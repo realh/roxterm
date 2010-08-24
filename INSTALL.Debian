@@ -1,0 +1,47 @@
+Instructions to build a Debian package of roxterm
+*************************************************
+
+Copyright (C) 2010 Tony Houghton.
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.  This file is offered as-is,
+without warranty of any kind.
+
+Prepararation
+=============
+
+First install the build dependencies, preferably after ensuring your system is
+up-to-date. If your distribution already includes roxterm the command:
+
+    apt-get build-dep roxterm
+
+should suffice, but if their version is between 1.17.1 and 1.18.2 this may
+install more packages than are now necessary. If you can't or don't want to
+use build-dep, just continue; if debuild fails due to missing dependencies it
+will say which packages are missing in its error message.
+
+Additionally install the devscripts package, which includes debuild.
+
+Use of bazaar (bzr)
+-------------------
+
+If using a clean bzr checkout you will also need autoconf, autotools and
+automake. Then run ./boostrap.sh.
+
+Building the package
+--------------------
+
+The actual package build is automated by a script. In the directory unpacked by
+the tarball or checked out by bzr, run:
+
+    ./builddeb
+
+This will build the package in a subdirectory called debtmp.
+
+Alternatively, if using a release tarball, copy/rename/link the tarball to
+roxterm_<version>.orig.tar.gz in the parent directory and run:
+    
+    debuild -uc -us
+
+to create the package files in the parent directory.

@@ -1,0 +1,109 @@
+#!/bin/sh
+
+PROG=roxterm
+
+APP_DIR=`dirname "$0"`
+APP_DIR=`cd "$APP_DIR";pwd`; export APP_DIR
+APPRUN="${APP_DIR}/AppRun"
+
+for f in AUTHORS COPYING NEWS README ; do
+    [ -f "$APP_DIR/Help/$f" ] || ln -nfs ../$f "$APP_DIR/Help/$f"
+done
+[ -f "$APP_DIR/Help/Changes" ] || ln -nfs ../ChangeLog "$APP_DIR/Help/Changes"
+
+MAINTAIN="--enable-maintainer-mode"
+if [ -f "$APP_DIR/tony" ]; then
+    #DEV_LDFLAGS="-L/usr/lib/debug -lmcheck $LDFLAGS"
+    DEV_LDFLAGS="-L/usr/lib/debug $LDFLAGS"
+    DEV_CFLAGS="-g -Wall -Wwrite-strings -Wunused"
+    #TABDRAG="--enable-gtk-native-tab-dragging"
+    ulimit -c unlimited
+    #DBGENV='G_SLICE=always-malloc'
+else
+    LOGFILE=
+fi
+PREFIX="--prefix=/usr/local/stow/roxterm"
+
+DEBUGGER=""
+
+case $1 in
+    --debug) shift
+        DEBUGGER="gdb --args"
+        ;;
+    --config) shift ; PROG=roxterm-config ;;
+    --valgrind) shift ;
+        ulimit -c unlimited
+        DEBUGGER="valgrind --freelist-vol=50000000"
+        DBGENV='G_SLICE=always-malloc'
+        ;;
+    --leaks) shift ;
+        DEBUGGER="valgrind --freelist-vol=50000000 --leak-check=yes"
+        DBGENV='G_SLICE=always-malloc'
+        ;;
+    --compile)
+        shift
+        if [ ! -d "$APP_DIR/src" ] ; then
+            echo "ERROR from $APPRUN:" >&2
+            echo "Cannot compile - source code is missing!" >&2
+            exit 1
+        fi
+        echo "Compiling $APP_DIR... please wait..." >&2
+        cd "$APP_DIR"
+        if [ ! -x configure ] ; then
+            echo "No configure script; running bootstrap.sh"
+            ./bootstrap.sh
+        fi
+        rm -f config.cache
+        LDFLAGS="$DEV_LDFLAGS" CFLAGS="$DEV_CFLAGS" \
+            ./configure $MAINTAIN $TABDRAG "$PREFIX" "$@" && \
+            make && \
+            ${APP_DIR}/update-locales --remake && \
+            echo Done >&2 && exit 0
+        echo Compile failed >&2
+        echo Press Return... >&2
+        read WAIT
+        exit 1 ;;
+esac
+
+exitcode=1
+
+if [ -d "${APP_DIR}/src" ] ; then
+    BIN="${APP_DIR}/src/$PROG"
+    if [ ! -x "$BIN" ]; then
+        echo "ERROR from $APPRUN:" >&2
+        echo "I cannot find an executable file for your host type ($PLATFORM)." >&2
+        echo "Trying to compile..." >&2
+        if [ -n "$DISPLAY" ] && echo $TERM | egrep -q -v 'term|rxvt' ; then
+            xterm -e "$APPRUN" --compile
+        else
+            "$APPRUN" --compile
+        fi
+    fi
+else
+    old_ifs="$IFS"
+    IFS=':'
+    for i in $PATH ; do
+        BIN="$i/$PROG"
+        [ -x "$BIN" ] && exec $DEBUGGER "$BIN" "$@"
+    done
+    IFS="$old_ifs"
+fi
+
+if [ -n "$LANG" -a -d "${APP_DIR}/po" ] ; then
+    lcstamp="${APP_DIR}/locale/stamp"
+    postamp="${APP_DIR}/po/stamp-po"
+    if [ ! -f "$postamp" ] ; then
+        "${APP_DIR}/update-locales" --remake
+    elif [ ! -f "$lcstamp" -o "$lcstamp" -ot "$postamp" ] ; then
+        "${APP_DIR}/update-locales"
+    fi
+fi
+
+if [ -x "$BIN" ]; then
+    exitcode=0
+    [ -n "$DBGENV" ] && export $DBGENV
+    exec $DEBUGGER "$BIN" "--appdir=$APP_DIR" "$@"
+else
+    echo "No roxterm executable found" >&2
+fi
+exit $exitcode

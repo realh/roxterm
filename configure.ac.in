@@ -1,0 +1,238 @@
+dnl Process this file with autoconf to produce a configure script.
+
+AC_INIT(roxterm, 1.19.0+bzr)
+AC_CONFIG_SRCDIR(src/roxterm.c)
+AC_CONFIG_MACRO_DIR([m4])
+AM_INIT_AUTOMAKE
+dnl Process this file with autoconf to produce a configure script.
+
+AM_CONFIG_HEADER(config.h)
+AM_MAINTAINER_MODE
+
+AH_TOP([
+#ifndef CONFIG_H
+#define CONFIG_H
+])
+AH_BOTTOM([
+#endif /* CONFIG_H */
+])
+
+AC_SUBST(VERSION)
+
+ISODATE=`date +%Y-%m-%d`
+AC_SUBST(ISODATE)
+
+AC_USE_SYSTEM_EXTENSIONS
+
+dnl Checks for programs.
+AC_PROG_CC
+AC_LANG(C)
+AM_PROG_CC_C_O
+AC_PROG_INSTALL
+AC_PROG_LIBTOOL
+AC_CHECK_PROG(HAVE_SED, sed, yes, no)
+if test "x$HAVE_SED" != "xyes"
+then
+    AC_MSG_ERROR([You need sed to build $PACKAGE])
+fi
+AC_CHECK_PROG(HAVE_DIFF, diff, yes, no)
+if test "x$HAVE_DIFF" != "xyes"
+then
+    AC_MSG_ERROR([You need diff to build $PACKAGE])
+fi
+PKG_PROG_PKG_CONFIG
+
+# Can we build the manpages?
+AC_CHECK_PROG(HAVE_XMLTO, xmlto, yes, no)
+AC_CHECK_PROG(HAVE_XSLTPROC, xsltproc, yes, no)
+if test "x$HAVE_XMLTO" = "xyes"
+then
+    XMLTOMAN="xmlto man"
+elif test "x$HAVE_XSLTPROC" = "xyes"
+then
+    XMLTOMAN="xsltproc --nonet --novalid --param man.charmap.use.subset 0 http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl"
+else
+    AC_MSG_WARN([Unable to build manpages without xmlto or xsltproc])
+    XMLTOMAN=""
+fi
+AM_CONDITIONAL(BUILD_MANPAGES, test "x$XMLTOMAN" != x)
+AC_SUBST(XMLTOMAN)
+
+AM_GNU_GETTEXT
+AM_GNU_GETTEXT_VERSION(0.17)
+
+dnl Misc options
+# GTK+'s tab dragging isn't currently fit for use
+#AC_ARG_ENABLE([gtk-native-tab-dragging],
+#    AC_HELP_STRING([--enable-gtk-native-tab-dragging],
+#        [Use GTK+'s functions for dragging tabs if possible instead of ROXTerm's own code]))
+
+AC_ARG_WITH([gnome-default-applications],
+    AC_HELP_STRING([--with-gnome-default-applications],
+        [Directory for GNOME Default Applications files. Use --without-... to disable. Default behaviour is to check with pkg-config.]),
+        [if test x$withval = xno
+        then
+            DEFAULTAPPS_DIR=""
+        else
+            DEFAULTAPPS_DIR="$withval"
+        fi],
+        [AC_MSG_CHECKING([Where to install GNOME Default Applications file])
+        if $PKG_CONFIG --variable=defappsdir gnome-default-applications >/dev/null ; then
+             DEFAULTAPPS_DIR="`$PKG_CONFIG --variable=defappsdir gnome-default-applications`"
+             AC_MSG_RESULT([$DEFAULTAPPS_DIR])
+        else
+             AC_MSG_RESULT([not found])
+             DEFAULTAPPS_DIR=""
+        fi])
+AC_SUBST(DEFAULTAPPS_DIR)
+AM_CONDITIONAL([INSTALL_DEFAULT_APPS], [test -n "$DEFAULTAPPS_DIR"])
+
+AC_ARG_WITH([sm],
+    AC_HELP_STRING([--without-sm],
+        [Don't enable session management code]),
+    [],
+    [with_sm="test"]
+)
+
+dnl Checks for libraries.
+dnl Common to terminal and capplet
+PKG_CHECK_MODULES(glib, [glib-2.0 >= 2.6.0])
+PKG_CHECK_MODULES(gtk, [gtk+-2.0 >= 2.6.0])
+PKG_CHECK_MODULES(dbus, [dbus-glib-1 >= 0.22])
+CFLAGS="$CFLAGS $glib_CFLAGS $gtk_CFLAGS $dbus_CFLAGS"
+LIBS="$LIBS $glib_LIBS $gtk_LIBS $dbus_LIBS"
+
+dnl Terminal only
+PKG_CHECK_MODULES(vte, [vte >= 0.11.11])
+tmp_LIBS="$LIBS"
+sm_LIBS=
+AC_CHECK_LIB(ICE, IceOpenConnection,
+    [AC_CHECK_LIB(SM, SmcOpenConnection,
+        [ HAVE_SM_LIBS=y
+          sm_LIBS="-lSM -lICE" ],
+        [HAVE_SM_LIBS=n], -lICE)],
+    [HAVE_SM_LIBS=n])
+LIBS="$tmp_LIBS"
+
+dnl Capplet only
+PKG_CHECK_MODULES(glade2, [libglade-2.0])
+AC_SUBST(roxterm_config_CFLAGS, [$glade2_CFLAGS])
+AC_SUBST(roxterm_config_LIBS, [$glade2_LIBS])
+
+AC_MSG_CHECKING([dbus version])
+dbus_version=`pkg-config --modversion dbus-1`
+AC_MSG_RESULT($dbus_version)
+dbus_old_args=0
+test "$dbus_version" \< "0.30" && dbus_old_args=1
+AC_DEFINE_UNQUOTED(ROXTERM_DBUS_OLD_ARGS_SEMANTICS, [$dbus_old_args],
+    [Whether to use dbus 0.2x API for handling message arguments])
+
+dnl Checks for header files.
+AC_HEADER_STDC
+AC_CHECK_HEADER(X11/SM/SMlib.h, [HAVE_SMLIB_H=y], [HAVE_SMLIB_H=n])
+AC_CHECK_HEADER(X11/ICE/ICElib.h, [HAVE_ICELIB_H=y], [HAVE_ICELIB_H=n])
+
+if test x$HAVE_SM_LIBS = xy && \
+        test x$HAVE_SMLIB_H = xy && test x$HAVE_ICELIB_H = xy
+then
+    if test x$with_sm != xno
+    then
+        with_sm=yes
+    fi
+else
+    if test x$with_sm = xyes || test x$with_sm = xx11
+    then
+        AC_MSG_ERROR([Missing or broken SM and/or ICE library or headers. Check config.log for more details.])
+    else
+        if test x$with_sm != xno
+        then
+            AC_MSG_WARN([Missing or broken SM and/or ICE library or headers; session management disabled. Check config.log for more details.])
+        fi
+        with_sm=no
+        sm_LIBS=
+    fi
+fi
+AM_CONDITIONAL(ENABLE_SM, test x$with_sm = xyes)
+if test x$with_sm = xyes
+then
+    with_sm="1"
+else
+    with_sm="0"
+fi
+AC_DEFINE_UNQUOTED(ENABLE_SM, [$with_sm],
+  [Whether to support session management])
+
+dnl Checks for typedefs, structures, and compiler characteristics.
+AC_C_CONST
+AC_C_INLINE
+
+dnl Checks for library functions.
+TH_CHECK_ALTERNATIVE_FUNCS(dbus-1,
+    dbus_bus_request_name, HAVE_DBUS_BUS_REQUEST_NAME,
+    dbus_bus_acquire_service, HAVE_DBUS_BUS_ACQUIRE_SERVICE)
+TH_CHECK_ALTERNATIVE_FUNCS(dbus-1,
+    dbus_message_iter_get_basic, HAVE_DBUS_MESSAGE_ITER_GET_BASIC,
+    dbus_message_iter_get_string, HAVE_DBUS_MESSAGE_ITER_GET_STRING)
+
+AC_CHECK_FUNCS_ONCE(g_mkdir_with_parents gtk_file_chooser_button_new g_file_set_contents get_current_dir_name)
+tmp_CFLAGS="$CFLAGS"
+tmp_LIBS="$LIBS"
+CFLAGS="$vte_CFLAGS"
+LIBS="$vte_LIBS"
+AC_CHECK_FUNCS(vte_terminal_set_cursor_blink_mode vte_terminal_match_add_gregex vte_terminal_set_cursor_shape)
+CFLAGS="$tmp_CFLAGS"
+LIBS="$tmp_LIBS"
+AM_CONDITIONAL(HAVE_G_FILE_SET_CONTENTS, test x$HAVE_G_FILE_SET_CONTENTS == 1)
+
+#if test x$enable_gtk_native_tab_dragging = xyes
+#then
+#DO_OWN_TAB_DRAGGING=0
+#AC_CHECK_FUNCS(gtk_notebook_set_tab_reorderable gtk_notebook_set_tab_detachable gtk_notebook_set_window_creation_hook, [], [DO_OWN_TAB_DRAGGING=1])
+#test $DO_OWN_TAB_DRAGGING = 1 && AC_MSG_WARN(["GTK+ doesn't support tab dragging; using ROXTerm's own code"])
+#else
+#DO_OWN_TAB_DRAGGING=1
+#fi
+# GTK+'s tab dragging isn't currently fit for use
+DO_OWN_TAB_DRAGGING=1
+AC_DEFINE_UNQUOTED(DO_OWN_TAB_DRAGGING, [$DO_OWN_TAB_DRAGGING],
+  [Whether to use own implementation of draggable tabs or GTK+'s new routines])
+AM_CONDITIONAL(DO_OWN_TAB_DRAGGING, [test $DO_OWN_TAB_DRAGGING = 1])
+
+
+dnl Output variables etc
+
+AC_SUBST(roxterm_CFLAGS, [$vte_CFLAGS])
+AC_SUBST(roxterm_LIBS, ["$vte_LIBS $sm_LIBS"])
+
+AC_SUBST(APPINFO_STRING, "${VERSION} (${ISODATE})")
+
+AC_SUBST(LDADD, [$LDADD])
+
+test "x$prefix" = xNONE && prefix="$ac_default_prefix"
+dir=`eval echo ${sysconfdir}`
+test "x$dir" = xNONE && dir=`eval echo ${prefix}/etc`
+TH_EXPAND_VARS(dir)
+AC_DEFINE_UNQUOTED(SYS_CONF_DIR, "$dir", [sysconfdir])
+
+dir=`eval echo ${datadir}`
+test "x$dir" = "x" && dir=NONE
+test "x$dir" = xNONE && dir=`eval echo ${prefix}/share`
+TH_EXPAND_VARS(dir)
+AC_DEFINE_UNQUOTED(DATA_DIR, "$dir", [datadir])
+m4_pattern_allow(PKG_DATA_DIR)
+AC_DEFINE_UNQUOTED([PKG_DATA_DIR], "$dir/$PACKAGE", [pkgdatadir])
+m4_pattern_allow(ICON_DIR)
+pkgicondir="$dir/icons/hicolor/scalable/apps"
+AC_DEFINE_UNQUOTED([ICON_DIR], "$pkgicondir", [Icon dir])
+AC_SUBST(pkgicondir, ["$pkgicondir"])
+AC_DEFINE_UNQUOTED([LOCALEDIR], "$dir/locale", [Locale dir])
+
+TH_EXPAND_VARS(htmldir)
+AC_DEFINE_UNQUOTED([HTML_DIR], "$htmldir", [htmldir])
+
+test "x$exec_prefix" = "x" && exec_prefix=NONE
+test "x$exec_prefix" = xNONE && exec_prefix="$prefix"
+TH_EXPAND_VARS(exec_prefix)
+AC_DEFINE_UNQUOTED([BIN_DIR], "$exec_prefix/bin", [bindir])
+
+AC_OUTPUT(Makefile src/Makefile roxterm.lsm roxterm.spec AppInfo.xml intl/Makefile po/Makefile.in roxterm.1.xml roxterm-config.1.xml)

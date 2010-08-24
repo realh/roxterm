@@ -1,0 +1,21 @@
+#!/bin/sh
+
+if [ -n "$1" ] ; then
+	if echo $1 | grep -qv roxterm ; then
+		f=roxterm-${1}.tar.gz
+	fi
+else
+	f=roxterm-*.tar.gz
+	if echo $f | egrep -q ' |\*' ; then
+		echo >&2 "Can't work out what version you want to upload"
+		exit 1
+	fi
+fi
+
+d=`echo $f | sed 's/roxterm-//;s/.tar.gz//'`
+mkdir $d
+cp $f $d
+
+rsync -avP -e ssh $d realh,roxterm@frs.sourceforge.net:/home/frs/project/r/ro/roxterm/roxterm/
+
+rm -rf $d

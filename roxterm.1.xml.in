@@ -1,0 +1,318 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
+
+<!--
+
+Process this file with an XSLT processor: `xsltproc -''-nonet \
+/usr/share/xml/docbook/stylesheet/nwalsh/manpages/docbook.xsl \
+roxterm.xml'. A manual page <package>.<section> will be generated. You
+may view the manual page with: nroff -man <package>.<section> | less'.
+A typical entry in a Makefile or Makefile.am is:
+
+DB2MAN=/usr/share/xml/docbook/stylesheet/nwalsh/manpages/docbook.xsl
+XP=xsltproc -''-nonet
+
+manpage.1: manpage.dbk
+        $(XP) $(DB2MAN) $<
+    
+The xsltproc binary is found in the xsltproc package.  The
+XSL files are in docbook-xsl.  Please remember that if you
+create the nroff version in one of the debian/rules file
+targets (such as build), you will need to include xsltproc
+and docbook-xsl in your Build-Depends control field.
+
+-->
+
+  <!-- Fill in your name for FIRSTNAME and SURNAME. -->
+  <!ENTITY dhfirstname "<firstname>Tony</firstname>">
+  <!ENTITY dhsurname   "<surname>Houghton</surname>">
+  <!-- Please adjust the date whenever revising the manpage. -->
+  <!ENTITY dhdate      "<date>November 27, 2009</date>">
+  <!-- SECTION should be 1-8, maybe w/ subsection other parameters are
+       allowed: see man(7), man(1). -->
+  <!ENTITY dhsection   "<manvolnum>1</manvolnum>">
+  <!ENTITY dhemail     "<email>h@realh.co.uk</email>">
+  <!ENTITY dhusername  "Tony Houghton">
+  <!ENTITY dhucpackage "<refentrytitle>roxterm</refentrytitle>">
+  <!ENTITY dhpackage   "roxterm">
+  <!ENTITY product     "ROXTerm">
+
+  <!ENTITY debian      "<productname>Debian</productname>">
+  <!ENTITY gnu         "<acronym>GNU</acronym>">
+  <!ENTITY gpl         "&gnu; <acronym>GPL</acronym>">
+]>
+
+<refentry>
+  <refentryinfo>
+    <address>
+      &dhemail;
+    </address>
+    <author>
+      <contrib>Developer</contrib>
+      &dhfirstname; &dhsurname;
+    </author>
+    <copyright>
+      <year>2005</year>
+      <holder>&dhusername;</holder>
+    </copyright>
+    &dhdate;
+  </refentryinfo>
+  <refmeta>
+    &dhucpackage;
+    &dhsection;
+    <refmiscinfo class="source">&product;</refmiscinfo>
+    <refmiscinfo class="version">@PACKAGE_VERSION@</refmiscinfo>
+    <refmiscinfo class="manual">User Commands</refmiscinfo>
+  </refmeta>
+  <refnamediv>
+    <refname>&dhpackage;</refname>
+
+    <refpurpose>terminal emulator</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <cmdsynopsis>
+      <command>&dhpackage;</command>
+      <arg><option>-?</option> | <option>--help</option></arg>
+      <arg><option>--help-all</option></arg>
+      <arg><option>--help-gtk</option></arg>
+      <arg><option>-u</option> | <option>--usage</option></arg>
+      <arg><option>--geometry=<replaceable>GEOM</replaceable></option></arg>
+      <arg><option>--appdir=<replaceable>DIR</replaceable></option></arg>
+      <arg><option>--profile=<replaceable>PROFILE</replaceable></option> |
+        <option>-p <replaceable>PROFILE</replaceable></option></arg>
+      <arg><option>--colour-scheme=<replaceable>SCHEME</replaceable></option> |
+        <option>--color-scheme=<replaceable>SCHEME</replaceable></option> |
+        <option>-c <replaceable>SCHEME</replaceable></option></arg>
+      <arg><option>--shortcut-scheme=<replaceable>SCHEME</replaceable></option>
+        | <option>-s <replaceable>SCHEME</replaceable></option></arg>
+      <arg><option>--separate</option></arg>
+      <arg><option>--replace</option></arg>
+      <arg><option>--directory=<replaceable>DIR</replaceable></option> |
+        <option>-d <replaceable>DIR</replaceable></option></arg>
+      <arg><option>--show-menubar</option></arg>
+      <arg><option>--hide-menubar</option></arg>
+      <arg><option>--fullscreen</option><option>-f</option></arg>
+      <arg><option>--disable-sm</option></arg>
+      <arg><option>--tab</option></arg>
+      <arg><option>--zoom=<replaceable>ZOOM</replaceable></option> |
+        <option>-z <replaceable>ZOOM</replaceable></option></arg>
+      <arg><option>--title=<replaceable>TITLE</replaceable></option> |
+        <option>-T <replaceable>TITLE</replaceable></option></arg>
+      <arg><option>--tab-name=<replaceable>NAME</replaceable></option> |
+        <option>-n <replaceable>NAME</replaceable></option></arg>
+      <arg><option>--display=<replaceable>DISPLAY</replaceable></option></arg>
+      <arg><option>--execute <replaceable>COMMAND</replaceable></option> |
+        <option>-e <replaceable>COMMAND</replaceable></option></arg>
+    </cmdsynopsis>
+  </refsynopsisdiv>
+  <refsect1>
+    <title>DESCRIPTION</title>
+
+    <para>This manual page documents briefly the
+      <command>&dhpackage;</command> command.</para>
+
+    <para><command>&dhpackage;</command> is a terminal emulator.</para>
+
+  </refsect1>
+  <refsect1>
+    <title>OPTIONS</title>
+
+    <para>These programs follow the usual &gnu; command line syntax,
+      with long options starting with two dashes (`-').  A summary of
+      options is included below.</para>
+
+    <variablelist>
+      <varlistentry>
+        <term><option>-?</option>
+          <option>--help</option>
+        </term>
+        <listitem>
+          <para>Show description of options.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--help-all</option>
+        </term>
+        <listitem>
+          <para>Show all options.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--help-gtk</option>
+        </term>
+        <listitem>
+          <para>Show all GTK+ options.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--usage</option>
+        </term>
+        <listitem>
+          <para>Show summary of usage.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-d <replaceable>DIRECTORY</replaceable></option>
+          <option>--directory=<replaceable>DIRECTORY</replaceable></option>
+        </term>
+        <listitem>
+          <para>Run shell/command in
+            <replaceable>DIRECTORY</replaceable>.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--geometry=<replaceable>GEOMETRY</replaceable></option>
+        </term>
+        <listitem>
+          <para>Set size and/or position of terminal according to X geometry
+            specification.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--appdir=<replaceable>DIR</replaceable></option>
+        </term>
+        <listitem>
+          <para>Application directory when run as a ROX app.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--show-menubar</option>
+          <option>--hide-menubar</option>
+        </term>
+        <listitem>
+          <para>Whether to show or hide the menubar, overriding the profile.
+            The default is to show it.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--fullscreen</option>
+          <option>-f</option>
+        </term>
+        <listitem>
+          <para>Make initial terminal window take up the whole screen with
+            no window furniture.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--disable-sm</option>
+        </term>
+        <listitem><para>Disable session management.</para></listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--tab</option>
+        </term>
+        <listitem>
+          <para>If possible open the new terminal in an existing window rather
+          than open a new window. The window chosen is the most recently
+          focused window with the same profile as the new terminal. This option
+          overrides <option>--zoom</option> and
+          <option>--fullscreen</option>.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--zoom=<replaceable>ZOOM</replaceable></option>
+          <option>-z <replaceable>ZOOM</replaceable></option>
+        </term>
+        <listitem>
+          <para>Scale terminal's font by a factor of ZOOM (1.0 is normal
+            size).</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-p <replaceable>PROFILE</replaceable></option>
+          <option>--profile=<replaceable>PROFILE</replaceable></option>
+        </term>
+        <listitem>
+          <para>Use the named profile.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-c <replaceable>SCHEME</replaceable></option>
+          <option>--colour-scheme=<replaceable>SCHEME</replaceable></option>
+          <option>--color-scheme=<replaceable>SCHEME</replaceable></option>
+        </term>
+        <listitem>
+          <para>Use the named colour scheme.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-s <replaceable>SCHEME</replaceable></option>
+          <option>--shortcut-scheme=<replaceable>SCHEME</replaceable></option>
+        </term>
+        <listitem>
+          <para>Use the named keyboard shortcut scheme.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--title=<replaceable>TITLE</replaceable></option>
+          <option>-T <replaceable>TITLE</replaceable></option>
+        </term>
+        <listitem>
+          <para>Set window title.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--tab-name=<replaceable>NAME</replaceable></option>
+          <option>-n <replaceable>NAME</replaceable></option>
+        </term>
+        <listitem>
+          <para>Set tab name.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--separate</option>
+        </term>
+        <listitem>
+          <para>Use a separate process for this terminal.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--replace</option>
+        </term>
+        <listitem>
+          <para>Replace any existing instance as ROXTerm D-BUS service
+            provider.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--display=<replaceable>DISPLAY</replaceable></option>
+        </term>
+        <listitem>
+          <para>X display to use.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-e</option>
+          <option>--execute</option>
+        </term>
+        <listitem>
+          <para>Execute remainder of command line inside the terminal. Must
+            be the final option.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </refsect1>
+  <refsect1>
+    <title>SEE ALSO</title>
+
+    <para>The program is documented fully by the HTML file
+      <filename>file://@pkgdocdir@/index.html</filename>.</para>
+  </refsect1>
+  <refsect1>
+    <title>AUTHOR</title>
+
+    <para>This manual page was written by &dhusername; &dhemail;.
+      Permission is granted to copy, distribute and/or modify this document
+      under the terms of the &gnu; General Public License, Version 2 or any
+      later version published by the Free Software Foundation.
+    </para>
+  <para>
+    On Debian systems, the complete text of the GNU General Public
+    License can be found in /usr/share/common-licenses/GPL.
+  </para>
+
+  </refsect1>
+
+</refentry>
+

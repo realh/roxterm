@@ -1,0 +1,34 @@
+/* IE6/IE7 fixes */
+h1, h2, h3, h4, .newsItemHeader, a {
+	color:#3368A1;
+}
+
+#Header {
+	background:#222;
+	border-bottom:5px solid #111;
+	height:95px;
+}
+
+#Header ul li {
+	display:inline;
+	zoom:1;
+}
+
+#Header ul li a {
+	border-color:#222;
+	display:block;
+}
+
+#SubNav li {
+	display:inline;
+}
+
+* html #Content,
+* html #SubNav {
+	padding-top:1em;
+}
+
+#FooterButtons a {
+	margin:0 3px;
+	float:left;
+}

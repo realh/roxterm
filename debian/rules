@@ -1,0 +1,14 @@
+#!/usr/bin/make -f
+
+%:
+	dh $@
+
+override_dh_auto_configure:
+	dh_auto_configure -- --with-gnome-default-applications=/usr/share/gnome-control-center/default-apps
+
+override_dh_auto_build:
+	dh_auto_build --parallel
+
+override_dh_auto_install:
+	dh_auto_install
+	dh_install --sourcedir=debian roxterm.xpm /usr/share/pixmaps/

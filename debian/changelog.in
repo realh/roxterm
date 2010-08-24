@@ -1,0 +1,186 @@
+roxterm (1.19.0+bzr-1) unstable; urgency=low
+
+  * New upstream release:
+    + New sizing code to fix sf.net bug 3041926.
+  * Updated Standards-Version to 3.9.1.
+
+ -- Tony Houghton <h@realh.co.uk>  Sun, 15 Aug 2010 21:07:48 +0100
+
+roxterm (1.18.5-1) unstable; urgency=low
+
+  * New upstream release (Closes: #589871):
+    + Avoid NULL colour for background tint.
+    + Correct setting of rtdbus_ok flag.
+    + Added --disable-sm runtime option.
+
+ -- Tony Houghton <h@realh.co.uk>  Fri, 23 Jul 2010 13:45:19 +0100
+
+roxterm (1.18.4-1) unstable; urgency=low
+
+  * New upstream release:
+    + Configurable TERM and COLORTERM env variables.
+    + Less "noise" when D-BUS fails.
+  * Use dh 7.
+
+ -- Tony Houghton <h@realh.co.uk>  Sat, 19 Jun 2010 20:53:42 +0100
+
+roxterm (1.18.3-1) unstable; urgency=low
+
+  * New upstream release:
+    + Call gtk_window_present when --tab is used.
+      (upstream SourceForge tracker (SF) 2997661, 2997666).
+    + Update window title even if vte hasn't set it yet (SF 2999166).
+    + Reduces build-deps chain.
+
+ -- Tony Houghton <h@realh.co.uk>  Sun, 23 May 2010 13:22:30 +0100
+
+roxterm (1.18.2-1) unstable; urgency=low
+
+  * New upstream release:
+    + Fix crash when using --tab with no pre-existing windows 
+      (upstream SourceForge tracker (SF) #2996294).
+    + Hide/show menu bar setting is inherited from other windows (SF 2996296).
+
+ -- Tony Houghton <h@realh.co.uk>  Wed, 05 May 2010 20:25:43 +0100
+
+roxterm (1.18.1-1) unstable; urgency=low
+
+  * New upstream release:
+    + Support X session management (SF #2779052).
+    + Added "Restart Command" menu action (SF #2810001).
+    + Ensure no associated menus/dialogs are left open when a terminal exits.
+    + Profile editor redesign with new fullscreen/maximise options
+      (SF #2942755).
+    + Option to reflect terminal status in tab close icon (LP: #509544).
+    + Fix --hide-/--show-menubar (SF #2942481).
+    + Rudimentary ssh support (SF #2810009).
+    + New Window/Tab With Profile menu items (SF #2928415).
+    + Moved Always show tabs option to Appearance and made it on by default;
+      single tabs no longer fill available space.
+  * Upgraded to debian source format 3.0 (quilt).
+  * debian/control:
+    + Updated long description.
+    + Updated Standards-Version.
+  * debian/rules: Parse DEB_BUILD_OPTIONS to support parallel build etc
+    (based on <http://lists.debian.org/debian-policy/2007/06/msg00022.html>).
+
+ -- Tony Houghton <h@realh.co.uk>  Tue, 23 Mar 2010 18:21:03 +0000
+
+roxterm (1.17.1-1) unstable; urgency=low
+
+  * New upstream release:
+    + Added always show tab bar option (SF #2921009).
+
+ -- Tony Houghton <h@realh.co.uk>  Sat, 02 Jan 2010 18:26:28 +0000
+
+roxterm (1.16.3-1) unstable; urgency=low
+
+  * New upstream release:
+    + Use PATH when spawning browser/mailer (Closes: #559126).
+    + Improved handling of situation when command fails (SF #2809991).
+
+ -- Tony Houghton <h@realh.co.uk>  Sat, 05 Dec 2009 15:28:49 +0000
+
+roxterm (1.16.2-1) unstable; urgency=low
+
+  * New upstream release:
+    + Support GNOME default applications (Closes: #557049) (LP: #485206).
+    + Close buttons on tabs are optional (SF #2863351).
+    + Handle multiple displays/screens correctly (SF #2854625).
+    + Added ROXTERM_PID and ROXTERM_NUM environment variables
+      (SF #2846976).
+    + Fixed minor issues with man pages.
+  * debian/postinst:
+    + Only run update-alternatives if $1 = "configure".
+  * debian/control:
+    + Added build deps: gettext, xmlto (SF #2854333), gnome-control-center-dev.
+    + Added Vcs-* fields.
+    + Update Standards-Version to 3.8.3
+
+ -- Tony Houghton <h@realh.co.uk>  Sat, 28 Nov 2009 14:02:07 +0000
+
+roxterm (1.15.2-1) unstable; urgency=low
+
+  * New maintainer (Closes: #535246).
+  * New upstream release (Closes: #511114, #485824).
+  * Use upstream manpages.
+  * debian/control:
+    + Update Standards-Version to 3.8.2
+  * debian/rules:
+    + Delete config.log in clean
+  * debian/copyright:
+    + Refer to absolute licence file (GPL-3)
+
+ -- Tony Houghton <h@realh.co.uk>  Mon, 06 Jul 2009 14:25:13 +0100
+
+roxterm (1.12.2-1) unstable; urgency=low
+
+  * New upstream release
+  * Ack NMU, thanks Chris Lamb. (Closes: #484434)
+  * Update Standards-Version to 3.8.0
+
+ -- Thierry Randrianiriana <randrianiriana@gmail.com>  Sun, 27 Jul 2008 12:17:49 +0300
+
+roxterm (1.11.1-1.1) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * debian/rules:
+    + Fix bashism (Closes: #484434). Thanks to Chris Lamb.
+
+ -- Marco Rodrigues <gothicx@sapo.pt>  Wed, 25 Jun 2008 20:43:10 +0100
+
+roxterm (1.11.1-1) unstable; urgency=low
+
+  * New upstream release. (Closes: #471791)
+  * Updated doc-base Section to Terminal Emulators
+
+ -- Thierry Randrianiriana <randrianiriana@gmail.com>  Fri, 28 Mar 2008 09:27:13 +0300
+
+roxterm (1.10.0-1) unstable; urgency=low
+
+  * New upstream release. (Closes: #461799, #460803)
+  * debian/control:
+    + Update Standards-Version to 3.7.3
+    + Use Homepage field
+    + Update debhelper to >= 6
+    + Add debian/roxterm.xpm and removed imagemagick in Build-Depends
+  * debian/compat:
+    + Update debhelper compat level to 6.
+  * debian/rules:
+    + Add '-as-needed' in LDFLAGS
+    + Use debian/roxterm.xpm
+
+ -- Thierry Randrianiriana <randrianiriana@gmail.com>  Fri, 04 Jan 2008 22:19:23 +0300
+
+roxterm (1.8.0-1) unstable; urgency=low
+
+  * New upstream release. (Closes: #445151)
+
+ -- Thierry Randrianiriana <randrianiriana@gmail.com>  Tue, 06 Nov 2007 08:20:40 +0300
+
+roxterm (1.7.4-1) unstable; urgency=low
+
+  * New upstream release
+  * Don't report trivial cases of failure to load bgimg in profilegui. (Closes: #441964)
+
+ -- Thierry Randrianiriana <randrianiriana@gmail.com>  Tue, 11 Sep 2007 23:43:03 +0300
+
+roxterm (1.6.0-1) unstable; urgency=low
+
+  * New upstream release
+  * Configuration manager can't copy Keyboard Shortcuts profile. (Closes: #435989)
+  * Can't modify keyboard shortcuts. (Closes: #436158, #435984)
+
+ -- Thierry Randrianiriana <randrianiriana@gmail.com>  Mon, 03 Sep 2007 22:35:33 +0300
+
+roxterm (1.5.2-2) unstable; urgency=low
+
+  * Renamed roxterm.postint to roxterm.postinst (Closes: #435475).
+
+ -- Thierry Randrianiriana <randrianiriana@gmail.com>  Wed, 01 Aug 2007 09:20:15 +0300
+
+roxterm (1.5.2-1) unstable; urgency=low
+
+  * Initial release (Closes: #416089)
+
+ -- Thierry Randrianiriana <randrianiriana@gmail.com>  Mon, 16 Jul 2007 13:42:17 +0300

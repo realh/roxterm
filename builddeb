@@ -1,0 +1,22 @@
+#!/bin/sh
+
+rm -rf debtmp
+mkdir debtmp
+
+Version=`grep ^AC_INIT configure.ac | sed 's/.*, //;s/)//'`
+
+[ -f Makefile ] || ./configure
+make dist
+ln roxterm-$Version.tar.gz debtmp/roxterm_$Version.orig.tar.gz
+
+cd debtmp
+tar xf roxterm_$Version.orig.tar.gz
+cd roxterm-$Version
+
+if [ "$EMAIL" != "h@realh.co.uk" ] ; then
+    SIGNOPTS="-uc -us"
+else
+    SIGNOPTS=""
+fi
+
+debuild -i -I $SIGNOPTS $@

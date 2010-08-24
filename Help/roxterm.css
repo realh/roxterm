@@ -1,0 +1,254 @@
+/*
+ * 	Author: Adrian Sampson
+*/
+
+html, body {
+	background:#F3F3F3;
+	font-family:"Lucida Grande","Lucida Sans Unicode","Lucida Sans","DejaVu Sans","Bitstream Vera Sans",Verdana,sans-serif;
+	font-size:10pt;
+	height:100%;
+	margin:0;
+}
+
+h1, h2, h3, h4 {
+	font-family:"Segoe UI","Trebuchet MS",Tahoma,sans-serif;
+}
+
+h1, h2, h3, h4, .newsItemHeader, a[href] {
+	color:#3368A1;
+	/*color:#4BA31E;*/
+}
+
+h1 {
+	border-bottom:1px solid #D9D9D9;
+	padding-bottom:0.5em;
+}
+
+a[href] {
+	font-weight:bold;
+}
+
+#Container {
+	min-height:100%;
+	position:relative;
+}
+
+#Header {
+	background:url('lib/header.png') repeat-x;
+	width:100%;
+	height:100px;
+	position:fixed;
+	z-index:100;
+}
+
+#Header div {
+	width:975px;
+	margin:0 auto;
+}
+
+#Logo {
+	outline:none;
+	text-decoration:none;
+	margin:20px 20px 0 -20px;
+	float:left;
+}
+
+#Logo img {
+	border:none;
+	vertical-align:middle;
+}
+
+#Header ul {
+	list-style:none;
+	margin-top:40px;
+	float:left;
+}
+
+#Header ul li {
+	text-align:center;
+	margin:0 2em;
+	display:inline-block;
+}
+
+#Header ul li a {
+	background:url('lib/sprites.png') no-repeat;
+	border-bottom:3px solid transparent;
+	outline:none;
+	color:#EEE;
+	text-decoration:none;
+	text-indent:-9999px;
+	height:20px;
+	padding-bottom:3px;
+	display:inline-block;
+	overflow:hidden;
+}
+
+#Header ul li a#MainNav_Home {
+	width:46px;
+}
+
+#Header ul li a#MainNav_News {
+	background-position:-46px top;
+	width:43px;
+}
+
+#Header ul li a#MainNav_Installation {
+	background-position:-89px top;
+	width:76px;
+}
+
+#Header ul li a#MainNav_UserGuide {
+	background-position:-165px top;
+	width:82px;
+}
+
+#Header ul li a#MainNav_Forums {
+	background-position:-247px top;
+	width:52px;
+}
+
+#Header ul li a.active, #Header ul li a:hover {
+	border-color:#4284C9;
+	/*border-color:#8FFF19;*/
+}
+
+#SubNav {
+	text-align:left;
+	list-style:none;
+	padding:125px 1.5em 3em;
+	margin:0;
+}
+
+#SubNav li {
+	margin:0.75em 0.5em;
+	display:inline-block;
+}
+
+#SubNav.largeFont a {
+	font-size:1.1em;
+}
+
+#SubNav a {
+	-moz-border-radius:0.75em;
+	border-radius:0.75em;
+	outline:none;
+	font-family:"Segoe UI","Trebuchet MS",Tahoma,sans-serif;
+	font-size:0.85em;
+	text-decoration:none;
+	padding:0.35em 1.25em;
+}
+
+#SubNav a:hover {
+	color:#4891DE;
+	background:#383838;
+}
+
+#Content {
+	padding:100px 3em 80px;
+}
+
+#Content.noPaddingTop {
+	padding-top:0;
+}
+
+#Content li {
+	color:#3A75B3;
+	font-size:0.85em;
+	font-weight:bold;
+}
+
+#Content li span {
+	color:#000;
+	font-weight:normal;
+}
+
+#Content a.toTop {
+	font-size:0.6em;
+	font-weight:bold;
+	text-decoration:none;
+}
+
+#Footer {
+	background:#222;
+	border-top:2px solid #141414;
+	width:100%;
+	height:60px;
+	padding:0.4em 0;
+	clear:both;
+	position:absolute;
+	bottom:0;
+}
+
+#FooterButtons {
+	text-align:center;
+	width:200px;
+	margin:0.25em auto;
+}
+
+#FooterButtons a {
+	background-image:url('lib/sprites.png');
+	background-repeat:no-repeat;
+	text-indent:-9999px;
+	overflow:hidden;
+	display:inline-block;
+}
+
+#DonationLink {
+	background-position:left -30px;
+	width:88px;
+	height:32px;
+}
+
+#ValidMarkupLink {
+	background-position:-90px -30px;
+	width:88px;
+	height:31px;
+	margin-bottom:1px;
+}
+
+#Footer p {
+	color:#EEE;
+	font-size:10px;
+	text-align:center;
+	margin:0;
+}
+
+.newsItem + .newsItem {
+	border-top:1px solid #D9D9D9;
+	padding-top:1em;
+}
+
+.newsItemHeader, .newsItemSubHeader {
+	font-weight:bold;
+	display:block;
+}
+
+.newsItemHeader {
+	font-size:0.85em;
+}
+
+.newsItemSubHeader {
+	font-size:0.75em;
+	margin:1em 0 0 2.5em;
+}
+
+.snippet {
+	background:#333;
+	-moz-border-radius:0.75em;
+	border-radius:0.75em;
+	color:#F2F2F2;
+	font-family:"Andale Mono","Lucida Console","Lucida Sans Typewriter","DejaVu Sans Mono","Bitstream Vera Sans Mono",
+	"Liberation Mono","Nimbus Mono L",Monaco,monospace;
+	font-size:0.85em;
+	padding:1em;
+	margin-left:2em;
+}
+
+.snippet span {
+	margin-left:0.5em;
+	display:block;
+}
+
+.indented , span.indented {
+	margin-left:3em;
+}
