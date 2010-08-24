@@ -23,17 +23,17 @@ will say which packages are missing in its error message.
 
 Additionally install the devscripts package, which includes debuild.
 
-Use of bazaar (bzr)
--------------------
+Use of git
+----------
 
-If using a clean bzr checkout you will also need autoconf, autotools and
+If using a clean git checkout you will also need autoconf, autotools and
 automake. Then run ./boostrap.sh.
 
 Building the package
 --------------------
 
 The actual package build is automated by a script. In the directory unpacked by
-the tarball or checked out by bzr, run:
+the tarball or checked out by git, run:
 
     ./builddeb
 

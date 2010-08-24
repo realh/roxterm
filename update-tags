@@ -4,6 +4,5 @@ if [ -z "$RELEASE" ] ; then
 	echo "You forgot the version number" >&2
 	exit 1
 fi
-[ -n "$2" ] && REVISION="-r $2"
-bzr tag --force stable
-bzr tag --force roxterm-$RELEASE
+git tag -s --force stable -m "roxterm-$RELEASE" "$2"
+git tag -s --force roxterm-$RELEASE -m "roxterm-$RELEASE" "$2"

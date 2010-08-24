@@ -42,12 +42,12 @@
 			<h2><a name="Download">Download</a></h2>
 
 			<p>Visit the <a href="http://sourceforge.net/projects/roxterm">SourceForge project page</a> to download release
-			files or use other Sourceforge tools. If you want to get developmental versions ahead of releases, use bzr (Bazaar).
+			files or use other Sourceforge tools. If you want to get developmental versions ahead of releases, use git.
 			For versions prior to 1.19.0 use svn (subversion). The actual command you will probably want to use to check out a
 			snapshot is:</p>
 
 			<p class="snippet">
-				<span>bzr co bzr://roxterm.bzr.sourceforge.net/bzrroot/roxterm</span>
+				<span>git clone git://roxterm.git.sourceforge.net/gitroot/roxterm/roxterm</span>
 			</p>
 
 			<h2><a name="Requirements">Requirements</a></h2>
@@ -59,7 +59,7 @@
 			<p>To compile ROXTerm you will need the header files for all the above libraries. In packaging systems they usually
 			come in packages whose names end in "-dev" or "-devel".</p>
 
-			<p>Additionally, to build a bzr checkout of ROXTerm you need autoconf, automake and libtool. Use the latest
+			<p>Additionally, to build a git checkout of ROXTerm you need autoconf, automake and libtool. Use the latest
 			versions possible. Old versions of automake (older than 1.7?) will cause building to fail because ROXTerm uses
 			per-target CFLAGS.</p>
 
@@ -92,7 +92,7 @@
 				<span>make install</span>
 			</p>
 
-			<p>If you are using a version fetched by bzr instead of a release tarball run the bootstrap.sh script first to
+			<p>If you are using a version fetched by git instead of a release tarball run the bootstrap.sh script first to
 			create the configure script and various other files needed for building.</p>
 
 			<h3>Debian &amp; Ubuntu</h3>
@@ -102,7 +102,7 @@
 			build their own debian packages, the debian packaging files used to have a separate module in subversion but
 			this has now been merged into the main trunk, and is also included with release tarballs from 1.19.1 onwards.</p>
 
-			<p>For instructions on building a debian package refer to the file INSTALL.Debian in the unpacked tarball/bzr
+			<p>For instructions on building a debian package refer to the file INSTALL.Debian in the unpacked tarball/git
 			working directory.</p>
 
 			<p>Ubuntu also has official roxterm packages, but due to Ubuntu's release cycle these may lag behind the latest

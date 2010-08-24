@@ -7,19 +7,13 @@
 # Conflicts: autoconf 2.13
 set -e
 
-if grep '^AC_INIT.*bzr' configure.ac.in >/dev/null 2>&1
+if grep '^AC_INIT.*git' configure.ac.in >/dev/null 2>&1
 then
-    # bzr status does nothing
-    revno=`bzr log | grep -m1 '^revno:' | sed 's/revno: //'`
-    branch=`bzr log | grep -m1 '^branch nick:' | sed 's/branch nick: //'`
-    if test z$branch = zroxterm
-    then
-        branch=
-    fi
-    Rev=$branch$revno
-    sed "s/^AC_INIT\([^+]*+bzr\)[^)]*/AC_INIT\1$Rev/" configure.ac.in \
+    Date=`git log --date=iso | grep -m1 '^Date:' | sed 's/^Date:\s*//'`
+    Rev=`date -d "$Date" -u +'%Y%m%d%H%M%S'`
+    sed "s/^AC_INIT\([^+]*+git\)[^)]*/AC_INIT\1$Rev/" configure.ac.in \
             > configure.ac
-    Line1=`head -n 1 debian/changelog.in | sed "s/bzr.*\(-[0-9.]*\))/bzr$Rev\1)/"`
+    Line1=`head -n 1 debian/changelog.in | sed "s/git.*\(-[0-9.]*\))/git$Rev\1)/"`
     echo $Line1 > debian/changelog
     tail -n +2 debian/changelog.in >> debian/changelog
 else
@@ -29,8 +23,7 @@ fi
 
 if test ! -f ChangeLog
 then
-    echo Generating ChangeLog from bzr...
-    bzr log > ChangeLog
+    git log > ChangeLog
 fi
 
 # Refresh GNU autotools toolchain.
