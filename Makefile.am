@@ -48,8 +48,6 @@ $(FAVICON): $(LOGO_PNG)
 $(TEXT_LOGO): $(LOGO_PNG) $(LOGO_TEXT_ONLY)
 	composite -gravity SouthWest $(LOGO_PNG) $(LOGO_TEXT_ONLY) $(TEXT_LOGO)
 
-FAVICON = $(top_srcdir)/Help/favicon.ico
-
 DISTCLEANFILES = $(man_MANS)
 
 endif
