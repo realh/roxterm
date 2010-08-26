@@ -604,7 +604,6 @@ void multi_tab_remove_from_parent(MultiTab *tab, gboolean notify_only)
     tab->parent = NULL;
 }
 
-#if DO_OWN_TAB_DRAGGING
 void multi_tab_move_to_new_window(MultiWin *win, MultiTab *tab, int position)
 {
     MultiWin *old_win = tab->parent;
@@ -632,7 +631,6 @@ void multi_tab_move_to_new_window(MultiWin *win, MultiTab *tab, int position)
     /* Remove extra references added by multi_tab_remove_from_parent */
     g_object_unref(tab->widget);
 }
-#endif
 
 static gboolean multi_tab_toggle_attention(gpointer data)
 {

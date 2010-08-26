@@ -158,10 +158,8 @@ void multi_tab_remove_from_parent(MultiTab *tab, gboolean notify_only);
  * already been done and it just updates data structs */
 void multi_tab_move_to_position(MultiTab *tab, int position, gboolean reorder);
 
-#if DO_OWN_TAB_DRAGGING
 /* Move tab to a different window */
 void multi_tab_move_to_new_window(MultiWin *win, MultiTab *tab, int position);
-#endif
 
 /* Returns NULL if pointer not over one of our tabs; otherwise position is
  * filled in with tab's position if not NULL. x and y are absolute coordinates

@@ -2648,11 +2648,24 @@ roxterm_attach_state_changed_handler(ROXTermData *roxterm)
             G_CALLBACK(roxterm_window_state_changed), roxterm);
 }
 
+#if !DO_OWN_TAB_DRAGGING
 static void
 roxterm_tab_received(GtkWidget *rcvd_widget, ROXTermData *roxterm)
 {
     g_debug("Tab dragged in");
+    MultiTab *tab = multi_tab_get_from_widget(rcvd_widget);
+    
+    if (tab != roxterm->tab)
+    {
+        int page_num = multi_tab_get_page_num(roxterm->tab);
+        
+        if (multi_tab_get_parent(tab) == roxterm->win)
+            multi_tab_move_to_position(tab, page_num, TRUE);
+        else
+            multi_tab_move_to_new_window(roxterm->win, tab, page_num);
+    }
 }
+#endif
 
 static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
     ROXTermData * roxterm_template, ROXTermData ** roxterm_out,
