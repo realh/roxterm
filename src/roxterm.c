@@ -2648,6 +2648,12 @@ roxterm_attach_state_changed_handler(ROXTermData *roxterm)
             G_CALLBACK(roxterm_window_state_changed), roxterm);
 }
 
+static void
+roxterm_tab_received(GtkWidget *rcvd_widget, ROXTermData *roxterm)
+{
+    g_debug("Tab dragged in");
+}
+
 static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
     ROXTermData * roxterm_template, ROXTermData ** roxterm_out,
     char **title, GtkWidget ** vte_widget, GtkAdjustment **adjustment)
@@ -2740,7 +2746,13 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
     multi_tab_connect_tab_selection_handler(win,
         (MultiTabSelectionHandler) roxterm_tab_selection_handler);
     roxterm->drd = drag_receive_setup_dest_widget(roxterm->widget,
-            roxterm_drag_data_received, roxterm);
+            roxterm_drag_data_received,
+#if DO_OWN_TAB_DRAGGING
+            NULL,
+#else
+            (DragReceiveTabHandler) roxterm_tab_received,
+#endif
+            roxterm);
     
     roxterm_attach_state_changed_handler(roxterm);
 

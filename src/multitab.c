@@ -157,13 +157,11 @@ static void multi_win_set_title(MultiWin *win, const char *title);
 
 static void multi_win_set_icon_title(MultiWin *win, const char *title);
 
-inline static MultiTab *multi_tab_from_widget(GtkWidget *widget)
+MultiTab *multi_tab_get_from_widget(GtkWidget *widget)
 {
     return g_object_get_data(G_OBJECT(widget), "roxterm_tab");
 }
 
-
-#define MULTI_WIN_NOTEBOOK_GROUP 8
 
 void multi_tab_popup_menu(MultiTab * tab, guint button, guint32 event_time)
 {
@@ -862,7 +860,7 @@ static void
 multi_win_page_switched(GtkNotebook * notebook, GtkNotebookPage * page,
     guint page_num, MultiWin * win)
 {
-    MultiTab *tab = multi_tab_from_widget(
+    MultiTab *tab = multi_tab_get_from_widget(
             gtk_notebook_get_nth_page(GTK_NOTEBOOK(win->notebook), page_num));
 
     if (win->current_tab == tab)
@@ -889,7 +887,6 @@ static gboolean multi_win_focus_in(GtkWidget *widget, GdkEventFocus *event,
     return FALSE;
 }
 
-#if DO_OWN_TAB_DRAGGING
 static gboolean tab_clicked_handler(GtkWidget *widget,
         GdkEventButton *event, MultiTab *tab)
 {
@@ -903,20 +900,24 @@ static gboolean tab_clicked_handler(GtkWidget *widget,
                                        tab_set_name_from_clipboard_callback,
                                        tab);
             break;
+#if DO_OWN_TAB_DRAGGING
         case 1:
         case 3:
             tab_drag_press(tab->tab_drag, event->button, event->x, event->y);
             break;
+#endif
         default:
             break;
     }
     return FALSE;
 }
-#else
+
+#if !DO_OWN_TAB_DRAGGING
 static void page_reordered_callback(GtkNotebook *notebook, GtkWidget *child,
         guint page_num, MultiWin *win)
 {
-    MultiTab *tab = multi_tab_from_widget(child);
+    g_debug("Page reordered");
+    MultiTab *tab = multi_tab_get_from_widget(child);
 
     g_return_if_fail(tab);
     multi_tab_move_to_position(tab, page_num, FALSE);
@@ -925,7 +926,8 @@ static void page_reordered_callback(GtkNotebook *notebook, GtkWidget *child,
 static void page_added_callback(GtkNotebook *notebook, GtkWidget *child,
         guint page_num, MultiWin *win)
 {
-    MultiTab *tab = multi_tab_from_widget(child);
+    g_debug("Page added");
+    MultiTab *tab = multi_tab_get_from_widget(child);
 
     g_return_if_fail(tab);
     if (!win->ignore_tabs_moving)
@@ -949,7 +951,8 @@ static void page_added_callback(GtkNotebook *notebook, GtkWidget *child,
 static void page_removed_callback(GtkNotebook *notebook, GtkWidget *child,
         guint page_num, MultiWin *win)
 {
-    MultiTab *tab = multi_tab_from_widget(child);
+    g_debug("Page removed");
+    MultiTab *tab = multi_tab_get_from_widget(child);
 
     g_return_if_fail(tab);
     if (!win->ignore_tabs_moving)
@@ -966,9 +969,10 @@ static void page_removed_callback(GtkNotebook *notebook, GtkWidget *child,
 static GtkNotebook *multi_win_notebook_creation_hook(GtkNotebook *source,
         GtkWidget *page, gint x, gint y, gpointer data)
 {
+    g_debug("Creation hook");
     /* ignore_tabs_moving is no use here because we get removed and added
      * signals after leaving this function; see notes in above handlers */
-    MultiTab *tab = multi_tab_from_widget(page);
+    MultiTab *tab = multi_tab_get_from_widget(page);
     MultiWin *win;
     gboolean disable_menu_shortcuts, disable_tab_shortcuts;
 
@@ -989,7 +993,7 @@ static GtkNotebook *multi_win_notebook_creation_hook(GtkNotebook *source,
     return GTK_NOTEBOOK(win->notebook);
 }
 
-#endif
+#endif /* !DO_OWN_TAB_DRAGGING */
 
 static void multi_win_close_tab_clicked(GtkWidget *widget, MultiTab *tab)
 {
@@ -1506,8 +1510,7 @@ MultiWin *multi_win_new_blank(const char *display_name, Options *shortcuts,
     g_signal_connect(win->gtkwin, "focus-in-event",
         G_CALLBACK(multi_win_focus_in), win);
 #if !DO_OWN_TAB_DRAGGING
-    gtk_notebook_set_group_id(GTK_NOTEBOOK(win->notebook),
-            MULTI_WIN_NOTEBOOK_GROUP);
+    gtk_notebook_set_group(GTK_NOTEBOOK(win->notebook), &multi_win_all);
     g_signal_connect(win->notebook, "page-reordered",
         G_CALLBACK(page_reordered_callback), win);
     g_signal_connect(win->notebook, "page-added",
@@ -1801,9 +1804,9 @@ static GtkWidget *make_tab_label(MultiTab *tab, GtkPositionType tab_pos,
     gtk_container_add(GTK_CONTAINER(tab->label_bg), tab->label);
 #if DO_OWN_TAB_DRAGGING
     tab->tab_drag = tab_drag_new(tab->label_bg, tab);
+#endif
     g_signal_connect(tab->label_bg, "button-press-event",
             G_CALLBACK(tab_clicked_handler), tab);
-#endif
     if (multi_tab_get_show_close_button(tab->user_data))
     {
         multi_tab_add_close_button(tab);

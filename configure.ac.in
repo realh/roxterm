@@ -193,7 +193,7 @@ AM_CONDITIONAL(HAVE_G_FILE_SET_CONTENTS, test x$HAVE_G_FILE_SET_CONTENTS == 1)
 #DO_OWN_TAB_DRAGGING=1
 #fi
 # GTK+'s tab dragging isn't currently fit for use
-DO_OWN_TAB_DRAGGING=1
+DO_OWN_TAB_DRAGGING=0
 AC_DEFINE_UNQUOTED(DO_OWN_TAB_DRAGGING, [$DO_OWN_TAB_DRAGGING],
   [Whether to use own implementation of draggable tabs or GTK+'s new routines])
 AM_CONDITIONAL(DO_OWN_TAB_DRAGGING, [test $DO_OWN_TAB_DRAGGING = 1])

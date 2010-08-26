@@ -28,19 +28,20 @@
 
 enum
 {
-	ROXTERM_DRAG_TARGET_URI_LIST,
-	ROXTERM_DRAG_TARGET_UTF8_STRING,
-	ROXTERM_DRAG_TARGET_TEXT,
-	ROXTERM_DRAG_TARGET_COMPOUND_TEXT,
-	ROXTERM_DRAG_TARGET_STRING,
-	ROXTERM_DRAG_TARGET_TEXT_PLAIN,
-	ROXTERM_DRAG_TARGET_MOZ_URL,
-	ROXTERM_DRAG_TARGET_TEXT_UNICODE
-	/*
-	ROXTERM_DRAG_TARGET_COLOR,
-	ROXTERM_DRAG_TARGET_BGIMAGE,
-	ROXTERM_DRAG_TARGET_RESET_BG,
-	*/
+    ROXTERM_DRAG_TARGET_URI_LIST,
+    ROXTERM_DRAG_TARGET_UTF8_STRING,
+    ROXTERM_DRAG_TARGET_TEXT,
+    ROXTERM_DRAG_TARGET_COMPOUND_TEXT,
+    ROXTERM_DRAG_TARGET_STRING,
+    ROXTERM_DRAG_TARGET_TEXT_PLAIN,
+    ROXTERM_DRAG_TARGET_MOZ_URL,
+    ROXTERM_DRAG_TARGET_TEXT_UNICODE,
+    ROXTERM_DRAG_TARGET_TAB
+    /*
+    ROXTERM_DRAG_TARGET_COLOR,
+    ROXTERM_DRAG_TARGET_BGIMAGE,
+    ROXTERM_DRAG_TARGET_RESET_BG,
+    */
 };
 
 typedef struct DragReceiveData DragReceiveData;
@@ -51,21 +52,21 @@ typedef struct DragReceiveData DragReceiveData;
  * is stripped. text is NULL-terminated.
  */
 typedef gboolean (*DragReceiveHandler)(GtkWidget *, const char *text,
-		gulong length, gpointer data);
+        gulong length, gpointer data);
 
-/* Called when a tab is moved over a widget */
-typedef gboolean (*DragReceiveTabHandler)(GtkWidget *, gpointer src_data,
-		gpointer dest_data);
+/* Called when a tab is dropped on a target widget. widget is  the dragged
+ * widget, data is as passed to drag_receive_setup_dest_widget. */
+typedef gboolean (*DragReceiveTabHandler)(GtkWidget *widget, gpointer data);
 
 /* Sets up widget as a destination for the types of drag we're interested in.
  * It returns a pointer to an opaque data structure which should be deleted
- * when the widget is destroyed. */
+ * when the widget is destroyed. The tab handler may be NULL. */
 DragReceiveData *drag_receive_setup_dest_widget(GtkWidget *widget,
-		DragReceiveHandler, gpointer data);
+        DragReceiveHandler, DragReceiveTabHandler, gpointer data);
 
 inline static void drag_receive_data_delete(DragReceiveData *drd)
 {
-	g_free(drd);
+    g_free(drd);
 }
 
 #endif /* DRAGRCV_H */

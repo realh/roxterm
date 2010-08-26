@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: roxterm 1.19.0+git\n"
 "Report-Msgid-Bugs-To: http://sourceforge.net/projects/roxterm\n"
-"POT-Creation-Date: 2010-08-15 21:09+0100\n"
+"POT-Creation-Date: 2010-08-25 20:13+0100\n"
 "PO-Revision-Date: 2010-02-28 19:49+0000\n"
 "Last-Translator: Tony Houghton <h@realh.co.uk>\n"
 "Language-Team: English\n"
@@ -486,128 +486,128 @@ msgstr "_Input Methods"
 msgid "Default"
 msgstr "Default"
 
-#: src/menutree.c:405
+#: src/menutree.c:403
 #, c-format
 msgid "Encoding '%s' not found in menu"
 msgstr "Encoding '%s' not found in menu"
 
-#: src/menutree.c:479
+#: src/menutree.c:477
 msgid "_New Window"
 msgstr "_New Window"
 
-#: src/menutree.c:480
+#: src/menutree.c:478
 msgid "New _Tab"
 msgstr "New _Tab"
 
-#: src/menutree.c:481
+#: src/menutree.c:479
 msgid "New _Window With Profile"
 msgstr "New _Window With Profile"
 
-#: src/menutree.c:482
+#: src/menutree.c:480
 msgid "New Tab With _Profile"
 msgstr "New Tab With _Profile"
 
-#: src/menutree.c:483
+#: src/menutree.c:481
 msgid "C_lose Tab"
 msgstr "C_lose Tab"
 
-#: src/menutree.c:484
+#: src/menutree.c:482
 msgid "_Close Window"
 msgstr "_Close Window"
 
-#: src/menutree.c:491
+#: src/menutree.c:489
 msgid "_Set Window Title..."
 msgstr "_Set Window Title..."
 
-#: src/menutree.c:494
+#: src/menutree.c:492
 msgid "Res_tart command"
 msgstr "Res_tart command"
 
-#: src/menutree.c:502
+#: src/menutree.c:500
 msgid "Always Show _Tab Bar"
 msgstr "Always Show _Tab Bar"
 
-#: src/menutree.c:503
+#: src/menutree.c:501
 msgid "_Full Screen"
 msgstr "_Full Screen"
 
-#: src/menutree.c:505
+#: src/menutree.c:503
 msgid "Zoom _In"
 msgstr "Zoom _In"
 
-#: src/menutree.c:506
+#: src/menutree.c:504
 msgid "Zoom _Out"
 msgstr "Zoom _Out"
 
-#: src/menutree.c:507
+#: src/menutree.c:505
 msgid "_Normal Size"
 msgstr "_Normal Size"
 
-#: src/menutree.c:509
+#: src/menutree.c:507
 msgid "Scroll _Up One Line"
 msgstr "Scroll _Up One Line"
 
-#: src/menutree.c:510
+#: src/menutree.c:508
 msgid "Scroll _Down One Line"
 msgstr "Scroll _Down One Line"
 
-#: src/menutree.c:517
+#: src/menutree.c:515
 msgid "Select _Profile"
 msgstr "Select _Profile"
 
-#: src/menutree.c:518
+#: src/menutree.c:516
 msgid "Select _Colour Scheme"
 msgstr "Select _Color Scheme"
 
-#: src/menutree.c:519
+#: src/menutree.c:517
 msgid "Select _Shortcuts Scheme"
 msgstr "Select _Shortcuts Scheme"
 
-#: src/menutree.c:521
+#: src/menutree.c:519
 msgid "_Edit Current Profile"
 msgstr "_Edit Current Profile"
 
-#: src/menutree.c:522
+#: src/menutree.c:520
 msgid "E_dit Current Colour Scheme"
 msgstr "E_dit Current Color Scheme"
 
-#: src/menutree.c:525
+#: src/menutree.c:523
 msgid "Configuration _Manager"
 msgstr "Configuration _Manager"
 
-#: src/menutree.c:534
+#: src/menutree.c:532
 msgid "Na_me Tab..."
 msgstr "Na_me Tab..."
 
-#: src/menutree.c:536
+#: src/menutree.c:534
 msgid "_Previous Tab"
 msgstr "_Previous Tab"
 
-#: src/menutree.c:537
+#: src/menutree.c:535
 msgid "_Next Tab"
 msgstr "_Next Tab"
 
-#: src/menutree.c:539
+#: src/menutree.c:537
 msgid "Move Tab _Left"
 msgstr "Move Tab _Left"
 
-#: src/menutree.c:540
+#: src/menutree.c:538
 msgid "Move Tab _Right"
 msgstr "Move Tab _Right"
 
-#: src/menutree.c:547
+#: src/menutree.c:545
 msgid "Show _Manual"
 msgstr "Show _Manual"
 
-#: src/menutree.c:548
+#: src/menutree.c:546
 msgid "_About ROXTerm"
 msgstr "_About ROXTerm"
 
-#: src/menutree.c:767
+#: src/menutree.c:765
 msgid "Move Tab _Up"
 msgstr "Move Tab _Up"
 
-#: src/menutree.c:769
+#: src/menutree.c:767
 msgid "Move Tab _Down"
 msgstr "Move Tab _Down"
 
@@ -641,15 +641,15 @@ msgstr "Failed to close file '%s': fclose() failed: %s"
 msgid "Existing file '%s' could not be removed: g_unlink() failed: %s"
 msgstr "Existing file '%s' could not be removed: g_unlink() failed: %s"
 
-#: src/multitab.c:1057
+#: src/multitab.c:1061
 msgid "Name Tab"
 msgstr "Name Tab"
 
-#: src/multitab.c:1101
+#: src/multitab.c:1105
 msgid "Set Window Title"
 msgstr "Set Window Title"
 
-#: src/multitab.c:1114
+#: src/multitab.c:1118
 msgid ""
 "The title string may include '%s' which is substituted with the title set by "
 "the child command (usually the current directory for shells). No other % "
@@ -661,7 +661,7 @@ msgstr ""
 "characters or sequences are permitted except '%%' which is displayed as a "
 "single %. Apply an empty string here to use the profile's title string."
 
-#: src/multitab.c:2164
+#: src/multitab.c:2168
 #, c-format
 msgid "'%s' contains invalid %% sequences for a window title string"
 msgstr "'%s' contains invalid %% sequences for a window title string"

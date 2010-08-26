@@ -170,6 +170,11 @@ void multi_tab_move_to_new_window(MultiWin *win, MultiTab *tab, int position);
  * widget is under the pointer */
 MultiTab *multi_tab_get_tab_under_pointer(int x, int y);
 
+/* widget is the top-level child of the notebook, as would be passed in a drag
+ * received event for a GtkNotebook dragged tab.
+ */
+MultiTab *multi_tab_get_from_widget(GtkWidget *widget);
+
 /* Make the tab flash orange or something */
 void multi_tab_draw_attention(MultiTab *tab);
 void multi_tab_cancel_attention(MultiTab *tab);

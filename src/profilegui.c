@@ -864,7 +864,7 @@ ProfileGUI *profilegui_open(const char *profile_name, GdkScreen *scrn)
 #endif
     pg->bgimg_drd = drag_receive_setup_dest_widget(
             profilegui_widget(pg, "bgimg_drag_target"),
-            bgimg_drag_data_received, pg);
+            bgimg_drag_data_received, NULL, pg);
     profilegui_fill_in_dialog(pg);
     profilegui_connect_handlers(pg);
 
