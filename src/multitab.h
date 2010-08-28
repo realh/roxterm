@@ -256,6 +256,10 @@ MultiWin *multi_win_new_blank(const char *display_name,
         gboolean disable_menu_shortcuts, gboolean disable_tab_shortcuts,
         GtkPositionType tab_pos, gboolean always_show_tabs);
 
+/* Creates a new "blank" window ready for a dragged tab at given coords */
+MultiWin *multi_win_new_for_tab(const char *display_name, int x, int y,
+        MultiTab *tab);
+
 void multi_win_show(MultiWin *win);
 
 /* Deletes a window, clearing up its data and removing it from main list, also

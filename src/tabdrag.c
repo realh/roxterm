@@ -47,14 +47,6 @@ static gboolean tab_drag_start_release_handler(GtkWidget *widget,
     return FALSE;
 }
 
-inline static void
-tab_drag_move_win_for_event(MultiWin *win, GdkEventButton *event)
-{
-    gtk_window_move(GTK_WINDOW(multi_win_get_widget(win)),
-            MAX((int) event->x_root - 20, 0),
-            MAX((int) event->y_root - 8, 0));
-}
-
 static gboolean tab_drag_end_release_handler(GtkWidget *widget,
         GdkEventButton *event, TabDrag *td)
 {
@@ -70,28 +62,18 @@ static gboolean tab_drag_end_release_handler(GtkWidget *widget,
              */
             if (multi_win_get_ntabs(orig_parent) == 1)
             {
-                tab_drag_move_win_for_event(orig_parent, event);
+                gtk_window_move(GTK_WINDOW(multi_win_get_widget(win)),
+                        MAX((int) event->x_root - 20, 0),
+                        MAX((int) event->y_root - 8, 0));
             }
             else
             {
                 char *display_name = gdk_screen_make_display_name(
                         gdk_drawable_get_screen(GDK_DRAWABLE(event->window)));
-                gpointer user_data = multi_tab_get_user_data(td->tab);
-                gboolean disable_menu_shortcuts, disable_tab_shortcuts;
-                MultiWin *win;
-                
-                multi_win_get_disable_menu_shortcuts(user_data,
-                        &disable_menu_shortcuts, &disable_tab_shortcuts);
-                win = multi_win_new_blank(display_name,
-                    multi_win_get_shortcut_scheme(
-                            multi_tab_get_parent(td->tab)),
-                    multi_win_get_zoom_index(orig_parent),
-                    disable_menu_shortcuts, disable_tab_shortcuts,
-                    multi_win_get_tab_pos(orig_parent),
-                    multi_win_get_always_show_tabs(orig_parent));
+                MultiWin *win = multi_win_new_for_tab(display_name,
+                        (int) event->x_root, (int) event->y_root, tab);
                 g_free(display_name);
                 multi_tab_move_to_new_window(win, td->tab, -1); 
-                tab_drag_move_win_for_event(win, event);
                 multi_win_show(win);
                 multi_win_select_tab(win, td->tab);
             }

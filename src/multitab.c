@@ -972,26 +972,35 @@ static GtkNotebook *multi_win_notebook_creation_hook(GtkNotebook *source,
      * signals after leaving this function; see notes in above handlers */
     MultiTab *tab = multi_tab_get_from_widget(page);
     MultiWin *win;
-    gboolean disable_menu_shortcuts, disable_tab_shortcuts;
 
     g_return_val_if_fail(tab, NULL);
-    win = tab->parent;
-    multi_tab_remove_from_parent(tab, TRUE);
-    multi_win_get_disable_menu_shortcuts(tab->user_data,
-            &disable_menu_shortcuts, &disable_tab_shortcuts);
-    win = multi_win_new_blank(win->display_name,
-                multi_win_get_shortcut_scheme(win),
-                ((MultiWin *) data)->zoom_index,
-                disable_menu_shortcuts, disable_tab_shortcuts,
-                win->tab_pos, win->always_show_tabs);
-    multi_win_add_tab(win, tab, -1, TRUE);
-    gtk_widget_show_all(win->notebook);
+    win = multi_win_new_for_tab(tab->parent->display_name, x, y, tab);
     /* Defer showing till page_added_callback because we can't set size
      * correctly until the tab has been added to the notebook */
     return GTK_NOTEBOOK(win->notebook);
 }
 
 #endif /* !DO_OWN_TAB_DRAGGING */
+
+MultiWin *multi_win_new_for_tab(const char *display_name, int x, int y,
+        MultiTab *tab)
+{
+    gboolean disable_menu_shortcuts, disable_tab_shortcuts;
+    MultiWin *win = tab->parent;
+
+    multi_win_get_disable_menu_shortcuts(tab->user_data,
+            &disable_menu_shortcuts, &disable_tab_shortcuts);
+    win = multi_win_new_blank(display_name,
+                multi_win_get_shortcut_scheme(win), win->zoom_index,
+                disable_menu_shortcuts, disable_tab_shortcuts,
+                win->tab_pos, win->always_show_tabs);
+    gtk_window_move(GTK_WINDOW(multi_win_get_widget(win)),
+            MAX(x - 20, 0), MAX(y - 8, 0));
+    gtk_widget_show_all(win->notebook);
+    /* Defer showing till page_added_callback because we can't set size
+     * correctly until the tab has been added to the notebook */
+    return win;
+}
 
 static void multi_win_close_tab_clicked(GtkWidget *widget, MultiTab *tab)
 {
