@@ -1,17 +1,10 @@
 /* IE6/IE7 fixes */
 h1, h2, h3, h4, .newsItemHeader, a {
-	color:#3368A1;
-}
-
-#Header {
-	background:#222;
-	border-bottom:5px solid #111;
-	height:95px;
+	color:#4284C9;
 }
 
 #Header ul li {
 	display:inline;
-	zoom:1;
 }
 
 #Header ul li a {
@@ -19,16 +12,43 @@ h1, h2, h3, h4, .newsItemHeader, a {
 	display:block;
 }
 
-#SubNav li {
-	display:inline;
-}
-
+* html #Middle,
 * html #Content,
 * html #SubNav {
-	padding-top:1em;
+	padding-top:0;
 }
 
-#FooterButtons a {
-	margin:0 3px;
+#Middle {
+	min-width:60em;
+	width:auto;
+}
+
+* html #Middle {
+	margin-top:2em;
+}
+
+#SubNav {
+	min-width:25%;
+	width:auto;
+}
+
+* html #SubNav {
+	padding-left:1em;
 	float:left;
+	position:static;
+}
+
+* html #Content.partialWidth {
+	padding:0 0 15em;
+	margin:0 !important;
+	float:left;
+}
+
+h2, h2 a.pageAnchor {
+	position:static;
+	top:0;
+}
+
+* html h2 a.pageAnchor {
+	display:inline;
 }
