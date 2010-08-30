@@ -56,6 +56,7 @@ struct MultiTab {
     GtkWidget *image;
     GtkWidget *rename_dialog;
     gboolean postponed_free;
+    gboolean old_win_destroyed;
 };
 
 struct MultiWin {
@@ -914,7 +915,6 @@ static gboolean tab_clicked_handler(GtkWidget *widget,
 static void page_reordered_callback(GtkNotebook *notebook, GtkWidget *child,
         guint page_num, MultiWin *win)
 {
-    g_debug("Page reordered");
     MultiTab *tab = multi_tab_get_from_widget(child);
 
     g_return_if_fail(tab);
@@ -924,24 +924,22 @@ static void page_reordered_callback(GtkNotebook *notebook, GtkWidget *child,
 static void page_added_callback(GtkNotebook *notebook, GtkWidget *child,
         guint page_num, MultiWin *win)
 {
-    g_debug("Page added");
     MultiTab *tab = multi_tab_get_from_widget(child);
 
     g_return_if_fail(tab);
     if (!win->ignore_tabs_moving)
     {
-        multi_win_cache_size(win);
-        /* If tab->parent == win, it's already been added by
-         * multi_win_notebook_creation_hook so don't add,
-         * but set size and show */
-        if (tab->parent != win)
+        if (win->ntabs != 1)
+            multi_win_cache_size(win);
+        multi_win_add_tab(win, tab, page_num, TRUE);
+        multi_tab_to_new_window_handler(win, tab, tab->old_win_destroyed);
+        if (win->ntabs == 1)
         {
-            multi_win_add_tab(win, tab, page_num, TRUE);
-        }
-        else
-        {
+            /*
             gtk_widget_show_all(win->notebook);
             gtk_widget_show_all(win->gtkwin);
+            */
+            multi_win_show(win);
         }
     }
 }
@@ -949,25 +947,19 @@ static void page_added_callback(GtkNotebook *notebook, GtkWidget *child,
 static void page_removed_callback(GtkNotebook *notebook, GtkWidget *child,
         guint page_num, MultiWin *win)
 {
-    g_debug("Page removed");
     MultiTab *tab = multi_tab_get_from_widget(child);
 
     g_return_if_fail(tab);
     if (!win->ignore_tabs_moving)
     {
-        /* If tab->parent != win, it's already been removed by
-         * multi_win_notebook_creation_hook so fix size instead of removing */
-        if (tab->parent == win)
-        {
-            multi_tab_remove_from_parent(tab, TRUE);
-        }
+        tab->old_win_destroyed = win->ntabs == 1;
+        multi_tab_remove_from_parent(tab, TRUE);
     }
 }
 
 static GtkNotebook *multi_win_notebook_creation_hook(GtkNotebook *source,
         GtkWidget *page, gint x, gint y, gpointer data)
 {
-    g_debug("Creation hook");
     /* ignore_tabs_moving is no use here because we get removed and added
      * signals after leaving this function; see notes in above handlers */
     MultiTab *tab = multi_tab_get_from_widget(page);
@@ -987,18 +979,21 @@ MultiWin *multi_win_new_for_tab(const char *display_name, int x, int y,
 {
     gboolean disable_menu_shortcuts, disable_tab_shortcuts;
     MultiWin *win = tab->parent;
+    int w, h;
+    GtkWindow *gwin = GTK_WINDOW(win->gtkwin);
 
+    gtk_window_get_size(gwin, &w, &h);
     multi_win_get_disable_menu_shortcuts(tab->user_data,
             &disable_menu_shortcuts, &disable_tab_shortcuts);
     win = multi_win_new_blank(display_name,
                 multi_win_get_shortcut_scheme(win), win->zoom_index,
                 disable_menu_shortcuts, disable_tab_shortcuts,
                 win->tab_pos, win->always_show_tabs);
-    gtk_window_move(GTK_WINDOW(multi_win_get_widget(win)),
-            MAX(x - 20, 0), MAX(y - 8, 0));
+    multi_win_set_geometry_hints_for_tab(win, tab);
+    gwin = GTK_WINDOW(win->gtkwin);
+    gtk_window_set_default_size(gwin, w, h);
+    gtk_window_move(gwin, MAX(x - 20, 0), MAX(y - 8, 0));
     gtk_widget_show_all(win->notebook);
-    /* Defer showing till page_added_callback because we can't set size
-     * correctly until the tab has been added to the notebook */
     return win;
 }
 
@@ -1617,6 +1612,10 @@ static void multi_win_destructor(MultiWin *win, gboolean destroy_widgets)
         g_signal_handler_disconnect(win->gtkwin, win->destroy_handler);
     }
 
+    if (!destroy_widgets)
+    {
+        win->gtkwin = NULL;
+    }
     for (link = win->tabs; link; link = g_list_next(link))
     {
         multi_tab_delete_without_notifying_parent(link->data, destroy_widgets);
@@ -1640,7 +1639,9 @@ static void multi_win_destructor(MultiWin *win, gboolean destroy_widgets)
     g_free(win);
     multi_win_all = g_list_remove(multi_win_all, win);
     if (!multi_win_all)
+    {
         gtk_main_quit();
+    }
 }
 
 void multi_win_delete(MultiWin *win)

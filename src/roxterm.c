@@ -2652,7 +2652,6 @@ roxterm_attach_state_changed_handler(ROXTermData *roxterm)
 static void
 roxterm_tab_received(GtkWidget *rcvd_widget, ROXTermData *roxterm)
 {
-    g_debug("Tab dragged in");
     MultiTab *tab = multi_tab_get_from_widget(rcvd_widget);
     
     if (tab != roxterm->tab)

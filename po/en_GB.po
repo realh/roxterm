@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: roxterm 1.19.0+git\n"
 "Report-Msgid-Bugs-To: http://sourceforge.net/projects/roxterm\n"
-"POT-Creation-Date: 2010-08-26 22:21+0100\n"
+"POT-Creation-Date: 2010-08-30 13:48+0100\n"
 "PO-Revision-Date: 2010-02-28 19:48+0000\n"
 "Last-Translator: Tony Houghton <h@realh.co.uk>\n"
 "Language-Team: English (British)\n"
@@ -641,15 +641,15 @@ msgstr "Failed to close file '%s': fclose() failed: %s"
 msgid "Existing file '%s' could not be removed: g_unlink() failed: %s"
 msgstr "Existing file '%s' could not be removed: g_unlink() failed: %s"
 
-#: src/multitab.c:1059
+#: src/multitab.c:1068
 msgid "Name Tab"
 msgstr "Name Tab"
 
-#: src/multitab.c:1103
+#: src/multitab.c:1112
 msgid "Set Window Title"
 msgstr "Set Window Title"
 
-#: src/multitab.c:1116
+#: src/multitab.c:1125
 msgid ""
 "The title string may include '%s' which is substituted with the title set by "
 "the child command (usually the current directory for shells). No other % "
@@ -661,7 +661,7 @@ msgstr ""
 "characters or sequences are permitted except '%%' which is displayed as a "
 "single %. Apply an empty string here to use the profile's title string."
 
-#: src/multitab.c:2165
+#: src/multitab.c:2174
 #, c-format
 msgid "'%s' contains invalid %% sequences for a window title string"
 msgstr "'%s' contains invalid %% sequences for a window title string"
