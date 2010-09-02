@@ -21,10 +21,8 @@ else
     cp debian/changelog.in debian/changelog
 fi
 
-if test ! -f ChangeLog
-then
-    git log > ChangeLog
-fi
+git log > ChangeLog
+cat ChangeLog.old >> ChangeLog
 
 # Refresh GNU autotools toolchain.
 echo Cleaning autotools files...

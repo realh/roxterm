@@ -1,0 +1,3067 @@
+------------------------------------------------------------------------
+r823 | realh | 2010-08-15 21:15:43 +0100 (Sun, 15 Aug 2010) | 2 lines
+
+Removed superfluous abort() declaration.
+
+------------------------------------------------------------------------
+r822 | realh | 2010-08-15 21:08:57 +0100 (Sun, 15 Aug 2010) | 2 lines
+
+Force tab selection handler to be called on tabs in new windows.
+
+------------------------------------------------------------------------
+r821 | realh | 2010-08-15 20:27:16 +0100 (Sun, 15 Aug 2010) | 2 lines
+
+Fixed issues dragging tabs to new windows.
+
+------------------------------------------------------------------------
+r820 | realh | 2010-08-15 17:16:56 +0100 (Sun, 15 Aug 2010) | 2 lines
+
+Updated TODO.
+
+------------------------------------------------------------------------
+r817 | realh | 2010-08-15 16:42:24 +0100 (Sun, 15 Aug 2010) | 2 lines
+
+Added TODO.
+
+------------------------------------------------------------------------
+r816 | realh | 2010-08-15 16:35:11 +0100 (Sun, 15 Aug 2010) | 2 lines
+
+Initialise titles correctly on new windows for dragged out tabs.
+
+------------------------------------------------------------------------
+r815 | realh | 2010-08-15 16:11:30 +0100 (Sun, 15 Aug 2010) | 5 lines
+
+Always cache/restore size when removing a tab.
+
+There was a spurious resize even if the presence or not
+of the tab bar was unchanged.
+
+------------------------------------------------------------------------
+r814 | realh | 2010-08-15 16:03:56 +0100 (Sun, 15 Aug 2010) | 2 lines
+
+Changed wording of init_tabs profile widget label.
+
+------------------------------------------------------------------------
+r810 | realh | 2010-08-14 20:29:23 +0100 (Sat, 14 Aug 2010) | 2 lines
+
+Updated Standards-Version.
+
+------------------------------------------------------------------------
+r805 | realh | 2010-08-13 17:08:15 +0100 (Fri, 13 Aug 2010) | 2 lines
+
+Set geometry hints on new windows for dragged tabs.
+
+------------------------------------------------------------------------
+r804 | realh | 2010-08-13 17:03:44 +0100 (Fri, 13 Aug 2010) | 2 lines
+
+"New Window" menu action sizes new window to match predecessor.
+
+------------------------------------------------------------------------
+r803 | realh | 2010-08-13 15:53:07 +0100 (Fri, 13 Aug 2010) | 2 lines
+
+Reconnect window-state-event when tab moves to new window.
+
+------------------------------------------------------------------------
+r802 | realh | 2010-08-13 15:27:32 +0100 (Fri, 13 Aug 2010) | 6 lines
+
+New windows for dragged tabs inherit settings correctly:
+
+As reported at
+<https://sourceforge.net/tracker/?func=detail&aid=2996296&group_id=124080&atid=698428>
+the show menu bar and tab bar options were not correctly inherited.
+
+------------------------------------------------------------------------
+r801 | realh | 2010-08-11 23:41:35 +0100 (Wed, 11 Aug 2010) | 2 lines
+
+Select "current" tab when restoring session.
+
+------------------------------------------------------------------------
+r800 | realh | 2010-08-11 19:02:53 +0100 (Wed, 11 Aug 2010) | 2 lines
+
+Restored $(HELPIMGS) to EXTRA_DIST.
+
+------------------------------------------------------------------------
+r799 | realh | 2010-08-11 18:42:58 +0100 (Wed, 11 Aug 2010) | 2 lines
+
+dch.
+
+------------------------------------------------------------------------
+r798 | realh | 2010-08-11 18:32:34 +0100 (Wed, 11 Aug 2010) | 2 lines
+
+Resize window after font/zoom changes.
+
+------------------------------------------------------------------------
+r797 | realh | 2010-08-11 16:20:28 +0100 (Wed, 11 Aug 2010) | 2 lines
+
+New terminal size-preserving code seems OK so far.
+
+------------------------------------------------------------------------
+r796 | realh | 2010-08-11 01:26:21 +0100 (Wed, 11 Aug 2010) | 5 lines
+
+Major rewrite of sizing code, still needs tweaking:
+
+Not restoring cached size when ntabs reduces to 1
+and tab bar is hidden.
+
+------------------------------------------------------------------------
+r795 | realh | 2010-08-10 18:19:22 +0100 (Tue, 10 Aug 2010) | 2 lines
+
+Select all tabs in new windows to ensure they start command.
+
+------------------------------------------------------------------------
+r794 | realh | 2010-08-10 15:28:08 +0100 (Tue, 10 Aug 2010) | 2 lines
+
+Use translatable "ROXTerm" instead of "roxterm" as default tab name.
+
+------------------------------------------------------------------------
+r793 | realh | 2010-08-10 15:26:32 +0100 (Tue, 10 Aug 2010) | 2 lines
+
+Initialise "Number of initial tabs" option in profile editor.
+
+------------------------------------------------------------------------
+r792 | realh | 2010-08-09 17:04:41 +0100 (Mon, 09 Aug 2010) | 2 lines
+
+Use docdir and htmldir correctly.
+
+------------------------------------------------------------------------
+r791 | realh | 2010-07-23 13:53:37 +0100 (Fri, 23 Jul 2010) | 2 lines
+
+Updated Standards-Version.
+
+------------------------------------------------------------------------
+r790 | realh | 2010-07-23 13:49:50 +0100 (Fri, 23 Jul 2010) | 4 lines
+
+Added --disable-sm runtime option.
+
+This is a workaround for Debian bug #589871.
+
+------------------------------------------------------------------------
+r789 | realh | 2010-07-22 18:53:48 +0100 (Thu, 22 Jul 2010) | 2 lines
+
+Updated docs with details of Ubuntu PPA.
+
+------------------------------------------------------------------------
+r788 | realh | 2010-07-22 18:09:42 +0100 (Thu, 22 Jul 2010) | 2 lines
+
+Fixed typo in INSTALL.Debian.
+
+------------------------------------------------------------------------
+r787 | realh | 2010-07-22 17:55:46 +0100 (Thu, 22 Jul 2010) | 2 lines
+
+Correct setting of rtdbus_ok flag.
+
+------------------------------------------------------------------------
+r786 | realh | 2010-07-22 17:48:57 +0100 (Thu, 22 Jul 2010) | 2 lines
+
+Avoid NULL colour for background tint.
+
+------------------------------------------------------------------------
+r782 | realh | 2010-06-19 19:58:44 +0100 (Sat, 19 Jun 2010) | 4 lines
+
+Version 1.18.4.
+
+builddeb passes args to debuild.
+
+------------------------------------------------------------------------
+r781 | realh | 2010-06-17 22:46:11 +0100 (Thu, 17 Jun 2010) | 2 lines
+
+Reverted to override for dh_auto_build --parallel.
+
+------------------------------------------------------------------------
+r780 | realh | 2010-06-17 22:42:04 +0100 (Thu, 17 Jun 2010) | 2 lines
+
+Retry using DH_OPTIONS for --parallel.
+
+------------------------------------------------------------------------
+r779 | realh | 2010-06-17 22:34:20 +0100 (Thu, 17 Jun 2010) | 2 lines
+
+Override dh_auto_build to support --parallel.
+
+------------------------------------------------------------------------
+r778 | realh | 2010-06-17 22:05:29 +0100 (Thu, 17 Jun 2010) | 2 lines
+
+Don't install README.
+
+------------------------------------------------------------------------
+r777 | realh | 2010-06-17 21:55:35 +0100 (Thu, 17 Jun 2010) | 2 lines
+
+Fixes for Debian install rules.
+
+------------------------------------------------------------------------
+r776 | realh | 2010-06-17 21:27:30 +0100 (Thu, 17 Jun 2010) | 2 lines
+
+Use dh 7 (initial try).
+
+------------------------------------------------------------------------
+r775 | realh | 2010-06-17 19:43:16 +0100 (Thu, 17 Jun 2010) | 2 lines
+
+Try to avoid chain of error messages if DBUS isn't working.
+
+------------------------------------------------------------------------
+r774 | realh | 2010-06-17 19:13:20 +0100 (Thu, 17 Jun 2010) | 4 lines
+
+Added Leandro Lucarella's patch:
+
+Makes TERM and COLORTERM env vars configurable.
+
+------------------------------------------------------------------------
+r770 | realh | 2010-05-23 13:23:30 +0100 (Sun, 23 May 2010) | 2 lines
+
+Removed blank line.
+
+------------------------------------------------------------------------
+r766 | realh | 2010-05-23 13:18:36 +0100 (Sun, 23 May 2010) | 2 lines
+
+Release 1.18.3.
+
+------------------------------------------------------------------------
+r765 | realh | 2010-05-21 18:10:45 +0100 (Fri, 21 May 2010) | 2 lines
+
+Updated manual ref editing keyboard shortcuts.
+
+------------------------------------------------------------------------
+r764 | realh | 2010-05-19 22:50:54 +0100 (Wed, 19 May 2010) | 2 lines
+
+Use inner-border vte style property if available.
+
+------------------------------------------------------------------------
+r763 | realh | 2010-05-19 21:05:15 +0100 (Wed, 19 May 2010) | 2 lines
+
+Disconnect window-state-changed handler for deleted roxterms.
+
+------------------------------------------------------------------------
+r762 | realh | 2010-05-16 19:34:52 +0100 (Sun, 16 May 2010) | 2 lines
+
+Use xsltproc --novalid.
+
+------------------------------------------------------------------------
+r761 | realh | 2010-05-16 19:20:59 +0100 (Sun, 16 May 2010) | 2 lines
+
+Apparently docbook-xml is not necessary.
+
+------------------------------------------------------------------------
+r760 | realh | 2010-05-16 18:06:20 +0100 (Sun, 16 May 2010) | 4 lines
+
+Use debuild -uc -us if builder's $EMAIL is not maintainer's.
+
+Also more improvements to docs.
+
+------------------------------------------------------------------------
+r759 | realh | 2010-05-16 17:57:32 +0100 (Sun, 16 May 2010) | 2 lines
+
+Improved instructions for building debs.
+
+------------------------------------------------------------------------
+r758 | realh | 2010-05-16 17:42:09 +0100 (Sun, 16 May 2010) | 2 lines
+
+Added override for GNOME Default Applications.
+
+------------------------------------------------------------------------
+r757 | realh | 2010-05-16 16:22:49 +0100 (Sun, 16 May 2010) | 2 lines
+
+Allow use of xsltproc instead of xmlto.
+
+------------------------------------------------------------------------
+r756 | realh | 2010-05-16 15:50:30 +0100 (Sun, 16 May 2010) | 2 lines
+
+ulimit -c unlimited when using --valgrind.
+
+------------------------------------------------------------------------
+r755 | realh | 2010-05-14 15:51:27 +0100 (Fri, 14 May 2010) | 2 lines
+
+bootstrap.sh calls svn update first.
+
+------------------------------------------------------------------------
+r754 | realh | 2010-05-14 15:27:01 +0100 (Fri, 14 May 2010) | 2 lines
+
+Tested and corrected make deb on release tarball.
+
+------------------------------------------------------------------------
+r753 | realh | 2010-05-14 15:13:47 +0100 (Fri, 14 May 2010) | 2 lines
+
+Temporarily changed version number for testing.
+
+------------------------------------------------------------------------
+r752 | realh | 2010-05-14 15:11:51 +0100 (Fri, 14 May 2010) | 2 lines
+
+Changed way version is generated and added made deb target.
+
+------------------------------------------------------------------------
+r751 | realh | 2010-05-11 21:03:41 +0100 (Tue, 11 May 2010) | 2 lines
+
+Got rid of debtag script.
+
+------------------------------------------------------------------------
+r750 | realh | 2010-05-11 20:06:49 +0100 (Tue, 11 May 2010) | 2 lines
+
+Version sync.
+
+------------------------------------------------------------------------
+r749 | realh | 2010-05-11 20:05:24 +0100 (Tue, 11 May 2010) | 2 lines
+
+More updates for manual.
+
+------------------------------------------------------------------------
+r748 | realh | 2010-05-11 19:59:28 +0100 (Tue, 11 May 2010) | 2 lines
+
+Added instructions for building debs.
+
+------------------------------------------------------------------------
+r747 | realh | 2010-05-11 15:40:35 +0100 (Tue, 11 May 2010) | 2 lines
+
+Initialise current_zoom_factor.
+
+------------------------------------------------------------------------
+r746 | realh | 2010-05-11 15:26:06 +0100 (Tue, 11 May 2010) | 2 lines
+
+Use gtk_window_present when --tab is used.
+
+------------------------------------------------------------------------
+r745 | realh | 2010-05-11 14:23:59 +0100 (Tue, 11 May 2010) | 2 lines
+
+Update window title even if it hasn't been set by vte.
+
+------------------------------------------------------------------------
+r741 | realh | 2010-05-05 20:30:15 +0100 (Wed, 05 May 2010) | 2 lines
+
+Release 1.18.2-1.
+
+------------------------------------------------------------------------
+r740 | realh | 2010-05-05 20:24:35 +0100 (Wed, 05 May 2010) | 2 lines
+
+Show menubar option is inherited from other windows.
+
+------------------------------------------------------------------------
+r739 | realh | 2010-05-05 19:00:16 +0100 (Wed, 05 May 2010) | 2 lines
+
+Fixed crash when using --tab with no existing windows.
+
+------------------------------------------------------------------------
+r738 | realh | 2010-03-23 18:57:03 +0000 (Tue, 23 Mar 2010) | 2 lines
+
+Updated upload script.
+
+------------------------------------------------------------------------
+r734 | realh | 2010-03-23 18:22:21 +0000 (Tue, 23 Mar 2010) | 2 lines
+
+Release 1.18.1.
+
+------------------------------------------------------------------------
+r733 | realh | 2010-03-23 18:13:50 +0000 (Tue, 23 Mar 2010) | 2 lines
+
+Don't ellipsize single tabs.
+
+------------------------------------------------------------------------
+r732 | realh | 2010-03-22 23:01:39 +0000 (Mon, 22 Mar 2010) | 2 lines
+
+Fixed crash when command fails.
+
+------------------------------------------------------------------------
+r731 | realh | 2010-03-18 18:46:27 +0000 (Thu, 18 Mar 2010) | 2 lines
+
+Single tabs no longer fill available width.
+
+------------------------------------------------------------------------
+r730 | realh | 2010-03-13 13:17:33 +0000 (Sat, 13 Mar 2010) | 2 lines
+
+Moved Always show tabs option to Appearance and made it on by default.
+
+------------------------------------------------------------------------
+r729 | realh | 2010-03-13 13:08:49 +0000 (Sat, 13 Mar 2010) | 2 lines
+
+Use title_template for icon name.
+
+------------------------------------------------------------------------
+r728 | realh | 2010-03-04 23:03:57 +0000 (Thu, 04 Mar 2010) | 2 lines
+
+More robust font handling.
+
+------------------------------------------------------------------------
+r727 | realh | 2010-03-04 22:45:40 +0000 (Thu, 04 Mar 2010) | 1 line
+
+
+------------------------------------------------------------------------
+r726 | realh | 2010-03-04 22:44:42 +0000 (Thu, 04 Mar 2010) | 2 lines
+
+Changed ignore_size_allocate and tab ellipsis setting.
+
+------------------------------------------------------------------------
+r725 | realh | 2010-03-04 22:11:23 +0000 (Thu, 04 Mar 2010) | 4 lines
+
+Tried to debug size allocation.
+
+Also fixed AppRun --debug.
+
+------------------------------------------------------------------------
+r724 | realh | 2010-03-04 18:55:28 +0000 (Thu, 04 Mar 2010) | 2 lines
+
+Make vte icon title change set icon title, not window title.
+
+------------------------------------------------------------------------
+r723 | realh | 2010-03-03 14:35:56 +0000 (Wed, 03 Mar 2010) | 2 lines
+
+Prevent zoom being applied repeatedly to new tabs.
+
+------------------------------------------------------------------------
+r722 | realh | 2010-03-02 14:22:36 +0000 (Tue, 02 Mar 2010) | 2 lines
+
+Updated Vcs control fields.
+
+------------------------------------------------------------------------
+r721 | realh | 2010-03-01 19:06:54 +0000 (Mon, 01 Mar 2010) | 2 lines
+
+Revert to svn log format for ChangeLog.
+
+------------------------------------------------------------------------
+r720 | realh | 2010-03-01 19:04:37 +0000 (Mon, 01 Mar 2010) | 2 lines
+
+Upgraded to debian source format 3.0.
+
+------------------------------------------------------------------------
+r719 | realh | 2010-02-28 19:59:04 +0000 (Sun, 28 Feb 2010) | 2 lines
+
+Changed some wordings for clarity & consistency.
+
+------------------------------------------------------------------------
+r718 | realh | 2010-02-28 19:57:31 +0000 (Sun, 28 Feb 2010) | 2 lines
+
+Recreated translations from scratch.
+
+------------------------------------------------------------------------
+r717 | realh | 2010-02-28 16:18:49 +0000 (Sun, 28 Feb 2010) | 2 lines
+
+Merged in debian subdirectory.
+
+------------------------------------------------------------------------
+r715 | realh | 2010-02-28 14:33:19 +0000 (Sun, 28 Feb 2010) | 2 lines
+
+Handle ICCM icon name separately from window title.
+
+------------------------------------------------------------------------
+r713 | realh | 2010-02-27 13:09:28 +0000 (Sat, 27 Feb 2010) | 6 lines
+
+Changes to window roles:
+
+* Add random number in case pid gets reused in new session.
+
+* Don't set new role before restoring from session.
+
+------------------------------------------------------------------------
+r710 | realh | 2010-02-27 00:10:57 +0000 (Sat, 27 Feb 2010) | 2 lines
+
+Use SM property names correctly.
+
+------------------------------------------------------------------------
+r709 | realh | 2010-02-26 20:19:35 +0000 (Fri, 26 Feb 2010) | 4 lines
+
+Improved session property memory management.
+
+Not that it matters, seeing as SM doesn't work as documented.
+
+------------------------------------------------------------------------
+r706 | realh | 2010-02-26 18:34:22 +0000 (Fri, 26 Feb 2010) | 4 lines
+
+Fixed setting of session properties.
+
+Also add svn revision to non-release version strings.
+
+------------------------------------------------------------------------
+r704 | realh | 2010-02-25 19:58:22 +0000 (Thu, 25 Feb 2010) | 2 lines
+
+Restore tab titles with session.
+
+------------------------------------------------------------------------
+r701 | realh | 2010-02-24 20:27:48 +0000 (Wed, 24 Feb 2010) | 2 lines
+
+Session management is provisionally complete.
+
+------------------------------------------------------------------------
+r699 | realh | 2010-02-24 00:23:57 +0000 (Wed, 24 Feb 2010) | 2 lines
+
+Well on way to working session restore :-).
+
+------------------------------------------------------------------------
+r697 | realh | 2010-02-21 23:11:47 +0000 (Sun, 21 Feb 2010) | 5 lines
+
+Session management is (possibly) complete...
+
+Some changes to how profiles, fonts, sizes etc interact.
+Use cursor-moved signal for fewer bogus status notifications.
+
+------------------------------------------------------------------------
+r696 | realh | 2010-02-21 20:31:19 +0000 (Sun, 21 Feb 2010) | 5 lines
+
+Fixed profile editor bg image preview management.
+
+Also fixed fatal bug introduced into roxterm_launch, using
+roxterm_profiles before it was initialised.
+
+------------------------------------------------------------------------
+r694 | realh | 2010-02-21 17:57:33 +0000 (Sun, 21 Feb 2010) | 2 lines
+
+Bumped version.
+
+------------------------------------------------------------------------
+r692 | realh | 2010-02-21 17:43:26 +0000 (Sun, 21 Feb 2010) | 2 lines
+
+Debug messages in contents-changed handler.
+
+------------------------------------------------------------------------
+r691 | realh | 2010-02-17 00:32:31 +0000 (Wed, 17 Feb 2010) | 5 lines
+
+Added roxterm_data_new.
+
+Separates a lot of useful stuff from roxterm_launch for use with
+session loading.
+
+------------------------------------------------------------------------
+r690 | realh | 2010-02-16 23:43:58 +0000 (Tue, 16 Feb 2010) | 2 lines
+
+Set up blank window for reloaded session.
+
+------------------------------------------------------------------------
+r689 | realh | 2010-02-16 19:51:57 +0000 (Tue, 16 Feb 2010) | 2 lines
+
+Changes to support further session loading code.
+
+------------------------------------------------------------------------
+r688 | realh | 2010-02-16 18:38:28 +0000 (Tue, 16 Feb 2010) | 2 lines
+
+More framework for loading a session.
+
+------------------------------------------------------------------------
+r687 | realh | 2010-02-16 16:38:32 +0000 (Tue, 16 Feb 2010) | 2 lines
+
+Added a little more session parsing code.
+
+------------------------------------------------------------------------
+r686 | realh | 2010-02-14 21:43:54 +0000 (Sun, 14 Feb 2010) | 2 lines
+
+Started writing session XML parser.
+
+------------------------------------------------------------------------
+r685 | realh | 2010-02-12 19:26:31 +0000 (Fri, 12 Feb 2010) | 2 lines
+
+Added --restart-/clone-session-id options (not yet implemented).
+
+------------------------------------------------------------------------
+r684 | realh | 2010-02-12 17:11:26 +0000 (Fri, 12 Feb 2010) | 2 lines
+
+Set SM properties when saving session.
+
+------------------------------------------------------------------------
+r683 | realh | 2010-02-11 22:32:58 +0000 (Thu, 11 Feb 2010) | 2 lines
+
+Save each tab's cwd in session.
+
+------------------------------------------------------------------------
+r682 | realh | 2010-02-11 22:29:50 +0000 (Thu, 11 Feb 2010) | 2 lines
+
+Added "Always show tab bar" menu action.
+
+------------------------------------------------------------------------
+r681 | realh | 2010-02-11 19:55:48 +0000 (Thu, 11 Feb 2010) | 2 lines
+
+Partially implemented session saving.
+
+------------------------------------------------------------------------
+r680 | realh | 2010-02-10 20:37:55 +0000 (Wed, 10 Feb 2010) | 2 lines
+
+Ignore spurious "content-changed" signal when adding new tab.
+
+------------------------------------------------------------------------
+r677 | realh | 2010-02-10 18:50:34 +0000 (Wed, 10 Feb 2010) | 2 lines
+
+Added "Restart Command" menu action (#2810001).
+
+------------------------------------------------------------------------
+r676 | realh | 2010-02-10 16:55:48 +0000 (Wed, 10 Feb 2010) | 5 lines
+
+Close menutree etc when closing terminal.
+
+Otherwise we could get events for terminals after they'd been
+destroyed, causing a crash.
+
+------------------------------------------------------------------------
+r675 | realh | 2010-02-10 15:26:08 +0000 (Wed, 10 Feb 2010) | 2 lines
+
+Use --without-sm instead of --disable-session-management.
+
+------------------------------------------------------------------------
+r674 | realh | 2010-02-10 00:33:56 +0000 (Wed, 10 Feb 2010) | 2 lines
+
+Added configure tests for session management.
+
+------------------------------------------------------------------------
+r673 | realh | 2010-02-09 19:31:40 +0000 (Tue, 09 Feb 2010) | 5 lines
+
+Updated docs: roxterm is bloated!
+
+Also forgot to mention before that #2942755 can be considered
+addressed now.
+
+------------------------------------------------------------------------
+r672 | realh | 2010-02-09 19:21:48 +0000 (Tue, 09 Feb 2010) | 2 lines
+
+Updated translations and usage summary.
+
+------------------------------------------------------------------------
+r671 | realh | 2010-02-09 19:13:18 +0000 (Tue, 09 Feb 2010) | 2 lines
+
+Implemented fullscreen and maximise options.
+
+------------------------------------------------------------------------
+r670 | realh | 2010-02-09 15:33:07 +0000 (Tue, 09 Feb 2010) | 2 lines
+
+Updated/corrected translations.
+
+------------------------------------------------------------------------
+r669 | realh | 2010-02-09 01:07:28 +0000 (Tue, 09 Feb 2010) | 4 lines
+
+Use U for Full Screen mnemonic.
+
+F clashed with Font.
+
+------------------------------------------------------------------------
+r668 | realh | 2010-02-09 01:00:40 +0000 (Tue, 09 Feb 2010) | 2 lines
+
+Use svn2cl for ChangeLog.
+
+------------------------------------------------------------------------
+r667 | realh | 2010-02-09 00:52:19 +0000 (Tue, 09 Feb 2010) | 2 lines
+
+Removed spurious extra "New Tab" menu item.
+
+------------------------------------------------------------------------
+r666 | realh | 2010-02-08 22:39:22 +0000 (Mon, 08 Feb 2010) | 6 lines
+
+Redesigned profile editor.
+
+Maximise and full screen options made "General" page too big
+so I added a new "Appearance" page, which meant there were too
+many tabs so I used the list view model instead.
+
+------------------------------------------------------------------------
+r664 | realh | 2010-02-07 18:01:46 +0000 (Sun, 07 Feb 2010) | 2 lines
+
+Added New Window/Tab With Profile menu items.
+
+------------------------------------------------------------------------
+r662 | realh | 2010-02-05 22:10:30 +0000 (Fri, 05 Feb 2010) | 2 lines
+
+Support ssh options (#2810009).
+
+------------------------------------------------------------------------
+r659 | realh | 2010-02-05 21:11:50 +0000 (Fri, 05 Feb 2010) | 2 lines
+
+Don't shade "Close Tab" menu item (#2944890).
+
+------------------------------------------------------------------------
+r658 | realh | 2010-02-05 20:27:54 +0000 (Fri, 05 Feb 2010) | 4 lines
+
+Added ssh options to profilegui:
+
+Still needs to be implemented in roxterm.c.
+
+------------------------------------------------------------------------
+r657 | realh | 2010-02-04 19:30:13 +0000 (Thu, 04 Feb 2010) | 2 lines
+
+Make tab border smaller to compensate for bigger buttons.
+
+------------------------------------------------------------------------
+r654 | realh | 2010-02-04 18:54:12 +0000 (Thu, 04 Feb 2010) | 2 lines
+
+Version bump.
+
+------------------------------------------------------------------------
+r653 | realh | 2010-02-04 18:52:39 +0000 (Thu, 04 Feb 2010) | 2 lines
+
+Added option to show status in tab close buttons.
+
+------------------------------------------------------------------------
+r652 | realh | 2010-02-04 16:29:30 +0000 (Thu, 04 Feb 2010) | 2 lines
+
+Quieter error handling for background pixbuf.
+
+------------------------------------------------------------------------
+r651 | realh | 2010-02-04 15:12:50 +0000 (Thu, 04 Feb 2010) | 2 lines
+
+Fixed --show-/--hide-menubar options (#2942481).
+
+------------------------------------------------------------------------
+r650 | realh | 2010-01-14 23:25:32 +0000 (Thu, 14 Jan 2010) | 4 lines
+
+Rearranged Command tab in profile.
+
+Was going to add Directory option but changed my mind.
+
+------------------------------------------------------------------------
+r649 | realh | 2010-01-14 20:40:57 +0000 (Thu, 14 Jan 2010) | 2 lines
+
+Fixed symbolic link hooks in AppRun.
+
+------------------------------------------------------------------------
+r648 | realh | 2010-01-14 20:38:32 +0000 (Thu, 14 Jan 2010) | 2 lines
+
+Beep sets window urgency hint on unfocused windows.
+
+------------------------------------------------------------------------
+r647 | realh | 2010-01-14 19:48:48 +0000 (Thu, 14 Jan 2010) | 2 lines
+
+Moved some standard files from Help to TLD.
+
+------------------------------------------------------------------------
+r642 | realh | 2010-01-02 18:23:11 +0000 (Sat, 02 Jan 2010) | 2 lines
+
+Release 1.17.1.
+
+------------------------------------------------------------------------
+r640 | realh | 2009-12-30 23:12:21 +0000 (Wed, 30 Dec 2009) | 2 lines
+
+Prevent tabs from losing close button when moving window.
+
+------------------------------------------------------------------------
+r639 | realh | 2009-12-30 22:47:23 +0000 (Wed, 30 Dec 2009) | 4 lines
+
+Added always_show_tabs option.
+
+Also removed some old debugging messages.
+
+------------------------------------------------------------------------
+r633 | realh | 2009-12-04 20:33:49 +0000 (Fri, 04 Dec 2009) | 2 lines
+
+Close new failed terminal immediately.
+
+------------------------------------------------------------------------
+r632 | realh | 2009-12-04 20:20:38 +0000 (Fri, 04 Dec 2009) | 4 lines
+
+Version 1.16.3.
+
+Send DBUS reply before warning dialog etc.
+
+------------------------------------------------------------------------
+r631 | realh | 2009-12-04 19:27:42 +0000 (Fri, 04 Dec 2009) | 5 lines
+
+Version 1.16.3.
+
+run_via_dbus() waits for reply so it can indicate error to caller
+<https://sourceforge.net/tracker/?func=detail&aid=2809991&group_id=124080&atid=698428>
+
+------------------------------------------------------------------------
+r627 | realh | 2009-12-04 16:45:17 +0000 (Fri, 04 Dec 2009) | 5 lines
+
+Version 1.16.3.
+
+Use PATH when launching browsers etc.
+Replaced bootstrap.sh with autotools-dev's example autogen.sh.
+
+------------------------------------------------------------------------
+r619 | realh | 2009-11-27 23:09:18 +0000 (Fri, 27 Nov 2009) | 4 lines
+
+Version 1.16.2.
+
+Fixed man pages (DocBook XML source).
+
+------------------------------------------------------------------------
+r615 | realh | 2009-11-27 17:15:40 +0000 (Fri, 27 Nov 2009) | 4 lines
+
+Release 1.16.1.
+
+Makefile.am failed to include roxterm.xml in make dist.
+
+------------------------------------------------------------------------
+r608 | realh | 2009-11-27 14:33:01 +0000 (Fri, 27 Nov 2009) | 4 lines
+
+Release 1.16.1.
+
+(Fixed check for default colour scheme).
+
+------------------------------------------------------------------------
+r607 | realh | 2009-11-26 23:19:26 +0000 (Thu, 26 Nov 2009) | 2 lines
+
+Default colour scheme is now "GTK".
+
+------------------------------------------------------------------------
+r606 | realh | 2009-11-26 22:20:13 +0000 (Thu, 26 Nov 2009) | 2 lines
+
+Added support for GNOME default applications.
+
+------------------------------------------------------------------------
+r605 | realh | 2009-11-26 19:13:14 +0000 (Thu, 26 Nov 2009) | 2 lines
+
+Updated configure.ac to get rid of warnings.
+
+------------------------------------------------------------------------
+r604 | realh | 2009-11-26 19:05:25 +0000 (Thu, 26 Nov 2009) | 4 lines
+
+Renamed man page XML source files to ....1.xml.
+
+This to avoid clash with roxterm.xml for GNOME preferred app.
+
+------------------------------------------------------------------------
+r603 | realh | 2009-11-26 18:56:11 +0000 (Thu, 26 Nov 2009) | 4 lines
+
+Added ROXTERM_PID and ROXTERM_NUM environment variables.
+
+Based on Chris Croughton's patch/request #2846976.
+
+------------------------------------------------------------------------
+r601 | realh | 2009-10-09 14:45:24 +0100 (Fri, 09 Oct 2009) | 4 lines
+
+Applied patch from bug #2875322.
+
+Use LIBS instead of LD_FLAGS for library tests.
+
+------------------------------------------------------------------------
+r600 | realh | 2009-09-30 17:57:50 +0100 (Wed, 30 Sep 2009) | 2 lines
+
+Extended display handling to other dialogs etc.
+
+------------------------------------------------------------------------
+r599 | realh | 2009-09-28 14:45:01 +0100 (Mon, 28 Sep 2009) | 2 lines
+
+Put display functions in a separate file.
+
+------------------------------------------------------------------------
+r598 | realh | 2009-09-28 14:31:53 +0100 (Mon, 28 Sep 2009) | 2 lines
+
+Popup menus have same screen as terminal.
+
+------------------------------------------------------------------------
+r597 | realh | 2009-09-26 21:10:13 +0100 (Sat, 26 Sep 2009) | 5 lines
+
+Changed way displays/screens are obtained.
+
+First attempt was obviously broken so do it gnome-terminal's way,
+although it could leak GdkScreen/GdkDisplay objects.
+
+------------------------------------------------------------------------
+r596 | realh | 2009-09-25 21:58:48 +0100 (Fri, 25 Sep 2009) | 2 lines
+
+Use g_object_[sg]et_data instead of g_object_[sg]et on displays.
+
+------------------------------------------------------------------------
+r595 | realh | 2009-09-25 21:44:59 +0100 (Fri, 25 Sep 2009) | 2 lines
+
+Use GObject ref counting as well as own for displays.
+
+------------------------------------------------------------------------
+r594 | realh | 2009-09-25 21:21:53 +0100 (Fri, 25 Sep 2009) | 5 lines
+
+Added proper support for --display:
+
+Untested, and still needs fixing for spwaning roxterm-config
+and sundry dialog boxes.
+
+------------------------------------------------------------------------
+r593 | realh | 2009-09-25 15:36:36 +0100 (Fri, 25 Sep 2009) | 2 lines
+
+Tab close buttons are optional.
+
+------------------------------------------------------------------------
+r592 | realh | 2009-09-24 21:00:29 +0100 (Thu, 24 Sep 2009) | 2 lines
+
+Use xmlto to build man pages.
+
+------------------------------------------------------------------------
+r591 | realh | 2009-09-24 20:58:25 +0100 (Thu, 24 Sep 2009) | 2 lines
+
+Made vboxes vertical in glade.
+
+------------------------------------------------------------------------
+r590 | realh | 2009-09-20 17:27:29 +0100 (Sun, 20 Sep 2009) | 2 lines
+
+Fixed check for manpages XSL file.
+
+------------------------------------------------------------------------
+r589 | realh | 2009-09-20 16:18:50 +0100 (Sun, 20 Sep 2009) | 2 lines
+
+Added update-locales to dist tarballs.
+
+------------------------------------------------------------------------
+r582 | realh | 2009-07-05 00:57:18 +0100 (Sun, 05 Jul 2009) | 4 lines
+
+Release 1.15.2
+
+More generated files are removed by make distclean.
+
+------------------------------------------------------------------------
+r581 | realh | 2009-07-05 00:23:20 +0100 (Sun, 05 Jul 2009) | 2 lines
+
+Version 1.15.2.
+
+------------------------------------------------------------------------
+r580 | realh | 2009-07-05 00:15:05 +0100 (Sun, 05 Jul 2009) | 5 lines
+
+Updated docs and desktop file:
+
+Updated svn URL in manual.
+Removed deprecated Encoding field from desktop file.
+
+------------------------------------------------------------------------
+r577 | realh | 2009-07-04 19:07:12 +0100 (Sat, 04 Jul 2009) | 2 lines
+
+Replaced debian/svntag with debtag.
+
+------------------------------------------------------------------------
+r573 | realh | 2009-07-03 13:13:39 +0100 (Fri, 03 Jul 2009) | 4 lines
+
+Release 1.15.1.
+
+Added svn update to dist hook.
+
+------------------------------------------------------------------------
+r572 | realh | 2009-07-03 13:11:42 +0100 (Fri, 03 Jul 2009) | 2 lines
+
+Version 1.15.1.
+
+------------------------------------------------------------------------
+r571 | realh | 2009-07-02 22:51:49 +0100 (Thu, 02 Jul 2009) | 2 lines
+
+Added Tango to Makefile.am.
+
+------------------------------------------------------------------------
+r570 | realh | 2009-07-02 22:48:17 +0100 (Thu, 02 Jul 2009) | 4 lines
+
+Added Tango colour scheme.
+
+Thanks to Trustin Lee for supplying it.
+
+------------------------------------------------------------------------
+r569 | realh | 2009-07-02 22:33:48 +0100 (Thu, 02 Jul 2009) | 2 lines
+
+Added columns and rows labels to profile editor.
+
+------------------------------------------------------------------------
+r568 | realh | 2009-07-02 22:25:10 +0100 (Thu, 02 Jul 2009) | 2 lines
+
+Multiple tabs in one window may now have different profiles.
+
+------------------------------------------------------------------------
+r567 | realh | 2009-06-28 21:17:11 +0100 (Sun, 28 Jun 2009) | 2 lines
+
+Added "Ask User" option for child exit action.
+
+------------------------------------------------------------------------
+r566 | realh | 2009-06-26 20:56:08 +0100 (Fri, 26 Jun 2009) | 2 lines
+
+Added tab-name CLI option.
+
+------------------------------------------------------------------------
+r565 | realh | 2009-06-26 00:39:23 +0100 (Fri, 26 Jun 2009) | 2 lines
+
+Fixed typo in comment.
+
+------------------------------------------------------------------------
+r564 | realh | 2009-06-25 22:01:51 +0100 (Thu, 25 Jun 2009) | 2 lines
+
+Added bell_highlights_tab feature.
+
+------------------------------------------------------------------------
+r563 | realh | 2009-06-25 15:08:30 +0100 (Thu, 25 Jun 2009) | 2 lines
+
+Removed futile attempt to fix #2797130.
+
+------------------------------------------------------------------------
+r561 | realh | 2009-06-25 14:56:28 +0100 (Thu, 25 Jun 2009) | 2 lines
+
+Added cursor_shape option.
+
+------------------------------------------------------------------------
+r559 | realh | 2009-06-24 20:04:52 +0100 (Wed, 24 Jun 2009) | 2 lines
+
+Documented use of bootstrap.sh.
+
+------------------------------------------------------------------------
+r558 | realh | 2009-06-24 20:02:21 +0100 (Wed, 24 Jun 2009) | 2 lines
+
+Show error message if child command fails to run.
+
+------------------------------------------------------------------------
+r557 | realh | 2009-06-23 20:52:01 +0100 (Tue, 23 Jun 2009) | 4 lines
+
+Better handling of default colours.
+
+Also fixed roxterm_force_redraw().
+
+------------------------------------------------------------------------
+r556 | realh | 2009-06-23 18:59:37 +0100 (Tue, 23 Jun 2009) | 4 lines
+
+Debugged recent changes.
+
+Also removed "emulation" option.
+
+------------------------------------------------------------------------
+r555 | realh | 2009-06-23 13:12:13 +0100 (Tue, 23 Jun 2009) | 2 lines
+
+Use a shorter popup menu when menu bar is visible (untested).
+
+------------------------------------------------------------------------
+r554 | realh | 2009-06-18 17:24:06 +0100 (Thu, 18 Jun 2009) | 2 lines
+
+Started adding support for reduced popup menu.
+
+------------------------------------------------------------------------
+r553 | realh | 2009-06-17 14:46:06 +0100 (Wed, 17 Jun 2009) | 4 lines
+
+Updated docs wrt keyboard shortcuts config etc.
+
+Also forced an extra redraw in the hope of curing 2797130.
+
+------------------------------------------------------------------------
+r552 | realh | 2009-04-29 19:37:37 +0100 (Wed, 29 Apr 2009) | 2 lines
+
+Fixed some glade issues.
+
+------------------------------------------------------------------------
+r551 | realh | 2009-04-28 20:06:08 +0100 (Tue, 28 Apr 2009) | 2 lines
+
+Added terminal emulation option.
+
+------------------------------------------------------------------------
+r550 | realh | 2009-04-28 19:01:00 +0100 (Tue, 28 Apr 2009) | 2 lines
+
+Updated docs for debian svn tags.
+
+------------------------------------------------------------------------
+r547 | realh | 2009-04-28 13:49:51 +0100 (Tue, 28 Apr 2009) | 2 lines
+
+Added Copy & Paste action.
+
+------------------------------------------------------------------------
+r542 | realh | 2009-04-13 17:15:45 +0100 (Mon, 13 Apr 2009) | 2 lines
+
+Force make dist to update ChangeLog.
+
+------------------------------------------------------------------------
+r538 | realh | 2009-04-13 17:01:56 +0100 (Mon, 13 Apr 2009) | 2 lines
+
+Version 1.14.2: Allow digits in email user names.
+
+------------------------------------------------------------------------
+r533 | realh | 2009-03-28 19:41:11 +0000 (Sat, 28 Mar 2009) | 4 lines
+
+Release 1.14.1.
+
+From now on *.*.0 reserved to indicate svn pre-release.
+
+------------------------------------------------------------------------
+r532 | realh | 2009-03-28 19:39:15 +0000 (Sat, 28 Mar 2009) | 4 lines
+
+Release 1.14.0.
+
+(Don't warn if can't change menu label).
+
+------------------------------------------------------------------------
+r531 | realh | 2009-03-28 00:21:41 +0000 (Sat, 28 Mar 2009) | 2 lines
+
+Updated wrap option tooltip and translations.
+
+------------------------------------------------------------------------
+r530 | realh | 2009-03-28 00:16:55 +0000 (Sat, 28 Mar 2009) | 2 lines
+
+Move tab left/right works.
+
+------------------------------------------------------------------------
+r529 | realh | 2009-03-27 23:09:24 +0000 (Fri, 27 Mar 2009) | 2 lines
+
+Use tab name instead of title in menus.
+
+------------------------------------------------------------------------
+r528 | realh | 2009-03-27 22:40:49 +0000 (Fri, 27 Mar 2009) | 2 lines
+
+Added move tab left/right menu items (not active yet).
+
+------------------------------------------------------------------------
+r527 | realh | 2009-03-25 23:28:26 +0000 (Wed, 25 Mar 2009) | 2 lines
+
+Improved dbus and conf file documentation.
+
+------------------------------------------------------------------------
+r526 | realh | 2009-03-25 22:58:43 +0000 (Wed, 25 Mar 2009) | 2 lines
+
+Documented new D-Bus methods.
+
+------------------------------------------------------------------------
+r525 | realh | 2009-03-25 22:19:06 +0000 (Wed, 25 Mar 2009) | 2 lines
+
+Use vte_terminal_match_add_gregex() if available.
+
+------------------------------------------------------------------------
+r524 | realh | 2009-03-25 22:02:37 +0000 (Wed, 25 Mar 2009) | 2 lines
+
+Added new cursor_blink_mode option.
+
+------------------------------------------------------------------------
+r523 | realh | 2009-03-24 22:46:17 +0000 (Tue, 24 Mar 2009) | 5 lines
+
+Added $ROXTERM_ID and listeners for new D-Bus messages:
+
+Can now change Profile, Colour Scheme or Shortcut Scheme of a
+terminal remotely.
+
+------------------------------------------------------------------------
+r519 | realh | 2009-01-05 23:30:34 +0000 (Mon, 05 Jan 2009) | 2 lines
+
+Added true translucence option and got opacity right way round.
+
+------------------------------------------------------------------------
+r518 | realh | 2009-01-05 20:30:13 +0000 (Mon, 05 Jan 2009) | 6 lines
+
+Use get_current_dir_name() where available.
+
+Unlike getcwd() and g_get_current_dir(), get_current_dir_name() doesn't
+follow symlinks, which is preferable even though it only helps when opening
+a new terminal from the command line.
+
+------------------------------------------------------------------------
+r514 | realh | 2008-12-29 18:25:13 +0000 (Mon, 29 Dec 2008) | 4 lines
+
+Release 1.13.4.
+
+Avoid crash if user closes tab/window while paused after child exited.
+
+------------------------------------------------------------------------
+r510 | realh | 2008-12-24 22:07:51 +0000 (Wed, 24 Dec 2008) | 4 lines
+
+Release 1.13.3.
+
+Each window is its own group leader.
+
+------------------------------------------------------------------------
+r506 | realh | 2008-12-24 21:45:44 +0000 (Wed, 24 Dec 2008) | 2 lines
+
+Support true transparency with compositing window managers.
+
+------------------------------------------------------------------------
+r505 | realh | 2008-11-01 20:48:21 +0000 (Sat, 01 Nov 2008) | 5 lines
+
+Version 1.13.1 (candidate).
+
+Insert raw title (no/expanded %s) in Edit Window Title dialog. See
+<https://sourceforge.net/tracker/?func=detail&atid=698428&aid=2209990&group_id=124080>.
+
+------------------------------------------------------------------------
+r504 | realh | 2008-10-30 19:57:56 +0000 (Thu, 30 Oct 2008) | 2 lines
+
+Corrected interaction between different ways of setting window title.
+
+------------------------------------------------------------------------
+r503 | realh | 2008-10-02 00:16:29 +0100 (Thu, 02 Oct 2008) | 2 lines
+
+Corrected upload_docs.sh with new address.
+
+------------------------------------------------------------------------
+r502 | realh | 2008-09-17 20:54:17 +0100 (Wed, 17 Sep 2008) | 2 lines
+
+Changed web page title from ROXterm to ROXTerm.
+
+------------------------------------------------------------------------
+r497 | realh | 2008-09-13 23:38:59 +0100 (Sat, 13 Sep 2008) | 2 lines
+
+Release 1.13.0.
+
+------------------------------------------------------------------------
+r496 | realh | 2008-09-13 23:35:56 +0100 (Sat, 13 Sep 2008) | 2 lines
+
+Separate warnings for closing multiple tabs/single tab windows.
+
+------------------------------------------------------------------------
+r495 | realh | 2008-09-13 21:49:44 +0100 (Sat, 13 Sep 2008) | 5 lines
+
+Release 1.13.0:
+
+Warn before closing windows (optional) to close bug 2010384.
+This release should also close 2093659 and 2056919.
+
+------------------------------------------------------------------------
+r489 | realh | 2008-09-12 18:05:49 +0100 (Fri, 12 Sep 2008) | 2 lines
+
+Man pages are now part of main distribution, not just for .debs.
+
+------------------------------------------------------------------------
+r488 | realh | 2008-09-12 15:17:54 +0100 (Fri, 12 Sep 2008) | 2 lines
+
+Added --tab option to open a new terminal in an existing window.
+
+------------------------------------------------------------------------
+r486 | realh | 2008-09-11 23:54:50 +0100 (Thu, 11 Sep 2008) | 2 lines
+
+Use -T instead of -t (for x-terminal-emulator compliance).
+
+------------------------------------------------------------------------
+r484 | realh | 2008-06-21 22:39:12 +0100 (Sat, 21 Jun 2008) | 2 lines
+
+Version 1.12.2: Fixed initial application of zoom factor to new terminals.
+
+------------------------------------------------------------------------
+r478 | realh | 2008-05-22 23:58:27 +0100 (Thu, 22 May 2008) | 2 lines
+
+Release 1.12.1: Improved update-tags and added upload script.
+
+------------------------------------------------------------------------
+r474 | realh | 2008-05-22 23:32:32 +0100 (Thu, 22 May 2008) | 2 lines
+
+Version 1.12.1: Fixed zoom when font not explicitly specified in profile.
+
+------------------------------------------------------------------------
+r471 | realh | 2008-05-20 17:57:02 +0100 (Tue, 20 May 2008) | 2 lines
+
+Release 1.12.0: NEWS.
+
+------------------------------------------------------------------------
+r470 | realh | 2008-05-20 17:53:12 +0100 (Tue, 20 May 2008) | 2 lines
+
+Release 1.12.0: Amended Makefile.am to distribute m4, not m4/ChangeLog.
+
+------------------------------------------------------------------------
+r469 | realh | 2008-05-20 17:42:51 +0100 (Tue, 20 May 2008) | 2 lines
+
+Checked in en_GB.po.
+
+------------------------------------------------------------------------
+r468 | realh | 2008-05-20 17:39:13 +0100 (Tue, 20 May 2008) | 2 lines
+
+Version 1.12.0: Added update-locales script.
+
+------------------------------------------------------------------------
+r467 | realh | 2008-05-20 16:02:13 +0100 (Tue, 20 May 2008) | 2 lines
+
+Use en_GB and en instead of en_US. Fixed bug reporting URL.
+
+------------------------------------------------------------------------
+r466 | realh | 2008-05-20 15:36:32 +0100 (Tue, 20 May 2008) | 2 lines
+
+Tweaked some translatable strings.
+
+------------------------------------------------------------------------
+r465 | realh | 2008-05-19 23:50:22 +0100 (Mon, 19 May 2008) | 2 lines
+
+Wrapped --color-scheme help message.
+
+------------------------------------------------------------------------
+r464 | realh | 2008-05-19 23:39:24 +0100 (Mon, 19 May 2008) | 4 lines
+
+Release 1.12.0.
+
+Show colour scheme name in editor window.
+
+------------------------------------------------------------------------
+r463 | realh | 2008-05-19 23:30:11 +0100 (Mon, 19 May 2008) | 2 lines
+
+Added i18n (gettext) support, including en_US as a sort of test case.
+
+------------------------------------------------------------------------
+r462 | realh | 2008-05-18 23:26:58 +0100 (Sun, 18 May 2008) | 2 lines
+
+Added --color-scheme as synonym for --colour-scheme.
+
+------------------------------------------------------------------------
+r461 | realh | 2008-05-07 20:01:43 +0100 (Wed, 07 May 2008) | 2 lines
+
+Don't report same CLI arg errors twice.
+
+------------------------------------------------------------------------
+r460 | realh | 2008-05-07 19:54:22 +0100 (Wed, 07 May 2008) | 2 lines
+
+Used more maintainable way of looking up long CLI option names from short ones.
+
+------------------------------------------------------------------------
+r459 | realh | 2008-05-07 19:13:46 +0100 (Wed, 07 May 2008) | 2 lines
+
+Translate -n args into --long-name when parsing.
+
+------------------------------------------------------------------------
+r458 | realh | 2008-05-07 18:53:32 +0100 (Wed, 07 May 2008) | 2 lines
+
+Create dbus message with args before parsing args removes them all.
+
+------------------------------------------------------------------------
+r457 | realh | 2008-05-07 18:22:05 +0100 (Wed, 07 May 2008) | 2 lines
+
+Added --title option.
+
+------------------------------------------------------------------------
+r456 | realh | 2008-05-07 15:34:07 +0100 (Wed, 07 May 2008) | 4 lines
+
+Fixed command-line parsing:
+
+Option-setting helper functions were failing to return bool result.
+
+------------------------------------------------------------------------
+r455 | realh | 2008-05-05 20:30:12 +0100 (Mon, 05 May 2008) | 2 lines
+
+Added hidden tab "position" option.
+
+------------------------------------------------------------------------
+r454 | realh | 2008-05-05 15:17:09 +0100 (Mon, 05 May 2008) | 2 lines
+
+Added option to disable tab switching shortcuts.
+
+------------------------------------------------------------------------
+r453 | realh | 2008-05-04 18:01:10 +0100 (Sun, 04 May 2008) | 2 lines
+
+Fixed updating of palette when foreground/background not set.
+
+------------------------------------------------------------------------
+r447 | realh | 2008-03-28 14:21:54 +0000 (Fri, 28 Mar 2008) | 5 lines
+
+Version 1.11.1:
+
+Colour schemes with empty keyfiles can be reverted.
+Use signed arithmetic for extrapolating colours.
+
+------------------------------------------------------------------------
+r443 | realh | 2008-03-27 18:04:38 +0000 (Thu, 27 Mar 2008) | 2 lines
+
+Release 1.11.0.
+
+------------------------------------------------------------------------
+r442 | realh | 2008-03-26 23:29:48 +0000 (Wed, 26 Mar 2008) | 5 lines
+
+Make sure colour scheme revert button works properly:
+
+Explicitly emit signals on colour widgets so changes are sent to terms.
+Clear cached colour scheme data so options are reread from keyfile.
+
+------------------------------------------------------------------------
+r441 | realh | 2008-03-26 21:30:29 +0000 (Wed, 26 Mar 2008) | 4 lines
+
+Bold and dim colours extrapolated from fg/bg if palette not set.
+
+Also fixed bg/fg to be unshaded in colour scheme editor if "Use custom palette" is unchecked while "Get ... from palette" was checked.
+
+------------------------------------------------------------------------
+r440 | realh | 2008-03-17 00:36:24 +0000 (Mon, 17 Mar 2008) | 4 lines
+
+Added title_string option.
+
+Also made sure dlg_ functions can handle % chars in post-formatted string.
+
+------------------------------------------------------------------------
+r439 | realh | 2008-03-16 21:54:22 +0000 (Sun, 16 Mar 2008) | 2 lines
+
+Fixed option parsing.
+
+------------------------------------------------------------------------
+r438 | realh | 2008-03-14 15:45:12 +0000 (Fri, 14 Mar 2008) | 2 lines
+
+Delete reversion backup colour scheme Options with colour scheme dialog.
+
+------------------------------------------------------------------------
+r437 | realh | 2008-03-14 15:36:56 +0000 (Fri, 14 Mar 2008) | 2 lines
+
+Colour scheme dialog has revert button.
+
+------------------------------------------------------------------------
+r436 | realh | 2008-03-13 17:29:00 +0000 (Thu, 13 Mar 2008) | 2 lines
+
+Update shading of "Get text and background colours from palette" when "Set text and background colours" is toggled.
+
+------------------------------------------------------------------------
+r432 | realh | 2008-02-07 14:40:35 +0000 (Thu, 07 Feb 2008) | 2 lines
+
+Version 1.10.1: fixed initialisation of tab_pos in multi_win_new_blank().
+
+------------------------------------------------------------------------
+r427 | realh | 2008-01-20 18:45:17 +0000 (Sun, 20 Jan 2008) | 8 lines
+
+Version 1.10.0:
+
+* Added "Set Window Title", mostly from Patrick Bogen's patch
+  (feature request 1871615)
+
+* Added menu accelerators for URI items, again thanks to Patrick Bogen
+  (feature request 1872253)
+
+------------------------------------------------------------------------
+r425 | realh | 2008-01-01 13:19:26 +0000 (Tue, 01 Jan 2008) | 4 lines
+
+Version 1.9.1.
+
+Doesn't block when pausing after a child task has completed.
+
+------------------------------------------------------------------------
+r420 | realh | 2007-12-31 22:25:53 +0000 (Mon, 31 Dec 2007) | 2 lines
+
+Release 1.9.0.
+
+------------------------------------------------------------------------
+r419 | realh | 2007-12-31 22:21:04 +0000 (Mon, 31 Dec 2007) | 2 lines
+
+Manual describes new button actions on tabs.
+
+------------------------------------------------------------------------
+r418 | realh | 2007-12-31 22:17:26 +0000 (Mon, 31 Dec 2007) | 4 lines
+
+New windows get new tab pos and/or number if profile has changed.
+
+Also added info about this to glade file.
+
+------------------------------------------------------------------------
+r417 | realh | 2007-12-31 18:34:53 +0000 (Mon, 31 Dec 2007) | 5 lines
+
+Update roxterm->win when tab is moved to new window.
+
+Was left pointing to original window's data which is especially problematic if
+that gets deleted.
+
+------------------------------------------------------------------------
+r416 | realh | 2007-12-31 00:45:51 +0000 (Mon, 31 Dec 2007) | 2 lines
+
+Labels of vertical tabs are not ellipsized (involves extra work to preserve terminal size when label size changes).
+
+------------------------------------------------------------------------
+r415 | realh | 2007-12-30 23:11:53 +0000 (Sun, 30 Dec 2007) | 2 lines
+
+Swapped actions of buttons 2 and 3 on notebook tabs.
+
+------------------------------------------------------------------------
+r414 | realh | 2007-12-29 21:31:23 +0000 (Sat, 29 Dec 2007) | 2 lines
+
+Don't use word-boundary matching in URI regexes.
+
+------------------------------------------------------------------------
+r413 | realh | 2007-12-29 20:14:00 +0000 (Sat, 29 Dec 2007) | 2 lines
+
+Fixed bugs where terminals running via dbus failed to get -e and colour-scheme etc.
+
+------------------------------------------------------------------------
+r412 | realh | 2007-12-29 16:54:49 +0000 (Sat, 29 Dec 2007) | 8 lines
+
+Enhanced tab handling:
+
+Accepted Sven Schnelle's patch for options to set tab position and initial
+number of tabs and quickly set tab name from clipboard, with some tweaks.
+
+Explicitly set tab names are now not overwritten by change of directory.
+
+
+------------------------------------------------------------------------
+r411 | realh | 2007-12-29 15:57:03 +0000 (Sat, 29 Dec 2007) | 2 lines
+
+Fixed failure to use dbus to launch new terminals instead of keeping the new process (reported by Nikos Ntarmos).
+
+------------------------------------------------------------------------
+r406 | realh | 2007-12-09 13:30:21 +0000 (Sun, 09 Dec 2007) | 2 lines
+
+Release 1.8.1: Configlet responds to scrollback lines value-changed (fixes 1847193).
+
+------------------------------------------------------------------------
+r405 | realh | 2007-12-09 13:28:46 +0000 (Sun, 09 Dec 2007) | 2 lines
+
+Use \b instead of \< in URI regexs for (probably) better compatibility.
+
+------------------------------------------------------------------------
+r400 | realh | 2007-11-04 23:29:41 +0000 (Sun, 04 Nov 2007) | 1 line
+
+Added option to pause when command has completed.
+------------------------------------------------------------------------
+r399 | realh | 2007-11-04 19:31:56 +0000 (Sun, 04 Nov 2007) | 2 lines
+
+Menu shortcuts can be disabled.
+
+------------------------------------------------------------------------
+r398 | realh | 2007-10-19 19:15:47 +0100 (Fri, 19 Oct 2007) | 2 lines
+
+Added scroll up/down by one line actions.
+
+------------------------------------------------------------------------
+r397 | realh | 2007-09-18 13:35:46 +0100 (Tue, 18 Sep 2007) | 2 lines
+
+Checked in upload_docs.sh.
+
+------------------------------------------------------------------------
+r393 | realh | 2007-09-17 22:51:05 +0100 (Mon, 17 Sep 2007) | 10 lines
+
+Version 1.7.4:
+
+ * Migration of colour_/shortcut_scheme to colour-/shortcut-scheme wasn't
+   handled properly. Now use underscores internally but accept hyphens in
+   config files.
+
+ * Don't try to start dbus service twice
+
+ * Strip leading hyphens from option_name when parsing CLI opts
+
+------------------------------------------------------------------------
+r388 | realh | 2007-09-17 18:35:28 +0100 (Mon, 17 Sep 2007) | 2 lines
+
+Don't complain about empty values for shortcuts (fixes #1795730).
+
+------------------------------------------------------------------------
+r381 | realh | 2007-09-16 20:39:30 +0100 (Sun, 16 Sep 2007) | 2 lines
+
+Version 1.7.2: Minor correction to desktop file.
+
+------------------------------------------------------------------------
+r377 | realh | 2007-09-11 15:47:21 +0100 (Tue, 11 Sep 2007) | 4 lines
+
+Version 1.7.1.
+
+Don't use stock icon for open URL.
+
+------------------------------------------------------------------------
+r373 | realh | 2007-09-11 14:51:04 +0100 (Tue, 11 Sep 2007) | 4 lines
+
+Release 1.7.0 (try again).
+
+Added comment about cwd inheritance to NEWS.
+
+------------------------------------------------------------------------
+r368 | realh | 2007-09-11 14:39:52 +0100 (Tue, 11 Sep 2007) | 4 lines
+
+Release 1.7.0.
+
+Updated docs wrt Debian status and changes to CLI options.
+
+------------------------------------------------------------------------
+r367 | realh | 2007-09-07 23:45:38 +0100 (Fri, 07 Sep 2007) | 2 lines
+
+Realised Options' read-only flag (kf_read_only) wasn't actually being used and removed it from API.
+
+------------------------------------------------------------------------
+r366 | realh | 2007-09-07 23:37:54 +0100 (Fri, 07 Sep 2007) | 2 lines
+
+Completed migration to GOption* command line option parsing.
+
+------------------------------------------------------------------------
+r365 | realh | 2007-09-07 21:40:52 +0100 (Fri, 07 Sep 2007) | 6 lines
+
+Started adding code to use GOption* to parse options.
+
+--colour_scheme and --shortcut_scheme are replaced by --colour-scheme and
+--shortcut-scheme (underscore becomes hyphen) but the old versions are still
+accepted (G_OPTION_FLAG_HIDDEN).
+
+------------------------------------------------------------------------
+r364 | realh | 2007-09-05 23:13:57 +0100 (Wed, 05 Sep 2007) | 4 lines
+
+Show GTK options with a GOptionContext after roxterm's own ones.
+
+Need to use GOption* fully for message to be completely correct.
+
+------------------------------------------------------------------------
+r363 | realh | 2007-09-05 20:33:19 +0100 (Wed, 05 Sep 2007) | 4 lines
+
+New windows/tabs inherit cwd from their parent.
+
+Also made sure all global opts are reset each time a new instance is run.
+
+------------------------------------------------------------------------
+r361 | realh | 2007-08-28 15:06:20 +0100 (Tue, 28 Aug 2007) | 2 lines
+
+V 1.7.0: Don't report trivial cases of failure to load bgimg in profilegui.
+
+------------------------------------------------------------------------
+r358 | realh | 2007-08-27 21:56:41 +0100 (Mon, 27 Aug 2007) | 7 lines
+
+Version 1.7.0.
+
+* Implemented fullscreen options.
+* Implemented zoom.
+* Rearranged menus to accommodate above.
+* Some menu items now have stock icons.
+
+------------------------------------------------------------------------
+r355 | realh | 2007-08-22 20:45:20 +0100 (Wed, 22 Aug 2007) | 1 line
+
+Added project-support.jpg to dist files.
+------------------------------------------------------------------------
+r348 | realh | 2007-08-22 19:37:22 +0100 (Wed, 22 Aug 2007) | 2 lines
+
+Release 1.6.0.
+
+------------------------------------------------------------------------
+r347 | realh | 2007-08-21 19:15:43 +0100 (Tue, 21 Aug 2007) | 5 lines
+
+Release 1.6.0 rc2
+
+Many more error/message/warnings are now reported in dialogs, not just a few
+configlet ones.
+
+------------------------------------------------------------------------
+r346 | realh | 2007-08-21 00:40:14 +0100 (Tue, 21 Aug 2007) | 4 lines
+
+Manual points out how you may need to enable shortcut editing in GNOME.
+
+Fixes Debian bug #436158.
+
+------------------------------------------------------------------------
+r345 | realh | 2007-08-21 00:01:10 +0100 (Tue, 21 Aug 2007) | 5 lines
+
+Fixed Debian bug #435989.
+
+When copying a profile/scheme check dest directory exists and if source file
+doesn't exist (as may be case for "Default") create a blank file.
+
+------------------------------------------------------------------------
+r340 | realh | 2007-08-06 19:25:48 +0100 (Mon, 06 Aug 2007) | 7 lines
+
+1.6.0 rc 1
+
+* Added wrap_switch_tab option: next and previous tab operations can wrap
+  around.
+
+* Added Info stock image to note about scrollbar settings in profile editor.
+
+------------------------------------------------------------------------
+r339 | realh | 2007-07-01 22:46:26 +0100 (Sun, 01 Jul 2007) | 2 lines
+
+Icon entry in .desktop file shouldn't include .svg suffix.
+
+------------------------------------------------------------------------
+r334 | realh | 2007-05-26 17:31:44 +0100 (Sat, 26 May 2007) | 4 lines
+
+Version 1.5.2.
+Removed spurious call to vte_terminal_set_size() at creation which broke
+scrollbar.
+
+------------------------------------------------------------------------
+r333 | realh | 2007-05-26 16:42:33 +0100 (Sat, 26 May 2007) | 4 lines
+
+New window for a dragged-out tab no longer has GDK_HINT_USER_SIZE:- dubious
+as to whether this was appropriate and setting it broke other vital geometry
+hints.
+
+------------------------------------------------------------------------
+r332 | realh | 2007-05-26 16:21:21 +0100 (Sat, 26 May 2007) | 5 lines
+
+If width/height not given in --geometry, profile/default values are added
+before passing to gtk_window_parse_geometry().
+Usage string updated to reflect support for full geometry option.
+Corrected default height from 25 to 24.
+
+------------------------------------------------------------------------
+r326 | realh | 2007-03-23 18:30:13 +0000 (Fri, 23 Mar 2007) | 3 lines
+
+Version 1.5.1.
+No longer use dbus_connection_close/disconnect so remove configure check.
+
+------------------------------------------------------------------------
+r324 | realh | 2007-03-23 00:05:52 +0000 (Fri, 23 Mar 2007) | 4 lines
+
+Fixed AppRun to work correctly with "empty" wrappers.
+Ignore mysterious but apparently harmless D-BUS error.
+Fixed --usage message: -e/--execute comes last.
+
+------------------------------------------------------------------------
+r323 | realh | 2007-03-22 20:23:30 +0000 (Thu, 22 Mar 2007) | 1 line
+
+Checked in TODO.
+------------------------------------------------------------------------
+r319 | realh | 2007-03-22 14:15:14 +0000 (Thu, 22 Mar 2007) | 1 line
+
+Version 1.5.0.
+------------------------------------------------------------------------
+r318 | realh | 2007-03-17 21:48:27 +0000 (Sat, 17 Mar 2007) | 1 line
+
+Uses D-BUS in a safer way wrt race conditions.
+------------------------------------------------------------------------
+r317 | realh | 2007-03-11 23:40:32 +0000 (Sun, 11 Mar 2007) | 3 lines
+
+Include <stdlib.h> in roxterm.c to fix warning about atoi.
+Added AM_PROG_CC_C_O to configure.ac.
+
+------------------------------------------------------------------------
+r316 | realh | 2007-03-11 23:21:12 +0000 (Sun, 11 Mar 2007) | 1 line
+
+Installs icon into an XDG theme dir instead of pixmaps dir.
+------------------------------------------------------------------------
+r312 | realh | 2007-02-13 16:04:07 +0000 (Tue, 13 Feb 2007) | 3 lines
+
+Release 1.4.1.
+Made sure next/prev tab menu items are shaded appropriately for new tabs.
+
+------------------------------------------------------------------------
+r311 | realh | 2007-02-09 22:30:14 +0000 (Fri, 09 Feb 2007) | 2 lines
+
+Release 1.4.0.
+
+------------------------------------------------------------------------
+r307 | realh | 2007-02-09 22:26:29 +0000 (Fri, 09 Feb 2007) | 2 lines
+
+Release tags now copied from trunk; should hopefully get its change history.
+
+------------------------------------------------------------------------
+r304 | realh | 2007-02-09 22:16:38 +0000 (Fri, 09 Feb 2007) | 2 lines
+
+Oops, broke last change to update-tags.
+
+------------------------------------------------------------------------
+r303 | realh | 2007-02-09 22:14:05 +0000 (Fri, 09 Feb 2007) | 2 lines
+
+update-tags uses new svn URL.
+
+------------------------------------------------------------------------
+r298 | realh | 2007-02-07 18:53:01 +0000 (Wed, 07 Feb 2007) | 2 lines
+
+Tabs can be named.
+
+------------------------------------------------------------------------
+r297 | realh | 2007-01-29 17:11:21 +0000 (Mon, 29 Jan 2007) | 2 lines
+
+More tweaks to URI matching.
+
+------------------------------------------------------------------------
+r296 | realh | 2007-01-29 16:47:59 +0000 (Mon, 29 Jan 2007) | 2 lines
+
+ProfileGUI->bgimg is still needed for old type of file chooser.
+
+------------------------------------------------------------------------
+r295 | realh | 2006-12-13 23:14:26 +0000 (Wed, 13 Dec 2006) | 2 lines
+
+Release 1.3.1.
+
+------------------------------------------------------------------------
+r292 | realh | 2006-12-13 18:50:51 +0000 (Wed, 13 Dec 2006) | 2 lines
+
+Supports --geometry.
+
+------------------------------------------------------------------------
+r291 | realh | 2006-12-13 17:34:24 +0000 (Wed, 13 Dec 2006) | 2 lines
+
+New windows for dragged tabs are forced to open under pointer.
+
+------------------------------------------------------------------------
+r290 | realh | 2006-12-12 21:39:34 +0000 (Tue, 12 Dec 2006) | 2 lines
+
+Use vte_terminal_set_font_from_string, no need to bother with pango details.
+
+------------------------------------------------------------------------
+r289 | realh | 2006-12-12 01:01:45 +0000 (Tue, 12 Dec 2006) | 3 lines
+
+When tabs are dragged to another window their profile is changed to match
+if necessary.
+
+------------------------------------------------------------------------
+r288 | realh | 2006-12-11 18:51:39 +0000 (Mon, 11 Dec 2006) | 2 lines
+
+Corrected docs: default path for $XDG_CONFIG_HOME.
+
+------------------------------------------------------------------------
+r287 | realh | 2006-12-11 18:49:04 +0000 (Mon, 11 Dec 2006) | 2 lines
+
+Changed manual to show that profiles apply to all tabs in the same window.
+
+------------------------------------------------------------------------
+r286 | realh | 2006-12-11 18:46:23 +0000 (Mon, 11 Dec 2006) | 3 lines
+
+Changing profile changes size to profile's default size.
+When a profile is changed, all tabs in the same window get the same profile.
+
+------------------------------------------------------------------------
+r285 | realh | 2006-12-07 00:28:52 +0000 (Thu, 07 Dec 2006) | 2 lines
+
+Got rid of pointless TH_WITH_PKG_ALTERNATIVE crap from configure.ac.
+
+------------------------------------------------------------------------
+r284 | realh | 2006-12-05 23:51:50 +0000 (Tue, 05 Dec 2006) | 2 lines
+
+Tweaked configure.ac so PKG_CHECK_MODULES shows more meaningful messages.
+
+------------------------------------------------------------------------
+r283 | realh | 2006-11-29 21:32:18 +0000 (Wed, 29 Nov 2006) | 2 lines
+
+Had to restore stupid size_request in multi_win_set_size.
+
+------------------------------------------------------------------------
+r282 | realh | 2006-11-29 19:44:02 +0000 (Wed, 29 Nov 2006) | 5 lines
+
+Outsized size_request in multi_win_set_size seems unnecessary after all.
+Fixed up GTK+ tab dragging support so far, in case I ever use it.
+Fixed some bugs with data being accessed after freed.
+Fixed menutree trying to check non-existent radio items.
+
+------------------------------------------------------------------------
+r281 | realh | 2006-11-25 20:06:14 +0000 (Sat, 25 Nov 2006) | 4 lines
+
+Prevented tabs from grabbing focus.
+Disabled partially complete code to replace own tab dragging routines
+with GTK+'s.
+
+------------------------------------------------------------------------
+r280 | realh | 2006-11-24 00:53:19 +0000 (Fri, 24 Nov 2006) | 4 lines
+
+Made using GTK+'s new tab dragging code optional (off by default).
+Fixed some bugs wrt deleting windows.
+Fixed dragging tabs to other notebooks using GTK+ 2.10.
+
+------------------------------------------------------------------------
+r279 | realh | 2006-11-21 23:14:28 +0000 (Tue, 21 Nov 2006) | 3 lines
+
+Fixed to expand things like ${datadir} recursively when they reference other
+variables.
+
+------------------------------------------------------------------------
+r278 | realh | 2006-11-21 18:52:27 +0000 (Tue, 21 Nov 2006) | 2 lines
+
+Uses gtk_dialog_run on about dialog then destroys it (fixes Close button).
+
+------------------------------------------------------------------------
+r277 | realh | 2006-11-20 00:00:48 +0000 (Mon, 20 Nov 2006) | 3 lines
+
+Dragged in URIs are single-quoted
+(single quotes in URI are escaped appropriately).
+
+------------------------------------------------------------------------
+r276 | realh | 2006-11-19 23:23:46 +0000 (Sun, 19 Nov 2006) | 3 lines
+
+AppRun is added to ROX app URI handlers at launch time instead of by capplet
+(profilegui.c reverted).
+
+------------------------------------------------------------------------
+r275 | realh | 2006-11-19 23:15:22 +0000 (Sun, 19 Nov 2006) | 3 lines
+
+ROX AppDirs detected when entered (dragged) into URL/mail handlers; 
+AppRun automatically appended.
+
+------------------------------------------------------------------------
+r274 | realh | 2006-11-19 21:23:09 +0000 (Sun, 19 Nov 2006) | 2 lines
+
+D-BUS API change (dbus_connection_disconnect -> dbus_connection_close).
+
+------------------------------------------------------------------------
+r271 | realh | 2006-07-23 22:03:52 +0100 (Sun, 23 Jul 2006) | 3 lines
+
+Quotes no longer considered part of URL.
+Fixed update-tags script.
+
+------------------------------------------------------------------------
+r270 | realh | 2006-07-23 15:56:49 +0100 (Sun, 23 Jul 2006) | 2 lines
+
+Added update-tags convenience script.
+
+------------------------------------------------------------------------
+r266 | realh | 2006-07-23 15:39:05 +0100 (Sun, 23 Jul 2006) | 3 lines
+
+Fixed recognition of email addresses without mailto.
+Fixed separation of host-only and host+path URLs.
+
+------------------------------------------------------------------------
+r262 | realh | 2006-07-15 22:42:13 +0100 (Sat, 15 Jul 2006) | 2 lines
+
+Support for reading D-BUS message string arguments from iterator with old API.
+
+------------------------------------------------------------------------
+r258 | realh | 2006-07-05 21:58:08 +0100 (Wed, 05 Jul 2006) | 3 lines
+
+Release 1.2.0.
+Updated docs.
+
+------------------------------------------------------------------------
+r257 | realh | 2006-07-05 21:50:38 +0100 (Wed, 05 Jul 2006) | 4 lines
+
+Default encoding is a separate global option instead of part of profile.
+Fixed configlet's Properties buttons for profiles and colour schemes.
+Fixed configlet's tooltips for encodings.
+
+------------------------------------------------------------------------
+r256 | realh | 2006-07-02 23:25:42 +0100 (Sun, 02 Jul 2006) | 2 lines
+
+Selected name is suggested when adding an encoding.
+
+------------------------------------------------------------------------
+r255 | realh | 2006-07-02 23:20:19 +0100 (Sun, 02 Jul 2006) | 2 lines
+
+Encodings menus seem to fully work now.
+
+------------------------------------------------------------------------
+r254 | realh | 2006-07-02 21:25:38 +0100 (Sun, 02 Jul 2006) | 2 lines
+
+Terminal responds to encodings being selected in menu.
+
+------------------------------------------------------------------------
+r253 | realh | 2006-07-01 14:33:04 +0100 (Sat, 01 Jul 2006) | 3 lines
+
+Configlet's changes to encodings are saved.
+Encodings menus in terminals partially implemented.
+
+------------------------------------------------------------------------
+r252 | realh | 2006-07-01 00:12:34 +0100 (Sat, 01 Jul 2006) | 2 lines
+
+Profile/scheme rename works except for encodings.
+
+------------------------------------------------------------------------
+r251 | realh | 2006-06-30 23:27:51 +0100 (Fri, 30 Jun 2006) | 2 lines
+
+Fancy trick to stop version number change causing complete rebuild.
+
+------------------------------------------------------------------------
+r250 | realh | 2006-06-30 20:49:28 +0100 (Fri, 30 Jun 2006) | 2 lines
+
+Can now add encodings to configlet dialog.
+
+------------------------------------------------------------------------
+r249 | realh | 2006-06-30 20:23:12 +0100 (Fri, 30 Jun 2006) | 4 lines
+
+Corrected check for whether a profile/scheme is system or user.
+Changed way handlers for delete/copy profiles/schemes are connected.
+Changed spelling of all instances of "dialogue" to "dialog".
+
+------------------------------------------------------------------------
+r248 | realh | 2006-06-30 18:21:46 +0100 (Fri, 30 Jun 2006) | 3 lines
+
+New configlet layout partially works without breaking existing functionality
+any more than it was already broken.
+
+------------------------------------------------------------------------
+r247 | realh | 2006-06-30 17:45:58 +0100 (Fri, 30 Jun 2006) | 2 lines
+
+Started adding configurable list of encodings to configlet.
+
+------------------------------------------------------------------------
+r246 | realh | 2006-06-25 20:15:18 +0100 (Sun, 25 Jun 2006) | 5 lines
+
+Release 1.1.1.
+URL matching now works for http://host?args form.
+Got rid of redundant .cvsignore files.
+Made README point out index.html instead of having its own obsolete info.
+
+------------------------------------------------------------------------
+r242 | realh | 2006-06-20 16:06:06 +0100 (Tue, 20 Jun 2006) | 2 lines
+
+Updated news with release date.
+
+------------------------------------------------------------------------
+r241 | realh | 2006-06-20 16:00:05 +0100 (Tue, 20 Jun 2006) | 2 lines
+
+Release 1.1.0.
+
+------------------------------------------------------------------------
+r240 | realh | 2006-06-20 15:58:23 +0100 (Tue, 20 Jun 2006) | 2 lines
+
+Text entry activates default button in configlet's Copy/Rename dialogues.
+
+------------------------------------------------------------------------
+r239 | realh | 2006-06-20 15:35:56 +0100 (Tue, 20 Jun 2006) | 3 lines
+
+Removed $Id strings and svn:keywords property;
+it was more hindrance due to recompiling than help.
+
+------------------------------------------------------------------------
+r238 | realh | 2006-06-20 15:20:11 +0100 (Tue, 20 Jun 2006) | 2 lines
+
+Changed name of roxterm-capplet to roxterm-config.
+
+------------------------------------------------------------------------
+r237 | realh | 2006-06-19 20:26:39 +0100 (Mon, 19 Jun 2006) | 2 lines
+
+Rationalised existing URI match patterns some more and added news:
+
+------------------------------------------------------------------------
+r236 | realh | 2006-06-19 18:44:41 +0100 (Mon, 19 Jun 2006) | 2 lines
+
+Revamped URI matching seems OK now.
+
+------------------------------------------------------------------------
+r235 | realh | 2006-06-19 15:15:19 +0100 (Mon, 19 Jun 2006) | 2 lines
+
+Completely revamped URL handling. No time to debug, doesn't even compile yet.
+
+------------------------------------------------------------------------
+r234 | realh | 2006-06-19 12:25:17 +0100 (Mon, 19 Jun 2006) | 2 lines
+
+In middle of changing URIs; not really working properly ATM.
+
+------------------------------------------------------------------------
+r233 | realh | 2006-06-16 20:12:20 +0100 (Fri, 16 Jun 2006) | 2 lines
+
+Better change version because of changes.
+
+------------------------------------------------------------------------
+r232 | realh | 2006-06-16 20:00:26 +0100 (Fri, 16 Jun 2006) | 4 lines
+
+Merged first memory access bug fix from 1.0.6.
+Removed Electric Fence bits from roxterm.c.
+Some debugging aids in AppRun.
+
+------------------------------------------------------------------------
+r227 | realh | 2006-06-14 21:16:48 +0100 (Wed, 14 Jun 2006) | 3 lines
+
+Accelerators for selecting up to 12 tabs, defaulting to Alt+1 - Alt+9, Alt+0
+for first 10.
+
+------------------------------------------------------------------------
+r226 | realh | 2006-06-12 20:56:28 +0100 (Mon, 12 Jun 2006) | 2 lines
+
+--directory works over dbus.
+
+------------------------------------------------------------------------
+r225 | realh | 2006-06-12 20:14:47 +0100 (Mon, 12 Jun 2006) | 2 lines
+
+Added --directory option.
+
+------------------------------------------------------------------------
+r224 | realh | 2006-06-12 19:49:33 +0100 (Mon, 12 Jun 2006) | 3 lines
+
+Checks roxterm->commandv is non-NULL before calling g_strfreev on it
+(although it's probably safe like free()).
+
+------------------------------------------------------------------------
+r223 | realh | 2006-06-12 19:47:06 +0100 (Mon, 12 Jun 2006) | 3 lines
+
+New tab/terminal no longer inherits current term's -e.
+Fixed memory management of -e arguments.
+
+------------------------------------------------------------------------
+r222 | realh | 2006-06-12 18:41:38 +0100 (Mon, 12 Jun 2006) | 2 lines
+
+Changed order of args in invocation of binary to make sure -e stays at end.
+
+------------------------------------------------------------------------
+r221 | realh | 2006-06-12 01:09:57 +0100 (Mon, 12 Jun 2006) | 2 lines
+
+Fixed --execute/-e, was broken by using single process.
+
+------------------------------------------------------------------------
+r220 | realh | 2006-06-11 20:21:31 +0100 (Sun, 11 Jun 2006) | 2 lines
+
+Can now drag tabs outside ROXTerm to create new windows.
+
+------------------------------------------------------------------------
+r219 | realh | 2006-06-11 19:31:23 +0100 (Sun, 11 Jun 2006) | 2 lines
+
+Dragging tabs to other existing windows seems to work.
+
+------------------------------------------------------------------------
+r218 | realh | 2006-06-11 15:43:46 +0100 (Sun, 11 Jun 2006) | 4 lines
+
+Reordered tabs have their menu items inserted in correct place, taking
+Next/Previous Tab and separator into account!
+No need to keep track of selected tab menu item now they're genuine radios.
+
+------------------------------------------------------------------------
+r217 | realh | 2006-06-11 15:27:52 +0100 (Sun, 11 Jun 2006) | 3 lines
+
+Tab selection menu items get reordered and reselected if appropriate when tabs
+are reordered.
+
+------------------------------------------------------------------------
+r216 | realh | 2006-06-11 14:40:46 +0100 (Sun, 11 Jun 2006) | 2 lines
+
+Replaced a couple of similar static functions with menutree_find_radio_group.
+
+------------------------------------------------------------------------
+r215 | realh | 2006-06-11 01:50:04 +0100 (Sun, 11 Jun 2006) | 3 lines
+
+Merged changes 1.0.4->1.0.5: correctly handle signals on tab selection
+menu items.
+
+------------------------------------------------------------------------
+r212 | realh | 2006-06-10 23:22:56 +0100 (Sat, 10 Jun 2006) | 2 lines
+
+Changes ready to allow tabs to be dragged between windows.
+
+------------------------------------------------------------------------
+r211 | realh | 2006-06-09 23:18:17 +0100 (Fri, 09 Jun 2006) | 1 line
+
+Tabs can be dragged within one window.
+------------------------------------------------------------------------
+r210 | realh | 2006-06-09 18:14:45 +0100 (Fri, 09 Jun 2006) | 2 lines
+
+$Id$ tags should now get expanded.
+
+------------------------------------------------------------------------
+r209 | realh | 2006-06-09 18:09:19 +0100 (Fri, 09 Jun 2006) | 2 lines
+
+Started writing code to make tabs draggable.
+
+------------------------------------------------------------------------
+r208 | realh | 2006-06-09 15:04:50 +0100 (Fri, 09 Jun 2006) | 2 lines
+
+We don't really know how to handle text/unicode drags.
+
+------------------------------------------------------------------------
+r207 | realh | 2006-06-09 01:32:40 +0100 (Fri, 09 Jun 2006) | 2 lines
+
+Made capplet's default for scrollbar_pos consistent with roxterm: on right.
+
+------------------------------------------------------------------------
+r206 | realh | 2006-06-09 01:25:58 +0100 (Fri, 09 Jun 2006) | 2 lines
+
+Looks like I forgot to check in rtdbus.[ch].
+
+------------------------------------------------------------------------
+r205 | realh | 2006-06-06 16:22:39 +0100 (Tue, 06 Jun 2006) | 3 lines
+
+Only mailto URIs may include '?' or '&' characters, plain email addresses
+exclude them and anything after.
+
+------------------------------------------------------------------------
+r204 | realh | 2006-06-06 16:15:50 +0100 (Tue, 06 Jun 2006) | 5 lines
+
+Now use Ctrl-click to launch URIs and Ctrl-drag to drag them.
+URI highlighting documented.
+Only add 'mailto' to plain email addresses if drop target is uri-list.
+Some nifty handling of "mailto:" at start of URIs.
+
+------------------------------------------------------------------------
+r203 | realh | 2006-06-06 14:29:44 +0100 (Tue, 06 Jun 2006) | 2 lines
+
+Merged in changes from 1.0.3->1.0.4 to use AC_CHECK_FUNCS correctly.
+
+------------------------------------------------------------------------
+r200 | realh | 2006-06-04 23:31:44 +0100 (Sun, 04 Jun 2006) | 2 lines
+
+Highlighted URIs can now be dragged.
+
+------------------------------------------------------------------------
+r199 | realh | 2006-06-04 23:16:34 +0100 (Sun, 04 Jun 2006) | 2 lines
+
+Added another couple of URI match types.
+
+------------------------------------------------------------------------
+r198 | realh | 2006-06-04 23:12:11 +0100 (Sun, 04 Jun 2006) | 2 lines
+
+Fixed URI recognition typo from nttp to nntp.
+
+------------------------------------------------------------------------
+r197 | realh | 2006-06-04 13:35:05 +0100 (Sun, 04 Jun 2006) | 3 lines
+
+Use configure --enable-maintainer-mode at all times to make
+configure.mak unecessary.
+
+------------------------------------------------------------------------
+r196 | realh | 2006-06-04 13:30:26 +0100 (Sun, 04 Jun 2006) | 2 lines
+
+Added --separate option.
+
+------------------------------------------------------------------------
+r195 | realh | 2006-06-02 00:45:20 +0100 (Fri, 02 Jun 2006) | 4 lines
+
+URIs can be double-clicked.
+Rerunning roxterm gets the first instance to open a new terminal so that
+all terminals are handled by one program.
+
+------------------------------------------------------------------------
+r191 | realh | 2006-05-30 00:43:53 +0100 (Tue, 30 May 2006) | 3 lines
+
+Release 1.0.3.
+Updated docs re drag & drop features.
+
+------------------------------------------------------------------------
+r190 | realh | 2006-05-29 21:20:29 +0100 (Mon, 29 May 2006) | 2 lines
+
+Capplet's background image widget is drag destination.
+
+------------------------------------------------------------------------
+r189 | realh | 2006-05-29 14:35:39 +0100 (Mon, 29 May 2006) | 4 lines
+
+Fixed memory leak (free ROXTermData).
+Drag & drop factored out into new file so it can be used for
+capplet background image widget (next job).
+
+------------------------------------------------------------------------
+r188 | realh | 2006-05-27 23:52:56 +0100 (Sat, 27 May 2006) | 2 lines
+
+Terminal widgets are now drag targets for text/filenames/URLs to be inserted.
+
+------------------------------------------------------------------------
+r187 | realh | 2006-05-27 17:12:38 +0100 (Sat, 27 May 2006) | 4 lines
+
+AppRun should be better at detecting whether we're already in a terminal.
+Suppressed error messages about missing groups in empty key files.
+Got rid of Default profile file which shouldn't be in dist.
+
+------------------------------------------------------------------------
+r186 | realh | 2006-05-27 00:28:10 +0100 (Sat, 27 May 2006) | 2 lines
+
+Made sure missing.c gets included in make dist.
+
+------------------------------------------------------------------------
+r185 | realh | 2006-05-26 18:27:37 +0100 (Fri, 26 May 2006) | 2 lines
+
+Updated glib version requirement in index.html.
+
+------------------------------------------------------------------------
+r184 | realh | 2006-05-26 18:10:22 +0100 (Fri, 26 May 2006) | 4 lines
+
+Hopefully now properly compatible with glib 2.6.
+Added configure.mak so we don't need test -nt (unavailable in Solaris) any more.
+Reenabled conditional use of GtkFileChooserButton (was disabled for test).
+
+------------------------------------------------------------------------
+r183 | realh | 2006-05-16 20:48:00 +0100 (Tue, 16 May 2006) | 3 lines
+
+AppRun tries to find roxterm in PATH if src is missing so it can be used
+unaltered in an empty wrapper.
+
+------------------------------------------------------------------------
+r182 | realh | 2006-05-16 20:30:32 +0100 (Tue, 16 May 2006) | 2 lines
+
+Fixed sizing issues when adding tabs.
+
+------------------------------------------------------------------------
+r181 | realh | 2006-05-11 00:36:40 +0100 (Thu, 11 May 2006) | 3 lines
+
+Added --profile, --colour_scheme and --shortcut_scheme CLI options.
+Fixed pointer dereference bug handling badly formed CLI options.
+
+------------------------------------------------------------------------
+r178 | realh | 2006-05-03 21:23:32 +0100 (Wed, 03 May 2006) | 2 lines
+
+Added note about encoding setting to manual.
+
+------------------------------------------------------------------------
+r177 | realh | 2006-05-03 21:22:36 +0100 (Wed, 03 May 2006) | 2 lines
+
+Fixed setting of encoding to always apply even if NULL.
+
+------------------------------------------------------------------------
+r176 | realh | 2006-05-03 20:58:28 +0100 (Wed, 03 May 2006) | 4 lines
+
+Version 1.0.1.
+Fixed encoding widget in profile editor.
+Small fixes to string option handling.
+
+------------------------------------------------------------------------
+r173 | realh | 2006-04-29 14:46:50 +0100 (Sat, 29 Apr 2006) | 2 lines
+
+Tidied up loose ends for release.
+
+------------------------------------------------------------------------
+r172 | realh | 2006-04-13 20:11:45 +0100 (Thu, 13 Apr 2006) | 2 lines
+
+No longer responds to phantom accelerators if menu bar is shown then hidden.
+
+------------------------------------------------------------------------
+r171 | realh | 2006-04-13 19:37:13 +0100 (Thu, 13 Apr 2006) | 2 lines
+
+Added note to manual about URIs in popup menus.
+
+------------------------------------------------------------------------
+r170 | realh | 2006-03-28 11:46:05 +0100 (Tue, 28 Mar 2006) | 2 lines
+
+Looks like I forgot to add logo.[ch] earlier.
+
+------------------------------------------------------------------------
+r169 | realh | 2006-03-27 13:18:42 +0100 (Mon, 27 Mar 2006) | 2 lines
+
+Sets window icons with ROXTerm logo.
+
+------------------------------------------------------------------------
+r168 | realh | 2006-03-26 15:18:46 +0100 (Sun, 26 Mar 2006) | 2 lines
+
+Changed "beta status" comment.
+
+------------------------------------------------------------------------
+r167 | realh | 2006-03-26 15:09:10 +0100 (Sun, 26 Mar 2006) | 2 lines
+
+Updated manual.
+
+------------------------------------------------------------------------
+r166 | realh | 2006-03-24 23:24:57 +0000 (Fri, 24 Mar 2006) | 3 lines
+
+Tidided up indentation in AppRun and made it detect when configure.ac
+is newer than configure.
+
+------------------------------------------------------------------------
+r165 | realh | 2006-03-24 23:18:11 +0000 (Fri, 24 Mar 2006) | 2 lines
+
+Uses GtkFileChooserButton if system supports it.
+
+------------------------------------------------------------------------
+r164 | realh | 2006-03-24 20:39:10 +0000 (Fri, 24 Mar 2006) | 2 lines
+
+Uses g_mkdir_with_parents if available.
+
+------------------------------------------------------------------------
+r163 | realh | 2006-03-23 21:08:49 +0000 (Thu, 23 Mar 2006) | 2 lines
+
+Tabs have close buttons.
+
+------------------------------------------------------------------------
+r162 | realh | 2006-03-23 19:50:53 +0000 (Thu, 23 Mar 2006) | 3 lines
+
+Uses ellipses in tab labels and makes them scrollable to stop them affecting
+window size.
+
+------------------------------------------------------------------------
+r161 | realh | 2006-03-20 01:14:45 +0000 (Mon, 20 Mar 2006) | 3 lines
+
+Geometry changes due to changing tab/menu widgets seems OK now,
+removed it from TODO.
+
+------------------------------------------------------------------------
+r160 | realh | 2006-03-12 15:20:14 +0000 (Sun, 12 Mar 2006) | 2 lines
+
+Tweaks to size allocation stuff.
+
+------------------------------------------------------------------------
+r159 | realh | 2006-03-07 00:50:32 +0000 (Tue, 07 Mar 2006) | 2 lines
+
+Added Installing section to index.html.
+
+------------------------------------------------------------------------
+r158 | realh | 2006-03-06 23:44:48 +0000 (Mon, 06 Mar 2006) | 2 lines
+
+More trivial rewording.
+
+------------------------------------------------------------------------
+r157 | realh | 2006-03-06 23:43:51 +0000 (Mon, 06 Mar 2006) | 2 lines
+
+Reworded D-Bus section slightly.
+
+------------------------------------------------------------------------
+r156 | realh | 2006-03-06 23:19:38 +0000 (Mon, 06 Mar 2006) | 2 lines
+
+More doc progress.
+
+------------------------------------------------------------------------
+r155 | realh | 2006-03-06 17:32:04 +0000 (Mon, 06 Mar 2006) | 4 lines
+
+Capplet doesn't need to be linked etc with vte.
+"Show manual" goes to manual section of index.html.
+More progress on new index.html.
+
+------------------------------------------------------------------------
+r154 | realh | 2006-03-06 00:34:51 +0000 (Mon, 06 Mar 2006) | 3 lines
+
+Use default size of 80x25 if one width or height option is set without
+the other.
+
+------------------------------------------------------------------------
+r153 | realh | 2006-03-05 22:35:42 +0000 (Sun, 05 Mar 2006) | 2 lines
+
+Found some geometry bugs.
+
+------------------------------------------------------------------------
+r152 | realh | 2006-03-05 22:26:35 +0000 (Sun, 05 Mar 2006) | 2 lines
+
+bootstrap.sh generates (svn) Changelog if necessary.
+
+------------------------------------------------------------------------
+r151 | realh | 2006-03-05 20:54:39 +0000 (Sun, 05 Mar 2006) | 4 lines
+
+Better add "imgs".
+Added roxterm.desktop.
+Credietd Havoc Pennington for libvte.
+
+------------------------------------------------------------------------
+r150 | realh | 2006-03-05 20:48:44 +0000 (Sun, 05 Mar 2006) | 4 lines
+
+Improved installation targets.
+Non-ROX installation now loads icon from $datadir/pixmaps.
+Got part-way through new index.html; a bit broken ATM.
+
+------------------------------------------------------------------------
+r149 | realh | 2006-03-04 20:13:03 +0000 (Sat, 04 Mar 2006) | 2 lines
+
+Fixed permissions when installing docs and default configs (were +x).
+
+------------------------------------------------------------------------
+r148 | realh | 2006-03-04 20:06:49 +0000 (Sat, 04 Mar 2006) | 6 lines
+
+Version 0.11.5.
+GKeyFile is always used even when files are missing.
+"Default" is always selectable for dynamic options even when there's no
+corresponding file.
+Added notes about migration to svn to docs.
+
+------------------------------------------------------------------------
+r147 | realh | 2006-03-04 19:59:29 +0000 (Sat, 04 Mar 2006) | 2 lines
+
+Returns empty GKeyFile for missing options files.
+
+------------------------------------------------------------------------
+r146 | realh | 2006-03-03 23:48:21 +0000 (Fri, 03 Mar 2006) | 2 lines
+
+Changelog (Help/Changes) will now be generated from svn.
+
+------------------------------------------------------------------------
+r145 | realh | 2006-03-03 23:38:20 +0000 (Fri, 03 Mar 2006) | 2 lines
+
+Removed obsolete XML Global config file and updated TODO.
+
+------------------------------------------------------------------------
+r143 | realh | 2006-03-01 20:16:24 +0000 (Wed, 01 Mar 2006) | 2 lines
+
+Changed "Help -> About" to "Help -> About ROXTerm".
+
+------------------------------------------------------------------------
+r142 | realh | 2006-03-01 20:14:59 +0000 (Wed, 01 Mar 2006) | 3 lines
+
+Better installation of Config and docs, and uninstall.
+Show Manual works.
+
+------------------------------------------------------------------------
+r141 | realh | 2006-03-01 19:18:59 +0000 (Wed, 01 Mar 2006) | 2 lines
+
+Added tooltips to config editor master window.
+
+------------------------------------------------------------------------
+r140 | realh | 2006-03-01 19:08:37 +0000 (Wed, 01 Mar 2006) | 4 lines
+
+Added tooltips to profile editor.
+Made compatibility reset button apply to encoding too.
+Changed "Help -> Contents" to "Help -> Show manual".
+
+------------------------------------------------------------------------
+r139 | realh | 2006-03-01 12:09:24 +0000 (Wed, 01 Mar 2006) | 3 lines
+
+Version 0.11.3.
+Hopefully recovered from the mess CVS made of 0.11.2.
+
+------------------------------------------------------------------------
+r137 | realh | 2006-03-01 02:28:55 +0000 (Wed, 01 Mar 2006) | 2 lines
+
+Fucking CVS!
+
+------------------------------------------------------------------------
+r136 | realh | 2006-02-28 22:56:25 +0000 (Tue, 28 Feb 2006) | 2 lines
+
+Broke geometry size setting trying to make getting window id work.
+
+------------------------------------------------------------------------
+r134 | realh | 2006-02-28 20:35:30 +0000 (Tue, 28 Feb 2006) | 2 lines
+
+Fixed fg/bg colour tracking of palette.
+
+------------------------------------------------------------------------
+r133 | realh | 2006-02-28 19:35:37 +0000 (Tue, 28 Feb 2006) | 2 lines
+
+Toggled signals are ignored for radio buttons being switched off.
+
+------------------------------------------------------------------------
+r132 | realh | 2006-02-28 01:07:13 +0000 (Tue, 28 Feb 2006) | 2 lines
+
+TODO note about broken bg/fg colour settings.
+
+------------------------------------------------------------------------
+r131 | realh | 2006-02-28 01:06:18 +0000 (Tue, 28 Feb 2006) | 5 lines
+
+Added tooltips to colour config dialog.
+Hid 3rd row of palette because VTE doesn't seem to support 24 colours
+contrary to docs.
+Fixed some palette setting bugs.
+
+------------------------------------------------------------------------
+r129 | realh | 2006-02-27 21:41:03 +0000 (Mon, 27 Feb 2006) | 2 lines
+
+Added notes about migration from XML to keyfiles.
+
+------------------------------------------------------------------------
+r128 | realh | 2006-02-27 21:37:17 +0000 (Mon, 27 Feb 2006) | 2 lines
+
+Uses keyfiles instead of XML for options.
+
+------------------------------------------------------------------------
+r126 | realh | 2006-02-26 20:04:19 +0000 (Sun, 26 Feb 2006) | 3 lines
+
+Version 0.10.14.
+I think I've got interaction between terminal and capplet complete now.
+
+------------------------------------------------------------------------
+r125 | realh | 2006-02-26 02:43:56 +0000 (Sun, 26 Feb 2006) | 4 lines
+
+Version 0.10.13.
+Shortcuts now have an index number instead of scheme name as part of their path
+so they can go on being used when scheme has been renamed or deleted.
+
+------------------------------------------------------------------------
+r124 | realh | 2006-02-25 21:24:12 +0000 (Sat, 25 Feb 2006) | 3 lines
+
+Version 0.10.12.
+Prevented attempts to unref NULL input methods submenus.
+
+------------------------------------------------------------------------
+r123 | realh | 2006-02-25 20:53:04 +0000 (Sat, 25 Feb 2006) | 2 lines
+
+Simplified AppRun again; no longer uses BIN_DIR etc.
+
+------------------------------------------------------------------------
+r122 | realh | 2006-02-25 20:47:44 +0000 (Sat, 25 Feb 2006) | 2 lines
+
+Added encoding option.
+
+------------------------------------------------------------------------
+r120 | realh | 2006-02-25 00:29:12 +0000 (Sat, 25 Feb 2006) | 2 lines
+
+Updated index.html to ref TODO.
+
+------------------------------------------------------------------------
+r119 | realh | 2006-02-25 00:27:18 +0000 (Sat, 25 Feb 2006) | 2 lines
+
+Updated TODO.
+
+------------------------------------------------------------------------
+r118 | realh | 2006-02-25 00:23:33 +0000 (Sat, 25 Feb 2006) | 2 lines
+
+Updated changelog.
+
+------------------------------------------------------------------------
+r117 | realh | 2006-02-25 00:20:35 +0000 (Sat, 25 Feb 2006) | 2 lines
+
+Updated docs.
+
+------------------------------------------------------------------------
+r116 | realh | 2006-02-25 00:08:12 +0000 (Sat, 25 Feb 2006) | 4 lines
+
+Version 0.10.11.
+Updated news.
+Got rid of log stuff in AppRun.
+
+------------------------------------------------------------------------
+r115 | realh | 2006-02-25 00:03:18 +0000 (Sat, 25 Feb 2006) | 2 lines
+
+Fixed new shortcut handling.
+
+------------------------------------------------------------------------
+r114 | realh | 2006-02-24 23:44:04 +0000 (Fri, 24 Feb 2006) | 2 lines
+
+Added x-www-browser to list of browsers to check for.
+
+------------------------------------------------------------------------
+r113 | realh | 2006-02-24 23:35:11 +0000 (Fri, 24 Feb 2006) | 2 lines
+
+Fixed empty input methods menus bug introduced with 0.10.9.
+
+------------------------------------------------------------------------
+r112 | realh | 2006-02-24 23:15:33 +0000 (Fri, 24 Feb 2006) | 3 lines
+
+Got rid of thlog.
+Refer to shortcuts by Options * instead of name.
+
+------------------------------------------------------------------------
+r111 | realh | 2006-02-10 14:38:10 +0000 (Fri, 10 Feb 2006) | 2 lines
+
+Input method submenus are no longer destroyed on switching tabs.
+
+------------------------------------------------------------------------
+r110 | realh | 2006-02-05 21:43:11 +0000 (Sun, 05 Feb 2006) | 5 lines
+
+Bodged configure script to avoid unwanted g++ checks pulled in by
+AC_PROG_LIBTOOL.
+AppRun should now launch compilation in current terminal if there is
+one instead of always using xterm in X.
+
+------------------------------------------------------------------------
+r109 | realh | 2006-01-16 23:16:08 +0000 (Mon, 16 Jan 2006) | 2 lines
+
+Hopefully this will stop configure requiring C++.
+
+------------------------------------------------------------------------
+r108 | realh | 2006-01-10 23:23:32 +0000 (Tue, 10 Jan 2006) | 3 lines
+
+Terminal now responds to configlet doing things to profiles and colour schemes.
+Changed a few things about options on the way.
+
+------------------------------------------------------------------------
+r107 | realh | 2006-01-10 19:02:19 +0000 (Tue, 10 Jan 2006) | 2 lines
+
+AppInfo.xml is a generated file.
+
+------------------------------------------------------------------------
+r106 | realh | 2006-01-10 19:00:55 +0000 (Tue, 10 Jan 2006) | 2 lines
+
+Configlet tree views use radios OK.
+
+------------------------------------------------------------------------
+r105 | realh | 2006-01-09 23:20:30 +0000 (Mon, 09 Jan 2006) | 3 lines
+
+Started getting configlet's treeviews working with radio columns and fixed
+some little bugs along the way.
+
+------------------------------------------------------------------------
+r104 | realh | 2006-01-04 22:28:44 +0000 (Wed, 04 Jan 2006) | 2 lines
+
+Corrected behaviour of profile, colour scheme and shortcuts selection submenus.
+
+------------------------------------------------------------------------
+r103 | realh | 2005-12-10 14:48:11 +0000 (Sat, 10 Dec 2005) | 2 lines
+
+AppRun normalises $0 to make sure it doesn't depend on a relative path.
+
+------------------------------------------------------------------------
+r102 | realh | 2005-11-12 23:37:52 +0000 (Sat, 12 Nov 2005) | 2 lines
+
+Got rid of Shortcuts Edit button in configlet.
+
+------------------------------------------------------------------------
+r101 | realh | 2005-11-12 01:04:40 +0000 (Sat, 12 Nov 2005) | 2 lines
+
+Configlet sends signals when profiles have been added/deleted.
+
+------------------------------------------------------------------------
+r100 | realh | 2005-11-11 23:42:12 +0000 (Fri, 11 Nov 2005) | 2 lines
+
+Can select profiles etc from terminal menus (in theory).
+
+------------------------------------------------------------------------
+r99 | realh | 2005-11-09 20:59:01 +0000 (Wed, 09 Nov 2005) | 3 lines
+
+Configlet can be launched from terminal menu, and terminal can now launch
+colour scheme editor by dbus.
+
+------------------------------------------------------------------------
+r98 | realh | 2005-11-08 20:37:13 +0000 (Tue, 08 Nov 2005) | 3 lines
+
+Changed Preferences menu.
+Colour and shortcuts schemes now looked up from global opts.
+
+------------------------------------------------------------------------
+r97 | realh | 2005-11-07 19:39:50 +0000 (Mon, 07 Nov 2005) | 2 lines
+
+Implemented configlet Delete buttons.
+
+------------------------------------------------------------------------
+r96 | realh | 2005-11-07 19:18:26 +0000 (Mon, 07 Nov 2005) | 2 lines
+
+dynamic_options_list returns char ** instead of GList.
+
+------------------------------------------------------------------------
+r95 | realh | 2005-10-30 17:21:29 +0000 (Sun, 30 Oct 2005) | 2 lines
+
+Factored out common code from copy functions into one function.
+
+------------------------------------------------------------------------
+r94 | realh | 2005-10-30 16:57:45 +0000 (Sun, 30 Oct 2005) | 2 lines
+
+Copy operations add new entry to list widget.
+
+------------------------------------------------------------------------
+r93 | realh | 2005-10-30 16:49:07 +0000 (Sun, 30 Oct 2005) | 3 lines
+
+Implemented copy buttons for shortcuts and colour schemes.
+Changed *_accelerators to _shortcuts.
+
+------------------------------------------------------------------------
+r92 | realh | 2005-10-30 16:38:59 +0000 (Sun, 30 Oct 2005) | 2 lines
+
+Got rid of GetName dialog because it's built in code instead.
+
+------------------------------------------------------------------------
+r91 | realh | 2005-10-26 23:19:32 +0100 (Wed, 26 Oct 2005) | 2 lines
+
+Implemented Copy profile.
+
+------------------------------------------------------------------------
+r90 | realh | 2005-10-25 00:27:37 +0100 (Tue, 25 Oct 2005) | 4 lines
+
+Profile/scheme name is copied for *_being_edited hash tables.
+Delete/rename buttons in configlet are shaded for profiles etc that aren't
+mutable.
+
+------------------------------------------------------------------------
+r89 | realh | 2005-10-24 22:09:27 +0100 (Mon, 24 Oct 2005) | 3 lines
+
+Focus is given to tab's active_widget, not its top-level, which may be a
+container for scrollbar.
+
+------------------------------------------------------------------------
+r88 | realh | 2005-10-24 21:44:07 +0100 (Mon, 24 Oct 2005) | 2 lines
+
+I don't think this should have been checked in.
+
+------------------------------------------------------------------------
+r87 | realh | 2005-10-24 21:43:21 +0100 (Mon, 24 Oct 2005) | 2 lines
+
+AppRun --install makes sure AppInfo.xml is in $APP_DIR.
+
+------------------------------------------------------------------------
+r86 | realh | 2005-10-14 14:14:43 +0100 (Fri, 14 Oct 2005) | 2 lines
+
+Changed buttons so they're not quite stock.
+
+------------------------------------------------------------------------
+r85 | realh | 2005-10-14 13:22:05 +0100 (Fri, 14 Oct 2005) | 3 lines
+
+Quotes URLs to make sure they get passed to browser correctly in case of
+characters like & and #.
+
+------------------------------------------------------------------------
+r84 | realh | 2005-10-13 23:53:34 +0100 (Thu, 13 Oct 2005) | 3 lines
+
+Opening/closing capplet profile/colour dialogue boxes sets shading for
+Delete & Rename buttons in "configlet" dialogue.
+
+------------------------------------------------------------------------
+r83 | realh | 2005-10-11 23:16:36 +0100 (Tue, 11 Oct 2005) | 3 lines
+
+"Configlet" (top-level) part of capplet is partially working.
+Changed dynamic_options_new() to dynamic_options_get().
+
+------------------------------------------------------------------------
+r81 | realh | 2005-10-09 01:22:31 +0100 (Sun, 09 Oct 2005) | 2 lines
+
+Damn, forgot to check in colourgui.[ch]!
+
+------------------------------------------------------------------------
+r80 | realh | 2005-10-09 01:21:15 +0100 (Sun, 09 Oct 2005) | 2 lines
+
+Added comment about forced redraw.
+
+------------------------------------------------------------------------
+r79 | realh | 2005-10-09 01:19:48 +0100 (Sun, 09 Oct 2005) | 2 lines
+
+Redraw forced when colours change.
+
+------------------------------------------------------------------------
+r77 | realh | 2005-10-08 21:34:02 +0100 (Sat, 08 Oct 2005) | 4 lines
+
+Terminal responds to colour changes correctly.
+AppRun now uses platform-specific BIN_DIR independently of BUILD_DIR.
+Separates binaries and their debugging tables.
+
+------------------------------------------------------------------------
+r76 | realh | 2005-10-08 16:58:58 +0100 (Sat, 08 Oct 2005) | 4 lines
+
+Implemented colour scheme editing.
+Fixed the odd bug or two.
+Improved AppRun's log file handling.
+
+------------------------------------------------------------------------
+r75 | realh | 2005-09-23 21:41:05 +0100 (Fri, 23 Sep 2005) | 2 lines
+
+Newly selected tab given back lost focus when another has been deleted.
+
+------------------------------------------------------------------------
+r74 | realh | 2005-07-30 00:23:06 +0100 (Sat, 30 Jul 2005) | 2 lines
+
+Made AppRun logging for tony work properly.
+
+------------------------------------------------------------------------
+r72 | realh | 2005-07-08 00:11:52 +0100 (Fri, 08 Jul 2005) | 2 lines
+
+Added/fixed accelerators for all of profile editor.
+
+------------------------------------------------------------------------
+r71 | realh | 2005-07-07 22:07:13 +0100 (Thu, 07 Jul 2005) | 2 lines
+
+Implemented "command" options - still untested!
+
+------------------------------------------------------------------------
+r69 | realh | 2005-07-07 15:12:31 +0100 (Thu, 07 Jul 2005) | 2 lines
+
+AppInfo.xml apparently somehow died in repository.
+
+------------------------------------------------------------------------
+r68 | realh | 2005-07-07 15:11:20 +0100 (Thu, 07 Jul 2005) | 2 lines
+
+Implemented "compatibility" options.
+
+------------------------------------------------------------------------
+r67 | realh | 2005-07-07 13:03:50 +0100 (Thu, 07 Jul 2005) | 2 lines
+
+Changed position of scrollbar changes comment.
+
+------------------------------------------------------------------------
+r65 | realh | 2005-07-06 20:45:04 +0100 (Wed, 06 Jul 2005) | 3 lines
+
+Removed GtkFileChooserButton (too new) from capplet background image picker and
+replaced with GtkFileChooserDialog complete with preview.
+
+------------------------------------------------------------------------
+r64 | realh | 2005-07-05 22:55:15 +0100 (Tue, 05 Jul 2005) | 2 lines
+
+Checked in contents of Config.
+
+------------------------------------------------------------------------
+r63 | realh | 2005-07-05 22:53:36 +0100 (Tue, 05 Jul 2005) | 4 lines
+
+Checked in Config.
+Added some logging features to AppRun.
+Added some debugging messages to try to trace loss of focus when tabs close.
+
+------------------------------------------------------------------------
+r62 | realh | 2005-06-22 21:18:15 +0100 (Wed, 22 Jun 2005) | 2 lines
+
+Improved .DirIcon.
+
+------------------------------------------------------------------------
+r61 | realh | 2005-06-06 18:38:22 +0100 (Mon, 06 Jun 2005) | 4 lines
+
+Version 0.9.3.
+Used subtraction instead of white rectangles to improve .DirIcon.
+Has "About" dialogue.
+
+------------------------------------------------------------------------
+r60 | realh | 2005-06-06 14:47:07 +0100 (Mon, 06 Jun 2005) | 2 lines
+
+Added Scrolling tab to profile editor.
+
+------------------------------------------------------------------------
+r59 | realh | 2005-06-05 01:52:24 +0100 (Sun, 05 Jun 2005) | 2 lines
+
+Updated NEWS.
+
+------------------------------------------------------------------------
+r58 | realh | 2005-06-05 01:46:44 +0100 (Sun, 05 Jun 2005) | 2 lines
+
+Added functional background tab to profile editor.
+
+------------------------------------------------------------------------
+r57 | realh | 2005-04-25 20:59:43 +0100 (Mon, 25 Apr 2005) | 2 lines
+
+Better handling of dbus API differences for message args between 0.2x and 0.3x.
+
+------------------------------------------------------------------------
+r56 | realh | 2005-04-21 14:26:34 +0100 (Thu, 21 Apr 2005) | 2 lines
+
+Capplet mailer options widgets given correct values when opening.
+
+------------------------------------------------------------------------
+r55 | realh | 2005-04-21 14:23:07 +0100 (Thu, 21 Apr 2005) | 2 lines
+
+Fixed for dbus 0.3x.
+
+------------------------------------------------------------------------
+r54 | realh | 2005-04-10 23:26:17 +0100 (Sun, 10 Apr 2005) | 2 lines
+
+Fixed bootstrap.sh.
+
+------------------------------------------------------------------------
+r53 | realh | 2005-04-10 23:17:12 +0100 (Sun, 10 Apr 2005) | 3 lines
+
+Added automake to bootstrap.sh.
+Committed Appinfo.xml.in.
+
+------------------------------------------------------------------------
+r52 | realh | 2005-04-06 20:27:38 +0100 (Wed, 06 Apr 2005) | 4 lines
+
+Corrected install target for roxterm-capplet.glade.
+Installs config files under ${prefix}/share.
+Terminal can now find capplet properly when installed.
+
+------------------------------------------------------------------------
+r51 | realh | 2005-04-06 15:27:34 +0100 (Wed, 06 Apr 2005) | 2 lines
+
+Comment refers to datadir instead of sysconfdir.
+
+------------------------------------------------------------------------
+r50 | realh | 2005-04-06 15:23:29 +0100 (Wed, 06 Apr 2005) | 2 lines
+
+Uses glib convenience functions for XDG config dirs.
+
+------------------------------------------------------------------------
+r49 | realh | 2005-04-06 14:33:44 +0100 (Wed, 06 Apr 2005) | 2 lines
+
+Terminal can launch capplet to edit current profile.
+
+------------------------------------------------------------------------
+r48 | realh | 2005-04-06 01:12:33 +0100 (Wed, 06 Apr 2005) | 2 lines
+
+Capplet exits if dbus init fails in listen mode.
+
+------------------------------------------------------------------------
+r47 | realh | 2005-04-06 00:13:16 +0100 (Wed, 06 Apr 2005) | 2 lines
+
+Capplet responds to EditProfile D-BUS messages.
+
+------------------------------------------------------------------------
+r46 | realh | 2005-04-05 19:28:04 +0100 (Tue, 05 Apr 2005) | 2 lines
+
+Moved D-BUS API detection from run-time to compile-time.
+
+------------------------------------------------------------------------
+r45 | realh | 2005-04-05 18:08:42 +0100 (Tue, 05 Apr 2005) | 2 lines
+
+Checked in configure.ac.
+
+------------------------------------------------------------------------
+r44 | realh | 2005-04-05 18:08:06 +0100 (Tue, 05 Apr 2005) | 3 lines
+
+Updated build system: configure.ac replaces configure.in, bootstrap.sh uses
+autoreconf, and libtool is used for the convenience library.
+
+------------------------------------------------------------------------
+r43 | realh | 2005-04-04 19:52:50 +0100 (Mon, 04 Apr 2005) | 3 lines
+
+Email address matching/mailer launching.
+Ran all source through indent and added vi modelines.
+
+------------------------------------------------------------------------
+r42 | realh | 2005-04-04 15:55:22 +0100 (Mon, 04 Apr 2005) | 3 lines
+
+Better size change handling.
+Less noisy debugging.
+
+------------------------------------------------------------------------
+r41 | realh | 2005-04-04 00:12:17 +0100 (Mon, 04 Apr 2005) | 2 lines
+
+Tries to preserve geometry on style changes.
+
+------------------------------------------------------------------------
+r40 | realh | 2005-04-03 16:21:33 +0100 (Sun, 03 Apr 2005) | 2 lines
+
+Changes window size in response to fontconfig/Xft setting changes.
+
+------------------------------------------------------------------------
+r39 | realh | 2005-04-02 21:47:27 +0100 (Sat, 02 Apr 2005) | 2 lines
+
+Fully implemented geometry options in profile.
+
+------------------------------------------------------------------------
+r38 | realh | 2005-04-02 14:08:59 +0100 (Sat, 02 Apr 2005) | 2 lines
+
+Updated NEWS and README.
+
+------------------------------------------------------------------------
+r37 | realh | 2005-04-02 13:43:49 +0100 (Sat, 02 Apr 2005) | 2 lines
+
+Forgot to add some capplet source files!
+
+------------------------------------------------------------------------
+r36 | realh | 2005-04-02 13:40:49 +0100 (Sat, 02 Apr 2005) | 2 lines
+
+Terminal reacts to changes in rest of options currently implemented in capplet.
+
+------------------------------------------------------------------------
+r35 | realh | 2005-04-02 01:07:25 +0100 (Sat, 02 Apr 2005) | 3 lines
+
+Tidied up build.
+Started getting dbus signalling working.
+
+------------------------------------------------------------------------
+r34 | realh | 2005-03-26 23:52:14 +0000 (Sat, 26 Mar 2005) | 2 lines
+
+Rewrote pkg-config checks in configure.in/acinclude.m4.
+
+------------------------------------------------------------------------
+r33 | realh | 2005-03-24 23:03:42 +0000 (Thu, 24 Mar 2005) | 2 lines
+
+Added glade file to Makefile.am.
+
+------------------------------------------------------------------------
+r32 | realh | 2005-03-13 00:53:59 +0000 (Sun, 13 Mar 2005) | 2 lines
+
+Better handling of options with missing value or duplicate key.
+
+------------------------------------------------------------------------
+r31 | realh | 2005-03-13 00:52:37 +0000 (Sun, 13 Mar 2005) | 2 lines
+
+Better handling of XML options with duplicate keys or missing values.
+
+------------------------------------------------------------------------
+r30 | realh | 2005-02-19 20:28:21 +0000 (Sat, 19 Feb 2005) | 2 lines
+
+Removed unused glade source files.
+
+------------------------------------------------------------------------
+r29 | realh | 2005-02-19 20:26:53 +0000 (Sat, 19 Feb 2005) | 2 lines
+
+Capplet uses libglade now.
+
+------------------------------------------------------------------------
+r28 | realh | 2005-02-18 17:12:31 +0000 (Fri, 18 Feb 2005) | 2 lines
+
+Tabs menu items get updated with terminal titles.
+
+------------------------------------------------------------------------
+r27 | realh | 2005-02-18 13:16:54 +0000 (Fri, 18 Feb 2005) | 2 lines
+
+Fixed skipping of tabs for next/previous tab operations.
+
+------------------------------------------------------------------------
+r26 | realh | 2005-01-30 15:58:52 +0000 (Sun, 30 Jan 2005) | 2 lines
+
+Warning for duplicate option keys in XML files.
+
+------------------------------------------------------------------------
+r25 | realh | 2005-01-29 18:44:51 +0000 (Sat, 29 Jan 2005) | 2 lines
+
+.DirIcon back to SVG.
+
+------------------------------------------------------------------------
+r24 | realh | 2005-01-29 18:22:09 +0000 (Sat, 29 Jan 2005) | 2 lines
+
+Converted .DirIcon to PNG.
+
+------------------------------------------------------------------------
+r23 | realh | 2005-01-22 23:33:30 +0000 (Sat, 22 Jan 2005) | 5 lines
+
+Fixed ability to handle '&' in capplet text fields.
+Added browser options.
+Fixed command launching.
+Made sure multi_tab_delete doesn't try to modify deleted wins.
+
+------------------------------------------------------------------------
+r22 | realh | 2004-12-06 00:43:04 +0000 (Mon, 06 Dec 2004) | 2 lines
+
+Capplet changes profile Default in response to widgets.
+
+------------------------------------------------------------------------
+r21 | realh | 2004-12-05 22:13:27 +0000 (Sun, 05 Dec 2004) | 2 lines
+
+Capplet fills in dialog's currently implemented options from Default profile.
+
+------------------------------------------------------------------------
+r20 | realh | 2004-12-05 21:12:23 +0000 (Sun, 05 Dec 2004) | 2 lines
+
+New callback framework for capplet.
+
+------------------------------------------------------------------------
+r19 | realh | 2004-12-05 17:28:05 +0000 (Sun, 05 Dec 2004) | 2 lines
+
+Implemented "command" option in profile.
+
+------------------------------------------------------------------------
+r18 | realh | 2004-12-04 01:45:18 +0000 (Sat, 04 Dec 2004) | 2 lines
+
+Makefile.am reflects name change from "config" to "Config" for make dist.
+
+------------------------------------------------------------------------
+r17 | realh | 2004-11-28 23:46:28 +0000 (Sun, 28 Nov 2004) | 2 lines
+
+Started the capplet.
+
+------------------------------------------------------------------------
+r16 | realh | 2004-11-28 16:24:44 +0000 (Sun, 28 Nov 2004) | 2 lines
+
+shortcuts_save clears xml_dirty flag.
+
+------------------------------------------------------------------------
+r15 | realh | 2004-11-28 02:19:50 +0000 (Sun, 28 Nov 2004) | 3 lines
+
+Changed way shortcuts are saved.
+Corrected to look for ~/.config/roxterm.sourceforge.net/
+
+------------------------------------------------------------------------
+r14 | realh | 2004-11-24 14:41:51 +0000 (Wed, 24 Nov 2004) | 2 lines
+
+Fixed hide_menubar check.
+
+------------------------------------------------------------------------
+r13 | realh | 2004-11-24 14:39:25 +0000 (Wed, 24 Nov 2004) | 2 lines
+
+Implemented more options and fixed defaults for others.
+
+------------------------------------------------------------------------
+r12 | realh | 2004-11-22 19:20:10 +0000 (Mon, 22 Nov 2004) | 2 lines
+
+Exclude .swp files from CVS.
+
+------------------------------------------------------------------------
+r11 | realh | 2004-11-22 19:18:04 +0000 (Mon, 22 Nov 2004) | 3 lines
+
+Added another type of wrapped URL.
+Moved some stuff from roxterm_tab_filler to roxterm_apply_profile.
+
+------------------------------------------------------------------------
+r10 | realh | 2004-11-22 19:05:23 +0000 (Mon, 22 Nov 2004) | 2 lines
+
+Implemented scrolling-related options.
+
+------------------------------------------------------------------------
+r9 | realh | 2004-11-22 17:51:12 +0000 (Mon, 22 Nov 2004) | 3 lines
+
+Geometry, colour scheme, shortcuts and hide_menubar now in profile,
+instead of in Global opts.
+
+------------------------------------------------------------------------
+r8 | realh | 2004-11-21 21:21:48 +0000 (Sun, 21 Nov 2004) | 2 lines
+
+Added HTML.
+
+------------------------------------------------------------------------
+r7 | realh | 2004-11-21 21:14:20 +0000 (Sun, 21 Nov 2004) | 2 lines
+
+Just fiddling with .cvsignore etc.
+
+------------------------------------------------------------------------
+r3 | realh | 2004-11-21 21:05:21 +0000 (Sun, 21 Nov 2004) | 2 lines
+
+Initial revision
+
+------------------------------------------------------------------------
