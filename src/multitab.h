@@ -150,8 +150,10 @@ inline static GtkNotebook *multi_tab_get_notebook(MultiTab *tab)
 
 /* Adds reference to widget but label and menutree widgets are lost;
  * if notify_only this function assumes the tab has already been moved by
- * GTK and it's just being called for notification */
-void multi_tab_remove_from_parent(MultiTab *tab, gboolean notify_only);
+ * GTK and it's just being called for notification.
+ * Returns TRUE if win has no tabs left and is destroyed.
+ */
+gboolean multi_tab_remove_from_parent(MultiTab *tab, gboolean notify_only);
 
 /* Moves a tab to the given position in the notebook; if reorder is TRUE
  * this function does the reordering otherwise it assumes the reordering has

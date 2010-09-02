@@ -76,9 +76,6 @@ struct MultiWin {
     gboolean ignore_tab_selections;
     gboolean ignore_toggles;
     gboolean ignore_tabs_moving;
-#if !DO_OWN_TAB_DRAGGING
-    gulong prcbid;        /* page-removed callback id */
-#endif
     gboolean show_menu_bar;
     Options *shortcuts;
     GtkAccelGroup *accel_group;
@@ -582,11 +579,12 @@ void multi_tab_move_to_position(MultiTab *tab, int position, gboolean reorder)
     multi_tab_add_menutree_items(win, tab, position);
 }
 
-void multi_tab_remove_from_parent(MultiTab *tab, gboolean notify_only)
+gboolean multi_tab_remove_from_parent(MultiTab *tab, gboolean notify_only)
 {
     MultiWin *win = tab->parent;
+    gboolean destroyed;
 
-    g_return_if_fail(win);
+    g_return_val_if_fail(win, TRUE);
     win->ignore_tabs_moving = TRUE;
     if (!notify_only)
     {
@@ -598,11 +596,13 @@ void multi_tab_remove_from_parent(MultiTab *tab, gboolean notify_only)
         tab->close_button = NULL;
     }
     multi_tab_remove_menutree_items(win, tab);
-    if (!multi_win_notify_tab_removed(win, tab))
+    destroyed = multi_win_notify_tab_removed(win, tab);
+    if (!destroyed)
     {
         win->ignore_tabs_moving = FALSE;
     }
     tab->parent = NULL;
+    return destroyed;
 }
 
 void multi_tab_move_to_new_window(MultiWin *win, MultiTab *tab, int position)
@@ -925,14 +925,29 @@ static void page_added_callback(GtkNotebook *notebook, GtkWidget *child,
         guint page_num, MultiWin *win)
 {
     MultiTab *tab = multi_tab_get_from_widget(child);
+    gboolean old_win_destroyed;
 
     g_return_if_fail(tab);
     if (!win->ignore_tabs_moving)
     {
+        if (tab->parent == win)
+        {
+            /* Dragged in from same window so do nothing */
+            return;
+        }
+        if (tab->parent)
+        {
+            old_win_destroyed = multi_tab_remove_from_parent(tab, TRUE);
+        }
+        else
+        {
+            old_win_destroyed = TRUE;
+            g_warning("Page added had no previous parent");
+        }
         if (win->ntabs != 1)
             multi_win_cache_size(win);
         multi_win_add_tab(win, tab, page_num, TRUE);
-        multi_tab_to_new_window_handler(win, tab, tab->old_win_destroyed);
+        multi_tab_to_new_window_handler(win, tab, old_win_destroyed);
         if (win->ntabs == 1)
         {
             /*
@@ -944,24 +959,9 @@ static void page_added_callback(GtkNotebook *notebook, GtkWidget *child,
     }
 }
 
-static void page_removed_callback(GtkNotebook *notebook, GtkWidget *child,
-        guint page_num, MultiWin *win)
-{
-    MultiTab *tab = multi_tab_get_from_widget(child);
-
-    g_return_if_fail(tab);
-    if (!win->ignore_tabs_moving)
-    {
-        tab->old_win_destroyed = win->ntabs == 1;
-        multi_tab_remove_from_parent(tab, TRUE);
-    }
-}
-
 static GtkNotebook *multi_win_notebook_creation_hook(GtkNotebook *source,
         GtkWidget *page, gint x, gint y, gpointer data)
 {
-    /* ignore_tabs_moving is no use here because we get removed and added
-     * signals after leaving this function; see notes in above handlers */
     MultiTab *tab = multi_tab_get_from_widget(page);
     MultiWin *win;
 
@@ -1517,8 +1517,6 @@ MultiWin *multi_win_new_blank(const char *display_name, Options *shortcuts,
         G_CALLBACK(page_reordered_callback), win);
     g_signal_connect(win->notebook, "page-added",
         G_CALLBACK(page_added_callback), win);
-    win->prcbid = g_signal_connect(win->notebook, "page-removed",
-        G_CALLBACK(page_removed_callback), win);
 #endif
     /* VTE widgets handle these events, so we only get them if they occur over
      * the actual sticky out bit */
@@ -1599,9 +1597,6 @@ static void multi_win_destructor(MultiWin *win, gboolean destroy_widgets)
     g_return_if_fail(win);
 
     win->ignore_tab_selections = TRUE;
-#if !DO_OWN_TAB_DRAGGING
-    g_signal_handler_disconnect(win->notebook, win->prcbid);
-#endif
     if (win->accel_group)
     {
         UNREF_LOG(g_object_unref(win->accel_group));
