@@ -92,7 +92,9 @@ dist-hook:
 		cat $(top_srcdir)/ChangeLog.old >> $(top_srcdir)/ChangeLog
 
 install-data-local:
-	$(install_sh) -m 0644 -d $(DESTDIR)/$(docdir) $(DESTDIR)/$(htmldir)/lib
+	$(install_sh) -m 0755 -d $(DESTDIR)/$(docdir) \
+		$(DESTDIR)/$(htmldir)/lib \
+		$(DESTDIR)/$(pkgicondir)/
 	$(install_sh) -m 0644 -t $(DESTDIR)/$(htmldir) $(HTMLFILES)
 	$(install_sh) -m 0644 -t $(DESTDIR)/$(htmldir)/lib $(HELPIMGS)
 	$(install_sh) -m 0644 $(top_srcdir)/roxterm.svg \
