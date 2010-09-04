@@ -950,10 +950,6 @@ static void page_added_callback(GtkNotebook *notebook, GtkWidget *child,
         multi_tab_to_new_window_handler(win, tab, old_win_destroyed);
         if (win->ntabs == 1)
         {
-            /*
-            gtk_widget_show_all(win->notebook);
-            gtk_widget_show_all(win->gtkwin);
-            */
             multi_win_show(win);
         }
     }
@@ -1644,16 +1640,6 @@ void multi_win_delete(MultiWin *win)
     multi_win_destructor(win, TRUE);
 }
 
-static void single_tab(MultiWin *win, MultiTab *tab)
-{
-    gtk_notebook_set_tab_label_packing(GTK_NOTEBOOK(win->notebook),
-        tab->widget, FALSE, TRUE, GTK_PACK_START);
-    gtk_widget_set_size_request(tab->label,
-            (win->tab_pos == GTK_POS_LEFT || win->tab_pos == GTK_POS_RIGHT) ?
-                    HORIZ_TAB_WIDTH : -1,
-            -1);
-}
-
 /* Returns TRUE if window destroyed */
 static gboolean multi_win_notify_tab_removed(MultiWin * win, MultiTab * tab)
 {
@@ -1685,12 +1671,6 @@ static gboolean multi_win_notify_tab_removed(MultiWin * win, MultiTab * tab)
             {
                 multi_win_hide_tabs(win);
             }
-            if (win->tab_pos != GTK_POS_LEFT && win->tab_pos != GTK_POS_RIGHT)
-            {
-                gtk_label_set_ellipsize(GTK_LABEL(tab->label),
-                        PANGO_ELLIPSIZE_NONE);
-            }
-            single_tab(win, tab);
         }
     }
     multi_win_shade_menus_for_tabs(win);
@@ -1770,8 +1750,7 @@ void multi_tab_set_status_stock(MultiTab *tab, const char *stock)
 
 /* Creates the label widget for a tab. tab->label is the GtkLabel containing
  * the text; the return value is the top-level container. */
-static GtkWidget *make_tab_label(MultiTab *tab, GtkPositionType tab_pos,
-        gboolean single)
+static GtkWidget *make_tab_label(MultiTab *tab, GtkPositionType tab_pos)
 {
     static GdkColor amber;
     static gboolean parsed_amber = FALSE;
@@ -1784,15 +1763,14 @@ static GtkWidget *make_tab_label(MultiTab *tab, GtkPositionType tab_pos,
             tab->label_box = gtk_vbox_new(FALSE, 4);
             tab->label_packer = gtk_box_pack_end;
             gtk_widget_set_size_request(tab->label, HORIZ_TAB_WIDTH, -1);
-            single = FALSE;
+            gtk_label_set_ellipsize(GTK_LABEL(tab->label),
+                    PANGO_ELLIPSIZE_MIDDLE);
             break;
         default:
             tab->label_box = gtk_hbox_new(FALSE, 4);
             tab->label_packer = gtk_box_pack_start;
             break;
     }
-    if (!single)
-        gtk_label_set_ellipsize(GTK_LABEL(tab->label), PANGO_ELLIPSIZE_MIDDLE);
     
     tab->label_bg = gtk_event_box_new();
     if (!parsed_amber)
@@ -1842,15 +1820,8 @@ static void multi_tab_add_menutree_items(MultiWin * win, MultiTab * tab,
 static void multi_win_add_tab_to_notebook(MultiWin * win, MultiTab * tab,
         int position)
 {
-    GtkWidget *label = make_tab_label(tab, win->tab_pos, win->ntabs == 1);
+    GtkWidget *label = make_tab_label(tab, win->tab_pos);
 
-    if (win->ntabs == 2)
-    {
-        gtk_notebook_set_tab_label_packing(GTK_NOTEBOOK(win->notebook),
-            win->current_tab->widget, TRUE, TRUE, GTK_PACK_START);
-        gtk_label_set_ellipsize(GTK_LABEL(win->current_tab->label),
-                PANGO_ELLIPSIZE_MIDDLE);
-    }
     if (position == -1)
     {
         gtk_notebook_append_page(GTK_NOTEBOOK(win->notebook),
@@ -1868,15 +1839,6 @@ static void multi_win_add_tab_to_notebook(MultiWin * win, MultiTab * tab,
             TRUE);
 #endif
     g_object_set(gtk_widget_get_parent(label), "can-focus", FALSE, NULL);
-    if (win->ntabs == 1)
-    {
-        single_tab(win, tab);
-    }
-    else
-    {
-        gtk_notebook_set_tab_label_packing(GTK_NOTEBOOK(win->notebook),
-            tab->widget, TRUE, TRUE, GTK_PACK_START);
-    }
 }
 
 /* Keep track of a tab after it's been created; if notify_only is set, it's

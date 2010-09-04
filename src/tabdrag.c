@@ -62,7 +62,7 @@ static gboolean tab_drag_end_release_handler(GtkWidget *widget,
              */
             if (multi_win_get_ntabs(orig_parent) == 1)
             {
-                gtk_window_move(GTK_WINDOW(multi_win_get_widget(win)),
+                gtk_window_move(GTK_WINDOW(multi_win_get_widget(orig_parent)),
                         MAX((int) event->x_root - 20, 0),
                         MAX((int) event->y_root - 8, 0));
             }
@@ -71,7 +71,8 @@ static gboolean tab_drag_end_release_handler(GtkWidget *widget,
                 char *display_name = gdk_screen_make_display_name(
                         gdk_drawable_get_screen(GDK_DRAWABLE(event->window)));
                 MultiWin *win = multi_win_new_for_tab(display_name,
-                        (int) event->x_root, (int) event->y_root, tab);
+                        (int) event->x_root, (int) event->y_root, td->tab);
+                        
                 g_free(display_name);
                 multi_tab_move_to_new_window(win, td->tab, -1); 
                 multi_win_show(win);
