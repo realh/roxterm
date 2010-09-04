@@ -65,7 +65,7 @@ EXTRA_DIST = config.rpath m4 roxterm.svg \
 		update-locales roxterm.xml \
 		Help/AUTHORS Help/COPYING Help/Changes Help/README \
 		builddeb INSTALL.Debian \
-		debian/changelog.in  debian/dirs             \
+		debian/changelog     debian/dirs             \
 		debian/compat        debian/menu             \
 		debian/control       debian/roxterm.doc-base \
 		debian/copyright     debian/roxterm.postinst \
