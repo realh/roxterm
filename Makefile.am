@@ -13,11 +13,18 @@ LOGO_TEXT_ONLY = $(top_srcdir)/Help/lib/logo_text_only.png
 HELPIMGS =  $(LOGO_PNG) $(TEXT_LOGO) \
 		$(top_srcdir)/Help/lib/header.png \
 		$(top_srcdir)/Help/lib/sprites.png
-		
-HTMLFILES = $(wildcard $(top_srcdir)/Help/*/*.html) \
+
+HELPLIBFILES = $(HELPIMGS) \
 	$(top_srcdir)/Help/lib/roxterm.css \
 	$(top_srcdir)/Help/lib/roxterm_ie.css \
 	$(FAVICON)
+		
+HTMLFILES_EN = $(top_srcdir)/Help/en/guide.html \
+	$(top_srcdir)/Help/en/index.html \
+	$(top_srcdir)/Help/en/installation.html \
+	$(top_srcdir)/Help/en/news.html
+
+HTMLFILES = $(HTMLFILES_EN)
 
 HELPOTHER = \
 		$(top_srcdir)/ChangeLog \
@@ -58,7 +65,7 @@ EXTRA_DIST = config.rpath m4 roxterm.svg \
 		.DirIcon AppRun AppInfo.xml AppInfo.xml.in \
 		roxterm.desktop $(nobase_pkgdata_DATA) $(HTMLFILES) \
 		$(LOGO_TEXT_ONLY) \
-		AUTHORS COPYING README $(HELPOTHER) $(HELPIMGS) \
+		AUTHORS COPYING README $(HELPOTHER) $(HELPLIBFILES) \
 		update-locales roxterm.xml \
 		Help/AUTHORS Help/COPYING Help/Changes Help/README \
 		builddeb INSTALL.Debian \
@@ -91,9 +98,10 @@ dist-hook:
 install-data-local:
 	$(install_sh) -m 0755 -d $(DESTDIR)/$(docdir) \
 		$(DESTDIR)/$(htmldir)/lib \
+		$(DESTDIR)/$(htmldir)/en \
 		$(DESTDIR)/$(pkgicondir)/
-	$(install_sh) -m 0644 -t $(DESTDIR)/$(htmldir) $(HTMLFILES)
-	$(install_sh) -m 0644 -t $(DESTDIR)/$(htmldir)/lib $(HELPIMGS)
+	$(install_sh) -m 0644 -t $(DESTDIR)/$(htmldir)/en $(HTMLFILES_EN)
+	$(install_sh) -m 0644 -t $(DESTDIR)/$(htmldir)/lib $(HELPLIBFILES)
 	$(install_sh) -m 0644 $(top_srcdir)/roxterm.svg \
 		$(DESTDIR)/$(pkgicondir)/
 
