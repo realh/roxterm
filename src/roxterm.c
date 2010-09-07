@@ -1736,28 +1736,77 @@ static void roxterm_show_about(MultiWin * win)
             roxterm_about_www_hook, roxterm_about_email_hook, roxterm);
 }
 
+static char *roxterm_get_help_filename(const char *base_dir, const char *lang)
+{
+    char *filename = g_build_filename(base_dir, lang, "guide.html", NULL);
+    
+    if (!g_file_test(filename, G_FILE_TEST_EXISTS))
+    {
+        g_free(filename);
+        filename = NULL;
+    }
+    return filename;
+}
+
+static char *roxterm_get_help_uri(const char *base_dir, const char *lang)
+{
+    char *short_lang = NULL;
+    char *sep;
+    char *filename;
+    char *uri;
+    
+    filename = roxterm_get_help_filename(base_dir, lang);
+    if (!filename)
+    {
+        short_lang = g_strdup(lang);
+        sep = strchr(short_lang, '.');
+        if (sep)
+        {
+            *sep = 0;
+            filename = roxterm_get_help_filename(base_dir, short_lang);
+        }
+        if (!filename)
+        {
+            sep = strchr(short_lang, '_');
+            filename = roxterm_get_help_filename(base_dir, short_lang);
+        }
+        g_free(short_lang);
+        if (!filename)
+        {
+            filename = roxterm_get_help_filename(base_dir, "en");
+        }
+    }
+    uri = g_strconcat("file://", filename, NULL);
+    g_free(filename);
+    return uri;
+}
+
 static void roxterm_show_manual(MultiWin * win)
 {
     ROXTermData *roxterm = multi_win_get_user_data_for_current_tab(win);
-    char *filename = NULL;
-    char *url;
+    char *uri;
+    char *dir = NULL;
+    const char *lang;
     
     g_return_if_fail(roxterm);
 
     if (global_options_appdir)
     {
-        filename = g_build_filename(global_options_appdir,
-            "Help", "guide.html", NULL);
+        dir = g_build_filename(global_options_appdir, "Help", NULL);
     }
     else
     {
-        filename = g_build_filename(HTML_DIR, "guide.html", NULL);
+        dir = g_build_filename(HTML_DIR, NULL);
     }
-    url = g_strconcat("file://", filename, NULL);
-
-    roxterm_launch_browser(roxterm, url);
-    g_free(url);
-    g_free(filename);
+    
+    lang = g_getenv("LANG");
+    if (!lang || !lang[0])
+        lang = "en";
+    uri = roxterm_get_help_uri(dir, lang);
+    
+    roxterm_launch_browser(roxterm, uri);
+    g_free(uri);
+    g_free(dir);
 }
 
 static void roxterm_open_config_manager(MultiWin * win)
