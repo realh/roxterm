@@ -1,5 +1,5 @@
 
-SUBDIRS = intl po src
+SUBDIRS = intl po src man/es
 
 nobase_pkgdata_DATA = Config/Colours/GTK \
 		Config/Colours/Tango \
@@ -33,16 +33,6 @@ HELPOTHER = \
 desktopdir = $(datadir)/applications
 desktop_DATA = roxterm.desktop
 
-if BUILD_MANPAGES
-
-man_MANS = roxterm.1 roxterm-config.1
-
-roxterm.1: roxterm.1.xml
-	@XMLTOMAN@ $<
-
-roxterm-config.1: roxterm-config.1.xml
-	@XMLTOMAN@ $<
-
 $(LOGO_PNG): roxterm.svg
 	convert -background '#0000' roxterm.svg -geometry 64x64 $(LOGO_PNG)
 
@@ -52,6 +42,26 @@ $(FAVICON): $(LOGO_PNG)
 $(TEXT_LOGO): $(LOGO_PNG) $(LOGO_TEXT_ONLY)
 	composite -gravity SouthWest $(LOGO_PNG) $(LOGO_TEXT_ONLY) $(TEXT_LOGO)
 
+if BUILD_MANPAGES
+
+man_MANS = man/en/roxterm.1 man/en/roxterm-config.1
+
+#esmandir = $(mandir)/es
+#esman_MANS = man/es/roxterm.1 man/es/roxterm-config.1
+
+man/en/roxterm.1: man/en/roxterm.1.xml
+	@XMLTOMAN@ -o man/en $<
+
+man/en/roxterm-config.1: man/en/roxterm-config.1.xml
+	@XMLTOMAN@ -o man/en $<
+
+#man/es/roxterm.1: man/es/roxterm.1.xml
+#	@XMLTOMAN@ -o man/es $<
+#
+#man/es/roxterm-config.1: man/es/roxterm-config.1.xml
+#	@XMLTOMAN@ -o man/es $<
+#
+#DISTCLEANFILES = $(man_MANS) $(esman_MANS)
 DISTCLEANFILES = $(man_MANS)
 
 endif
@@ -99,7 +109,7 @@ install-data-local:
 	$(install_sh) -m 0755 -d $(DESTDIR)/$(docdir) \
 		$(DESTDIR)/$(htmldir)/lib \
 		$(DESTDIR)/$(htmldir)/en \
-		$(DESTDIR)/$(pkgicondir)/
+		$(DESTDIR)/$(pkgicondir)
 	$(install_sh) -m 0644 -t $(DESTDIR)/$(htmldir)/en $(HTMLFILES_EN)
 	$(install_sh) -m 0644 -t $(DESTDIR)/$(htmldir)/lib $(HELPLIBFILES)
 	$(install_sh) -m 0644 $(top_srcdir)/roxterm.svg \
@@ -110,6 +120,8 @@ uninstall-local:
 		$(DESTDIR)/$(docdir) \
 		$(DESTDIR)/$(htmldir) \
 		$(DESTDIR)/$(pkgicondir)/roxterm.svg
+#		$(DESTDIR)/$(esmandir)/man1/roxterm.1 \
+#		$(DESTDIR)/$(esmandir)/man1/roxterm-config.1
 
 ACLOCAL_AMFLAGS = -I m4
 
