@@ -70,6 +70,7 @@ AC_ARG_ENABLE([gtk-native-tab-dragging],
             DO_OWN_TAB_DRAGGING=1
         else
             DO_OWN_TAB_DRAGGING=0
+        fi
         ],
         [DO_OWN_TAB_DRAGGING=0])
 
