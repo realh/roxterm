@@ -6,7 +6,7 @@ nobase_pkgdata_DATA = Config/Colours/GTK \
 		Config/Shortcuts/Default
 
 LOGO_PNG = $(top_srcdir)/Help/lib/roxterm_logo.png
-FAVICON = $(top_srcdir)/Help/favicon.ico
+FAVICON = $(top_srcdir)/Help/lib/favicon.ico
 TEXT_LOGO = $(top_srcdir)/Help/lib/logo_text.png
 LOGO_TEXT_ONLY = $(top_srcdir)/Help/lib/logo_text_only.png
 
@@ -14,12 +14,9 @@ HELPIMGS =  $(LOGO_PNG) $(TEXT_LOGO) \
 		$(top_srcdir)/Help/lib/header.png \
 		$(top_srcdir)/Help/lib/sprites.png
 		
-HTMLFILES = $(top_srcdir)/Help/index.html \
-	$(top_srcdir)/Help/guide.html \
-	$(top_srcdir)/Help/installation.html \
-	$(top_srcdir)/Help/news.html \
-	$(top_srcdir)/Help/roxterm.css \
-	$(top_srcdir)/Help/roxterm_ie.css \
+HTMLFILES = $(wildcard $(top_srcdir)/Help/*/*.html) \
+	$(top_srcdir)/Help/lib/roxterm.css \
+	$(top_srcdir)/Help/lib/roxterm_ie.css \
 	$(FAVICON)
 
 HELPOTHER = \
