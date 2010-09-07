@@ -232,5 +232,8 @@ test "x$exec_prefix" = xNONE && exec_prefix="$prefix"
 TH_EXPAND_VARS(exec_prefix)
 AC_DEFINE_UNQUOTED([BIN_DIR], "$exec_prefix/bin", [bindir])
 
-AC_OUTPUT(Makefile src/Makefile roxterm.lsm roxterm.spec AppInfo.xml intl/Makefile po/Makefile.in
-    man/en/roxterm.1.xml man/en/roxterm-config.1.xml man/es/roxterm.1.xml man/es/roxterm-config.1.xml)
+AC_OUTPUT(Makefile src/Makefile man/es/Makefile
+    roxterm.lsm roxterm.spec AppInfo.xml
+    intl/Makefile po/Makefile.in
+    man/en/roxterm.1.xml man/en/roxterm-config.1.xml
+    man/es/roxterm.1.xml man/es/roxterm-config.1.xml)

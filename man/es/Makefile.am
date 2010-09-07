@@ -2,7 +2,7 @@ if BUILD_MANPAGES
 
 esmandir = $(mandir)/es/man1
 esman_MANS = roxterm.1 roxterm-config.1
-noinst_pkgdata_DATA = $(esman_MANS)
+noinst_DATA = $(esman_MANS)
 DISTCLEANFILES = $(esman_MANS)
 
 roxterm.1: roxterm.1.xml
