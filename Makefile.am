@@ -1,5 +1,5 @@
 
-SUBDIRS = intl po src man/es
+SUBDIRS = intl po src po4a
 
 nobase_pkgdata_DATA = Config/Colours/GTK \
 		Config/Colours/Tango \
@@ -44,24 +44,14 @@ $(TEXT_LOGO): $(LOGO_PNG) $(LOGO_TEXT_ONLY)
 
 if BUILD_MANPAGES
 
-man_MANS = man/en/roxterm.1 man/en/roxterm-config.1
+man_MANS = roxterm.1 roxterm-config.1
 
-#esmandir = $(mandir)/es
-#esman_MANS = man/es/roxterm.1 man/es/roxterm-config.1
+roxterm.1: roxterm.1.xml
+	@XMLTOMAN@ $<
 
-man/en/roxterm.1: man/en/roxterm.1.xml
-	@XMLTOMAN@ -o man/en $<
+roxterm-config.1: roxterm-config.1.xml
+	@XMLTOMAN@  $<
 
-man/en/roxterm-config.1: man/en/roxterm-config.1.xml
-	@XMLTOMAN@ -o man/en $<
-
-#man/es/roxterm.1: man/es/roxterm.1.xml
-#	@XMLTOMAN@ -o man/es $<
-#
-#man/es/roxterm-config.1: man/es/roxterm-config.1.xml
-#	@XMLTOMAN@ -o man/es $<
-#
-#DISTCLEANFILES = $(man_MANS) $(esman_MANS)
 DISTCLEANFILES = $(man_MANS)
 
 endif
@@ -120,8 +110,6 @@ uninstall-local:
 		$(DESTDIR)/$(docdir) \
 		$(DESTDIR)/$(htmldir) \
 		$(DESTDIR)/$(pkgicondir)/roxterm.svg
-#		$(DESTDIR)/$(esmandir)/man1/roxterm.1 \
-#		$(DESTDIR)/$(esmandir)/man1/roxterm-config.1
 
 ACLOCAL_AMFLAGS = -I m4
 
