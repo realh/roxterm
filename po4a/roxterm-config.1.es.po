@@ -3,7 +3,6 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
@@ -18,85 +17,72 @@ msgstr ""
 
 #. type: Content of the dhfirstname entity
 #: roxterm-config.1.xml.in:28
-#, fuzzy
 msgid "<firstname>Tony</firstname>"
 msgstr "<firstname>Tony</firstname>"
 
 #. type: Content of the dhsurname entity
 #: roxterm-config.1.xml.in:29
-#, fuzzy
 msgid "<surname>Houghton</surname>"
 msgstr "<surname>Houghton</surname>"
 
 #. type: Content of the dhdate entity
 #: roxterm-config.1.xml.in:31
-#, fuzzy
 msgid "<date>November 27, 2009</date>"
 msgstr "<date>5 de Septiembre de 2010</date>"
 
 #. type: Content of the dhsection entity
 #: roxterm-config.1.xml.in:34
-#, fuzzy
 msgid "<manvolnum>1</manvolnum>"
 msgstr "<manvolnum>1</manvolnum>"
 
 #. type: Content of the dhemail entity
 #: roxterm-config.1.xml.in:35
-#, fuzzy
 msgid "<email>h@realh.co.uk</email>"
 msgstr "<email>h@realh.co.uk</email>"
 
 #. type: Content of the dhusername entity
 #: roxterm-config.1.xml.in:36
-#, fuzzy
 msgid "Tony Houghton"
 msgstr "Tony Houghton"
 
 #. type: Content of the dhucpackage entity
 #: roxterm-config.1.xml.in:37
-#, fuzzy
 msgid "<refentrytitle>roxterm</refentrytitle>"
 msgstr "<refentrytitle>roxterm</refentrytitle>"
 
 #. type: Content of the dhpackage entity
 #: roxterm-config.1.xml.in:38
-#, fuzzy
 msgid "roxterm-config"
 msgstr "roxterm-config"
 
 #. type: Content of the product entity
 #: roxterm-config.1.xml.in:39
-#, fuzzy
 msgid "ROXTerm"
 msgstr "ROXTerm"
 
 #. type: Content of the debian entity
 #: roxterm-config.1.xml.in:41
-#, fuzzy
 msgid "<productname>Debian</productname>"
 msgstr "<productname>Debian</productname>"
 
 #. type: Content of the gnu entity
 #: roxterm-config.1.xml.in:42
-#, fuzzy
 msgid "<acronym>GNU</acronym>"
 msgstr "<acronym>GNU</acronym>"
 
 #. type: Content of the gpl entity
 #: roxterm-config.1.xml.in:43
-#, fuzzy
 msgid "&gnu; <acronym>GPL</acronym>"
 msgstr "&gnu; <acronym>GPL</acronym>"
 
 #. type: Attribute 'lang' of: <refentry>
 #: roxterm-config.1.xml.in:46
-#, fuzzy
 msgid "en"
 msgstr "es"
 
 #. type: Content of: <refentry><refentryinfo><address>
 #: roxterm-config.1.xml.in:49
-#, fuzzy, no-wrap
+#, no-wrap
 msgid ""
 "      &dhemail;\n"
 "    "
@@ -106,82 +92,71 @@ msgstr ""
 
 #. type: Content of: <refentry><refentryinfo>
 #: roxterm-config.1.xml.in:48
-#, fuzzy
 msgid ""
-"<placeholder type=\"address\" id=\"0\"/> <author> "
-"<contrib>Developer</contrib> &dhfirstname; &dhsurname; </author> <copyright> "
-"<year>2005</year> <holder>&dhusername;</holder> </copyright> &dhdate;"
+"<placeholder type=\"address\" id=\"0\"/> <author> <contrib>Developer</"
+"contrib> &dhfirstname; &dhsurname; </author> <copyright> <year>2005</year> "
+"<holder>&dhusername;</holder> </copyright> &dhdate;"
 msgstr ""
-"<placeholder type=\"address\" id=\"0\"/> <author> "
-"<contrib>Programador</contrib> &dhfirstname; &dhsurname; </author> "
-"<copyright> <year>2005</year> <holder>&dhusername;</holder> </copyright> "
-"&dhdate;"
+"<placeholder type=\"address\" id=\"0\"/> <author> <contrib>Programador</"
+"contrib> &dhfirstname; &dhsurname; </author> <copyright> <year>2005</year> "
+"<holder>&dhusername;</holder> </copyright> &dhdate;"
 
 #. type: Content of: <refentry><refmeta><refmiscinfo>
 #: roxterm-config.1.xml.in:64
-#, fuzzy
 msgid "&product;"
 msgstr "&product;"
 
 #. type: Content of: <refentry><refmeta><refmiscinfo>
 #: roxterm-config.1.xml.in:65
-#, fuzzy
 msgid "@PACKAGE_VERSION@"
 msgstr "@PACKAGE_VERSION@"
 
 #. type: Content of: <refentry><refmeta><refmiscinfo>
 #: roxterm-config.1.xml.in:66
-#, fuzzy
 msgid "User Commands"
 msgstr "Comandos de usuario"
 
 #. type: Content of: <refentry><refnamediv><refname>
 #: roxterm-config.1.xml.in:69
-#, fuzzy
 msgid "&dhpackage;"
 msgstr "&dhpackage;"
 
 #. type: Content of: <refentry><refnamediv><refpurpose>
 #: roxterm-config.1.xml.in:71
-#, fuzzy
 msgid "terminal emulator"
 msgstr "emulador de terminal"
 
 #. type: Content of: <refentry><refsynopsisdiv><cmdsynopsis>
 #: roxterm-config.1.xml.in:75
-#, fuzzy
 msgid ""
-"<command>&dhpackage;</command> "
-"<arg><option>--appdir=<replaceable>DIR</replaceable></option></arg> "
-"<arg><option>--EditProfile=<replaceable>PROFILE</replaceable></option></arg> "
-"<arg><option>--EditColourScheme=<replaceable>SCHEME</replaceable></option></arg> "
+"<command>&dhpackage;</command> <arg><option>--appdir=<replaceable>DIR</"
+"replaceable></option></arg> <arg><option>--EditProfile=<replaceable>PROFILE</"
+"replaceable></option></arg> <arg><option>--"
+"EditColourScheme=<replaceable>SCHEME</replaceable></option></arg> "
 "<arg><option>--Configlet</option></arg> <arg><option>--listen</option></arg>"
 msgstr ""
-"<command>&dhpackage;</command> "
-"<arg><option>--appdir=<replaceable>DIR</replaceable></option></arg> "
-"<arg><option>--EditProfile=<replaceable>PERFIL</replaceable></option></arg> "
-"<arg><option>--EditColourScheme=<replaceable>ESQUEMA</replaceable></option></arg> "
+"<command>&dhpackage;</command> <arg><option>--appdir=<replaceable>DIR</"
+"replaceable></option></arg> <arg><option>--EditProfile=<replaceable>PERFIL</"
+"replaceable></option></arg> <arg><option>--"
+"EditColourScheme=<replaceable>ESQUEMA</replaceable></option></arg> "
 "<arg><option>--Configlet</option></arg> <arg><option>--listen</option></arg>"
 
 #. type: Content of: <refentry><refsect1><title>
 #: roxterm-config.1.xml.in:84
-#, fuzzy
 msgid "DESCRIPTION"
 msgstr "DESCRIPCIÓN"
 
 #. type: Content of: <refentry><refsect1><para>
 #: roxterm-config.1.xml.in:86
-#, fuzzy
 msgid ""
 "This manual page documents briefly the <command>&dhpackage;</command> "
 "command."
 msgstr ""
-"Esta página de manual describe brevemente el comando "
-"<command>&dhpackage;</command>."
+"Esta página de manual describe brevemente el comando <command>&dhpackage;</"
+"command>."
 
 #. type: Content of: <refentry><refsect1><para>
 #: roxterm-config.1.xml.in:89
-#, fuzzy
 msgid ""
 "<command>&dhpackage;</command> is for configuring ROXTerm, the terminal "
 "emulator."
@@ -191,13 +166,11 @@ msgstr ""
 
 #. type: Content of: <refentry><refsect1><title>
 #: roxterm-config.1.xml.in:94
-#, fuzzy
 msgid "OPTIONS"
 msgstr "OPCIONES"
 
 #. type: Content of: <refentry><refsect1><para>
 #: roxterm-config.1.xml.in:96
-#, fuzzy
 msgid ""
 "These programs follow the usual &gnu; command line syntax, with long options "
 "starting with two dashes (`-').  A summary of options is included below."
@@ -208,78 +181,67 @@ msgstr ""
 
 #. type: Content of: <refentry><refsect1><variablelist><varlistentry><term>
 #: roxterm-config.1.xml.in:102
-#, fuzzy
 msgid "<option>--appdir=DIR</option>"
 msgstr "<option>--appdir=DIR</option>"
 
 #. type: Content of: <refentry><refsect1><variablelist><varlistentry><listitem><para>
 #: roxterm-config.1.xml.in:105
-#, fuzzy
 msgid "Application directory when run as a ROX app."
 msgstr "Directorio de aplicación donde ejecutar como una aplicación ROX."
 
 #. type: Content of: <refentry><refsect1><variablelist><varlistentry><term>
 #: roxterm-config.1.xml.in:109
-#, fuzzy
 msgid "<option>--EditProfile=PROFILE</option>"
 msgstr "<option>--EditProfile=PERFIL</option>"
 
 #. type: Content of: <refentry><refsect1><variablelist><varlistentry><listitem><para>
 #: roxterm-config.1.xml.in:112
-#, fuzzy
 msgid "Edit the named profile."
 msgstr "Editar el perfil indicado."
 
 #. type: Content of: <refentry><refsect1><variablelist><varlistentry><term>
 #: roxterm-config.1.xml.in:116
-#, fuzzy
 msgid "<option>--EditColourScheme=SCHEME</option>"
 msgstr "<option>--EditColourScheme=ESQUEMA</option>"
 
 #. type: Content of: <refentry><refsect1><variablelist><varlistentry><listitem><para>
 #: roxterm-config.1.xml.in:119
-#, fuzzy
 msgid "Edit the named colour scheme."
 msgstr "Editar el esquema de color indicado."
 
 #. type: Content of: <refentry><refsect1><variablelist><varlistentry><term>
 #: roxterm-config.1.xml.in:123
-#, fuzzy
 msgid "<option>--listen</option>"
 msgstr "<option>--listen</option>"
 
 #. type: Content of: <refentry><refsect1><variablelist><varlistentry><listitem><para>
 #: roxterm-config.1.xml.in:126
-#, fuzzy
 msgid "Do nothing but wait for ROXTerm to request operations via D-BUS."
-msgstr "Mantenerse a la espera a que ROXTerm solicite operaciones a través de D-BUS."
+msgstr ""
+"Mantenerse a la espera a que ROXTerm solicite operaciones a través de D-BUS."
 
 #. type: Content of: <refentry><refsect1><title>
 #: roxterm-config.1.xml.in:133
-#, fuzzy
 msgid "SEE ALSO"
 msgstr "VÉASE TAMBIÉN"
 
 #. type: Content of: <refentry><refsect1><para>
 #: roxterm-config.1.xml.in:135
-#, fuzzy
 msgid ""
 "roxterm-config is usually run by roxterm. The package is documented fully by "
 "the HTML file <filename>file://@pkgdocdir@/index.html</filename>."
 msgstr ""
 "roxterm-config se ejecuta habitualmente por roxterm. Este paquete está "
-"completamente documentado en el archivo HTML "
-"<filename>file://@pkgdocdir@/index.html</filename>."
+"completamente documentado en el archivo HTML <filename>file://@pkgdocdir@/"
+"index.html</filename>."
 
 #. type: Content of: <refentry><refsect1><title>
 #: roxterm-config.1.xml.in:140
-#, fuzzy
 msgid "AUTHOR"
 msgstr "AUTOR"
 
 #. type: Content of: <refentry><refsect1><para>
 #: roxterm-config.1.xml.in:142
-#, fuzzy
 msgid ""
 "This manual page was written by &dhusername; &dhemail;.  Permission is "
 "granted to copy, distribute and/or modify this document under the terms of "
@@ -287,14 +249,13 @@ msgid ""
 "by the Free Software Foundation."
 msgstr ""
 "Esta página de manual fue escrita por &dhusername; &dhemail;, y traducida "
-"por Félix Medrano Sanz xukosky@yahoo.es. Se permite la copia, distribución "
-"y/o modificación de este documento bajo los términos de la licencia &gnu; "
-"GPL, versión 2 o cualquier versión posterior publicada por la Free Software "
+"por Félix Medrano Sanz xukosky@yahoo.es. Se permite la copia, distribución y/"
+"o modificación de este documento bajo los términos de la licencia &gnu; GPL, "
+"versión 2 o cualquier versión posterior publicada por la Free Software "
 "Foundation."
 
 #. type: Content of: <refentry><refsect1><para>
 #: roxterm-config.1.xml.in:148
-#, fuzzy
 msgid ""
 "On Debian systems, the complete text of the GNU General Public License can "
 "be found in /usr/share/common-licenses/GPL."
