@@ -89,40 +89,18 @@ a img {
 	display:inline-block;
 }
 
-#Header ul li a {
-	background:url('sprites.png') no-repeat;
-	border-bottom:3px solid transparent;
+#Header ul li a, #SubNav li a {
 	outline:none;
-	color:#EEE;
 	text-decoration:none;
-	text-indent:-9999px;
-	height:20px;
-	display:inline-block;
-	overflow:hidden;
+	font-family:"Segoe UI","Trebuchet MS",Tahoma,sans-serif;
 }
 
-#Header ul li a#MainNav_Home {
-	width:46px;
-}
-
-#Header ul li a#MainNav_News {
-	background-position:-46px top;
-	width:43px;
-}
-
-#Header ul li a#MainNav_Installation {
-	background-position:-89px top;
-	width:76px;
-}
-
-#Header ul li a#MainNav_UserGuide {
-	background-position:-165px top;
-	width:82px;
-}
-
-#Header ul li a#MainNav_Forums {
-	background-position:-247px top;
-	width:52px;
+#Header ul li a {
+	border-bottom:3px solid transparent;
+	color:#EEE;
+	font-family:'Trebuchet MS',sans-serif;
+	font-size: 1.15em;
+	padding-bottom: 0.35em;
 }
 
 #Header ul li a.active, #Header ul li a:hover {
@@ -155,11 +133,8 @@ a#TopAnchor {
 #SubNav a {
 	-moz-border-radius:0.75em;
 	border-radius:0.75em;
-	outline:none;
-	font-family:"Segoe UI","Trebuchet MS",Tahoma,sans-serif;
 	font-size:0.85em;
-	text-decoration:none;
-	padding:0.35em 1.25em;
+	padding:0.4em 1.25em;
 }
 
 #SubNav a:hover {
