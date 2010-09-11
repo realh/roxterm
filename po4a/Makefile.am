@@ -47,3 +47,41 @@ uninstall-local:
 
 endif
 
+# HTML translations
+
+guide.html.pot: ../Help/en/guide.html
+	po4a-gettextize -f xhtml -m $< -p $@
+
+index.html.pot: ../Help/en/index.html
+	po4a-gettextize -f xhtml -m $< -p $@
+
+installation.html.pot: ../Help/en/installation.html
+	po4a-gettextize -f xhtml -m $< -p $@
+
+news.html.pot: ../Help/en/news.html
+	po4a-gettextize -f xhtml -m $< -p $@
+
+guide.html.es.po: ../Help/en/guide.html
+	po4a-updatepo -f xhtml -m $< -p $@
+
+index.html.es.po: ../Help/en/index.html
+	po4a-updatepo -f xhtml -m $< -p $@
+
+installation.html.es.po: ../Help/en/installation.html
+	po4a-updatepo -f xhtml -m $< -p $@
+
+news.html.es.po: ../Help/en/news.html
+	po4a-updatepo -f xhtml -m $< -p $@
+
+../Help/es/guide.html: guide.html.es.po
+	po4a-translate -f xhtml -m ../Help/en/guide.html -p $< -l $@
+
+../Help/es/index.html: index.html.es.po
+	po4a-translate -f xhtml -m ../Help/en/index.html -p $< -l $@
+
+../Help/es/installation.html: installation.html.es.po
+	po4a-translate -f xhtml -m ../Help/en/installation.html -p $< -l $@
+
+../Help/es/news.html: news.html.es.po
+	po4a-translate -f xhtml -m ../Help/en/news.html -p $< -l $@
+
