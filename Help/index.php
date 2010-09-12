@@ -6,6 +6,12 @@
  * This script is for uploading to the project web pages,
  * not for distribution with the package.
  */
+function make_filename($lang, $page)
+{
+    return str_replace('index.php', "$lang/$page.html",
+            $_SERVER['SCRIPT_FILENAME']);
+}
+
 if (isset($_GET['page']))
 {
     $page = $_GET['page'];
@@ -45,9 +51,15 @@ switch ($lang)
     default:
         $lang = 'en';
 }
-$filename = str_replace('index.php', "$lang/$page.html",
-        $_SERVER['SCRIPT_FILENAME']);
+$filename = make_filename($lang, $page);
 $file = fopen($filename, 'r');
+if (!$file)
+{
+    /* Redirect should cause a generic 404 */
+    header('Location: http://' . $_SERVER['HTTP_HOST'] . '/' .
+            dirname($_SERVER['PHP_SELF']) . "/$lang/$page.html");
+    exit();
+}
 while (!feof($file))
 {
     $line = fgets($file);
@@ -57,9 +69,9 @@ while (!feof($file))
     if (trim($line) == '<!-- PHP PLACEHOLDER -->')
     {
         print '<div id="LangMenu">';
-        print '<form method="GET" action="http://' . $_SERVER['HTTP_HOST'] .
-                '/' . $_SERVER['PHP_SELF'] . '">';
-        print '<select name="lang">';
+        print '<form id="LangForm" method="GET" action="http://' .
+                $_SERVER['HTTP_HOST'] . '/' . $_SERVER['PHP_SELF'] . '">';
+        print '<select name="lang" onChange="javascript:this.form.submit()">';
         print '<option value="en"';
         if ($lang == 'en')
         {
@@ -73,7 +85,7 @@ while (!feof($file))
         }
         print '>Español</option>';
         print '</select>';
-        print '<button>&#187;</button>';
+        print '<noscript><button id="LangButton">&#187;</button></noscript>';
         print '<hidden name="page" value="' . $page . '"/>';
         print "</form></div>\n";
     }
