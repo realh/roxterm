@@ -7,19 +7,12 @@
 # Conflicts: autoconf 2.13
 set -e
 
-if grep '^AC_INIT.*git' configure.ac.in >/dev/null 2>&1
-then
-    Date=`git log --date=iso | grep -m1 '^Date:' | sed 's/^Date:\s*//'`
-    Rev=`date -d "$Date" -u +'%Y%m%d%H%M%S'`
-    sed "s/^AC_INIT\([^+]*+git\)[^)]*/AC_INIT\1$Rev/" configure.ac.in \
-            > configure.ac
-    Line1=`head -n 1 debian/changelog.in | sed "s/git.*\(-[0-9.]*\))/git$Rev\1)/"`
-    echo $Line1 > debian/changelog
-    tail -n +2 debian/changelog.in >> debian/changelog
-else
-    cp configure.ac.in configure.ac
-    cp debian/changelog.in debian/changelog
-fi
+Rev=`git describe`
+sed "s/@VERSION@/$Rev/" configure.ac.in \
+        > configure.ac
+Line1=`head -n 1 debian/changelog.in | sed "s/@VERSION@/$Rev/"`
+echo $Line1 > debian/changelog
+tail -n +2 debian/changelog.in >> debian/changelog
 
 git log > ChangeLog
 cat ChangeLog.old >> ChangeLog
