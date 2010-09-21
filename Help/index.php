@@ -23,11 +23,11 @@ else
 if (isset($_GET['lang']))
 {
     $lang = $_GET['lang'];
-    setcookie('lang', $lang);
+    setcookie('roxterm_lang', $lang);
 }
-elseif (isset($_COOKIE['lang']))
+elseif (isset($_COOKIE['roxterm_lang']))
 {
-    $lang = $_COOKIE['lang'];
+    $lang = $_COOKIE['roxterm_lang'];
 }
 else
 {
@@ -65,10 +65,10 @@ while (!feof($file))
     $line = fgets($file);
     $line = str_replace('../lib/' , 'lib/', $line);
     $line = preg_replace('/href="(guide|index|installation|news)\.html"/',
-            "href=\"index.php?page=$page&lang=$lang\"", $line);
-    if (trim($line) == '<!-- PHP PLACEHOLDER -->')
+            "href=\"index.php?page=\\1&lang=$lang\"", $line);
+    # if (trim($line) == '<!-- PHP PLACEHOLDER -->')
+    if (0)
     {
-        print '<div id="LangMenu">';
         print '<form id="LangForm" method="GET" action="http://' .
                 $_SERVER['HTTP_HOST'] . '/' . $_SERVER['PHP_SELF'] . '">';
         print '<select name="lang" onChange="javascript:this.form.submit()">';
@@ -86,8 +86,8 @@ while (!feof($file))
         print '>Español</option>';
         print '</select>';
         print '<noscript><button id="LangButton">&#187;</button></noscript>';
-        print '<hidden name="page" value="' . $page . '"/>';
-        print "</form></div>\n";
+        print '<input type="hidden" name="page" value="' . $page . '"/>';
+        print "</form>\n";
     }
     else
     {

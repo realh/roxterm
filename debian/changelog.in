@@ -4,9 +4,17 @@ roxterm (@VERSION@-1) unstable; urgency=low
     + New sizing code to fix sf.net bug 3041926.
     + Default to using GtkNotebook's implementation of draggable tabs.
     + New web pages.
-  * Updated Standards-Version to 3.9.1.
+    + Spanish translation.
 
- -- Tony Houghton <h@realh.co.uk>  Sat, 04 Sep 2010 17:46:53 +0100
+ -- Tony Houghton <h@realh.co.uk>  Tue, 21 Sep 2010 15:39:05 +0100
+
+roxterm (1.18.5-2) unstable; urgency=low
+
+   * Backported fixes from forthcoming upstream release to fix problems with
+     initialising and resizing multiple tabs (Closes: #592984).
+   * Standards-Version: 3.9.1.
+
+ -- Tony Houghton <h@realh.co.uk>  Sun, 15 Aug 2010 21:47:40 +0100
 
 roxterm (1.18.5-1) unstable; urgency=low
 

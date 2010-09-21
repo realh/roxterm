@@ -280,6 +280,13 @@ a.pageAnchor {
 }
 
 /* Language selection form */
-#LangMenu {
-    float: right;
+
+#Header {
+     white-space:nowrap;
 }
+
+#Header form#LangForm {
+     text-align:right;
+     margin:3em 2em 0 0;
+}
+
