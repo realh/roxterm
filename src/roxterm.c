@@ -376,8 +376,8 @@ static ROXTermData *roxterm_data_clone(ROXTermData *old_gt)
     {
         VteTerminal *vte = VTE_TERMINAL(old_gt->widget);
         
-        new_gt->columns = vte->column_count;
-        new_gt->rows = vte->row_count;
+        new_gt->columns = vte_terminal_get_column_count(vte);
+        new_gt->rows = vte_terminal_get_row_count(vte);
     }
 
     return new_gt;
@@ -1003,8 +1003,8 @@ roxterm_set_vte_size(ROXTermData *roxterm, VteTerminal *vte,
         int req_w, req_h;
         
         roxterm_get_vte_padding(vte, &px, &py);
-        req_w = vte->char_width * columns + px;
-        req_h = vte->char_height * rows + py;
+        req_w = vte_terminal_get_char_width(vte) * columns + px;
+        req_h = vte_terminal_get_char_height(vte) * rows + py;
         /*
         g_debug("Child was %dx%d, window bigger by %dx%d; "
                 "resizing for child calc %dx%d",
@@ -1044,14 +1044,14 @@ static void roxterm_size_func(ROXTermData *roxterm, gboolean set,
             
             vte_terminal_set_size(vte, *pwidth, *pheight);
             roxterm_get_vte_padding(vte, &px, &py);
-            *pwidth = *pwidth * vte->char_width + px;
-            *pheight = *pheight * vte->char_height + py;
+            *pwidth = *pwidth * vte_terminal_get_char_width(vte) + px;
+            *pheight = *pheight * vte_terminal_get_char_height(vte) + py;
         }
     }
     else
     {
-        *pwidth = vte->column_count;
-        *pheight = vte->row_count;
+        *pwidth = vte_terminal_get_column_count(vte);
+        *pheight = vte_terminal_get_row_count(vte);
     }
 }
 
@@ -1104,8 +1104,8 @@ roxterm_apply_profile_font(ROXTermData *roxterm, VteTerminal *vte,
 {
     char *fdesc;
     PangoFontDescription *pango_desc = NULL;
-    int w = vte->column_count;
-    int h = vte->row_count;
+    int w = vte_terminal_get_column_count(vte);
+    int h = vte_terminal_get_row_count(vte);
 
     if (roxterm->pango_desc)
     {
@@ -1172,8 +1172,8 @@ roxterm_update_font(ROXTermData *roxterm, VteTerminal *vte,
         roxterm_apply_profile_font(roxterm, vte, update_geometry);
         return;
     }
-    w = vte->column_count;
-    h = vte->row_count;
+    w = vte_terminal_get_column_count(vte);
+    h = vte_terminal_get_row_count(vte);
     zf = roxterm->target_zoom_factor /
             (roxterm->current_zoom_factor ?
                     roxterm->current_zoom_factor : 1);
@@ -1208,8 +1208,8 @@ static void roxterm_match_text_size(ROXTermData *roxterm, ROXTermData *other)
         return;
     vte = VTE_TERMINAL(roxterm->widget);
     other_vte = VTE_TERMINAL(other->widget);
-    width = other_vte->column_count;
-    height = other_vte->row_count;
+    width = vte_terminal_get_column_count(other_vte);
+    height = vte_terminal_get_row_count(other_vte);
     fd = vte_terminal_get_font(VTE_TERMINAL(other->widget));
     roxterm->target_zoom_factor = other->current_zoom_factor;
     roxterm->current_zoom_factor = other->current_zoom_factor;
@@ -1219,7 +1219,8 @@ static void roxterm_match_text_size(ROXTermData *roxterm, ROXTermData *other)
     {
         vte_terminal_set_font(vte, fd);
     }
-    if (vte->column_count != width || vte->row_count != height)
+    if (vte_terminal_get_column_count(vte) != width ||
+            vte_terminal_get_row_count(vte) != height)
     {
         roxterm_set_vte_size(roxterm, VTE_TERMINAL(roxterm->widget),
                 width, height);
@@ -1258,8 +1259,8 @@ static gboolean roxterm_check_match(ROXTermData *roxterm, VteTerminal *vte,
     roxterm_get_vte_padding(vte, &xpad, &ypad);
     g_free(roxterm->matched_url);
     roxterm->matched_url = vte_terminal_match_check(vte,
-        (event_x - ypad) / vte->char_width,
-        (event_y - ypad) / vte->char_height, &tag);
+        (event_x - ypad) / vte_terminal_get_char_width(vte),
+        (event_y - ypad) / vte_terminal_get_char_height(vte), &tag);
     if (roxterm->matched_url)
         roxterm->match_type = roxterm_get_match_type(roxterm, tag);
     return roxterm->matched_url != NULL;
@@ -1436,13 +1437,14 @@ static void roxterm_window_title_handler(VteTerminal *vte,
         ROXTermData * roxterm)
 {
     multi_tab_set_window_title(roxterm->tab,
-        vte->window_title ? vte->window_title : _("ROXTerm"));
+        vte_terminal_get_window_title(vte) ?
+        vte_terminal_get_window_title(vte) : _("ROXTerm"));
 }
 
 static void roxterm_icon_title_handler(VteTerminal *vte,
         ROXTermData * roxterm)
 {
-    multi_tab_set_icon_title(roxterm->tab, vte->icon_title);
+    multi_tab_set_icon_title(roxterm->tab, vte_terminal_get_icon_title(vte));
 }
 
 /* data is cast to char const **pname - indirect pointer to name to check for -
@@ -2758,7 +2760,7 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
     if (vte_widget)
         *vte_widget = roxterm->widget;
     if (adjustment)
-        *adjustment = vte->adjustment;
+        *adjustment = vte_terminal_get_adjustment(vte);
 
     scrollbar_pos = multi_win_set_scroll_bar_position(win,
         options_lookup_int_with_default(roxterm_template->profile,
@@ -2766,7 +2768,8 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
     if (scrollbar_pos)
     {
         roxterm->hbox = gtk_hbox_new(FALSE, 0);
-        roxterm->scrollbar = gtk_vscrollbar_new(vte->adjustment);
+        roxterm->scrollbar =
+                gtk_vscrollbar_new(vte_terminal_get_adjustment(vte));
         if (scrollbar_pos == MultiWinScrollBar_Left)
         {
             gtk_box_pack_end_defaults(GTK_BOX(roxterm->hbox), roxterm->widget);
