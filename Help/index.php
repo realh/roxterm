@@ -66,8 +66,7 @@ while (!feof($file))
     $line = str_replace('../lib/' , 'lib/', $line);
     $line = preg_replace('/href="(guide|index|installation|news)\.html"/',
             "href=\"index.php?page=\\1&lang=$lang\"", $line);
-    # if (trim($line) == '<!-- PHP PLACEHOLDER -->')
-    if (0)
+    if (trim($line) == '<!-- PHP PLACEHOLDER -->')
     {
         print '<form id="LangForm" method="GET" action="http://' .
                 $_SERVER['HTTP_HOST'] . '/' . $_SERVER['PHP_SELF'] . '">';
