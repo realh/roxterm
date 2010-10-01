@@ -1,60 +1,62 @@
-# SOME DESCRIPTIVE TITLE
-# Copyright (C) YEAR Free Software Foundation, Inc.
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Spanish translations for roxterm package.
+# Copyright (C) 2010 Félix Medrano
+# This file is distributed under the same license as the roxterm package.
 #
-#, fuzzy
+# Félix Medrano <xukosky@yahoo.es>, 2010.
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2010-09-11 14:33+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Project-Id-Version: roxterm 1.18.0+svn\n"
+"Report-Msgid-Bugs-To: http://sourceforge.net/projects/roxterm\n"
+"POT-Creation-Date: 2010-09-11 14:53+0100\n"
+"PO-Revision-Date: 2010-09-24 18:31+0200\n"
+"Last-Translator: Félix Medrano <xukosky@yahoo.es>\n"
+"Language-Team: Spanish <>\n"
+"Language: es\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Lokalize 1.0\n"
 
 #. type: Attribute 'lang' of: <html>
 #: index.html:3
 msgid "en-US"
-msgstr ""
+msgstr "es-ES"
 
 #. type: Attribute 'alt' of: <html><body><div><div><div><a><img>
 #: index.html:8 index.html:20
 msgid "ROXTerm"
-msgstr ""
+msgstr "ROXTerm"
 
 #. type: Content of: <html><body><div><div><div><a>
 #: index.html:19
 msgid "<a id=\"Logo\" href=\"index.html\">"
-msgstr ""
+msgstr "<a id=\"Logo\" href=\"index.html\">"
 
 #. type: Content of: <html><body><div><div><div><div>
 #: index.html:21 index.html:51
 msgid "</a>"
-msgstr ""
+msgstr "</a>"
 
 #. type: Content of: <html><body><div><div><div><ul><li>
 #: index.html:24
 msgid "<a id=\"MainNav_Home\" class=\"active\" href=\"#\">Home</a>"
-msgstr ""
+msgstr "<a id=\"MainNav_Home\" class=\"active\" href=\"#\">Inicio</a>"
 
 #. type: Content of: <html><body><div><div><div><ul><li>
 #: index.html:25
 msgid "<a id=\"MainNav_News\" href=\"news.html\">News</a>"
-msgstr ""
+msgstr "<a id=\"MainNav_News\" href=\"news.html\">Noticias</a>"
 
 #. type: Content of: <html><body><div><div><div><ul><li>
 #: index.html:26
 msgid "<a id=\"MainNav_Installation\" href=\"installation.html\">Installation</a>"
-msgstr ""
+msgstr "<a id=\"MainNav_Installation\" href=\"installation.html\">Instalación</a>"
 
 #. type: Content of: <html><body><div><div><div><ul><li>
 #: index.html:27
 msgid "<a id=\"MainNav_UserGuide\" href=\"guide.html\">User Guide</a>"
-msgstr ""
+msgstr "<a id=\"MainNav_UserGuide\" href=\"guide.html\">Guía de usuario</a>"
 
 #. type: Content of: <html><body><div><div><div><ul><li>
 #: index.html:28
@@ -62,11 +64,13 @@ msgid ""
 "<a id=\"MainNav_Forums\" "
 "href=\"https://sourceforge.net/projects/roxterm/forums\">Forums</a>"
 msgstr ""
+"<a id=\"MainNav_Forums\" "
+"href=\"https://sourceforge.net/projects/roxterm/forums\">Foros</a>"
 
 #. type: Content of: <html><body><div><div><div><h1>
 #: index.html:35
 msgid "Welcome"
-msgstr ""
+msgstr "Bienvenido"
 
 #. type: Content of: <html><body><div><div><div><p>
 #: index.html:37
@@ -80,6 +84,14 @@ msgid ""
 "gnome-terminal and aimed more at \"power\" users who make heavy use of "
 "terminals."
 msgstr ""
+"ROXTerm es un emulador de terminal pensado para proporcionar características similares a "
+"gnome-terminal, basado en la misma librería VTE. Se diseñó originalmente para tener "
+"un menor consumo de memoria y un arranque más rápido al no utilizar las librerías de "
+"Gnome y al utilizar un applet separado para el interfaz de configuración, pero gracias "
+"a todas las características que ha adquirido a lo largo de los años ROXTerm puede "
+"ser probablemente acusado ahora de pesado. Sin embargo, es más configurable que "
+"gnome-terminal y se enfoca más a los usuarios «avanzados» que hacen un gran uso "
+"de las terminales."
 
 #. type: Content of: <html><body><div><div><div><p>
 #: index.html:43
@@ -87,6 +99,8 @@ msgid ""
 "It can be used as a ROX application, as the name implies, or in any other X "
 "environment."
 msgstr ""
+"Se puede utilizar como una aplicación ROX, como su nombre indica, o con cualquier "
+"otro entorno X."
 
 #. type: Content of: <html><body><div><div><div><div><a>
 #: index.html:48
@@ -94,6 +108,8 @@ msgid ""
 "<a id=\"SourceforgeLink\" href=\"http://sourceforge.net/projects/roxterm\" "
 "title=\"RoxTerm Sourceforge\">"
 msgstr ""
+"<a id=\"SourceforgeLink\" href=\"http://sourceforge.net/projects/roxterm\" "
+"title=\"RoxTerm Sourceforge\">"
 
 #. type: Attribute 'alt' of: <html><body><div><div><div><div><a><img>
 #: index.html:50
@@ -101,6 +117,8 @@ msgid ""
 "Get RoxTerm at SourceForge.net. Fast, secure and Free Open Source software "
 "downloads"
 msgstr ""
+"Descargue RoxTerm desde SourceForge.net. Descargas de software libre rápidas, "
+"seguras y gratis"
 
 #. type: Content of: <html><body><div><div><div><div>
 #: index.html:55
@@ -110,6 +128,10 @@ msgid ""
 "<a id=\"ValidMarkupLink\" class=\"spriteLink\" "
 "href=\"http://validator.w3.org/check?uri=referer\">Valid XHTML</a>"
 msgstr ""
+"<a id=\"DonationLink\" class=\"spriteLink\" "
+"href=\"http://sourceforge.net/donate/index.php?group_id=124080\">Donar</a> "
+"<a id=\"ValidMarkupLink\" class=\"spriteLink\" "
+"href=\"http://validator.w3.org/check?uri=referer\">XHTML Válido</a>"
 
 #. type: Content of: <html><body><div><div><div><p>
 #: index.html:59
@@ -118,3 +140,7 @@ msgid ""
 "href=\"http://www.gnu.org/licenses/gpl-3.0-standalone.html\">GPL</a> | Site "
 "design by Adrian Sampson"
 msgstr ""
+"ROXTerm se publica bajo la licencia <a "
+"href=\"http://www.gnu.org/licenses/gpl-3.0-standalone.html\">GPL</a> | Diseño "
+"de la página web por Adrian Sampson"
+
