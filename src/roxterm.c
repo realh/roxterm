@@ -401,7 +401,7 @@ static char **roxterm_modify_environment(char const * const *env,
     equals = g_new(char *, replace_len + 1);
     equals[replace_len] = NULL;
     for (i = 0; i < replace_len; ++i)
-        equals[i] = g_strconcat(replace[i], "=", NULL);
+        equals[i] = g_strconcat(replace[i * 2], "=", NULL);
     result = g_new(char *, replace_len + env_len + 1);
     k = 0;
     for (j = 0; j < env_len; ++j)
