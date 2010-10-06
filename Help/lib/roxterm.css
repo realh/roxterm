@@ -47,7 +47,7 @@ a img {
 	position:relative;
 }
 
-#Header, #Footer, #SubNav li a:hover, .snippet {
+#Header, #Footer, #SubNav li a:hover {
 	background:#222;
 }
 
@@ -62,6 +62,7 @@ a img {
 #Header div {
 	width:65em;
 	margin:0 auto;
+	white-space:nowrap;
 }
 
 #Logo {
@@ -235,12 +236,13 @@ a#ValidMarkupLink {
 .snippet {
 	-moz-border-radius:0.75em;
 	border-radius:0.75em;
-	color:#F2F2F2;
+	color:black;
 	font-family:"Andale Mono","Lucida Console","Lucida Sans Typewriter","DejaVu Sans Mono","Bitstream Vera Sans Mono",
 	"Liberation Mono","Nimbus Mono L",Monaco,monospace;
 	font-size:0.85em;
 	padding:1em;
 	margin-left:2em;
+	background:#ccc;
 }
 
 .snippet span {
