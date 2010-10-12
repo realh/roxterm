@@ -68,7 +68,7 @@ GtkWidget *dlg_ok_cancel(GtkWindow *parent, const char *title,
     w = gtk_message_dialog_new(parent,
             GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
             GTK_MESSAGE_QUESTION, GTK_BUTTONS_OK_CANCEL,
-            msg);
+            "%s", msg);
     g_free(msg);
     gtk_window_set_title(GTK_WINDOW(w), title);
     return w;
