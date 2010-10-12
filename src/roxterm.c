@@ -401,7 +401,9 @@ static char **roxterm_modify_environment(char const * const *env,
     equals = g_new(char *, replace_len + 1);
     equals[replace_len] = NULL;
     for (i = 0; i < replace_len; ++i)
+    {
         equals[i] = g_strconcat(replace[i * 2], "=", NULL);
+    }
     result = g_new(char *, replace_len + env_len + 1);
     k = 0;
     for (j = 0; j < env_len; ++j)
@@ -417,7 +419,9 @@ static char **roxterm_modify_environment(char const * const *env,
             }
         }
         if (!skip)
+        {
             result[k++] = g_strdup(env[j]);
+        }
     }
     g_strfreev(equals);
     for (j = 0; j < replace_len; ++j)
@@ -534,6 +538,42 @@ static gboolean roxterm_command_failed(ROXTermData *roxterm)
     return FALSE;
 }
 
+static char *roxterm_fork_command(VteTerminal *terminal,
+        const char *command, char **argv, char **envv,
+        const char *working_directory,
+        gboolean lastlog, gboolean utmp, gboolean wtmp, pid_t *pid)
+{
+#if HAVE_VTE_TERMINAL_FORK_COMMAND_FULL
+    GPid *ppid = (GPid *) pid;
+    GError *error = NULL;
+    
+    if (!vte_terminal_fork_command_full(terminal,
+            (lastlog ? 0 : VTE_PTY_NO_LASTLOG) |
+            (utmp ? 0 : VTE_PTY_NO_UTMP) |
+            (wtmp ? 0 : VTE_PTY_NO_WTMP),
+            working_directory, argv, envv,
+            G_SPAWN_SEARCH_PATH,
+            NULL, NULL, ppid, &error))
+    {
+        char *reply = g_strdup_printf(
+                _("The new terminal's command failed to run: %s"),
+                error->message);
+                
+        *pid = -1;
+        g_error_free(error);
+        return reply;
+    }
+#else
+    *pid = vte_terminal_fork_command(terminal, command, argv, envv,
+            working_directory, lastlog, utmp, wtmp);
+    if (*pid == -1)
+    {
+        return g_strdup(_("The new terminal's command failed to run"));
+    }
+#endif
+    return NULL;
+}
+
 static void roxterm_run_command(ROXTermData *roxterm, VteTerminal *vte)
 {
     char **commandv = NULL;
@@ -640,13 +680,9 @@ static void roxterm_run_command(ROXTermData *roxterm, VteTerminal *vte)
         gboolean xtmplog = options_lookup_int_with_default(roxterm->profile,
                 "update_records", 1);
 
-        roxterm->pid = vte_terminal_fork_command(vte, filename,
-            commandv, env, roxterm->directory, login, xtmplog, xtmplog);
-        if (roxterm->pid == -1)
-        {
-            reply = g_strdup(
-                    ("The new terminal's command failed to run"));
-        }
+        reply = roxterm_fork_command(vte, filename,
+            commandv, env, roxterm->directory, login, xtmplog, xtmplog,
+            &roxterm->pid);
     }
     else
     {
