@@ -74,7 +74,8 @@ EXTRA_DIST = config.rpath m4 roxterm.svg \
 		debian/control       debian/roxterm.doc-base \
 		debian/copyright     debian/roxterm.postinst \
 		debian/roxterm.prerm debian/roxterm.xpm      \
-		debian/rules         debian/watch
+		debian/rules         debian/watch	     \
+		debian/source/format
 
 Help/AUTHORS:
 	ln -nfs ../AUTHORS Help/AUTHORS
