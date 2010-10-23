@@ -1047,9 +1047,16 @@ static void multi_win_new_tab_action(MultiWin * win)
         win->user_data_template);
 }
 
+static gboolean multi_tab_deferred_close_action(gpointer handle)
+{
+    multi_tab_delete(handle);
+    return FALSE;
+}
+
 static void multi_win_close_tab_action(MultiWin * win)
 {
-    multi_tab_delete(win->current_tab);
+    g_idle_add(multi_tab_deferred_close_action, win->current_tab);
+    //multi_tab_delete(win->current_tab);
 }
 
 static void multi_win_name_tab_action(MultiWin * win)
