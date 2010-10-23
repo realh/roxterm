@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: roxterm 1.19.1\n"
 "Report-Msgid-Bugs-To: http://sourceforge.net/projects/roxterm\n"
-"POT-Creation-Date: 2010-10-17 18:14+0100\n"
+"POT-Creation-Date: 2010-10-23 16:11+0100\n"
 "PO-Revision-Date: 2010-09-11 18:11+0200\n"
 "Last-Translator: \n"
 "Language-Team: Spanish <kde-i18n-doc@kde.org>\n"
@@ -646,15 +646,15 @@ msgstr "No se pudo cerrar el archivo '%s': fclose() fallido: %s"
 msgid "Existing file '%s' could not be removed: g_unlink() failed: %s"
 msgstr "No se pudo eliminar el archivo '%s' existente: g_unlink() fallido: %s"
 
-#: src/multitab.c:1059
+#: src/multitab.c:1066
 msgid "Name Tab"
 msgstr "Nombrar pestaña"
 
-#: src/multitab.c:1103
+#: src/multitab.c:1110
 msgid "Set Window Title"
 msgstr "Cambia el título de la ventana"
 
-#: src/multitab.c:1116
+#: src/multitab.c:1123
 msgid ""
 "The title string may include '%s' which is substituted with the title set by "
 "the child command (usually the current directory for shells). No other % "
@@ -666,7 +666,7 @@ msgstr ""
 "permite ningún otro carácter % o secuencias excepto '%%' que se muestra como "
 "un solo %. Ponga una cadena vacía aquí para utilizar el título del perfil."
 
-#: src/multitab.c:2132
+#: src/multitab.c:2139
 #, c-format
 msgid "'%s' contains invalid %% sequences for a window title string"
 msgstr "'%s' contiene secuencias %% no válidas para una ventana de título"
