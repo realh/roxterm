@@ -15,11 +15,11 @@ roxterm-config.1.es: roxterm-config.1.es.xml
 	mv roxterm-config.1 roxterm-config.1.es
 
 roxterm.1.es.xml: roxterm.1.es.xml.in
-	sed "s/@PACKAGE_VERSION@/$(PACKAGE_VERSION)/; s/@pkgdocdir@/$(pkgdocdir)/" \
+	sed "s/\@PACKAGE_VERSION\@/$(PACKAGE_VERSION)/; s#\@htmldir\@#$(htmldir)#" \
 		< $< > $@
 
 roxterm-config.1.es.xml: roxterm-config.1.es.xml.in
-	sed "s/@PACKAGE_VERSION@/$(PACKAGE_VERSION)/; s/@pkgdocdir@/$(pkgdocdir)/" \
+	sed "s/\@PACKAGE_VERSION\@/$(PACKAGE_VERSION)/; s#\@htmldir\@#$(htmldir)#" \
 		< $< > $@
 
 roxterm.1.es.xml.in: roxterm.1.es.po
