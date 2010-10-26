@@ -195,6 +195,99 @@ void multi_tab_init(MultiTabFiller filler, MultiTabDestructor destructor,
     multi_tab_get_show_close_button = get_show_close_button;
 }
 
+void multi_win_set_geometry_hints(MultiWin *win, GtkWidget *child,
+    GdkGeometry *geometry, GdkWindowHints geom_mask)
+{
+    gtk_window_set_geometry_hints(GTK_WINDOW(win->gtkwin), child,
+        geometry, geom_mask);
+}
+
+static void multi_win_set_geometry_hints_for_tab(MultiWin * win, MultiTab * tab)
+{
+    GdkGeometry geom;
+    GdkWindowHints hints;
+
+    if (multi_win_geometry_func)
+    {
+        (*multi_win_geometry_func) (tab->user_data, &geom, &hints);
+        multi_win_set_geometry_hints(win, tab->active_widget, &geom, hints);
+    }
+}
+
+static void multi_win_size_alloc_handler(GtkWidget *widget,
+        GtkAllocation *alloc, MultiWin *win)
+{
+    int w = win->cached_width;
+    int h = win->cached_height;
+    GtkAllocation c_alloc;
+    
+    g_debug("size-alloc %dx%d", alloc->width, alloc->height);
+    if (!win->current_tab)
+    {
+        g_debug("No current tab, not restoring");
+        return;
+    }
+    widget = win->current_tab->active_widget;
+    gtk_widget_get_allocation(widget, &c_alloc);
+    multi_win_size_func(win->current_tab->user_data, TRUE, &w, &h);
+    g_debug("Restoring %d+%d-%d x %d+%d-%d",
+            w, alloc->width, c_alloc.width,
+            h, alloc->height, c_alloc.height);
+    w += alloc->width - c_alloc.width;
+    h += alloc->height - c_alloc.height;
+    if (w != alloc->width || h != alloc->height)
+    {
+        gtk_window_resize(GTK_WINDOW(win->gtkwin), w, h);
+        multi_win_set_geometry_hints_for_tab(win, win->current_tab);
+    }
+    else
+    {
+        g_debug("Already desired size");
+    }
+}
+
+static gboolean multi_win_cancel_size_alloc(MultiWin *win)
+{
+    /* Use g_list_find to make sure the win hasn't been deleted */
+    if (g_list_find(multi_win_all, win) && win->size_alloc_tag)
+    {
+        g_signal_handler_disconnect(win->gtkwin, win->size_alloc_tag);
+        win->size_alloc_tag = 0;
+    }
+    return FALSE;
+}
+
+static void multi_win_cache_size_(MultiWin *win)
+{
+    int px, py, cx, cy;
+    
+    if (win->size_alloc_tag)
+    {
+        return;
+    }
+    if (!win->current_tab || !win->gtkwin ||
+            !gtk_widget_get_visible(win->gtkwin) ||
+            win->fullscreen || multi_win_is_maximised(win))
+    {
+        return;
+    }
+    multi_win_size_func(win->current_tab->user_data, FALSE,
+            &win->cached_width, &win->cached_height);
+    gtk_window_get_size(GTK_WINDOW(win->gtkwin), &px, &py);
+    gdk_drawable_get_size(GDK_DRAWABLE(
+            gtk_widget_get_window(win->current_tab->active_widget)),
+            &cx, &cy);
+    g_debug("Caching size %dx%d, win %dx%d, drwbl %dx%d",
+            win->cached_width, win->cached_height, px, py, cx, cy);
+    win->size_alloc_tag = g_signal_connect_after(
+            win->gtkwin, "size-allocate",
+            G_CALLBACK(multi_win_size_alloc_handler), win);
+    g_idle_add((GSourceFunc) multi_win_cancel_size_alloc, win);
+}
+
+#define multi_win_cache_size(w) g_debug("%s calling mwcs", __func__); \
+        multi_win_cache_size_(w)
+
 MultiTab *multi_tab_new(MultiWin * parent, gpointer user_data_template)
 {
     MultiTab *tab = g_new0(MultiTab, 1);
@@ -262,6 +355,8 @@ void multi_tab_delete(MultiTab * tab)
 {
     MultiWin *win = tab->parent;
 
+    if (win->ntabs > 1)
+        multi_win_cache_size(win);
     win->ignore_tabs_moving = TRUE;
     multi_tab_delete_without_notifying_parent(tab, TRUE);
     if (!multi_win_notify_tab_removed(win, tab))
@@ -278,70 +373,6 @@ GtkWidget *multi_tab_get_widget(MultiTab * tab)
 const char *multi_tab_get_display_name(MultiTab *tab)
 {
     return tab->parent ? tab->parent->display_name : NULL;
-}
-
-void multi_win_set_geometry_hints(MultiWin *win, GtkWidget *child,
-    GdkGeometry *geometry, GdkWindowHints geom_mask)
-{
-    gtk_window_set_geometry_hints(GTK_WINDOW(win->gtkwin), child,
-        geometry, geom_mask);
-}
-
-static void multi_win_set_geometry_hints_for_tab(MultiWin * win, MultiTab * tab)
-{
-    GdkGeometry geom;
-    GdkWindowHints hints;
-
-    if (multi_win_geometry_func)
-    {
-        (*multi_win_geometry_func) (tab->user_data, &geom, &hints);
-        multi_win_set_geometry_hints(win, tab->active_widget, &geom, hints);
-    }
-}
-
-static void multi_win_size_alloc_handler(GtkWidget *widget,
-        GtkAllocation *alloc, MultiWin *win)
-{
-    int w = win->cached_width;
-    int h = win->cached_height;
-    GtkAllocation c_alloc;
-    
-    g_signal_handler_disconnect(widget, win->size_alloc_tag);
-    win->size_alloc_tag = 0;
-    if (!win->current_tab)
-        return;
-    widget = win->current_tab->active_widget;
-    gtk_widget_get_allocation(widget, &c_alloc);
-    multi_win_size_func(win->current_tab->user_data, TRUE, &w, &h);
-    gtk_window_resize(GTK_WINDOW(win->gtkwin),
-            w + alloc->width - c_alloc.width,
-            h + alloc->height - c_alloc.height);
-    multi_win_set_geometry_hints_for_tab(win, win->current_tab);
-}
-
-static void multi_win_cache_size(MultiWin *win)
-{
-    int px, py, cx, cy;
-    
-    if (win->size_alloc_tag)
-    {
-        return;
-    }
-    if (!win->current_tab || !win->gtkwin ||
-            !gtk_widget_get_visible(win->gtkwin) ||
-            win->fullscreen || multi_win_is_maximised(win))
-    {
-        return;
-    }
-    multi_win_size_func(win->current_tab->user_data, FALSE,
-            &win->cached_width, &win->cached_height);
-    gtk_window_get_size(GTK_WINDOW(win->gtkwin), &px, &py);
-    gdk_drawable_get_size(GDK_DRAWABLE(
-            gtk_widget_get_window(win->current_tab->active_widget)),
-            &cx, &cy);
-    win->size_alloc_tag = g_signal_connect_after(
-            win->gtkwin, "size-allocate",
-            G_CALLBACK(multi_win_size_alloc_handler), win);
 }
 
 static void multi_tab_set_name_or_title(MultiTab *tab, const char *title)
@@ -1582,6 +1613,7 @@ MultiWin *multi_win_new_full(const char *display_name, Options *shortcuts,
         gtk_notebook_set_current_page(GTK_NOTEBOOK(win->notebook), n);
     tab = win->tabs->data;
     win->tab_selection_handler(tab->user_data, tab);
+    multi_win_set_geometry_hints_for_tab(win, tab);
 
     return win;
 }
