@@ -2735,7 +2735,6 @@ roxterm_attach_state_changed_handler(ROXTermData *roxterm)
             G_CALLBACK(roxterm_window_state_changed), roxterm);
 }
 
-#if !DO_OWN_TAB_DRAGGING
 static void
 roxterm_tab_received(GtkWidget *rcvd_widget, ROXTermData *roxterm)
 {
@@ -2751,7 +2750,6 @@ roxterm_tab_received(GtkWidget *rcvd_widget, ROXTermData *roxterm)
             multi_tab_move_to_new_window(roxterm->win, tab, page_num);
     }
 }
-#endif
 
 static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
     ROXTermData * roxterm_template, ROXTermData ** roxterm_out,
@@ -2847,11 +2845,7 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
         (MultiTabSelectionHandler) roxterm_tab_selection_handler);
     roxterm->drd = drag_receive_setup_dest_widget(roxterm->widget,
             roxterm_drag_data_received,
-#if DO_OWN_TAB_DRAGGING
-            NULL,
-#else
             (DragReceiveTabHandler) roxterm_tab_received,
-#endif
             roxterm);
     
     roxterm_attach_state_changed_handler(roxterm);

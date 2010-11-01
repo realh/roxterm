@@ -63,10 +63,6 @@ roxterm_SOURCES =	\
 	shortcuts.c	shortcuts.h	\
 	uri.c		uri.h
 
-if DO_OWN_TAB_DRAGGING
-roxterm_SOURCES += tabdrag.c	tabdrag.h
-endif
-
 if ENABLE_SM
 roxterm_SOURCES += session.c    session.h
 endif

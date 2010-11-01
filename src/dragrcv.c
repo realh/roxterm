@@ -162,14 +162,12 @@ static void drag_data_received(GtkWidget *widget, GdkDragContext *context,
             g_strfreev(uris);
             g_free(uri_list);
             break;
-#if !DO_OWN_TAB_DRAGGING
         case ROXTERM_DRAG_TARGET_TAB:
             if (drd->tab_handler)
             {
                 drd->tab_handler(*(GtkWidget**) selection_data->data,
                         drd->data);
             }
-#endif
     }
 }
 
@@ -190,10 +188,8 @@ DragReceiveData *drag_receive_setup_dest_widget(GtkWidget *widget,
         { (char *) "TEXT", 0, ROXTERM_DRAG_TARGET_TEXT },
         { (char *) "STRING",     0, ROXTERM_DRAG_TARGET_STRING },
         { (char *) "text/plain", 0, ROXTERM_DRAG_TARGET_TEXT_PLAIN }
-#if !DO_OWN_TAB_DRAGGING
         , { (char *) "GTK_NOTEBOOK_TAB",
                 GTK_TARGET_SAME_APP, ROXTERM_DRAG_TARGET_TAB }
-#endif
         /*{ (char *) "text/unicode", 0, ROXTERM_DRAG_TARGET_TEXT_UNICODE }*/
     };
     DragReceiveData *drd = g_new(DragReceiveData, 1);

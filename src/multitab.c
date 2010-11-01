@@ -23,9 +23,6 @@
 #include "menutree.h"
 #include "multitab.h"
 #include "shortcuts.h"
-#if DO_OWN_TAB_DRAGGING
-#include "tabdrag.h"
-#endif
 
 #define HAVE_COMPOSITE GTK_CHECK_VERSION(2, 10, 0)
 
@@ -42,9 +39,6 @@ struct MultiTab {
     gpointer user_data;
     GtkWidget *label;
     GtkWidget *label_bg;
-#if DO_OWN_TAB_DRAGGING
-    TabDrag *tab_drag;
-#endif
     GtkAdjustment *adjustment;
     double scroll_step;
     gboolean attention;
@@ -247,13 +241,6 @@ static void multi_tab_delete_without_notifying_parent(MultiTab * tab,
         menutree_remove_tab(tab->parent->menu_bar, tab->menu_bar_item);
         tab->menu_bar_item = NULL;
     }
-#if DO_OWN_TAB_DRAGGING
-    if (tab->tab_drag)
-    {
-        tab_drag_delete(tab->tab_drag);
-        tab->tab_drag = NULL;
-    }
-#endif
     if (!tab->postponed_free)
         g_free(tab);
 }
@@ -899,19 +886,12 @@ static gboolean tab_clicked_handler(GtkWidget *widget,
                                        tab_set_name_from_clipboard_callback,
                                        tab);
             break;
-#if DO_OWN_TAB_DRAGGING
-        case 1:
-        case 3:
-            tab_drag_press(tab->tab_drag, event->button, event->x, event->y);
-            break;
-#endif
         default:
             break;
     }
     return FALSE;
 }
 
-#if !DO_OWN_TAB_DRAGGING
 static void page_reordered_callback(GtkNotebook *notebook, GtkWidget *child,
         guint page_num, MultiWin *win)
 {
@@ -967,8 +947,6 @@ static GtkNotebook *multi_win_notebook_creation_hook(GtkNotebook *source,
      * correctly until the tab has been added to the notebook */
     return GTK_NOTEBOOK(win->notebook);
 }
-
-#endif /* !DO_OWN_TAB_DRAGGING */
 
 MultiWin *multi_win_new_for_tab(const char *display_name, int x, int y,
         MultiTab *tab)
@@ -1378,8 +1356,6 @@ MultiWin *multi_win_new_blank(const char *display_name, Options *shortcuts,
         GtkPositionType tab_pos, gboolean always_show_tabs)
 {
     MultiWin *win = g_new0(MultiWin, 1);
-
-#if !DO_OWN_TAB_DRAGGING
     static gboolean set_nwc_hook = FALSE;
 
     if (!set_nwc_hook)
@@ -1388,7 +1364,6 @@ MultiWin *multi_win_new_blank(const char *display_name, Options *shortcuts,
                 win, NULL);
         set_nwc_hook = TRUE;
     }
-#endif
 
     win->tab_pos = tab_pos;
     win->always_show_tabs = always_show_tabs;
@@ -1507,13 +1482,11 @@ MultiWin *multi_win_new_blank(const char *display_name, Options *shortcuts,
         G_CALLBACK(multi_win_page_switched), win);
     g_signal_connect(win->gtkwin, "focus-in-event",
         G_CALLBACK(multi_win_focus_in), win);
-#if !DO_OWN_TAB_DRAGGING
     gtk_notebook_set_group(GTK_NOTEBOOK(win->notebook), &multi_win_all);
     g_signal_connect(win->notebook, "page-reordered",
         G_CALLBACK(page_reordered_callback), win);
     g_signal_connect(win->notebook, "page-added",
         G_CALLBACK(page_added_callback), win);
-#endif
     /* VTE widgets handle these events, so we only get them if they occur over
      * the actual sticky out bit */
 
@@ -1783,9 +1756,6 @@ static GtkWidget *make_tab_label(MultiTab *tab, GtkPositionType tab_pos)
     gtk_event_box_set_visible_window(GTK_EVENT_BOX(tab->label_bg), FALSE);
     tab->label_packer(GTK_BOX(tab->label_box), tab->label_bg, TRUE, TRUE, 0);
     gtk_container_add(GTK_CONTAINER(tab->label_bg), tab->label);
-#if DO_OWN_TAB_DRAGGING
-    tab->tab_drag = tab_drag_new(tab->label_bg, tab);
-#endif
     g_signal_connect(tab->label_bg, "button-press-event",
             G_CALLBACK(tab_clicked_handler), tab);
     if (multi_tab_get_show_close_button(tab->user_data))
@@ -1832,12 +1802,10 @@ static void multi_win_add_tab_to_notebook(MultiWin * win, MultiTab * tab,
         gtk_notebook_insert_page(GTK_NOTEBOOK(win->notebook),
                 tab->widget, label, position);
     }
-#if !DO_OWN_TAB_DRAGGING
     gtk_notebook_set_tab_reorderable(GTK_NOTEBOOK(win->notebook), tab->widget,
             TRUE);
     gtk_notebook_set_tab_detachable(GTK_NOTEBOOK(win->notebook), tab->widget,
             TRUE);
-#endif
     g_object_set(gtk_widget_get_parent(label), "can-focus", FALSE, NULL);
 }
 
