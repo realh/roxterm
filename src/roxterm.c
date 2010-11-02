@@ -1620,10 +1620,11 @@ static void roxterm_tab_selection_handler(ROXTermData * roxterm, MultiTab * tab)
     multi_win_set_ignore_toggles(roxterm->win, FALSE);
 }
 
-static void roxterm_widget_realized(VteTerminal *vte, ROXTermData *roxterm)
+static gboolean run_child_when_idle(ROXTermData *roxterm)
 {
     if (!roxterm->running)
-        roxterm_run_command(roxterm, vte);
+        roxterm_run_command(roxterm, VTE_TERMINAL(roxterm->widget));
+    return FALSE;
 }
 
 static void roxterm_browser_action(MultiWin * win)
@@ -2438,8 +2439,6 @@ static void roxterm_connect_misc_signals(ROXTermData * roxterm)
     */
     g_signal_connect(roxterm->widget, "cursor-moved",
             G_CALLBACK(roxterm_text_changed_handler), roxterm);
-    g_signal_connect(roxterm->widget, "realize",
-            G_CALLBACK(roxterm_widget_realized), roxterm);
 }
 
 inline static void
@@ -2849,6 +2848,8 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
             roxterm);
     
     roxterm_attach_state_changed_handler(roxterm);
+    
+    g_idle_add((GSourceFunc) run_child_when_idle, roxterm);
 
     return scrollbar_pos ? roxterm->hbox : roxterm->widget;
 }
