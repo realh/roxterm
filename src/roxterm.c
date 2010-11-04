@@ -1038,6 +1038,7 @@ roxterm_set_vte_size(ROXTermData *roxterm, VteTerminal *vte,
         int px, py;
         int req_w, req_h;
         
+        g_debug("roxterm_set_vte_size resizing window");
         roxterm_get_vte_padding(vte, &px, &py);
         req_w = vte_terminal_get_char_width(vte) * columns + px;
         req_h = vte_terminal_get_char_height(vte) * rows + py;
@@ -1047,6 +1048,10 @@ roxterm_set_vte_size(ROXTermData *roxterm, VteTerminal *vte,
                 cw, ch, ww - cw, wh - ch, req_w, req_h);
         */
         gtk_window_resize(GTK_WINDOW(pw), req_w + ww - cw, req_h + wh - ch);
+    }
+    else
+    {
+        g_debug("roxterm_set_vte_size not resizing window");
     }
 }
 
@@ -1092,18 +1097,27 @@ static void roxterm_update_size(ROXTermData * roxterm, VteTerminal * vte)
     }
 }
 
-static void roxterm_update_geometry(ROXTermData * roxterm, VteTerminal * vte)
+static void roxterm__update_geometry(ROXTermData * roxterm, VteTerminal * vte)
 {
     if (multi_win_get_current_tab(roxterm->win) == roxterm->tab)
     {
         GdkGeometry geom;
         GdkWindowHints hints;
 
+        g_debug("Updating geometry, current tab");
         roxterm_geometry_func(roxterm, &geom, &hints);
         multi_win_set_geometry_hints(roxterm->win, roxterm->widget,
             &geom, hints);
     }
+    else
+    {
+        g_debug("Not updating geometry, not current tab");
+    }
 }
+
+#define roxterm_update_geometry(rt, vte) \
+        g_debug("%s calling roxterm_update_geometry", __func__); \
+        roxterm__update_geometry(rt, vte)
 
 static void resize_pango_for_zoom(PangoFontDescription *pango_desc,
         double zf)
