@@ -7,7 +7,7 @@
 # Conflicts: autoconf 2.13
 set -e
 
-Rev=`git describe`
+Rev=`git describe | sed 's/-/./;s/-/~/'`
 sed "s/@VERSION@/$Rev/" configure.ac.in \
         > configure.ac
 Line1=`head -n 1 debian/changelog.in | sed "s/@VERSION@/$Rev/"`
