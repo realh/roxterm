@@ -149,6 +149,28 @@ static void multi_win_set_icon_title(MultiWin *win, const char *title);
 
 static void multi_win_restore_size(MultiWin *win)
 {
+    MultiTab *tab = win->current_tab;
+    int w = -1;
+    int h = -1;
+    GtkRequisition win_rq, term_rq;
+    
+    if (!tab || !tab->active_widget || !GTK_WIDGET_REALIZED(tab->active_widget))
+        return;
+    if (multi_win_is_maximised(win) || multi_win_is_fullscreen(win))
+        return;
+    /* Find new difference between window and term widget (padding) */
+    gtk_widget_size_request(win->gtkwin, &win_rq);
+    gtk_widget_size_request(tab->active_widget, &term_rq);
+    /*
+    g_debug("Window request %dx%d, term %dx%d",
+            win_rq.width, win_rq.height, term_rq.width, term_rq.height);
+    */
+    /* What size is the terminal supposed to be? */
+    multi_win_size_func(tab->user_data, TRUE, &w, &h);
+    /* Resize window to terminal's previous size + new padding */
+    gtk_window_resize(GTK_WINDOW(win->gtkwin),
+            w + win_rq.width - term_rq.width,
+            h + win_rq.height - term_rq.height);
 }
 
 MultiTab *multi_tab_get_from_widget(GtkWidget *widget)
@@ -1590,6 +1612,7 @@ static gboolean multi_win_notify_tab_removed(MultiWin * win, MultiTab * tab)
             if (!win->always_show_tabs)
             {
                 multi_win_hide_tabs(win);
+                multi_win_restore_size(win);
             }
         }
     }
@@ -1766,9 +1789,10 @@ static void multi_win_add_tab(MultiWin * win, MultiTab * tab, int position,
     else
         win->tabs = g_list_insert(win->tabs, tab, position);
     ++win->ntabs;
-    if (win->ntabs == 2)
+    if (win->ntabs == 2 && !win->always_show_tabs)
     {
         multi_win_show_tabs(win);
+        multi_win_restore_size(win);
     }
     multi_tab_add_menutree_items(win, tab, position);
     if (!notify_only)
@@ -1777,6 +1801,7 @@ static void multi_win_add_tab(MultiWin * win, MultiTab * tab, int position,
         gtk_widget_show(tab->widget);
     }
     multi_win_shade_menus_for_tabs(win);
+    multi_win_select_tab(win, tab);
     win->ignore_tabs_moving = FALSE;
 }
 
