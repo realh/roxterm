@@ -56,11 +56,12 @@ typedef void (*MultiWinMenuSignalConnector) (MultiWin * win);
 typedef void (*MultiWinGeometryFunc) (gpointer user_data, GdkGeometry * geom,
     GdkWindowHints * hints);
 
-/* If set is TRUE, the child widget may use the width and height values
- * to resize itself and must update width and height to desired size in pixels,
- * otherwise it must update width and height with its current size
+/* If pixels is FALSE: Return grid size in *pwidth and *pheight.
+ * If pixels is TRUE: Given a grid size in *pwidth and *pheight, update them to
+ * the total size of the widget required for it. If a size in is -1 use the
+ * widget's current grid size instead.
  */
-typedef gboolean (*MultiWinSizeFunc) (gpointer user_data, gboolean set,
+typedef void (*MultiWinSizeFunc) (gpointer user_data, gboolean pixels,
     int *pwidth, int *pheight);
 
 /* Called when a tab is selected */

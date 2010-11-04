@@ -93,8 +93,6 @@ struct MultiWin {
     gboolean composite;
 #endif
     char *display_name;
-    int cached_width, cached_height;
-    gulong size_alloc_tag;
 };
 
 static double multi_win_zoom_factors[] = {
@@ -148,6 +146,10 @@ static void multi_win_destructor(MultiWin *win, gboolean destroy_widgets);
 static void multi_win_set_title(MultiWin *win, const char *title);
 
 static void multi_win_set_icon_title(MultiWin *win, const char *title);
+
+static void multi_win_restore_size(MultiWin *win)
+{
+}
 
 MultiTab *multi_tab_get_from_widget(GtkWidget *widget)
 {
@@ -286,63 +288,12 @@ static void multi_win_set_geometry_hints_for_tab(MultiWin * win, MultiTab * tab)
     }
 }
 
-static void multi_win_size_alloc_handler(GtkWidget *widget,
-        GtkAllocation *alloc, MultiWin *win)
-{
-    int w = win->cached_width;
-    int h = win->cached_height;
-    GtkAllocation c_alloc;
-    
-    g_signal_handler_disconnect(widget, win->size_alloc_tag);
-    win->size_alloc_tag = 0;
-    if (!win->current_tab)
-        return;
-    widget = win->current_tab->active_widget;
-    gtk_widget_get_allocation(widget, &c_alloc);
-    multi_win_size_func(win->current_tab->user_data, TRUE, &w, &h);
-    gtk_window_resize(GTK_WINDOW(win->gtkwin),
-            w + alloc->width - c_alloc.width,
-            h + alloc->height - c_alloc.height);
-    multi_win_set_geometry_hints_for_tab(win, win->current_tab);
-}
-
-static void multi_win_cache_size(MultiWin *win)
-{
-    int px, py, cx, cy;
-    
-    if (win->size_alloc_tag)
-    {
-        return;
-    }
-    if (!win->current_tab || !win->gtkwin ||
-            !gtk_widget_get_visible(win->gtkwin) ||
-            win->fullscreen || multi_win_is_maximised(win))
-    {
-        return;
-    }
-    multi_win_size_func(win->current_tab->user_data, FALSE,
-            &win->cached_width, &win->cached_height);
-    gtk_window_get_size(GTK_WINDOW(win->gtkwin), &px, &py);
-    gdk_drawable_get_size(GDK_DRAWABLE(
-            gtk_widget_get_window(win->current_tab->active_widget)),
-            &cx, &cy);
-    win->size_alloc_tag = g_signal_connect_after(
-            win->gtkwin, "size-allocate",
-            G_CALLBACK(multi_win_size_alloc_handler), win);
-}
-
 static void multi_tab_set_name_or_title(MultiTab *tab, const char *title)
 {
     MultiWin *win = tab->parent;
 
     if (tab->label)
     {
-        GtkPositionType tab_pos = tab->parent->tab_pos;
-        gboolean cache_size = (tab_pos == GTK_POS_LEFT ||
-                tab_pos == GTK_POS_RIGHT) && win;
-        
-        if (cache_size)
-            multi_win_cache_size(win);
         gtk_label_set_text(GTK_LABEL(tab->label), title);
     }
     if (win)
@@ -575,8 +526,6 @@ gboolean multi_tab_remove_from_parent(MultiTab *tab, gboolean notify_only)
     win->ignore_tabs_moving = TRUE;
     if (!notify_only)
     {
-        if (win->ntabs > 1)
-            multi_win_cache_size(win);
         g_object_ref(tab->widget);
         gtk_notebook_remove_page(GTK_NOTEBOOK(win->notebook),
                 multi_tab_get_page_num(tab));
@@ -725,10 +674,11 @@ void multi_win_select_tab(MultiWin * win, MultiTab * tab)
         multi_win_set_icon_title(win, tab->icon_title);
         menutree_select_tab(win->popup_menu, tab->popup_menu_item);
         menutree_select_tab(win->menu_bar, tab->menu_bar_item);
-        if (GTK_WIDGET_REALIZED(tab->active_widget) &&
-            win->tab_selection_handler)
+        if (GTK_WIDGET_REALIZED(tab->active_widget))
         {
-            win->tab_selection_handler(tab->user_data, tab);
+            if (win->tab_selection_handler)
+                win->tab_selection_handler(tab->user_data, tab);
+            multi_win_set_geometry_hints_for_tab(win, tab);
         }
     }
     multi_win_shade_for_next_and_previous_tab(win);
@@ -768,7 +718,6 @@ void multi_win_set_show_menu_bar(MultiWin * win, gboolean show)
 {
     if (win->menu_bar_set == show)
         return;
-    multi_win_cache_size(win);
     win->menu_bar_set = show;
     if (show)
         add_menu_bar(win);
@@ -777,6 +726,7 @@ void multi_win_set_show_menu_bar(MultiWin * win, gboolean show)
     menutree_set_show_menu_bar_active(win->menu_bar, show);
     menutree_set_show_menu_bar_active(win->popup_menu, show);
     menutree_set_show_menu_bar_active(win->short_popup, show);
+    multi_win_restore_size(win);
 }
 
 gboolean multi_win_get_show_menu_bar(MultiWin * win)
@@ -924,8 +874,6 @@ static void page_added_callback(GtkNotebook *notebook, GtkWidget *child,
             old_win_destroyed = TRUE;
             g_warning("Page added had no previous parent");
         }
-        if (win->ntabs != 1)
-            multi_win_cache_size(win);
         multi_win_add_tab(win, tab, page_num, TRUE);
         multi_tab_to_new_window_handler(win, tab, old_win_destroyed);
         if (win->ntabs == 1)
@@ -1000,8 +948,8 @@ MultiWin *multi_win_clone(MultiWin *old,
         char geom[16];
         int width, height;
         
-        multi_win_size_func(multi_tab_get_user_data(old->current_tab),
-                FALSE, &width, &height);
+        multi_win_size_func(multi_tab_get_user_data(old->current_tab), FALSE,
+                &width, &height);
         sprintf(geom, "%dx%d", width, height);
         return multi_win_new_with_geom(old->display_name, old->shortcuts,
                 old->zoom_index, user_data_template, geom,
@@ -1636,7 +1584,6 @@ static gboolean multi_win_notify_tab_removed(MultiWin * win, MultiTab * tab)
     }
     else
     {
-        multi_win_cache_size(win);
         if (win->ntabs == 1)
         {
             tab = win->tabs->data;
@@ -1661,10 +1608,6 @@ void multi_tab_add_close_button(MultiTab *tab)
         return;
     
     win = tab->parent;
-    if (win)
-    {
-        multi_win_cache_size(win);
-    }
     tab->close_button = gtk_button_new();
     tab->image = gtk_image_new_from_stock(
             tab->status_stock ? tab->status_stock : GTK_STOCK_CLOSE,
@@ -1686,6 +1629,7 @@ void multi_tab_add_close_button(MultiTab *tab)
     gtk_widget_show_all(tab->close_button);
     if (win)
     {
+        multi_win_restore_size(win);
     }
 }
 
@@ -1696,12 +1640,12 @@ void multi_tab_remove_close_button(MultiTab *tab)
         MultiWin *win;
     
         win = tab->parent;
-        if (win)
-        {
-            multi_win_cache_size(win);
-        }
         gtk_widget_destroy(tab->close_button);
         tab->close_button = NULL;
+        if (win)
+        {
+            multi_win_restore_size(win);
+        }
     }
     tab->image = NULL;
 }
@@ -1816,7 +1760,6 @@ static void multi_win_add_tab(MultiWin * win, MultiTab * tab, int position,
         gboolean notify_only)
 {
     tab->parent = win;
-    multi_win_cache_size(win);
     win->ignore_tabs_moving = TRUE;
     if (position == -1)
         win->tabs = g_list_append(win->tabs, tab);
@@ -2041,11 +1984,11 @@ void multi_win_set_always_show_tabs(MultiWin *win, gboolean show)
         MultiTab *tab = win->current_tab;
         
         g_return_if_fail(tab != NULL);
-        multi_win_cache_size(win);
         if (show)
             multi_win_show_tabs(win);
         else
             multi_win_hide_tabs(win);
+        multi_win_restore_size(win);
     }
 }
 

@@ -1063,31 +1063,22 @@ static void roxterm_geometry_func(ROXTermData *roxterm,
     *hints = GDK_HINT_RESIZE_INC | GDK_HINT_BASE_SIZE | GDK_HINT_MIN_SIZE;
 }
 
-static void roxterm_size_func(ROXTermData *roxterm, gboolean set,
+static void roxterm_size_func(ROXTermData *roxterm, gboolean pixels,
         int *pwidth, int *pheight)
 {
-    /* column_/row_count may contain garbage if the widget isn't showing,
-     * so read values from current tab's vte */
-    MultiTab *ctab = multi_win_get_current_tab(roxterm->win);
-    ROXTermData *crt = ctab ? multi_tab_get_user_data(ctab) : roxterm;
-    VteTerminal *vte = VTE_TERMINAL(crt->widget);
-
-    if (set)
-    {
-        if (crt == roxterm)
-        {
-            int px, py;
-            
-            vte_terminal_set_size(vte, *pwidth, *pheight);
-            roxterm_get_vte_padding(vte, &px, &py);
-            *pwidth = *pwidth * vte_terminal_get_char_width(vte) + px;
-            *pheight = *pheight * vte_terminal_get_char_height(vte) + py;
-        }
-    }
-    else
-    {
+    VteTerminal *vte = VTE_TERMINAL(roxterm->widget);
+    
+    if (!pixels || *pwidth == -1)
         *pwidth = vte_terminal_get_column_count(vte);
+    if (!pixels || *pheight == -1)
         *pheight = vte_terminal_get_row_count(vte);
+    if (pixels)
+    {
+        int px, py;
+        
+        roxterm_get_vte_padding(vte, &px, &py);
+        *pwidth = *pwidth * vte_terminal_get_char_width(vte) + px;
+        *pheight = *pheight * vte_terminal_get_char_height(vte) + py;
     }
 }
 
@@ -3958,7 +3949,14 @@ const char *roxterm_get_shortcuts_scheme_name(ROXTermData *roxterm)
 
 void roxterm_get_nonfs_dimensions(ROXTermData *roxterm, int *cols, int *rows)
 {
-    roxterm_size_func(roxterm, FALSE, cols, rows);
+    /* FIXME: This gets current dimensions whether we're full-screen/maximised
+     * or not, but this is for session management so presumably manager will
+     * remember size anyway.
+     */
+    VteTerminal *vte = VTE_TERMINAL(roxterm->widget);
+    
+    *cols = vte_terminal_get_column_count(vte);
+    *rows = vte_terminal_get_row_count(vte);
 }
 
 double roxterm_get_zoom_factor(ROXTermData *roxterm)
