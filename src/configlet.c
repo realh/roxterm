@@ -625,8 +625,10 @@ static void configlet_rename(ConfigletList *cl,
 		gtk_tree_model_get(model, &iter, cfColumn_Radio, &state, -1);
 		gtk_list_store_set(cl->list, &iter,
 				cfColumn_Radio, state, cfColumn_Name, new_leaf, -1);
+		/*
 		g_debug("Sending d-bus message: %s, %s, %s, %s",
 				OPTSDBUS_RENAMED, cl->family, old_leaf, new_leaf);
+		*/
 		optsdbus_send_stuff_changed_signal(OPTSDBUS_RENAMED, cl->family,
 				old_leaf, new_leaf);
 	}
