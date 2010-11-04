@@ -1047,6 +1047,7 @@ roxterm_set_vte_size(ROXTermData *roxterm, VteTerminal *vte,
                 "resizing for child calc %dx%d",
                 cw, ch, ww - cw, wh - ch, req_w, req_h);
         */
+        g_debug("roxterm_set_vte_size setting window size");
         gtk_window_resize(GTK_WINDOW(pw), req_w + ww - cw, req_h + wh - ch);
     }
     else

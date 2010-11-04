@@ -168,6 +168,7 @@ static void multi_win_restore_size(MultiWin *win)
     /* What size is the terminal supposed to be? */
     multi_win_size_func(tab->user_data, TRUE, &w, &h);
     /* Resize window to terminal's previous size + new padding */
+    g_debug("multi_win_restore_size setting size");
     gtk_window_resize(GTK_WINDOW(win->gtkwin),
             w + win_rq.width - term_rq.width,
             h + win_rq.height - term_rq.height);
