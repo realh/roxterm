@@ -777,7 +777,8 @@ static gboolean multi_win_state_event_handler(GtkWidget *widget,
 {
     if (event->changed_mask & GDK_WINDOW_STATE_FULLSCREEN)
     {
-        win->fullscreen = event->new_window_state & GDK_WINDOW_STATE_FULLSCREEN;
+        win->fullscreen =
+                (event->new_window_state & GDK_WINDOW_STATE_FULLSCREEN) != 0;
         menutree_set_fullscreen_active(win->menu_bar, win->fullscreen);
         menutree_set_fullscreen_active(win->popup_menu, win->fullscreen);
     }
@@ -958,7 +959,7 @@ MultiWin *multi_win_clone(MultiWin *old,
         gboolean always_show_tabs);
 
     multi_win_initial_tabs(user_data_template, &tab_pos, &num_tabs);
-    if (old->fullscreen)
+    if (multi_win_is_fullscreen(old))
     {
         creator = multi_win_new_fullscreen;
     }
