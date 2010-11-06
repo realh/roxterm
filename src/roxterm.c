@@ -696,24 +696,25 @@ static void roxterm_run_command(ROXTermData *roxterm, VteTerminal *vte)
         g_free(filename);
     roxterm->actual_commandv = commandv;
     g_strfreev(env);
-    if (roxterm->launcher && !dbus_message_get_no_reply(roxterm->launcher))
-    {
-        DBusMessage *dmsg = dbus_message_new_method_return(roxterm->launcher);
-        
-        if (dmsg)
-        {
-            if (!reply)
-                reply = g_strdup("OK");
-            dmsg = rtdbus_append_args(dmsg,
-                    DBUS_TYPE_STRING, RTDBUS_ARG(reply),
-                    DBUS_TYPE_INVALID);
-        }
-        if (dmsg)
-            rtdbus_send_message(dmsg);
-    }
     if (roxterm->launcher)
     {
-        /* UNREF_LOG(dbus_message_unref(roxterm->launcher)); */
+        if (!dbus_message_get_no_reply(roxterm->launcher))
+        {
+            DBusMessage *dmsg =
+                    dbus_message_new_method_return(roxterm->launcher);
+            
+            if (dmsg)
+            {
+                if (!reply)
+                    reply = g_strdup("OK");
+                dmsg = rtdbus_append_args(dmsg,
+                        DBUS_TYPE_STRING, RTDBUS_ARG(reply),
+                        DBUS_TYPE_INVALID);
+            }
+            if (dmsg)
+                rtdbus_send_message(dmsg);
+        }
+        UNREF_LOG(dbus_message_unref(roxterm->launcher));
         roxterm->launcher = NULL;
     }
     if (reply && strcmp(reply, "OK"))
@@ -3632,6 +3633,8 @@ void roxterm_launch(const char *display_name, DBusMessage *launcher)
     {
         roxterm->commandv = global_options_copy_strv(global_options_commandv);
     }
+    if (launcher)
+        dbus_message_ref(launcher);
     roxterm->launcher = launcher;
     roxterm_get_initial_tabs(roxterm, &tab_pos, &num_tabs);
     always_show_tabs = roxterm_get_always_show_tabs(roxterm);
