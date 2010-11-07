@@ -26,8 +26,6 @@
 
 #include <vte/vte.h>
 
-#include "rtdbus.h"
-
 typedef struct ROXTermData ROXTermData;
 
 /* Make sure global options have been parsed before calling this, but call it
@@ -38,7 +36,7 @@ void roxterm_init(void);
 
 /* Launch a new terminal in response to a D-BUS message (launcher) or for first
  * time (launcher = NULL); display_name may be NULL for default display. */
-void roxterm_launch(const char *display_name, DBusMessage *launcher);
+void roxterm_launch(const char *display_name);
 
 /* Ways of spawning a command */
 typedef enum {

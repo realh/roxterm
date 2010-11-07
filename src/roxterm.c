@@ -95,10 +95,6 @@ struct ROXTermData {
                                 and --title was given. */
     gboolean post_exit_tag;
     char *display_name;
-    DBusMessage *launcher;  /* The D-BUS message, if any, that launched this
-                             * instance. It requires a reply on running the
-                             * command.
-                             */
     const char *status_stock;
     gboolean maximise;
     gulong win_state_changed_tag;
@@ -696,27 +692,6 @@ static void roxterm_run_command(ROXTermData *roxterm, VteTerminal *vte)
         g_free(filename);
     roxterm->actual_commandv = commandv;
     g_strfreev(env);
-    if (roxterm->launcher)
-    {
-        if (!dbus_message_get_no_reply(roxterm->launcher))
-        {
-            DBusMessage *dmsg =
-                    dbus_message_new_method_return(roxterm->launcher);
-            
-            if (dmsg)
-            {
-                if (!reply)
-                    reply = g_strdup("OK");
-                dmsg = rtdbus_append_args(dmsg,
-                        DBUS_TYPE_STRING, RTDBUS_ARG(reply),
-                        DBUS_TYPE_INVALID);
-            }
-            if (dmsg)
-                rtdbus_send_message(dmsg);
-        }
-        UNREF_LOG(dbus_message_unref(roxterm->launcher));
-        roxterm->launcher = NULL;
-    }
     if (reply && strcmp(reply, "OK"))
     {
         roxterm->reply = reply;
@@ -3595,7 +3570,7 @@ static ROXTermData *roxterm_data_new(const char *display_name,
     return roxterm;
 }
 
-void roxterm_launch(const char *display_name, DBusMessage *launcher)
+void roxterm_launch(const char *display_name)
 {
     GtkPositionType tab_pos;
     gboolean always_show_tabs;
@@ -3633,9 +3608,6 @@ void roxterm_launch(const char *display_name, DBusMessage *launcher)
     {
         roxterm->commandv = global_options_copy_strv(global_options_commandv);
     }
-    if (launcher)
-        dbus_message_ref(launcher);
-    roxterm->launcher = launcher;
     roxterm_get_initial_tabs(roxterm, &tab_pos, &num_tabs);
     always_show_tabs = roxterm_get_always_show_tabs(roxterm);
     shortcut_scheme = global_options_lookup_string_with_default

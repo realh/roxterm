@@ -114,7 +114,19 @@ static int run_via_dbus(DBusMessage *message)
         }
     }
     if (!result)
-        result = rtdbus_send_message_with_reply(message) ? 0 : 1;
+    {
+        /* The reply to the NewTerminal message can't include whether it
+         * launched successfully because we don't know that until we fork
+         * the command after an idle, and D-BUS won't let us defer the reply to
+         * after an idle.
+         *
+         * Removing the reply prevents the error message reported in
+         * <https://sourceforge.net/tracker/?func=detail&atid=698428&aid=3089323&group_id=124080>
+         * at the expense of regressing
+         * <https://sourceforge.net/tracker/?func=detail&aid=2809991&group_id=124080&atid=698428>
+         */
+        result = rtdbus_send_message(message) ? 0 : -1;
+    }
     return result;
 }
 
@@ -145,7 +157,7 @@ static DBusHandlerResult new_term_listener(DBusConnection *connection,
         global_options_preparse_argv_for_execute(&argc, argv, TRUE);
         global_options_init(&argc, &argv, FALSE);
     }
-    roxterm_launch(display, message);
+    roxterm_launch(display);
 
     for (n = 0; n < argc; ++n)
         g_free(argv[n]);
@@ -279,7 +291,7 @@ int main(int argc, char **argv)
     multi_win_set_role_prefix("roxterm");
     if (!launched)
     {
-        roxterm_launch(dpy_name, NULL);
+        roxterm_launch(dpy_name);
     }
 
 #if ENABLE_SM
