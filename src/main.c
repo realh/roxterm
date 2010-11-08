@@ -121,9 +121,9 @@ static int run_via_dbus(DBusMessage *message)
          * after an idle.
          *
          * Removing the reply prevents the error message reported in
-         * <https://sourceforge.net/tracker/?func=detail&atid=698428&aid=3089323&group_id=124080>
+         * <http://p.sf.net/roxterm/gi5kdI9QrPZ>
          * at the expense of regressing
-         * <https://sourceforge.net/tracker/?func=detail&aid=2809991&group_id=124080&atid=698428>
+         * <http://p.sf.net/roxterm/EfNoUkwW>
          */
         result = rtdbus_send_message(message) ? 0 : -1;
     }
