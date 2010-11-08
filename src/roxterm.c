@@ -105,6 +105,7 @@ struct ROXTermData {
     gboolean dont_lookup_dimensions;
     char *reply;
     int columns, rows;
+    char **env;
 };
 
 #define PROFILE_NAME_KEY "roxterm_profile_name"
@@ -309,6 +310,19 @@ char *roxterm_get_cwd(ROXTermData *roxterm)
     return target;
 }
 
+static char **roxterm_strv_copy(char **src)
+{
+    int n;
+    char **dest;
+    
+    for (n = 0; src[n]; ++n);
+    dest = g_new(char *, n + 1);
+    for (n = 0; src[n]; ++n)
+        dest[n] = g_strdup(src[n]);
+    dest[n] = 0;
+    return dest;
+}
+
 static ROXTermData *roxterm_data_clone(ROXTermData *old_gt)
 {
     ROXTermData *new_gt = g_new(ROXTermData, 1);
@@ -324,6 +338,7 @@ static ROXTermData *roxterm_data_clone(ROXTermData *old_gt)
     new_gt->setup_encodings = FALSE;
     new_gt->dont_lookup_dimensions = FALSE;
     new_gt->actual_commandv = NULL;
+    new_gt->env = roxterm_strv_copy(old_gt->env);
 
     if (old_gt->colour_scheme)
     {
@@ -429,8 +444,6 @@ static char **roxterm_modify_environment(char const * const *env,
     return result;
 }
 
-extern char **environ;
-
 static char **roxterm_get_environment(ROXTermData *roxterm)
 {
     char **result;
@@ -465,7 +478,7 @@ static char **roxterm_get_environment(ROXTermData *roxterm)
         new_env[13] = roxterm->display_name;
     else
         new_env[12] = NULL;
-    result = roxterm_modify_environment((char const * const *) environ,
+    result = roxterm_modify_environment((char const * const *) roxterm->env,
             new_env);
     g_free((char *) new_env[1]);
     g_free((char *) new_env[3]);
@@ -801,6 +814,7 @@ static void roxterm_data_delete(ROXTermData *roxterm)
     g_free(roxterm->directory);
     g_free(roxterm->encoding);
     g_free(roxterm->display_name);
+    g_strfreev(roxterm->env);
     if (roxterm->pango_desc)
         pango_font_description_free(roxterm->pango_desc);
     if (roxterm->replace_task_dialog)
@@ -3480,7 +3494,7 @@ static ROXTermData *roxterm_data_new(const char *display_name,
         char *title_template, double zoom_factor, const char *directory,
         char *profile_name, Options *profile, gboolean maximise,
         const char *colour_scheme_name, char *encoding,
-        char **geom, gboolean *size_on_cli)
+        char **geom, gboolean *size_on_cli, char **env)
 {
     ROXTermData *roxterm = g_new0(ROXTermData, 1);
 
@@ -3567,10 +3581,11 @@ static ROXTermData *roxterm_data_new(const char *display_name,
         roxterm->encoding = NULL;
     }
     roxterm->pid = -1;
+    roxterm->env = global_options_copy_strv(env);
     return roxterm;
 }
 
-void roxterm_launch(const char *display_name)
+void roxterm_launch(const char *display_name, char **env)
 {
     GtkPositionType tab_pos;
     gboolean always_show_tabs;
@@ -3595,7 +3610,7 @@ void roxterm_launch(const char *display_name)
                             "maximise", 0),
             colour_scheme_name,
             global_options_lookup_string("encoding"),
-            &geom, &size_on_cli);
+            &geom, &size_on_cli, env);
             
     if (!size_on_cli)
     {
@@ -3827,9 +3842,9 @@ void roxterm_init(void)
 }
 
 gboolean roxterm_spawn_command_line(const gchar *command_line,
-        const char *display_name, const char *cwd, GError **error)
+        const char *display_name, const char *cwd, char **env, GError **error)
 {
-    char **env;
+    char **env2;
     char const *disp[3];
     int argc;
     char **argv = NULL;
@@ -3842,14 +3857,14 @@ gboolean roxterm_spawn_command_line(const gchar *command_line,
     disp[0] = "DISPLAY";
     disp[1] = display_name;
     disp[2] = NULL;
-    env = roxterm_modify_environment((char const * const *) environ, disp);
+    env2 = roxterm_modify_environment((char const * const *) env, disp);
     result = g_shell_parse_argv(command_line, &argc, &argv, error);
     if (result)
     {
-        result = g_spawn_async(cwd, argv, env, G_SPAWN_SEARCH_PATH,
+        result = g_spawn_async(cwd, argv, env2, G_SPAWN_SEARCH_PATH,
                 NULL, NULL, NULL, error);
     }
-    g_strfreev(env);
+    g_strfreev(env2);
     if (argv)
         g_strfreev(argv);
     return result;
@@ -3882,7 +3897,7 @@ void roxterm_spawn(ROXTermData *roxterm, const char *command,
         default:
             cwd = roxterm_get_cwd(roxterm);
             roxterm_spawn_command_line(command, roxterm->display_name,
-                    cwd, &error);
+                    cwd, roxterm->env, &error);
             if (error)
             {
                 dlg_warning(roxterm_get_toplevel(roxterm),
@@ -4139,6 +4154,8 @@ static void close_win_tag(_ROXTermParseContext *rctx)
     rctx->geom = NULL;
 }
 
+extern char **environ;
+
 static void parse_open_tab(_ROXTermParseContext *rctx,
         const char **attribute_names, const char **attribute_values,
         GError **error)
@@ -4187,7 +4204,7 @@ static void parse_open_tab(_ROXTermParseContext *rctx,
     roxterm = roxterm_data_new(rctx->disp, rctx->title_template,
             rctx->zoom_factor, cwd, g_strdup(profile_name), profile,
             rctx->maximised, colours_name, g_strdup(encoding),
-            &rctx->geom, NULL);
+            &rctx->geom, NULL, environ);
     roxterm->dont_lookup_dimensions = TRUE;
     if (rctx->fdesc)
         roxterm->pango_desc = pango_font_description_copy(rctx->fdesc);

@@ -89,11 +89,15 @@ DBusMessage *rtdbus_append_args(DBusMessage *message,
 DBusMessage *rtdbus_append_args_valist(DBusMessage *message, 
 		int first_arg_type, va_list ap);
 
-/* Returns NULL-terminated array of strings corresponding to a message's args.
- * Non-string message args are counted as errors and skipped.
+/* Returns NULL-terminated array of strings ("strv") corresponding to a
+ * message's args. Non-string message args are counted as errors and skipped.
  * Result may be freed with g_strfreev if it isn't NULL (no args).
+ * iter must be initialised before calling.
  */
-char **rtdbus_get_message_args_as_strings(DBusMessage *message);
+char **rtdbus_get_message_args_as_strings(DBusMessageIter *iter);
+
+/* Returns a "strv" from a single message arg, advancing iter */
+char **rtdbus_get_message_arg_string_array(DBusMessageIter *iter);
 
 #endif /* RTDBUS_H */
 

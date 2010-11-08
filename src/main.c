@@ -49,6 +49,8 @@ static gboolean main_quit_handler(gpointer data)
 #define ROXTERM_DBUS_INTERFACE RTDBUS_INTERFACE
 #define ROXTERM_DBUS_METHOD_NAME "NewTerminal"
 
+extern char **environ;
+
 static DBusMessage *create_dbus_message(int argc, char **argv,
         const char *display)
 {
@@ -58,6 +60,13 @@ static DBusMessage *create_dbus_message(int argc, char **argv,
     message = rtdbus_method_new(ROXTERM_DBUS_NAME, ROXTERM_DBUS_OBJECT_PATH,
             ROXTERM_DBUS_INTERFACE,
             ROXTERM_DBUS_METHOD_NAME, DBUS_TYPE_INVALID);
+    for (n = 0; environ[n]; ++n);
+    message = rtdbus_append_args(message,
+            DBUS_TYPE_ARRAY, DBUS_TYPE_STRING, RTDBUS_ARG(environ), n,
+            DBUS_TYPE_INVALID);
+    if (!message)
+        return NULL;
+    
     for (n = 0; message && n < argc; ++n)
     {
         message = rtdbus_append_args(message,
@@ -77,12 +86,13 @@ static DBusMessage *create_dbus_message(int argc, char **argv,
 static int run_via_dbus(DBusMessage *message)
 {
     int result = 0;
-
+    
     if (!message)
         return -1;
+    
     /* New roxterm command may have been run in a different directory
      * from original instance */
-    if (!global_options_directory)
+    if (!result && !global_options_directory)
     {
         char *cwd = GET_CURRENT_DIR();
         const char *d = "-d";
@@ -134,10 +144,12 @@ static DBusHandlerResult new_term_listener(DBusConnection *connection,
         DBusMessage *message, void *user_data)
 {
     DBusError derror;
+    char **env;
     char **argv;
     int argc;
     int n;
     const char *display = NULL;
+    DBusMessageIter iter;
 
     dbus_error_init(&derror);
 
@@ -146,7 +158,9 @@ static DBusHandlerResult new_term_listener(DBusConnection *connection,
     {
         return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;    
     }
-    argv = rtdbus_get_message_args_as_strings(message);
+    dbus_message_iter_init(message, &iter);
+    env = rtdbus_get_message_arg_string_array(&iter);
+    argv = rtdbus_get_message_args_as_strings(&iter);
     for (argc = 0; argv && argv[argc]; ++argc)
     {
         if (g_str_has_prefix(argv[argc], "--display="))
@@ -157,11 +171,10 @@ static DBusHandlerResult new_term_listener(DBusConnection *connection,
         global_options_preparse_argv_for_execute(&argc, argv, TRUE);
         global_options_init(&argc, &argv, FALSE);
     }
-    roxterm_launch(display);
+    roxterm_launch(display, env);
 
-    for (n = 0; n < argc; ++n)
-        g_free(argv[n]);
-    g_free(argv);
+    g_strfreev(argv);
+    g_strfreev(env);
     
     return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;    
 }
@@ -291,7 +304,7 @@ int main(int argc, char **argv)
     multi_win_set_role_prefix("roxterm");
     if (!launched)
     {
-        roxterm_launch(dpy_name);
+        roxterm_launch(dpy_name, environ);
     }
 
 #if ENABLE_SM

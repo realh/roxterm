@@ -278,34 +278,31 @@ DBusMessage *rtdbus_method_new(
     return message;
 }
 
-char **rtdbus_get_message_args_as_strings(DBusMessage *message)
+char **rtdbus_get_message_args_as_strings(DBusMessageIter *iter)
 {
-    DBusMessageIter iter;
     char **argv = NULL;
     int len = 0;
     int argc = 0;
     int argtype;
 
-    if (!dbus_message_iter_init(message, &iter))
-        return NULL;
-    for (; (argtype = dbus_message_iter_get_arg_type(&iter)) 
+    for (; (argtype = dbus_message_iter_get_arg_type(iter)) 
             != DBUS_TYPE_INVALID;
-            dbus_message_iter_next(&iter))
+            dbus_message_iter_next(iter))
     {
         RTDBUS_ARG_CONST char *arg;
 
         if (argtype != DBUS_TYPE_STRING)
         {
-            g_critical(_("Invalid argument type (%d) in "
+            g_critical(_("Invalid argument type ('%c') in "
                         "NewTerminal D-BUS method"), argtype);
             continue;
         }
         if (argc + 1 >= len)
             argv = g_renew(char *, argv, len = len ? len * 2 : 2);
 #if HAVE_DBUS_MESSAGE_ITER_GET_BASIC
-        dbus_message_iter_get_basic(&iter, &arg);
+        dbus_message_iter_get_basic(iter, &arg);
 #elif HAVE_DBUS_MESSAGE_ITER_GET_STRING
-        arg = dbus_message_iter_get_string(&iter);
+        arg = dbus_message_iter_get_string(iter);
 #else
 #error "Don't know how to read D-BUS message arguments from iterator"
 #endif
@@ -326,6 +323,28 @@ char **rtdbus_get_message_args_as_strings(DBusMessage *message)
         argv[++argc] = NULL;
     }
     return argv;
+}
+
+char **rtdbus_get_message_arg_string_array(DBusMessageIter *iter)
+{
+    int t;
+    DBusMessageIter sub_iter;
+    
+    if ((t = dbus_message_iter_get_arg_type(iter)) != DBUS_TYPE_ARRAY)
+    {
+        g_critical(_("Invalid first argument type ('%c') in "
+                    "NewTerminal D-BUS method; expected array"), t);
+        return NULL;
+    }
+    if ((t = dbus_message_iter_get_element_type(iter)) != DBUS_TYPE_STRING)
+    {
+        g_critical(_("Invalid array element type ('%c') in "
+                    "NewTerminal D-BUS method; expected strings"), t);
+        return NULL;
+    }
+    dbus_message_iter_recurse(iter, &sub_iter);
+    dbus_message_iter_next(iter);
+    return rtdbus_get_message_args_as_strings(&sub_iter);
 }
 
 /* vi:set sw=4 ts=4 noet cindent cino= */
