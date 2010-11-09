@@ -581,7 +581,7 @@ void multi_tab_move_to_new_window(MultiWin *win, MultiTab *tab, int position)
         win->title_template = old_win->default_title_template ?
                 g_strdup(old_win->default_title_template) : NULL;
     }
-    old_win_destroyed = old_win->ntabs <= 1;
+    old_win_destroyed = old_win && old_win->ntabs <= 1;
     multi_tab_remove_from_parent(tab, FALSE);
     multi_win_add_tab(win, tab, position, FALSE);
     multi_win_set_geometry_hints_for_tab(win, tab);

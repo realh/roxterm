@@ -783,7 +783,7 @@ static void roxterm_data_delete(ROXTermData *roxterm)
     g_return_if_fail(roxterm);
     
     gwin = roxterm_get_toplevel(roxterm);
-    if (gwin)
+    if (gwin && roxterm->win_state_changed_tag)
     {
         g_signal_handler_disconnect(gwin, roxterm->win_state_changed_tag);
     }
