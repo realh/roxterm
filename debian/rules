@@ -4,7 +4,7 @@
 	dh $@
 
 override_dh_auto_configure:
-	dh_auto_configure -- --with-gnome-default-applications=/usr/share/gnome-control-center/default-apps
+	dh_auto_configure -- --with-gnome-default-applications=/usr/share/gnome-control-center/default-apps LDFLAGS=--as-needed
 
 override_dh_auto_build:
 	dh_auto_build --parallel
