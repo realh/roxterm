@@ -249,7 +249,8 @@ and docbook-xsl in your Build-Depends control field.
           <option>-T <replaceable>TITLE</replaceable></option>
         </term>
         <listitem>
-          <para>Set window title.</para>
+          <para>Set window title. May include "%s" which is substituted with
+          the full contents of the tab's label.</para>
         </listitem>
       </varlistentry>
       <varlistentry>
@@ -257,7 +258,9 @@ and docbook-xsl in your Build-Depends control field.
           <option>-n <replaceable>NAME</replaceable></option>
         </term>
         <listitem>
-          <para>Set tab name.</para>
+          <para>Set tab name as displayed in its label. May include "%s" which
+          is substituted with the window title string set by the terminal.
+          </para>
         </listitem>
       </varlistentry>
       <varlistentry>
