@@ -333,7 +333,7 @@ static ROXTermData *roxterm_data_clone(ROXTermData *old_gt)
     new_gt->win = NULL;
     new_gt->tab = NULL;
     new_gt->running = FALSE;
-    new_gt->title_template = NULL;
+    new_gt->title_template = g_strdup(old_gt->title_template);
     new_gt->postponed_free = FALSE;
     new_gt->setup_encodings = FALSE;
     new_gt->dont_lookup_dimensions = FALSE;
@@ -1453,13 +1453,13 @@ static gboolean roxterm_release_handler(GtkWidget *widget,
 static void roxterm_window_title_handler(VteTerminal *vte,
         ROXTermData * roxterm)
 {
-    multi_tab_set_window_title(roxterm->tab,
-        vte_terminal_get_window_title(vte) ?
-        vte_terminal_get_window_title(vte) : _("ROXTerm"));
+    const char *t = vte_terminal_get_window_title(vte);
+    
+    multi_tab_set_window_title(roxterm->tab, t ? t : _("ROXTerm"));
 }
 
 static void roxterm_icon_title_handler(VteTerminal *vte,
-        ROXTermData * roxterm)
+        ROXTermData *roxterm)
 {
     multi_tab_set_icon_title(roxterm->tab, vte_terminal_get_icon_title(vte));
 }
@@ -2566,19 +2566,9 @@ static void roxterm_apply_disable_menu_access(ROXTermData *roxterm)
 
 static void roxterm_apply_title_template(ROXTermData *roxterm)
 {
-    char *tt = NULL;
-    
-    if (roxterm->title_template)
-    {
-        tt = g_strdup(roxterm->title_template);
-    }
-    else
-    {
-        tt = options_lookup_string_with_default(roxterm->profile,
-            "title_string", "%s");
-    }
-    multi_win_set_title_template(roxterm->win, tt, TRUE);
-    g_free(tt);
+    multi_win_set_title_template(roxterm->win, 
+            roxterm->title_template ?
+            roxterm->title_template : _("ROXTerm: %s")); 
 }
     
 /*
@@ -2733,7 +2723,7 @@ roxterm_tab_received(GtkWidget *rcvd_widget, ROXTermData *roxterm)
 
 static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
     ROXTermData * roxterm_template, ROXTermData ** roxterm_out,
-    char **title, GtkWidget ** vte_widget, GtkAdjustment **adjustment)
+    GtkWidget ** vte_widget, GtkAdjustment **adjustment)
 {
     VteTerminal *vte;
     const char *title_orig;
@@ -2742,11 +2732,6 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
     MultiWinScrollBar_Position scrollbar_pos;
     char *tab_name;
 
-    if ((!roxterm_template->win || roxterm_template->win == win)
-        && roxterm_template->title_template)
-    {
-        roxterm->title_template = g_strdup(roxterm_template->title_template);
-    }
     roxterm_terms = g_list_append(roxterm_terms, roxterm);
 
     if (roxterm_template->win)
@@ -2808,17 +2793,17 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
 
     roxterm_apply_profile(roxterm, vte);
     tab_name = global_options_lookup_string("tab-name");
-    if (tab_name)
+    if (!tab_name)
     {
-        multi_tab_set_name(tab, tab_name);
-        options_set_string(global_options, "tab-name", NULL);
-        g_free(tab_name);
+        tab_name = options_lookup_string_with_default(roxterm->profile,
+                "title_string", "%s");
     }
+    multi_tab_set_window_title_template(tab, tab_name);
+    g_free(tab_name);
+    title_orig = vte_terminal_get_window_title(vte);
+    multi_tab_set_window_title(tab,title_orig ? title_orig : _("ROXTerm"));
 
     roxterm_set_vte_size(roxterm, vte, roxterm->columns, roxterm->rows);
-
-    title_orig = vte_terminal_get_window_title(vte);
-    *title = g_strdup(title_orig ? title_orig : _("ROXTerm"));
 
     roxterm_connect_misc_signals(roxterm);
     multi_tab_connect_tab_selection_handler(win,
@@ -3038,9 +3023,9 @@ static void roxterm_reflect_profile_change(Options * profile, const char *key)
         }
         else if (!strcmp(key, "title_string"))
         {
-            g_free(roxterm->title_template);
-            roxterm->title_template = NULL;
-            roxterm_apply_title_template(roxterm);
+            multi_tab_set_window_title_template(roxterm->tab,
+                    options_lookup_string_with_default(roxterm->profile,
+                            "title_string", "%s"));
         }
         else if (!strcmp(key, "tab_close_btn"))
         {
@@ -3973,7 +3958,8 @@ typedef struct {
     char *geom;
     int width, height;
     PangoFontDescription *fdesc;
-    char *title_template;
+    char *window_title;
+    char *window_title_template;
     double zoom_factor;
     char *title;
     char *role;
@@ -3981,6 +3967,7 @@ typedef struct {
     int argc;
     int argn;
     char *tab_name;
+    char *tab_title_template;
     char *tab_title;
     char *icon_title;
     gboolean current;
@@ -3994,11 +3981,11 @@ static void parse_open_win(_ROXTermParseContext *rctx,
     int n;
     const char *disp = NULL;
     const char *geom = NULL;
-    const char *title_template = NULL;
-    const char *title = NULL;
     const char *role = NULL;
     const char *font = NULL;
     const char *shortcuts_name = NULL;
+    const char *title_template = NULL;
+    const char *title = NULL;
     gboolean show_mbar = TRUE;
     gboolean show_tabs = FALSE;
     gboolean disable_menu_shortcuts = FALSE;
@@ -4025,7 +4012,7 @@ static void parse_open_win(_ROXTermParseContext *rctx,
             sscanf(v, "%dx%d+", &rctx->width, &rctx->height);
         }
         else if (!strcmp(a, "title_template"))
-            title_template = g_strdup(v);
+            title_template = v;
         else if (!strcmp(a, "font"))
             font = v;
         else if (!strcmp(a, "title"))
@@ -4073,10 +4060,14 @@ static void parse_open_win(_ROXTermParseContext *rctx,
         rctx->role = g_strdup(role);
         gtk_window_set_role(gwin, role);
     }
-    if (title && title[0])
+    if (title_template && title_template[0])
     {
-        rctx->title = g_strdup(title);
-        gtk_window_set_title(gwin, rctx->title);
+        rctx->window_title_template = g_strdup(title_template);
+        multi_win_set_title_template(win, title_template);
+    }
+    if (rctx->window_title)
+    {
+        multi_win_set_title(win, rctx->window_title);
     }
     if (geom && geom[0])
     {
@@ -4091,8 +4082,8 @@ static void parse_open_win(_ROXTermParseContext *rctx,
         rctx->disp = g_strdup(disp);
     multi_win_set_show_menu_bar(win, show_mbar);
     multi_win_set_always_show_tabs(win, show_tabs);
-    if (title_template && title_template[0])
-        rctx->title_template = g_strdup(title_template);
+    if (title && title[0])
+        rctx->window_title = g_strdup(title);
 }
 
 static void close_win_tag(_ROXTermParseContext *rctx)
@@ -4118,15 +4109,15 @@ static void close_win_tag(_ROXTermParseContext *rctx)
         {
             gtk_window_parse_geometry(gwin, rctx->geom);
         }
-        if (rctx->title_template)
+        if (rctx->window_title_template)
         {
             multi_win_set_title_template(rctx->win,
-                    rctx->title_template, FALSE);
+                    rctx->window_title_template);
         }
         if (rctx->role)
             gtk_window_set_role(gwin, rctx->role);
-        if (rctx->title)
-            gtk_window_set_title(gwin, rctx->title);
+        if (rctx->window_title)
+            multi_win_set_title(rctx->win, rctx->window_title);
         multi_win_show(rctx->win);
         if (rctx->active_tab)
         {
@@ -4137,12 +4128,12 @@ static void close_win_tag(_ROXTermParseContext *rctx)
         }
     }
     rctx->win = NULL;
-    g_free(rctx->title_template);
-    rctx->title_template = NULL;
     g_free(rctx->role);
     rctx->role = NULL;
-    g_free(rctx->title);
-    rctx->title = NULL;
+    g_free(rctx->window_title);
+    rctx->window_title = NULL;
+    g_free(rctx->window_title_template);
+    rctx->window_title_template = NULL;
     if (rctx->fdesc)
     {
         pango_font_description_free(rctx->fdesc);
@@ -4180,9 +4171,9 @@ static void parse_open_tab(_ROXTermParseContext *rctx,
             colours_name = v;
         else if (!strcmp(a, "cwd"))
             cwd = v;
-        else if (!strcmp(a, "name"))
-            rctx->tab_name = g_strdup(v);
-        else if (!strcmp(a, "title"))
+        else if (!strcmp(a, "title_template"))
+            rctx->tab_title_template = g_strdup(v);
+        else if (!strcmp(a, "window_title"))
             rctx->tab_title = g_strdup(v);
         else if (!strcmp(a, "icon_title"))
             rctx->icon_title = g_strdup(v);
@@ -4201,7 +4192,7 @@ static void parse_open_tab(_ROXTermParseContext *rctx,
     
     profile = dynamic_options_lookup_and_ref(roxterm_get_profiles(),
             profile_name, "roxterm profile");
-    roxterm = roxterm_data_new(rctx->disp, rctx->title_template,
+    roxterm = roxterm_data_new(rctx->disp, rctx->window_title_template,
             rctx->zoom_factor, cwd, g_strdup(profile_name), profile,
             rctx->maximised, colours_name, g_strdup(encoding),
             &rctx->geom, NULL, environ);
@@ -4232,14 +4223,17 @@ static void close_tab_tag(_ROXTermParseContext *rctx)
     rctx->tab = multi_tab_new(rctx->win, roxterm);
     if (rctx->current)
         rctx->active_tab = rctx->tab;
-    if (rctx->tab_name && rctx->tab_name[0])
-        multi_tab_set_name(rctx->tab, rctx->tab_name);
+    if (rctx->tab_title_template && rctx->tab_title_template[0])
+    {
+        multi_tab_set_window_title_template(rctx->tab,
+                rctx->tab_title_template);
+    }
     if (rctx->tab_title && rctx->tab_title[0])
         multi_tab_set_window_title(rctx->tab, rctx->tab_title);
     if (rctx->icon_title && rctx->icon_title[0])
         multi_tab_set_icon_title(rctx->tab, rctx->icon_title);
-    g_free(rctx->tab_name);
-    rctx->tab_name = NULL;
+    g_free(rctx->tab_title_template);
+    rctx->tab_title_template = NULL;
     g_free(rctx->tab_title);
     rctx->tab_title = NULL;
     g_free(rctx->icon_title);

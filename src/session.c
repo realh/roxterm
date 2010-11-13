@@ -120,7 +120,7 @@ static void save_tab_to_fp(MultiTab *tab, gpointer handle)
 {
     FILE *fp = handle;
     ROXTermData *roxterm = multi_tab_get_user_data(tab);
-    const char *name = multi_tab_get_name(tab);
+    const char *name = multi_tab_get_window_title_template(tab);
     char *ne = name ? g_markup_escape_text(name, -1) : NULL;
     const char *title = multi_tab_get_window_title(tab);
     char *te = title ? g_markup_escape_text(title, -1) : NULL;
@@ -137,7 +137,7 @@ static void save_tab_to_fp(MultiTab *tab, gpointer handle)
     char const * const *commandv = roxterm_get_actual_commandv(roxterm);
     
     fprintf(fp, "    <tab profile='%s' colour_scheme='%s' cwd='%s'\n"
-            "        name='%s' title='%s' icon_title='%s'\n"
+            "        title_template='%s' window_title='%s' icon_title='%s'\n"
             "        encoding='%s' current='%d'%s>\n",
             pne, csne, cwde,
             ne ? ne : "", te ? te : "", ie ? ie : "",
@@ -150,7 +150,6 @@ static void save_tab_to_fp(MultiTab *tab, gpointer handle)
     g_free(csne);
     g_free(ence);
     g_free(ne);
-    g_free(te);
     g_free(ie);
     if (commandv)
     {
@@ -181,7 +180,7 @@ static gboolean save_session_to_fp(SessionData *sd, FILE *fp)
         char *disp = gdk_screen_make_display_name(gtk_window_get_screen(gwin));
         const char *tt0 = multi_win_get_title_template(win);
         char *tt;
-        const char *title0 = gtk_window_get_title(gwin);
+        const char *title0 = multi_win_get_title(win);
         char *title;
         gpointer user_data = multi_win_get_user_data_for_current_tab(win);
         VteTerminal *vte;
@@ -222,7 +221,7 @@ static gboolean save_session_to_fp(SessionData *sd, FILE *fp)
                 "      maximised='%d' fullscreen='%d' zoom='%f'>\n",
                 disp, w, h, x, y,
                 tt ? tt : "", fne,
-                title ? title : "", gtk_window_get_role(gwin),
+                title, gtk_window_get_role(gwin),
                 scsne,
                 multi_win_get_show_menu_bar(win),
                 multi_win_get_always_show_tabs(win),

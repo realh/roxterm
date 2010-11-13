@@ -776,7 +776,7 @@ static void profilegui_setup_list_store(ProfileGUI *pg)
     static char const *labels[] = {
             N_("Appearance"), N_("General"), N_("Command"),
             N_("URI handling"), N_("Background"), N_("Scrolling"),
-            N_("Keyboard"), N_("Window/Tabs")
+            N_("Keyboard"), N_("Tabs")
     };
     GtkTreeIter iter;
     int n;

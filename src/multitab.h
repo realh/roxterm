@@ -41,7 +41,7 @@ typedef struct MultiWin MultiWin;
  */
 typedef GtkWidget *(*MultiTabFiller) (MultiWin * win, MultiTab * tab,
     gpointer user_data_template, gpointer * new_user_data,
-    char **title, GtkWidget ** active_widget, GtkAdjustment **adjustment);
+    GtkWidget ** active_widget, GtkAdjustment **adjustment);
 
 /* Called when a tab is destroyed, with the data passed as new_user_data above
  */
@@ -120,14 +120,18 @@ GtkWidget *multi_tab_get_widget(MultiTab *);
 
 const char *multi_tab_get_display_name(MultiTab *tab);
 
-void multi_tab_set_window_title(MultiTab *, const char *);
-
 void multi_tab_set_icon_title(MultiTab *, const char *);
 
-void multi_tab_set_name(MultiTab *, const char *);
+/* Sets the title which is used to build the actaul title from title_template.
+ */
+void multi_tab_set_window_title(MultiTab *, const char *);
 
-const char *multi_tab_get_name(MultiTab *);
+/* See multi_win_set-title */
+void multi_tab_set_window_title_template(MultiTab *, const char *);
 
+const char *multi_tab_get_window_title_template(MultiTab *);
+
+/* Not the full title */
 const char *multi_tab_get_window_title(MultiTab *);
 
 const char *multi_tab_get_icon_title(MultiTab *);
@@ -380,14 +384,17 @@ void multi_win_set_always_show_tabs(MultiWin *win, gboolean show);
 /* List of all known windows - treat as read-only */
 extern GList *multi_win_all;
 
-/* Sets a title template string - see profile dialog "Window/Tabs Window Title"
-   comment for details; NULL is equivalent to "%s". If def (for "default")
-   this is a default which will be restored if NULL is subsequently passed with
-   def FALSE */
-void multi_win_set_title_template(MultiWin *win, const char *tt,
-        gboolean def);
+/* Sets a title template string. %s is substituted with the current tab's title.
+ * There may only be one %s and no other % characters except %%.
+ * NULL is equivalent to "%s".
+ */
+void multi_win_set_title_template(MultiWin *win, const char *tt);
 
 const char *multi_win_get_title_template(MultiWin *win);
+
+const char *multi_win_get_title(MultiWin *win);
+
+void multi_win_set_title(MultiWin *win, const char *);
 
 /* Whether window is managed by a compositor */
 gboolean multi_win_composite(MultiWin *win);

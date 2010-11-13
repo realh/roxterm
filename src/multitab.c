@@ -32,8 +32,8 @@ struct MultiTab {
     MultiWin *parent;
     GtkWidget *widget;            /* Top-level widget in notebook */
     char *window_title;
+    char *window_title_template;
     char *icon_title;
-    char *name;
     GtkWidget *popup_menu_item, *menu_bar_item;
     GtkWidget *active_widget;
     gpointer user_data;
@@ -88,7 +88,6 @@ struct MultiWin {
     char *default_title_template;
     char *child_title;
     char *child_icon;
-    gboolean title_override;
 #if HAVE_COMPOSITE
     gboolean composite;
 #endif
@@ -142,8 +141,6 @@ static void multi_win_select_tab_action(GtkCheckMenuItem *widget,
         MultiTab * tab);
 
 static void multi_win_destructor(MultiWin *win, gboolean destroy_widgets);
-
-static void multi_win_set_title(MultiWin *win, const char *title);
 
 static void multi_win_set_icon_title(MultiWin *win, const char *title);
 
@@ -219,8 +216,7 @@ MultiTab *multi_tab_new(MultiWin * parent, gpointer user_data_template)
 
     tab->status_stock = NULL;
     tab->widget = multi_tab_filler(parent, tab, user_data_template,
-        &tab->user_data, &tab->window_title, &tab->active_widget,
-        &tab->adjustment);
+        &tab->user_data, &tab->active_widget, &tab->adjustment);
     g_object_set_data(G_OBJECT(tab->widget), "roxterm_tab", tab);
 
     multi_win_add_tab(parent, tab, -1, FALSE);
@@ -245,9 +241,7 @@ static void multi_tab_delete_without_notifying_parent(MultiTab * tab,
     tab->user_data = NULL;
 
     g_free(tab->window_title);
-    g_free(tab->name);
     tab->window_title = NULL;
-    tab->name = NULL;
     if (destroy_widgets && tab->widget)
     {
         gtk_widget_destroy(tab->widget);
@@ -310,47 +304,22 @@ static void multi_win_set_geometry_hints_for_tab(MultiWin * win, MultiTab * tab)
     }
 }
 
-static void multi_tab_set_name_or_title(MultiTab *tab, const char *title)
+static char *make_title(const char *template, const char *title)
 {
-    MultiWin *win = tab->parent;
-
-    if (tab->label)
+    char *title0 = NULL;
+    
+    if (template)
     {
-        gtk_label_set_text(GTK_LABEL(tab->label), title);
-    }
-    if (win)
-    {
-        win->ignore_toggles = TRUE;
-        if (tab->popup_menu_item)
+        if (strstr(template, "%s"))
         {
-            tab->popup_menu_item = menutree_change_tab_title
-                (win->popup_menu, tab->popup_menu_item, title);
-            g_signal_connect(tab->popup_menu_item, "toggled",
-                G_CALLBACK(multi_win_select_tab_action), tab);
+            title0 = g_strdup_printf(template, title ? title: "");
         }
-        if (tab->menu_bar_item)
+        else
         {
-            tab->menu_bar_item = menutree_change_tab_title
-                (win->menu_bar, tab->menu_bar_item, title);
-            g_signal_connect(tab->menu_bar_item, "toggled",
-                G_CALLBACK(multi_win_select_tab_action), tab);
+            title0 = g_strdup(template);
         }
-        win->ignore_toggles = FALSE;
     }
-}
-
-void multi_tab_set_window_title(MultiTab * tab, const char *title)
-{
-    MultiWin *win = tab->parent;
-
-    g_free(tab->window_title);
-    tab->window_title = title ? g_strdup(title) : NULL;
-    if (win->current_tab == tab)
-    {
-        multi_win_set_title(win, STR_EMPTY(tab->window_title));
-    }
-    if (!tab->name)
-        multi_tab_set_name_or_title(tab, title);
+    return title0;
 }
 
 void multi_tab_set_icon_title(MultiTab * tab, const char *title)
@@ -365,16 +334,117 @@ void multi_tab_set_icon_title(MultiTab * tab, const char *title)
     }
 }
 
-void multi_tab_set_name(MultiTab * tab, const char *name)
+static gboolean check_title_template(const char *tt)
 {
-    g_free(tab->name);
-    tab->name = name ? g_strdup(name) : NULL;
-    multi_tab_set_name_or_title(tab, name ? name : tab->window_title);
+    const char *c;
+    gboolean lwpc = FALSE;
+    gboolean got_pcs = FALSE;
+    
+    c = tt;
+    do
+    {
+        if (*c == '%')
+        {
+            /* Check for illegal trailing % */
+            if (!lwpc && *(c + 1) == 0)
+                return FALSE;
+            /* lwpc is FALSE after even # of %s, TRUE after odd # */
+            lwpc = !lwpc;
+        }
+        else
+        {
+            if (lwpc)
+            {
+                if (*c == 's')
+                {
+                    if (got_pcs)
+                        return FALSE;
+                    got_pcs = TRUE;
+                }
+                else
+                {
+                    return FALSE;
+                }
+            }
+            lwpc = FALSE;
+        }
+    }
+    while (*(c++));
+    return TRUE;
 }
 
-const char *multi_tab_get_name(MultiTab * tab)
+static gboolean validate_title_template(GtkWindow *parent, const char *tt)
 {
-    return tab->name;
+    if (tt && !check_title_template(tt))
+    {
+        static char *bad_template = NULL;
+    
+        if (!bad_template || strcmp(bad_template, tt))
+        {
+            dlg_warning(parent,
+              _("'%s' contains invalid %% sequences for a title template"),
+              tt);
+            g_free(bad_template);
+            bad_template = g_strdup(tt);
+        }
+        return FALSE;
+    }
+    return TRUE;
+}
+
+static void multi_tab_set_full_window_title(MultiTab * tab,
+        const char *template, const char *title)
+{
+    MultiWin *win = tab->parent;
+    char *actual_title = g_strdup_printf(template ? template : "%s",
+            title ? title : "");
+
+    if (tab->label)
+    {
+        gtk_label_set_text(GTK_LABEL(tab->label), actual_title);
+    }
+    if (win)
+    {
+        win->ignore_toggles = TRUE;
+        if (win->current_tab == tab)
+            multi_win_set_title(win, actual_title);
+        if (tab->popup_menu_item)
+        {
+            tab->popup_menu_item = menutree_change_tab_title
+                (win->popup_menu, tab->popup_menu_item, actual_title);
+            g_signal_connect(tab->popup_menu_item, "toggled",
+                G_CALLBACK(multi_win_select_tab_action), tab);
+        }
+        if (tab->menu_bar_item)
+        {
+            tab->menu_bar_item = menutree_change_tab_title
+                (win->menu_bar, tab->menu_bar_item, actual_title);
+            g_signal_connect(tab->menu_bar_item, "toggled",
+                G_CALLBACK(multi_win_select_tab_action), tab);
+        }
+        win->ignore_toggles = FALSE;
+    }
+}
+
+void multi_tab_set_window_title(MultiTab * tab, const char *title)
+{
+    g_free(tab->window_title);
+    tab->window_title = title ? g_strdup(title) : NULL;
+    multi_tab_set_full_window_title(tab, tab->window_title_template, title);
+}
+
+void multi_tab_set_window_title_template(MultiTab * tab, const char *template)
+{
+    GtkWidget *gwin = tab->parent ? tab->parent->gtkwin : NULL;
+    
+    if (!validate_title_template(gwin ? GTK_WINDOW(gwin) : NULL,
+            template))
+    {
+        return;
+    }
+    g_free(tab->window_title_template);
+    tab->window_title_template = template ? g_strdup(template) : NULL;
+    multi_tab_set_full_window_title(tab, template, tab->window_title);
 }
 
 const char *multi_tab_get_window_title(MultiTab * tab)
@@ -382,14 +452,19 @@ const char *multi_tab_get_window_title(MultiTab * tab)
     return tab->window_title;
 }
 
+const char *multi_tab_get_window_title_template(MultiTab * tab)
+{
+    return tab->window_title_template;
+}
+
+static char *multi_tab_get_full_window_title(MultiTab * tab)
+{
+    return make_title(tab->window_title_template, tab->window_title);
+}
+
 const char *multi_tab_get_icon_title(MultiTab * tab)
 {
     return tab->icon_title;
-}
-
-static const char *multi_tab_get_name_or_title(MultiTab * tab)
-{
-    return tab->name ? tab->name : tab->window_title;
 }
 
 gpointer multi_tab_get_user_data(MultiTab * tab)
@@ -625,51 +700,32 @@ void multi_tab_cancel_attention(MultiTab *tab)
     }
 }
 
-static char *make_title(MultiWin *win, const char *title)
+static void multi_win_set_full_title(MultiWin *win,
+        const char *template, const char *title)
 {
-    char *title0 = NULL;
-    
-    if (win->title_template)
+    if (win->gtkwin)
     {
-        if (strstr(win->title_template, "%s"))
-        {
-            title0 = g_strdup_printf(win->title_template, title ? title: "");
-        }
-        else
-        {
-            title0 = g_strdup(win->title_template);
-        }
+        char *title0 = make_title(template, title);
+        
+        gtk_window_set_title(GTK_WINDOW(win->gtkwin), title0);
+        g_free(title0);
     }
-    return title0;
 }
 
-static void multi_win_set_title(MultiWin *win, const char *title)
+void multi_win_set_title(MultiWin *win, const char *title)
 {
-    char *title0;
-    
     if (win->child_title != title)
     {
         g_free(win->child_title);
         win->child_title = title ? g_strdup(title) : NULL;
     }
-    title0 = make_title(win, title);
-    gtk_window_set_title(GTK_WINDOW(win->gtkwin), title0);
-    g_free(title0);
+    multi_win_set_full_title(win, win->title_template, title);
 }
 
 static void multi_win_set_icon_title(MultiWin *win, const char *title)
 {
-    char *title0;
-    
-    if (win->child_title != title)
-    {
-        g_free(win->child_title);
-        win->child_title = title ? g_strdup(title) : NULL;
-    }
-    title0 = make_title(win, title);
     if (win->gtkwin->window)
-        gdk_window_set_icon_name(win->gtkwin->window, title0);
-    g_free(title0);
+        gdk_window_set_icon_name(win->gtkwin->window, title);
 }
 
 void multi_win_select_tab(MultiWin * win, MultiTab * tab)
@@ -686,13 +742,16 @@ void multi_win_select_tab(MultiWin * win, MultiTab * tab)
     win->current_tab = tab;
     if (tab)
     {
+        char *title = multi_tab_get_full_window_title(tab);
+        
         multi_tab_cancel_attention(tab);
         multi_tab_set_status_stock(tab, NULL);
         win->user_data_template = tab->user_data;
         gtk_notebook_set_current_page(GTK_NOTEBOOK(win->notebook),
             multi_tab_get_page_num(tab));
         gtk_widget_grab_focus(tab->active_widget);
-        multi_win_set_title(win, tab->window_title);
+        multi_win_set_title(win, title);
+        g_free(title);
         multi_win_set_icon_title(win, tab->icon_title);
         menutree_select_tab(win->popup_menu, tab->popup_menu_item);
         menutree_select_tab(win->menu_bar, tab->menu_bar_item);
@@ -834,7 +893,7 @@ static void tab_set_name_from_clipboard_callback(GtkClipboard *clp,
     
     if (text == NULL || tab == NULL)
         return;
-    multi_tab_set_name(tab, text);
+    multi_tab_set_window_title_template(tab, text);
 }
 
 static gboolean multi_win_focus_in(GtkWidget *widget, GdkEventFocus *event,
@@ -1014,7 +1073,7 @@ static void multi_win_name_tab_action(MultiWin * win)
     GtkDialog *dialog = GTK_DIALOG(dialog_w);
     GtkWidget *name_w = gtk_entry_new();
     GtkEntry *name_e = GTK_ENTRY(name_w);
-    const char *name = tab->name;
+    const char *name = tab->window_title_template;
     int response;
 
     tab->rename_dialog = dialog_w;
@@ -1034,7 +1093,7 @@ static void multi_win_name_tab_action(MultiWin * win)
             name = gtk_entry_get_text(name_e);
             if (name && !name[0])
                 name = NULL;
-            multi_tab_set_name(tab, name);
+            multi_tab_set_window_title_template(tab, name);
             /* Fall through to destroy */
         default:
             gtk_widget_destroy(dialog_w);
@@ -1058,7 +1117,6 @@ static void multi_win_set_window_title_action(MultiWin * win)
     GtkDialog *dialog = GTK_DIALOG(dialog_w);
     GtkWidget *title_w = gtk_entry_new();
     GtkEntry *title_e = GTK_ENTRY(title_w);
-    const char *title = gtk_window_get_title(GTK_WINDOW(win->gtkwin));
     GtkWidget *hbox = gtk_hbox_new(FALSE, 8);
     GtkWidget *img = gtk_image_new_from_stock(GTK_STOCK_DIALOG_INFO,
             GTK_ICON_SIZE_DIALOG);
@@ -1069,6 +1127,7 @@ static void multi_win_set_window_title_action(MultiWin * win)
             "displayed as a single %. Apply an empty string here to use the "
             "profile's title string."));
     int response;
+    const char *title;
 
     gtk_dialog_set_default_response(dialog, GTK_RESPONSE_APPLY);
     gtk_box_pack_start(GTK_BOX(dialog->vbox), title_w, FALSE, TRUE, 8);
@@ -1077,7 +1136,7 @@ static void multi_win_set_window_title_action(MultiWin * win)
     gtk_box_pack_start(GTK_BOX(hbox), tip_label, TRUE, TRUE, 0);
     gtk_box_pack_start(GTK_BOX(dialog->vbox), hbox, TRUE, TRUE, 8);
     gtk_entry_set_activates_default(title_e, TRUE);
-    gtk_entry_set_text(title_e, title ? title : "");
+    gtk_entry_set_text(title_e, win->title_template ? win->title_template : "");
     gtk_widget_show_all(dialog_w);
     response = gtk_dialog_run(dialog);
     switch (response)
@@ -1090,8 +1149,7 @@ static void multi_win_set_window_title_action(MultiWin * win)
             title = gtk_entry_get_text(title_e);
             if (title && !title[0])
                 title = NULL;
-            multi_win_set_title_template(win, title, FALSE);
-            win->title_override = title ? TRUE : FALSE;
+            multi_win_set_title_template(win, title);
             /* Fall through to destroy */
         default:
             gtk_widget_destroy(dialog_w);
@@ -1696,7 +1754,9 @@ static GtkWidget *make_tab_label(MultiTab *tab, GtkPositionType tab_pos)
     static GdkColor amber;
     static gboolean parsed_amber = FALSE;
 
-    tab->label = gtk_label_new(multi_tab_get_name_or_title(tab));
+    tab->label = gtk_label_new(NULL);
+    multi_tab_set_full_window_title(tab, tab->window_title_template,
+            tab->window_title);
     switch (tab_pos)
     {
         case GTK_POS_LEFT:
@@ -1740,10 +1800,13 @@ static GtkWidget *make_tab_label(MultiTab *tab, GtkPositionType tab_pos)
 static void multi_tab_add_menutree_items(MultiWin * win, MultiTab * tab,
         int position)
 {
+    char *title = multi_tab_get_full_window_title(tab);
+    
     tab->popup_menu_item = menutree_add_tab_at_position(win->popup_menu,
-            multi_tab_get_name_or_title(tab), position);
+            title, position);
     tab->menu_bar_item = menutree_add_tab_at_position(win->menu_bar,
-            multi_tab_get_name_or_title(tab), position);
+            title, position);
+    g_free(title);
     g_signal_connect(tab->popup_menu_item, "toggled",
         G_CALLBACK(multi_win_select_tab_action), tab);
     g_signal_connect(tab->menu_bar_item, "toggled",
@@ -2018,87 +2081,23 @@ void multi_win_set_always_show_tabs(MultiWin *win, gboolean show)
     }
 }
 
-static gboolean check_title_template(const char *tt)
+void multi_win_set_title_template(MultiWin *win, const char *tt)
 {
-    const char *c;
-    gboolean lwpc = FALSE;
-    gboolean got_pcs = FALSE;
-    
-    c = tt;
-    do
-    {
-        if (*c == '%')
-        {
-            /* Check for illegal trailing % */
-            if (!lwpc && *(c + 1) == 0)
-                return FALSE;
-            /* lwpc is FALSE after even # of %s, TRUE after odd # */
-            lwpc = !lwpc;
-        }
-        else
-        {
-            if (lwpc)
-            {
-                if (*c == 's')
-                {
-                    if (got_pcs)
-                        return FALSE;
-                    got_pcs = TRUE;
-                }
-                else
-                {
-                    return FALSE;
-                }
-            }
-            lwpc = FALSE;
-        }
-    }
-    while (*(c++));
-    return TRUE;
-}
-
-static gboolean validate_title_template(MultiWin *win, const char *tt)
-{
-    if (tt && !check_title_template(tt))
-    {
-        static char *bad_template = NULL;
-    
-        if (!bad_template || strcmp(bad_template, tt))
-        {
-            dlg_warning(GTK_WINDOW(win->gtkwin),
-              _("'%s' contains invalid %% sequences for a window title string"),
-              tt);
-            g_free(bad_template);
-            bad_template = g_strdup(tt);
-        }
-        return FALSE;
-    }
-    return TRUE;
-}
-
-void multi_win_set_title_template(MultiWin *win, const char *tt, gboolean def)
-{
-    if (!validate_title_template(win, tt))
+    if (!validate_title_template(GTK_WINDOW(win->gtkwin), tt))
         return;
-    if (!tt && !def)
-        tt = win->default_title_template;
-    if (def)
-    {
-        g_free(win->default_title_template);
-        win->default_title_template = tt ? g_strdup(tt) : NULL;
-    }
-    if (!def || !win->title_override)
-    {
-        g_free(win->title_template);
-        win->title_template = tt ? g_strdup(tt) : NULL;
-    	multi_win_set_title(win, win->child_title);
-        multi_win_set_icon_title(win, win->child_icon);
-    }
+    g_free(win->title_template);
+    win->title_template = tt ? g_strdup(tt) : NULL;
+    multi_win_set_full_title(win, tt, win->child_title);
 }
 
 const char *multi_win_get_title_template(MultiWin *win)
 {
     return win->title_template;
+}
+
+const char *multi_win_get_title(MultiWin *win)
+{
+    return win->child_title;
 }
 
 gboolean multi_win_composite(MultiWin *win)
