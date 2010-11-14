@@ -5,9 +5,9 @@
 # Félix Medrano <xukosky@yahoo.es>, 2010.
 msgid ""
 msgstr ""
-"Project-Id-Version: roxterm 1.19.1\n"
+"Project-Id-Version: roxterm 1.20.0\n"
 "Report-Msgid-Bugs-To: http://sourceforge.net/projects/roxterm\n"
-"POT-Creation-Date: 2010-11-14 16:46+0000\n"
+"POT-Creation-Date: 2010-11-14 17:00+0000\n"
 "PO-Revision-Date: 2010-09-11 18:11+0200\n"
 "Last-Translator: \n"
 "Language-Team: Spanish <kde-i18n-doc@kde.org>\n"
@@ -647,7 +647,7 @@ msgid "Existing file '%s' could not be removed: g_unlink() failed: %s"
 msgstr "No se pudo eliminar el archivo '%s' existente: g_unlink() fallido: %s"
 
 #: src/multitab.c:385
-#, fuzzy, c-format
+#, c-format
 msgid "'%s' contains invalid %% sequences for a title template"
 msgstr "'%s' contiene secuencias %% no válidas para una ventana de título"
 
@@ -825,8 +825,9 @@ msgid "Keyboard"
 msgstr "Teclado"
 
 #: src/profilegui.c:779
+#, fuzzy
 msgid "Tabs"
-msgstr ""
+msgstr "Pestañas"
 
 #: src/profilegui.c:846
 #, c-format
@@ -849,9 +850,9 @@ msgid "Unable to look up login details: %s"
 msgstr "No se pueden buscar los detalles de acceso: %s"
 
 #: src/roxterm.c:568
-#, c-format
+#, fuzzy, c-format
 msgid "The new terminal's command failed to run: %s"
-msgstr ""
+msgstr "Cambia el directorio de trabajo de la terminal: %s"
 
 #: src/roxterm.c:580
 #, fuzzy
@@ -949,9 +950,9 @@ msgid "Colour scheme '%s' not found"
 msgstr "No se encuentra el esquema de color '%s'"
 
 #: src/roxterm.c:2606
-#, fuzzy, c-format
+#, c-format
 msgid "ROXTerm: %s"
-msgstr "ROXTerm"
+msgstr "ROXTerm: %s"
 
 #: src/roxterm.c:2894
 #, c-format
@@ -1191,23 +1192,23 @@ msgid "Unable to create D-BUS method call message"
 msgstr "No se puede crear el mensaje de llamada D-BUS"
 
 #: src/rtdbus.c:296
-#, fuzzy, c-format
+#, c-format
 msgid "Invalid argument type ('%c') in NewTerminal D-BUS method"
-msgstr "Tipo de argumento no válido (%d) en el método NewTerminal de D-BUS"
+msgstr "Tipo de argumento no válido ('%c') en el método NewTerminal de D-BUS"
 
 #: src/rtdbus.c:335
 #, fuzzy, c-format
 msgid ""
 "Invalid first argument type ('%c') in NewTerminal D-BUS method; expected "
 "array"
-msgstr "Tipo de argumento no válido (%d) en el método NewTerminal de D-BUS"
+msgstr "Tipo de argumento no válido ('%c') en el método NewTerminal de D-BUS"
 
 #: src/rtdbus.c:341
 #, fuzzy, c-format
 msgid ""
 "Invalid array element type ('%c') in NewTerminal D-BUS method; expected "
 "strings"
-msgstr "Tipo de argumento no válido (%d) en el método NewTerminal de D-BUS"
+msgstr "Tipo de argumento no válido ('%c') en el método NewTerminal de D-BUS"
 
 #: src/session.c:63
 #, c-format
