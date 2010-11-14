@@ -2189,6 +2189,39 @@ static void roxterm_beep_handler(VteTerminal *vte, ROXTermData *roxterm)
     }
 }
 
+static void roxterm_resize_window_handler(VteTerminal *vte,
+        guint width, guint height, ROXTermData *roxterm)
+{
+    MultiWin *win = roxterm->win;
+    int pad_w, pad_h;
+    GtkAllocation alloc;
+    int columns, rows;
+    
+    /* Can't compute size if not realized */
+    if (!gtk_widget_get_realized(roxterm->widget))
+        return;
+    /* Ignore if maximised or full screen */
+    if (win && (multi_win_is_maximised(win) || multi_win_is_fullscreen(win)))
+        return;
+    /* May already be desired size */
+    gtk_widget_get_allocation(roxterm->widget, &alloc);
+    if (alloc.width == width && alloc.height == height)
+        return;
+    /* Compute nearest grid size */
+    roxterm_get_vte_padding(vte, &pad_w, &pad_h);
+    columns = (int) (0.5 +
+            (double) (width - pad_w) /
+            (double) vte_terminal_get_char_width(vte));
+    rows = (int) (0.5 +
+            (double) (height - pad_h) /
+            (double) vte_terminal_get_char_height(vte));
+    /* Only resize window now if this is current tab */
+    if (roxterm->tab == multi_win_get_current_tab(win))
+        roxterm_set_vte_size(roxterm, vte, columns, rows);
+    else
+        vte_terminal_set_size(vte, columns, rows);
+}
+
 static GtkWidget *create_radio_menu_item(MenuTree *mtree,
         const char *name, GSList **group, GCallback handler)
 {
@@ -2420,6 +2453,8 @@ static void roxterm_connect_misc_signals(ROXTermData * roxterm)
     */
     g_signal_connect(roxterm->widget, "cursor-moved",
             G_CALLBACK(roxterm_text_changed_handler), roxterm);
+    g_signal_connect(roxterm->widget, "resize-window",
+            G_CALLBACK(roxterm_resize_window_handler), roxterm);
 }
 
 inline static void
