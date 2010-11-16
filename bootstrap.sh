@@ -17,6 +17,8 @@ tail -n +2 debian/changelog.in >> debian/changelog
 git log > ChangeLog
 cat ChangeLog.old >> ChangeLog
 
+./po4a/genmake.sh
+
 # Refresh GNU autotools toolchain.
 echo Cleaning autotools files...
 find -type d -name autom4te.cache -print0 | xargs -0 rm -rf \;
