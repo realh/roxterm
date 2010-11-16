@@ -12,7 +12,7 @@ Vcs-Browser: http://roxterm.git.sourceforge.net/git/gitweb.cgi?p=roxterm/roxterm
 
 Package: roxterm
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}, librsvg2-common
 Provides: x-terminal-emulator
 Recommends: openssh-client
 Description: Multi-tabbed GTK/VTE terminal emulator
