@@ -8,9 +8,9 @@ msgstr ""
 "Project-Id-Version: roxterm 1.20.0\n"
 "Report-Msgid-Bugs-To: http://sourceforge.net/projects/roxterm\n"
 "POT-Creation-Date: 2010-11-14 20:01+0000\n"
-"PO-Revision-Date: 2010-09-11 18:11+0200\n"
-"Last-Translator: \n"
-"Language-Team: Spanish <kde-i18n-doc@kde.org>\n"
+"PO-Revision-Date: 2010-11-14 23:19+0100\n"
+"Last-Translator: Félix Medrano <xukosky@yahoo.es>\n"
+"Language-Team: Spanish <>\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -825,7 +825,6 @@ msgid "Keyboard"
 msgstr "Teclado"
 
 #: src/profilegui.c:779
-#, fuzzy
 msgid "Tabs"
 msgstr "Pestañas"
 
@@ -850,14 +849,13 @@ msgid "Unable to look up login details: %s"
 msgstr "No se pueden buscar los detalles de acceso: %s"
 
 #: src/roxterm.c:568
-#, fuzzy, c-format
+#, c-format
 msgid "The new terminal's command failed to run: %s"
-msgstr "Cambia el directorio de trabajo de la terminal: %s"
+msgstr "El comando de la nueva terminal no se pudo ejecutar: %s"
 
 #: src/roxterm.c:580
-#, fuzzy
 msgid "The new terminal's command failed to run"
-msgstr "Cambia el directorio de trabajo de la terminal"
+msgstr "El comando de la nueva terminal no se pudo ejecutar"
 
 #: src/roxterm.c:662
 #, c-format
@@ -1197,18 +1195,24 @@ msgid "Invalid argument type ('%c') in NewTerminal D-BUS method"
 msgstr "Tipo de argumento no válido ('%c') en el método NewTerminal de D-BUS"
 
 #: src/rtdbus.c:335
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Invalid first argument type ('%c') in NewTerminal D-BUS method; expected "
 "array"
-msgstr "Tipo de argumento no válido ('%c') en el método NewTerminal de D-BUS"
+msgstr ""
+"Tipo del primer argumento no válido ('%c') en el método NewTerminal de "
+"D-BUS; "
+"se esperaba un array"
 
 #: src/rtdbus.c:341
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Invalid array element type ('%c') in NewTerminal D-BUS method; expected "
 "strings"
-msgstr "Tipo de argumento no válido ('%c') en el método NewTerminal de D-BUS"
+msgstr ""
+"Tipo del primer argumento no válido ('%c') en el método NewTerminal de "
+"D-BUS; "
+"se esperaba una cadena"
 
 #: src/session.c:63
 #, c-format
@@ -1838,9 +1842,8 @@ msgid "<b>Compatibility</b>"
 msgstr "<b>Compatibilidad</b>"
 
 #: src/roxterm-config.glade:2052
-#, fuzzy
 msgid "_Tab title:"
-msgstr "_Título:"
+msgstr "_Título de pestaña:"
 
 #: src/roxterm-config.glade:2065
 msgid ""
@@ -1890,13 +1893,13 @@ msgstr ""
 "cambiar en pestañas inactivas para reflejar su estado."
 
 #: src/roxterm-config.glade:2163
-#, fuzzy
 msgid ""
 "The following tab options do not apply to windows that are already open; "
 "they only apply to windows opened subsequently."
 msgstr ""
-"La opción anterior no se aplica a ventanas que están ya abiertas; solo se "
-"aplica a ventanas abiertas posteriormente."
+"Las siguientes opciones de pestaña no se aplican a las ventanas que están "
+"abiertas; "
+"solo a las ventanas que se abren posteriormente"
 
 #: src/roxterm-config.glade:2184
 msgid "Initial _number of tabs:"
