@@ -2,8 +2,7 @@
 # Copyright (C) 2010 Tony Houghton
 # This file is distributed under the same license as the roxterm package.
 # <http://goo.gl/YMBdA>, 2010.
-#
-#, fuzzy
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: roxterm 1.20.0.5~g29b9915\n"
@@ -12,10 +11,10 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
 
 #: src/about.c:55
 #, c-format
@@ -24,7 +23,7 @@ msgstr ""
 
 #: src/about.c:69
 msgid "Tony Houghton <h@realh.co.uk>"
-msgstr ""
+msgstr "Tony Houghton <h@realh.co.uk>"
 
 #: src/about.c:70
 msgid "Thanks to Havoc Pennington et al for libvte"
@@ -62,8 +61,7 @@ msgid "Unable to back up colour scheme to revert"
 msgstr ""
 
 #: src/colourgui.c:671
-msgid ""
-"Deleting edited colour scheme that wasn't in list of schemes being edited"
+msgid "Deleting edited colour scheme that wasn't in list of schemes being edited"
 msgstr ""
 
 #: src/colourscheme.c:120
@@ -127,9 +125,7 @@ msgid "Unable to rename profile/scheme"
 msgstr ""
 
 #: src/configlet.c:657
-msgid ""
-"Shortcuts can currently only be edited by hovering over the menu entries and "
-"pressing keys"
+msgid "Shortcuts can currently only be edited by hovering over the menu entries and pressing keys"
 msgstr ""
 
 #: src/configlet.c:663
@@ -633,11 +629,7 @@ msgid "Set Window Title"
 msgstr ""
 
 #: src/multitab.c:1123
-msgid ""
-"The title string may include '%s' which is substituted with the title set by "
-"the child command (usually the current directory for shells). No other % "
-"characters or sequences are permitted except '%%' which is displayed as a "
-"single %. Apply an empty string here to use the profile's title string."
+msgid "The title string may include '%s' which is substituted with the title set by the child command (usually the current directory for shells). No other % characters or sequences are permitted except '%%' which is displayed as a single %. Apply an empty string here to use the profile's title string."
 msgstr ""
 
 #: src/options.c:75
@@ -865,16 +857,11 @@ msgid "Kill current task?"
 msgstr ""
 
 #: src/roxterm.c:1699
-msgid ""
-"The current task is still running; to restart it the current instance must "
-"be killed. Do you want to kill the current task to replace it with a new "
-"instance?"
+msgid "The current task is still running; to restart it the current instance must be killed. Do you want to kill the current task to replace it with a new instance?"
 msgstr ""
 
 #: src/roxterm.c:1885
-msgid ""
-"The command in this terminal has terminated. What do you want to do with the "
-"terminal now?"
+msgid "The command in this terminal has terminated. What do you want to do with the terminal now?"
 msgstr ""
 
 #: src/roxterm.c:1892
@@ -937,9 +924,7 @@ msgstr ""
 
 #: src/roxterm.c:3376
 #, c-format
-msgid ""
-"Invalid ROXTERM_ID %p in D-Bus message (this is expected if you used "
-"roxterm's --separate option)"
+msgid "Invalid ROXTERM_ID %p in D-Bus message (this is expected if you used roxterm's --separate option)"
 msgstr ""
 
 #: src/roxterm.c:3400
@@ -957,15 +942,11 @@ msgid "Invalid geometry specification"
 msgstr ""
 
 #: src/roxterm.c:3815
-msgid ""
-"You are about to close a ROXTerm window; this may cause loss of data. Are "
-"you sure you want to continue?"
+msgid "You are about to close a ROXTerm window; this may cause loss of data. Are you sure you want to continue?"
 msgstr ""
 
 #: src/roxterm.c:3817
-msgid ""
-"You are about to close a window containing multiple ROXTerm tabs; this may "
-"cause loss of data. Are you sure you want to continue?"
+msgid "You are about to close a window containing multiple ROXTerm tabs; this may cause loss of data. Are you sure you want to continue?"
 msgstr ""
 
 #: src/roxterm.c:3820
@@ -1149,16 +1130,12 @@ msgstr ""
 
 #: src/rtdbus.c:335
 #, c-format
-msgid ""
-"Invalid first argument type ('%c') in NewTerminal D-BUS method; expected "
-"array"
+msgid "Invalid first argument type ('%c') in NewTerminal D-BUS method; expected array"
 msgstr ""
 
 #: src/rtdbus.c:341
 #, c-format
-msgid ""
-"Invalid array element type ('%c') in NewTerminal D-BUS method; expected "
-"strings"
+msgid "Invalid array element type ('%c') in NewTerminal D-BUS method; expected strings"
 msgstr ""
 
 #: src/session.c:63
@@ -1268,9 +1245,7 @@ msgid "Show _menubar by default"
 msgstr ""
 
 #: src/roxterm-config.glade:243
-msgid ""
-"Whether new windows with this profile will have a menu bar. You can also "
-"turn the menu bar on and off from terminal menus."
+msgid "Whether new windows with this profile will have a menu bar. You can also turn the menu bar on and off from terminal menus."
 msgstr ""
 
 #: src/roxterm-config.glade:255
@@ -1278,9 +1253,7 @@ msgid "_Always show tab bar"
 msgstr ""
 
 #: src/roxterm-config.glade:261
-msgid ""
-"If this option is enabled the tabs at the top of each terminal are always "
-"shown, even in windows which only contain one tab"
+msgid "If this option is enabled the tabs at the top of each terminal are always shown, even in windows which only contain one tab"
 msgstr ""
 
 #: src/roxterm-config.glade:278
@@ -1304,9 +1277,7 @@ msgid "_Visible bell"
 msgstr ""
 
 #: src/roxterm-config.glade:358
-msgid ""
-"If selected, \"printing\" an ASCII bell character will cause the terminal to "
-"flash."
+msgid "If selected, \"printing\" an ASCII bell character will cause the terminal to flash."
 msgstr ""
 
 #: src/roxterm-config.glade:374
@@ -1370,10 +1341,7 @@ msgid "Bell _highlights tab/window"
 msgstr ""
 
 #: src/roxterm-config.glade:530
-msgid ""
-"If the \"bell rings\" in a terminal while it isn't the active tab or window, "
-"its tab label will flash and/or its window will be marked \"urgent\". This "
-"only works with recent versions of vte."
+msgid "If the \"bell rings\" in a terminal while it isn't the active tab or window, its tab label will flash and/or its window will be marked \"urgent\". This only works with recent versions of vte."
 msgstr ""
 
 #: src/roxterm-config.glade:546
@@ -1385,9 +1353,7 @@ msgid "_Select-by-word characters:"
 msgstr ""
 
 #: src/roxterm-config.glade:582
-msgid ""
-"Words can be selected by double-clicking. Characters not in this list count "
-"as the start or end of a word"
+msgid "Words can be selected by double-clicking. Characters not in this list count as the start or end of a word"
 msgstr ""
 
 #: src/roxterm-config.glade:607
@@ -1475,9 +1441,7 @@ msgid "secs"
 msgstr ""
 
 #: src/roxterm-config.glade:937
-msgid ""
-"Pause for this number of seconds after the command exits before performing "
-"the action above."
+msgid "Pause for this number of seconds after the command exits before performing the action above."
 msgstr ""
 
 #: src/roxterm-config.glade:959
@@ -1559,9 +1523,7 @@ msgid "Background _image"
 msgstr ""
 
 #: src/roxterm-config.glade:1306
-msgid ""
-"A background image will be blended with the background colour depending on "
-"the transparency setting"
+msgid "A background image will be blended with the background colour depending on the transparency setting"
 msgstr ""
 
 #: src/roxterm-config.glade:1330
@@ -1598,9 +1560,7 @@ msgid "_Transparent background"
 msgstr ""
 
 #: src/roxterm-config.glade:1445
-msgid ""
-"The desktop background will show through the terminal background to an "
-"extent determined by the transparency setting"
+msgid "The desktop background will show through the terminal background to an extent determined by the transparency setting"
 msgstr ""
 
 #: src/roxterm-config.glade:1472
@@ -1608,10 +1568,7 @@ msgid "True translucence with compositing window managers"
 msgstr ""
 
 #: src/roxterm-config.glade:1477
-msgid ""
-"If enabled while using a compositing window manager, the terminal background "
-"is truly translucent with other windows showing through. Otherwise the "
-"terminal background is copied from the desktop background. "
+msgid "If enabled while using a compositing window manager, the terminal background is truly translucent with other windows showing through. Otherwise the terminal background is copied from the desktop background. "
 msgstr ""
 
 #: src/roxterm-config.glade:1501
@@ -1651,9 +1608,7 @@ msgid "Scroll_back:"
 msgstr ""
 
 #: src/roxterm-config.glade:1732
-msgid ""
-"Number of lines of output text to retain in the buffer so that they can "
-"still be viewed by scrolling up"
+msgid "Number of lines of output text to retain in the buffer so that they can still be viewed by scrolling up"
 msgstr ""
 
 #: src/roxterm-config.glade:1746
@@ -1665,9 +1620,7 @@ msgid "Scroll on _output"
 msgstr ""
 
 #: src/roxterm-config.glade:1767
-msgid ""
-"Whether to make the scrollbar jump to the bottom when new text is printed in "
-"the terminal"
+msgid "Whether to make the scrollbar jump to the bottom when new text is printed in the terminal"
 msgstr ""
 
 #: src/roxterm-config.glade:1780
@@ -1675,9 +1628,7 @@ msgid "Scroll on _keystroke"
 msgstr ""
 
 #: src/roxterm-config.glade:1785
-msgid ""
-"Whether to make the scrollbar jump to the bottom when text is typed into a "
-"terminal"
+msgid "Whether to make the scrollbar jump to the bottom when text is typed into a terminal"
 msgstr ""
 
 #: src/roxterm-config.glade:1803
@@ -1713,9 +1664,7 @@ msgid "Disable menu _access key (F10 by default)"
 msgstr ""
 
 #: src/roxterm-config.glade:1952
-msgid ""
-"This option disables the keyboard shortcut for opening the first menu. The "
-"default shortcut is F10."
+msgid "This option disables the keyboard shortcut for opening the first menu. The default shortcut is F10."
 msgstr ""
 
 #: src/roxterm-config.glade:1964
@@ -1723,9 +1672,7 @@ msgid "Disable other menu _shortcut keys (Alt+...)"
 msgstr ""
 
 #: src/roxterm-config.glade:1970
-msgid ""
-"This option disables the underlined shortcut keys in the menus (eg Alt+F for "
-"the File menu)."
+msgid "This option disables the underlined shortcut keys in the menus (eg Alt+F for the File menu)."
 msgstr ""
 
 #: src/roxterm-config.glade:1982
@@ -1733,9 +1680,7 @@ msgid "Disable _tab switching shortcut keys (Alt+number)"
 msgstr ""
 
 #: src/roxterm-config.glade:1988
-msgid ""
-"This option disables the shortcut keys for switching tabs (Alt+1-9 and Alt+0 "
-"by default)"
+msgid "This option disables the shortcut keys for switching tabs (Alt+1-9 and Alt+0 by default)"
 msgstr ""
 
 #: src/roxterm-config.glade:2006
@@ -1747,11 +1692,7 @@ msgid "_Tab title:"
 msgstr ""
 
 #: src/roxterm-config.glade:2065
-msgid ""
-"The title string may include '%s' which is substituted with the title set by "
-"the child command (usually the current directory for shells). No other % "
-"characters or sequences are permitted except '%%' which is displayed as a "
-"single %."
+msgid "The title string may include '%s' which is substituted with the title set by the child command (usually the current directory for shells). No other % characters or sequences are permitted except '%%' which is displayed as a single %."
 msgstr ""
 
 #: src/roxterm-config.glade:2086
@@ -1759,10 +1700,7 @@ msgid "_Wrap when switching tabs"
 msgstr ""
 
 #: src/roxterm-config.glade:2092
-msgid ""
-"This option makes the Next and Previous Tab operations respectively wrap "
-"around from the first and last tab to the opposite end of the row; the move "
-"tab left/right/up/down menu items are affected similarly."
+msgid "This option makes the Next and Previous Tab operations respectively wrap around from the first and last tab to the opposite end of the row; the move tab left/right/up/down menu items are affected similarly."
 msgstr ""
 
 #: src/roxterm-config.glade:2103
@@ -1778,15 +1716,11 @@ msgid "Show terminal _status in close buttons"
 msgstr ""
 
 #: src/roxterm-config.glade:2127
-msgid ""
-"If this option is enabled the icons in close buttons may be changed in "
-"inactive tabs to reflect the status of their terminals."
+msgid "If this option is enabled the icons in close buttons may be changed in inactive tabs to reflect the status of their terminals."
 msgstr ""
 
 #: src/roxterm-config.glade:2163
-msgid ""
-"The following tab options do not apply to windows that are already open; "
-"they only apply to windows opened subsequently."
+msgid "The following tab options do not apply to windows that are already open; they only apply to windows opened subsequently."
 msgstr ""
 
 #: src/roxterm-config.glade:2184
@@ -1819,9 +1753,7 @@ msgid "Configure ROXTerm"
 msgstr ""
 
 #: src/roxterm-config.glade:2367
-msgid ""
-"Select a row to choose which encoding the buttons below apply to. Select a "
-"radio button to set the encoding used by default."
+msgid "Select a row to choose which encoding the buttons below apply to. Select a radio button to set the encoding used by default."
 msgstr ""
 
 #: src/roxterm-config.glade:2390
@@ -1854,10 +1786,7 @@ msgid "<b>Character encodings</b>"
 msgstr ""
 
 #: src/roxterm-config.glade:2596
-msgid ""
-"Select a row to choose which keyboard shortcuts scheme the buttons below "
-"apply to. Select a radio button to set the shortcuts scheme used when "
-"roxterm is run without a --shortcut-scheme option."
+msgid "Select a row to choose which keyboard shortcuts scheme the buttons below apply to. Select a radio button to set the shortcuts scheme used when roxterm is run without a --shortcut-scheme option."
 msgstr ""
 
 #: src/roxterm-config.glade:2619 src/roxterm-config.glade:3168
@@ -1865,9 +1794,7 @@ msgid "Click to delete the selected profile"
 msgstr ""
 
 #: src/roxterm-config.glade:2670
-msgid ""
-"Click to create a new keyboard shortcuts scheme with settings copied from "
-"the current selection"
+msgid "Click to create a new keyboard shortcuts scheme with settings copied from the current selection"
 msgstr ""
 
 #: src/roxterm-config.glade:2695 src/roxterm-config.glade:2973
@@ -1889,10 +1816,7 @@ msgid "<b>Keyboard shortcuts</b>"
 msgstr ""
 
 #: src/roxterm-config.glade:2821
-msgid ""
-"Select a row to choose which colour scheme the buttons below apply to. "
-"Select a radio button to set the colour scheme used when roxterm is run "
-"without a --colour-scheme option."
+msgid "Select a row to choose which colour scheme the buttons below apply to. Select a radio button to set the colour scheme used when roxterm is run without a --colour-scheme option."
 msgstr ""
 
 #: src/roxterm-config.glade:2844
@@ -1904,9 +1828,7 @@ msgid "Click to delete the selected colour scheme"
 msgstr ""
 
 #: src/roxterm-config.glade:2948
-msgid ""
-"Click to create a new colour scheme with settings copied from the current "
-"selection"
+msgid "Click to create a new colour scheme with settings copied from the current selection"
 msgstr ""
 
 #: src/roxterm-config.glade:2999
@@ -1922,10 +1844,7 @@ msgid "<b>Colour scheme</b>"
 msgstr ""
 
 #: src/roxterm-config.glade:3092
-msgid ""
-"Select a row to choose which profile the buttons below apply to. Select a "
-"radio button to set the profile used when roxterm is run without a --profile "
-"option."
+msgid "Select a row to choose which profile the buttons below apply to. Select a radio button to set the profile used when roxterm is run without a --profile option."
 msgstr ""
 
 #: src/roxterm-config.glade:3115
@@ -1933,8 +1852,7 @@ msgid "Click to rename the selected profile"
 msgstr ""
 
 #: src/roxterm-config.glade:3219
-msgid ""
-"Click to create a new profile with settings copied from the current selection"
+msgid "Click to create a new profile with settings copied from the current selection"
 msgstr ""
 
 #: src/roxterm-config.glade:3270
@@ -1998,8 +1916,7 @@ msgid "_Set text and background colours"
 msgstr ""
 
 #: src/roxterm-config.glade:3619
-msgid ""
-"Whether to set terminals' text and background colours using the fields below"
+msgid "Whether to set terminals' text and background colours using the fields below"
 msgstr ""
 
 #: src/roxterm-config.glade:3637
@@ -2031,9 +1948,7 @@ msgid "_Get text and background colours from palette"
 msgstr ""
 
 #: src/roxterm-config.glade:3722
-msgid ""
-"Whether to use the palette table below to set the background and text "
-"foreground colours"
+msgid "Whether to use the palette table below to set the background and text foreground colours"
 msgstr ""
 
 #: src/roxterm-config.glade:4144

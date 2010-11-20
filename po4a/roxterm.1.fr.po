@@ -2,8 +2,7 @@
 # Copyright (C) YEAR Tony Houghton
 # This file is distributed under the same license as the roxterm package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
-#, fuzzy
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: roxterm 1.20.0.10~gc7a064f\n"
@@ -12,75 +11,75 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
 
 #. type: Content of the dhfirstname entity
 #: ../roxterm.1.xml.in:28
 msgid "<firstname>Tony</firstname>"
-msgstr ""
+msgstr "test"
 
 #. type: Content of the dhsurname entity
 #: ../roxterm.1.xml.in:29
 msgid "<surname>Houghton</surname>"
-msgstr ""
+msgstr "test"
 
 #. type: Content of the dhdate entity
 #: ../roxterm.1.xml.in:31
 msgid "<date>November 27, 2009</date>"
-msgstr ""
+msgstr "test"
 
 #. type: Content of the dhsection entity
 #: ../roxterm.1.xml.in:34
 msgid "<manvolnum>1</manvolnum>"
-msgstr ""
+msgstr "test"
 
 #. type: Content of the dhemail entity
 #: ../roxterm.1.xml.in:35
 msgid "<email>h@realh.co.uk</email>"
-msgstr ""
+msgstr "test"
 
 #. type: Content of the dhusername entity
 #: ../roxterm.1.xml.in:36
 msgid "Tony Houghton"
-msgstr ""
+msgstr "test"
 
 #. type: Content of the dhucpackage entity
 #: ../roxterm.1.xml.in:37
 msgid "<refentrytitle>roxterm</refentrytitle>"
-msgstr ""
+msgstr "test"
 
 #. type: Content of the dhpackage entity
 #: ../roxterm.1.xml.in:38
 msgid "roxterm"
-msgstr ""
+msgstr "test"
 
 #. type: Content of the product entity
 #: ../roxterm.1.xml.in:39
 msgid "ROXTerm"
-msgstr ""
+msgstr "test"
 
 #. type: Content of the debian entity
 #: ../roxterm.1.xml.in:41
 msgid "<productname>Debian</productname>"
-msgstr ""
+msgstr "test"
 
 #. type: Content of the gnu entity
 #: ../roxterm.1.xml.in:42
 msgid "<acronym>GNU</acronym>"
-msgstr ""
+msgstr "test"
 
 #. type: Content of the gpl entity
 #: ../roxterm.1.xml.in:43
 msgid "&gnu; <acronym>GPL</acronym>"
-msgstr ""
+msgstr "test"
 
 #. type: Attribute 'lang' of: <refentry>
 #: ../roxterm.1.xml.in:46
 msgid "en"
-msgstr ""
+msgstr "test"
 
 #. type: Content of: <refentry><refentryinfo><address>
 #: ../roxterm.1.xml.in:49
@@ -88,73 +87,41 @@ msgstr ""
 msgid ""
 "      &dhemail;\n"
 "    "
-msgstr ""
+msgstr "test"
 
 #. type: Content of: <refentry><refentryinfo>
 #: ../roxterm.1.xml.in:48
-msgid ""
-"<placeholder type=\"address\" id=\"0\"/> <author> "
-"<contrib>Developer</contrib> &dhfirstname; &dhsurname; </author> <copyright> "
-"<year>2005</year> <holder>&dhusername;</holder> </copyright> &dhdate;"
-msgstr ""
+msgid "<placeholder type=\"address\" id=\"0\"/> <author> <contrib>Developer</contrib> &dhfirstname; &dhsurname; </author> <copyright> <year>2005</year> <holder>&dhusername;</holder> </copyright> &dhdate;"
+msgstr "test"
 
 #. type: Content of: <refentry><refmeta><refmiscinfo>
 #: ../roxterm.1.xml.in:64
 msgid "&product;"
-msgstr ""
+msgstr "test"
 
 #. type: Content of: <refentry><refmeta><refmiscinfo>
 #: ../roxterm.1.xml.in:65
 msgid "@PACKAGE_VERSION@"
-msgstr ""
+msgstr "test"
 
 #. type: Content of: <refentry><refmeta><refmiscinfo>
 #: ../roxterm.1.xml.in:66
 msgid "User Commands"
-msgstr ""
+msgstr "test"
 
 #. type: Content of: <refentry><refnamediv><refname>
 #: ../roxterm.1.xml.in:69
 msgid "&dhpackage;"
-msgstr ""
+msgstr "test"
 
 #. type: Content of: <refentry><refnamediv><refpurpose>
 #: ../roxterm.1.xml.in:71
 msgid "terminal emulator"
-msgstr ""
+msgstr "test"
 
 #. type: Content of: <refentry><refsynopsisdiv><cmdsynopsis>
 #: ../roxterm.1.xml.in:75
-msgid ""
-"<command>&dhpackage;</command> <arg><option>-?</option> | "
-"<option>--help</option></arg> <arg><option>--help-all</option></arg> "
-"<arg><option>--help-gtk</option></arg> <arg><option>-u</option> | "
-"<option>--usage</option></arg> "
-"<arg><option>--geometry=<replaceable>GEOM</replaceable></option></arg> "
-"<arg><option>--appdir=<replaceable>DIR</replaceable></option></arg> "
-"<arg><option>--profile=<replaceable>PROFILE</replaceable></option> | "
-"<option>-p <replaceable>PROFILE</replaceable></option></arg> "
-"<arg><option>--colour-scheme=<replaceable>SCHEME</replaceable></option> | "
-"<option>--color-scheme=<replaceable>SCHEME</replaceable></option> | "
-"<option>-c <replaceable>SCHEME</replaceable></option></arg> "
-"<arg><option>--shortcut-scheme=<replaceable>SCHEME</replaceable></option> | "
-"<option>-s <replaceable>SCHEME</replaceable></option></arg> "
-"<arg><option>--separate</option></arg> <arg><option>--replace</option></arg> "
-"<arg><option>--directory=<replaceable>DIR</replaceable></option> | "
-"<option>-d <replaceable>DIR</replaceable></option></arg> "
-"<arg><option>--show-menubar</option></arg> "
-"<arg><option>--hide-menubar</option></arg> "
-"<arg><option>--fullscreen</option><option>-f</option></arg> "
-"<arg><option>--disable-sm</option></arg> <arg><option>--tab</option></arg> "
-"<arg><option>--zoom=<replaceable>ZOOM</replaceable></option> | <option>-z "
-"<replaceable>ZOOM</replaceable></option></arg> "
-"<arg><option>--title=<replaceable>TITLE</replaceable></option> | <option>-T "
-"<replaceable>TITLE</replaceable></option></arg> "
-"<arg><option>--tab-name=<replaceable>NAME</replaceable></option> | "
-"<option>-n <replaceable>NAME</replaceable></option></arg> "
-"<arg><option>--display=<replaceable>DISPLAY</replaceable></option></arg> "
-"<arg><option>--execute <replaceable>COMMAND</replaceable></option> | "
-"<option>-e <replaceable>COMMAND</replaceable></option></arg>"
+msgid "<command>&dhpackage;</command> <arg><option>-?</option> | <option>--help</option></arg> <arg><option>--help-all</option></arg> <arg><option>--help-gtk</option></arg> <arg><option>-u</option> | <option>--usage</option></arg> <arg><option>--geometry=<replaceable>GEOM</replaceable></option></arg> <arg><option>--appdir=<replaceable>DIR</replaceable></option></arg> <arg><option>--profile=<replaceable>PROFILE</replaceable></option> | <option>-p <replaceable>PROFILE</replaceable></option></arg> <arg><option>--colour-scheme=<replaceable>SCHEME</replaceable></option> | <option>--color-scheme=<replaceable>SCHEME</replaceable></option> | <option>-c <replaceable>SCHEME</replaceable></option></arg> <arg><option>--shortcut-scheme=<replaceable>SCHEME</replaceable></option> | <option>-s <replaceable>SCHEME</replaceable></option></arg> <arg><option>--separate</option></arg> <arg><option>--replace</option></arg> <arg><option>--directory=<replaceable>DIR</replaceable></option> | <option>-d <replaceable>DIR</replaceable></option></arg> <arg><option>--show-menubar</option></arg> <arg><option>--hide-menubar</option></arg> <arg><option>--fullscreen</option><option>-f</option></arg> <arg><option>--disable-sm</option></arg> <arg><option>--tab</option></arg> <arg><option>--zoom=<replaceable>ZOOM</replaceable></option> | <option>-z <replaceable>ZOOM</replaceable></option></arg> <arg><option>--title=<replaceable>TITLE</replaceable></option> | <option>-T <replaceable>TITLE</replaceable></option></arg> <arg><option>--tab-name=<replaceable>NAME</replaceable></option> | <option>-n <replaceable>NAME</replaceable></option></arg> <arg><option>--display=<replaceable>DISPLAY</replaceable></option></arg> <arg><option>--execute <replaceable>COMMAND</replaceable></option> | <option>-e <replaceable>COMMAND</replaceable></option></arg>"
 msgstr ""
 
 #. type: Content of: <refentry><refsect1><title>
@@ -164,9 +131,7 @@ msgstr ""
 
 #. type: Content of: <refentry><refsect1><para>
 #: ../roxterm.1.xml.in:112
-msgid ""
-"This manual page documents briefly the <command>&dhpackage;</command> "
-"command."
+msgid "This manual page documents briefly the <command>&dhpackage;</command> command."
 msgstr ""
 
 #. type: Content of: <refentry><refsect1><para>
@@ -181,9 +146,7 @@ msgstr ""
 
 #. type: Content of: <refentry><refsect1><para>
 #: ../roxterm.1.xml.in:121
-msgid ""
-"These programs follow the usual &gnu; command line syntax, with long options "
-"starting with two dashes (`-').  A summary of options is included below."
+msgid "These programs follow the usual &gnu; command line syntax, with long options starting with two dashes (`-').  A summary of options is included below."
 msgstr ""
 
 #. type: Content of: <refentry><refsect1><variablelist><varlistentry><term>
@@ -191,7 +154,8 @@ msgstr ""
 msgid "<option>-?</option> <option>--help</option>"
 msgstr ""
 
-#. type: Content of: <refentry><refsect1><variablelist><varlistentry><listitem><para>
+#. type: Content of:
+#. <refentry><refsect1><variablelist><varlistentry><listitem><para>
 #: ../roxterm.1.xml.in:131
 msgid "Show description of options."
 msgstr ""
@@ -201,7 +165,8 @@ msgstr ""
 msgid "<option>--help-all</option>"
 msgstr ""
 
-#. type: Content of: <refentry><refsect1><variablelist><varlistentry><listitem><para>
+#. type: Content of:
+#. <refentry><refsect1><variablelist><varlistentry><listitem><para>
 #: ../roxterm.1.xml.in:138
 msgid "Show all options."
 msgstr ""
@@ -211,7 +176,8 @@ msgstr ""
 msgid "<option>--help-gtk</option>"
 msgstr ""
 
-#. type: Content of: <refentry><refsect1><variablelist><varlistentry><listitem><para>
+#. type: Content of:
+#. <refentry><refsect1><variablelist><varlistentry><listitem><para>
 #: ../roxterm.1.xml.in:145
 msgid "Show all GTK+ options."
 msgstr ""
@@ -221,19 +187,19 @@ msgstr ""
 msgid "<option>--usage</option>"
 msgstr ""
 
-#. type: Content of: <refentry><refsect1><variablelist><varlistentry><listitem><para>
+#. type: Content of:
+#. <refentry><refsect1><variablelist><varlistentry><listitem><para>
 #: ../roxterm.1.xml.in:152
 msgid "Show summary of usage."
 msgstr ""
 
 #. type: Content of: <refentry><refsect1><variablelist><varlistentry><term>
 #: ../roxterm.1.xml.in:156
-msgid ""
-"<option>-d <replaceable>DIRECTORY</replaceable></option> "
-"<option>--directory=<replaceable>DIRECTORY</replaceable></option>"
+msgid "<option>-d <replaceable>DIRECTORY</replaceable></option> <option>--directory=<replaceable>DIRECTORY</replaceable></option>"
 msgstr ""
 
-#. type: Content of: <refentry><refsect1><variablelist><varlistentry><listitem><para>
+#. type: Content of:
+#. <refentry><refsect1><variablelist><varlistentry><listitem><para>
 #: ../roxterm.1.xml.in:160
 msgid "Run shell/command in <replaceable>DIRECTORY</replaceable>."
 msgstr ""
@@ -243,7 +209,8 @@ msgstr ""
 msgid "<option>--geometry=<replaceable>GEOMETRY</replaceable></option>"
 msgstr ""
 
-#. type: Content of: <refentry><refsect1><variablelist><varlistentry><listitem><para>
+#. type: Content of:
+#. <refentry><refsect1><variablelist><varlistentry><listitem><para>
 #: ../roxterm.1.xml.in:168
 msgid "Set size and/or position of terminal according to X geometry specification."
 msgstr ""
@@ -253,7 +220,8 @@ msgstr ""
 msgid "<option>--appdir=<replaceable>DIR</replaceable></option>"
 msgstr ""
 
-#. type: Content of: <refentry><refsect1><variablelist><varlistentry><listitem><para>
+#. type: Content of:
+#. <refentry><refsect1><variablelist><varlistentry><listitem><para>
 #: ../roxterm.1.xml.in:176
 msgid "Application directory when run as a ROX app."
 msgstr ""
@@ -263,11 +231,10 @@ msgstr ""
 msgid "<option>--show-menubar</option> <option>--hide-menubar</option>"
 msgstr ""
 
-#. type: Content of: <refentry><refsect1><variablelist><varlistentry><listitem><para>
+#. type: Content of:
+#. <refentry><refsect1><variablelist><varlistentry><listitem><para>
 #: ../roxterm.1.xml.in:184
-msgid ""
-"Whether to show or hide the menubar, overriding the profile.  The default is "
-"to show it."
+msgid "Whether to show or hide the menubar, overriding the profile.  The default is to show it."
 msgstr ""
 
 #. type: Content of: <refentry><refsect1><variablelist><varlistentry><term>
@@ -275,11 +242,10 @@ msgstr ""
 msgid "<option>--fullscreen</option> <option>-f</option>"
 msgstr ""
 
-#. type: Content of: <refentry><refsect1><variablelist><varlistentry><listitem><para>
+#. type: Content of:
+#. <refentry><refsect1><variablelist><varlistentry><listitem><para>
 #: ../roxterm.1.xml.in:193
-msgid ""
-"Make initial terminal window take up the whole screen with no window "
-"furniture."
+msgid "Make initial terminal window take up the whole screen with no window furniture."
 msgstr ""
 
 #. type: Content of: <refentry><refsect1><variablelist><varlistentry><term>
@@ -287,7 +253,8 @@ msgstr ""
 msgid "<option>--disable-sm</option>"
 msgstr ""
 
-#. type: Content of: <refentry><refsect1><variablelist><varlistentry><listitem><para>
+#. type: Content of:
+#. <refentry><refsect1><variablelist><varlistentry><listitem><para>
 #: ../roxterm.1.xml.in:200
 msgid "Disable session management."
 msgstr ""
@@ -297,90 +264,76 @@ msgstr ""
 msgid "<option>--tab</option>"
 msgstr ""
 
-#. type: Content of: <refentry><refsect1><variablelist><varlistentry><listitem><para>
+#. type: Content of:
+#. <refentry><refsect1><variablelist><varlistentry><listitem><para>
 #: ../roxterm.1.xml.in:206
-msgid ""
-"If possible open the new terminal in an existing window rather than open a "
-"new window. The window chosen is the most recently focused window with the "
-"same profile as the new terminal. This option overrides "
-"<option>--zoom</option> and <option>--fullscreen</option>."
+msgid "If possible open the new terminal in an existing window rather than open a new window. The window chosen is the most recently focused window with the same profile as the new terminal. This option overrides <option>--zoom</option> and <option>--fullscreen</option>."
 msgstr ""
 
 #. type: Content of: <refentry><refsect1><variablelist><varlistentry><term>
 #: ../roxterm.1.xml.in:214
-msgid ""
-"<option>--zoom=<replaceable>ZOOM</replaceable></option> <option>-z "
-"<replaceable>ZOOM</replaceable></option>"
+msgid "<option>--zoom=<replaceable>ZOOM</replaceable></option> <option>-z <replaceable>ZOOM</replaceable></option>"
 msgstr ""
 
-#. type: Content of: <refentry><refsect1><variablelist><varlistentry><listitem><para>
+#. type: Content of:
+#. <refentry><refsect1><variablelist><varlistentry><listitem><para>
 #: ../roxterm.1.xml.in:218
 msgid "Scale terminal's font by a factor of ZOOM (1.0 is normal size)."
 msgstr ""
 
 #. type: Content of: <refentry><refsect1><variablelist><varlistentry><term>
 #: ../roxterm.1.xml.in:223
-msgid ""
-"<option>-p <replaceable>PROFILE</replaceable></option> "
-"<option>--profile=<replaceable>PROFILE</replaceable></option>"
+msgid "<option>-p <replaceable>PROFILE</replaceable></option> <option>--profile=<replaceable>PROFILE</replaceable></option>"
 msgstr ""
 
-#. type: Content of: <refentry><refsect1><variablelist><varlistentry><listitem><para>
+#. type: Content of:
+#. <refentry><refsect1><variablelist><varlistentry><listitem><para>
 #: ../roxterm.1.xml.in:227
 msgid "Use the named profile."
 msgstr ""
 
 #. type: Content of: <refentry><refsect1><variablelist><varlistentry><term>
 #: ../roxterm.1.xml.in:231
-msgid ""
-"<option>-c <replaceable>SCHEME</replaceable></option> "
-"<option>--colour-scheme=<replaceable>SCHEME</replaceable></option> "
-"<option>--color-scheme=<replaceable>SCHEME</replaceable></option>"
+msgid "<option>-c <replaceable>SCHEME</replaceable></option> <option>--colour-scheme=<replaceable>SCHEME</replaceable></option> <option>--color-scheme=<replaceable>SCHEME</replaceable></option>"
 msgstr ""
 
-#. type: Content of: <refentry><refsect1><variablelist><varlistentry><listitem><para>
+#. type: Content of:
+#. <refentry><refsect1><variablelist><varlistentry><listitem><para>
 #: ../roxterm.1.xml.in:236
 msgid "Use the named colour scheme."
 msgstr ""
 
 #. type: Content of: <refentry><refsect1><variablelist><varlistentry><term>
 #: ../roxterm.1.xml.in:240
-msgid ""
-"<option>-s <replaceable>SCHEME</replaceable></option> "
-"<option>--shortcut-scheme=<replaceable>SCHEME</replaceable></option>"
+msgid "<option>-s <replaceable>SCHEME</replaceable></option> <option>--shortcut-scheme=<replaceable>SCHEME</replaceable></option>"
 msgstr ""
 
-#. type: Content of: <refentry><refsect1><variablelist><varlistentry><listitem><para>
+#. type: Content of:
+#. <refentry><refsect1><variablelist><varlistentry><listitem><para>
 #: ../roxterm.1.xml.in:244
 msgid "Use the named keyboard shortcut scheme."
 msgstr ""
 
 #. type: Content of: <refentry><refsect1><variablelist><varlistentry><term>
 #: ../roxterm.1.xml.in:248
-msgid ""
-"<option>--title=<replaceable>TITLE</replaceable></option> <option>-T "
-"<replaceable>TITLE</replaceable></option>"
+msgid "<option>--title=<replaceable>TITLE</replaceable></option> <option>-T <replaceable>TITLE</replaceable></option>"
 msgstr ""
 
-#. type: Content of: <refentry><refsect1><variablelist><varlistentry><listitem><para>
+#. type: Content of:
+#. <refentry><refsect1><variablelist><varlistentry><listitem><para>
 #: ../roxterm.1.xml.in:252
-msgid ""
-"Set window title. May include \"%s\" which is substituted with the full "
-"contents of the tab's label."
+msgid "Set window title. May include \"%s\" which is substituted with the full contents of the tab's label."
 msgstr ""
 
 #. type: Content of: <refentry><refsect1><variablelist><varlistentry><term>
 #: ../roxterm.1.xml.in:257
-msgid ""
-"<option>--tab-name=<replaceable>NAME</replaceable></option> <option>-n "
-"<replaceable>NAME</replaceable></option>"
+msgid "<option>--tab-name=<replaceable>NAME</replaceable></option> <option>-n <replaceable>NAME</replaceable></option>"
 msgstr ""
 
-#. type: Content of: <refentry><refsect1><variablelist><varlistentry><listitem><para>
+#. type: Content of:
+#. <refentry><refsect1><variablelist><varlistentry><listitem><para>
 #: ../roxterm.1.xml.in:261
-msgid ""
-"Set tab name as displayed in its label. May include \"%s\" which is "
-"substituted with the window title string set by the terminal."
+msgid "Set tab name as displayed in its label. May include \"%s\" which is substituted with the window title string set by the terminal."
 msgstr ""
 
 #. type: Content of: <refentry><refsect1><variablelist><varlistentry><term>
@@ -388,7 +341,8 @@ msgstr ""
 msgid "<option>--separate</option>"
 msgstr ""
 
-#. type: Content of: <refentry><refsect1><variablelist><varlistentry><listitem><para>
+#. type: Content of:
+#. <refentry><refsect1><variablelist><varlistentry><listitem><para>
 #: ../roxterm.1.xml.in:270
 msgid "Use a separate process for this terminal."
 msgstr ""
@@ -398,7 +352,8 @@ msgstr ""
 msgid "<option>--replace</option>"
 msgstr ""
 
-#. type: Content of: <refentry><refsect1><variablelist><varlistentry><listitem><para>
+#. type: Content of:
+#. <refentry><refsect1><variablelist><varlistentry><listitem><para>
 #: ../roxterm.1.xml.in:277
 msgid "Replace any existing instance as ROXTerm D-BUS service provider."
 msgstr ""
@@ -408,7 +363,8 @@ msgstr ""
 msgid "<option>--display=<replaceable>DISPLAY</replaceable></option>"
 msgstr ""
 
-#. type: Content of: <refentry><refsect1><variablelist><varlistentry><listitem><para>
+#. type: Content of:
+#. <refentry><refsect1><variablelist><varlistentry><listitem><para>
 #: ../roxterm.1.xml.in:285
 msgid "X display to use."
 msgstr ""
@@ -418,11 +374,10 @@ msgstr ""
 msgid "<option>-e</option> <option>--execute</option>"
 msgstr ""
 
-#. type: Content of: <refentry><refsect1><variablelist><varlistentry><listitem><para>
+#. type: Content of:
+#. <refentry><refsect1><variablelist><varlistentry><listitem><para>
 #: ../roxterm.1.xml.in:293
-msgid ""
-"Execute remainder of command line inside the terminal. Must be the final "
-"option."
+msgid "Execute remainder of command line inside the terminal. Must be the final option."
 msgstr ""
 
 #. type: Content of: <refentry><refsect1><title>
@@ -432,9 +387,7 @@ msgstr ""
 
 #. type: Content of: <refentry><refsect1><para>
 #: ../roxterm.1.xml.in:302
-msgid ""
-"The program is documented fully by the HTML file "
-"<filename>file://@htmldir@/en/index.html</filename>."
+msgid "The program is documented fully by the HTML file <filename>file://@htmldir@/en/index.html</filename>."
 msgstr ""
 
 #. type: Content of: <refentry><refsect1><title>
@@ -444,16 +397,10 @@ msgstr ""
 
 #. type: Content of: <refentry><refsect1><para>
 #: ../roxterm.1.xml.in:308
-msgid ""
-"This manual page was written by &dhusername; &dhemail;.  Permission is "
-"granted to copy, distribute and/or modify this document under the terms of "
-"the &gnu; General Public License, Version 2 or any later version published "
-"by the Free Software Foundation."
+msgid "This manual page was written by &dhusername; &dhemail;.  Permission is granted to copy, distribute and/or modify this document under the terms of the &gnu; General Public License, Version 2 or any later version published by the Free Software Foundation."
 msgstr ""
 
 #. type: Content of: <refentry><refsect1><para>
 #: ../roxterm.1.xml.in:314
-msgid ""
-"On Debian systems, the complete text of the GNU General Public License can "
-"be found in /usr/share/common-licenses/GPL."
+msgid "On Debian systems, the complete text of the GNU General Public License can be found in /usr/share/common-licenses/GPL."
 msgstr ""
