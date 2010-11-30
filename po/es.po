@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: roxterm 1.20.0\n"
 "Report-Msgid-Bugs-To: http://sourceforge.net/projects/roxterm\n"
-"POT-Creation-Date: 2010-11-14 20:01+0000\n"
+"POT-Creation-Date: 2010-11-30 16:10+0000\n"
 "PO-Revision-Date: 2010-11-14 23:19+0100\n"
 "Last-Translator: Félix Medrano <xukosky@yahoo.es>\n"
 "Language-Team: Spanish <>\n"
@@ -646,20 +646,20 @@ msgstr "No se pudo cerrar el archivo '%s': fclose() fallido: %s"
 msgid "Existing file '%s' could not be removed: g_unlink() failed: %s"
 msgstr "No se pudo eliminar el archivo '%s' existente: g_unlink() fallido: %s"
 
-#: src/multitab.c:385
+#: src/multitab.c:386
 #, c-format
 msgid "'%s' contains invalid %% sequences for a title template"
 msgstr "'%s' contiene secuencias %% no válidas para una ventana de título"
 
-#: src/multitab.c:1067
+#: src/multitab.c:1076
 msgid "Name Tab"
 msgstr "Nombrar pestaña"
 
-#: src/multitab.c:1111
+#: src/multitab.c:1120
 msgid "Set Window Title"
 msgstr "Cambia el título de la ventana"
 
-#: src/multitab.c:1123
+#: src/multitab.c:1132
 msgid ""
 "The title string may include '%s' which is substituted with the title set by "
 "the child command (usually the current directory for shells). No other % "
@@ -1200,9 +1200,8 @@ msgid ""
 "Invalid first argument type ('%c') in NewTerminal D-BUS method; expected "
 "array"
 msgstr ""
-"Tipo del primer argumento no válido ('%c') en el método NewTerminal de "
-"D-BUS; "
-"se esperaba un array"
+"Tipo del primer argumento no válido ('%c') en el método NewTerminal de D-"
+"BUS; se esperaba un array"
 
 #: src/rtdbus.c:341
 #, c-format
@@ -1210,9 +1209,8 @@ msgid ""
 "Invalid array element type ('%c') in NewTerminal D-BUS method; expected "
 "strings"
 msgstr ""
-"Tipo del primer argumento no válido ('%c') en el método NewTerminal de "
-"D-BUS; "
-"se esperaba una cadena"
+"Tipo del primer argumento no válido ('%c') en el método NewTerminal de D-"
+"BUS; se esperaba una cadena"
 
 #: src/session.c:63
 #, c-format
@@ -1898,8 +1896,7 @@ msgid ""
 "they only apply to windows opened subsequently."
 msgstr ""
 "Las siguientes opciones de pestaña no se aplican a las ventanas que están "
-"abiertas; "
-"solo a las ventanas que se abren posteriormente"
+"abiertas; solo a las ventanas que se abren posteriormente"
 
 #: src/roxterm-config.glade:2184
 msgid "Initial _number of tabs:"

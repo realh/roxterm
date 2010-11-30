@@ -39,6 +39,7 @@ struct MultiTab {
     gpointer user_data;
     GtkWidget *label;
     GtkWidget *label_bg;
+    GtkWidget *menu_label;
     GtkAdjustment *adjustment;
     double scroll_step;
     gboolean attention;
@@ -401,7 +402,14 @@ static void multi_tab_set_full_window_title(MultiTab * tab,
 
     if (tab->label)
     {
+        char *menu_text = g_strdup_printf("%d. %s",
+                gtk_notebook_page_num(GTK_NOTEBOOK(win->notebook),
+                        tab->widget) + 1,
+                actual_title);
+        
         gtk_label_set_text(GTK_LABEL(tab->label), actual_title);
+        gtk_label_set_text(GTK_LABEL(tab->menu_label), menu_text);
+        g_free(menu_text);
     }
     if (win)
     {
@@ -424,6 +432,7 @@ static void multi_tab_set_full_window_title(MultiTab * tab,
         }
         win->ignore_toggles = FALSE;
     }
+    g_free(actual_title);
 }
 
 void multi_tab_set_window_title(MultiTab * tab, const char *title)
@@ -1495,7 +1504,7 @@ MultiWin *multi_win_new_blank(const char *display_name, Options *shortcuts,
     {
         g_object_set(win->notebook, "tab-vborder", 0, NULL);
     }
-    gtk_notebook_set_scrollable(GTK_NOTEBOOK(win->notebook), TRUE);
+    gtk_notebook_popup_enable(GTK_NOTEBOOK(win->notebook));
     if (always_show_tabs)
     {
         multi_win_set_show_tabs_menu_items(win, TRUE);
@@ -1753,8 +1762,12 @@ static GtkWidget *make_tab_label(MultiTab *tab, GtkPositionType tab_pos)
 {
     static GdkColor amber;
     static gboolean parsed_amber = FALSE;
+    GtkLabel *label;
 
     tab->label = gtk_label_new(NULL);
+    tab->menu_label = gtk_label_new(NULL);
+    label = GTK_LABEL(tab->label);
+    gtk_label_set_ellipsize(label, PANGO_ELLIPSIZE_MIDDLE);
     multi_tab_set_full_window_title(tab, tab->window_title_template,
             tab->window_title);
     switch (tab_pos)
@@ -1764,8 +1777,6 @@ static GtkWidget *make_tab_label(MultiTab *tab, GtkPositionType tab_pos)
             tab->label_box = gtk_vbox_new(FALSE, 4);
             tab->label_packer = gtk_box_pack_end;
             gtk_widget_set_size_request(tab->label, HORIZ_TAB_WIDTH, -1);
-            gtk_label_set_ellipsize(GTK_LABEL(tab->label),
-                    PANGO_ELLIPSIZE_MIDDLE);
             break;
         default:
             tab->label_box = gtk_hbox_new(FALSE, 4);
@@ -1822,21 +1833,22 @@ static void multi_win_add_tab_to_notebook(MultiWin * win, MultiTab * tab,
         int position)
 {
     GtkWidget *label = make_tab_label(tab, win->tab_pos);
+    GtkNotebook *notebook = GTK_NOTEBOOK(win->notebook);
 
     if (position == -1)
     {
-        gtk_notebook_append_page(GTK_NOTEBOOK(win->notebook),
-                tab->widget, label);
+        gtk_notebook_append_page_menu(notebook, tab->widget, label,
+                tab->menu_label);
     }
     else
     {
-        gtk_notebook_insert_page(GTK_NOTEBOOK(win->notebook),
-                tab->widget, label, position);
+        gtk_notebook_insert_page_menu(notebook,
+                tab->widget, label, tab->menu_label, position);
     }
-    gtk_notebook_set_tab_reorderable(GTK_NOTEBOOK(win->notebook), tab->widget,
-            TRUE);
-    gtk_notebook_set_tab_detachable(GTK_NOTEBOOK(win->notebook), tab->widget,
-            TRUE);
+    gtk_container_child_set(GTK_CONTAINER(notebook), tab->widget,
+            "tab-expand", TRUE, "tab-fill", TRUE, NULL);
+    gtk_notebook_set_tab_reorderable(notebook, tab->widget, TRUE);
+    gtk_notebook_set_tab_detachable(notebook, tab->widget, TRUE);
     g_object_set(gtk_widget_get_parent(label), "can-focus", FALSE, NULL);
 }
 
