@@ -709,6 +709,16 @@ void multi_tab_cancel_attention(MultiTab *tab)
     }
 }
 
+/* Force tab width to something "nice". Unfortunately we can't
+ * easily find the window's size when we're adding the first tab. */
+static void multi_tab_set_single_size(MultiTab *tab)
+{
+    g_object_set(G_OBJECT(tab->parent->notebook), "homogeneous", FALSE, NULL);
+    gtk_container_child_set(GTK_CONTAINER(tab->parent->notebook), tab->widget,
+            "tab-expand", FALSE, "tab-fill", FALSE, NULL);
+    gtk_widget_set_size_request(tab->label, 240, -1);
+}
+
 static void multi_win_set_full_title(MultiWin *win,
         const char *template, const char *title)
 {
@@ -1677,6 +1687,7 @@ static gboolean multi_win_notify_tab_removed(MultiWin * win, MultiTab * tab)
         if (win->ntabs == 1)
         {
             tab = win->tabs->data;
+            multi_tab_set_single_size(tab);
             if (!win->always_show_tabs)
             {
                 multi_win_hide_tabs(win);
@@ -1845,11 +1856,29 @@ static void multi_win_add_tab_to_notebook(MultiWin * win, MultiTab * tab,
         gtk_notebook_insert_page_menu(notebook,
                 tab->widget, label, tab->menu_label, position);
     }
-    gtk_container_child_set(GTK_CONTAINER(notebook), tab->widget,
-            "tab-expand", TRUE, "tab-fill", TRUE, NULL);
     gtk_notebook_set_tab_reorderable(notebook, tab->widget, TRUE);
     gtk_notebook_set_tab_detachable(notebook, tab->widget, TRUE);
     g_object_set(gtk_widget_get_parent(label), "can-focus", FALSE, NULL);
+    /* Note at this point ntabs is how many tabs there are about to be,
+     * not how many there were before adding.
+     */
+    if (win->ntabs == 1)
+    {
+        multi_tab_set_single_size(tab);
+    }
+    else
+    {
+        GList *link;
+        
+        g_object_set(G_OBJECT(win->notebook), "homogeneous", TRUE, NULL);
+        for (link = win->tabs; link; link = g_list_next(link))
+        {
+            MultiTab *tab = link->data;
+            
+            gtk_container_child_set(GTK_CONTAINER(notebook), tab->widget,
+                    "tab-expand", TRUE, "tab-fill", TRUE, NULL);
+        }
+    }
 }
 
 /* Keep track of a tab after it's been created; if notify_only is set, it's
