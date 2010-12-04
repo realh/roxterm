@@ -4157,9 +4157,11 @@ static void close_win_tag(_ROXTermParseContext *rctx)
         if (rctx->active_tab)
         {
             multi_win_select_tab(rctx->win, rctx->active_tab);
+            /*
             roxterm_tab_selection_handler(
                     multi_tab_get_user_data(rctx->active_tab),
                     rctx->active_tab);
+            */
         }
     }
     rctx->win = NULL;

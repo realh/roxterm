@@ -709,6 +709,7 @@ void multi_tab_cancel_attention(MultiTab *tab)
     }
 }
 
+#if 0
 /* Force tab width to something "nice". Unfortunately we can't
  * easily find the window's size when we're adding the first tab. */
 static void multi_tab_set_single_size(MultiTab *tab)
@@ -718,6 +719,7 @@ static void multi_tab_set_single_size(MultiTab *tab)
             "tab-expand", FALSE, "tab-fill", FALSE, NULL);
     gtk_widget_set_size_request(tab->label, 240, -1);
 }
+#endif
 
 static void multi_win_set_full_title(MultiWin *win,
         const char *template, const char *title)
@@ -979,6 +981,7 @@ static void page_added_callback(GtkNotebook *notebook, GtkWidget *child,
         multi_tab_to_new_window_handler(win, tab, old_win_destroyed);
         if (win->ntabs == 1)
         {
+            /* multi_tab_set_single_size(tab); */
             multi_win_show(win);
         }
     }
@@ -1405,6 +1408,7 @@ MultiWin *multi_win_new_blank(const char *display_name, Options *shortcuts,
 {
     MultiWin *win = g_new0(MultiWin, 1);
     static gboolean set_nwc_hook = FALSE;
+    GtkNotebook *notebook;
 
     if (!set_nwc_hook)
     {
@@ -1506,15 +1510,17 @@ MultiWin *multi_win_new_blank(const char *display_name, Options *shortcuts,
         G_CALLBACK(multi_win_state_event_handler), win);
 
     win->notebook = gtk_notebook_new();
+    notebook = GTK_NOTEBOOK(win->notebook);
+    gtk_notebook_set_scrollable(notebook, TRUE);
     if (win->tab_pos == GTK_POS_LEFT || win->tab_pos == GTK_POS_RIGHT)
     {
-        g_object_set(win->notebook, "tab-hborder", 0, NULL);
+        g_object_set(notebook, "tab-hborder", 0, NULL);
     }
     else
     {
-        g_object_set(win->notebook, "tab-vborder", 0, NULL);
+        g_object_set(notebook, "tab-vborder", 0, NULL);
     }
-    gtk_notebook_popup_enable(GTK_NOTEBOOK(win->notebook));
+    gtk_notebook_popup_enable(notebook);
     if (always_show_tabs)
     {
         multi_win_set_show_tabs_menu_items(win, TRUE);
@@ -1530,7 +1536,7 @@ MultiWin *multi_win_new_blank(const char *display_name, Options *shortcuts,
         G_CALLBACK(multi_win_page_switched), win);
     g_signal_connect(win->gtkwin, "focus-in-event",
         G_CALLBACK(multi_win_focus_in), win);
-    gtk_notebook_set_group(GTK_NOTEBOOK(win->notebook), &multi_win_all);
+    gtk_notebook_set_group(notebook, &multi_win_all);
     g_signal_connect(win->notebook, "page-reordered",
         G_CALLBACK(page_reordered_callback), win);
     g_signal_connect(win->notebook, "page-added",
@@ -1687,7 +1693,7 @@ static gboolean multi_win_notify_tab_removed(MultiWin * win, MultiTab * tab)
         if (win->ntabs == 1)
         {
             tab = win->tabs->data;
-            multi_tab_set_single_size(tab);
+            /*multi_tab_set_single_size(tab);*/
             if (!win->always_show_tabs)
             {
                 multi_win_hide_tabs(win);
@@ -1862,6 +1868,7 @@ static void multi_win_add_tab_to_notebook(MultiWin * win, MultiTab * tab,
     /* Note at this point ntabs is how many tabs there are about to be,
      * not how many there were before adding.
      */
+    /*
     if (win->ntabs == 1)
     {
         multi_tab_set_single_size(tab);
@@ -1879,6 +1886,9 @@ static void multi_win_add_tab_to_notebook(MultiWin * win, MultiTab * tab,
                     "tab-expand", TRUE, "tab-fill", TRUE, NULL);
         }
     }
+    */
+    gtk_container_child_set(GTK_CONTAINER(notebook), tab->widget,
+            "tab-expand", TRUE, "tab-fill", TRUE, NULL);
 }
 
 /* Keep track of a tab after it's been created; if notify_only is set, it's
