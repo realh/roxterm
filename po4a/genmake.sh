@@ -1,6 +1,6 @@
 #!/bin/sh
 
-LANGS='es fr'
+LANGS='es'
 PAGES='guide index installation news'
 
 f=`dirname $0`/Makefile.am
