@@ -1072,13 +1072,21 @@ static void roxterm_size_func(ROXTermData *roxterm, gboolean pixels,
     }
 }
 
+static void roxterm_default_size_func(ROXTermData *roxterm,
+        int *pwidth, int *pheight)
+{
+    *pwidth = options_lookup_int_with_default(roxterm->profile, "width", 80);
+    *pheight = options_lookup_int_with_default(roxterm->profile, "height", 24);
+}
+
 static void roxterm_update_size(ROXTermData * roxterm, VteTerminal * vte)
 {
     if (multi_win_get_current_tab(roxterm->win) == roxterm->tab)
     {
-        roxterm_set_vte_size(roxterm, vte,
-            options_lookup_int_with_default(roxterm->profile, "width", 80),
-            options_lookup_int_with_default(roxterm->profile, "height", 24));
+        int w, h;
+        
+        roxterm_default_size_func(roxterm, &w, &h);
+        roxterm_set_vte_size(roxterm, vte, w, h);
     }
 }
 
@@ -3634,10 +3642,7 @@ void roxterm_launch(const char *display_name, char **env)
             
     if (!size_on_cli)
     {
-        roxterm->columns = options_lookup_int_with_default(roxterm->profile,
-                "width", 80);
-        roxterm->rows = options_lookup_int_with_default(roxterm->profile,
-                "height", 24);
+        roxterm_default_size_func(roxterm, &roxterm->columns, &roxterm->rows);
     }
     if (global_options_commandv)
     {
@@ -3853,6 +3858,7 @@ void roxterm_init(void)
         roxterm_connect_menu_signals,
         (MultiWinGeometryFunc) roxterm_geometry_func,
         (MultiWinSizeFunc) roxterm_size_func,
+        (MultiWinDefaultSizeFunc) roxterm_default_size_func,
         roxterm_tab_to_new_window,
         (MultiWinZoomHandler) roxterm_set_zoom_factor,
         (MultiWinGetDisableMenuShortcuts) roxterm_get_disable_menu_shortcuts,

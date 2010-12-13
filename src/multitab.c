@@ -123,6 +123,7 @@ static MultiTabDestructor multi_tab_destructor;
 static MultiWinMenuSignalConnector multi_win_menu_signal_connector;
 static MultiWinGeometryFunc multi_win_geometry_func;
 static MultiWinSizeFunc multi_win_size_func;
+static MultiWinDefaultSizeFunc multi_win_default_size_func;
 static MultiTabToNewWindowHandler multi_tab_to_new_window_handler;
 static MultiWinZoomHandler multi_win_zoom_handler;
 MultiWinGetDisableMenuShortcuts multi_win_get_disable_menu_shortcuts;
@@ -191,6 +192,7 @@ void multi_tab_popup_menu(MultiTab * tab, guint button, guint32 event_time)
 void multi_tab_init(MultiTabFiller filler, MultiTabDestructor destructor,
     MultiWinMenuSignalConnector menu_signal_connector,
     MultiWinGeometryFunc geometry_func, MultiWinSizeFunc size_func,
+    MultiWinDefaultSizeFunc default_size_func,
     MultiTabToNewWindowHandler tab_to_new_window_handler,
     MultiWinZoomHandler zoom_handler,
     MultiWinGetDisableMenuShortcuts get_disable_menu_shortcuts,
@@ -203,6 +205,7 @@ void multi_tab_init(MultiTabFiller filler, MultiTabDestructor destructor,
     multi_win_menu_signal_connector = menu_signal_connector;
     multi_win_geometry_func = geometry_func;
     multi_win_size_func = size_func;
+    multi_win_default_size_func = default_size_func;
     multi_tab_to_new_window_handler = tab_to_new_window_handler;
     multi_win_zoom_handler = zoom_handler;
     multi_win_get_disable_menu_shortcuts = get_disable_menu_shortcuts;
@@ -1033,34 +1036,16 @@ MultiWin *multi_win_clone(MultiWin *old,
 {
     GtkPositionType tab_pos = GTK_POS_TOP;
     int num_tabs = 1;
-    MultiWin *(*creator)(const char *display_name,
-        Options *shortcuts, int zoom_index,
-        gpointer user_data_template, int numtabs, GtkPositionType tab_pos,
-        gboolean always_show_tabs);
+    char geom[16];
+    int width, height;
 
     multi_win_initial_tabs(user_data_template, &tab_pos, &num_tabs);
-    if (multi_win_is_fullscreen(old))
-    {
-        creator = multi_win_new_fullscreen;
-    }
-    else if (multi_win_is_maximised(old))
-    {
-        creator = multi_win_new_maximised;
-    }
-    else
-    {
-        char geom[16];
-        int width, height;
-        
-        multi_win_size_func(multi_tab_get_user_data(old->current_tab), FALSE,
-                &width, &height);
-        sprintf(geom, "%dx%d", width, height);
-        return multi_win_new_with_geom(old->display_name, old->shortcuts,
-                old->zoom_index, user_data_template, geom,
-                num_tabs, tab_pos, always_show_tabs);
-    }
-    return creator(old->display_name, old->shortcuts, old->zoom_index,
-            user_data_template, num_tabs, tab_pos, always_show_tabs);
+    multi_win_default_size_func(multi_tab_get_user_data(old->current_tab),
+            &width, &height);
+    sprintf(geom, "%dx%d", width, height);
+    return multi_win_new_with_geom(old->display_name, old->shortcuts,
+            old->zoom_index, user_data_template, geom,
+            num_tabs, tab_pos, always_show_tabs);
 }
 
 static void multi_win_new_window_action(MultiWin * win)

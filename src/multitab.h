@@ -64,6 +64,10 @@ typedef void (*MultiWinGeometryFunc) (gpointer user_data, GdkGeometry * geom,
 typedef void (*MultiWinSizeFunc) (gpointer user_data, gboolean pixels,
     int *pwidth, int *pheight);
 
+/* Return the profile's default size in char cells */
+typedef void (*MultiWinDefaultSizeFunc)(gpointer user_data,
+        int *width, int *height);
+
 /* Called when a tab is selected */
 typedef void (*MultiTabSelectionHandler) (gpointer user_data, MultiTab * tab);
 
@@ -103,7 +107,8 @@ MultiWinGetDisableMenuShortcuts multi_win_get_disable_menu_shortcuts;
 void
 multi_tab_init(MultiTabFiller filler, MultiTabDestructor destructor,
     MultiWinMenuSignalConnector menu_signal_connector,
-    MultiWinGeometryFunc, MultiWinSizeFunc, MultiTabToNewWindowHandler,
+    MultiWinGeometryFunc, MultiWinSizeFunc, MultiWinDefaultSizeFunc,
+    MultiTabToNewWindowHandler,
     MultiWinZoomHandler, MultiWinGetDisableMenuShortcuts, MultiWinInitialTabs,
     MultiWinDeleteHandler, MultiTabGetShowCloseButton);
 

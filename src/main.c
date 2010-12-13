@@ -147,7 +147,6 @@ static DBusHandlerResult new_term_listener(DBusConnection *connection,
     char **env;
     char **argv;
     int argc;
-    int n;
     const char *display = NULL;
     DBusMessageIter iter;
 
