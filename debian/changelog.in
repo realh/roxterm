@@ -6,8 +6,11 @@ roxterm (@VERSION@-1) unstable; urgency=low
     + Rationalised handling of tab and window titles.
     + Use ellipsizing in tab labels again (Closes: #601828).
     + Support tab popup menus.
+    + New windows take on profile's default size instead of inheriting
+      previous window's size.
+  * Use -Wall in CFLAGS.
 
- -- Tony Houghton <h@realh.co.uk>  Tue, 30 Nov 2010 16:06:15 +0000
+ -- Tony Houghton <h@realh.co.uk>  Mon, 13 Dec 2010 16:13:22 +0000
 
 roxterm (1.19.4-1) unstable; urgency=low
 
