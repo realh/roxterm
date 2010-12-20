@@ -19,8 +19,8 @@ cat ChangeLog.old >> ChangeLog
 
 if ! tx pull --all
 then
-    echo Transifex client failed or not installed.
-    echo See <http://help.transifex.net/user-guide/client/client-0.3.html>
+    echo 'Transifex client failed or not installed.'
+    echo 'See <http://help.transifex.net/user-guide/client/client-0.3.html>'
     exit 1
 fi
 
