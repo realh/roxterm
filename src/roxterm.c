@@ -2209,6 +2209,10 @@ static void roxterm_beep_handler(VteTerminal *vte, ROXTermData *roxterm)
     }
 }
 
+#if ! HAVE_GTK_WIDGET_GET_REALIZED
+#define gtk_widget_get_realized GTK_WIDGET_REALIZED
+#endif
+
 static void roxterm_resize_window_handler(VteTerminal *vte,
         guint width, guint height, ROXTermData *roxterm)
 {
