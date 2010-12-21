@@ -181,7 +181,7 @@ TH_CHECK_ALTERNATIVE_FUNCS(dbus-1,
     dbus_message_iter_get_basic, HAVE_DBUS_MESSAGE_ITER_GET_BASIC,
     dbus_message_iter_get_string, HAVE_DBUS_MESSAGE_ITER_GET_STRING)
 
-AC_CHECK_FUNCS_ONCE(g_mkdir_with_parents gtk_file_chooser_button_new g_file_set_contents get_current_dir_name)
+AC_CHECK_FUNCS_ONCE(gtk_widget_get_realized g_mkdir_with_parents gtk_file_chooser_button_new g_file_set_contents get_current_dir_name)
 tmp_CFLAGS="$CFLAGS"
 tmp_LIBS="$LIBS"
 CFLAGS="$vte_CFLAGS"

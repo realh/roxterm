@@ -561,7 +561,7 @@ static char *roxterm_fork_command(VteTerminal *terminal,
             (utmp ? 0 : VTE_PTY_NO_UTMP) |
             (wtmp ? 0 : VTE_PTY_NO_WTMP),
             working_directory, argv, envv,
-            G_SPAWN_SEARCH_PATH,
+            lastlog ? G_SPAWN_FILE_AND_ARGV_ZERO : G_SPAWN_SEARCH_PATH,
             NULL, NULL, ppid, &error))
     {
         char *reply = g_strdup_printf(
@@ -573,7 +573,7 @@ static char *roxterm_fork_command(VteTerminal *terminal,
         return reply;
     }
 #else
-    *pid = vte_terminal_fork_command(terminal, command, argv, envv,
+    *pid = vte_terminal_fork_command(terminal, command, argv + 1, envv,
             working_directory, lastlog, utmp, wtmp);
     if (*pid == -1)
     {
@@ -671,15 +671,27 @@ static void roxterm_run_command(ROXTermData *roxterm, VteTerminal *vte)
         if (!special && options_lookup_int_with_default(roxterm->profile,
                 "login_shell", 0))
         {
-            /* If login_shell, make sure commandv[0] is a leafname and
-             * prepend - */
+            /* If login_shell, make sure commandv[1] is the
+             * shell base name (== leaf name) prepended by "-" */
+            char **new_commandv;
+            guint old_len;
             char *leaf = strrchr(commandv[0], G_DIR_SEPARATOR);
 
             if (leaf)
                 ++leaf;
             else
                 leaf = commandv[0];
-            commandv[0] = g_strconcat("-", leaf, NULL);
+
+            /* The NULL terminator is not considered by g_strv_length() */
+            old_len = g_strv_length(commandv);
+            new_commandv = g_new(char *, old_len + 2);
+
+            new_commandv[0] = commandv[0];
+            new_commandv[1] = g_strconcat("-", leaf, NULL);
+            memcpy(new_commandv + 2, commandv + 1, sizeof(char *) * old_len);
+
+            g_free(commandv);
+            commandv = new_commandv;
             login = TRUE;
         }
     }
@@ -2196,6 +2208,10 @@ static void roxterm_beep_handler(VteTerminal *vte, ROXTermData *roxterm)
             gtk_window_set_urgency_hint(win, TRUE);
     }
 }
+
+#if ! HAVE_GTK_WIDGET_GET_REALIZED
+#define gtk_widget_get_realized GTK_WIDGET_REALIZED
+#endif
 
 static void roxterm_resize_window_handler(VteTerminal *vte,
         guint width, guint height, ROXTermData *roxterm)

@@ -17,6 +17,13 @@ tail -n +2 debian/changelog.in >> debian/changelog
 git log > ChangeLog
 cat ChangeLog.old >> ChangeLog
 
+if ! tx pull --all
+then
+    echo 'Transifex client failed or not installed.'
+    echo 'See <http://help.transifex.net/user-guide/client/client-0.3.html>'
+    exit 1
+fi
+
 ./po4a/genmake.sh
 
 # Refresh GNU autotools toolchain.
