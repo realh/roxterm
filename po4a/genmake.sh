@@ -169,7 +169,12 @@ do
     TRANSLATED_HTML="$TRANSLATED_HTML "'$(HTMLFILES_'`echo $l | tr '[:lower:]' '[:upper:]'`')'
 done
 echo >>$f TRANSLATED_HTML = "$TRANSLATED_HTML"
-echo >>$f 'EXTRA_DIST = $(MAN_EXTRA_DIST) $(HTML_POFILES) $(TRANSLATED_HTML)'
+echo >>$f if ENABLE_PO4A
+echo >>$f 'EXTRA_DIST = $(MAN_EXTRA_DIST) $(HTML_POFILES) $(TRANSLATED_HTML) $(POTFILES)'
 echo >>$f 'noinst_DATA = $(TRANSLATED_MANS) $(TRANSLATED_HTML) $(POTFILES)'
+echo >>$f else
+echo >>$f 'EXTRA_DIST = $(MAN_EXTRA_DIST) $(HTML_POFILES) $(TRANSLATED_HTML)'
+echo >>$f 'noinst_DATA = $(TRANSLATED_MANS) $(TRANSLATED_HTML)'
+echo >>$f endif
 echo >>$f 'DISTCLEANFILES = $(MAN_DISTCLEANFILES) $(TRANSLATED_HTML)'
 
