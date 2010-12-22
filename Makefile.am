@@ -93,8 +93,9 @@ Help/README:
 	ln -nfs ../README Help/README
 
 dist-hook:
-	git log > $(top_srcdir)/ChangeLog && \
-		cat $(top_srcdir)/ChangeLog.old >> $(top_srcdir)/ChangeLog
+	test -d $(top_srcdir)/.git && git log > $(top_srcdir)/ChangeLog && \
+		cat $(top_srcdir)/ChangeLog.old >> $(top_srcdir)/ChangeLog \
+		|| true
 
 install-data-local:
 	$(install_sh) -m 0755 -d $(DESTDIR)/$(docdir) \
