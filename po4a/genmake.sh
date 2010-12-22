@@ -41,6 +41,8 @@ echo >>$f MAN_DISTCLEANFILES = '$(TRANSLATED_MANS)' $DISTCLEANFILES
 echo >>$f MAN_POFILES = $MAN_POFILES
 echo >>$f MAN_EXTRA_DIST = '$(MAN_POFILES)' $MAN_EXTRA_DIST
 echo >>$f
+echo >>$f if ENABLE_PO4A
+echo >>$f
 
 POTFILES=''
 for r in roxterm roxterm-config
@@ -55,11 +57,15 @@ for l in $LANGS
 do
     for r in roxterm roxterm-config
     do
+        echo >>$f endif
+        echo >>$f
         echo >>$f $r.1.$l: $r.1.$l.xml
         printf >>$f '\t@XMLTOMAN@ $<\n'
         printf >>$f '\tmv %s.1 %s.1.%s\n\n' $r $r $l
         echo >>$f $r.1.$l.xml: $r.1.$l.xml.in
         printf >>$f '\tsed "s/\\@PACKAGE_VERSION\\@/$(PACKAGE_VERSION)/; s#\\@htmldir\\@#$(htmldir)#" < $< > $@\n\n'
+        echo >>$f if ENABLE_PO4A
+        echo >>$f
         echo >>$f $r.1.$l.xml.in: $r.1.$l.po
         printf >>$f '\t$(PO4A_TRANSLATE) -k 0 -f docbook -m ../%s.1.xml.in -p $< -l $@\n\n' $r
         echo >>$f $r.1.$l.po: ../$r.1.xml.in
@@ -67,6 +73,9 @@ do
         printf >>$f '\tsed -i s/charset=CHARSET/charset=UTF-8/ $@\n\n'
     done
 done
+
+echo >>$f endif
+echo >>$f
 
 echo >>$f install-mans:
 for l in $LANGS
@@ -127,6 +136,8 @@ do
 	printf >>$f '\t$(install_sh) -m 0644 -t $(DESTDIR)/$(htmldir)/%s $(HTMLFILES_%s)\n' $l `echo $l | tr '[:lower:]' '[:upper:]'`
 done
 echo >>$f
+echo >>$f if ENABLE_PO4A
+echo >>$f
 
 for p in $PAGES
 do
@@ -148,6 +159,8 @@ do
     done
 done
 
+echo >>$f endif
+echo >>$f
 echo >>$f '# Force building and distribution of various files'
 echo >>$f POTFILES = "$POTFILES"
 TRANSLATED_HTML=''
