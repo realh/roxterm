@@ -26,8 +26,10 @@ Additionally install the devscripts package, which includes debuild.
 Use of git
 ----------
 
-If using a clean git checkout you will also need autoconf, automake,
-autopoint, autotools and po4a. Then run ./bootstrap.sh.
+If using a clean git checkout you will also need autoconf, automake, autopoint,
+autotools, po4a and the transifex client (tx). For transifex see
+<http://help.transifex.net/user-guide/client/client-0.3.html>. Then run
+./bootstrap.sh.
 
 Building the package
 --------------------
