@@ -31,30 +31,22 @@ AM_PROG_CC_C_O
 AC_PROG_INSTALL
 AC_PROG_LIBTOOL
 AC_CHECK_PROG(HAVE_SED, sed, yes, no)
-if test "x$HAVE_SED" != "xyes"
-then
-    AC_MSG_ERROR([You need sed to build $PACKAGE])
-fi
+AS_IF([test "x$HAVE_SED" != "xyes"],
+    [AC_MSG_ERROR([You need sed to build $PACKAGE])])
 AC_CHECK_PROG(HAVE_DIFF, diff, yes, no)
-if test "x$HAVE_DIFF" != "xyes"
-then
-    AC_MSG_ERROR([You need diff to build $PACKAGE])
-fi
+AS_IF([test "x$HAVE_DIFF" != "xyes"],
+    [AC_MSG_ERROR([You need diff to build $PACKAGE])])
 PKG_PROG_PKG_CONFIG
 
 # Can we build the manpages?
 AC_CHECK_PROG(HAVE_XMLTO, xmlto, yes, no)
 AC_CHECK_PROG(HAVE_XSLTPROC, xsltproc, yes, no)
-if test "x$HAVE_XMLTO" = "xyes"
-then
-    XMLTOMAN="xmlto man"
-elif test "x$HAVE_XSLTPROC" = "xyes"
-then
-    XMLTOMAN="xsltproc --nonet --novalid --param man.charmap.use.subset 0 http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl"
-else
-    AC_MSG_WARN([Unable to build manpages without xmlto or xsltproc])
-    XMLTOMAN=""
-fi
+AS_IF([test "x$HAVE_XMLTO" = "xyes"],
+    [XMLTOMAN="xmlto man"],
+    [test "x$HAVE_XSLTPROC" = "xyes"],
+    [XMLTOMAN="xsltproc --nonet --novalid --param man.charmap.use.subset 0 http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl"],
+    [AC_MSG_WARN([Unable to build manpages without xmlto or xsltproc])
+    XMLTOMAN=""])
 AM_CONDITIONAL(BUILD_MANPAGES, test "x$XMLTOMAN" != x)
 AC_SUBST(XMLTOMAN)
 
@@ -69,32 +61,23 @@ dnl Misc options
 AC_ARG_ENABLE([gtk-native-tab-dragging],
     AS_HELP_STRING([--disable-gtk-native-tab-dragging],
         [Use ROXTerm's legacy code for dragging tabs instead of GTK+'s functions]),
-    [if test x$enableval = xno
-    then
-        DO_OWN_TAB_DRAGGING=1
-    else
-        DO_OWN_TAB_DRAGGING=0
-    fi
-    ],
+    [AS_IF([test x$enableval = xno],
+        [DO_OWN_TAB_DRAGGING=1],
+        [DO_OWN_TAB_DRAGGING=0])],
     [DO_OWN_TAB_DRAGGING=0])
 
 AC_ARG_WITH([gnome-default-applications],
     AS_HELP_STRING([--with-gnome-default-applications],
         [Directory for GNOME Default Applications files. Use --without-... to disable. Default behaviour is to check with pkg-config.]),
-    [if test x$withval = xno
-    then
-        DEFAULTAPPS_DIR=""
-    else
-        DEFAULTAPPS_DIR="$withval"
-    fi],
+    [AS_IF([test x$withval = xno],
+        [DEFAULTAPPS_DIR=""],
+        [DEFAULTAPPS_DIR="$withval"])],
     [AC_MSG_CHECKING([Where to install GNOME Default Applications file])
-    if $PKG_CONFIG --variable=defappsdir gnome-default-applications >/dev/null ; then
-         DEFAULTAPPS_DIR="`$PKG_CONFIG --variable=defappsdir gnome-default-applications`"
-         AC_MSG_RESULT([$DEFAULTAPPS_DIR])
-    else
-         AC_MSG_RESULT([not found])
-         DEFAULTAPPS_DIR=""
-    fi])
+    AS_IF([$PKG_CONFIG --variable=defappsdir gnome-default-applications >/dev/null],
+         [DEFAULTAPPS_DIR="`$PKG_CONFIG --variable=defappsdir gnome-default-applications`"
+         AC_MSG_RESULT([$DEFAULTAPPS_DIR])],
+         [AC_MSG_RESULT([not found])
+         DEFAULTAPPS_DIR=""])])
 AC_SUBST(DEFAULTAPPS_DIR)
 AM_CONDITIONAL([INSTALL_DEFAULT_APPS], [test -n "$DEFAULTAPPS_DIR"])
 
@@ -114,21 +97,15 @@ LIBS="$LIBS $glib_LIBS $gtk_LIBS $dbus_LIBS"
 
 dnl Terminal only
 PKG_CHECK_MODULES(vte, [vte >= 0.11.11])
-if test $enable_sm = no
-then
-    enable_sm=0
-else
-    PKG_CHECK_MODULES(sm, [sm ice],
+AS_IF([test $enable_sm = no],
+    [enable_sm=0],
+    [PKG_CHECK_MODULES(sm, [sm ice],
         [enable_sm=1],
-        [if test $enable_sm = yes
-        then
-            AC_MSG_ERROR([Missing or broken SM and/or ICE library or headers. Check config.log for more details.])
-        else
-            AC_MSG_WARN([Missing or broken SM and/or ICE library or headers; session management disabled. Check config.log for more details.])
-        fi
+        [AS_IF([test $enable_sm = yes],
+            [AC_MSG_ERROR([Missing or broken SM and/or ICE library or headers. Check config.log for more details.])],
+            [AC_MSG_WARN([Missing or broken SM and/or ICE library or headers; session management disabled. Check config.log for more details.])])
         enable_sm=0
-        ])
-fi
+        ])])
 AC_DEFINE_UNQUOTED(ENABLE_SM, [$enable_sm],
   [Whether to support session management])
 AM_CONDITIONAL(ENABLE_SM, [test $enable_sm = yes])
