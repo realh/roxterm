@@ -28,7 +28,7 @@ do
     echo >>$f ${l}mandir = '$(mandir)'/$l/man1
     for r in roxterm roxterm-config
     do
-        TRANSLATED_MANS="$TRANSLATED_MANS $r.1.$l"
+        TRANSLATED_MANS="$TRANSLATED_MANS $l/$r.1"
         MAN_DISTCLEANFILES="$MAN_DISTCLEANFILES $r.1.$l.xml"
         MAN_POFILES="$MAN_POFILES $r.1.$l.po"
         MAN_EXTRA_DIST="$MAN_EXTRA_DIST $r.1.$l.xml.in"
@@ -59,9 +59,9 @@ do
     do
         echo >>$f endif
         echo >>$f
-        echo >>$f $r.1.$l: $r.1.$l.xml
-        printf >>$f '\t@XMLTOMAN@ $<\n'
-        printf >>$f '\tmv %s.1 %s.1.%s\n\n' $r $r $l
+        echo >>$f $l/$r.1: $r.1.$l.xml
+        printf >>$f '\tmkdir %s || true\n' $l
+        printf >>$f '\t@XMLTOMAN@ -o %s $<\n\n' $l
         echo >>$f $r.1.$l.xml: $r.1.$l.xml.in
         printf >>$f '\tsed "s/\\@PACKAGE_VERSION\\@/$(PACKAGE_VERSION)/; s#\\@htmldir\\@#$(htmldir)#" < $< > $@\n\n'
         echo >>$f if ENABLE_PO4A
@@ -83,8 +83,7 @@ do
 	printf >>$f '\t$(install_sh) -m 0755 -d $(DESTDIR)/$(%smandir)\n' $l
     for r in roxterm roxterm-config
     do
-        printf >>$f '\tcp %s.1.%s $(DESTDIR)/$(%smandir)/%s.1\n' $r $l $l $r
-        printf >>$f '\tchmod 0644 $(DESTDIR)/$(%smandir)/%s.1\n' $l $r
+        printf >>$f '\t$(install_sh) %s/%s.1 $(DESTDIR)/$(%smandir)/\n' $l $r $l
     done
 done
 

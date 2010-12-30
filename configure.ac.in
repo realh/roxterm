@@ -108,7 +108,7 @@ AS_IF([test $enable_sm = no],
         ])])
 AC_DEFINE_UNQUOTED(ENABLE_SM, [$enable_sm],
   [Whether to support session management])
-AM_CONDITIONAL(ENABLE_SM, [test $enable_sm = yes])
+AM_CONDITIONAL(ENABLE_SM, [test $enable_sm = 1])
 
 dnl Capplet only
 PKG_CHECK_MODULES(glade2, [libglade-2.0])
