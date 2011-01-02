@@ -155,7 +155,7 @@ AM_CONDITIONAL(DO_OWN_TAB_DRAGGING, [test $DO_OWN_TAB_DRAGGING = 1])
 
 dnl Output variables etc
 
-AC_SUBST(roxterm_CFLAGS, [$vte_CFLAGS $sm_CFLAGS])
+AC_SUBST(roxterm_CFLAGS, ["$vte_CFLAGS $sm_CFLAGS"])
 AC_SUBST(roxterm_LIBS, ["$vte_LIBS $sm_LIBS"])
 
 AC_SUBST(APPINFO_STRING, "${VERSION} (${ISODATE})")
