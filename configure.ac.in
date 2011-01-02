@@ -31,78 +31,60 @@ AM_PROG_CC_C_O
 AC_PROG_INSTALL
 AC_PROG_LIBTOOL
 AC_CHECK_PROG(HAVE_SED, sed, yes, no)
-if test "x$HAVE_SED" != "xyes"
-then
-    AC_MSG_ERROR([You need sed to build $PACKAGE])
-fi
+AS_IF([test "x$HAVE_SED" != "xyes"],
+    [AC_MSG_ERROR([You need sed to build $PACKAGE])])
 AC_CHECK_PROG(HAVE_DIFF, diff, yes, no)
-if test "x$HAVE_DIFF" != "xyes"
-then
-    AC_MSG_ERROR([You need diff to build $PACKAGE])
-fi
+AS_IF([test "x$HAVE_DIFF" != "xyes"],
+    [AC_MSG_ERROR([You need diff to build $PACKAGE])])
 PKG_PROG_PKG_CONFIG
 
 # Can we build the manpages?
 AC_CHECK_PROG(HAVE_XMLTO, xmlto, yes, no)
 AC_CHECK_PROG(HAVE_XSLTPROC, xsltproc, yes, no)
-if test "x$HAVE_XMLTO" = "xyes"
-then
-    XMLTOMAN="xmlto man"
-elif test "x$HAVE_XSLTPROC" = "xyes"
-then
-    XMLTOMAN="xsltproc --nonet --novalid --param man.charmap.use.subset 0 http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl"
-else
-    AC_MSG_WARN([Unable to build manpages without xmlto or xsltproc])
-    XMLTOMAN=""
-fi
+AS_IF([test "x$HAVE_XMLTO" = "xyes"],
+    [XMLTOMAN="xmlto man"],
+    [test "x$HAVE_XSLTPROC" = "xyes"],
+    [XMLTOMAN="xsltproc --nonet --novalid --param man.charmap.use.subset 0 http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl"],
+    [AC_MSG_WARN([Unable to build manpages without xmlto or xsltproc])
+    XMLTOMAN=""])
 AM_CONDITIONAL(BUILD_MANPAGES, test "x$XMLTOMAN" != x)
 AC_SUBST(XMLTOMAN)
+
+AM_GNU_GETTEXT
+AM_GNU_GETTEXT_VERSION(0.17)
 
 # Is po4a available?
 AC_CHECK_PROG(HAVE_PO4A, po4a-translate, yes, no)
 AM_CONDITIONAL(ENABLE_PO4A, [test $HAVE_PO4A = yes])
 
-AM_GNU_GETTEXT
-AM_GNU_GETTEXT_VERSION(0.17)
-
 dnl Misc options
 AC_ARG_ENABLE([gtk-native-tab-dragging],
-    AC_HELP_STRING([--disable-gtk-native-tab-dragging],
+    AS_HELP_STRING([--disable-gtk-native-tab-dragging],
         [Use ROXTerm's legacy code for dragging tabs instead of GTK+'s functions]),
-        [if test x$enableval = xno
-        then
-            DO_OWN_TAB_DRAGGING=1
-        else
-            DO_OWN_TAB_DRAGGING=0
-        fi
-        ],
-        [DO_OWN_TAB_DRAGGING=0])
+    [AS_IF([test x$enableval = xno],
+        [DO_OWN_TAB_DRAGGING=1],
+        [DO_OWN_TAB_DRAGGING=0])],
+    [DO_OWN_TAB_DRAGGING=0])
 
 AC_ARG_WITH([gnome-default-applications],
-    AC_HELP_STRING([--with-gnome-default-applications],
+    AS_HELP_STRING([--with-gnome-default-applications],
         [Directory for GNOME Default Applications files. Use --without-... to disable. Default behaviour is to check with pkg-config.]),
-        [if test x$withval = xno
-        then
-            DEFAULTAPPS_DIR=""
-        else
-            DEFAULTAPPS_DIR="$withval"
-        fi],
-        [AC_MSG_CHECKING([Where to install GNOME Default Applications file])
-        if $PKG_CONFIG --variable=defappsdir gnome-default-applications >/dev/null ; then
-             DEFAULTAPPS_DIR="`$PKG_CONFIG --variable=defappsdir gnome-default-applications`"
-             AC_MSG_RESULT([$DEFAULTAPPS_DIR])
-        else
-             AC_MSG_RESULT([not found])
-             DEFAULTAPPS_DIR=""
-        fi])
+    [AS_IF([test x$withval = xno],
+        [DEFAULTAPPS_DIR=""],
+        [DEFAULTAPPS_DIR="$withval"])],
+    [AC_MSG_CHECKING([Where to install GNOME Default Applications file])
+    AS_IF([$PKG_CONFIG --variable=defappsdir gnome-default-applications >/dev/null],
+         [DEFAULTAPPS_DIR="`$PKG_CONFIG --variable=defappsdir gnome-default-applications`"
+         AC_MSG_RESULT([$DEFAULTAPPS_DIR])],
+         [AC_MSG_RESULT([not found])
+         DEFAULTAPPS_DIR=""])])
 AC_SUBST(DEFAULTAPPS_DIR)
 AM_CONDITIONAL([INSTALL_DEFAULT_APPS], [test -n "$DEFAULTAPPS_DIR"])
 
-AC_ARG_WITH([sm],
-    AC_HELP_STRING([--without-sm],
-        [Don't enable session management code]),
+AC_ARG_ENABLE([sm],
+    AS_HELP_STRING([--disable-sm], [Don't enable session management code]),
     [],
-    [with_sm="test"]
+    [enable_sm="test"]
 )
 
 dnl Checks for libraries.
@@ -115,15 +97,18 @@ LIBS="$LIBS $glib_LIBS $gtk_LIBS $dbus_LIBS"
 
 dnl Terminal only
 PKG_CHECK_MODULES(vte, [vte >= 0.11.11])
-tmp_LIBS="$LIBS"
-sm_LIBS=
-AC_CHECK_LIB(ICE, IceOpenConnection,
-    [AC_CHECK_LIB(SM, SmcOpenConnection,
-        [ HAVE_SM_LIBS=y
-          sm_LIBS="-lSM -lICE" ],
-        [HAVE_SM_LIBS=n], -lICE)],
-    [HAVE_SM_LIBS=n])
-LIBS="$tmp_LIBS"
+AS_IF([test $enable_sm = no],
+    [enable_sm=0],
+    [PKG_CHECK_MODULES(sm, [sm ice],
+        [enable_sm=1],
+        [AS_IF([test $enable_sm = yes],
+            [AC_MSG_ERROR([Missing or broken SM and/or ICE library or headers. Check config.log for more details.])],
+            [AC_MSG_WARN([Missing or broken SM and/or ICE library or headers; session management disabled. Check config.log for more details.])])
+        enable_sm=0
+        ])])
+AC_DEFINE_UNQUOTED(ENABLE_SM, [$enable_sm],
+  [Whether to support session management])
+AM_CONDITIONAL(ENABLE_SM, [test $enable_sm = 1])
 
 dnl Capplet only
 PKG_CHECK_MODULES(glade2, [libglade-2.0])
@@ -140,38 +125,6 @@ AC_DEFINE_UNQUOTED(ROXTERM_DBUS_OLD_ARGS_SEMANTICS, [$dbus_old_args],
 
 dnl Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADER(X11/SM/SMlib.h, [HAVE_SMLIB_H=y], [HAVE_SMLIB_H=n])
-AC_CHECK_HEADER(X11/ICE/ICElib.h, [HAVE_ICELIB_H=y], [HAVE_ICELIB_H=n])
-
-if test x$HAVE_SM_LIBS = xy && \
-        test x$HAVE_SMLIB_H = xy && test x$HAVE_ICELIB_H = xy
-then
-    if test x$with_sm != xno
-    then
-        with_sm=yes
-    fi
-else
-    if test x$with_sm = xyes || test x$with_sm = xx11
-    then
-        AC_MSG_ERROR([Missing or broken SM and/or ICE library or headers. Check config.log for more details.])
-    else
-        if test x$with_sm != xno
-        then
-            AC_MSG_WARN([Missing or broken SM and/or ICE library or headers; session management disabled. Check config.log for more details.])
-        fi
-        with_sm=no
-        sm_LIBS=
-    fi
-fi
-AM_CONDITIONAL(ENABLE_SM, test x$with_sm = xyes)
-if test x$with_sm = xyes
-then
-    with_sm="1"
-else
-    with_sm="0"
-fi
-AC_DEFINE_UNQUOTED(ENABLE_SM, [$with_sm],
-  [Whether to support session management])
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
@@ -202,7 +155,7 @@ AM_CONDITIONAL(DO_OWN_TAB_DRAGGING, [test $DO_OWN_TAB_DRAGGING = 1])
 
 dnl Output variables etc
 
-AC_SUBST(roxterm_CFLAGS, [$vte_CFLAGS])
+AC_SUBST(roxterm_CFLAGS, ["$vte_CFLAGS $sm_CFLAGS"])
 AC_SUBST(roxterm_LIBS, ["$vte_LIBS $sm_LIBS"])
 
 AC_SUBST(APPINFO_STRING, "${VERSION} (${ISODATE})")
