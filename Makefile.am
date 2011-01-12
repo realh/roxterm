@@ -47,10 +47,10 @@ if BUILD_MANPAGES
 man_MANS = roxterm.1 roxterm-config.1
 
 roxterm.1: roxterm.1.xml
-	@XMLTOMAN@ $<
+	@XMLTOMAN@ @XMLTOMAN_OPTS@ $<
 
 roxterm-config.1: roxterm-config.1.xml
-	@XMLTOMAN@  $<
+	@XMLTOMAN@ @XMLTOMAN_OPTS@ $<
 
 DISTCLEANFILES = $(man_MANS)
 

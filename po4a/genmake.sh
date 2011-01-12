@@ -61,7 +61,7 @@ do
         echo >>$f
         echo >>$f $l/$r.1: $r.1.$l.xml
         printf >>$f '\tmkdir %s || true\n' $l
-        printf >>$f '\t@XMLTOMAN@ -o %s $<\n\n' $l
+        printf >>$f '\t@XMLTOMAN@ -o %s/ @XMLTOMAN_OPTS@ $<\n\n' $l
         echo >>$f $r.1.$l.xml: $r.1.$l.xml.in
         printf >>$f '\tsed "s/\\@PACKAGE_VERSION\\@/$(PACKAGE_VERSION)/; s#\\@htmldir\\@#$(htmldir)#" < $< > $@\n\n'
         echo >>$f if ENABLE_PO4A
