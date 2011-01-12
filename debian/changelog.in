@@ -9,47 +9,19 @@ roxterm (@VERSION@-1) unstable; urgency=low
     + New windows take on profile's default size instead of inheriting
       previous window's size.
     + Added Nicola Fontana's patch to fix login shell option.
+    + New sizing code to fix sf.net bug 3041926.
+    + Default to using GtkNotebook's implementation of draggable tabs.
+    + New HTML documentation.
+    + Spanish translation.
   * Use -Wall in CFLAGS.
 
- -- Tony Houghton <h@realh.co.uk>  Wed, 22 Dec 2010 21:30:55 +0000
-
-roxterm (1.19.4-1) unstable; urgency=low
-
-  * New upstream release:
-    + Hopefully fixed CSS issues with web page header.
-
- -- Tony Houghton <h@realh.co.uk>  Sun, 17 Oct 2010 15:22:51 +0100
-
-roxterm (1.19.3-1) unstable; urgency=low
-
-  * New upstream release:
-    + Use vte_terminal_fork_command_full where supported.
-
- -- Tony Houghton <h@realh.co.uk>  Tue, 12 Oct 2010 19:20:25 +0100
-
-roxterm (1.19.2-1) unstable; urgency=low
-
-  * New upstream release:
-    + Merge fix from 1.18.5-3.
-    + Tweaks to docs' CSS.
-
- -- Tony Houghton <h@realh.co.uk>  Tue, 12 Oct 2010 16:59:55 +0100
+ -- Tony Houghton <h@realh.co.uk>  Wed, 12 Jan 2011 17:09:17 +0000
 
 roxterm (1.18.5-3) unstable; urgency=low
 
    * Fix setting of env variables (Closes: #598971) (LP: #651578)
 
  -- Tony Houghton <h@realh.co.uk>  Sun, 03 Oct 2010 16:57:51 +0100
-
-roxterm (1.19.1-1) unstable; urgency=low
-
-  * New upstream release:
-    + New sizing code to fix sf.net bug 3041926.
-    + Default to using GtkNotebook's implementation of draggable tabs.
-    + New web pages.
-    + Spanish translation.
-
- -- Tony Houghton <h@realh.co.uk>  Tue, 21 Sep 2010 17:58:18 +0100
 
 roxterm (1.18.5-2) unstable; urgency=low
 
