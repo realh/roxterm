@@ -14,8 +14,12 @@ roxterm (@VERSION@-1) experimental; urgency=low
     + New HTML documentation.
     + Spanish translation.
   * Use -Wall in CFLAGS.
+  * debian/control:
+    + Updated Vcs-* fields to git repository.
+    + Added binary dependency on librsvg2-common.
+  * Removed debian/patches:- all merged upstream.
 
- -- Tony Houghton <h@realh.co.uk>  Wed, 12 Jan 2011 17:09:17 +0000
+ -- Tony Houghton <h@realh.co.uk>  Fri, 14 Jan 2011 15:26:09 +0000
 
 roxterm (1.18.5-3) unstable; urgency=low
 
