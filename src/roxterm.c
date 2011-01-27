@@ -548,20 +548,45 @@ static gboolean roxterm_command_failed(ROXTermData *roxterm)
 }
 
 static char *roxterm_fork_command(VteTerminal *terminal,
-        const char *command, char **argv, char **envv,
-        const char *working_directory,
-        gboolean lastlog, gboolean utmp, gboolean wtmp, pid_t *pid)
+        char **argv, char **envv, const char *working_directory,
+        gboolean login, gboolean utmp, gboolean wtmp, pid_t *pid)
 {
 #if HAVE_VTE_TERMINAL_FORK_COMMAND_FULL
     GPid *ppid = (GPid *) pid;
     GError *error = NULL;
-    
+#endif
+    char *filename = argv[0];
+    char **new_argv = NULL;
+
+    if (login)
+    {
+        /* If login_shell, make sure argv[0] is the
+         * shell base name (== leaf name) prepended by "-" */
+        guint old_len;
+        char *leaf = strrchr(filename, G_DIR_SEPARATOR);
+
+        if (leaf)
+            ++leaf;
+        else
+            leaf = argv[0];
+
+        /* The NULL terminator is not considered by g_strv_length() */
+        old_len = g_strv_length(argv);
+        new_argv = g_new(char *, old_len + 2);
+
+        new_argv[0] = filename;
+        new_argv[1] = g_strconcat("-", leaf, NULL);
+        memcpy(new_argv + 2, argv + 1, sizeof(char *) * old_len);
+        argv = new_argv;
+    }
+
+#if HAVE_VTE_TERMINAL_FORK_COMMAND_FULL
     if (!vte_terminal_fork_command_full(terminal,
             (lastlog ? 0 : VTE_PTY_NO_LASTLOG) |
             (utmp ? 0 : VTE_PTY_NO_UTMP) |
             (wtmp ? 0 : VTE_PTY_NO_WTMP),
             working_directory, argv, envv,
-            lastlog ? G_SPAWN_FILE_AND_ARGV_ZERO : G_SPAWN_SEARCH_PATH,
+            login ? G_SPAWN_FILE_AND_ARGV_ZERO : G_SPAWN_SEARCH_PATH,
             NULL, NULL, ppid, &error))
     {
         char *reply = g_strdup_printf(
@@ -573,13 +598,21 @@ static char *roxterm_fork_command(VteTerminal *terminal,
         return reply;
     }
 #else
-    *pid = vte_terminal_fork_command(terminal, command, argv + 1, envv,
-            working_directory, lastlog, utmp, wtmp);
+    *pid = vte_terminal_fork_command(terminal, filename,
+            argv + (login ? 1 : 0), envv,
+            working_directory, login, utmp, wtmp);
     if (*pid == -1)
     {
         return g_strdup(_("The new terminal's command failed to run"));
     }
 #endif
+
+    if (new_argv)
+    {
+        g_free(new_argv[1]);
+        g_free(new_argv);
+    }
+    
     return NULL;
 }
 
@@ -587,7 +620,6 @@ static void roxterm_run_command(ROXTermData *roxterm, VteTerminal *vte)
 {
     char **commandv = NULL;
     char *command = NULL;
-    char *filename = NULL;
     gboolean special = FALSE;    /* special_command and -e override login_shell
                                   */
     gboolean login = FALSE;
@@ -648,7 +680,6 @@ static void roxterm_run_command(ROXTermData *roxterm, VteTerminal *vte)
     {
         /* We're using roxterm->commandv, point commandv to it */
         commandv = roxterm->commandv;
-        filename = commandv[0];
     }
     else
     {
@@ -667,31 +698,9 @@ static void roxterm_run_command(ROXTermData *roxterm, VteTerminal *vte)
             commandv[0] = g_strdup(get_default_command(roxterm));
             commandv[1] = NULL;
         }
-        filename = commandv[0];
         if (!special && options_lookup_int_with_default(roxterm->profile,
                 "login_shell", 0))
         {
-            /* If login_shell, make sure commandv[1] is the
-             * shell base name (== leaf name) prepended by "-" */
-            char **new_commandv;
-            guint old_len;
-            char *leaf = strrchr(commandv[0], G_DIR_SEPARATOR);
-
-            if (leaf)
-                ++leaf;
-            else
-                leaf = commandv[0];
-
-            /* The NULL terminator is not considered by g_strv_length() */
-            old_len = g_strv_length(commandv);
-            new_commandv = g_new(char *, old_len + 2);
-
-            new_commandv[0] = commandv[0];
-            new_commandv[1] = g_strconcat("-", leaf, NULL);
-            memcpy(new_commandv + 2, commandv + 1, sizeof(char *) * old_len);
-
-            g_free(commandv);
-            commandv = new_commandv;
             login = TRUE;
         }
     }
@@ -701,9 +710,8 @@ static void roxterm_run_command(ROXTermData *roxterm, VteTerminal *vte)
         gboolean xtmplog = options_lookup_int_with_default(roxterm->profile,
                 "update_records", 1);
 
-        reply = roxterm_fork_command(vte, filename,
-            commandv, env, roxterm->directory, login, xtmplog, xtmplog,
-            &roxterm->pid);
+        reply = roxterm_fork_command(vte, commandv, env,
+                roxterm->directory, login, xtmplog, xtmplog, &roxterm->pid);
     }
     else
     {
@@ -713,8 +721,6 @@ static void roxterm_run_command(ROXTermData *roxterm, VteTerminal *vte)
     roxterm->special_command = NULL;
     /* If special_command was set, command points to the same string */
     g_free(command);
-    if (filename != commandv[0])
-        g_free(filename);
     roxterm->actual_commandv = commandv;
     g_strfreev(env);
     if (reply && strcmp(reply, "OK"))
