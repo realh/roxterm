@@ -582,7 +582,7 @@ static char *roxterm_fork_command(VteTerminal *terminal,
 
 #if HAVE_VTE_TERMINAL_FORK_COMMAND_FULL
     if (!vte_terminal_fork_command_full(terminal,
-            (lastlog ? 0 : VTE_PTY_NO_LASTLOG) |
+            (login ? 0 : VTE_PTY_NO_LASTLOG) |
             (utmp ? 0 : VTE_PTY_NO_UTMP) |
             (wtmp ? 0 : VTE_PTY_NO_WTMP),
             working_directory, argv, envv,
