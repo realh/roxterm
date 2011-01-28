@@ -446,6 +446,10 @@ static char **roxterm_modify_environment(char const * const *env,
 
 static char **roxterm_get_environment(ROXTermData *roxterm)
 {
+    /* We stil set TERM even though vte is supposed to override it because
+     * earlier versions added an additional TERM instead of replacing it, and
+     * the one we add should take priority.
+     */
     char **result;
     char const *new_env[] = {
         "COLORTERM", NULL,
@@ -2636,15 +2640,13 @@ static void roxterm_apply_title_template(ROXTermData *roxterm)
             roxterm->title_template : _("ROXTerm: %s")); 
 }
     
-/*
 static void roxterm_apply_emulation(ROXTermData *roxterm, VteTerminal *vte)
 {
-    char *emu = options_lookup_string(roxterm->profile, "emulation");
+    char *emu = options_lookup_string(roxterm->profile, "term");
 
     vte_terminal_set_emulation(vte, emu);
     g_free(emu);
 }
-*/
 
 static void roxterm_apply_show_tab_status(ROXTermData *roxterm)
 {
@@ -2690,7 +2692,7 @@ static void roxterm_apply_profile(ROXTermData *roxterm, VteTerminal *vte)
 
     roxterm_update_mouse_autohide(roxterm, vte);
     roxterm_apply_encoding(roxterm, vte);
-    /*roxterm_apply_emulation(roxterm, vte);*/
+    roxterm_apply_emulation(roxterm, vte);
 
     roxterm_apply_wrap_switch_tab(roxterm);
 
@@ -2988,12 +2990,10 @@ static void roxterm_reflect_profile_change(Options * profile, const char *key)
         {
             roxterm_set_select_by_word_chars(roxterm, vte);
         }
-        /*
-        else if (!strcmp(key, "emulation"))
+        else if (!strcmp(key, "term"))
         {
             roxterm_apply_emulation(roxterm, vte);
         }
-        */
         else if (!strcmp(key, "width") || !strcmp(key, "height"))
         {
             roxterm_update_size(roxterm, vte);
