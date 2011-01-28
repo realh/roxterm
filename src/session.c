@@ -120,37 +120,26 @@ static void save_tab_to_fp(MultiTab *tab, gpointer handle)
 {
     FILE *fp = handle;
     ROXTermData *roxterm = multi_tab_get_user_data(tab);
-    const char *name = multi_tab_get_window_title_template(tab);
-    char *ne = name ? g_markup_escape_text(name, -1) : NULL;
-    const char *title = multi_tab_get_window_title(tab);
-    char *te = title ? g_markup_escape_text(title, -1) : NULL;
-    const char *icon_title = multi_tab_get_icon_title(tab);
-    char *ie = icon_title ? g_markup_escape_text(icon_title, -1) : NULL;
-    char *cwd = roxterm_get_cwd(roxterm);
-    char *cwde = g_markup_escape_text(
-            cwd ? cwd : (cwd = g_get_current_dir()), -1);
-    char *pne = g_markup_escape_text(roxterm_get_profile_name(roxterm), -1);
-    char *csne = g_markup_escape_text(
-            roxterm_get_colour_scheme_name(roxterm), -1);
-    char *ence = g_markup_escape_text(
-            vte_terminal_get_encoding(roxterm_get_vte_terminal(roxterm)), -1);
     char const * const *commandv = roxterm_get_actual_commandv(roxterm);
-    
-    fprintf(fp, "    <tab profile='%s' colour_scheme='%s' cwd='%s'\n"
+    const char *name = multi_tab_get_window_title_template(tab);
+    const char *title = multi_tab_get_window_title(tab);
+    const char *icon_title = multi_tab_get_icon_title(tab);
+    char *cwd = roxterm_get_cwd(roxterm);
+    char *s = g_markup_printf_escaped("<tab profile='%s'\n"
+            "        colour_scheme='%s' cwd='%s'\n"
             "        title_template='%s' window_title='%s' icon_title='%s'\n"
-            "        encoding='%s' current='%d'%s>\n",
-            pne, csne, cwde,
-            ne ? ne : "", te ? te : "", ie ? ie : "",
-            ence,
+            "        encoding='%s'",
+            roxterm_get_profile_name(roxterm),
+            roxterm_get_colour_scheme_name(roxterm),
+            cwd ? cwd = g_strdup(cwd) : (cwd = g_get_current_dir()),
+            name ? name : "", title ? title : "", icon_title ? icon_title : "",
+            vte_terminal_get_encoding(roxterm_get_vte_terminal(roxterm)));
+            
+    fprintf(fp, "    %s current='%d'%s>\n", s,
             tab == multi_win_get_current_tab(multi_tab_get_parent(tab)),
             commandv ? "" : " /");
     g_free(cwd);
-    g_free(cwde);
-    g_free(pne);
-    g_free(csne);
-    g_free(ence);
-    g_free(ne);
-    g_free(ie);
+    g_free(s);
     if (commandv)
     {
         int n;
@@ -158,9 +147,14 @@ static void save_tab_to_fp(MultiTab *tab, gpointer handle)
         for (n = 0; commandv[n]; ++n);
         fprintf(fp, "      <command argc='%d'>\n", n);
         for (n = 0; commandv[n]; ++n)
-            fprintf(fp, "        <arg s='%s' />\n", commandv[n]);
-        fprintf(fp, "      </command>\n");
-        fprintf(fp, "    </tab>\n");
+        {
+            s = g_markup_printf_escaped("        <arg s='%s' />\n",
+                    commandv[n]);
+            fputs(s, fp);
+            g_free(s);
+        }
+        fputs("      </command>\n", fp);
+        fputs("    </tab>\n", fp);
     }
 }
 
@@ -178,16 +172,13 @@ static gboolean save_session_to_fp(SessionData *sd, FILE *fp)
         int x, y;
         int result;
         char *disp = gdk_screen_make_display_name(gtk_window_get_screen(gwin));
-        const char *tt0 = multi_win_get_title_template(win);
-        char *tt;
-        const char *title0 = multi_win_get_title(win);
-        char *title;
+        const char *tt = multi_win_get_title_template(win);
+        const char *title = multi_win_get_title(win);
         gpointer user_data = multi_win_get_user_data_for_current_tab(win);
         VteTerminal *vte;
         char *font_name;
-        char *fne;
         gboolean disable_menu_shortcuts, disable_tab_shortcuts;
-        char *scsne;
+        char *s;
         
         if (!user_data)
         {
@@ -197,22 +188,12 @@ static gboolean save_session_to_fp(SessionData *sd, FILE *fp)
         vte = roxterm_get_vte_terminal(user_data);
         font_name = pango_font_description_to_string(
                 vte_terminal_get_font(vte));
-        fne = g_markup_escape_text(font_name, -1);
-        scsne = g_markup_escape_text(
-                multi_win_get_shortcuts_scheme_name(win), -1);
-        if (tt0 && tt0[0])
-            tt = g_markup_escape_text(tt0, -1);
-        else
-            tt = NULL;
-        if (title0 && title0[0])
-            title = g_markup_escape_text(title0, -1);
-        else
-            title = NULL;
         multi_win_get_disable_menu_shortcuts(user_data,
                 &disable_menu_shortcuts, &disable_tab_shortcuts);
         roxterm_get_nonfs_dimensions(user_data, &w, &h);
         gtk_window_get_position(gwin, &x, &y);
-        result = fprintf(fp, "  <window disp='%s' geometry='%dx%d+%d+%d'\n"
+        s = g_markup_printf_escaped("  <window disp='%s'\n"
+                "      geometry='%dx%d+%d+%d'\n"
                 "      title_template='%s' font='%s'\n"
                 "      title='%s' role='%s'\n"
                 "      shortcut_scheme='%s' show_menubar='%d'\n"
@@ -220,9 +201,9 @@ static gboolean save_session_to_fp(SessionData *sd, FILE *fp)
                 "      disable_menu_shortcuts='%d' disable_tab_shortcuts='%d'\n"
                 "      maximised='%d' fullscreen='%d' zoom='%f'>\n",
                 disp, w, h, x, y,
-                tt ? tt : "", fne,
+                tt ? tt : "", font_name,
                 title, gtk_window_get_role(gwin),
-                scsne,
+                multi_win_get_shortcuts_scheme_name(win),
                 multi_win_get_show_menu_bar(win),
                 multi_win_get_always_show_tabs(win),
                 multi_win_get_tab_pos(win),
@@ -230,12 +211,10 @@ static gboolean save_session_to_fp(SessionData *sd, FILE *fp)
                 multi_win_is_maximised(win),
                 multi_win_is_fullscreen(win),
                 roxterm_get_zoom_factor(user_data));
-        g_free(tt);
-        g_free(title);
+        result = fputs(s, fp);
+        g_free(s);
         g_free(disp);
         g_free(font_name);
-        g_free(fne);
-        g_free(scsne);
         if (result < 0)
             return FALSE;
         multi_win_foreach_tab(win, save_tab_to_fp, fp);
