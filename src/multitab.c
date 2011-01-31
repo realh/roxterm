@@ -52,6 +52,7 @@ struct MultiTab {
     GtkWidget *rename_dialog;
     gboolean postponed_free;
     gboolean old_win_destroyed;
+    gboolean lock_title;
 };
 
 struct MultiWin {
@@ -454,6 +455,8 @@ void multi_tab_set_window_title_template(MultiTab * tab, const char *template)
     {
         return;
     }
+    if (tab->lock_title)
+        return;
     g_free(tab->window_title_template);
     tab->window_title_template = template ? g_strdup(template) : NULL;
     multi_tab_set_full_window_title(tab, template, tab->window_title);
@@ -1098,9 +1101,11 @@ static void multi_win_name_tab_action(MultiWin * win)
             break;
         case GTK_RESPONSE_APPLY:
             name = gtk_entry_get_text(name_e);
+            tab->lock_title = FALSE;
             if (name && !name[0])
                 name = NULL;
             multi_tab_set_window_title_template(tab, name);
+            tab->lock_title = (name != NULL);
             /* Fall through to destroy */
         default:
             gtk_widget_destroy(dialog_w);
