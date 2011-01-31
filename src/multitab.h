@@ -136,6 +136,10 @@ void multi_tab_set_window_title_template(MultiTab *, const char *);
 
 const char *multi_tab_get_window_title_template(MultiTab *);
 
+gboolean multi_tab_get_title_template_locked(MultiTab *);
+
+void multi_tab_set_title_template_locked(MultiTab *, gboolean);
+
 /* Not the full title */
 const char *multi_tab_get_window_title(MultiTab *);
 

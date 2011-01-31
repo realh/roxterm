@@ -128,11 +128,13 @@ static void save_tab_to_fp(MultiTab *tab, gpointer handle)
     char *s = g_markup_printf_escaped("<tab profile='%s'\n"
             "        colour_scheme='%s' cwd='%s'\n"
             "        title_template='%s' window_title='%s' icon_title='%s'\n"
+            "        title_template_locked='%d'\n"
             "        encoding='%s'",
             roxterm_get_profile_name(roxterm),
             roxterm_get_colour_scheme_name(roxterm),
             cwd ? cwd = g_strdup(cwd) : (cwd = g_get_current_dir()),
             name ? name : "", title ? title : "", icon_title ? icon_title : "",
+            multi_tab_get_title_template_locked(tab),
             vte_terminal_get_encoding(roxterm_get_vte_terminal(roxterm)));
             
     fprintf(fp, "    %s current='%d'%s>\n", s,

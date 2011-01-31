@@ -2868,7 +2868,7 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
     multi_tab_set_window_title_template(tab, tab_name);
     g_free(tab_name);
     title_orig = vte_terminal_get_window_title(vte);
-    multi_tab_set_window_title(tab,title_orig ? title_orig : _("ROXTerm"));
+    multi_tab_set_window_title(tab, title_orig ? title_orig : _("ROXTerm"));
 
     roxterm_set_vte_size(roxterm, vte, roxterm->columns, roxterm->rows);
 
@@ -4033,6 +4033,7 @@ typedef struct {
     char *tab_title_template;
     char *tab_title;
     char *icon_title;
+    gboolean tab_title_template_locked;
     gboolean current;
     MultiTab *active_tab;
 } _ROXTermParseContext;
@@ -4225,6 +4226,7 @@ static void parse_open_tab(_ROXTermParseContext *rctx,
     Options *profile;
     
     rctx->current = FALSE;
+    rctx->tab_title_template_locked = FALSE;
     for (n = 0; attribute_names[n]; ++n)
     {
         const char *a = attribute_names[n];
@@ -4246,6 +4248,8 @@ static void parse_open_tab(_ROXTermParseContext *rctx,
             encoding = v;
         else if (!strcmp(a, "current"))
             rctx->current = (strcmp(v, "0") != 0);
+        else if (!strcmp(a, "title_template_locked"))
+            rctx->tab_title_template_locked = atoi(v);
         else
         {
             *error = g_error_new(G_MARKUP_ERROR,
@@ -4297,6 +4301,8 @@ static void close_tab_tag(_ROXTermParseContext *rctx)
         multi_tab_set_window_title(rctx->tab, rctx->tab_title);
     if (rctx->icon_title && rctx->icon_title[0])
         multi_tab_set_icon_title(rctx->tab, rctx->icon_title);
+    multi_tab_set_title_template_locked(rctx->tab,
+            rctx->tab_title_template_locked);
     g_free(rctx->tab_title_template);
     rctx->tab_title_template = NULL;
     g_free(rctx->tab_title);
