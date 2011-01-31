@@ -62,7 +62,6 @@ struct ProfileGUI {
         char sel_by_word;
         char color_term;
         char term;
-        /*char emulation;*/
         char browser;
         char mailer;
         char command;
@@ -70,6 +69,7 @@ struct ProfileGUI {
         char ssh_address;
         char ssh_user;
         char ssh_options;
+        char win_title;
     } changed;
     GtkWidget *bgimg;
 #ifndef HAVE_VTE_TERMINAL_SET_CURSOR_BLINK_MODE
@@ -117,13 +117,6 @@ void profilegui_check_entries_for_changes(ProfileGUI * pg)
         profilegui_update_from_entry(pg, "term");
         pg->changed.term = 0;
     }
-    /*
-    if (pg->changed.emulation)
-    {
-        profilegui_update_from_entry(pg, "emulation");
-        pg->changed.emulation = 0;
-    }
-    */
     if (pg->changed.browser)
     {
         profilegui_update_from_entry(pg, "browser");
@@ -142,7 +135,12 @@ void profilegui_check_entries_for_changes(ProfileGUI * pg)
     if (pg->changed.title_string)
     {
         profilegui_update_from_entry(pg, "title_string");
-        pg->changed.command = 0;
+        pg->changed.title_string = 0;
+    }
+    if (pg->changed.win_title)
+    {
+        profilegui_update_from_entry(pg, "win_title");
+        pg->changed.win_title = 0;
     }
 }
 
@@ -576,11 +574,11 @@ static void profilegui_connect_handlers(ProfileGUI * pg)
     PG_EC_CONNECT(pg, sel_by_word);
     PG_EC_CONNECT(pg, color_term);
     PG_EC_CONNECT(pg, term);
-    /*PG_EC_CONNECT(pg, emulation);*/
     PG_EC_CONNECT(pg, command);
     PG_EC_CONNECT(pg, browser);
     PG_EC_CONNECT(pg, mailer);
     PG_EC_CONNECT(pg, title_string);
+    PG_EC_CONNECT(pg, win_title);
 
     /* Misc */
     PG_CONNECT(pg, on_Profile_Editor_destroy);
@@ -647,7 +645,6 @@ static void profilegui_fill_in_dialog(ProfileGUI * pg)
     capplet_set_text_entry(glade, profile, "sel_by_word", "-A-Za-z0-9,./?%&#_");
     capplet_set_text_entry(glade, profile, "color_term", "roxterm");
     capplet_set_text_entry(glade, profile, "term", "xterm");
-    /*capplet_set_text_entry(glade, profile, "emulation", NULL);*/
     capplet_set_combo(glade, profile, "tab_pos", 0);
     capplet_set_spin_button(glade, profile, "init_tabs", 1);
     capplet_set_boolean_toggle(glade, profile, "wrap_switch_tab", FALSE);
@@ -700,6 +697,7 @@ static void profilegui_fill_in_dialog(ProfileGUI * pg)
     capplet_set_combo(glade, profile, "exit_action", 0);
     capplet_set_spin_button_float(glade, profile, "exit_pause");
     capplet_set_text_entry(glade, profile, "title_string", "%s");
+    capplet_set_text_entry(glade, profile, "win_title", "%s");
     exit_action_changed(GTK_COMBO_BOX(profilegui_widget(pg, "exit_action")),
             pg);
     profilegui_set_command_shading(pg);
