@@ -1441,7 +1441,7 @@ MultiWin *multi_win_new_blank(const char *display_name, Options *shortcuts,
         xclass = "roxterm";
     if (xclass)
     {
-        gtk_window_set_wmclass(GTK_WINDOW(win->gtkwin), xclass, xname);
+        gtk_window_set_wmclass(GTK_WINDOW(win->gtkwin), xname, xclass);
         global_options_reset_string("xclass");
         global_options_reset_string("xname");
     }
