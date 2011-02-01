@@ -2801,7 +2801,14 @@ Hidden</property>
                               </packing>
                             </child>
                             <child>
-                              <placeholder/>
+                              <widget class="GtkCheckButton" id="edit_shortcuts">
+                                <property name="label" translatable="yes">Enable editing</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">False</property>
+                                <property name="draw_indicator">True</property>
+                                <signal name="toggled" handler="on_boolean_toggled"/>
+                              </widget>
                             </child>
                           </widget>
                           <packing>

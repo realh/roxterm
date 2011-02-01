@@ -3213,6 +3213,18 @@ static void roxterm_reflect_colour_change(Options *scheme, const char *key)
     }
 }
 
+static void roxterm_apply_can_edit_shortcuts(void)
+{
+    g_type_class_unref(g_type_class_ref(GTK_TYPE_MENU_ITEM));
+    g_type_class_unref(g_type_class_ref(GTK_TYPE_IMAGE_MENU_ITEM));
+    g_type_class_unref(g_type_class_ref(GTK_TYPE_CHECK_MENU_ITEM));
+    g_type_class_unref(g_type_class_ref(GTK_TYPE_RADIO_MENU_ITEM));
+    gtk_settings_set_long_property(gtk_settings_get_default(),
+            "gtk-can-change-accels",
+            global_options_lookup_int_with_default("edit_shortcuts", FALSE),
+            "roxterm");
+}
+
 static void
 roxterm_opt_signal_handler(const char *profile_name, const char *key,
     OptsDBusOptType opt_type, OptsDBusValue val)
@@ -3241,9 +3253,13 @@ roxterm_opt_signal_handler(const char *profile_name, const char *key,
             roxterm_reflect_colour_change(scheme, key);
         colour_scheme_unref(scheme);
     }
-    else if (!strcmp(profile_name, "Global") && !strcmp(key, "warn_close"))
+    else if (!strcmp(profile_name, "Global") &&
+            (!strcmp(key, "warn_close") ||
+            !strcmp(key, "edit_shortcuts")))
     {
-        options_set_int(global_options, "warn_close", val.i);
+        options_set_int(global_options, key, val.i);
+        if (!strcmp(key, "edit_shortcuts"))
+            roxterm_apply_can_edit_shortcuts();
     }
     else
     {
@@ -3919,6 +3935,7 @@ void roxterm_init(void)
         (MultiWinInitialTabs) roxterm_get_initial_tabs,
         (MultiWinDeleteHandler) roxterm_win_delete_handler,
         (MultiTabGetShowCloseButton) roxterm_get_show_tab_close_button);
+    roxterm_apply_can_edit_shortcuts();
 }
 
 gboolean roxterm_spawn_command_line(const gchar *command_line,

@@ -79,6 +79,11 @@ inline static char *global_options_lookup_string(const char *key)
 	return options_lookup_string_with_default(global_options, key, NULL);
 }
 
+inline static int global_options_lookup_int_with_default(const char *key, int d)
+{
+	return options_lookup_int_with_default(global_options, key, d);
+}
+
 inline static int global_options_lookup_int(const char *key)
 {
 	return options_lookup_int(global_options, key);

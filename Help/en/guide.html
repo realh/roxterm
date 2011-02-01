@@ -111,12 +111,11 @@
 				<h2>Keyboard Shortcuts <a class="pageAnchor" name="KeyboardShortcuts">:</a></h2>
 
 				<p>There is no editor for keyboard shortcuts; instead they can be changed by pressing keys while the mouse is
-				hovering over a menu item in the terminal, provided editable shortcuts are enabled in your desktop session. In
-				GNOME you have to edit a "secret" option, either by running the command:</p>
-
-				<p class="snippet">gconftool --type bool --set /desktop/gnome/interface/can_change_accels true</p>
-
-				<p>or by editing the /desktop/gnome/interface/can_change_accels option with gconf-editor ("Configuration Editor").</p>
+				hovering over a menu item in the terminal. This feature must be enabled with the "Enable editing" option under
+				the "Keyboard shortcuts" section of the <a href="#ConfigurationManagement">Configuration Manager</a>. There is
+				also a "hidden" global GNOME setting to determine whether GTK applications can have their shortcuts edited in this
+				way. The global option is managed by gconf, which roxterm is not linked with, so in some circumstances the global
+				and roxterm options may conflict with each other.</p>
 
 				<h2>Configuration Management <a class="pageAnchor" name="ConfigurationManagement">:</a></h2>
 
