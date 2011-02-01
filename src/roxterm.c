@@ -91,8 +91,6 @@ struct ROXTermData {
     char *encoding;
     double target_zoom_factor, current_zoom_factor;
     int zoom_index;
-    char *title_template;   /* Set if new terminal created by roxterm_launch
-                                and --title was given. */
     gboolean post_exit_tag;
     char *display_name;
     const char *status_stock;
@@ -333,7 +331,6 @@ static ROXTermData *roxterm_data_clone(ROXTermData *old_gt)
     new_gt->win = NULL;
     new_gt->tab = NULL;
     new_gt->running = FALSE;
-    new_gt->title_template = g_strdup(old_gt->title_template);
     new_gt->postponed_free = FALSE;
     new_gt->setup_encodings = FALSE;
     new_gt->dont_lookup_dimensions = FALSE;
@@ -2635,9 +2632,25 @@ static void roxterm_apply_disable_menu_access(ROXTermData *roxterm)
 
 static void roxterm_apply_title_template(ROXTermData *roxterm)
 {
-    multi_win_set_title_template(roxterm->win, 
-            roxterm->title_template ?
-            roxterm->title_template : _("ROXTerm: %s")); 
+    const char *win_title = global_options_lookup_string("title");
+    gboolean custom_win_title;
+    
+    if (win_title)
+    {
+        custom_win_title = TRUE;
+    }
+    else
+    {
+        custom_win_title = FALSE;
+        win_title = options_lookup_string_with_default(roxterm->profile,
+                    "win_title", "%s");
+    }
+    multi_win_set_title_template(roxterm->win, win_title);
+    if (custom_win_title)
+    {
+        global_options_reset_string("title");
+        multi_win_set_title_template_locked(roxterm->win, TRUE);
+    }
 }
     
 static void roxterm_apply_emulation(ROXTermData *roxterm, VteTerminal *vte)
@@ -2867,7 +2880,7 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
     }
     else
     {
-        custom_tab_name = TRUE;
+        custom_tab_name = FALSE;
         tab_name = options_lookup_string_with_default(roxterm->profile,
                 "title_string", "%s");
     }
@@ -3102,6 +3115,12 @@ static void roxterm_reflect_profile_change(Options * profile, const char *key)
             multi_tab_set_window_title_template(roxterm->tab,
                     options_lookup_string_with_default(roxterm->profile,
                             "title_string", "%s"));
+        }
+        else if (!strcmp(key, "win_title"))
+        {
+            multi_win_set_title_template(roxterm->win,
+                    options_lookup_string_with_default(roxterm->profile,
+                            "win_title", "%s"));
         }
         else if (!strcmp(key, "tab_close_btn"))
         {
@@ -3552,7 +3571,7 @@ static void roxterm_get_initial_tabs(ROXTermData *roxterm,
  * geom is freed and set to NULL if it's invalid
  */
 static ROXTermData *roxterm_data_new(const char *display_name,
-        char *title_template, double zoom_factor, const char *directory,
+        double zoom_factor, const char *directory,
         char *profile_name, Options *profile, gboolean maximise,
         const char *colour_scheme_name, char *encoding,
         char **geom, gboolean *size_on_cli, char **env)
@@ -3560,7 +3579,6 @@ static ROXTermData *roxterm_data_new(const char *display_name,
     ROXTermData *roxterm = g_new0(ROXTermData, 1);
 
     roxterm->status_stock = NULL;
-    roxterm->title_template = title_template;
     roxterm->target_zoom_factor = zoom_factor;
     roxterm->current_zoom_factor = 1.0;
     if (display_name)
@@ -3661,8 +3679,8 @@ void roxterm_launch(const char *display_name, char **env)
             global_options_lookup_string_with_default("colour_scheme", "GTK");
     Options *profile = dynamic_options_lookup_and_ref(roxterm_get_profiles(),
             profile_name, "roxterm profile");
+    MultiWin *win = NULL;
     ROXTermData *roxterm = roxterm_data_new(display_name,
-            global_options_lookup_string("title"),
             global_options_lookup_double("zoom"),
             global_options_directory,
             profile_name, profile,
@@ -3688,10 +3706,10 @@ void roxterm_launch(const char *display_name, char **env)
     shortcuts = shortcuts_open(shortcut_scheme);
     if (global_options_tab)
     {
-        MultiWin *win = multi_win_all ? multi_win_all->data : NULL;
-        ROXTermData *partner = win ?
-                multi_win_get_user_data_for_current_tab(win) : NULL;
+        ROXTermData *partner;
         
+        win = multi_win_all ? multi_win_all->data : NULL;
+        partner = win ? multi_win_get_user_data_for_current_tab(win) : NULL;
         if (partner)
         {
             roxterm->dont_lookup_dimensions = TRUE;
@@ -3729,14 +3747,16 @@ void roxterm_launch(const char *display_name, char **env)
             options_lookup_int_with_default(roxterm->profile, "full_screen", 0))
     {
         global_options_fullscreen = FALSE;
-        multi_win_new_fullscreen(display_name, shortcuts, roxterm->zoom_index,
-                roxterm, num_tabs, tab_pos, always_show_tabs);
+        win = multi_win_new_fullscreen(display_name, shortcuts,
+                roxterm->zoom_index, roxterm,
+                num_tabs, tab_pos, always_show_tabs);
     }
     else if (roxterm->maximise)
     {
         global_options_maximise = FALSE;
-        multi_win_new_maximised(display_name, shortcuts, roxterm->zoom_index,
-                roxterm, num_tabs, tab_pos, always_show_tabs);
+        win = multi_win_new_maximised(display_name, shortcuts,
+                roxterm->zoom_index, roxterm,
+                num_tabs, tab_pos, always_show_tabs);
     }
     else
     {
@@ -3756,8 +3776,9 @@ void roxterm_launch(const char *display_name, char **env)
                         roxterm->columns, roxterm->rows);
             }
         }
-        multi_win_new_with_geom(display_name, shortcuts, roxterm->zoom_index,
-                roxterm, geom, num_tabs, tab_pos, always_show_tabs);
+        win = multi_win_new_with_geom(display_name, shortcuts,
+                roxterm->zoom_index, roxterm, geom,
+                num_tabs, tab_pos, always_show_tabs);
     }
     g_free(geom);
 
@@ -4278,7 +4299,7 @@ static void parse_open_tab(_ROXTermParseContext *rctx,
     
     profile = dynamic_options_lookup_and_ref(roxterm_get_profiles(),
             profile_name, "roxterm profile");
-    roxterm = roxterm_data_new(rctx->disp, rctx->window_title_template,
+    roxterm = roxterm_data_new(rctx->disp,
             rctx->zoom_factor, cwd, g_strdup(profile_name), profile,
             rctx->maximised, colours_name, g_strdup(encoding),
             &rctx->geom, NULL, environ);
