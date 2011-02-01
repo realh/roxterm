@@ -101,6 +101,8 @@ and docbook-xsl in your Build-Depends control field.
         <option>-T <replaceable>TITLE</replaceable></option></arg>
       <arg><option>--tab-name=<replaceable>NAME</replaceable></option> |
         <option>-n <replaceable>NAME</replaceable></option></arg>
+      <arg><option>--xclass=<replaceable>CLASS</replaceable></option></arg>
+      <arg><option>--xname=<replaceable>NAME</replaceable></option></arg>
       <arg><option>--display=<replaceable>DISPLAY</replaceable></option></arg>
       <arg><option>--execute <replaceable>COMMAND</replaceable></option> |
         <option>-e <replaceable>COMMAND</replaceable></option></arg>
@@ -283,6 +285,22 @@ and docbook-xsl in your Build-Depends control field.
         </term>
         <listitem>
           <para>X display to use.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--xclass=<replaceable>CLASS</replaceable></option>
+        </term>
+        <listitem>
+          <para>Set's the X window system "class" hint for the new window.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--xname=<replaceable>NAME</replaceable></option>
+        </term>
+        <listitem>
+          <para>Set's the X window system "name" hint for the new window.
+          </para>
         </listitem>
       </varlistentry>
       <varlistentry>

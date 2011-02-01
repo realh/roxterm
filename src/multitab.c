@@ -1412,6 +1412,7 @@ MultiWin *multi_win_new_blank(const char *display_name, Options *shortcuts,
     MultiWin *win = g_new0(MultiWin, 1);
     static gboolean set_nwc_hook = FALSE;
     GtkNotebook *notebook;
+    const char *xclass, *xname;
 
     if (!set_nwc_hook)
     {
@@ -1431,6 +1432,20 @@ MultiWin *multi_win_new_blank(const char *display_name, Options *shortcuts,
         win->zoom_index = zoom_index;
 
     win->gtkwin = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    
+    xclass = global_options_lookup_string("xclass");
+    xname = global_options_lookup_string("xname");
+    if (xclass && !xname)
+        xname = "Roxterm";
+    if (xname && !xclass)
+        xclass = "roxterm";
+    if (xclass)
+    {
+        gtk_window_set_wmclass(GTK_WINDOW(win->gtkwin), xclass, xname);
+        global_options_reset_string("xclass");
+        global_options_reset_string("xname");
+    }
+    
     if (display_name)
     {
         GdkScreen *scr;

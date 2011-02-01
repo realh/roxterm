@@ -3690,7 +3690,7 @@ void roxterm_launch(const char *display_name, char **env)
             colour_scheme_name,
             global_options_lookup_string("encoding"),
             &geom, &size_on_cli, env);
-            
+    
     if (!size_on_cli)
     {
         roxterm_default_size_func(roxterm, &roxterm->columns, &roxterm->rows);
