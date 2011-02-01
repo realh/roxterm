@@ -89,6 +89,12 @@ inline static double global_options_lookup_double(const char *key)
 	return options_lookup_double(global_options, key);
 }
 
+/* Reset a string option which should only be "one-shot" */
+inline static void global_options_reset_string(const char *key)
+{
+    options_set_string(global_options, key, NULL);
+}
+
 /* Checks CLI args for --appdir without altering argv */
 void global_options_init_appdir(int argc, char **argv);
 

@@ -2798,6 +2798,7 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
     int hide_menu_bar;
     MultiWinScrollBar_Position scrollbar_pos;
     char *tab_name;
+    gboolean custom_tab_name = FALSE;
 
     roxterm_terms = g_list_append(roxterm_terms, roxterm);
 
@@ -2860,12 +2861,22 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
 
     roxterm_apply_profile(roxterm, vte);
     tab_name = global_options_lookup_string("tab-name");
-    if (!tab_name)
+    if (tab_name)
     {
+        custom_tab_name = TRUE;
+    }
+    else
+    {
+        custom_tab_name = TRUE;
         tab_name = options_lookup_string_with_default(roxterm->profile,
                 "title_string", "%s");
     }
     multi_tab_set_window_title_template(tab, tab_name);
+    multi_tab_set_title_template_locked(tab, custom_tab_name);
+    if (custom_tab_name)
+    {
+        global_options_reset_string("tab-name");
+    }
     g_free(tab_name);
     title_orig = vte_terminal_get_window_title(vte);
     multi_tab_set_window_title(tab, title_orig ? title_orig : _("ROXTerm"));
