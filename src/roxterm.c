@@ -4033,6 +4033,7 @@ typedef struct {
     char *tab_title_template;
     char *tab_title;
     char *icon_title;
+    gboolean win_title_template_locked;
     gboolean tab_title_template_locked;
     gboolean current;
     MultiTab *active_tab;
@@ -4063,6 +4064,7 @@ static void parse_open_win(_ROXTermParseContext *rctx,
     rctx->maximised = FALSE;
     rctx->zoom_factor = 1.0;
     rctx->active_tab = NULL;
+    rctx->win_title_template_locked = FALSE;
     for (n = 0; attribute_names[n]; ++n)
     {
         const char *a = attribute_names[n];
@@ -4101,6 +4103,8 @@ static void parse_open_win(_ROXTermParseContext *rctx,
             rctx->fullscreen = (strcmp(v, "0") != 0);
         else if (!strcmp(a, "zoom"))
             rctx->zoom_factor = atof(v);
+        else if (!strcmp(a, "title_template_locked"))
+            rctx->win_title_template_locked = atoi(v);
         else
         {
             *error = g_error_new(G_MARKUP_ERROR,
@@ -4182,6 +4186,8 @@ static void close_win_tag(_ROXTermParseContext *rctx)
             gtk_window_set_role(gwin, rctx->role);
         if (rctx->window_title)
             multi_win_set_title(rctx->win, rctx->window_title);
+        multi_win_set_title_template_locked(rctx->win,
+                rctx->win_title_template_locked);
         multi_win_show(rctx->win);
         if (rctx->active_tab)
         {

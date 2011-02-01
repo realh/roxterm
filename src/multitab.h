@@ -405,6 +405,10 @@ const char *multi_win_get_title(MultiWin *win);
 
 void multi_win_set_title(MultiWin *win, const char *);
 
+void multi_win_set_title_template_locked(MultiWin *win, gboolean locked);
+
+gboolean multi_win_get_title_template_locked(MultiWin *win);
+
 /* Whether window is managed by a compositor */
 gboolean multi_win_composite(MultiWin *win);
 

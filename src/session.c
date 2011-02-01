@@ -197,6 +197,7 @@ static gboolean save_session_to_fp(SessionData *sd, FILE *fp)
         s = g_markup_printf_escaped("  <window disp='%s'\n"
                 "      geometry='%dx%d+%d+%d'\n"
                 "      title_template='%s' font='%s'\n"
+                "      title_template_locked='%d'\n"
                 "      title='%s' role='%s'\n"
                 "      shortcut_scheme='%s' show_menubar='%d'\n"
                 "      always_show_tabs='%d' tab_pos='%d'\n"
@@ -204,6 +205,7 @@ static gboolean save_session_to_fp(SessionData *sd, FILE *fp)
                 "      maximised='%d' fullscreen='%d' zoom='%f'>\n",
                 disp, w, h, x, y,
                 tt ? tt : "", font_name,
+                multi_win_get_title_template_locked(win),
                 title, gtk_window_get_role(gwin),
                 multi_win_get_shortcuts_scheme_name(win),
                 multi_win_get_show_menu_bar(win),

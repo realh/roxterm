@@ -94,6 +94,7 @@ struct MultiWin {
     gboolean composite;
 #endif
     char *display_name;
+    gboolean title_template_locked;
 };
 
 static double multi_win_zoom_factors[] = {
@@ -1171,7 +1172,9 @@ static void multi_win_set_window_title_action(MultiWin * win)
             title = gtk_entry_get_text(title_e);
             if (title && !title[0])
                 title = NULL;
+            win->title_template_locked = FALSE;
             multi_win_set_title_template(win, title);
+            win->title_template_locked = (title == NULL);
             /* Fall through to destroy */
         default:
             gtk_widget_destroy(dialog_w);
@@ -2136,9 +2139,21 @@ void multi_win_set_title_template(MultiWin *win, const char *tt)
 {
     if (!validate_title_template(GTK_WINDOW(win->gtkwin), tt))
         return;
+    if (win->title_template_locked)
+        return;
     g_free(win->title_template);
     win->title_template = tt ? g_strdup(tt) : NULL;
     multi_win_set_full_title(win, tt, win->child_title);
+}
+
+void multi_win_set_title_template_locked(MultiWin *win, gboolean locked)
+{
+    win->title_template_locked = locked;
+}
+
+gboolean multi_win_get_title_template_locked(MultiWin *win)
+{
+    return win->title_template_locked;
 }
 
 const char *multi_win_get_title_template(MultiWin *win)
