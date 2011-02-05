@@ -146,7 +146,7 @@ tmp_CFLAGS="$CFLAGS"
 tmp_LIBS="$LIBS"
 CFLAGS="$vte_CFLAGS"
 LIBS="$vte_LIBS"
-AC_CHECK_FUNCS(vte_terminal_set_cursor_blink_mode vte_terminal_match_add_gregex vte_terminal_set_cursor_shape vte_terminal_fork_command_full)
+AC_CHECK_FUNCS(vte_terminal_set_cursor_blink_mode vte_terminal_match_add_gregex vte_terminal_set_cursor_shape)
 CFLAGS="$tmp_CFLAGS"
 LIBS="$tmp_LIBS"
 AM_CONDITIONAL(HAVE_G_FILE_SET_CONTENTS, test x$HAVE_G_FILE_SET_CONTENTS = x1)

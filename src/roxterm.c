@@ -17,7 +17,6 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-
 #include "defns.h"
 
 #include <sys/types.h>
@@ -44,6 +43,12 @@
 #include "multitab.h"
 #include "shortcuts.h"
 #include "uri.h"
+
+#if VTE_CHECK_VERSION(0, 26, 0)
+#define VTE_HAS_PTY_OBJECT 1
+#else
+#define VTE_HAS_PTY_OBJECT 0
+#endif
 
 typedef enum {
     ROXTerm_Match_Invalid,
@@ -441,7 +446,7 @@ static char **roxterm_modify_environment(char const * const *env,
     return result;
 }
 
-static char **roxterm_get_environment(ROXTermData *roxterm)
+static char **roxterm_get_environment(ROXTermData *roxterm, const char *term)
 {
     /* We stil set TERM even though vte is supposed to override it because
      * earlier versions added an additional TERM instead of replacing it, and
@@ -462,8 +467,7 @@ static char **roxterm_get_environment(ROXTermData *roxterm)
 
     new_env[1] = g_strdup(options_lookup_string_with_default(roxterm->profile,
 		    "color_term", "roxterm"));
-    new_env[3] = g_strdup(options_lookup_string_with_default(roxterm->profile,
-		    "term", "xterm"));
+    new_env[3] = g_strdup(term ? term : "xterm");
     new_env[5] = g_strdup_printf("%ld",
             GDK_WINDOW_XWINDOW(roxterm->widget->window));
     new_env[7] = g_strdup_printf("%p", roxterm);
@@ -548,16 +552,18 @@ static gboolean roxterm_command_failed(ROXTermData *roxterm)
     return FALSE;
 }
 
-static char *roxterm_fork_command(VteTerminal *terminal,
+static char *roxterm_fork_command(VteTerminal *vte, const char *term,
         char **argv, char **envv, const char *working_directory,
         gboolean login, gboolean utmp, gboolean wtmp, pid_t *pid)
 {
-#if HAVE_VTE_TERMINAL_FORK_COMMAND_FULL
+#if VTE_HAS_PTY_OBJECT
     GPid *ppid = (GPid *) pid;
     GError *error = NULL;
+    VtePty *pty;
 #endif
     char *filename = argv[0];
     char **new_argv = NULL;
+    char *reply = NULL;
 
     if (login)
     {
@@ -581,30 +587,42 @@ static char *roxterm_fork_command(VteTerminal *terminal,
         argv = new_argv;
     }
 
-#if HAVE_VTE_TERMINAL_FORK_COMMAND_FULL
-    if (!vte_terminal_fork_command_full(terminal,
+#if VTE_HAS_PTY_OBJECT
+    pty = vte_terminal_pty_new(vte,
             (login ? 0 : VTE_PTY_NO_LASTLOG) |
             (utmp ? 0 : VTE_PTY_NO_UTMP) |
-            (wtmp ? 0 : VTE_PTY_NO_WTMP),
-            working_directory, argv, envv,
-            login ? G_SPAWN_FILE_AND_ARGV_ZERO : G_SPAWN_SEARCH_PATH,
-            NULL, NULL, ppid, &error))
+            (wtmp ? 0 : VTE_PTY_NO_WTMP), &error);
+    if (pty)
     {
-        char *reply = g_strdup_printf(
-                _("The new terminal's command failed to run: %s"),
-                error->message);
-                
-        *pid = -1;
-        g_error_free(error);
-        return reply;
+        vte_terminal_set_pty_object(vte, pty);
+        if (term)
+            vte_pty_set_term(pty, term);
+        if (g_spawn_async(working_directory, argv, envv,
+                G_SPAWN_DO_NOT_REAP_CHILD |
+                    (login ? G_SPAWN_FILE_AND_ARGV_ZERO : G_SPAWN_SEARCH_PATH),
+                (GSpawnChildSetupFunc) vte_pty_child_setup, pty,
+                ppid, &error))
+        {
+            vte_terminal_watch_child(vte, *ppid);
+        }
+        else
+        {
+            reply = g_strdup_printf(
+                    _("The new terminal's command failed to run: %s"),
+                    error->message);
+        }
+    }
+    else
+    {
+        reply = g_strdup_printf(_("Failed to create pty: %s"), error->message);
     }
 #else
-    *pid = vte_terminal_fork_command(terminal, filename,
+    *pid = vte_terminal_fork_command(vte, filename,
             argv + (login ? 1 : 0), envv,
             working_directory, login, utmp, wtmp);
     if (*pid == -1)
     {
-        return g_strdup(_("The new terminal's command failed to run"));
+        reply = g_strdup(_("The new terminal's command failed to run"));
     }
 #endif
 
@@ -614,17 +632,21 @@ static char *roxterm_fork_command(VteTerminal *terminal,
         g_free(new_argv);
     }
     
-    return NULL;
+    if (reply)
+        *pid = -1;
+    if (error)
+        g_error_free(error);
+    return reply;
 }
 
 static void roxterm_run_command(ROXTermData *roxterm, VteTerminal *vte)
 {
     char **commandv = NULL;
     char *command = NULL;
-    gboolean special = FALSE;    /* special_command and -e override login_shell
-                                  */
+    gboolean special = FALSE; /* special_command and -e override login_shell */
     gboolean login = FALSE;
-    char **env = roxterm_get_environment(roxterm);
+    const char *term = options_lookup_string(roxterm->profile, "term");
+    char **env = roxterm_get_environment(roxterm, term);
     char *reply = NULL;
 
     roxterm->running = TRUE;
@@ -711,7 +733,7 @@ static void roxterm_run_command(ROXTermData *roxterm, VteTerminal *vte)
         gboolean xtmplog = options_lookup_int_with_default(roxterm->profile,
                 "update_records", 1);
 
-        reply = roxterm_fork_command(vte, commandv, env,
+        reply = roxterm_fork_command(vte, term, commandv, env,
                 roxterm->directory, login, xtmplog, xtmplog, &roxterm->pid);
     }
     else
@@ -2653,14 +2675,6 @@ static void roxterm_apply_title_template(ROXTermData *roxterm)
     }
 }
     
-static void roxterm_apply_emulation(ROXTermData *roxterm, VteTerminal *vte)
-{
-    char *emu = options_lookup_string(roxterm->profile, "term");
-
-    vte_terminal_set_emulation(vte, emu);
-    g_free(emu);
-}
-
 static void roxterm_apply_show_tab_status(ROXTermData *roxterm)
 {
     if (roxterm->tab)
@@ -2705,7 +2719,6 @@ static void roxterm_apply_profile(ROXTermData *roxterm, VteTerminal *vte)
 
     roxterm_update_mouse_autohide(roxterm, vte);
     roxterm_apply_encoding(roxterm, vte);
-    roxterm_apply_emulation(roxterm, vte);
 
     roxterm_apply_wrap_switch_tab(roxterm);
 
@@ -3013,10 +3026,6 @@ static void roxterm_reflect_profile_change(Options * profile, const char *key)
         else if (!strcmp(key, "sel_by_word"))
         {
             roxterm_set_select_by_word_chars(roxterm, vte);
-        }
-        else if (!strcmp(key, "term"))
-        {
-            roxterm_apply_emulation(roxterm, vte);
         }
         else if (!strcmp(key, "width") || !strcmp(key, "height"))
         {
