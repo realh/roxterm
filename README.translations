@@ -1,0 +1,12 @@
+Notes for translators
+=====================
+
+ROXTerm's translations are managed by Transifex at
+<https://www.transifex.net/projects/p/roxterm/>. There are links to help
+with using the transifex client there.
+
+To maintain a translation I recommend checking out roxterm from git (see the
+user guide) and creating a new local branch. In your branch edit po/LINGUAS to
+include the code for your language (one language per line). Run bootstrap.sh
+whenever you merge the main branch with yours to ensure that any generated
+files are updated.
