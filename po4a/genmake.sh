@@ -68,7 +68,7 @@ do
         echo >>$f
         echo >>$f $r.1.$l.xml.in: $r.1.$l.po
         printf >>$f '\t$(PO4A_TRANSLATE) -k 0 -f docbook -m ../%s.1.xml.in -p $< -l $@\n\n' $r
-        echo >>$f $r.1.$l.po: ../$r.1.xml.in
+        echo >>$f $r.1.$l.po: ../$r.1.xml.in $r.1.pot
         printf >>$f '\t$(PO4A_UPDATEPO) -f docbook -m $< -p $@\n'
         printf >>$f '\tsed -i s/charset=CHARSET/charset=UTF-8/ $@\n\n'
     done
@@ -150,7 +150,7 @@ do
     echo >>$f
     for l in $LANGS
     do
-        echo >>$f $p.html.$l.po: ../Help/en/$p.html
+        echo >>$f $p.html.$l.po: ../Help/en/$p.html $p.html.pot
         printf >>$f '\t$(PO4A_UPDATEPO) -f xhtml -m $< -p $@\n'
         echo >>$f
         echo >>$f ../Help/$l/$p.html: $p.html.$l.po
