@@ -64,7 +64,7 @@ endif
 EXTRA_DIST = config.rpath m4 roxterm.svg \
 		.DirIcon AppRun AppInfo.xml AppInfo.xml.in \
 		roxterm.desktop $(nobase_pkgdata_DATA) $(HTMLFILES) \
-		$(LOGO_TEXT_ONLY) \
+		$(LOGO_TEXT_ONLY) $(LOGO_PNG) $(TEXT_LOGO) $(FAVICON) \
 		AUTHORS COPYING README $(HELPOTHER) $(HELPLIBFILES) \
 		update-locales roxterm.xml \
 		Help/AUTHORS Help/COPYING Help/Changes Help/README \
