@@ -616,6 +616,8 @@ static char *roxterm_fork_command(VteTerminal *vte, const char *term,
     {
         reply = g_strdup_printf(_("Failed to create pty: %s"), error->message);
     }
+    if (error)
+        g_error_free(error);
 #else
     *pid = vte_terminal_fork_command(vte, filename,
             argv + (login ? 1 : 0), envv,
@@ -634,8 +636,6 @@ static char *roxterm_fork_command(VteTerminal *vte, const char *term,
     
     if (reply)
         *pid = -1;
-    if (error)
-        g_error_free(error);
     return reply;
 }
 
