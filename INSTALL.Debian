@@ -27,8 +27,8 @@ Use of git
 ----------
 
 If using a clean git checkout you will also need autoconf, automake, autopoint,
-autotools, po4a and the transifex client (tx). If your distro does not include
-the transifex-client package install python-setuptools and see
+libtool, autotools-dev, po4a and the transifex client (tx). If your distro does
+not include the transifex-client package install python-setuptools and see
 <http://help.transifex.net/user-guide/client/client-0.3.html>.
 
 Once you have installed all the above run ./bootstrap.sh before proceeding.
