@@ -181,6 +181,7 @@ static gboolean save_session_to_fp(SessionData *sd, FILE *fp)
         char *font_name;
         gboolean disable_menu_shortcuts, disable_tab_shortcuts;
         char *s;
+        const char *xname, *xclass;
         
         if (!user_data)
         {
@@ -194,11 +195,13 @@ static gboolean save_session_to_fp(SessionData *sd, FILE *fp)
                 &disable_menu_shortcuts, &disable_tab_shortcuts);
         roxterm_get_nonfs_dimensions(user_data, &w, &h);
         gtk_window_get_position(gwin, &x, &y);
+        multi_win_get_class_name(win, &xclass, &xname);
         s = g_markup_printf_escaped("  <window disp='%s'\n"
                 "      geometry='%dx%d+%d+%d'\n"
                 "      title_template='%s' font='%s'\n"
                 "      title_template_locked='%d'\n"
                 "      title='%s' role='%s'\n"
+                "      xclass='%s' xname='%s'\n"
                 "      shortcut_scheme='%s' show_menubar='%d'\n"
                 "      always_show_tabs='%d' tab_pos='%d'\n"
                 "      disable_menu_shortcuts='%d' disable_tab_shortcuts='%d'\n"
@@ -207,6 +210,7 @@ static gboolean save_session_to_fp(SessionData *sd, FILE *fp)
                 tt ? tt : "", font_name,
                 multi_win_get_title_template_locked(win),
                 title, gtk_window_get_role(gwin),
+                xclass ? xclass : "", xname ? xname : "",
                 multi_win_get_shortcuts_scheme_name(win),
                 multi_win_get_show_menu_bar(win),
                 multi_win_get_always_show_tabs(win),

@@ -95,6 +95,7 @@ struct MultiWin {
 #endif
     char *display_name;
     gboolean title_template_locked;
+    char *xclass, *xname;
 };
 
 static double multi_win_zoom_factors[] = {
@@ -1441,6 +1442,8 @@ MultiWin *multi_win_new_blank(const char *display_name, Options *shortcuts,
         xclass = "roxterm";
     if (xclass)
     {
+        win->xclass = g_strdup(xclass);
+        win->xname = g_strdup(xname);
         gtk_window_set_wmclass(GTK_WINDOW(win->gtkwin), xname, xclass);
         global_options_reset_string("xclass");
         global_options_reset_string("xname");
@@ -1672,6 +1675,8 @@ static void multi_win_destructor(MultiWin *win, gboolean destroy_widgets)
     {
         g_free(win->display_name);
     }
+    g_free(win->xclass);
+    g_free(win->xname);
     g_free(win);
     multi_win_all = g_list_remove(multi_win_all, win);
     if (!multi_win_all)
@@ -2205,6 +2210,13 @@ const char *multi_win_get_shortcuts_scheme_name(MultiWin *win)
 guint multi_win_get_num_tabs(MultiWin *win)
 {
     return g_list_length(win->tabs);
+}
+
+void
+multi_win_get_class_name(MultiWin *win, char const **xclass, char const **xname)
+{
+    *xclass = win->xclass;
+    *xname = win->xname;
 }
 
 /* This is maintained in order of most recently focused */

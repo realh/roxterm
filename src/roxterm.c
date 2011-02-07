@@ -4105,6 +4105,8 @@ static void parse_open_win(_ROXTermParseContext *rctx,
     const char *disp = NULL;
     const char *geom = NULL;
     const char *role = NULL;
+    const char *xclass = NULL;
+    const char *xname = NULL;
     const char *font = NULL;
     const char *shortcuts_name = NULL;
     const char *title_template = NULL;
@@ -4143,6 +4145,10 @@ static void parse_open_win(_ROXTermParseContext *rctx,
             title = v;
         else if (!strcmp(a, "role"))
             role = v;
+        else if (!strcmp(a, "xclass") && v && v[0])
+            xclass = v;
+        else if (!strcmp(a, "xname") && v && v[0])
+            xname = v;
         else if (!strcmp(a, "shortcut_scheme"))
             shortcuts_name = v;
         else if (!strcmp(a, "show_menubar"))
@@ -4185,6 +4191,12 @@ static void parse_open_win(_ROXTermParseContext *rctx,
     {
         rctx->role = g_strdup(role);
         gtk_window_set_role(gwin, role);
+    }
+    if (xclass)
+    {
+        gtk_window_set_wmclass(gwin, xname, xclass);
+        xclass = NULL;
+        xname = NULL;
     }
     if (title_template && title_template[0])
     {
