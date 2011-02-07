@@ -46,8 +46,10 @@
 
 #if VTE_CHECK_VERSION(0, 26, 0)
 #define VTE_HAS_PTY_OBJECT 1
+#define ROXTERM_SET_TERM_ENV 0
 #else
 #define VTE_HAS_PTY_OBJECT 0
+#define ROXTERM_SET_TERM_ENV 1
 #endif
 
 typedef enum {
@@ -454,43 +456,63 @@ static char **roxterm_get_environment(ROXTermData *roxterm, const char *term)
      */
     char **result;
     char const *new_env[] = {
-        "COLORTERM", NULL,
-        "TERM", NULL,
         "WINDOWID", NULL,
         "ROXTERM_ID", NULL,
         "ROXTERM_NUM", NULL,
         "ROXTERM_PID", NULL,
-        "DISPLAY", NULL,
+        NULL, NULL,
+        NULL, NULL,
+        NULL, NULL,
         NULL };
+    enum {
+        EnvWindowId,
+        EnvRoxtermId,
+        EnvRoxtermNum,
+        EnvRoxtermPid
+    };
     GList *link;
     int n;
+    const char *cterm;
 
-    new_env[1] = g_strdup(options_lookup_string_with_default(roxterm->profile,
-		    "color_term", "roxterm"));
-    new_env[3] = g_strdup(term ? term : "xterm");
-    new_env[5] = g_strdup_printf("%ld",
+    new_env[EnvWindowId * 2 + 1] = g_strdup_printf("%ld",
             GDK_WINDOW_XWINDOW(roxterm->widget->window));
-    new_env[7] = g_strdup_printf("%p", roxterm);
+    new_env[EnvRoxtermId * 2 + 1] = g_strdup_printf("%p", roxterm);
     for (n = 0, link = roxterm_terms; link; ++n, link = g_list_next(link))
     {
         ++n;
         if (link->data == roxterm)
             break;
     }
-    new_env[9] = g_strdup_printf("%d", n);
-    new_env[11] = g_strdup_printf("%d", (int) getpid());
+    new_env[EnvRoxtermNum * 2 + 1] = g_strdup_printf("%d", n);
+    new_env[EnvRoxtermPid * 2 + 1] = g_strdup_printf("%d", (int) getpid());
+    n = EnvRoxtermPid + 1;
     if (roxterm->display_name)
-        new_env[13] = roxterm->display_name;
-    else
-        new_env[12] = NULL;
+    {
+        new_env[n * 2] = "DISPLAY";
+        new_env[n * 2 + 1] = roxterm->display_name;
+        ++n;
+    }
+#if ROXTERM_SET_TERM_ENV
+    if (term)
+    {
+        new_env[n * 2] = "TERM";
+        new_env[n * 2 + 1] = term;
+        ++n;
+    }
+#endif
+    cterm = options_lookup_string(roxterm->profile, "color_term");
+    if (cterm)
+    {
+        new_env[n * 2] = "COLORTERM";
+        new_env[n * 2 + 1] = cterm;
+        ++n;
+    }
     result = roxterm_modify_environment((char const * const *) roxterm->env,
             new_env);
-    g_free((char *) new_env[1]);
-    g_free((char *) new_env[3]);
-    g_free((char *) new_env[5]);
-    g_free((char *) new_env[7]);
-    g_free((char *) new_env[9]);
-    g_free((char *) new_env[11]);
+    g_free((char *) new_env[EnvWindowId * 2 + 1]);
+    g_free((char *) new_env[EnvRoxtermId * 2 + 1]);
+    g_free((char *) new_env[EnvRoxtermNum * 2 + 1]);
+    g_free((char *) new_env[EnvRoxtermPid * 2 + 1]);
     return result;
 }
 

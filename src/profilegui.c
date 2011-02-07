@@ -643,8 +643,8 @@ static void profilegui_fill_in_dialog(ProfileGUI * pg)
 #endif
     capplet_set_boolean_toggle(glade, profile, "hide_mouse", TRUE);
     capplet_set_text_entry(glade, profile, "sel_by_word", "-A-Za-z0-9,./?%&#_");
-    capplet_set_text_entry(glade, profile, "color_term", "roxterm");
-    capplet_set_text_entry(glade, profile, "term", "xterm");
+    capplet_set_text_entry(glade, profile, "color_term", NULL);
+    capplet_set_text_entry(glade, profile, "term", NULL);
     capplet_set_combo(glade, profile, "tab_pos", 0);
     capplet_set_spin_button(glade, profile, "init_tabs", 1);
     capplet_set_boolean_toggle(glade, profile, "wrap_switch_tab", FALSE);
