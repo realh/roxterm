@@ -3,6 +3,8 @@
 if [ -n "$1" ] ; then
 	if echo $1 | grep -qv roxterm ; then
 		f=roxterm-${1}.tar.gz
+	else
+	    f="$1"
 	fi
 else
 	f=roxterm-*.tar.gz
