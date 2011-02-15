@@ -69,7 +69,7 @@ static void drag_data_received(GtkWidget *widget, GdkDragContext *context,
                 || selection_data->length == 0)
             {
                 g_critical(_("text/plain dropped on widget had wrong "
-                            "format (%d) or length (%d)\n"),
+                            "format (%d) or length (%d)"),
                             selection_data->format, selection_data->length);
                 return;
             }
@@ -93,7 +93,7 @@ static void drag_data_received(GtkWidget *widget, GdkDragContext *context,
                 || (selection_data->length % 2) != 0)
             {
                 g_critical(_("Mozilla url dropped on widget had wrong "
-                            "format (%d) or length (%d)\n"),
+                            "format (%d) or length (%d)"),
                             selection_data->format,
                             selection_data->length);
                 return;
@@ -124,7 +124,7 @@ static void drag_data_received(GtkWidget *widget, GdkDragContext *context,
                 || selection_data->length == 0)
             {
                 g_critical(_("URI list dropped on widget had wrong "
-                            "format (%d) or length (%d)\n"),
+                            "format (%d) or length (%d)"),
                             selection_data->format, selection_data->length);
                 return;
             }
