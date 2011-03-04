@@ -1437,9 +1437,9 @@ MultiWin *multi_win_new_blank(const char *display_name, Options *shortcuts,
     xclass = global_options_lookup_string("xclass");
     xname = global_options_lookup_string("xname");
     if (xclass && !xname)
-        xname = "Roxterm";
+        xname = "roxterm";
     if (xname && !xclass)
-        xclass = "roxterm";
+        xclass = "Roxterm";
     if (xclass)
     {
         win->xclass = g_strdup(xclass);
