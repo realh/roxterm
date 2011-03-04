@@ -617,8 +617,9 @@ static char *roxterm_fork_command(VteTerminal *vte, const char *term,
     if (pty)
     {
         vte_terminal_set_pty_object(vte, pty);
-        if (term)
-            vte_pty_set_term(pty, term);
+        if (!term)
+            term = vte_terminal_get_default_emulation(vte);
+        vte_pty_set_term(pty, term);
         if (g_spawn_async(working_directory, argv, envv,
                 G_SPAWN_DO_NOT_REAP_CHILD |
                     (login ? G_SPAWN_FILE_AND_ARGV_ZERO : G_SPAWN_SEARCH_PATH),
