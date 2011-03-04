@@ -46,10 +46,8 @@
 
 #if VTE_CHECK_VERSION(0, 26, 0)
 #define VTE_HAS_PTY_OBJECT 1
-#define ROXTERM_SET_TERM_ENV 0
 #else
 #define VTE_HAS_PTY_OBJECT 0
-#define ROXTERM_SET_TERM_ENV 1
 #endif
 
 typedef enum {
@@ -492,14 +490,9 @@ static char **roxterm_get_environment(ROXTermData *roxterm, const char *term)
         new_env[n * 2 + 1] = roxterm->display_name;
         ++n;
     }
-#if ROXTERM_SET_TERM_ENV
-    if (term)
-    {
-        new_env[n * 2] = "TERM";
-        new_env[n * 2 + 1] = term;
-        ++n;
-    }
-#endif
+    new_env[n * 2] = "TERM";
+    new_env[n * 2 + 1] = term;
+    ++n;
     cterm = options_lookup_string(roxterm->profile, "color_term");
     if (cterm)
     {
@@ -669,9 +662,12 @@ static void roxterm_run_command(ROXTermData *roxterm, VteTerminal *vte)
     gboolean special = FALSE; /* special_command and -e override login_shell */
     gboolean login = FALSE;
     const char *term = options_lookup_string(roxterm->profile, "term");
-    char **env = roxterm_get_environment(roxterm, term);
+    char **env;
     char *reply = NULL;
 
+    if (!term)
+        term = vte_terminal_get_default_emulation(vte);
+    env = roxterm_get_environment(roxterm, term);
     roxterm->running = TRUE;
     roxterm_show_status_stock(roxterm, GTK_STOCK_CLOSE);
     if (roxterm->special_command)
