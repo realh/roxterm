@@ -290,7 +290,7 @@
                                     <property name="can_focus">True</property>
                                     <property name="tooltip" translatable="yes">The title string may include '%s' which is substituted with the contents of the current tab's label. No other % characters or sequences are permitted except '%%' which is displayed as a single %.</property>
                                     <property name="invisible_char">&#x25CF;</property>
-                                    <signal name="changed" handler="on_win_title_changed"/>
+                                    <signal name="changed" handler="on_editable_changed"/>
                                     <signal name="activate" handler="on_entry_activate"/>
                                   </widget>
                                   <packing>
@@ -3490,7 +3490,7 @@ Hidden</property>
                 <property name="can_focus">True</property>
                 <property name="tooltip" translatable="yes">Ssh server address.</property>
                 <property name="invisible_char">&#x2022;</property>
-                <signal name="changed" handler="on_ssh_address_changed"/>
+                <signal name="changed" handler="on_editable_changed"/>
                 <signal name="changed" handler="on_ssh_host_changed"/>
                 <signal name="activate" handler="on_ssh_entry_activate"/>
               </widget>
@@ -3520,7 +3520,7 @@ Hidden</property>
                 <property name="can_focus">True</property>
                 <property name="tooltip" translatable="yes">Remote username.</property>
                 <property name="invisible_char">&#x2022;</property>
-                <signal name="changed" handler="on_ssh_user_changed"/>
+                <signal name="changed" handler="on_editable_changed"/>
                 <signal name="activate" handler="on_ssh_entry_activate"/>
               </widget>
               <packing>
@@ -3571,7 +3571,7 @@ Hidden</property>
                 <property name="can_focus">True</property>
                 <property name="tooltip" translatable="yes">Miscellaneous options to add to the ssh command line.</property>
                 <property name="invisible_char">&#x2022;</property>
-                <signal name="changed" handler="on_ssh_options_changed"/>
+                <signal name="changed" handler="on_editable_changed"/>
                 <signal name="activate" handler="on_ssh_entry_activate"/>
               </widget>
               <packing>
