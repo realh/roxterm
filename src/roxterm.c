@@ -2070,7 +2070,7 @@ static void roxterm_new_term_with_profile(GtkMenuItem *mitem,
         MenuTree *mtree, gboolean just_tab)
 {
     ROXTermData *roxterm = roxterm_from_menutree(mtree);
-    MultiWin *win = roxterm->win;
+    MultiWin *win;
     const char *profile_name;
     Options *old_profile;
     Options *new_profile;
@@ -2079,6 +2079,7 @@ static void roxterm_new_term_with_profile(GtkMenuItem *mitem,
     if (!roxterm)
         return;
 
+    win = roxterm->win;
     profile_name = g_object_get_data(G_OBJECT(mitem), PROFILE_NAME_KEY);
     if (!profile_name)
     {
