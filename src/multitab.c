@@ -89,7 +89,6 @@ struct MultiWin {
     char *title_template;
     char *default_title_template;
     char *child_title;
-    char *child_icon;
 #if HAVE_COMPOSITE
     gboolean composite;
 #endif
@@ -249,6 +248,10 @@ static void multi_tab_delete_without_notifying_parent(MultiTab * tab,
 
     g_free(tab->window_title);
     tab->window_title = NULL;
+    g_free(tab->window_title_template);
+    tab->window_title_template = NULL;
+    g_free(tab->icon_title);
+    tab->icon_title = NULL;
     if (destroy_widgets && tab->widget)
     {
         gtk_widget_destroy(tab->widget);
@@ -1671,10 +1674,10 @@ static void multi_win_destructor(MultiWin *win, gboolean destroy_widgets)
         win->gtkwin = NULL;
     }
     UNREF_LOG(options_unref(win->shortcuts));
-    if (win->display_name)
-    {
-        g_free(win->display_name);
-    }
+    g_free(win->display_name);
+    g_free(win->title_template);
+    g_free(win->default_title_template);
+    g_free(win->child_title);
     g_free(win->xclass);
     g_free(win->xname);
     g_free(win);
