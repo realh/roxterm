@@ -1,4 +1,11 @@
-roxterm (@VERSION@-1) unstable; urgency=low
+roxterm (1.21.3-1) unstable; urgency=low
+
+  * New upstream release:
+    + Fix minor memory leaks and potential NULL dereference.
+
+ -- Tony Houghton <h@realh.co.uk>  Sat, 12 Mar 2011 17:33:43 +0000
+
+roxterm (1.21.2.4~g4b4776b-1) unstable; urgency=low
 
   * New upstream version:
     + Support TERM setting with vte >= 0.26.
