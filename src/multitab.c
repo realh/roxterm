@@ -1178,7 +1178,7 @@ static void multi_win_set_window_title_action(MultiWin * win)
                 title = NULL;
             win->title_template_locked = FALSE;
             multi_win_set_title_template(win, title);
-            win->title_template_locked = (title == NULL);
+            win->title_template_locked = (title != NULL);
             /* Fall through to destroy */
         default:
             gtk_widget_destroy(dialog_w);
