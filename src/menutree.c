@@ -265,14 +265,20 @@ void menutree_apply_shortcuts(MenuTree *tree, Options *shortcuts)
     menutree_set_accel_path_for_submenu(tree, MENUTREE_PREFERENCES,
             "Preferences");
     /* Tabs have shortcuts set dynamically so set paths
-     * for Next and Previous Tab individually */
+     * for fixed items individually */
     submenu = menutree_submenu_from_id(tree, MENUTREE_TABS);
     if (submenu)
         gtk_menu_set_accel_group(submenu, tree->accel_group);
+    menutree_set_accel_path_for_item(tree, MENUTREE_TABS_NAME_TAB,
+            "Tabs/Name Tab...");
     menutree_set_accel_path_for_item(tree, MENUTREE_TABS_NEXT_TAB,
             "Tabs/Next Tab");
     menutree_set_accel_path_for_item(tree, MENUTREE_TABS_PREVIOUS_TAB,
             "Tabs/Previous Tab");
+    menutree_set_accel_path_for_item(tree, MENUTREE_TABS_MOVE_TAB_LEFT,
+            "Tabs/Move Tab Left");
+    menutree_set_accel_path_for_item(tree, MENUTREE_TABS_MOVE_TAB_RIGHT,
+            "Tabs/Move Tab Right");
     menutree_set_accel_path_for_submenu(tree, MENUTREE_HELP, "Help");
     menutree_apply_tab_shortcuts(tree);
     shortcuts_enable_signal_handler(TRUE);
