@@ -238,11 +238,12 @@ static void configlet_list_build(ConfigletList *cl)
 
     if (cl->encodings)
     {
-        item_list = encodings_list(cl->encodings);
+        item_list = encodings_list_sorted(cl->encodings);
     }
     else
     {
-        item_list = dynamic_options_list(dynamic_options_get(cl->family));
+        item_list = dynamic_options_list_sorted(
+                dynamic_options_get(cl->family));
     }
 
     if (cl->list)
@@ -763,6 +764,7 @@ static void on_copy_clicked(GtkButton *button, ConfigletList *cl)
     {
         g_warning(_("No selection to copy"));
     }
+    g_strfreev(existing);
     g_free(title);
 }
 
@@ -863,6 +865,7 @@ static void on_rename_clicked(GtkButton *button, ConfigletList *cl)
     {
         g_warning(_("No selection to copy"));
     }
+    g_strfreev(existing);
     g_free(title);
 }
 

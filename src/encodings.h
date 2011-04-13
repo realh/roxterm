@@ -31,7 +31,17 @@ void encodings_save(GKeyFile *kf);
 
 /* Returns a NULL-terminated array of strings which can (and should) be freed
  * with g_strfreev; the first item is always "Default". */
-char **encodings_list(GKeyFile *);
+char **encodings_list_full(GKeyFile *, gboolean sorted);
+
+inline static char **encodings_list(GKeyFile *kf)
+{
+    return encodings_list_full(kf, FALSE);
+}
+
+inline static char **encodings_list_sorted(GKeyFile *kf)
+{
+    return encodings_list_full(kf, TRUE);
+}
 
 char *encodings_lookup(GKeyFile *, int n);
 
