@@ -2404,7 +2404,7 @@ static void add_new_term_with_profile_submenu(MenuTree *menutree,
 
 static void roxterm_add_pair_of_profile_submenus(MultiWin *win)
 {
-    char **items = dynamic_options_list(dynamic_options_get("Profiles"));
+    char **items = dynamic_options_list_sorted(dynamic_options_get("Profiles"));
     MenuTree *menutree;
 
     g_return_if_fail(items);

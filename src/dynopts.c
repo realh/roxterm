@@ -104,7 +104,7 @@ dynamic_options_unref(DynamicOptions * dynopts, const char *profile_name)
 }
 
 static GList *dynopts_add_path_contents_to_list(GList *list, const char *path,
-                const char *family)
+                const char *family, gboolean sorted)
 {
     GError *err = NULL;
     char *dirname = g_build_filename(path, family, NULL);
@@ -145,10 +145,18 @@ static GList *dynopts_add_path_contents_to_list(GList *list, const char *path,
         }
     }
     g_free(dirname);
+    if (sorted)
+    {
+        GList *default_item = list;
+        
+        list = g_list_remove_link(list, default_item);
+        list = g_list_sort(list, (GCompareFunc) g_strcmp0);
+        list = g_list_concat(default_item, list);
+    }
     return list;
 }
 
-char **dynamic_options_list(DynamicOptions *dynopts)
+char **dynamic_options_list_full(DynamicOptions *dynopts, gboolean sorted)
 {
     int i;
     const char * const *paths = options_file_get_pathv();
@@ -161,7 +169,7 @@ char **dynamic_options_list(DynamicOptions *dynopts)
     for (i = 0; paths[i]; ++i)
     {
         list = dynopts_add_path_contents_to_list(list, paths[i],
-                dynopts->family);
+                dynopts->family, sorted);
     }
 
     nmemb = g_list_length(list);

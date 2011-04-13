@@ -54,9 +54,20 @@ dynamic_options_unref(DynamicOptions * dynopts, const char *profile_name);
 void dynamic_options_rename(DynamicOptions *dynopts,
 		const char *old_name, const char *new_name);
 
+char **dynamic_options_list_full(DynamicOptions *, gboolean sorted);
+
 /* Returns a list of names (g_strfreev them) of files within family's subdir;
  * the first item will always be "Default" even if no such file exists */
-char **dynamic_options_list(DynamicOptions *);
+inline static char **dynamic_options_list(DynamicOptions *dynopts)
+{
+    return dynamic_options_list_full(dynopts, FALSE);
+}
+
+/* As above but the list is sorted (except for Default) */
+inline static char **dynamic_options_list_sorted(DynamicOptions *dynopts)
+{
+    return dynamic_options_list_full(dynopts, TRUE);
+}
 
 #endif /* DYNOPTS_H */
 
