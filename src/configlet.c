@@ -238,7 +238,7 @@ static void configlet_list_build(ConfigletList *cl)
 
     if (cl->encodings)
     {
-        item_list = encodings_list_sorted(cl->encodings);
+        item_list = encodings_list(cl->encodings);
     }
     else
     {
