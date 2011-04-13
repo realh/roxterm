@@ -39,6 +39,7 @@ Help/fr
 debian/changelog
 debian/deletable.files
 *.gmo
+*.pot
 po/Makefile.in.in
 po/Makevars.template
 po/POTFILES
@@ -50,7 +51,6 @@ po/insert-header.sin
 po/quot.sed
 po/remove-potcdate.sed
 po/remove-potcdate.sin
-po/roxterm.pot
 po/stamp-po
 src/roxterm
 src/roxterm-config
@@ -60,8 +60,6 @@ roxterm.lsm
 *.tar.gz
 tony
 debtmp
-*.pot
-*.po
 po4a/Makefile.am
 po4a/*.xml.in
 po4a/*.1.es
