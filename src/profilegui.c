@@ -46,7 +46,7 @@
 #define PG_CONNECT_OPTS(pg, h) PG_GLADE_CONNECT_OPTS((pg), (pg)->glade, h)
 
 #define PG_GLADE_EC_CONNECT(pg, glade, n) \
-    glade_xml_signal_connect_data ((glade), "on_"  #n "_changed", \
+    glade_xml_signal_connect_data ((glade), "on_editable_changed", \
             (GCallback) on_editable_changed, &pg->changed. n)
 
 #define PG_EC_CONNECT(pg, n) PG_GLADE_EC_CONNECT((pg), (pg)->glade, n)
