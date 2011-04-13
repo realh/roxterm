@@ -1504,12 +1504,12 @@ MultiWin *multi_win_new_blank(const char *display_name, Options *shortcuts,
     gtk_window_add_accel_group(GTK_WINDOW(win->gtkwin), win->accel_group);
 
     win->popup_menu = menutree_new(shortcuts, win->accel_group,
-        GTK_TYPE_MENU, disable_menu_shortcuts, disable_tab_shortcuts, win);
+        GTK_TYPE_MENU, TRUE, disable_tab_shortcuts, win);
     menutree_connect_destroyed(win->popup_menu,
         G_CALLBACK(multi_win_menutree_deleted_handler), win);
 
     win->short_popup = menutree_new_short_popup(shortcuts, win->accel_group,
-        disable_menu_shortcuts, win);
+        TRUE, win);
     menutree_connect_destroyed(win->short_popup,
         G_CALLBACK(multi_win_menutree_deleted_handler), win);
 

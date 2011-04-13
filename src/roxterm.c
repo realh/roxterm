@@ -3121,12 +3121,8 @@ static void roxterm_reflect_profile_change(Options * profile, const char *key)
         {
             gboolean disable = options_lookup_int(roxterm->profile,
                     "disable_menu_shortcuts");
-            MenuTree *mtree = multi_win_get_popup_menu(roxterm->win);
+            MenuTree *mtree = multi_win_get_menu_bar(roxterm->win);
 
-            menutree_disable_shortcuts(mtree, disable);
-            mtree = multi_win_get_menu_bar(roxterm->win);
-            menutree_disable_shortcuts(mtree, disable);
-            mtree = multi_win_get_short_popup_menu(roxterm->win);
             menutree_disable_shortcuts(mtree, disable);
         }
         else if (!strcmp(key, "disable_tab_menu_shortcuts"))
