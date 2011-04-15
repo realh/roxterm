@@ -1320,10 +1320,10 @@ static void multi_win_move_tab_by_one(MultiWin *win, int dir)
     pos = multi_tab_get_page_num(tab) + dir;
     if (win->wrap_switch_tab)
     {
-        if (pos >= win->ntabs)
-            pos = 0;
-        else if (pos < 0)
+        if (pos < 0)
             pos = win->ntabs - 1;
+        else if (pos >= win->ntabs)
+            pos = 0;
     }
     g_return_if_fail(pos >= 0 && pos < win->ntabs);
     multi_tab_move_to_position(tab, pos, TRUE);
