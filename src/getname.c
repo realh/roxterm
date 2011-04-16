@@ -26,7 +26,7 @@
 
 #include "getname.h"
 
-static gboolean name_clashes(const char *new_name, char **existing)
+static gboolean name_clashes(const char *new_name, char const **existing)
 {
 	while (*existing)
 	{
@@ -39,7 +39,7 @@ static gboolean name_clashes(const char *new_name, char **existing)
 	return FALSE;
 }
 
-static char *suggest_name(const char *orig, char **existing)
+static char *suggest_name(const char *orig, char const **existing)
 {
 	/* Does orig end in a number? */
 	size_t len = strlen(orig);
@@ -63,7 +63,7 @@ static char *suggest_name(const char *orig, char **existing)
 }
 
 char *getname_run_dialog(GtkWindow *parent, const char *old_name,
-		char **existing, const char *title, const char *button_label,
+		char const **existing, const char *title, const char *button_label,
 		GtkWidget *icon, gboolean suggest_change)
 {
 	GtkWidget *dialog;

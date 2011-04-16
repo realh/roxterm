@@ -334,7 +334,7 @@ static void create_encodings_menu(MenuTree *mtree,
             mtree->encodings);
 }
 
-void menutree_build_encodings_menu(MenuTree *mtree, char **encodings,
+void menutree_build_encodings_menu(MenuTree *mtree, char const **encodings,
         MenuTreeToggledHandler handler)
 {
     /* We skip first item in list, "Default" */

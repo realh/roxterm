@@ -30,7 +30,7 @@
  * it's pre-entered and selected, but if suggest_change is TRUE, the name is
  * altered by incremental numbering to avoid any existing names */
 char *getname_run_dialog(GtkWindow *parent, const char *old_name,
-		char **existing, const char *title, const char *button_label,
+		char const **existing, const char *title, const char *button_label,
 		GtkWidget *icon, gboolean suggest_change);
 
 #endif /* GETNAME_H */

@@ -24,24 +24,39 @@
 #include "defns.h"
 #endif
 
-/* Loads the encodings keyfile or creates a default */
-GKeyFile *encodings_load(void);
+typedef GPtrArray Encodings;
 
-void encodings_save(GKeyFile *kf);
+/* Loads the encodings file or creates a default */
+Encodings *encodings_load(void);
 
-/* Returns a NULL-terminated array of strings which can (and should) be freed
- * with g_strfreev; the first item is always "Default". */
-char **encodings_list(GKeyFile *);
+void encodings_save(Encodings *);
 
-char *encodings_lookup(GKeyFile *, int n);
+/* Returns a NULL-terminated array of strings; free the list with g_free, not
+ * g_strfreev; the first item is always "Default" and "UTF-8" is second if
+ * present. */
+char const **encodings_list(Encodings *);
 
-int encodings_count(GKeyFile *);
+inline static const char *encodings_lookup(Encodings *enc, int n)
+{
+    return g_ptr_array_index(enc, n);
+}
 
-void encodings_add(GKeyFile *, const char *);
+inline static int encodings_count(Encodings *enc)
+{
+    return enc->len;
+}
 
-void encodings_remove(GKeyFile *, int n);
+inline static void encodings_add(Encodings *enc, const char *v)
+{
+    g_ptr_array_add(enc, g_strdup(v));
+}
 
-void encodings_change(GKeyFile *, int n, const char *);
+inline static void encodings_remove(Encodings *enc, int n)
+{
+    g_ptr_array_remove_index(enc, n);
+}
+
+void encodings_change(Encodings *, int n, const char *);
 
 
 #endif /* ENCODINGS_H */

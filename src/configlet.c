@@ -51,7 +51,7 @@ typedef struct {
     GtkTreeView *tvwidget;
     GtkListStore *list;
     gpointer foreach_data;
-    GKeyFile *encodings;
+    Encodings *encodings;
     ConfigletData *cg;
 } ConfigletList;
 
@@ -232,8 +232,8 @@ static char *configlet_get_configured_name(ConfigletList *cl)
 
 static void configlet_list_build(ConfigletList *cl)
 {
-    char **item_list;
-    char **pitem;
+    char const **item_list;
+    char const **pitem;
     char *selected_name = configlet_get_configured_name(cl);
 
     if (cl->encodings)
@@ -242,7 +242,7 @@ static void configlet_list_build(ConfigletList *cl)
     }
     else
     {
-        item_list = dynamic_options_list_sorted(
+        item_list = (char const **) dynamic_options_list_sorted(
                 dynamic_options_get(cl->family));
     }
 
@@ -266,7 +266,10 @@ static void configlet_list_build(ConfigletList *cl)
                 cfColumn_Name, *pitem,
                 -1);
     }
-    g_strfreev(item_list);
+    if (cl->encodings)
+        g_free(item_list);
+    else
+        g_strfreev((char **) item_list);
     g_free(selected_name);
 }
 
@@ -730,7 +733,7 @@ static void on_copy_clicked(GtkButton *button, ConfigletList *cl)
     char *old_name = get_selected_name(cl);
     char *title = NULL;
     const char *button_label = NULL;
-    char **existing = NULL;
+    const char **existing = NULL;
 
     if (cl->encodings)
     {
@@ -745,7 +748,7 @@ static void on_copy_clicked(GtkButton *button, ConfigletList *cl)
         title = g_strdup_printf(_("Copy %s"),
             full_name_from_family(cl->family));
         button_label = GTK_STOCK_COPY;
-        existing = dynamic_options_list(dynopts);
+        existing = (char const **) dynamic_options_list(dynopts);
     }
     if (old_name || cl->encodings)
     {
@@ -764,7 +767,10 @@ static void on_copy_clicked(GtkButton *button, ConfigletList *cl)
     {
         g_warning(_("No selection to copy"));
     }
-    g_strfreev(existing);
+    if (cl->encodings)
+        g_free(existing);
+    else
+        g_strfreev((char **) existing);
     g_free(title);
 }
 
@@ -832,7 +838,7 @@ static void on_delete_clicked(GtkButton *button, ConfigletList *cl)
 static void on_rename_clicked(GtkButton *button, ConfigletList *cl)
 {
     char *title = NULL;
-    char **existing = NULL;
+    char const **existing = NULL;
     char *old_name = get_selected_name(cl);
 
     if (cl->encodings)
@@ -846,7 +852,7 @@ static void on_rename_clicked(GtkButton *button, ConfigletList *cl)
 
         title = g_strdup_printf(_("Rename %s"),
             full_name_from_family(cl->family));
-        existing = dynamic_options_list(dynopts);
+        existing = (char const **) dynamic_options_list(dynopts);
     }
     if (old_name || cl->encodings)
     {
@@ -865,7 +871,10 @@ static void on_rename_clicked(GtkButton *button, ConfigletList *cl)
     {
         g_warning(_("No selection to copy"));
     }
-    g_strfreev(existing);
+    if (cl->encodings)
+        g_free(existing);
+    else
+        g_strfreev((char **) existing);
     g_free(title);
 }
 

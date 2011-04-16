@@ -28,98 +28,97 @@ static const char *encodings_group_name = "roxterm encodings";
 
 static const char *encodings_get_key(int n)
 {
-	static char key[16];
+    static char key[16];
 
-	sprintf(key, "e%d", n);
-	return key;
+    sprintf(key, "e%d", n);
+    return key;
 }
 
-static GKeyFile *encodings_build_default(void)
+static GPtrArray *encodings_build_default(void)
 {
-	GKeyFile *kf = g_key_file_new();
+    GPtrArray *enc = g_ptr_array_sized_new(2);
 
-	g_key_file_set_integer(kf, encodings_group_name, "n", 2);
-	g_key_file_set_string(kf, encodings_group_name, "e0", "UTF-8");
-	g_key_file_set_string(kf, encodings_group_name, "e1", "ISO-8859-1");
-	return kf;
+    g_ptr_array_add(enc, "UTF-8");
+    g_ptr_array_add(enc, "ISO-8859-1");
+    return enc;
 }
 
-GKeyFile *encodings_load(void)
+Encodings *encodings_load(void)
 {
-	char *filename = options_file_build_filename("Encodings", NULL);
+    char *filename = options_file_build_filename("Encodings", NULL);
 
-	if (filename)
-	{
-		GKeyFile *result = options_file_open("Encodings", encodings_group_name);
+    if (filename)
+    {
+        GKeyFile *kf = options_file_open("Encodings", encodings_group_name);
+        int count = options_file_lookup_int_with_default(kf,
+            encodings_group_name, "n", 0);
+        GPtrArray *enc = g_ptr_array_sized_new(count);
+        int n;
 
-		g_free(filename);
-		return result;
-	}
-	else
-	{
-		return encodings_build_default();
-	}
+        for (n = 0; n < count; ++n)
+        {
+            char *v = options_file_lookup_string_with_default(kf,
+                    encodings_group_name, encodings_get_key(n), NULL);
+            
+            g_ptr_array_add(enc, v);
+        }
+        g_free(filename);
+        g_key_file_free(kf);
+        return enc;
+    }
+    else
+    {
+        return encodings_build_default();
+    }
 }
 
-void encodings_save(GKeyFile *kf)
+void encodings_save(Encodings *enc)
 {
-	options_file_save(kf, "Encodings");
+    GKeyFile *kf = g_key_file_new();
+    int n;
+    
+    g_key_file_set_integer(kf, encodings_group_name, "n", enc->len);
+    for (n = 0; n < enc->len; ++n)
+    {
+        g_key_file_set_string(kf, encodings_group_name,
+                encodings_get_key(n), g_ptr_array_index(enc, n));
+    }
+    options_file_save(kf, "Encodings");
+    g_key_file_free(kf);
 }
 
-char **encodings_list(GKeyFile *kf)
+static int encodings_compare(const char const **penc1,
+        const char const **penc2)
 {
-	int n = encodings_count(kf);
-	int m;
-	char **list;
-
-	list = g_new(char *, n + 2);
-	list[0] = g_strdup("Default");
-	for (m = 0; m < n; ++m)
-	{
-		list[m + 1] = encodings_lookup(kf, m);
-	}
-	list[n + 1] = NULL;
-	return list;
+    if (!g_strcmp0(*penc1, "UTF-8"))
+        return g_strcmp0(*penc2, "UTF-8") ? -1 : 0;
+    else if (!g_strcmp0(*penc2, "UTF-8"))
+        return g_strcmp0(*penc1, "UTF-8") ? 1 : 0;
+    return g_strcmp0(*penc1, *penc2);
+    
 }
 
-char *encodings_lookup(GKeyFile *kf, int n)
+char const **encodings_list(Encodings *enc)
 {
-	return options_file_lookup_string_with_default(kf,
-		encodings_group_name, encodings_get_key(n), "UTF-8");
+    int n = encodings_count(enc);
+    int m;
+    char const **list;
+
+    g_ptr_array_sort(enc, (GCompareFunc) encodings_compare);
+    list = g_new(char const *, n + 2);
+    list[0] = g_strdup("Default");
+    for (m = 0; m < n; ++m)
+    {
+        list[m + 1] = encodings_lookup(enc, m);
+    }
+    list[n + 1] = NULL;
+    return list;
 }
 
-int encodings_count(GKeyFile *kf)
+void encodings_change(Encodings *enc, int n, const char *v)
 {
-	return options_file_lookup_int_with_default(kf,
-			encodings_group_name, "n", 0);
-}
-
-void encodings_add(GKeyFile *kf, const char *enc)
-{
-	int n = encodings_count(kf);
-	
-	encodings_change(kf, n, enc);
-	g_key_file_set_integer(kf, encodings_group_name, "n", n + 1);
-}
-
-void encodings_remove(GKeyFile *kf, int n)
-{
-	int count = encodings_count(kf);
-
-	for (; n < count - 1; ++n)
-	{
-		char *enc = encodings_lookup(kf, n + 1);
-
-		encodings_change(kf, n, enc);
-		g_free(enc);
-	}
-	g_key_file_set_integer(kf, encodings_group_name, "n", count - 1);
-}
-
-void encodings_change(GKeyFile *kf, int n, const char *enc)
-{
-	g_key_file_set_string(kf, encodings_group_name,
-			encodings_get_key(n), enc);
+    encodings_remove(enc, n);
+    encodings_add(enc, v);
 }
 
 /* vi:set sw=4 ts=4 noet cindent cino= */

@@ -136,7 +136,7 @@ MenuTree *menutree_new_short_popup(Options *shortcuts,
  * menutree_encoding_from_widget to get the encoding name. */
 typedef void (*MenuTreeToggledHandler)(GtkCheckMenuItem *, gpointer);
 
-void menutree_build_encodings_menu(MenuTree *, char **encodings,
+void menutree_build_encodings_menu(MenuTree *, char const **encodings,
         MenuTreeToggledHandler);
 
 const char *menutree_encoding_from_widget(GtkCheckMenuItem *);

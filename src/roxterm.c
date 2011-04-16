@@ -121,9 +121,9 @@ static void roxterm_apply_profile(ROXTermData * roxterm, VteTerminal * vte);
 
 /********************** Encodings ***************************/
 
-static GKeyFile *roxterm_encodings = NULL;
+static Encodings *roxterm_encodings = NULL;
 
-inline static char **roxterm_list_encodings(void)
+inline static char const **roxterm_list_encodings(void)
 {
     return encodings_list(roxterm_encodings);
 }
@@ -1651,7 +1651,7 @@ static void roxterm_tab_selection_handler(ROXTermData * roxterm, MultiTab * tab)
     multi_win_set_ignore_toggles(roxterm->win, TRUE);
     if (!roxterm->setup_encodings)
     {
-        char **encodings = roxterm_list_encodings();
+        char const **encodings = roxterm_list_encodings();
 
         menutree_build_encodings_menu(popup_menu,
                 encodings, roxterm_encoding_toggled);
@@ -1660,7 +1660,7 @@ static void roxterm_tab_selection_handler(ROXTermData * roxterm, MultiTab * tab)
         menutree_build_encodings_menu(short_popup,
                 encodings, roxterm_encoding_toggled);
         if (encodings)
-            g_strfreev(encodings);
+            g_free(encodings);
         roxterm->setup_encodings = TRUE;
     }
     menutree_select_encoding(popup_menu, roxterm->encoding);
