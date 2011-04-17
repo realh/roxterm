@@ -46,10 +46,7 @@ inline static int encodings_count(Encodings *enc)
     return enc->len;
 }
 
-inline static void encodings_add(Encodings *enc, const char *v)
-{
-    g_ptr_array_add(enc, g_strdup(v));
-}
+void encodings_add(Encodings *enc, const char *v);
 
 inline static void encodings_remove(Encodings *enc, int n)
 {

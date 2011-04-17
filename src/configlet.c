@@ -230,6 +230,36 @@ static char *configlet_get_configured_name(ConfigletList *cl)
             strcmp(cl->family, "Colours") ? "Default" : "GTK");
 }
 
+static int configlet_strcmp(const char *s1, const char *s2, gboolean enc)
+{
+    if (!g_strcmp0(s1, "Default"))
+        return g_strcmp0(s2, "Default") ? -1 : 0;
+    else if (!g_strcmp0(s2, "Default"))
+        return 1;
+    if (enc)
+    {
+        if (!g_strcmp0(s1, "UTF-8"))
+            return g_strcmp0(s2, "UTF-8") ? -1 : 0;
+        else if (!g_strcmp0(s2, "UTF-8"))
+            return 1;
+    }
+    return g_strcmp0(s1, s2);
+}
+
+static int configlet_list_cmp(GtkTreeModel *model,
+        GtkTreeIter *a, GtkTreeIter *b, gpointer user_data)
+{
+    int result;
+    char *s1, *s2;
+    
+    gtk_tree_model_get(model, a, cfColumn_Name, &s1, -1);
+    gtk_tree_model_get(model, b, cfColumn_Name, &s2, -1);
+    result = configlet_strcmp(s1, s2, GPOINTER_TO_INT(user_data));
+    g_free(s1);
+    g_free(s2);
+    return result;
+}
+
 static void configlet_list_build(ConfigletList *cl)
 {
     char const **item_list;
@@ -252,8 +282,16 @@ static void configlet_list_build(ConfigletList *cl)
     }
     else
     {
+        GtkTreeSortable *sl;
+        
         cl->list = gtk_list_store_new(cfColumn_NColumns,
                 G_TYPE_BOOLEAN, G_TYPE_STRING);
+        sl = GTK_TREE_SORTABLE(cl->list);
+        gtk_tree_sortable_set_default_sort_func(sl,
+                (GtkTreeIterCompareFunc) configlet_list_cmp,
+                GINT_TO_POINTER(cl->encodings != NULL), NULL);
+        gtk_tree_sortable_set_sort_column_id(sl,
+                GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID, GTK_SORT_ASCENDING);
     }
 
     for (pitem = item_list; *pitem; ++pitem)

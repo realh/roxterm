@@ -43,6 +43,17 @@ static GPtrArray *encodings_build_default(void)
     return enc;
 }
 
+static int encodings_compare(const char const **penc1,
+        const char const **penc2)
+{
+    if (!g_strcmp0(*penc1, "UTF-8"))
+        return g_strcmp0(*penc2, "UTF-8") ? -1 : 0;
+    else if (!g_strcmp0(*penc2, "UTF-8"))
+        return 1;
+    return g_strcmp0(*penc1, *penc2);
+    
+}
+
 Encodings *encodings_load(void)
 {
     char *filename = options_file_build_filename("Encodings", NULL);
@@ -64,6 +75,7 @@ Encodings *encodings_load(void)
         }
         g_free(filename);
         g_key_file_free(kf);
+        g_ptr_array_sort(enc, (GCompareFunc) encodings_compare);
         return enc;
     }
     else
@@ -87,24 +99,12 @@ void encodings_save(Encodings *enc)
     g_key_file_free(kf);
 }
 
-static int encodings_compare(const char const **penc1,
-        const char const **penc2)
-{
-    if (!g_strcmp0(*penc1, "UTF-8"))
-        return g_strcmp0(*penc2, "UTF-8") ? -1 : 0;
-    else if (!g_strcmp0(*penc2, "UTF-8"))
-        return g_strcmp0(*penc1, "UTF-8") ? 1 : 0;
-    return g_strcmp0(*penc1, *penc2);
-    
-}
-
 char const **encodings_list(Encodings *enc)
 {
     int n = encodings_count(enc);
     int m;
     char const **list;
 
-    g_ptr_array_sort(enc, (GCompareFunc) encodings_compare);
     list = g_new(char const *, n + 2);
     list[0] = g_strdup("Default");
     for (m = 0; m < n; ++m)
@@ -113,6 +113,12 @@ char const **encodings_list(Encodings *enc)
     }
     list[n + 1] = NULL;
     return list;
+}
+
+void encodings_add(Encodings *enc, const char *v)
+{
+    g_ptr_array_add(enc, g_strdup(v));
+    g_ptr_array_sort(enc, (GCompareFunc) encodings_compare);
 }
 
 void encodings_change(Encodings *enc, int n, const char *v)
