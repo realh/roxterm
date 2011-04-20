@@ -69,6 +69,9 @@ inline static char **dynamic_options_list_sorted(DynamicOptions *dynopts)
     return dynamic_options_list_full(dynopts, TRUE);
 }
 
+/* Like g_strcmp0 but "Default" comes first */
+int dynamic_options_strcmp(const char *s1, const char *s2);
+
 #endif /* DYNOPTS_H */
 
 /* vi:set sw=4 ts=4 noet cindent cino= */

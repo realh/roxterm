@@ -147,11 +147,7 @@ static GList *dynopts_add_path_contents_to_list(GList *list, const char *path,
     g_free(dirname);
     if (sorted)
     {
-        GList *default_item = list;
-        
-        list = g_list_remove_link(list, default_item);
-        list = g_list_sort(list, (GCompareFunc) g_strcmp0);
-        list = g_list_concat(default_item, list);
+        list = g_list_sort(list, (GCompareFunc) dynamic_options_strcmp);
     }
     return list;
 }
@@ -192,6 +188,15 @@ void dynamic_options_rename(DynamicOptions *dynopts,
     g_return_if_fail(opts);
     dynamic_options_forget(dynopts, old_name);
     g_hash_table_insert(dynopts->profiles, g_strdup(new_name), opts);
+}
+
+int dynamic_options_strcmp(const char *s1, const char *s2)
+{
+    if (!g_strcmp0(s1, "Default"))
+        return g_strcmp0(s2, "Default") ? -1 : 0;
+    else if (!g_strcmp0(s2, "Default"))
+        return 1;
+    return g_strcmp0(s1, s2);
 }
 
 /* vi:set sw=4 ts=4 noet cindent cino= */

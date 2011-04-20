@@ -2962,7 +2962,7 @@ roxterm_update_option(Options * opts, const char *key,
     {
         case OptsDBus_StringOpt:
             oldval = options_lookup_string(opts, key);
-            if (options_strcmp(oldval, val.s))
+            if (g_strcmp0(oldval, val.s))
                 options_set_string(opts, key, val.s);
             else
                 result = FALSE;

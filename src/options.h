@@ -101,13 +101,6 @@ inline static gpointer options_get_data(Options * options)
 	return options->user_data;
 }
 
-/* Like strcmp, but handles NULL strings safely and considers NULL to be
- * equivalent to "" */
-inline static int options_strcmp(const char *s1, const char *s2)
-{
-	return strcmp(s1 ? s1 : "", s2 ? s2 : "");
-}
-
 /* Returns the last path element of the name member */
 const char *options_get_leafname(Options *options);
 

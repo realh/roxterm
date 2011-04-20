@@ -92,7 +92,7 @@ AC_ARG_ENABLE([sm],
 
 dnl Checks for libraries.
 dnl Common to terminal and capplet
-PKG_CHECK_MODULES(glib, [glib-2.0 >= 2.6.0])
+PKG_CHECK_MODULES(glib, [glib-2.0 >= 2.16.0])
 PKG_CHECK_MODULES(gtk, [gtk+-2.0 >= 2.6.0])
 PKG_CHECK_MODULES(dbus, [dbus-glib-1 >= 0.22])
 CFLAGS="$CFLAGS $glib_CFLAGS $gtk_CFLAGS $dbus_CFLAGS"

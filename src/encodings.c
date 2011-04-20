@@ -38,19 +38,15 @@ static GPtrArray *encodings_build_default(void)
 {
     GPtrArray *enc = g_ptr_array_sized_new(2);
 
-    g_ptr_array_add(enc, "UTF-8");
     g_ptr_array_add(enc, "ISO-8859-1");
+    g_ptr_array_add(enc, "UTF-8");
     return enc;
 }
 
 static int encodings_compare(const char const **penc1,
         const char const **penc2)
 {
-    if (!g_strcmp0(*penc1, "UTF-8"))
-        return g_strcmp0(*penc2, "UTF-8") ? -1 : 0;
-    else if (!g_strcmp0(*penc2, "UTF-8"))
-        return 1;
-    return g_strcmp0(*penc1, *penc2);
+    return dynamic_options_strcmp(*penc1, *penc2);
     
 }
 
