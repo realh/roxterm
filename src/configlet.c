@@ -827,8 +827,8 @@ static void on_delete_clicked(GtkButton *button, ConfigletList *cl)
         {
             int n = get_selected_index(cl);
 
-            g_return_if_fail(n != -1);
-            encodings_remove(cl->encodings, n);
+            g_return_if_fail(n > 0);
+            encodings_remove(cl->encodings, n - 1);
             encodings_save(cl->encodings);
         }
         else
