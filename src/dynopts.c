@@ -192,11 +192,19 @@ void dynamic_options_rename(DynamicOptions *dynopts,
 
 int dynamic_options_strcmp(const char *s1, const char *s2)
 {
+    char *u1, *u2;
+    int result;
+    
     if (!g_strcmp0(s1, "Default"))
         return g_strcmp0(s2, "Default") ? -1 : 0;
     else if (!g_strcmp0(s2, "Default"))
         return 1;
-    return g_strcmp0(s1, s2);
+    u1 = s1 ? g_utf8_casefold(s1, -1) : g_strdup("");
+    u2 = s2 ? g_utf8_casefold(s2, -1) : g_strdup("");
+    result = g_utf8_collate(u1, u2);
+    g_free(u2);
+    g_free(u1);
+    return result;
 }
 
 /* vi:set sw=4 ts=4 noet cindent cino= */
