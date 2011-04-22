@@ -654,7 +654,7 @@ static void configlet_rename(ConfigletList *cl,
     {
         int n = get_selected_index(cl);
 
-        encodings_change(cl->encodings, n, new_leaf);
+        encodings_change(cl->encodings, n - 1, new_leaf);
         encodings_save(cl->encodings);
         success = TRUE;
     }
