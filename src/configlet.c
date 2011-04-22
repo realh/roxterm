@@ -271,11 +271,11 @@ static void configlet_list_build(ConfigletList *cl)
         cl->list = gtk_list_store_new(cfColumn_NColumns,
                 G_TYPE_BOOLEAN, G_TYPE_STRING);
         sl = GTK_TREE_SORTABLE(cl->list);
-        gtk_tree_sortable_set_default_sort_func(sl,
+        gtk_tree_sortable_set_sort_func(sl, cfColumn_Name,
                 (GtkTreeIterCompareFunc) configlet_list_cmp,
                 GINT_TO_POINTER(cl->encodings != NULL), NULL);
         gtk_tree_sortable_set_sort_column_id(sl,
-                GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID, GTK_SORT_ASCENDING);
+                cfColumn_Name, GTK_SORT_ASCENDING);
     }
 
     for (pitem = item_list; *pitem; ++pitem)
@@ -408,6 +408,8 @@ static void configlet_list_init(ConfigletList *cl, GtkWidget *widget,
                 NULL);
     gtk_tree_view_append_column(cl->tvwidget, tcolumn);
     gtk_tree_view_column_set_visible(rcolumn, TRUE);
+    gtk_tree_view_column_set_sort_column_id(rcolumn, cfColumn_Name);
+    gtk_tree_view_column_set_sort_column_id(tcolumn, cfColumn_Name);
 
     gtk_tree_selection_set_mode(gtk_tree_view_get_selection(cl->tvwidget),
             GTK_SELECTION_BROWSE);

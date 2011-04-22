@@ -2366,7 +2366,7 @@ static GtkMenu *menu_from_strv(char **items,
 static void roxterm_add_pair_of_pref_submenus(MultiWin *win,
         DynamicOptions *family, MenuTreeID id, GCallback handler)
 {
-    char **items = dynamic_options_list(family);
+    char **items = dynamic_options_list_sorted(family);
     GtkMenu *submenu;
     MenuTree *menutree;
 

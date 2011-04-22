@@ -32,8 +32,8 @@ Encodings *encodings_load(void);
 void encodings_save(Encodings *);
 
 /* Returns a NULL-terminated array of strings; free the list with g_free, not
- * g_strfreev; the first item is always "Default" and "UTF-8" is second if
- * present. */
+ * g_strfreev; the first item is always "Default".
+ */
 char const **encodings_list(Encodings *);
 
 inline static const char *encodings_lookup(Encodings *enc, int n)
