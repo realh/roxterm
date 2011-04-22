@@ -541,6 +541,8 @@ static void add_name_to_list(ConfigletList *cl, const char *new_name)
             cname && !strcmp(new_name, cname),
             cfColumn_Name, new_name,
             -1);
+    gtk_tree_selection_select_iter(gtk_tree_view_get_selection(cl->tvwidget),
+            &iter);
     g_free(cname);
     set_sensitive_for_list(cl);
 }
