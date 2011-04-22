@@ -266,16 +266,8 @@ static void configlet_list_build(ConfigletList *cl)
     }
     else
     {
-        GtkTreeSortable *sl;
-        
         cl->list = gtk_list_store_new(cfColumn_NColumns,
                 G_TYPE_BOOLEAN, G_TYPE_STRING);
-        sl = GTK_TREE_SORTABLE(cl->list);
-        gtk_tree_sortable_set_sort_func(sl, cfColumn_Name,
-                (GtkTreeIterCompareFunc) configlet_list_cmp,
-                GINT_TO_POINTER(cl->encodings != NULL), NULL);
-        gtk_tree_sortable_set_sort_column_id(sl,
-                cfColumn_Name, GTK_SORT_ASCENDING);
     }
 
     for (pitem = item_list; *pitem; ++pitem)
@@ -399,6 +391,7 @@ static void configlet_list_init(ConfigletList *cl, GtkWidget *widget,
                 cfColumn_Radio,
                 NULL);
     gtk_tree_view_append_column(cl->tvwidget, rcolumn);
+    gtk_tree_view_column_set_visible(rcolumn, TRUE);
 
     tcolumn = gtk_tree_view_column_new_with_attributes(
                 NULL,
@@ -407,9 +400,7 @@ static void configlet_list_init(ConfigletList *cl, GtkWidget *widget,
                 cfColumn_Name,
                 NULL);
     gtk_tree_view_append_column(cl->tvwidget, tcolumn);
-    gtk_tree_view_column_set_visible(rcolumn, TRUE);
-    gtk_tree_view_column_set_sort_column_id(rcolumn, cfColumn_Name);
-    gtk_tree_view_column_set_sort_column_id(tcolumn, cfColumn_Name);
+    gtk_tree_view_column_set_visible(tcolumn, TRUE);
 
     gtk_tree_selection_set_mode(gtk_tree_view_get_selection(cl->tvwidget),
             GTK_SELECTION_BROWSE);
@@ -504,15 +495,50 @@ static gboolean get_selected_state(ConfigletList *cl)
     return state;
 }
 
+/* Finds an iter to insert a name before to preserve ordering. If result is
+ * FALSE iter is not valid and you should append instead.
+ */
+static gboolean find_list_insert_point(ConfigletList *cl, const char *new_name,
+        GtkTreeIter *iter)
+{
+    GtkTreeModel *tm = GTK_TREE_MODEL(cl->list);
+    
+    if (gtk_tree_model_get_iter_first(tm, iter))
+    {
+        do
+        {
+            char *n;
+            int cmp;
+            
+            gtk_tree_model_get(tm, iter, cfColumn_Name, &n, -1);
+            cmp = dynamic_options_strcmp(new_name, n);
+            g_free(n);
+            if (cmp < 0)
+            {
+                return TRUE;
+            }
+        }
+        while (gtk_tree_model_iter_next(tm, iter));
+    }
+    return FALSE;
+}
+
 static void add_name_to_list(ConfigletList *cl, const char *new_name)
 {
-    GtkTreeIter iter;
+    GtkTreeIter iter, insert;
     char *cname = configlet_get_configured_name(cl);
 
-    gtk_list_store_append(cl->list, &iter);
+    if (find_list_insert_point(cl, new_name, &insert))
+    {
+        gtk_list_store_insert_before(cl->list, &iter, &insert);
+    }
+    else
+    {
+        gtk_list_store_append(cl->list, &iter);
+    }
     gtk_list_store_set(cl->list, &iter,
             cfColumn_Radio,
-            cname && !strcmp(new_name, configlet_get_configured_name(cl)),
+            cname && !strcmp(new_name, cname),
             cfColumn_Name, new_name,
             -1);
     g_free(cname);
@@ -646,13 +672,21 @@ static void configlet_rename(ConfigletList *cl,
     if (success)
     {
         GtkTreeModel *model;
-        GtkTreeIter iter;
+        GtkTreeIter iter, insert;
         gboolean state;
 
         get_selected_iter(cl, &model, &iter);
         gtk_tree_model_get(model, &iter, cfColumn_Radio, &state, -1);
         gtk_list_store_set(cl->list, &iter,
                 cfColumn_Radio, state, cfColumn_Name, new_leaf, -1);
+        if (find_list_insert_point(cl, new_leaf, &insert))
+        {
+            gtk_list_store_move_before(cl->list, &iter, &insert);
+        }
+        else
+        {
+            gtk_list_store_move_before(cl->list, &iter, NULL);
+        }
         /*
         g_debug("Sending d-bus message: %s, %s, %s, %s",
                 OPTSDBUS_RENAMED, cl->family, old_leaf, new_leaf);
