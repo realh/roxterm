@@ -177,11 +177,10 @@ void multi_tab_move_to_position(MultiTab *tab, int position, gboolean reorder);
 /* Move tab to a different window */
 void multi_tab_move_to_new_window(MultiWin *win, MultiTab *tab, int position);
 
-/* Returns NULL if pointer not over one of our tabs; otherwise position is
- * filled in with tab's position if not NULL. x and y are absolute coordinates
- * from mouse event. Note that when there are multiple tabs this returns tab
- * whose label spans pointer position, not necessarily the one whose main page
- * widget is under the pointer */
+/* Returns NULL if pointer not over one of our tabs. x and y are absolute
+ * coordinates from mouse event. Note that when there are multiple tabs this
+ * returns tab whose label spans pointer position, not necessarily the one
+ * whose main page widget is under the pointer */
 MultiTab *multi_tab_get_tab_under_pointer(int x, int y);
 
 /* widget is the top-level child of the notebook, as would be passed in a drag
