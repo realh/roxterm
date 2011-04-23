@@ -219,13 +219,24 @@ void multi_tab_init(MultiTabFiller filler, MultiTabDestructor destructor,
 MultiTab *multi_tab_new(MultiWin * parent, gpointer user_data_template)
 {
     MultiTab *tab = g_new0(MultiTab, 1);
+    int pos;
 
     tab->status_stock = NULL;
     tab->widget = multi_tab_filler(parent, tab, user_data_template,
         &tab->user_data, &tab->active_widget, &tab->adjustment);
     g_object_set_data(G_OBJECT(tab->widget), "roxterm_tab", tab);
 
-    multi_win_add_tab(parent, tab, -1, FALSE);
+    if (parent->current_tab)
+    {
+        pos = multi_tab_get_page_num(parent->current_tab) + 1;
+        if (pos == parent->ntabs)
+            pos = -1;
+    }
+    else
+    {
+        pos = -1;
+    }
+    multi_win_add_tab(parent, tab, pos, FALSE);
     multi_win_select_tab(parent, tab);
 
     return tab;
