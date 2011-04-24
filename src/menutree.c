@@ -256,6 +256,7 @@ static void menutree_apply_tab_shortcuts(MenuTree *mtree)
 void menutree_apply_shortcuts(MenuTree *tree, Options *shortcuts)
 {
     GtkMenu *submenu;
+    char *accel_path;
     
     tree->shortcuts = shortcuts;
     shortcuts_enable_signal_handler(FALSE);
@@ -264,11 +265,37 @@ void menutree_apply_shortcuts(MenuTree *tree, Options *shortcuts)
     menutree_set_accel_path_for_submenu(tree, MENUTREE_VIEW, "View");
     menutree_set_accel_path_for_submenu(tree, MENUTREE_PREFERENCES,
             "Preferences");
+    
+    submenu = GTK_MENU(tree->new_win_profiles_menu);
+    if (submenu)
+    {
+        accel_path = get_accel_path(tree->shortcuts,
+                "File/New Window With Profile");
+        gtk_menu_set_accel_path(submenu, accel_path);
+        g_free(accel_path);
+        gtk_menu_set_accel_group(submenu, tree->accel_group);
+    }
+    submenu = GTK_MENU(tree->new_tab_profiles_menu);
+    if (submenu)
+    {
+        accel_path = get_accel_path(tree->shortcuts,
+                "File/New Tab With Profile");
+        gtk_menu_set_accel_path(submenu, accel_path);
+        g_free(accel_path);
+        gtk_menu_set_accel_group(submenu, tree->accel_group);
+    }
+    
     /* Tabs have shortcuts set dynamically so set paths
      * for fixed items individually */
     submenu = menutree_submenu_from_id(tree, MENUTREE_TABS);
     if (submenu)
         gtk_menu_set_accel_group(submenu, tree->accel_group);
+    menutree_set_accel_path_for_item(tree,
+            MENUTREE_FILE_NEW_WINDOW_WITH_PROFILE_HEADER,
+            "File/New Window With Profile/Profiles");
+    menutree_set_accel_path_for_item(tree,
+            MENUTREE_FILE_NEW_TAB_WITH_PROFILE_HEADER,
+            "File/New Tab With Profile/Profiles");
     menutree_set_accel_path_for_item(tree, MENUTREE_TABS_NAME_TAB,
             "Tabs/Name Tab...");
     menutree_set_accel_path_for_item(tree, MENUTREE_TABS_NEXT_TAB,
@@ -488,6 +515,25 @@ static void menutree_build(MenuTree *menu_tree, Options *shortcuts,
         _("_Close Window"), MENUTREE_FILE_CLOSE_WINDOW, NULL);
     gtk_menu_item_set_submenu(GTK_MENU_ITEM(menu_tree->item_widgets
             [MENUTREE_FILE]), submenu);
+    
+    menu_tree->new_win_profiles_menu = gtk_menu_new();
+    menutree_build_shell(menu_tree,
+            GTK_MENU_SHELL(menu_tree->new_win_profiles_menu),
+            _("Profiles"), MENUTREE_FILE_NEW_WINDOW_WITH_PROFILE_HEADER,
+            "_", MENUTREE_NULL_ID,
+            NULL);
+    gtk_menu_item_set_submenu(GTK_MENU_ITEM(menu_tree->item_widgets
+            [MENUTREE_FILE_NEW_WINDOW_WITH_PROFILE]),
+            menu_tree->new_win_profiles_menu);
+    menu_tree->new_tab_profiles_menu = gtk_menu_new();
+    menutree_build_shell(menu_tree,
+            GTK_MENU_SHELL(menu_tree->new_tab_profiles_menu),
+            _("Profiles"), MENUTREE_FILE_NEW_TAB_WITH_PROFILE_HEADER,
+            "_", MENUTREE_NULL_ID,
+            NULL);
+    gtk_menu_item_set_submenu(GTK_MENU_ITEM(menu_tree->item_widgets
+            [MENUTREE_FILE_NEW_TAB_WITH_PROFILE]),
+            menu_tree->new_tab_profiles_menu);
 
     submenu = gtk_menu_new();
     menutree_build_shell(menu_tree, GTK_MENU_SHELL(submenu),

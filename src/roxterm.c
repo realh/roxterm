@@ -2336,33 +2336,6 @@ static GtkMenu *radio_menu_from_strv(char **items,
     return menu;
 }
 
-static GtkMenu *menu_from_strv(char **items,
-        GCallback handler, MenuTree *mtree)
-{
-    int n;
-    GtkMenu *menu;
-
-    if (!items || !items[0])
-        return NULL;
-
-    menu = GTK_MENU(gtk_menu_new());
-
-    for (n = 0; items[n]; ++n)
-    {
-        GtkWidget *mitem = gtk_menu_item_new_with_label(items[n]);
-        
-        gtk_widget_show(mitem);
-        if (handler)
-        {
-            g_object_set_data_full(G_OBJECT(mitem), PROFILE_NAME_KEY,
-                    g_strdup(items[n]), g_free);
-            g_signal_connect(mitem, "activate", handler, mtree);
-        }
-        gtk_menu_shell_append(GTK_MENU_SHELL(menu), mitem);
-    }
-    return menu;
-}
-
 static void roxterm_add_pair_of_pref_submenus(MultiWin *win,
         DynamicOptions *family, MenuTreeID id, GCallback handler)
 {
@@ -2392,17 +2365,27 @@ static void roxterm_add_pair_of_pref_submenus(MultiWin *win,
     g_strfreev(items);
 }
 
-static void add_new_term_with_profile_submenu(MenuTree *menutree,
-        GCallback callback, MenuTreeID id, char **items)
+static void build_new_term_with_profile_submenu(MenuTree *mtree,
+        GCallback callback, GtkMenuShell *mshell, char **items)
 {
-    GtkMenu *submenu = menu_from_strv(items, callback, menutree);
+    int n;
     
-    gtk_menu_item_set_submenu(
-            GTK_MENU_ITEM(menutree_get_widget_for_id(menutree, id)),
-            GTK_WIDGET(submenu));
+    for (n = 0; items[n]; ++n)
+    {
+        GtkWidget *mitem = gtk_menu_item_new_with_label(items[n]);
+        
+        gtk_widget_show(mitem);
+        if (callback)
+        {
+            g_object_set_data_full(G_OBJECT(mitem), PROFILE_NAME_KEY,
+                    g_strdup(items[n]), g_free);
+            g_signal_connect(mitem, "activate", callback, mtree);
+        }
+        gtk_menu_shell_append(mshell, mitem);
+    }
 }
 
-static void roxterm_add_pair_of_profile_submenus(MultiWin *win)
+static void roxterm_build_pair_of_profile_submenus(MultiWin *win)
 {
     char **items = dynamic_options_list_sorted(dynamic_options_get("Profiles"));
     MenuTree *menutree;
@@ -2412,22 +2395,22 @@ static void roxterm_add_pair_of_profile_submenus(MultiWin *win)
     menutree = multi_win_get_menu_bar(win);
     if (menutree)
     {
-        add_new_term_with_profile_submenu(menutree,
+        build_new_term_with_profile_submenu(menutree,
             G_CALLBACK(roxterm_new_window_with_profile),
-            MENUTREE_FILE_NEW_WINDOW_WITH_PROFILE, items);
-        add_new_term_with_profile_submenu(menutree,
+            GTK_MENU_SHELL(menutree->new_win_profiles_menu), items);
+        build_new_term_with_profile_submenu(menutree,
             G_CALLBACK(roxterm_new_tab_with_profile),
-            MENUTREE_FILE_NEW_TAB_WITH_PROFILE, items);
+            GTK_MENU_SHELL(menutree->new_tab_profiles_menu), items);
     }
     menutree = multi_win_get_popup_menu(win);
     if (menutree)
     {
-        add_new_term_with_profile_submenu(menutree,
+        build_new_term_with_profile_submenu(menutree,
             G_CALLBACK(roxterm_new_window_with_profile),
-            MENUTREE_FILE_NEW_WINDOW_WITH_PROFILE, items);
-        add_new_term_with_profile_submenu(menutree,
+            GTK_MENU_SHELL(menutree->new_win_profiles_menu), items);
+        build_new_term_with_profile_submenu(menutree,
             G_CALLBACK(roxterm_new_tab_with_profile),
-            MENUTREE_FILE_NEW_TAB_WITH_PROFILE, items);
+            GTK_MENU_SHELL(menutree->new_tab_profiles_menu), items);
     }
     multi_win_set_ignore_toggles(win, FALSE);
     g_strfreev(items);
@@ -2438,7 +2421,7 @@ static void roxterm_add_all_pref_submenus(MultiWin *win)
     roxterm_add_pair_of_pref_submenus(win, dynamic_options_get("Profiles"),
             MENUTREE_PREFERENCES_SELECT_PROFILE,
             G_CALLBACK(roxterm_profile_selected));
-    roxterm_add_pair_of_profile_submenus(win);
+    roxterm_build_pair_of_profile_submenus(win);
     roxterm_add_pair_of_pref_submenus(win, dynamic_options_get("Colours"),
             MENUTREE_PREFERENCES_SELECT_COLOUR_SCHEME,
             G_CALLBACK(roxterm_colour_scheme_selected));

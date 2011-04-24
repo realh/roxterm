@@ -1,6 +1,19 @@
 roxterm (@VERSION@-1) unstable; urgency=low
 
   * New upstream version:
+    + New Window/Tab With Profile submenu can be popped up with shortcut.
+    + New tabs are inserted immediately after currrent.
+    + Lists of profiles etc are sorted.
+    + Move Tab Left wraps correctly.
+    + Regression fix: profile editor was failing to respond to changes in
+      text entry widgets.
+    + No underlines in popup menus (mnemonics don't work in popups).
+
+ -- Tony Houghton <h@realh.co.uk>  Sun, 24 Apr 2011 20:22:10 +0100
+
+roxterm (1.21.4-1) unstable; urgency=low
+
+  * New upstream version:
     + Allow shortcuts to be set on all fixed Tabs menu items.
     + Fix minor memory leaks and potential NULL dereference.
     + Support TERM setting with vte >= 0.26.

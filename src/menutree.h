@@ -45,7 +45,9 @@ typedef enum {
     MENUTREE_FILE_NEW_WINDOW,
     MENUTREE_FILE_NEW_TAB,
     MENUTREE_FILE_NEW_WINDOW_WITH_PROFILE,
+    MENUTREE_FILE_NEW_WINDOW_WITH_PROFILE_HEADER,
     MENUTREE_FILE_NEW_TAB_WITH_PROFILE,
+    MENUTREE_FILE_NEW_TAB_WITH_PROFILE_HEADER,
     MENUTREE_FILE_CLOSE_TAB,
     MENUTREE_FILE_CLOSE_WINDOW,
 
@@ -92,8 +94,8 @@ typedef enum {
     MENUTREE_TABS_LAST_FIXED = MENUTREE_TABS_MOVE_TAB_RIGHT + 1,
                                 /* +1 for separator */
     MENUTREE_TABS_FIRST_DYNAMIC =
-        MENUTREE_TABS_LAST_FIXED - MENUTREE_TABS_FIRST_FIXED + 3
-            /* +3 because there are 3 separators in total */
+    MENUTREE_TABS_LAST_FIXED - MENUTREE_TABS_FIRST_FIXED + 3
+    /* +3 because there are 3 separators in total */
 } MenuTreeID;
 
 typedef struct MenuTree MenuTree;
@@ -113,6 +115,8 @@ struct MenuTree {
     int n_encodings;
     gboolean disable_shortcuts;
     gboolean disable_tab_shortcuts;
+    GtkWidget *new_win_profiles_menu;
+    GtkWidget *new_tab_profiles_menu;
 };
 
 /* Builds a menu tree. The GType should either be GTK_TYPE_MENU_BAR or

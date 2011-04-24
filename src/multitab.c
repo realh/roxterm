@@ -1350,6 +1350,11 @@ static void multi_win_move_tab_right_action(MultiWin *win)
     multi_win_move_tab_by_one(win, 1);
 }
 
+static void multi_win_popup_new_term_with_profile(GtkMenu *menu)
+{
+    gtk_menu_popup(menu, NULL, NULL, NULL, NULL, 0, GDK_CURRENT_TIME);
+}
+
 static void multi_win_connect_actions(MultiWin * win)
 {
     multi_win_menu_connect_swapped(win, MENUTREE_FILE_NEW_WINDOW, G_CALLBACK
@@ -1360,6 +1365,14 @@ static void multi_win_connect_actions(MultiWin * win)
         (multi_win_new_tab_action), win, NULL, NULL, NULL);
     multi_win_menu_connect_swapped(win, MENUTREE_FILE_CLOSE_TAB, G_CALLBACK
         (multi_win_close_tab_action), win, NULL, NULL, NULL);
+    menutree_signal_connect_swapped(win->popup_menu,
+            MENUTREE_FILE_NEW_WINDOW_WITH_PROFILE_HEADER,
+            G_CALLBACK(multi_win_popup_new_term_with_profile),
+            win->popup_menu->new_win_profiles_menu);
+    menutree_signal_connect_swapped(win->popup_menu,
+            MENUTREE_FILE_NEW_TAB_WITH_PROFILE_HEADER,
+            G_CALLBACK(multi_win_popup_new_term_with_profile),
+            win->popup_menu->new_tab_profiles_menu);
     multi_win_menu_connect_swapped(win, MENUTREE_TABS_PREVIOUS_TAB, G_CALLBACK
         (multi_win_previous_tab_action), win, NULL, NULL, NULL);
     multi_win_menu_connect_swapped(win, MENUTREE_TABS_NEXT_TAB, G_CALLBACK
