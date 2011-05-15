@@ -17,15 +17,18 @@ tail -n +2 debian/changelog.in >> debian/changelog
 git log > ChangeLog
 cat ChangeLog.old >> ChangeLog
 
-if test x$1 = x--no-tx
+if test x$1 = x--tx
 then
     shift
-elif ! tx pull --all
+    if ! tx pull --all
+    then
+        echo "Transifex client failed or not installed."
+        echo "See <http://help.transifex.net/user-guide/client/client-0.3.html>"
+        exit 1
+    fi
+elif test x$1 = x--no-tx
 then
-    echo "Transifex client failed or not installed."
-    echo "See <http://help.transifex.net/user-guide/client/client-0.3.html>"
-    echo "or rerun bootstrap.sh with --no-tx as the first option."
-    exit 1
+    shift
 fi
 
 ./po4a/genmake.sh
