@@ -4177,6 +4177,13 @@ static void parse_open_win(_ROXTermParseContext *rctx,
         }
     }
     
+    if (xclass)
+    {
+        options_set_string(global_options, "xclass", xclass);
+        options_set_string(global_options, "xname", xname);
+        xclass = NULL;
+        xname = NULL;
+    }
     shortcuts = shortcuts_open(shortcuts_name);
     rctx->win = win = multi_win_new_blank(disp, shortcuts,
             multi_win_get_nearest_index_for_zoom(rctx->zoom_factor),
@@ -4190,12 +4197,6 @@ static void parse_open_win(_ROXTermParseContext *rctx,
     {
         rctx->role = g_strdup(role);
         gtk_window_set_role(gwin, role);
-    }
-    if (xclass)
-    {
-        gtk_window_set_wmclass(gwin, xname, xclass);
-        xclass = NULL;
-        xname = NULL;
     }
     if (title_template && title_template[0])
     {
@@ -4657,6 +4658,8 @@ gboolean roxterm_load_session(const char *xml, gssize len,
         g_error_free(error);
         error = NULL;
     }
+    global_options_reset_string("xclass");
+    global_options_reset_string("xname");
     return result;
 }
 
