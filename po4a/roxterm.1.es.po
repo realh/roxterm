@@ -219,6 +219,7 @@ msgstr ""
 "<replaceable>NOMBRE</replaceable></option></arg> <arg><option>--"
 "xclass=<replaceable>CLASE</replaceable></option></arg> <arg><option>--"
 "xname=<replaceable>NOMBRE</replaceable></option></arg> <arg><option>--"
+"role=<replaceable>ROLE</replaceable></option></arg> <arg><option>--"
 "display=<replaceable>PANTALLA</replaceable></option></arg> <arg><option>--"
 "execute <replaceable>COMANDO</replaceable></option> | <option>-e "
 "<replaceable>COMANDO</replaceable></option></arg>"
@@ -529,7 +530,7 @@ msgstr "<option>--xclass=<replaceable>CLASE</replaceable></option>"
 #, fuzzy
 #| msgid "Set's the X window system \"class\" hint for the new window."
 msgid "Sets the X window system \"class\" hint for each window."
-msgstr "Establece la etiqueta «clase» de X window para la nueva ventana."
+msgstr "Establece la etiqueta «clase» de X window para cada ventana."
 
 #. type: Content of: <refentry><refsect1><variablelist><varlistentry><term>
 #: ../roxterm.1.xml.in:300
@@ -541,14 +542,14 @@ msgstr "<option>--xname=<replaceable>NOMBRE</replaceable></option>"
 #, fuzzy
 #| msgid "Set's the X window system \"name\" hint for the new window."
 msgid "Sets the X window system \"name\" hint for each window."
-msgstr "Establece la etiqueta «nombre» de X window para la nueva ventana."
+msgstr "Establece la etiqueta «nombre» de X window para cada ventana."
 
 #. type: Content of: <refentry><refsect1><variablelist><varlistentry><term>
 #: ../roxterm.1.xml.in:308
 #, fuzzy
 #| msgid "<option>--xname=<replaceable>NAME</replaceable></option>"
 msgid "<option>--role=<replaceable>ROLE</replaceable></option>"
-msgstr "<option>--xname=<replaceable>NOMBRE</replaceable></option>"
+msgstr "<option>--role=<replaceable>ROLE</replaceable></option>"
 
 #. type: Content of: <refentry><refsect1><variablelist><varlistentry><listitem><para>
 #: ../roxterm.1.xml.in:311
