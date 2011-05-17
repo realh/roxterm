@@ -4506,7 +4506,7 @@ static void parse_roxterm_session_tag(_ROXTermParseContext *rctx,
         {
             *error = g_error_new(G_MARKUP_ERROR,
                     G_MARKUP_ERROR_UNKNOWN_ATTRIBUTE,
-                    _("Unknown <roxter_session> attribute '%s'"), a);
+                    _("Unknown <roxterm_session> attribute '%s'"), a);
             return;
         }
     }
