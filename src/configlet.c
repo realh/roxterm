@@ -230,20 +230,6 @@ static char *configlet_get_configured_name(ConfigletList *cl)
             strcmp(cl->family, "Colours") ? "Default" : "GTK");
 }
 
-static int configlet_list_cmp(GtkTreeModel *model,
-        GtkTreeIter *a, GtkTreeIter *b, gpointer user_data)
-{
-    int result;
-    char *s1, *s2;
-    
-    gtk_tree_model_get(model, a, cfColumn_Name, &s1, -1);
-    gtk_tree_model_get(model, b, cfColumn_Name, &s2, -1);
-    result = dynamic_options_strcmp(s1, s2);
-    g_free(s1);
-    g_free(s2);
-    return result;
-}
-
 static void configlet_list_build(ConfigletList *cl)
 {
     char const **item_list;

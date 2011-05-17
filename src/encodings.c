@@ -21,6 +21,7 @@
 
 #include <string.h>
 
+#include "dynopts.h"
 #include "encodings.h"
 #include "optsfile.h"
 
@@ -38,8 +39,8 @@ static GPtrArray *encodings_build_default(void)
 {
     GPtrArray *enc = g_ptr_array_sized_new(2);
 
-    g_ptr_array_add(enc, "ISO-8859-1");
-    g_ptr_array_add(enc, "UTF-8");
+    g_ptr_array_add(enc, (char *) "ISO-8859-1");
+    g_ptr_array_add(enc, (char *) "UTF-8");
     return enc;
 }
 
