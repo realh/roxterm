@@ -103,6 +103,7 @@ and docbook-xsl in your Build-Depends control field.
         <option>-n <replaceable>NAME</replaceable></option></arg>
       <arg><option>--xclass=<replaceable>CLASS</replaceable></option></arg>
       <arg><option>--xname=<replaceable>NAME</replaceable></option></arg>
+      <arg><option>--role=<replaceable>ROLE</replaceable></option></arg>
       <arg><option>--display=<replaceable>DISPLAY</replaceable></option></arg>
       <arg><option>--execute <replaceable>COMMAND</replaceable></option> |
         <option>-e <replaceable>COMMAND</replaceable></option></arg>
@@ -291,7 +292,7 @@ and docbook-xsl in your Build-Depends control field.
         <term><option>--xclass=<replaceable>CLASS</replaceable></option>
         </term>
         <listitem>
-          <para>Set's the X window system "class" hint for each window.
+          <para>Sets the X window system "class" hint for each window.
           </para>
         </listitem>
       </varlistentry>
@@ -299,7 +300,16 @@ and docbook-xsl in your Build-Depends control field.
         <term><option>--xname=<replaceable>NAME</replaceable></option>
         </term>
         <listitem>
-          <para>Set's the X window system "name" hint for each window.
+          <para>Sets the X window system "name" hint for each window.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--role=<replaceable>ROLE</replaceable></option>
+        </term>
+        <listitem>
+          <para>Sets the X window system "role" hint for the window
+            being created.
           </para>
         </listitem>
       </varlistentry>

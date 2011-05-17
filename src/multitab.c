@@ -1441,6 +1441,7 @@ MultiWin *multi_win_new_blank(const char *display_name, Options *shortcuts,
     static gboolean set_nwc_hook = FALSE;
     GtkNotebook *notebook;
     const char *xclass, *xname;
+    char *role = NULL;
 
     if (!set_nwc_hook)
     {
@@ -1483,11 +1484,18 @@ MultiWin *multi_win_new_blank(const char *display_name, Options *shortcuts,
         if (scr)
             gtk_window_set_screen(GTK_WINDOW(win->gtkwin), scr);
     }
-    if (multi_win_role_prefix)
+    role = global_options_lookup_string("role");
+    if (role)
     {
-        char *role = g_strdup_printf("%s-%d-%x-%d", multi_win_role_prefix,
+        global_options_reset_string("role");
+    }
+    else if (multi_win_role_prefix)
+    {
+        role = g_strdup_printf("%s-%d-%x-%d", multi_win_role_prefix,
                 getpid(), g_random_int(), ++multi_win_role_index);
-        
+    }
+    if (role)
+    {
         gtk_window_set_role(GTK_WINDOW(win->gtkwin), role);
         g_free(role);
     }

@@ -297,6 +297,7 @@ int main(int argc, char **argv)
     gtk_quit_add(0, main_quit_handler, main_all_windows);
 
     roxterm_init();
+    multi_win_set_role_prefix("roxterm");
 #if ENABLE_SM
     if (!global_options_disable_sm)
     {
@@ -306,7 +307,6 @@ int main(int argc, char **argv)
             launched = session_load(global_options_clone_session_id);
     }
 #endif
-    multi_win_set_role_prefix("roxterm");
     if (!launched)
     {
         roxterm_launch(dpy_name, environ);

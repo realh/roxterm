@@ -85,7 +85,9 @@ static gboolean global_options_show_usage(const gchar *option_name,
       "    [--title=TITLE|-T TITLE] [--tab-name=NAME|-n NAME]\n"
       "    [--separate] [--replace] [--tab]\n"
       "    [--directory=DIRECTORY|-d DIRECTORY] [--disable-sm]\n"
-      "    [--show-menubar] [--hide-menubar] [-e|--execute COMMAND]\n");
+      "    [--show-menubar] [--hide-menubar]\n"
+      "    [--xclass=CLASS] [--xname=NAME] [--role=ROLE]\n"
+      "    [-e|--execute COMMAND]\n");
     exit(0);
     return TRUE;
 }
@@ -254,6 +256,9 @@ static GOptionEntry global_g_options[] = {
     { "xname", 0, G_OPTION_FLAG_IN_MAIN,
         G_OPTION_ARG_CALLBACK, global_options_set_string,
         N_("Set X window system 'name' hint"), N_("NAME") },
+    { "role", 0, G_OPTION_FLAG_IN_MAIN,
+        G_OPTION_ARG_CALLBACK, global_options_set_string,
+        N_("Set X window system 'role' hint"), N_("NAME") },
     { "restart-session-id", 0, G_OPTION_FLAG_HIDDEN,
         G_OPTION_ARG_STRING, &global_options_restart_session_id, NULL, NULL },
     { "clone-session-id", 0, G_OPTION_FLAG_HIDDEN,
