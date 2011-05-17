@@ -2071,7 +2071,6 @@ static void roxterm_new_term_with_profile(GtkMenuItem *mitem,
     const char *profile_name;
     Options *old_profile;
     Options *new_profile;
-    MultiTab *tab;
 
     if (!roxterm)
         return;
@@ -2095,7 +2094,7 @@ static void roxterm_new_term_with_profile(GtkMenuItem *mitem,
     roxterm->profile = new_profile;
     if (just_tab)
     {
-        tab = multi_tab_new(win, roxterm);
+        multi_tab_new(win, roxterm);
     }
     else
     {
@@ -2851,6 +2850,15 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
     *roxterm_out = roxterm;
 
     roxterm->widget = vte_terminal_new();
+#if HAVE_COMPOSITE
+    {
+        GdkScreen *screen = gtk_widget_get_screen(multi_win_get_widget(win));
+        GdkColormap *colormap = gdk_screen_get_rgba_colormap(screen);
+    
+        if (colormap)
+            gtk_widget_set_colormap(roxterm->widget, colormap);
+    }
+#endif
     gtk_widget_grab_focus(roxterm->widget);
     vte = VTE_TERMINAL(roxterm->widget);
     if (vte_widget)
@@ -3913,6 +3921,14 @@ static gboolean roxterm_win_delete_handler(GtkWindow *gtkwin, GdkEvent *event,
     return response;
 }
 
+#if HAVE_COMPOSITE
+static void roxterm_composited_changed_handler(ROXTermData *roxterm,
+        gboolean composited)
+{
+    roxterm_update_background(roxterm, VTE_TERMINAL(roxterm->widget));
+}
+#endif
+
 void roxterm_init(void)
 {
     char *logo_filename = logo_find();
@@ -3942,7 +3958,11 @@ void roxterm_init(void)
         (MultiWinGetDisableMenuShortcuts) roxterm_get_disable_menu_shortcuts,
         (MultiWinInitialTabs) roxterm_get_initial_tabs,
         (MultiWinDeleteHandler) roxterm_win_delete_handler,
-        (MultiTabGetShowCloseButton) roxterm_get_show_tab_close_button);
+        (MultiTabGetShowCloseButton) roxterm_get_show_tab_close_button
+#if HAVE_COMPOSITE
+        , (MultiWinCompositedChangedHandler) roxterm_composited_changed_handler
+#endif
+        );
     roxterm_apply_can_edit_shortcuts();
 }
 
@@ -4176,13 +4196,6 @@ static void parse_open_win(_ROXTermParseContext *rctx,
         }
     }
     
-    if (xclass)
-    {
-        options_set_string(global_options, "xclass", xclass);
-        options_set_string(global_options, "xname", xname);
-        xclass = NULL;
-        xname = NULL;
-    }
     shortcuts = shortcuts_open(shortcuts_name);
     rctx->win = win = multi_win_new_blank(disp, shortcuts,
             multi_win_get_nearest_index_for_zoom(rctx->zoom_factor),

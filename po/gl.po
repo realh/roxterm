@@ -7,10 +7,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: roxterm\n"
 "Report-Msgid-Bugs-To: https://sourceforge.net/tracker/?group_id=124080\n"
-"POT-Creation-Date: 2011-03-14 17:24+0000\n"
-"PO-Revision-Date: 2011-03-22 15:08+0000\n"
+"POT-Creation-Date: 2011-04-24 20:39+0100\n"
+"PO-Revision-Date: 2011-04-24 19:42+0000\n"
 "Last-Translator: realh <h@realh.co.uk>\n"
-"Language-Team: Galician <None>\n"
+"Language-Team: Galician (http://www.transifex.net/projects/p/roxterm/team/gl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -102,107 +102,107 @@ msgstr ""
 msgid "Bad options family basename '%s'"
 msgstr ""
 
-#: src/configlet.c:514
+#: src/configlet.c:570
 #, c-format
 msgid "'%s' will now refer to a %s provided by the system"
 msgstr ""
 
-#: src/configlet.c:560
+#: src/configlet.c:616
 #, c-format
 msgid "Unable to create directory '%s'"
 msgstr ""
 
-#: src/configlet.c:586
+#: src/configlet.c:642
 #, c-format
 msgid "Unable to copy profile/scheme: %s"
 msgstr ""
 
-#: src/configlet.c:587 src/profilegui.c:383 src/profilegui.c:388
+#: src/configlet.c:643 src/profilegui.c:383 src/profilegui.c:388
 #: src/roxterm.c:736 src/session.c:381 src/shortcuts.c:128
 msgid "unknown reason"
 msgstr ""
 
-#: src/configlet.c:638
+#: src/configlet.c:702
 msgid "Unable to rename profile/scheme"
 msgstr ""
 
-#: src/configlet.c:657
+#: src/configlet.c:721
 msgid ""
 "Shortcuts can currently only be edited by hovering over the menu entries and"
 " pressing keys"
 msgstr ""
 
-#: src/configlet.c:663
+#: src/configlet.c:727
 msgid "Encoding names have no properties"
 msgstr ""
 
-#: src/configlet.c:667
+#: src/configlet.c:731
 #, c-format
 msgid "Option family name '%s' not recognised for editing"
 msgstr ""
 
-#: src/configlet.c:689
+#: src/configlet.c:753
 msgid "No selection to edit"
 msgstr ""
 
-#: src/configlet.c:711
+#: src/configlet.c:775
 msgid "Can't get iterator for activated item"
 msgstr ""
 
-#: src/configlet.c:736
+#: src/configlet.c:800
 msgid "Add Encoding"
 msgstr ""
 
-#: src/configlet.c:744
+#: src/configlet.c:808
 #, c-format
 msgid "Copy %s"
 msgstr ""
 
-#: src/configlet.c:764 src/configlet.c:864
+#: src/configlet.c:828 src/configlet.c:932
 msgid "No selection to copy"
 msgstr ""
 
-#: src/configlet.c:776
+#: src/configlet.c:844
 #, c-format
 msgid "You may not delete the selected default %s"
 msgstr ""
 
-#: src/configlet.c:783
+#: src/configlet.c:851
 msgid "No selection to delete"
 msgstr ""
 
-#: src/configlet.c:789
+#: src/configlet.c:857
 #, c-format
 msgid "'%s' is a system %s and can not be deleted"
 msgstr ""
 
-#: src/configlet.c:812
+#: src/configlet.c:880
 #, c-format
 msgid "Unable to delete '%s'"
 msgstr ""
 
-#: src/configlet.c:838
+#: src/configlet.c:906
 msgid "Edit Encoding"
 msgstr ""
 
-#: src/configlet.c:845
+#: src/configlet.c:913
 #, c-format
 msgid "Rename %s"
 msgstr ""
 
-#: src/configlet.c:1001
+#: src/configlet.c:1073
 msgid "Trying to decrease profile_lock below 0"
 msgstr ""
 
-#: src/configlet.c:1019
+#: src/configlet.c:1091
 msgid "Trying to decrease colours_lock below 0"
 msgstr ""
 
-#: src/configlet.c:1037
+#: src/configlet.c:1109
 msgid "Trying to decrease shortcuts_lock below 0"
 msgstr ""
 
-#: src/configlet.c:1055
+#: src/configlet.c:1127
 msgid "Trying to decrease encodings_lock below 0"
 msgstr ""
 
@@ -472,132 +472,136 @@ msgstr ""
 msgid "_Input Methods"
 msgstr ""
 
-#: src/menutree.c:323
+#: src/menutree.c:350
 msgid "Default"
 msgstr ""
 
-#: src/menutree.c:409
+#: src/menutree.c:436
 #, c-format
 msgid "Encoding '%s' not found in menu"
 msgstr ""
 
-#: src/menutree.c:483
+#: src/menutree.c:510
 msgid "_New Window"
 msgstr ""
 
-#: src/menutree.c:484
+#: src/menutree.c:511
 msgid "New _Tab"
 msgstr ""
 
-#: src/menutree.c:485
+#: src/menutree.c:512
 msgid "New _Window With Profile"
 msgstr ""
 
-#: src/menutree.c:486
+#: src/menutree.c:513
 msgid "New Tab With _Profile"
 msgstr ""
 
-#: src/menutree.c:487
+#: src/menutree.c:514
 msgid "C_lose Tab"
 msgstr ""
 
-#: src/menutree.c:488
+#: src/menutree.c:515
 msgid "_Close Window"
 msgstr ""
 
-#: src/menutree.c:495
-msgid "_Set Window Title..."
-msgstr ""
-
-#: src/menutree.c:498
-msgid "Res_tart command"
-msgstr ""
-
-#: src/menutree.c:506
-msgid "Always Show _Tab Bar"
-msgstr ""
-
-#: src/menutree.c:507
-msgid "_Full Screen"
-msgstr ""
-
-#: src/menutree.c:509
-msgid "Zoom _In"
-msgstr ""
-
-#: src/menutree.c:510
-msgid "Zoom _Out"
-msgstr ""
-
-#: src/menutree.c:511
-msgid "_Normal Size"
-msgstr ""
-
-#: src/menutree.c:513
-msgid "Scroll _Up One Line"
-msgstr ""
-
-#: src/menutree.c:514
-msgid "Scroll _Down One Line"
-msgstr ""
-
-#: src/menutree.c:521
-msgid "Select _Profile"
-msgstr ""
-
-#: src/menutree.c:522
-msgid "Select _Colour Scheme"
-msgstr ""
-
-#: src/menutree.c:523
-msgid "Select _Shortcuts Scheme"
-msgstr ""
-
-#: src/menutree.c:525
-msgid "_Edit Current Profile"
-msgstr ""
-
-#: src/menutree.c:526
-msgid "E_dit Current Colour Scheme"
-msgstr ""
-
-#: src/menutree.c:529
-msgid "Configuration _Manager"
-msgstr ""
-
-#: src/menutree.c:538
-msgid "Na_me Tab..."
-msgstr ""
-
-#: src/menutree.c:540
-msgid "_Previous Tab"
+#: src/menutree.c:522 src/menutree.c:531
+msgid "Profiles"
 msgstr ""
 
 #: src/menutree.c:541
-msgid "_Next Tab"
-msgstr ""
-
-#: src/menutree.c:543
-msgid "Move Tab _Left"
+msgid "_Set Window Title..."
 msgstr ""
 
 #: src/menutree.c:544
-msgid "Move Tab _Right"
-msgstr ""
-
-#: src/menutree.c:551
-msgid "Show _Manual"
+msgid "Res_tart command"
 msgstr ""
 
 #: src/menutree.c:552
+msgid "Always Show _Tab Bar"
+msgstr ""
+
+#: src/menutree.c:553
+msgid "_Full Screen"
+msgstr ""
+
+#: src/menutree.c:555
+msgid "Zoom _In"
+msgstr ""
+
+#: src/menutree.c:556
+msgid "Zoom _Out"
+msgstr ""
+
+#: src/menutree.c:557
+msgid "_Normal Size"
+msgstr ""
+
+#: src/menutree.c:559
+msgid "Scroll _Up One Line"
+msgstr ""
+
+#: src/menutree.c:560
+msgid "Scroll _Down One Line"
+msgstr ""
+
+#: src/menutree.c:567
+msgid "Select _Profile"
+msgstr ""
+
+#: src/menutree.c:568
+msgid "Select _Colour Scheme"
+msgstr ""
+
+#: src/menutree.c:569
+msgid "Select _Shortcuts Scheme"
+msgstr ""
+
+#: src/menutree.c:571
+msgid "_Edit Current Profile"
+msgstr ""
+
+#: src/menutree.c:572
+msgid "E_dit Current Colour Scheme"
+msgstr ""
+
+#: src/menutree.c:575
+msgid "Configuration _Manager"
+msgstr ""
+
+#: src/menutree.c:584
+msgid "Na_me Tab..."
+msgstr ""
+
+#: src/menutree.c:586
+msgid "_Previous Tab"
+msgstr ""
+
+#: src/menutree.c:587
+msgid "_Next Tab"
+msgstr ""
+
+#: src/menutree.c:589
+msgid "Move Tab _Left"
+msgstr ""
+
+#: src/menutree.c:590
+msgid "Move Tab _Right"
+msgstr ""
+
+#: src/menutree.c:597
+msgid "Show _Manual"
+msgstr ""
+
+#: src/menutree.c:598
 msgid "_About ROXTerm"
 msgstr ""
 
-#: src/menutree.c:771
+#: src/menutree.c:817
 msgid "Move Tab _Up"
 msgstr ""
 
-#: src/menutree.c:773
+#: src/menutree.c:819
 msgid "Move Tab _Down"
 msgstr ""
 
@@ -631,20 +635,20 @@ msgstr ""
 msgid "Existing file '%s' could not be removed: g_unlink() failed: %s"
 msgstr ""
 
-#: src/multitab.c:395
+#: src/multitab.c:406
 #, c-format
 msgid "'%s' contains invalid %% sequences for a title template"
 msgstr ""
 
-#: src/multitab.c:1092
+#: src/multitab.c:1103
 msgid "Name Tab"
 msgstr ""
 
-#: src/multitab.c:1138
+#: src/multitab.c:1149
 msgid "Set Window Title"
 msgstr ""
 
-#: src/multitab.c:1150
+#: src/multitab.c:1161
 msgid ""
 "The title string may include '%s' which is substituted with the title set by"
 " the child command (usually the current directory for shells). No other % "
@@ -868,7 +872,7 @@ msgstr ""
 msgid "Unable to convert dragged URI to UTF-8: %s"
 msgstr ""
 
-#: src/roxterm.c:1526 src/roxterm.c:2928
+#: src/roxterm.c:1526 src/roxterm.c:2911
 msgid "ROXTerm"
 msgstr ""
 
@@ -923,184 +927,184 @@ msgstr ""
 msgid "Colour scheme '%s' not found"
 msgstr ""
 
-#: src/roxterm.c:2983
+#: src/roxterm.c:2966
 #, c-format
 msgid "Unknown option type (%d)"
 msgstr ""
 
-#: src/roxterm.c:3295
+#: src/roxterm.c:3274
 #, c-format
 msgid "Profile/key '%s/%s' not understood"
 msgstr ""
 
-#: src/roxterm.c:3377
+#: src/roxterm.c:3356
 #, c-format
 msgid "Changed options family '%s' not known"
 msgstr ""
 
-#: src/roxterm.c:3392
+#: src/roxterm.c:3371
 msgid "[Deleted]"
 msgstr ""
 
-#: src/roxterm.c:3415
+#: src/roxterm.c:3394
 #, c-format
 msgid "Options family change action '%s' not known"
 msgstr ""
 
-#: src/roxterm.c:3481
+#: src/roxterm.c:3460
 #, c-format
 msgid ""
 "Invalid ROXTERM_ID %p in D-Bus message (this is expected if you used "
 "roxterm's --separate option)"
 msgstr ""
 
-#: src/roxterm.c:3505
+#: src/roxterm.c:3484
 #, c-format
 msgid "Unknown profile '%s' in D-Bus signal"
 msgstr ""
 
-#: src/roxterm.c:3525
+#: src/roxterm.c:3504
 #, c-format
 msgid "Unknown colour scheme '%s' in D-Bus signal"
 msgstr ""
 
-#: src/roxterm.c:3692
+#: src/roxterm.c:3671
 msgid "Invalid geometry specification"
 msgstr ""
 
-#: src/roxterm.c:3919
+#: src/roxterm.c:3898
 msgid ""
 "You are about to close a ROXTerm window; this may cause loss of data. Are "
 "you sure you want to continue?"
 msgstr ""
 
-#: src/roxterm.c:3921
+#: src/roxterm.c:3900
 msgid ""
 "You are about to close a window containing multiple ROXTerm tabs; this may "
 "cause loss of data. Are you sure you want to continue?"
 msgstr ""
 
-#: src/roxterm.c:3924
+#: src/roxterm.c:3903
 msgid "ROXTerm: Confirm close"
 msgstr ""
 
-#: src/roxterm.c:3925
+#: src/roxterm.c:3904
 msgid "_Don't show this again"
 msgstr ""
 
-#: src/roxterm.c:4030
+#: src/roxterm.c:4009
 #, c-format
 msgid "Unable to spawn command %s: %s"
 msgstr ""
 
-#: src/roxterm.c:4196
+#: src/roxterm.c:4175
 #, c-format
 msgid "Unknown <window> attribute '%s'"
 msgstr ""
 
-#: src/roxterm.c:4251
+#: src/roxterm.c:4230
 msgid "Session contains window with no valid tabs"
 msgstr ""
 
-#: src/roxterm.c:4353
+#: src/roxterm.c:4332
 #, c-format
 msgid "Unknown <tab> attribute '%s'"
 msgstr ""
 
-#: src/roxterm.c:4384
+#: src/roxterm.c:4363
 msgid "<command> with no arguments"
 msgstr ""
 
-#: src/roxterm.c:4434
+#: src/roxterm.c:4413
 #, c-format
 msgid "Unknown <command> attribute '%s'"
 msgstr ""
 
-#: src/roxterm.c:4446
+#: src/roxterm.c:4425
 msgid "<command> missing argc attribute"
 msgstr ""
 
-#: src/roxterm.c:4460
+#: src/roxterm.c:4439
 #, c-format
 msgid "Too many <arg> elements for <command argc='%d>"
 msgstr ""
 
-#: src/roxterm.c:4477
+#: src/roxterm.c:4456
 #, c-format
 msgid "Unknown <arg> attribute '%s'"
 msgstr ""
 
-#: src/roxterm.c:4489
+#: src/roxterm.c:4468
 msgid "<arg> missing s attribute"
 msgstr ""
 
-#: src/roxterm.c:4505
+#: src/roxterm.c:4484
 msgid "<roxterm_session> tag nested within <window>"
 msgstr ""
 
-#: src/roxterm.c:4517
+#: src/roxterm.c:4496
 msgid "<window> tag not within <roxterm_session>"
 msgstr ""
 
-#: src/roxterm.c:4522
+#: src/roxterm.c:4501
 msgid "<window> tag nested within another <window>"
 msgstr ""
 
-#: src/roxterm.c:4534
+#: src/roxterm.c:4513
 msgid "<tab> tag not within <window>"
 msgstr ""
 
-#: src/roxterm.c:4539
+#: src/roxterm.c:4518
 msgid "<tab> tag nested within another <tab>"
 msgstr ""
 
-#: src/roxterm.c:4551
+#: src/roxterm.c:4530
 msgid "<command> tag not within <tab>"
 msgstr ""
 
-#: src/roxterm.c:4556
+#: src/roxterm.c:4535
 msgid "<command> tag nested within another <command>"
 msgstr ""
 
-#: src/roxterm.c:4568
+#: src/roxterm.c:4547
 msgid "<arg> tag not within <command>"
 msgstr ""
 
-#: src/roxterm.c:4578
+#: src/roxterm.c:4557
 #, c-format
 msgid "Unknown element <%s>"
 msgstr ""
 
-#: src/roxterm.c:4593
+#: src/roxterm.c:4572
 msgid "Unmatched </roxterm_session>"
 msgstr ""
 
-#: src/roxterm.c:4598
+#: src/roxterm.c:4577
 msgid "Attempt to close <roxterm_session> without closing <window>"
 msgstr ""
 
-#: src/roxterm.c:4611
+#: src/roxterm.c:4590
 msgid "Unmatched </window>"
 msgstr ""
 
-#: src/roxterm.c:4616
+#: src/roxterm.c:4595
 msgid "Attempt to close <window> without closing <tab>"
 msgstr ""
 
-#: src/roxterm.c:4628
+#: src/roxterm.c:4607
 msgid "Unmatched </tab>"
 msgstr ""
 
-#: src/roxterm.c:4642
+#: src/roxterm.c:4621
 msgid "Unmatched </command>"
 msgstr ""
 
-#: src/roxterm.c:4648
+#: src/roxterm.c:4627
 #, c-format
 msgid "Unknown closing element </%s>"
 msgstr ""
 
-#: src/roxterm.c:4657
+#: src/roxterm.c:4636
 #, c-format
 msgid "Unable to parse data for session '%s': %s"
 msgstr ""

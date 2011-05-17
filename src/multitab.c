@@ -24,8 +24,6 @@
 #include "multitab.h"
 #include "shortcuts.h"
 
-#define HAVE_COMPOSITE GTK_CHECK_VERSION(2, 10, 0)
-
 #define HORIZ_TAB_WIDTH 120
 
 struct MultiTab {
@@ -91,6 +89,7 @@ struct MultiWin {
     char *child_title;
 #if HAVE_COMPOSITE
     gboolean composite;
+    gulong composited_changed_tag;
 #endif
     char *display_name;
     gboolean title_template_locked;
@@ -132,6 +131,9 @@ MultiWinGetDisableMenuShortcuts multi_win_get_disable_menu_shortcuts;
 static MultiWinInitialTabs multi_win_initial_tabs;
 static MultiWinDeleteHandler multi_win_delete_handler;
 static MultiTabGetShowCloseButton multi_tab_get_show_close_button;
+#if HAVE_COMPOSITE
+static MultiWinCompositedChangedHandler multi_win_composited_changed_handler;
+#endif
 
 static gboolean multi_win_notify_tab_removed(MultiWin *, MultiTab *);
 
@@ -200,7 +202,11 @@ void multi_tab_init(MultiTabFiller filler, MultiTabDestructor destructor,
     MultiWinGetDisableMenuShortcuts get_disable_menu_shortcuts,
     MultiWinInitialTabs initial_tabs,
     MultiWinDeleteHandler delete_handler,
-    MultiTabGetShowCloseButton get_show_close_button)
+    MultiTabGetShowCloseButton get_show_close_button
+#if HAVE_COMPOSITE
+    , MultiWinCompositedChangedHandler composited_changed_handler
+#endif
+    )
 {
     multi_tab_filler = filler;
     multi_tab_destructor = destructor;
@@ -214,6 +220,9 @@ void multi_tab_init(MultiTabFiller filler, MultiTabDestructor destructor,
     multi_win_initial_tabs = initial_tabs;
     multi_win_delete_handler = delete_handler;
     multi_tab_get_show_close_button = get_show_close_button;
+#if HAVE_COMPOSITE
+    multi_win_composited_changed_handler = composited_changed_handler;
+#endif
 }
 
 MultiTab *multi_tab_new(MultiWin * parent, gpointer user_data_template)
@@ -1432,6 +1441,30 @@ void multi_win_show(MultiWin *win)
     g_object_set_data(G_OBJECT(win->gtkwin->window), "ROXTermWin", win);
 }
 
+#if HAVE_COMPOSITE
+static void multi_win_composite_foreach_tab(MultiTab *tab, void *handle)
+{
+    (void) handle;
+    
+    multi_win_composited_changed_handler(tab->user_data,
+            tab->parent->composite);
+}
+
+static void multi_win_composited_changed(GdkScreen *screen, MultiWin *win)
+{
+    if (gdk_screen_is_composited(screen))
+        win->composite = TRUE;
+    else
+        win->composite = FALSE;
+    /* This handler has to be run before clients, hence we have yet another
+     * callback instead of letting client connect to screen's
+     * composited-changed signal.
+     */
+    if (multi_win_composited_changed_handler)
+        multi_win_foreach_tab(win, multi_win_composite_foreach_tab, NULL);
+}
+#endif /* HAVE_COMPOSITE */
+
 MultiWin *multi_win_new_blank(const char *display_name, Options *shortcuts,
         int zoom_index,
         gboolean disable_menu_shortcuts, gboolean disable_tab_shortcuts,
@@ -1513,15 +1546,13 @@ MultiWin *multi_win_new_blank(const char *display_name, Options *shortcuts,
     {
         GdkScreen *screen = gtk_widget_get_screen(win->gtkwin);
         GdkColormap *colormap = gdk_screen_get_rgba_colormap(screen);
-        if (colormap && gdk_screen_is_composited(screen))
-        {
+    
+        if (colormap)
             gtk_widget_set_colormap(win->gtkwin, colormap);
-            win->composite = TRUE;
-        }
-        else
-        {
-            win->composite = FALSE;
-        }
+        multi_win_composited_changed(screen, win);
+        win->composited_changed_tag = g_signal_connect(screen,
+                "composited-changed",
+                G_CALLBACK(multi_win_composited_changed), win);
     }
 #endif
 
@@ -1700,6 +1731,13 @@ static void multi_win_destructor(MultiWin *win, gboolean destroy_widgets)
     }
     if (destroy_widgets && win->gtkwin)
     {
+#if HAVE_COMPOSITE
+        if (win->composited_changed_tag)
+        {
+            g_signal_handler_disconnect(gtk_widget_get_screen(win->gtkwin),
+                    win->composited_changed_tag);
+        }
+#endif
         gtk_widget_destroy(win->gtkwin);
         win->gtkwin = NULL;
     }
