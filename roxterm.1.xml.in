@@ -291,7 +291,7 @@ and docbook-xsl in your Build-Depends control field.
         <term><option>--xclass=<replaceable>CLASS</replaceable></option>
         </term>
         <listitem>
-          <para>Set's the X window system "class" hint for the new window.
+          <para>Set's the X window system "class" hint for each window.
           </para>
         </listitem>
       </varlistentry>
@@ -299,7 +299,7 @@ and docbook-xsl in your Build-Depends control field.
         <term><option>--xname=<replaceable>NAME</replaceable></option>
         </term>
         <listitem>
-          <para>Set's the X window system "name" hint for the new window.
+          <para>Set's the X window system "name" hint for each window.
           </para>
         </listitem>
       </varlistentry>
@@ -313,6 +313,11 @@ and docbook-xsl in your Build-Depends control field.
         </listitem>
       </varlistentry>
     </variablelist>
+    <para>The --xclass and --xname options are only honoured for commands that
+      launch a new instance of roxterm. By default commands are delegated
+      to an existing roxterm instance unless --separate is used.
+    </para>
+      
   </refsect1>
   <refsect1>
     <title>SEE ALSO</title>

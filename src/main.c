@@ -116,11 +116,17 @@ static int run_via_dbus(DBusMessage *message)
             return -1;
         for (n = 0; global_options_commandv[n]; ++n)
         {
-            message = rtdbus_append_args(message,
-                    DBUS_TYPE_STRING, RTDBUS_ARG(global_options_commandv[n]),
-                    DBUS_TYPE_INVALID);
-            if (!message)
-                return -1;
+            const char *a = global_options_commandv[n];
+            
+            if (!g_str_has_prefix(a, "--xclass") &&
+                    !g_str_has_prefix(a, "--xname"))
+            {
+                message = rtdbus_append_args(message,
+                        DBUS_TYPE_STRING, RTDBUS_ARG(a),
+                        DBUS_TYPE_INVALID);
+                if (!message)
+                    return -1;
+            }
         }
     }
     if (!result)

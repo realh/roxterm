@@ -1472,8 +1472,6 @@ MultiWin *multi_win_new_blank(const char *display_name, Options *shortcuts,
         win->xclass = g_strdup(xclass);
         win->xname = g_strdup(xname);
         gtk_window_set_wmclass(GTK_WINDOW(win->gtkwin), xname, xclass);
-        global_options_reset_string("xclass");
-        global_options_reset_string("xname");
     }
     
     if (display_name)

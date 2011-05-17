@@ -4104,8 +4104,6 @@ static void parse_open_win(_ROXTermParseContext *rctx,
     const char *disp = NULL;
     const char *geom = NULL;
     const char *role = NULL;
-    const char *xclass = NULL;
-    const char *xname = NULL;
     const char *font = NULL;
     const char *shortcuts_name = NULL;
     const char *title_template = NULL;
@@ -4144,10 +4142,11 @@ static void parse_open_win(_ROXTermParseContext *rctx,
             title = v;
         else if (!strcmp(a, "role"))
             role = v;
-        else if (!strcmp(a, "xclass") && v && v[0])
-            xclass = v;
-        else if (!strcmp(a, "xname") && v && v[0])
-            xname = v;
+        /* xclass and xname are obsolete in <window> so silently ignore */
+        else if (!strcmp(a, "xclass"))
+            continue;
+        else if (!strcmp(a, "xname"))
+            continue;
         else if (!strcmp(a, "shortcut_scheme"))
             shortcuts_name = v;
         else if (!strcmp(a, "show_menubar"))
@@ -4190,12 +4189,6 @@ static void parse_open_win(_ROXTermParseContext *rctx,
     {
         rctx->role = g_strdup(role);
         gtk_window_set_role(gwin, role);
-    }
-    if (xclass)
-    {
-        gtk_window_set_wmclass(gwin, xname, xclass);
-        xclass = NULL;
-        xname = NULL;
     }
     if (title_template && title_template[0])
     {
@@ -4469,6 +4462,36 @@ static void parse_open_arg(_ROXTermParseContext *rctx,
     }
 }
 
+static void parse_roxterm_session_tag(_ROXTermParseContext *rctx,
+        const char **attribute_names, const char **attribute_values,
+        GError **error)
+{
+    int n;
+    
+    
+    for (n = 0; attribute_names[n]; ++n)
+    {
+        const char *a = attribute_names[n];
+        const char *v = attribute_values[n];
+        
+        if (!strcmp(a, "xclass"))
+        {
+            options_set_string(global_options, "xclass", v);
+        }
+        else if (!strcmp(a, "xname"))
+        {
+            options_set_string(global_options, "xname", v);
+        }
+        else if (strcmp(a, "id"))
+        {
+            *error = g_error_new(G_MARKUP_ERROR,
+                    G_MARKUP_ERROR_UNKNOWN_ATTRIBUTE,
+                    _("Unknown <roxter_session> attribute '%s'"), a);
+            return;
+        }
+    }
+}
+
 static void parse_start_element(GMarkupParseContext *context,
         const char *element_name,
         const char **attribute_names, const char **attribute_values,
@@ -4486,6 +4509,8 @@ static void parse_start_element(GMarkupParseContext *context,
         else
         {
             rctx->session_tag_open = TRUE;
+            parse_roxterm_session_tag(rctx,
+                    attribute_names, attribute_values, error);
         }
     }
     else if (!strcmp(element_name, "window"))
