@@ -116,17 +116,11 @@ static int run_via_dbus(DBusMessage *message)
             return -1;
         for (n = 0; global_options_commandv[n]; ++n)
         {
-            const char *a = global_options_commandv[n];
-            
-            if (!g_str_has_prefix(a, "--xclass") &&
-                    !g_str_has_prefix(a, "--xname"))
-            {
-                message = rtdbus_append_args(message,
-                        DBUS_TYPE_STRING, RTDBUS_ARG(a),
-                        DBUS_TYPE_INVALID);
-                if (!message)
-                    return -1;
-            }
+            message = rtdbus_append_args(message,
+                    DBUS_TYPE_STRING, RTDBUS_ARG(global_options_commandv[n]),
+                    DBUS_TYPE_INVALID);
+            if (!message)
+                return -1;
         }
     }
     if (!result)
@@ -170,11 +164,21 @@ static DBusHandlerResult new_term_listener(DBusConnection *connection,
     {
         if (g_str_has_prefix(argv[argc], "--display="))
             display = argv[argc] + 10;
+        else if (!strcmp(argv[argc], "--display") && argv[argc + 1])
+            display = argv[argc + 1];
     }
     if (argc)
     {
+        /* xclass and xname must be same across all instances */
+        char *xclass = global_options_lookup_string("xclass");
+        char *xname = global_options_lookup_string("xname");
+        
         global_options_preparse_argv_for_execute(&argc, argv, TRUE);
         global_options_init(&argc, &argv, FALSE);
+        options_set_string(global_options, "xclass", xclass);
+        options_set_string(global_options, "xname", xname);
+        g_free(xclass);
+        g_free(xname);
     }
     roxterm_launch(display, env);
 
