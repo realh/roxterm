@@ -227,7 +227,6 @@ int main(int argc, char **argv)
         }
         for (n = 1; n < argc; ++n)
             session_argv[n] = g_strdup(argv[n]);
-        session_init(global_options_restart_session_id);
     }
 #endif
     g_set_application_name(PACKAGE);
