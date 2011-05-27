@@ -4494,15 +4494,7 @@ static void parse_roxterm_session_tag(_ROXTermParseContext *rctx,
         const char *a = attribute_names[n];
         const char *v = attribute_values[n];
         
-        if (!strcmp(a, "xclass"))
-        {
-            options_set_string(global_options, "xclass", v);
-        }
-        else if (!strcmp(a, "xname"))
-        {
-            options_set_string(global_options, "xname", v);
-        }
-        else if (strcmp(a, "id"))
+        if (strcmp(a, "id"))
         {
             *error = g_error_new(G_MARKUP_ERROR,
                     G_MARKUP_ERROR_UNKNOWN_ATTRIBUTE,
@@ -4702,8 +4694,6 @@ gboolean roxterm_load_session(const char *xml, gssize len,
         g_error_free(error);
         error = NULL;
     }
-    global_options_reset_string("xclass");
-    global_options_reset_string("xname");
     return result;
 }
 

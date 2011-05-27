@@ -429,9 +429,6 @@ const char *multi_win_get_shortcuts_scheme_name(MultiWin *win);
 
 guint multi_win_get_num_tabs(MultiWin *win);
 
-void multi_win_get_class_name(MultiWin *win,
-        char const **xclass, char const **xname);
-
 #endif /* MULTITAB_H */
 
 /* vi:set sw=4 ts=4 et cindent cino= */

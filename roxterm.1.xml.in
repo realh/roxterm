@@ -101,8 +101,6 @@ and docbook-xsl in your Build-Depends control field.
         <option>-T <replaceable>TITLE</replaceable></option></arg>
       <arg><option>--tab-name=<replaceable>NAME</replaceable></option> |
         <option>-n <replaceable>NAME</replaceable></option></arg>
-      <arg><option>--xclass=<replaceable>CLASS</replaceable></option></arg>
-      <arg><option>--xname=<replaceable>NAME</replaceable></option></arg>
       <arg><option>--role=<replaceable>ROLE</replaceable></option></arg>
       <arg><option>--display=<replaceable>DISPLAY</replaceable></option></arg>
       <arg><option>--execute <replaceable>COMMAND</replaceable></option> |
@@ -289,22 +287,6 @@ and docbook-xsl in your Build-Depends control field.
         </listitem>
       </varlistentry>
       <varlistentry>
-        <term><option>--xclass=<replaceable>CLASS</replaceable></option>
-        </term>
-        <listitem>
-          <para>Sets the X window system "class" hint for each window.
-          </para>
-        </listitem>
-      </varlistentry>
-      <varlistentry>
-        <term><option>--xname=<replaceable>NAME</replaceable></option>
-        </term>
-        <listitem>
-          <para>Sets the X window system "name" hint for each window.
-          </para>
-        </listitem>
-      </varlistentry>
-      <varlistentry>
         <term><option>--role=<replaceable>ROLE</replaceable></option>
         </term>
         <listitem>
@@ -323,10 +305,6 @@ and docbook-xsl in your Build-Depends control field.
         </listitem>
       </varlistentry>
     </variablelist>
-    <para>The --xclass and --xname options are only honoured for commands that
-      launch a new instance of roxterm. By default commands are delegated
-      to an existing roxterm instance unless --separate is used.
-    </para>
       
   </refsect1>
   <refsect1>

@@ -169,16 +169,8 @@ static DBusHandlerResult new_term_listener(DBusConnection *connection,
     }
     if (argc)
     {
-        /* xclass and xname must be same across all instances */
-        char *xclass = global_options_lookup_string("xclass");
-        char *xname = global_options_lookup_string("xname");
-        
         global_options_preparse_argv_for_execute(&argc, argv, TRUE);
         global_options_init(&argc, &argv, FALSE);
-        options_set_string(global_options, "xclass", xclass);
-        options_set_string(global_options, "xname", xname);
-        g_free(xclass);
-        g_free(xname);
     }
     roxterm_launch(display, env);
 

@@ -86,7 +86,7 @@ static gboolean global_options_show_usage(const gchar *option_name,
       "    [--separate] [--replace] [--tab]\n"
       "    [--directory=DIRECTORY|-d DIRECTORY] [--disable-sm]\n"
       "    [--show-menubar] [--hide-menubar]\n"
-      "    [--xclass=CLASS] [--xname=NAME] [--role=ROLE]\n"
+      "    [--role=ROLE]\n"
       "    [-e|--execute COMMAND]\n");
     exit(0);
     return TRUE;
@@ -250,12 +250,6 @@ static GOptionEntry global_g_options[] = {
     { "disable-sm", 0, G_OPTION_FLAG_IN_MAIN,
         G_OPTION_ARG_NONE, &global_options_disable_sm,
         N_("Disable session management"), NULL },
-    { "xclass", 0, G_OPTION_FLAG_IN_MAIN,
-        G_OPTION_ARG_CALLBACK, global_options_set_string,
-        N_("Set X window system 'class' hint"), N_("CLASS") },
-    { "xname", 0, G_OPTION_FLAG_IN_MAIN,
-        G_OPTION_ARG_CALLBACK, global_options_set_string,
-        N_("Set X window system 'name' hint"), N_("NAME") },
     { "role", 0, G_OPTION_FLAG_IN_MAIN,
         G_OPTION_ARG_CALLBACK, global_options_set_string,
         N_("Set X window system 'role' hint"), N_("NAME") },
