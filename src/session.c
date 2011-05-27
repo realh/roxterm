@@ -48,7 +48,8 @@ typedef struct {
 
 static SessionData session_data;
 
-const char *session_arg0;
+int session_argc;
+char **session_argv;
 
 static char *session_get_filename(const char *client_id, gboolean create_dir)
 {
@@ -247,33 +248,76 @@ inline static void fill_in_prop_val(SmPropValue *val, const char *s)
     val->value = (SmPointer) h_strdup(s);
 }
 
-static SmProp *make_string_list_prop(int num_vals, const char *name,
-        const char *s1, const char *s2, const char *s3)
+static SmProp *make_string_list_propv_full(int num_vals, const char *name,
+        char const * const *values, const char *prop_type)
 {
+    int n;
     SmProp *prop = malloc(sizeof(SmProp));
     
     prop->name = h_strdup(name);
-    if (num_vals == 1)
-        prop->type = h_strdup(SmARRAY8);
-    else
-        prop->type = h_strdup(SmLISTofARRAY8);
+    prop->type = h_strdup(prop_type);
     prop->num_vals = num_vals;
     prop->vals = malloc(sizeof(SmPropValue) * num_vals);
-    fill_in_prop_val(prop->vals, s1);
-    if (num_vals >= 2)
-        fill_in_prop_val(prop->vals + 1, s2);
-    if (num_vals >= 3)
-        fill_in_prop_val(prop->vals + 2, s3);
+    for (n = 0; n < num_vals; ++n)
+        fill_in_prop_val(prop->vals + n, values[n]);
     return prop;
 }
 
-inline static SmProp *make_start_command_prop(const char *name,
-        const char *opt, const char *client_id)
+inline static SmProp *make_string_list_propv(int num_vals, const char *name,
+        char const * const *values)
 {
-    char *idarg = g_strdup_printf("--%s-session-id=%s", opt, client_id);
-    SmProp *prop = make_string_list_prop(2, name, session_arg0, idarg, NULL);
+    return make_string_list_propv_full(num_vals, name, values, SmLISTofARRAY8);
+}
+
+static SmProp *make_string_list_prop(int num_vals, const char *name,
+        const char *s1, const char *s2, const char *s3)
+{
+    char const *values[3];
     
-    g_free(idarg);
+    values[0] = s1;
+    if (num_vals >= 2)
+        values[1] = s2;
+    if (num_vals >= 3)
+        values[2] = s3;
+    return make_string_list_propv_full(num_vals, name, values, SmLISTofARRAY8);
+}
+
+inline static SmProp *make_string_list_prop1(const char *name, const char *s)
+{
+    return make_string_list_propv_full(1, name, &s, SmARRAY8);
+}
+
+/* If resclone is non-NULL add --restart/clone-session-id... */
+static SmProp *make_start_command_prop(const char *name, const char *resclone,
+        const char *client_id)
+{
+    SmProp *prop;
+    
+    if (resclone)
+    {
+        char const **argv;
+        char *idarg = g_strdup_printf("--%s-session-id=%s",
+                resclone, client_id);
+        int n, m;
+        
+        argv = g_new(const char *, session_argc + 1);
+        for (n = m = 0; n < session_argc; ++n)
+        {
+            if (!g_str_has_prefix(session_argv[n], "--restart-session-id=") &&
+                !g_str_has_prefix(session_argv[n], "--clone-session-id="))
+            {
+                argv[m++] = session_argv[n];
+            }
+        }
+        argv[m++] = idarg;
+        prop = make_string_list_propv(m, name, argv);
+        g_free(idarg);
+    }
+    else
+    {
+        prop = make_string_list_propv(session_argc, name,
+                (char const * const *) session_argv);
+    }
     return prop;
 }
 
@@ -287,16 +331,16 @@ static void session_set_props(SessionData *sd, const char *filename)
         if (props[n])
             SmFreeProperty(props[n]);
     }
-    props[0] = make_string_list_prop(1, SmCloneCommand,
-            session_arg0, NULL, NULL);
+    props[0] = make_start_command_prop(SmCloneCommand,
+            "clone", sd->client_id);
     props[1] = make_string_list_prop(3, SmDiscardCommand,
             "/bin/rm", "-f", filename);
-    props[2] = make_string_list_prop(1, SmProgram,
-            session_arg0, NULL, NULL);
+    props[2] = make_string_list_prop1(SmProgram,
+            session_argv[0]);
     props[3] = make_start_command_prop(SmRestartCommand,
             "restart", sd->client_id);
-    props[4] = make_string_list_prop(1, SmUserID,
-            g_get_user_name(), NULL, NULL);
+    props[4] = make_string_list_prop1(SmUserID,
+            g_get_user_name());
     SmcSetProperties(sd->smc_conn, 5, props);
 }
 

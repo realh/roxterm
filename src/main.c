@@ -187,11 +187,11 @@ gboolean listen_for_new_term(void)
             new_term_listener, global_options_lookup_int("replace") > 0);
 }
 
-static const char *abs_bin(const char *filename)
+static char *abs_bin(const char *filename)
 {
     if (g_path_is_absolute(filename))
     {
-        return filename;
+        return g_strdup(filename);
     }
     return g_build_filename(global_options_bindir, "roxterm", NULL);
 }
@@ -201,11 +201,35 @@ int main(int argc, char **argv)
     gboolean preparse_ok;
     DBusMessage *message = NULL;
     char *display = NULL;
-    const char *dpy_name;
+    const char *dpy_name = NULL;
     int n;
     gboolean launched = FALSE;
     gboolean dbus_ok;
 
+#if ENABLE_SM
+    if (!global_options_disable_sm)
+    {
+        session_argc = argc;
+        session_argv = g_new(char *, argc);
+        if (global_options_appdir)
+        {
+            session_argv[0] = g_build_filename(global_options_appdir,
+                    "AppRun", NULL);
+            if (!g_file_test(session_argv[0], G_FILE_TEST_IS_EXECUTABLE))
+            {
+                g_free(session_argv[0]);
+                session_argv[0] = abs_bin(argv[0]);
+            }
+        }
+        else
+        {
+            session_argv[0] = abs_bin(argv[0]);
+        }
+        for (n = 1; n < argc; ++n)
+            session_argv[n] = g_strdup(argv[n]);
+        session_init(global_options_restart_session_id);
+    }
+#endif
     g_set_application_name(PACKAGE);
     preparse_ok = global_options_preparse_argv_for_execute(&argc, argv, FALSE);
     
@@ -223,6 +247,13 @@ int main(int argc, char **argv)
         if (strlen(argv[n]) > 10 && g_str_has_prefix(argv[n], "--display="))
         {
             display = g_strdup(argv[n]); 
+            dpy_name = display + 10;
+            break;
+        }
+        else if (n < argc - 1 && !strcmp(argv[n], "--display"))
+        {
+            display = g_strdup_printf("--display=%s", argv[n + 1]); 
+            dpy_name = display + 10;
             break;
         }
     }
@@ -235,9 +266,11 @@ int main(int argc, char **argv)
         return 1;
     }
     
-    dpy_name = gdk_display_get_name(gdk_display_get_default());
     if (!display)
+    {
+        dpy_name = gdk_display_get_name(gdk_display_get_default());
         display = g_strdup_printf("--display=%s", dpy_name);
+    }
     
     /* Have to create message with args from argv before parsing them */
     dbus_ok = rtdbus_ok = rtdbus_init();
@@ -311,20 +344,6 @@ int main(int argc, char **argv)
 #if ENABLE_SM
     if (!global_options_disable_sm)
     {
-        if (global_options_appdir)
-        {
-            session_arg0 = g_build_filename(global_options_appdir,
-                    "AppRun", NULL);
-            if (!g_file_test(session_arg0, G_FILE_TEST_IS_EXECUTABLE))
-            {
-                g_free((char *) session_arg0);
-                session_arg0 = abs_bin(argv[0]);
-            }
-        }
-        else
-        {
-            session_arg0 = abs_bin(argv[0]);
-        }
         session_init(global_options_restart_session_id);
     }
 #endif

@@ -34,8 +34,8 @@ typedef struct ROXTermData ROXTermData;
  */
 void roxterm_init(void);
 
-/* Launch a new terminal in response to a D-BUS message (launcher) or for first
- * time (launcher = NULL); display_name may be NULL for default display.
+/* Launch a new terminal in response to a D-BUS message or for first
+ * time; display_name may be NULL for default display.
  * env is copied without being altered.
  */
 void roxterm_launch(const char *display_name, char **env);

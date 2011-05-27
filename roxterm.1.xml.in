@@ -102,7 +102,6 @@ and docbook-xsl in your Build-Depends control field.
       <arg><option>--tab-name=<replaceable>NAME</replaceable></option> |
         <option>-n <replaceable>NAME</replaceable></option></arg>
       <arg><option>--role=<replaceable>ROLE</replaceable></option></arg>
-      <arg><option>--display=<replaceable>DISPLAY</replaceable></option></arg>
       <arg><option>--execute <replaceable>COMMAND</replaceable></option> |
         <option>-e <replaceable>COMMAND</replaceable></option></arg>
     </cmdsynopsis>
@@ -277,13 +276,6 @@ and docbook-xsl in your Build-Depends control field.
         <listitem>
           <para>Replace any existing instance as ROXTerm D-BUS service
             provider.</para>
-        </listitem>
-      </varlistentry>
-      <varlistentry>
-        <term><option>--display=<replaceable>DISPLAY</replaceable></option>
-        </term>
-        <listitem>
-          <para>X display to use.</para>
         </listitem>
       </varlistentry>
       <varlistentry>

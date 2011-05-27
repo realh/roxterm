@@ -25,8 +25,9 @@
 #include "defns.h"
 #endif
 
-/* Set to argv[0] from main() */
-extern const char *session_arg0;
+/* Copy from argc/argv in main() before letting GTK process args */
+extern int session_argc;
+extern char **session_argv;
 
 void session_init(const char *client_id);
 
