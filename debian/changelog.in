@@ -3,7 +3,7 @@ roxterm (@VERSION@-1) unstable; urgency=low
   * New upstream version:
     + Respond when compositing is enabled/disabled.
     + New --role option.
-    + --xclass and --xname options apply globally.
+    + --xclass and --xname options removed.
     + New Window/Tab With Profile submenu can be popped up with shortcut.
     + New tabs are inserted immediately after currrent.
     + Lists of profiles etc are sorted.
@@ -11,8 +11,9 @@ roxterm (@VERSION@-1) unstable; urgency=low
     + Regression fix: profile editor was failing to respond to changes in
       text entry widgets.
     + No underlines in popup menus (mnemonics don't work in popups).
+    + Try to avoid creating redundant session state files.
 
- -- Tony Houghton <h@realh.co.uk>  Tue, 17 May 2011 20:33:39 +0100
+ -- Tony Houghton <h@realh.co.uk>  Sat, 28 May 2011 14:43:59 +0100
 
 roxterm (1.21.4-1) unstable; urgency=low
 

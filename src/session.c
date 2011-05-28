@@ -44,6 +44,7 @@ typedef struct {
     guint tag;
     char *client_id;
     SmProp *props[5];
+    gboolean init_done;
 } SessionData;
 
 static SessionData session_data;
@@ -348,30 +349,47 @@ static void session_save_yourself_callback(SmcConn smc_conn, SmPointer handle,
         int save_type, Bool shutdown, int interact_style, Bool fast)
 {
     SessionData *sd = handle;
-    char *filename = session_get_filename(sd->client_id, TRUE);
     gboolean success = FALSE;
     
-    if (filename)
+    if (!sd->init_done)
     {
-        FILE *fp = fopen(filename, "w");
+        /* An extra message is sent in response to initialising the connection
+         * so we don't actually want to save state at that point.
+         */
+        sd->init_done = TRUE;
+        success = TRUE;
+    }
+    else if (save_type == SmSaveGlobal)
+    {
+        /* Only save state for SmSaveLocal/Both */
+        success = TRUE;
+    }
+    else
+    {
+        char *filename = session_get_filename(sd->client_id, TRUE);
         
-        if (fp)
+        if (filename)
         {
-            success = save_session_to_fp(sd, fp);
-            fclose(fp);
-            if (!success)
-                g_unlink(filename);
+            FILE *fp = fopen(filename, "w");
+            
+            if (fp)
+            {
+                success = save_session_to_fp(sd, fp);
+                fclose(fp);
+                if (!success)
+                    g_unlink(filename);
+            }
+            if (success)
+            {
+                session_set_props(sd, filename);
+            }
+            else
+            {
+                g_warning(_("Failed to save session state to '%s': %s"),
+                        filename, strerror(errno));
+            }
+            g_free(filename);
         }
-        if (success)
-        {
-            session_set_props(sd, filename);
-        }
-        else
-        {
-            g_warning(_("Failed to save session state to '%s': %s"),
-                    filename, strerror(errno));
-        }
-        g_free(filename);
     }
     SmcSaveYourselfDone(smc_conn, success);
 }
@@ -379,6 +397,7 @@ static void session_save_yourself_callback(SmcConn smc_conn, SmPointer handle,
 static void die_callback(SmcConn smc_conn, SmPointer handle)
 {
     SmcCloseConnection(smc_conn, 0, NULL);
+    /* FIXME: Should we try to reconnect if not in shutdown? */
 }
 
 static void save_complete_callback(SmcConn smc_conn, SmPointer handle)
@@ -401,6 +420,7 @@ void session_init(const char *client_id)
     session_data.client_id = NULL;
     session_data.ioc = NULL;
     session_data.tag = 0;
+    session_data.init_done = client_id != NULL;
     memset(session_data.props, 0, sizeof(SmProp *) * 5);
     
     if (!IceAddConnectionWatch(ice_watch_callback, &session_data))
