@@ -103,6 +103,9 @@ inline static void global_options_reset_string(const char *key)
 /* Checks CLI args for --appdir without altering argv */
 void global_options_init_appdir(int argc, char **argv);
 
+/* Detects bindir from argv[0] */
+void global_options_init_bindir(const char *argv0);
+
 /* Deep copy a NULL-terminated array of NULL-terminated strings */
 char **global_options_copy_strv(char **ps);
 

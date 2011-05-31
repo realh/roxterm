@@ -19,6 +19,7 @@
 
 #include "defns.h"
 
+#include <stdio.h>
 #include <locale.h>
 
 #include <gdk/gdk.h>
@@ -206,6 +207,8 @@ int main(int argc, char **argv)
     gboolean launched = FALSE;
     gboolean dbus_ok;
 
+    global_options_init_appdir(argc, argv);
+    global_options_init_bindir(argv[0]);
 #if ENABLE_SM
     if (!global_options_disable_sm)
     {
@@ -226,14 +229,15 @@ int main(int argc, char **argv)
             session_argv[0] = abs_bin(argv[0]);
         }
         for (n = 1; n < argc; ++n)
+        {
             session_argv[n] = g_strdup(argv[n]);
+        }
     }
 #endif
     g_set_application_name(PACKAGE);
     preparse_ok = global_options_preparse_argv_for_execute(&argc, argv, FALSE);
     
 #if ENABLE_NLS
-    global_options_init_appdir(argc, argv);
     setlocale(LC_ALL, "");
     bindtextdomain(PACKAGE, global_options_appdir ?
             g_strdup_printf("%s/locale", global_options_appdir) : LOCALEDIR);

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: roxterm\n"
 "Report-Msgid-Bugs-To: http://sourceforge.net/projects/roxterm\n"
-"POT-Creation-Date: 2011-05-27 23:16+0100\n"
+"POT-Creation-Date: 2011-05-31 15:19+0100\n"
 "PO-Revision-Date: 2011-05-17 20:32+0100\n"
 "Last-Translator: Tony Houghton <h@realh.co.uk>\n"
 "Language-Team: Spanish (Castilian) (http://www.transifex.net/projects/p/"
@@ -121,7 +121,7 @@ msgid "Unable to copy profile/scheme: %s"
 msgstr "No se puede copiar el perfil/esquema: %s"
 
 #: src/configlet.c:629 src/profilegui.c:383 src/profilegui.c:388
-#: src/roxterm.c:736 src/session.c:421 src/shortcuts.c:128
+#: src/roxterm.c:736 src/session.c:450 src/shortcuts.c:128
 msgid "unknown reason"
 msgstr "motivo desconocido"
 
@@ -406,11 +406,11 @@ msgstr ""
 msgid "Error parsing command line options: %s"
 msgstr "Error al procesar las opciones en la línea de comandos: %s"
 
-#: src/globalopts.c:417
+#: src/globalopts.c:426
 msgid "Can't find roxterm-config"
 msgstr "No se encuentra roxterm-config"
 
-#: src/main.c:265
+#: src/main.c:272
 msgid "Missing command after -e/--execute option"
 msgstr "Falta un comando tras la opción -e/--execute"
 
@@ -1220,34 +1220,34 @@ msgstr ""
 "Tipo del primer argumento no válido ('%c') en el método NewTerminal de D-"
 "BUS; se esperaba una cadena"
 
-#: src/session.c:64
+#: src/session.c:65
 #, c-format
 msgid "Unable to create Sessions directory '%s': %s"
 msgstr "No se puede crear el directorio de sesiones '%s': %s"
 
-#: src/session.c:83
+#: src/session.c:84
 msgid "Error processing ICE (session management) messages"
 msgstr "Error al procesar los mensajes ICE (gestión de sesiones)"
 
-#: src/session.c:188
+#: src/session.c:189
 msgid "Window with no user data"
 msgstr "Ventana sin información de usuario"
 
-#: src/session.c:371
+#: src/session.c:397
 #, c-format
 msgid "Failed to save session state to '%s': %s"
 msgstr "No se puede guardar el estado de la sesión en '%s': %s"
 
-#: src/session.c:408
+#: src/session.c:437
 msgid "Unable to initialise ICE for session management"
 msgstr "No se puede iniciar ICE para la gestión de sesiones"
 
-#: src/session.c:420
+#: src/session.c:449
 #, c-format
 msgid "Failed to connect to session manager: %s"
 msgstr "No se puede conectar con el gestor de sesiones: %s"
 
-#: src/session.c:437
+#: src/session.c:466
 #, c-format
 msgid "Unable to load session '%s': %s"
 msgstr "No se puede cargar la sesión '%s': %s"

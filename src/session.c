@@ -260,7 +260,9 @@ static SmProp *make_string_list_propv_full(int num_vals, const char *name,
     prop->num_vals = num_vals;
     prop->vals = malloc(sizeof(SmPropValue) * num_vals);
     for (n = 0; n < num_vals; ++n)
+    {
         fill_in_prop_val(prop->vals + n, values[n]);
+    }
     return prop;
 }
 

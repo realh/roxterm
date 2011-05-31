@@ -371,6 +371,58 @@ static const char *process_option_name(const char *name)
     return name;
 }
 
+void global_options_init_bindir(const char *argv0)
+{
+    global_options_bindir = g_path_get_dirname(argv0);
+    if (!strcmp(global_options_bindir, "."))
+    {
+        /* No directory component, try to find roxterm-config in BIN_DIR,
+         * current dir, then PATH */
+        char *capplet;
+
+        g_free(global_options_bindir);
+        global_options_bindir = NULL;
+        capplet = g_build_filename(BIN_DIR, "roxterm-config", NULL);
+        if (g_file_test(capplet, G_FILE_TEST_IS_EXECUTABLE))
+        {
+            global_options_bindir = g_strdup(BIN_DIR);
+        }
+        else if (g_file_test("roxterm-config", G_FILE_TEST_IS_EXECUTABLE))
+        {
+            /* Paranoia in case g_free() != free() */
+            char *bindir = GET_CURRENT_DIR();
+            
+            global_options_bindir = g_strdup(bindir);
+            FREE_CURRENT_DIR(bindir);
+        }
+        else
+        {
+            char *full = g_find_program_in_path("roxterm-config");
+            
+            if (full)
+            {
+                global_options_bindir = g_path_get_dirname(full);
+                g_free(full);
+            }
+            else
+            {
+                dlg_critical(NULL, _("Can't find roxterm-config"));
+            }
+        }
+    }
+    else if (!g_path_is_absolute(global_options_bindir))
+    {
+        /* Partial path, must be relative to current dir */
+        char *cur = GET_CURRENT_DIR();
+        char *full = g_build_filename(cur, global_options_bindir, NULL);
+
+        FREE_CURRENT_DIR(cur);
+        g_free(global_options_bindir);
+        global_options_bindir = full;
+    }
+    /* else full path was given, use that */
+}
+
 void global_options_init(int *argc, char ***argv, gboolean report)
 {
     static gboolean already = FALSE;
@@ -388,46 +440,9 @@ void global_options_init(int *argc, char ***argv, gboolean report)
         correct_schemes();
     }
     global_options_parse_argv(argc, argv, report);
-    if (!already)
+    if (!global_options_bindir)
     {
-        global_options_bindir = g_path_get_dirname((*argv)[0]);
-        if (!strcmp(global_options_bindir, "."))
-        {
-            /* No directory component, try to find roxterm-config in BIN_DIR,
-             * current dir, then PATH */
-            char *capplet;
-
-            g_free(global_options_bindir);
-            global_options_bindir = NULL;
-            capplet = g_build_filename(BIN_DIR, "roxterm-config", NULL);
-            if (g_file_test(capplet, G_FILE_TEST_IS_EXECUTABLE))
-            {
-                global_options_bindir = g_strdup(BIN_DIR);
-            }
-            else if (g_file_test("roxterm-config", G_FILE_TEST_IS_EXECUTABLE))
-            {
-                /* Paranoia in case g_free() != free() */
-                char *bindir = GET_CURRENT_DIR();
-                
-                global_options_bindir = g_strdup(bindir);
-                FREE_CURRENT_DIR(bindir);
-            }
-            else if (!g_find_program_in_path("roxterm-config"))
-            {
-                dlg_critical(NULL, _("Can't find roxterm-config"));
-            }
-        }
-        else if (!g_path_is_absolute(global_options_bindir))
-        {
-            /* Partial path, must be relative to current dir */
-            char *cur = GET_CURRENT_DIR();
-            char *full = g_build_filename(cur, global_options_bindir, NULL);
-
-            FREE_CURRENT_DIR(cur);
-            g_free(global_options_bindir);
-            global_options_bindir = full;
-        }
-        /* else full path was given */
+        global_options_init_bindir((*argv)[0]);
     }
     already = TRUE;
 }
