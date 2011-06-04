@@ -112,7 +112,7 @@ AS_IF([test $enable_gtk3 = yes -a $found_gtk3=no],
 enable_gtk3=$found_gtk3
 AS_IF([test $enable_gtk3 = no],
 [
-    PKG_CHECK_MODULES(gtk2, [gtk+-2.0 >= 2.6.0])
+    PKG_CHECK_MODULES(gtk2, [gtk+-2.0 >= 2.18.0])
     PKG_CHECK_MODULES(vte, [vte >= 0.20])
     gtk_CFLAGS=$gtk2_CFLAGS
     gtk_LIBS=$gtk2_LIBS

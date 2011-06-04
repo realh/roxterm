@@ -20,6 +20,7 @@
 
 #include "defns.h"
 
+#include <stdarg.h>
 #include <string.h>
 
 #include "capplet.h"
@@ -32,10 +33,10 @@
 
 #define MANAGE_PREVIEW
 
-struct ProfileGUI {
+struct _ProfileGUI {
     CappletData capp;
-    GtkWidget *widget;
-    GtkWidget *ssh_widget;
+    GtkWidget *dialog;
+    GtkWidget *ssh_dialog;
     char *profile_name;
     gboolean ignore_destroy;
     struct {
@@ -74,22 +75,24 @@ static void profilegui_update_from_entry(ProfileGUI * pg, const char *name)
                     GTK_ENTRY(gtk_builder_get_object(pg->capp.builder, name))));
 }
 
-#define UPDATE_IF(s) if (pg->changed ## s) \
+#define PG_MEMBER(a, b) a . b
+
+#define PG_UPDATE_IF(s) if (PG_MEMBER(pg->changed, s)) \
     { \
         profilegui_update_from_entry(pg, # s); \
-        pg->changed ## s = 0; \
+        PG_MEMBER(pg->changed, s) = 0; \
     }
 
 void profilegui_check_entries_for_changes(ProfileGUI * pg)
 {
-    UPDATE_IF(sel_by_word)
-    UPDATE_IF(color_term)
-    UPDATE_IF(term)
-    UPDATE_IF(browser)
-    UPDATE_IF(mailer)
-    UPDATE_IF(command)
-    UPDATE_IF(title_string)
-    UPDATE_IF(win_title)
+    PG_UPDATE_IF(sel_by_word)
+    PG_UPDATE_IF(color_term)
+    PG_UPDATE_IF(term)
+    PG_UPDATE_IF(browser)
+    PG_UPDATE_IF(mailer)
+    PG_UPDATE_IF(command)
+    PG_UPDATE_IF(title_string)
+    PG_UPDATE_IF(win_title)
 }
 
 static void profilegui_set_bgimg_shading(ProfileGUI *pg, gboolean sensitive)
@@ -143,9 +146,9 @@ static void profilegui_check_ssh_entries_for_changes(ProfileGUI * pg)
 {
     GtkBuilder *builder = pg->capp.builder;
     
-    UPDATE_IF(ssh_address)
-    UPDATE_IF(ssh_user)
-    UPDATE_IF(ssh_options)
+    PG_UPDATE_IF(ssh_address)
+    PG_UPDATE_IF(ssh_user)
+    PG_UPDATE_IF(ssh_options)
 }
 
 /***********************************************************/
@@ -154,19 +157,19 @@ static void profilegui_check_ssh_entries_for_changes(ProfileGUI * pg)
 void on_editable_changed(GtkEditable * editable, ProfileGUI *pg)
 {
     const char *n = gtk_buildable_get_name(GTK_BUILDABLE(editable));
-#define IF_CHANGED(s) if (!strcmp(n, #s)) pg->changed. ## s = 1
+#define PG_IF_CHANGED(s) if (!strcmp(n, #s)) PG_MEMBER(pg->changed, s) = 1
 
-    IF_CHANGED(sel_by_word);
-    else IF_CHANGED(color_term);
-    else IF_CHANGED(term);
-    else IF_CHANGED(browser);
-    else IF_CHANGED(mailer);
-    else IF_CHANGED(command);
-    else IF_CHANGED(title_string);
-    else IF_CHANGED(ssh_address);
-    else IF_CHANGED(ssh_user);
-    else IF_CHANGED(ssh_options);
-    else IF_CHANGED(win_title);
+    PG_IF_CHANGED(sel_by_word);
+    else PG_IF_CHANGED(color_term);
+    else PG_IF_CHANGED(term);
+    else PG_IF_CHANGED(browser);
+    else PG_IF_CHANGED(mailer);
+    else PG_IF_CHANGED(command);
+    else PG_IF_CHANGED(title_string);
+    else PG_IF_CHANGED(ssh_address);
+    else PG_IF_CHANGED(ssh_user);
+    else PG_IF_CHANGED(ssh_options);
+    else PG_IF_CHANGED(win_title);
 }
 
 static void on_ssh_entry_activate(GtkEntry * entry, ProfileGUI * pg)
@@ -220,7 +223,7 @@ static void on_Profile_Editor_close(GtkWidget * widget, ProfileGUI * pg)
 
 static void on_font_set(GtkFontButton * fontbutton, ProfileGUI * pg)
 {
-    capplet_set_string(pg->profile,
+    capplet_set_string(pg->capp.options,
         "font", gtk_font_button_get_font_name(fontbutton));
 }
 
@@ -230,7 +233,7 @@ static void on_entry_activate(GtkEntry * entry, ProfileGUI * pg)
 }
 
 static void
-on_profile_notebook_switch_page(GtkNotebook * notebook, GtkNotebookPage * page,
+on_profile_notebook_switch_page(GtkNotebook * notebook, GtkWidget *page,
     guint page_num, ProfileGUI * pg)
 {
     profilegui_check_entries_for_changes(pg);
@@ -240,7 +243,7 @@ static void on_bgtype_toggled(GtkToggleButton *button, ProfileGUI *pg)
 {
     if (gtk_toggle_button_get_active(button))
         profilegui_set_background_shading(pg);
-    on_radio_toggled(button, pg->profile);
+    on_radio_toggled(button, &pg->capp);
 }
 
 static void on_command_toggled(GtkToggleButton *button, ProfileGUI *pg)
@@ -261,7 +264,7 @@ static void on_cursor_blinks_toggled(GtkToggleButton *button, ProfileGUI *pg)
         return;
     
     state = gtk_toggle_button_get_active(button);
-    capplet_set_int(&pg->capp, "cursor_blinks", state);
+    capplet_set_int(pg->capp.options, "cursor_blinks", state);
 }
 
 #define PREVIEW_SIZE 160
@@ -398,7 +401,7 @@ static char *get_bgimg_filename(ProfileGUI *pg, GtkFileChooser *chooser)
         g_free(new_filename);
         return NULL;
     }
-    capplet_set_string(pg->profile, "background_img", new_filename);
+    capplet_set_string(pg->capp.options, "background_img", new_filename);
     return new_filename;
 }
 
@@ -412,11 +415,11 @@ static void on_bgimg_chosen(GtkFileChooser *chooser, ProfileGUI *pg)
 
 static void on_reset_compat_clicked(GtkButton *button, ProfileGUI *pg)
 {
-    capplet_set_int(pg->profile, "backspace_binding",
+    capplet_set_int(pg->capp.options, "backspace_binding",
             DEFAULT_BACKSPACE_BINDING);
     capplet_set_combo(&pg->capp, "backspace_binding",
             DEFAULT_BACKSPACE_BINDING);
-    capplet_set_int(pg->profile, "delete_binding",
+    capplet_set_int(pg->capp.options, "delete_binding",
             DEFAULT_DELETE_BINDING);
     capplet_set_combo(&pg->capp, "delete_binding",
             DEFAULT_DELETE_BINDING);
@@ -473,7 +476,7 @@ static void profilegui_connect_handlers(ProfileGUI * pg)
 
 static void profilegui_fill_in_dialog(ProfileGUI * pg)
 {
-    Options *profile = pg->profile;
+    Options *profile = pg->capp.options;
     char *val;
 
     gtk_font_button_set_font_name(
@@ -516,7 +519,7 @@ static void profilegui_fill_in_dialog(ProfileGUI * pg)
     capplet_set_radio(&pg->capp, "background_type", 0);
     profilegui_set_background_shading(pg);
     capplet_set_float_range(&pg->capp, "saturation", 1.0);
-    capplet_set_boolean_toggle(g&pg->capp, scroll_background", TRUE);
+    capplet_set_boolean_toggle(&pg->capp, "scroll_background", TRUE);
     val = options_lookup_string_with_default(profile, "background_img", "");
     profilegui_fill_in_file_chooser(pg, val);
     g_free(val);
@@ -606,13 +609,101 @@ static void profilegui_setup_list_store(ProfileGUI *pg)
     gtk_widget_show(tvw);
 }
 
+/* Hopefully all this combo support stuff can go away when everything
+ * supports GtkComboBoxText.
+ */
+
+static void profilegui_add_combo_items(GtkWidget *combo, ...)
+{
+    const char *item;
+    va_list ap;
+#ifdef HAVE_GTK_COMBO_BOX_TEXT_NEW
+    GtkComboBoxText *cast_combo = GTK_COMBO_BOX_TEXT(combo);
+#else
+    GtkComboBox *cast_combo = GTK_COMBO_BOX(combo);
+#endif
+    
+    va_start(ap, combo);
+    while ((item = va_arg(ap, const char *)) != NULL)
+    {
+#ifdef HAVE_GTK_COMBO_BOX_TEXT_NEW
+        gtk_combo_box_text_append_text(cast_combo, item);
+#else
+        gtk_combo_box_append_text(cast_combo, item);
+#endif
+    }
+    va_end(ap);
+}
+
+static void profilegui_add_combo_items_by_name(GtkWidget *combo,
+        const char *name)
+{
+    if (!strcmp(name, "exit_action"))
+    {
+        profilegui_add_combo_items(combo,
+            _("Exit terminal"),
+            _("Hold terminal open"),
+            _("Restart command"),
+            _("Ask user"),
+            NULL);
+    }
+    else if (!strcmp(name, "delete_binding") ||
+            !strcmp(name, "backspace_binding"))
+    {
+        profilegui_add_combo_items(combo,
+            _("Automatic choice"),
+            _("Control-H"),
+            _("ASCII DEL"),
+            _("Escape sequence"),
+            NULL);
+    }
+    else if (!strcmp(name, "tab_pos"))
+    {
+        profilegui_add_combo_items(combo,
+            _("Top"),
+            _("Bottom"),
+            _("Left"),
+            _("Right"),
+            _("Hidden"),
+            NULL);
+    }
+}
+
+static void profile_gui_make_a_combo(ProfileGUI *pg, const char *name)
+{
+    char *box_name = g_strdup_printf("%s_box", name);
+    GtkBox *box = GTK_BOX(gtk_builder_get_object(pg->capp.builder, box_name));
+    GtkWidget *combo;
+    
+#ifdef HAVE_GTK_COMBO_BOX_TEXT_NEW
+    combo = gtk_combo_box_text_new();
+#else
+    combo = gtk_combo_box_new_text();
+#endif
+    profilegui_add_combo_items_by_name(combo, name);
+    gtk_buildable_set_name(GTK_BUILDABLE(combo), name);
+    gtk_buildable_add_child(GTK_BUILDABLE(box), pg->capp.builder,
+            G_OBJECT(combo), NULL);
+    gtk_box_pack_start(box, combo, TRUE, TRUE, 0);
+    gtk_widget_show(combo);
+}
+
+static void profile_gui_make_combos(ProfileGUI *pg)
+{
+    profilegui_make_a_combo(pg, "exit_action");
+    profilegui_make_a_combo(pg, "backspace_binding");
+    profilegui_make_a_combo(pg, "delete_binding");
+    profilegui_make_a_combo(pg, "tab_pos");
+}
+
 /* Loads a Profile and creates a working dialog box for it */
 ProfileGUI *profilegui_open(const char *profile_name, GdkScreen *scrn)
 {
     static DynamicOptions *profiles = NULL;
     ProfileGUI *pg;
     char *title;
-    static const char *obj_names = { "Profile_Editor", "ssh_dialog", NULL };
+    static const char *obj_names[] = { "Profile_Editor", "ssh_dialog", NULL };
+    GError *error = NULL;
 
     if (!profilegui_being_edited)
     {
@@ -633,7 +724,7 @@ ProfileGUI *profilegui_open(const char *profile_name, GdkScreen *scrn)
 
     pg = g_new0(ProfileGUI, 1);
     pg->profile_name = g_strdup(profile_name);
-    pg->profile = dynamic_options_lookup_and_ref(profiles, profile_name,
+    pg->capp.options = dynamic_options_lookup_and_ref(profiles, profile_name,
         "roxterm profile");
 
     pg->capp.builder = gtk_builder_new();
@@ -651,6 +742,8 @@ ProfileGUI *profilegui_open(const char *profile_name, GdkScreen *scrn)
     title = g_strdup_printf(_("ROXTerm Profile \"%s\""), profile_name);
     gtk_window_set_title(GTK_WINDOW(pg->dialog), title);
     g_free(title);
+    
+    profile_gui_make_combos(pg);
     
     profilegui_setup_list_store(pg);
 
@@ -692,7 +785,7 @@ void profilegui_delete(ProfileGUI * pg)
         gtk_widget_destroy(pg->ssh_dialog);
     }
     UNREF_LOG(g_object_unref(pg->list_store));
-    UNREF_LOG(g_object_unref(pg->builder));
+    UNREF_LOG(g_object_unref(pg->capp.builder));
     dynamic_options_unref(dynopts, pg->profile_name);
     g_free(pg->profile_name);
     drag_receive_data_delete(pg->bgimg_drd);

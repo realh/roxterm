@@ -51,7 +51,7 @@ void capplet_set_float(Options * options, const char *name, double value);
 /* Returns -1 if there's an error */
 int capplet_which_radio_is_selected(GtkWidget *widget);
 
-void capplet_set_radio_by_index(CappletData *capp,
+void capplet_set_radio_by_index(GtkBuilder *builder,
         const char *basename, int index);
 
 /**********************************************/

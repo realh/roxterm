@@ -65,12 +65,13 @@ static void drag_data_received(GtkWidget *widget, GdkDragContext *context,
     switch (info)
     {
         case ROXTERM_DRAG_TARGET_TEXT_PLAIN:
-            if (selection_data->format != 8
-                || selection_data->length == 0)
+            if (gtk_selection_data_get_format(selection_data) != 8
+                || gtk_selection_data_get_length(selection_data) == 0)
             {
                 g_critical(_("text/plain dropped on widget had wrong "
                             "format (%d) or length (%d)"),
-                            selection_data->format, selection_data->length);
+                            gtk_selection_data_get_format(selection_data),
+                            gtk_selection_data_get_length(selection_data));
                 return;
             }
             /* Fall-through */
@@ -89,19 +90,21 @@ static void drag_data_received(GtkWidget *widget, GdkDragContext *context,
              * The data contains the URL, a \n, then the
              * title of the web page.
              */
-            if (selection_data->format != 8 || selection_data->length == 0
-                || (selection_data->length % 2) != 0)
+            if (gtk_selection_data_get_format(selection_data) != 8
+                ||gtk_selection_data_get_length(selection_data) == 0
+                || (gtk_selection_data_get_length(selection_data) % 2) != 0)
             {
                 g_critical(_("Mozilla url dropped on widget had wrong "
                             "format (%d) or length (%d)"),
-                            selection_data->format,
-                            selection_data->length);
+                            gtk_selection_data_get_format(selection_data),
+                            gtk_selection_data_get_length(selection_data));
                 return;
             }
 
             gstr = g_string_new(NULL);
-            char_len = selection_data->length / 2;
-            char_data = (const guint16 *) selection_data->data;
+            char_len = gtk_selection_data_get_length(selection_data) / 2;
+            char_data = (const guint16 *)
+                    gtk_selection_data_get_data(selection_data);
             i = 0;
             while (i < char_len)
             {
@@ -120,18 +123,20 @@ static void drag_data_received(GtkWidget *widget, GdkDragContext *context,
             g_string_free(gstr, TRUE);
             break;
         case ROXTERM_DRAG_TARGET_URI_LIST:
-            if (selection_data->format != 8
-                || selection_data->length == 0)
+            if (gtk_selection_data_get_format(selection_data) != 8
+                || gtk_selection_data_get_length(selection_data) == 0)
             {
                 g_critical(_("URI list dropped on widget had wrong "
                             "format (%d) or length (%d)"),
-                            selection_data->format, selection_data->length);
+                            gtk_selection_data_get_format(selection_data),
+                            gtk_selection_data_get_length(selection_data));
                 return;
             }
             /* Don't use gtk_selection_data_get_text because it returns UTF-8
              * while g_filename_from_uri wants ASCII in */
-            uri_list = g_strndup((const char *) selection_data->data,
-                    selection_data->length);
+            uri_list = g_strndup((const char *)
+                    gtk_selection_data_get_data(selection_data),
+                    gtk_selection_data_get_length(selection_data));
             uris = g_strsplit(uri_list, "\r\n", 0);
             for (i = 0; uris && uris[i]; ++i)
             {
@@ -165,7 +170,8 @@ static void drag_data_received(GtkWidget *widget, GdkDragContext *context,
         case ROXTERM_DRAG_TARGET_TAB:
             if (drd->tab_handler)
             {
-                drd->tab_handler(*(GtkWidget**) selection_data->data,
+                drd->tab_handler(*(GtkWidget**)
+                        gtk_selection_data_get_data(selection_data),
                         drd->data);
             }
     }

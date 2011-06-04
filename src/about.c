@@ -109,7 +109,7 @@ void about_dialog_show(GtkWindow *parent,
     if (parent)
         gtk_window_set_transient_for(GTK_WINDOW(ad), parent);
 #if USE_ACTIVATE_LINK
-    g_signal_connect(ad, "activate-link", uri_handler, hook_data);
+    g_signal_connect(ad, "activate-link", G_CALLBACK(uri_handler), hook_data);
     gtk_dialog_run(GTK_DIALOG(ad));
 #endif
     gtk_widget_destroy(ad);

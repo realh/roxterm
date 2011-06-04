@@ -95,7 +95,7 @@ void capplet_set_text_entry(CappletData *capp,
 void capplet_set_radio(CappletData *capp,
     const char *name, int dflt)
 {
-    capplet_set_radio_by_index(glade, name, 
+    capplet_set_radio_by_index(capp->builder, name, 
             options_lookup_int_with_default(capp->options, name, dflt));
 }
 

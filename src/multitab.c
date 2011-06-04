@@ -26,6 +26,12 @@
 
 #define HORIZ_TAB_WIDTH 120
 
+#if GTK_CHECK_VERSION(3,0,0)
+#define HAVE_COLORMAP 0
+#else
+#define HAVE_COLORMAP 1
+#endif
+
 struct MultiTab {
     MultiWin *parent;
     GtkWidget *widget;            /* Top-level widget in notebook */
@@ -539,6 +545,7 @@ MultiTab *multi_tab_get_tab_under_pointer(int x, int y)
     GList *tab_node;
     GtkPositionType tab_pos;
     gboolean vert_tabs;
+    GtkAllocation allocation;
 
     if (!win)
         return NULL;
@@ -555,11 +562,12 @@ MultiTab *multi_tab_get_tab_under_pointer(int x, int y)
 
         if (!GTK_WIDGET_MAPPED(label))
             continue;
-        gdk_window_get_origin(label->window, &x0, &y0);
-        x0 += label->allocation.x;
-        y0 += label->allocation.y;
-        x1 = x0 + label->allocation.width;
-        y1 = y0 + label->allocation.height;
+        gdk_window_get_origin(gtk_widget_get_window(label), &x0, &y0);
+        gtk_widget_get_allocation(label, &allocation);
+        x0 += allocation.x;
+        y0 += allocation.y;
+        x1 = x0 + allocation.width;
+        y1 = y0 + allocation.height;
         if (vert_tabs && y >= y0 && y < y1)
             return tab;
         else if (!vert_tabs && x >= x0 && x < x1)
@@ -785,8 +793,9 @@ void multi_win_set_title(MultiWin *win, const char *title)
 
 static void multi_win_set_icon_title(MultiWin *win, const char *title)
 {
-    if (win->gtkwin->window)
-        gdk_window_set_icon_name(win->gtkwin->window, title);
+    GdkWindow *w = gtk_widget_get_window(win->gtkwin);
+    if (w)
+        gdk_window_set_icon_name(w, title);
 }
 
 void multi_win_select_tab(MultiWin * win, MultiTab * tab)
@@ -906,13 +915,13 @@ static gboolean multi_win_state_event_handler(GtkWidget *widget,
 
 static void multi_win_realize_handler(GtkWidget *win, gpointer data)
 {
-    GdkWindow *w = win->window;
+    GdkWindow *w = gtk_widget_get_window(win);
 
     gdk_window_set_group(w, w);
     (void) data;
 }
 
-static void multi_win_destroy_handler(GtkObject * obj, MultiWin * win)
+static void multi_win_destroy_handler(GObject * obj, MultiWin * win)
 {
     (void) obj;
 
@@ -936,7 +945,7 @@ static void multi_win_menutree_deleted_handler(MenuTree * tree, gpointer data)
 }
 
 static void
-multi_win_page_switched(GtkNotebook * notebook, GtkNotebookPage * page,
+multi_win_page_switched(GtkNotebook * notebook, GtkWidget *page,
     guint page_num, MultiWin * win)
 {
     MultiTab *tab = multi_tab_get_from_widget(
@@ -1122,7 +1131,8 @@ static void multi_win_name_tab_action(MultiWin * win)
 
     tab->rename_dialog = dialog_w;
     gtk_dialog_set_default_response(dialog, GTK_RESPONSE_APPLY);
-    gtk_box_pack_start(GTK_BOX(dialog->vbox), name_w, TRUE, TRUE, 8);
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(dialog)),
+            name_w, TRUE, TRUE, 8);
     gtk_entry_set_activates_default(name_e, TRUE);
     gtk_entry_set_text(name_e, name ? name : "");
     gtk_widget_show_all(dialog_w);
@@ -1174,13 +1184,14 @@ static void multi_win_set_window_title_action(MultiWin * win)
             "profile's title string."));
     int response;
     const char *title;
+    GtkBox *content_area = GTK_BOX(gtk_dialog_get_content_area(dialog));
 
     gtk_dialog_set_default_response(dialog, GTK_RESPONSE_APPLY);
-    gtk_box_pack_start(GTK_BOX(dialog->vbox), title_w, FALSE, TRUE, 8);
+    gtk_box_pack_start(content_area, title_w, FALSE, TRUE, 8);
     gtk_box_pack_start(GTK_BOX(hbox), img, FALSE, TRUE, 0);
     gtk_label_set_line_wrap(GTK_LABEL(tip_label), TRUE);
     gtk_box_pack_start(GTK_BOX(hbox), tip_label, TRUE, TRUE, 0);
-    gtk_box_pack_start(GTK_BOX(dialog->vbox), hbox, TRUE, TRUE, 8);
+    gtk_box_pack_start(content_area, hbox, TRUE, TRUE, 8);
     gtk_entry_set_activates_default(title_e, TRUE);
     gtk_entry_set_text(title_e, win->title_template ? win->title_template : "");
     gtk_widget_show_all(dialog_w);
@@ -1313,8 +1324,10 @@ static void multi_win_vscroll_by(MultiWin *win, double multiplier)
     adj = win->current_tab->adjustment;
     if (!adj)
         return;
-    newval = adj->value + multiplier * adj->step_increment;
-    newval = CLAMP(newval, 0, adj->upper - adj->page_size);
+    newval = gtk_adjustment_get_value(adj) +
+            multiplier * gtk_adjustment_get_step_increment(adj);
+    newval = CLAMP(newval, 0,
+            gtk_adjustment_get_upper(adj) - gtk_adjustment_get_page_size(adj));
     gtk_adjustment_set_value(adj, newval);
 }
 
@@ -1437,7 +1450,8 @@ void multi_win_show(MultiWin *win)
     gtk_widget_show(win->notebook);
     gtk_widget_show(win->vbox);
     gtk_widget_show(win->gtkwin);
-    g_object_set_data(G_OBJECT(win->gtkwin->window), "ROXTermWin", win);
+    g_object_set_data(G_OBJECT(gtk_widget_get_window(win->gtkwin)),
+            "ROXTermWin", win);
 }
 
 #if HAVE_COMPOSITE
@@ -1523,23 +1537,25 @@ MultiWin *multi_win_new_blank(const char *display_name, Options *shortcuts,
             G_CALLBACK(multi_win_destroy_handler), win);
     if (multi_win_delete_handler)
     {
-        g_signal_connect(GTK_OBJECT(win->gtkwin), "delete-event",
+        g_signal_connect(win->gtkwin, "delete-event",
                 G_CALLBACK(multi_win_delete_handler), win);
     }
     
 #if HAVE_COMPOSITE
     {
         GdkScreen *screen = gtk_widget_get_screen(win->gtkwin);
+#if HAVE_COLORMAP
         GdkColormap *colormap = gdk_screen_get_rgba_colormap(screen);
     
         if (colormap)
             gtk_widget_set_colormap(win->gtkwin, colormap);
+#endif /* HAVE_COLORMAP */
         multi_win_composited_changed(screen, win);
         win->composited_changed_tag = g_signal_connect(screen,
                 "composited-changed",
                 G_CALLBACK(multi_win_composited_changed), win);
     }
-#endif
+#endif /* HAVE_COMPOSITE */
 
     win->vbox = gtk_vbox_new(FALSE, 0);
     gtk_container_add(GTK_CONTAINER(win->gtkwin), win->vbox);
@@ -2009,9 +2025,9 @@ gboolean multi_win_is_fullscreen(MultiWin *win)
 
 gboolean multi_win_is_maximised(MultiWin *win)
 {
-    return (win->gtkwin->window &&
-            (gdk_window_get_state(win->gtkwin->window) &
-                GDK_WINDOW_STATE_MAXIMIZED) != 0);
+    GdkWindow *w = gtk_widget_get_window(win->gtkwin);
+    
+    return (w && (gdk_window_get_state(w) & GDK_WINDOW_STATE_MAXIMIZED) != 0);
 }
 
 int multi_win_get_zoom_index(MultiWin *win)

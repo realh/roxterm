@@ -622,7 +622,7 @@ static void menutree_destroy(MenuTree * tree)
     g_free(tree);
 }
 
-static void menutree_destroy_widget_handler(GtkObject * obj, MenuTree * tree)
+static void menutree_destroy_widget_handler(GObject * obj, MenuTree * tree)
 {
     (void) obj;
 
@@ -648,8 +648,8 @@ static MenuTree *menutree_new_common(Options *shortcuts,
 
     builder(tree, shortcuts, menu_type);
 
-    g_signal_connect(GTK_OBJECT(tree->top_level),
-        "destroy", G_CALLBACK(menutree_destroy_widget_handler), tree);
+    g_signal_connect(tree->top_level,
+            "destroy", G_CALLBACK(menutree_destroy_widget_handler), tree);
 
     gtk_widget_show_all(tree->top_level);
     return tree;

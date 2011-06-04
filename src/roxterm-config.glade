@@ -2775,6 +2775,7 @@
                                 <property name="can_focus">True</property>
                                 <property name="tooltip_text" translatable="yes">Select a row to choose which colour scheme the buttons below apply to. Select a radio button to set the colour scheme used when roxterm is run without a --colour-scheme option.</property>
                                 <property name="headers_visible">False</property>
+                                <signal name="row_activated" handler="on_row_activated"/>
                               </object>
                             </child>
                           </object>
@@ -3043,6 +3044,7 @@
                                 <property name="can_focus">True</property>
                                 <property name="tooltip_text" translatable="yes">Select a row to choose which profile the buttons below apply to. Select a radio button to set the profile used when roxterm is run without a --profile option.</property>
                                 <property name="headers_visible">False</property>
+                                <signal name="row_activated" handler="on_row_activated"/>
                               </object>
                             </child>
                           </object>

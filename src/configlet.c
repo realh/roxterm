@@ -56,10 +56,9 @@ typedef struct {
 } ConfigletList;
 
 struct ConfigletData {
+    CappletData capp;
     gboolean ignore_destroy;
-    GladeXML *glade;
     GtkWidget *widget;
-    Options *options;
     ConfigletList profile;
     ConfigletList colours;
     ConfigletList shortcuts;
@@ -74,8 +73,6 @@ enum {
 };
 
 static gboolean ignore_changes = FALSE;
-
-static GladeXML *configlet_glade;
 
 static ConfigletData *configlet_data;
 
@@ -122,7 +119,9 @@ static void configlet_set_sensitive_button(const char *wbasename,
         const char *butname, gboolean sensitive)
 {
     char *button_name = g_strdup_printf("%s_%s", wbasename, butname);
-    GtkWidget *widget = glade_xml_get_widget(configlet_glade, button_name);
+    GtkWidget *widget =
+            GTK_WIDGET(gtk_builder_get_object(configlet_data->builder,
+                    button_name));
 
     g_free(button_name);
     g_return_if_fail(widget != NULL);
@@ -133,7 +132,7 @@ static void configlet_set_sensitive(const char *wbasename, gboolean sensitive)
 {
     int lock;
 
-    if (!configlet_glade)
+    if (!configlet_builder)
         return;
     if (!strcmp(wbasename, "profile"))
     {
@@ -201,7 +200,7 @@ static void configlet_delete(ConfigletData *cg)
     {
         UNREF_LOG(g_object_unref(cg->glade));
         cg->glade = NULL;
-        configlet_glade = NULL;
+        configlet_builder = NULL;
     }
     g_free(cg);
     configlet_data = NULL;
@@ -926,53 +925,6 @@ static void on_rename_clicked(GtkButton *button, ConfigletList *cl)
 
 /********************************************************************/
 
-#define CONFIGLET_CONNECT(glade, data, h) \
-    glade_xml_signal_connect_data(glade, #h, (GCallback) h, (data))
-
-#define CG_CONNECT(cg, h) \
-    CONFIGLET_CONNECT((cg)->glade, cg, h)
-
-
-static void connect_generic_handlers(ConfigletData *cg)
-{
-    CG_CONNECT(cg, on_Configlet_destroy);
-    CG_CONNECT(cg, on_Configlet_close);
-    CG_CONNECT(cg, on_Configlet_response);
-}
-
-static void connect_a_list_handler(ConfigletList *cl, GladeXML *glade,
-        const char *wbasename, const char *signame_stub, GCallback handler)
-{
-    char *signame;
-
-    signame = g_strdup_printf("on_%s_%s_clicked", wbasename, signame_stub);
-    glade_xml_signal_connect_data(glade, signame, handler, cl);
-    g_free(signame);
-}
-
-static void connect_list_handlers(ConfigletList *cl, GladeXML *glade)
-{
-    char *wbasename = convert_family_name(cl->family);
-
-    if (!cl->encodings && strcmp(cl->family, "Shortcuts"))
-    {
-        connect_a_list_handler(cl, glade, wbasename, "edit",
-                G_CALLBACK(on_edit_clicked));
-        g_signal_connect(cl->tvwidget, "row-activated",
-                G_CALLBACK(on_row_activated), cl);
-    }
-    connect_a_list_handler(cl, glade, wbasename, "delete",
-            G_CALLBACK(on_delete_clicked));
-    connect_a_list_handler(cl, glade, wbasename, "copy",
-            G_CALLBACK(on_copy_clicked));
-    connect_a_list_handler(cl, glade, wbasename, "rename",
-            G_CALLBACK(on_rename_clicked));
-    g_free(wbasename);
-
-    g_signal_connect(gtk_tree_view_get_selection(cl->tvwidget), "changed",
-                  G_CALLBACK(on_tree_selection_changed), cl);
-}
-
 static void configlet_setup_family(ConfigletData *cg, ConfigletList *cl,
         const char *family)
 {
@@ -987,7 +939,6 @@ static void configlet_setup_family(ConfigletData *cg, ConfigletList *cl,
     configlet_list_init(cl, widget, family);
     shade_actions_for_name(cl, cname = configlet_get_configured_name(cl));
     g_free(cname);
-    connect_list_handlers(cl, cg->glade);
     g_free(wbasename);
 }
 
@@ -1015,7 +966,7 @@ gboolean configlet_open(GdkScreen *scrn)
         }
         if (scrn)
             gtk_window_set_screen(GTK_WINDOW(cg->widget), scrn);
-        configlet_glade = cg->glade;
+        configlet_builder = cg->glade;
 
         cg->options = options_open("Global", "roxterm options");
 
