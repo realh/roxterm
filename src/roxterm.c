@@ -830,7 +830,9 @@ static void roxterm_launch_email(ROXTermData *roxterm, const char *uri)
 static void roxterm_launch_uri(ROXTermData *roxterm)
 {
     if (roxterm->match_type == ROXTerm_Match_MailTo)
+    {
         roxterm_launch_email(roxterm, roxterm->matched_url);
+    }
     else
         roxterm_launch_browser(roxterm, roxterm->matched_url);
 }
@@ -1324,6 +1326,21 @@ static void roxterm_about_email_hook(GtkAboutDialog *about,
 {
     roxterm_launch_email(data, link);
 }
+
+#if USE_ACTIVATE_LINK
+static gboolean roxterm_about_uri_hook(GtkAboutDialog *about,
+        gchar *link, gpointer data)
+{
+    if (g_str_has_prefix(link, "mailto:"))
+    {
+        roxterm_launch_email(data, link + 7);
+    }
+    else
+    {
+        roxterm_launch_browser(data, link);
+    }
+}
+#endif
 
 static gboolean roxterm_popup_handler(GtkWidget * widget, ROXTermData * roxterm)
 {
@@ -1821,7 +1838,12 @@ static void roxterm_show_about(MultiWin * win)
      * same GdkScreen.
      */
     about_dialog_show(GTK_WINDOW(multi_win_get_widget(win)),
-            roxterm_about_www_hook, roxterm_about_email_hook, roxterm);
+#if USE_ACTIVATE_LINK
+            roxterm_about_uri_hook,
+#else
+            roxterm_about_www_hook, roxterm_about_email_hook,
+#endif
+            roxterm);
 }
 
 static char *roxterm_get_help_filename(const char *base_dir, const char *lang)

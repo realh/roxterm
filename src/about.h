@@ -24,12 +24,21 @@
 #include "defns.h"
 #endif
 
-/* parent isn't vital; it just allows the use of gtk_show_about_dialog, but
- * that isn't actually used in the current implementation.
- */
+#if GTK_CHECK_VERSION(2,25,0)
+#define USE_ACTIVATE_LINK 1
+#else
+#define USE_ACTIVATE_LINK 0
+#endif
+
 void about_dialog_show(GtkWindow *parent,
-		GtkAboutDialogActivateLinkFunc www_hook,
-		GtkAboutDialogActivateLinkFunc email_hook, gpointer hook_data);
+#if USE_ACTIVATE_LINK
+        gboolean (*uri_handler)(GtkAboutDialog *, char *, gpointer),
+#else
+        AboutDialogActivateLinkFunc www_hook,
+        AboutDialogActivateLinkFunc email_hook,
+#endif
+        gpointer hook_data
+);
 
 #endif /* ABOUT_H */
 

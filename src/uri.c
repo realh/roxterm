@@ -128,8 +128,8 @@ char *uri_get_mailer_command(const char *address, const char *mailer)
 {
 	char *preferred_mailer = NULL;
 	char *cmd = NULL;
-	const char *mailers[] = { "mutt", "thunderbird", "sylpheed", "balsa",
-		"evolution", "mahogany", "pine", "elm", "mozilla", "mail", NULL
+	const char *mailers[] = { "claws-mail", "thunderbird", "balsa",
+		"evolution", "mutt", "pine", "elm", "mozilla", "mail", NULL
 	};
 
 	if (!mailer || !mailer[0])
