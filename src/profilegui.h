@@ -24,9 +24,9 @@
 #include "defns.h"
 #endif
 
-/* Editing of a Profile with a GUI (using libglade) */
+/* Editing of a Profile with a GUI (using GtkBuilder) */
 
-typedef struct ProfileGUI ProfileGUI;
+typedef struct _ProfileGUI ProfileGUI;
 
 /* Loads a Profile and creates a working dialog box for it.
  * Creates new profile if it doesn't already exist */

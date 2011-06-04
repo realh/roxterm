@@ -103,10 +103,7 @@ AS_IF([test $enable_gtk3 != no],
 [
   PKG_CHECK_MODULES(gtk3, [gtk+-3.0],
   [
-    PKG_CHECK_MODULES(vte3, [vte-2.90],
-    [
-      PKG_CHECK_MODULES(gladeui, [gladeui-2.0], [found_gtk3=yes], [true])
-    ], [true])
+    PKG_CHECK_MODULES(vte3, [vte-2.90],[found_gtk3=yes], [true])
   ], [true])
 ])
 AS_IF([test $enable_gtk3 = yes -a $found_gtk3=no],
@@ -116,8 +113,7 @@ enable_gtk3=$found_gtk3
 AS_IF([test $enable_gtk3 = no],
 [
     PKG_CHECK_MODULES(gtk2, [gtk+-2.0 >= 2.6.0])
-    PKG_CHECK_MODULES(vte, [vte >= 0.11.11])
-    PKG_CHECK_MODULES(glade, [libglade-2.0])
+    PKG_CHECK_MODULES(vte, [vte >= 0.20])
     gtk_CFLAGS=$gtk2_CFLAGS
     gtk_LIBS=$gtk2_LIBS
 ],
@@ -126,8 +122,6 @@ AS_IF([test $enable_gtk3 = no],
     gtk_LIBS=$gtk3_LIBS
     vte_CFLAGS=$vte3_CFLAGS
     vte_LIBS=$vte3_LIBS
-    glade_CFLAGS=$gladeui_CFLAGS
-    glade_LIBS=$gladeui_LIBS
 ])
 
 PKG_CHECK_MODULES(dbus, [dbus-glib-1 >= 0.22])
@@ -170,12 +164,11 @@ TH_CHECK_ALTERNATIVE_FUNCS(dbus-1,
     dbus_message_iter_get_basic, HAVE_DBUS_MESSAGE_ITER_GET_BASIC,
     dbus_message_iter_get_string, HAVE_DBUS_MESSAGE_ITER_GET_STRING)
 
-AC_CHECK_FUNCS_ONCE(gtk_widget_get_realized g_mkdir_with_parents gtk_file_chooser_button_new g_file_set_contents get_current_dir_name)
+AC_CHECK_FUNCS_ONCE(gtk_widget_get_realized g_mkdir_with_parents g_file_set_contents get_current_dir_name gtk_combo_box_text_new)
 tmp_CFLAGS="$CFLAGS"
 tmp_LIBS="$LIBS"
 CFLAGS="$vte_CFLAGS"
 LIBS="$vte_LIBS"
-AC_CHECK_FUNCS(vte_terminal_set_cursor_blink_mode vte_terminal_match_add_gregex vte_terminal_set_cursor_shape)
 CFLAGS="$tmp_CFLAGS"
 LIBS="$tmp_LIBS"
 AM_CONDITIONAL(HAVE_G_FILE_SET_CONTENTS, test x$HAVE_G_FILE_SET_CONTENTS = x1)
@@ -189,8 +182,8 @@ dnl Output variables etc
 
 AC_SUBST(roxterm_CFLAGS, ["$vte_CFLAGS $sm_CFLAGS"])
 AC_SUBST(roxterm_LIBS, ["$vte_LIBS $sm_LIBS"])
-AC_SUBST(roxterm_config_CFLAGS, [$glade_CFLAGS])
-AC_SUBST(roxterm_config_LIBS, [$glade_LIBS])
+AC_SUBST(roxterm_config_CFLAGS, [$gtk_CFLAGS])
+AC_SUBST(roxterm_config_LIBS, [$gtk_LIBS])
 
 AC_SUBST(APPINFO_STRING, "${VERSION} (${ISODATE})")
 

@@ -182,12 +182,8 @@ inline static void roxterm_match_add(ROXTermData *roxterm, VteTerminal *vte,
     ROXTerm_MatchMap map;
 
     map.type = type;
-#ifdef HAVE_VTE_TERMINAL_MATCH_ADD_GREGEX
     map.tag = vte_terminal_match_add_gregex(vte,
             g_regex_new(match, 0, 0, NULL), 0);
-#else
-    map.tag = vte_terminal_match_add(vte, match);
-#endif
     vte_terminal_match_set_cursor_type(vte, map.tag, GDK_HAND2);
     g_array_append_val(roxterm->match_map, map);
 }
@@ -2565,17 +2561,10 @@ roxterm_update_allow_bold(ROXTermData * roxterm, VteTerminal * vte)
         (roxterm->profile, "allow_bold") != 0);
 }
 
-#ifdef HAVE_VTE_TERMINAL_SET_CURSOR_BLINK_MODE
-#define CURSOR_BLINK_OPTION "cursor_blink_mode"
-#else
-#define CURSOR_BLINK_OPTION "cursor_blinks"
-inline
-#endif
 static void
 roxterm_update_cursor_blink_mode(ROXTermData * roxterm, VteTerminal * vte)
 {
-#ifdef HAVE_VTE_TERMINAL_SET_CURSOR_BLINK_MODE
-    int o = options_lookup_int(roxterm->profile, CURSOR_BLINK_OPTION);
+    int o = options_lookup_int(roxterm->profile, "cursor_blink_mode");
     
     if (o == -1)
     {
@@ -2584,20 +2573,14 @@ roxterm_update_cursor_blink_mode(ROXTermData * roxterm, VteTerminal * vte)
             o ^= 3;
     }
     vte_terminal_set_cursor_blink_mode(vte, o);
-#else
-    vte_terminal_set_cursor_blinks(vte, options_lookup_int
-        (roxterm->profile, CURSOR_BLINK_OPTION) == 1);
-#endif
 }
 
-#ifdef HAVE_VTE_TERMINAL_SET_CURSOR_SHAPE
 inline static void
 roxterm_update_cursor_shape(ROXTermData * roxterm, VteTerminal * vte)
 {
     vte_terminal_set_cursor_shape(vte, options_lookup_int_with_default
         (roxterm->profile, "cursor_shape", 0));
 }
-#endif
 
 inline static void
 roxterm_update_mouse_autohide(ROXTermData * roxterm, VteTerminal * vte)
@@ -2724,9 +2707,7 @@ static void roxterm_apply_profile(ROXTermData *roxterm, VteTerminal *vte)
     roxterm_update_visible_bell(roxterm, vte);
     roxterm_update_allow_bold(roxterm, vte);
     roxterm_update_cursor_blink_mode(roxterm, vte);
-#ifdef HAVE_VTE_TERMINAL_SET_CURSOR_SHAPE
     roxterm_update_cursor_shape(roxterm, vte);
-#endif
 
     roxterm_apply_colour_scheme(roxterm, vte);
     roxterm_update_background(roxterm, vte);
@@ -3041,16 +3022,14 @@ static void roxterm_reflect_profile_change(Options * profile, const char *key)
         {
             roxterm_update_visible_bell(roxterm, vte);
         }
-        else if (!strcmp(key, CURSOR_BLINK_OPTION))
+        else if (!strcmp(key, "cursor_blink_mode"))
         {
             roxterm_update_cursor_blink_mode(roxterm, vte);
         }
-#ifdef HAVE_VTE_TERMINAL_SET_CURSOR_SHAPE
         else if (!strcmp(key, "cursor_shape"))
         {
             roxterm_update_cursor_shape(roxterm, vte);
         }
-#endif
         else if (!strcmp(key, "mouse_autohide"))
         {
             roxterm_update_mouse_autohide(roxterm, vte);

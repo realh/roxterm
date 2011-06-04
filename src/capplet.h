@@ -28,7 +28,10 @@
 
 #include "options.h"
 
-#include <glade/glade-xml.h>
+typedef struct {
+    GtkBuilder *builder;
+    Options *options;
+} CappletData;
 
 const char *capplet_get_glade_filename(void);
 
@@ -48,55 +51,51 @@ void capplet_set_float(Options * options, const char *name, double value);
 /* Returns -1 if there's an error */
 int capplet_which_radio_is_selected(GtkWidget *widget);
 
-void capplet_set_radio_by_index(GladeXML *glade,
-		const char *basename, int index);
+void capplet_set_radio_by_index(CappletData *capp,
+        const char *basename, int index);
 
 /**********************************************/
 /* Generic handlers */
 
-void on_editable_changed(GtkEditable * editable, char *pflag);
+void on_boolean_toggled(GtkToggleButton * button, CappletData *);
 
-void on_boolean_toggled(GtkToggleButton * button, Options * options);
+void on_radio_toggled(GtkToggleButton * button, CappletData *);
 
-void on_radio_toggled(GtkToggleButton * button, Options * options);
+void on_spin_button_changed(GtkSpinButton * button, CappletData *);
 
-void on_spin_button_changed(GtkSpinButton * button, Options * options);
+void on_float_spin_button_changed(GtkSpinButton * button, CappletData *);
 
-void on_float_spin_button_changed(GtkSpinButton * button, Options * options);
+void on_float_range_changed(GtkRange * range, CappletData *);
 
-void on_float_range_changed(GtkRange * range, Options * options);
-
-void on_combo_changed(GtkComboBox * combo, Options * options);
-
-/*void on_file_chosen(GtkFileChooser * chooser, Options * options);*/
+void on_combo_changed(GtkComboBox * combo, CappletData *);
 
 /**********************************************/
 
 /* Convenience functions to lookup an option and set the widget with the same
  * name */
-void capplet_set_boolean_toggle(GladeXML * glade, Options * options,
-	const char *name, gboolean dflt);
+void capplet_set_boolean_toggle(CappletData *capp,
+    const char *name, gboolean dflt);
 
-void capplet_set_text_entry(GladeXML * glade, Options * options,
-	const char *name, const char *dflt);
+void capplet_set_text_entry(CappletData *capp,
+    const char *name, const char *dflt);
 
-void capplet_set_radio(GladeXML * glade, Options * options,
-	const char *name, int dflt);
+void capplet_set_radio(CappletData *capp,
+    const char *name, int dflt);
 
-void capplet_set_spin_button(GladeXML * glade, Options * options,
-	const char *name, int dflt);
+void capplet_set_spin_button(CappletData *capp,
+    const char *name, int dflt);
 
-void capplet_set_spin_button_float(GladeXML * glade, Options * options,
-	const char *name);
+void capplet_set_spin_button_float(CappletData *capp,
+    const char *name);
 
-void capplet_set_float_range(GladeXML * glade, Options * options,
-	const char *name, double dflt);
+void capplet_set_float_range(CappletData *capp,
+    const char *name, double dflt);
 
-void capplet_set_combo(GladeXML * glade, Options * options,
-	const char *name, int dflt);
+void capplet_set_combo(CappletData *capp,
+    const char *name, int dflt);
 
 /*void capplet_set_filename(GladeXML * glade, Options * options,
-	const char *name);*/
+    const char *name);*/
 
 /* Keep track of number of open windows and quit when it reaches 0 */
 void capplet_inc_windows(void);
