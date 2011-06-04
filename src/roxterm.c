@@ -473,7 +473,7 @@ static char **roxterm_get_environment(ROXTermData *roxterm, const char *term)
     const char *cterm;
 
     new_env[EnvWindowId * 2 + 1] = g_strdup_printf("%ld",
-            GDK_WINDOW_XWINDOW(roxterm->widget->window));
+            GDK_WINDOW_XWINDOW(gtk_widget_get_window(roxterm->widget)));
     new_env[EnvRoxtermId * 2 + 1] = g_strdup_printf("%p", roxterm);
     for (n = 0, link = roxterm_terms; link; ++n, link = g_list_next(link))
     {
@@ -1969,8 +1969,7 @@ static gboolean roxterm_post_child_exit(ROXTermData *roxterm)
     {
         GtkWidget *dialog = gtk_message_dialog_new(
                 roxterm_get_toplevel(roxterm),
-                GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT |
-                        GTK_DIALOG_NO_SEPARATOR,
+                GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
                 GTK_MESSAGE_QUESTION, GTK_BUTTONS_NONE,
                 _("The command in this terminal has terminated. "
                 "What do you want to do with the terminal now?"));
@@ -2872,7 +2871,7 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
     *roxterm_out = roxterm;
 
     roxterm->widget = vte_terminal_new();
-#if HAVE_COMPOSITE
+#if HAVE_COMPOSITE && !GTK_CHECK_VERSION(3, 0, 0)
     {
         GdkScreen *screen = gtk_widget_get_screen(multi_win_get_widget(win));
         GdkColormap *colormap = gdk_screen_get_rgba_colormap(screen);
@@ -3935,8 +3934,8 @@ static gboolean roxterm_win_delete_handler(GtkWindow *gtkwin, GdkEvent *event,
     gtk_toggle_button_set_state(GTK_TOGGLE_BUTTON(noshow), FALSE);
     g_signal_connect(noshow, "toggled",
             G_CALLBACK(dont_show_again_toggled), &d);
-    gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), noshow,
-            FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),
+            noshow, FALSE, FALSE, 0);
     gtk_widget_show(noshow);
     response = gtk_dialog_run(GTK_DIALOG(dialog)) != GTK_RESPONSE_OK;
     gtk_widget_destroy(dialog);
