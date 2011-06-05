@@ -740,15 +740,22 @@ static gboolean edit_selected_thing(ConfigletList *cl)
     return TRUE;
 }
 
-void on_edit_clicked(GtkButton *button, ConfigletList *cl)
+void on_profile_edit_clicked(GtkButton *button, ConfigletData *cg)
 {
-    edit_selected_thing(cl);
+    edit_selected_thing(&cg->profile);
+}
+
+void on_colours_edit_clicked(GtkButton *button, ConfigletData *cg)
+{
+    edit_selected_thing(&cg->colours);
 }
 
 void on_row_activated(GtkTreeView *tvwidget, GtkTreePath *path,
-        GtkTreeViewColumn *column, ConfigletList *cl)
+        GtkTreeViewColumn *column, ConfigletData *cg)
 {
     GtkTreeIter iter;
+    ConfigletList *cl = g_object_get_data(G_OBJECT(tvwidget),
+            "ROXTermConfigletList");
 
     if (gtk_tree_model_get_iter(GTK_TREE_MODEL(cl->list), &iter, path))
         edit_thing_by_iter(cl, &iter);
@@ -769,7 +776,7 @@ static void on_tree_selection_changed(GtkTreeSelection *selection,
 }
 
 /* This is Add for Encodings */
-void on_copy_clicked(GtkButton *button, ConfigletList *cl)
+static void on_copy_clicked(ConfigletList *cl)
 {
     char *old_name = get_selected_name(cl);
     char *title = NULL;
@@ -815,7 +822,27 @@ void on_copy_clicked(GtkButton *button, ConfigletList *cl)
     g_free(title);
 }
 
-void on_delete_clicked(GtkButton *button, ConfigletList *cl)
+void on_profile_copy_clicked(GtkButton *button, ConfigletData *cg)
+{
+    on_copy_clicked(&cg->profile);
+}
+
+void on_colours_copy_clicked(GtkButton *button, ConfigletData *cg)
+{
+    on_copy_clicked(&cg->colours);
+}
+
+void on_shortcuts_copy_clicked(GtkButton *button, ConfigletData *cg)
+{
+    on_copy_clicked(&cg->shortcuts);
+}
+
+void on_encodings_copy_clicked(GtkButton *button, ConfigletData *cg)
+{
+    on_copy_clicked(&cg->encodings);
+}
+
+static void on_delete_clicked(ConfigletList *cl)
 {
     char *name;
 
@@ -875,8 +902,28 @@ void on_delete_clicked(GtkButton *button, ConfigletList *cl)
     g_free(name);
 }
 
+void on_profile_delete_clicked(GtkButton *button, ConfigletData *cg)
+{
+    on_delete_clicked(&cg->profile);
+}
+
+void on_colours_delete_clicked(GtkButton *button, ConfigletData *cg)
+{
+    on_delete_clicked(&cg->colours);
+}
+
+void on_shortcuts_delete_clicked(GtkButton *button, ConfigletData *cg)
+{
+    on_delete_clicked(&cg->shortcuts);
+}
+
+void on_encodings_delete_clicked(GtkButton *button, ConfigletData *cg)
+{
+    on_delete_clicked(&cg->encodings);
+}
+
 /* This is Edit for Encodings */
-void on_rename_clicked(GtkButton *button, ConfigletList *cl)
+void on_rename_clicked(ConfigletList *cl)
 {
     char *title = NULL;
     char const **existing = NULL;
@@ -919,6 +966,26 @@ void on_rename_clicked(GtkButton *button, ConfigletList *cl)
     g_free(title);
 }
 
+void on_profile_rename_clicked(GtkButton *button, ConfigletData *cg)
+{
+    on_rename_clicked(&cg->profile);
+}
+
+void on_colours_rename_clicked(GtkButton *button, ConfigletData *cg)
+{
+    on_rename_clicked(&cg->colours);
+}
+
+void on_shortcuts_rename_clicked(GtkButton *button, ConfigletData *cg)
+{
+    on_rename_clicked(&cg->shortcuts);
+}
+
+void on_encodings_rename_clicked(GtkButton *button, ConfigletData *cg)
+{
+    on_rename_clicked(&cg->encodings);
+}
+
 /********************************************************************/
 
 static void configlet_setup_family(ConfigletData *cg, ConfigletList *cl,
@@ -933,6 +1000,7 @@ static void configlet_setup_family(ConfigletData *cg, ConfigletList *cl,
     g_free(widget_name);
     g_return_if_fail(widget != NULL);
     cl->cg = cg;
+    g_object_set_data(G_OBJECT(widget), "ROXTermConfigletList", cl);
     configlet_list_init(cl, widget, family);
     shade_actions_for_name(cl, cname = configlet_get_configured_name(cl));
     g_free(cname);

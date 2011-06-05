@@ -183,8 +183,8 @@ dnl Output variables etc
 
 AC_SUBST(roxterm_CFLAGS, ["$vte_CFLAGS $sm_CFLAGS"])
 AC_SUBST(roxterm_LIBS, ["$vte_LIBS $sm_LIBS"])
-AC_SUBST(roxterm_config_CFLAGS, [$gtk_CFLAGS $gmodule2_CFLAGS])
-AC_SUBST(roxterm_config_LIBS, [$gtk_LIBS $gmodule2_LIBS])
+AC_SUBST(roxterm_config_CFLAGS, ["$gtk_CFLAGS $gmodule2_CFLAGS"])
+AC_SUBST(roxterm_config_LIBS, ["$gtk_LIBS $gmodule2_LIBS"])
 
 AC_SUBST(APPINFO_STRING, "${VERSION} (${ISODATE})")
 
