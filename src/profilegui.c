@@ -144,8 +144,6 @@ static void profilegui_set_close_buttons_shading(ProfileGUI *pg)
 
 static void profilegui_check_ssh_entries_for_changes(ProfileGUI * pg)
 {
-    GtkBuilder *builder = pg->capp.builder;
-    
     PG_UPDATE_IF(ssh_address)
     PG_UPDATE_IF(ssh_user)
     PG_UPDATE_IF(ssh_options)
@@ -172,18 +170,18 @@ void on_editable_changed(GtkEditable * editable, ProfileGUI *pg)
     else PG_IF_CHANGED(win_title);
 }
 
-static void on_ssh_entry_activate(GtkEntry * entry, ProfileGUI * pg)
+void on_ssh_entry_activate(GtkEntry * entry, ProfileGUI * pg)
 {
     profilegui_check_ssh_entries_for_changes(pg);
 }
 
-static void on_ssh_host_changed(GtkWidget * widget, ProfileGUI *pg)
+void on_ssh_host_changed(GtkWidget * widget, ProfileGUI *pg)
 {
     gtk_entry_set_text(GTK_ENTRY(profilegui_widget(pg, "ssh_host")),
             gtk_entry_get_text(GTK_ENTRY(widget)));
 }
 
-static void on_edit_ssh_clicked(GtkWidget * widget, ProfileGUI *pg)
+void on_edit_ssh_clicked(GtkWidget * widget, ProfileGUI *pg)
 {
     capplet_inc_windows();
     
@@ -197,7 +195,7 @@ static void on_edit_ssh_clicked(GtkWidget * widget, ProfileGUI *pg)
     capplet_dec_windows();
 }
 
-static void on_Profile_Editor_destroy(GtkWidget * widget, ProfileGUI * pg)
+void on_Profile_Editor_destroy(GtkWidget * widget, ProfileGUI * pg)
 {
     if (pg->ignore_destroy)
     {
@@ -210,53 +208,51 @@ static void on_Profile_Editor_destroy(GtkWidget * widget, ProfileGUI * pg)
     }
 }
 
-static void on_Profile_Editor_response(GtkWidget * widget, int response,
-        ProfileGUI * pg)
+void on_Profile_Editor_response(GtkWidget *widget, int response, ProfileGUI *pg)
 {
     profilegui_delete(pg);
 }
 
-static void on_Profile_Editor_close(GtkWidget * widget, ProfileGUI * pg)
+void on_Profile_Editor_close(GtkWidget * widget, ProfileGUI * pg)
 {
     profilegui_delete(pg);
 }
 
-static void on_font_set(GtkFontButton * fontbutton, ProfileGUI * pg)
+void on_font_set(GtkFontButton * fontbutton, ProfileGUI * pg)
 {
     capplet_set_string(pg->capp.options,
         "font", gtk_font_button_get_font_name(fontbutton));
 }
 
-static void on_entry_activate(GtkEntry * entry, ProfileGUI * pg)
+void on_entry_activate(GtkEntry * entry, ProfileGUI * pg)
 {
     profilegui_check_entries_for_changes(pg);
 }
 
-static void
-on_profile_notebook_switch_page(GtkNotebook * notebook, GtkWidget *page,
-    guint page_num, ProfileGUI * pg)
+void on_profile_notebook_switch_page(GtkNotebook * notebook, GtkWidget *page,
+        guint page_num, ProfileGUI * pg)
 {
     profilegui_check_entries_for_changes(pg);
 }
 
-static void on_bgtype_toggled(GtkToggleButton *button, ProfileGUI *pg)
+void on_bgtype_toggled(GtkToggleButton *button, ProfileGUI *pg)
 {
     if (gtk_toggle_button_get_active(button))
         profilegui_set_background_shading(pg);
     on_radio_toggled(button, &pg->capp);
 }
 
-static void on_command_toggled(GtkToggleButton *button, ProfileGUI *pg)
+void on_command_toggled(GtkToggleButton *button, ProfileGUI *pg)
 {
     profilegui_set_command_shading(pg);
 }
 
-static void on_close_buttons_toggled(GtkToggleButton *button, ProfileGUI *pg)
+void on_close_buttons_toggled(GtkToggleButton *button, ProfileGUI *pg)
 {
     profilegui_set_close_buttons_shading(pg);
 }
 
-static void on_cursor_blinks_toggled(GtkToggleButton *button, ProfileGUI *pg)
+void on_cursor_blinks_toggled(GtkToggleButton *button, ProfileGUI *pg)
 {
     gboolean state;
     
@@ -405,7 +401,7 @@ static char *get_bgimg_filename(ProfileGUI *pg, GtkFileChooser *chooser)
     return new_filename;
 }
 
-static void on_bgimg_chosen(GtkFileChooser *chooser, ProfileGUI *pg)
+void on_bgimg_chosen(GtkFileChooser *chooser, ProfileGUI *pg)
 {
     g_free(get_bgimg_filename(pg, chooser));
 }
@@ -413,7 +409,7 @@ static void on_bgimg_chosen(GtkFileChooser *chooser, ProfileGUI *pg)
 #define DEFAULT_BACKSPACE_BINDING 0
 #define DEFAULT_DELETE_BINDING 0
 
-static void on_reset_compat_clicked(GtkButton *button, ProfileGUI *pg)
+void on_reset_compat_clicked(GtkButton *button, ProfileGUI *pg)
 {
     capplet_set_int(pg->capp.options, "backspace_binding",
             DEFAULT_BACKSPACE_BINDING);
@@ -669,7 +665,7 @@ static void profilegui_add_combo_items_by_name(GtkWidget *combo,
     }
 }
 
-static void profile_gui_make_a_combo(ProfileGUI *pg, const char *name)
+static void profilegui_make_a_combo(ProfileGUI *pg, const char *name)
 {
     char *box_name = g_strdup_printf("%s_box", name);
     GtkBox *box = GTK_BOX(gtk_builder_get_object(pg->capp.builder, box_name));

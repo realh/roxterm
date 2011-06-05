@@ -26,13 +26,23 @@
 
 /* Editing of a Colour with a GUI (using libglade) */
 
-typedef struct ColourGUI ColourGUI;
+typedef struct _ColourGUI ColourGUI;
 
 /* Loads a Colour and creates a working dialog box for it.
  * Creates new colour scheme if it doesn't already exist */
 ColourGUI *colourgui_open(const char *colour_scheme_name, GdkScreen *scrn);
 
 void colourgui_delete(ColourGUI *);
+
+/* Handlers declared extern for GtkBuilder */
+void on_Colour_Editor_destroy(GtkWidget *widget, ColourGUI * cg);
+void on_Colour_Editor_response(GtkWidget *widget, gint response, ColourGUI *cg);
+void on_Colour_Editor_close(GtkWidget *widget, ColourGUI * cg);
+void on_color_set(GtkColorButton *button, ColourGUI * cg);
+void on_set_fgbg_toggled(GtkToggleButton *button, ColourGUI * cg);
+void on_fgbg_track_palette_toggled(GtkToggleButton *button, ColourGUI * cg);
+void on_set_cursor_colour_toggled(GtkToggleButton *button, ColourGUI *cg);
+void on_palette_size_toggled(GtkToggleButton *button, ColourGUI *cg);
 
 #endif /* COLOURGUI_H */
 

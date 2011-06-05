@@ -381,7 +381,7 @@ static ROXTermData *roxterm_data_clone(ROXTermData *old_gt)
     {
         new_gt->pango_desc = pango_font_description_copy(old_gt->pango_desc);
     }
-    if (old_gt->widget && GTK_WIDGET_REALIZED(old_gt->widget))
+    if (old_gt->widget && gtk_widget_get_realized(old_gt->widget))
     {
         VteTerminal *vte = VTE_TERMINAL(old_gt->widget);
         
@@ -469,7 +469,7 @@ static char **roxterm_get_environment(ROXTermData *roxterm, const char *term)
     const char *cterm;
 
     new_env[EnvWindowId * 2 + 1] = g_strdup_printf("%ld",
-            GDK_WINDOW_XWINDOW(gtk_widget_get_window(roxterm->widget)));
+            GDK_WINDOW_XID(gtk_widget_get_window(roxterm->widget)));
     new_env[EnvRoxtermId * 2 + 1] = g_strdup_printf("%p", roxterm);
     for (n = 0, link = roxterm_terms; link; ++n, link = g_list_next(link))
     {
@@ -510,7 +510,7 @@ static GtkWindow *roxterm_get_toplevel(ROXTermData *roxterm)
     if (roxterm && roxterm->win)
     {
         GtkWidget *tl = multi_win_get_widget(roxterm->win);
-        if (tl && GTK_WIDGET_TOPLEVEL(tl))
+        if (tl && gtk_widget_is_toplevel(tl))
             return GTK_WINDOW(tl);
     }
     return NULL;
@@ -1074,7 +1074,12 @@ roxterm_set_vte_size(ROXTermData *roxterm, VteTerminal *vte,
     
     if (drbl && pd)
     {
+#if GTK_CHECK_VERSION(2, 24, 0)
+        cw = gdk_window_get_width(drbl);
+        ch = gdk_window_get_height(drbl);
+#else
         gdk_drawable_get_size(GDK_DRAWABLE(drbl), &cw, &ch);
+#endif
         gtk_window_get_size(GTK_WINDOW(pw), &ww, &wh);
     }
     vte_terminal_set_size(vte, columns, rows);
@@ -1311,18 +1316,6 @@ static void roxterm_match_text_size(ROXTermData *roxterm, ROXTermData *other)
     roxterm_update_geometry(roxterm, vte);
 }
 
-static void roxterm_about_www_hook(GtkAboutDialog *about,
-        const gchar *link, gpointer data)
-{
-    roxterm_launch_browser(data, link);
-}
-
-static void roxterm_about_email_hook(GtkAboutDialog *about,
-        const gchar *link, gpointer data)
-{
-    roxterm_launch_email(data, link);
-}
-
 #if USE_ACTIVATE_LINK
 static gboolean roxterm_about_uri_hook(GtkAboutDialog *about,
         gchar *link, gpointer data)
@@ -1335,6 +1328,19 @@ static gboolean roxterm_about_uri_hook(GtkAboutDialog *about,
     {
         roxterm_launch_browser(data, link);
     }
+    return TRUE;
+}
+#else
+static void roxterm_about_www_hook(GtkAboutDialog *about,
+        const gchar *link, gpointer data)
+{
+    roxterm_launch_browser(data, link);
+}
+
+static void roxterm_about_email_hook(GtkAboutDialog *about,
+        const gchar *link, gpointer data)
+{
+    roxterm_launch_email(data, link);
 }
 #endif
 
@@ -2275,7 +2281,7 @@ static void roxterm_beep_handler(VteTerminal *vte, ROXTermData *roxterm)
 }
 
 #if ! HAVE_GTK_WIDGET_GET_REALIZED
-#define gtk_widget_get_realized GTK_WIDGET_REALIZED
+#define gtk_widget_get_realized gtk_widget_get_realized
 #endif
 
 static void roxterm_resize_window_handler(VteTerminal *vte,
@@ -2878,16 +2884,17 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
                 gtk_vscrollbar_new(vte_terminal_get_adjustment(vte));
         if (scrollbar_pos == MultiWinScrollBar_Left)
         {
-            gtk_box_pack_end_defaults(GTK_BOX(roxterm->hbox), roxterm->widget);
+            gtk_box_pack_end(GTK_BOX(roxterm->hbox), roxterm->widget,
+                    TRUE, TRUE, 0);
             gtk_box_pack_end(GTK_BOX(roxterm->hbox), roxterm->scrollbar,
                 FALSE, FALSE, 0);
         }
         else
         {
-            gtk_box_pack_start_defaults(GTK_BOX(roxterm->hbox),
-                roxterm->widget);
+            gtk_box_pack_start(GTK_BOX(roxterm->hbox), roxterm->widget,
+                    TRUE, TRUE, 0);
             gtk_box_pack_start(GTK_BOX(roxterm->hbox), roxterm->scrollbar,
-                FALSE, FALSE, 0);
+                    FALSE, FALSE, 0);
         }
         gtk_widget_show_all(roxterm->hbox);
     }
@@ -3910,7 +3917,7 @@ static gboolean roxterm_win_delete_handler(GtkWindow *gtkwin, GdkEvent *event,
                     "you want to continue?"));
     gtk_window_set_title(GTK_WINDOW(dialog), _("ROXTerm: Confirm close"));
     noshow = gtk_check_button_new_with_mnemonic(_("_Don't show this again"));
-    gtk_toggle_button_set_state(GTK_TOGGLE_BUTTON(noshow), FALSE);
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(noshow), FALSE);
     g_signal_connect(noshow, "toggled",
             G_CALLBACK(dont_show_again_toggled), &d);
     gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),
@@ -4257,6 +4264,8 @@ static void close_win_tag(_ROXTermParseContext *rctx)
         }
         else if (rctx->geom)
         {
+            /* Need to show children before parsing geom */
+            gtk_widget_show_all(gtk_bin_get_child(GTK_BIN(gwin)));
             gtk_window_parse_geometry(gwin, rctx->geom);
         }
         if (rctx->window_title_template)
@@ -4492,7 +4501,6 @@ static void parse_roxterm_session_tag(_ROXTermParseContext *rctx,
     for (n = 0; attribute_names[n]; ++n)
     {
         const char *a = attribute_names[n];
-        const char *v = attribute_values[n];
         
         if (strcmp(a, "id"))
         {

@@ -979,6 +979,8 @@ gboolean configlet_open(GdkScreen *scrn)
         cg->capp.options = options_open("Global", "roxterm options");
 
         cg->encodings.encodings = encodings_load();
+        
+        gtk_builder_connect_signals(cg->capp.builder, cg);
 
         configlet_setup_family(cg, &cg->profile, "Profiles");
         configlet_setup_family(cg, &cg->colours, "Colours");

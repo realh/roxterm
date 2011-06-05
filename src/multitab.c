@@ -162,8 +162,11 @@ static void multi_win_restore_size(MultiWin *win)
     int h = -1;
     GtkRequisition win_rq, term_rq;
     
-    if (!tab || !tab->active_widget || !GTK_WIDGET_REALIZED(tab->active_widget))
+    if (!tab || !tab->active_widget ||
+            !gtk_widget_get_realized(tab->active_widget))
+    {
         return;
+    }
     if (multi_win_is_maximised(win) || multi_win_is_fullscreen(win))
         return;
     /* Find new difference between window and term widget (padding) */
@@ -560,7 +563,7 @@ MultiTab *multi_tab_get_tab_under_pointer(int x, int y)
         GtkWidget *label = gtk_notebook_get_tab_label(
                 GTK_NOTEBOOK(win->notebook), tab->widget);
 
-        if (!GTK_WIDGET_MAPPED(label))
+        if (!gtk_widget_get_mapped(label))
             continue;
         gdk_window_get_origin(gtk_widget_get_window(label), &x0, &y0);
         gtk_widget_get_allocation(label, &allocation);
@@ -825,7 +828,7 @@ void multi_win_select_tab(MultiWin * win, MultiTab * tab)
         multi_win_set_icon_title(win, tab->icon_title);
         menutree_select_tab(win->popup_menu, tab->popup_menu_item);
         menutree_select_tab(win->menu_bar, tab->menu_bar_item);
-        if (GTK_WIDGET_REALIZED(tab->active_widget))
+        if (gtk_widget_get_realized(tab->active_widget))
         {
             if (win->tab_selection_handler)
                 win->tab_selection_handler(tab->user_data, tab);
@@ -1484,16 +1487,20 @@ MultiWin *multi_win_new_blank(const char *display_name, Options *shortcuts,
         GtkPositionType tab_pos, gboolean always_show_tabs)
 {
     MultiWin *win = g_new0(MultiWin, 1);
+#if !GTK_CHECK_VERSION(2, 24, 0)
     static gboolean set_nwc_hook = FALSE;
+#endif
     GtkNotebook *notebook;
     char *role = NULL;
 
+#if !GTK_CHECK_VERSION(2, 24, 0)
     if (!set_nwc_hook)
     {
         gtk_notebook_set_window_creation_hook(multi_win_notebook_creation_hook,
                 win, NULL);
         set_nwc_hook = TRUE;
     }
+#endif
 
     win->tab_pos = tab_pos;
     win->always_show_tabs = always_show_tabs;
@@ -1597,7 +1604,12 @@ MultiWin *multi_win_new_blank(const char *display_name, Options *shortcuts,
 
     win->notebook = gtk_notebook_new();
     notebook = GTK_NOTEBOOK(win->notebook);
+#if GTK_CHECK_VERSION(2, 24, 0)
+    g_signal_connect(notebook, "create-window",
+            G_CALLBACK(multi_win_notebook_creation_hook), win);
+#endif
     gtk_notebook_set_scrollable(notebook, TRUE);
+#if !GTK_CHECK_VERSION(3, 0, 0)
     if (win->tab_pos == GTK_POS_LEFT || win->tab_pos == GTK_POS_RIGHT)
     {
         g_object_set(notebook, "tab-hborder", 0, NULL);
@@ -1606,6 +1618,7 @@ MultiWin *multi_win_new_blank(const char *display_name, Options *shortcuts,
     {
         g_object_set(notebook, "tab-vborder", 0, NULL);
     }
+#endif
     gtk_notebook_popup_enable(notebook);
     if (always_show_tabs)
     {
@@ -1617,12 +1630,16 @@ MultiWin *multi_win_new_blank(const char *display_name, Options *shortcuts,
         multi_win_set_show_tabs_menu_items(win, FALSE);
         multi_win_hide_tabs(win);
     }
-    gtk_box_pack_start_defaults(GTK_BOX(win->vbox), win->notebook);
+    gtk_box_pack_start(GTK_BOX(win->vbox), win->notebook, TRUE, TRUE, 0);
     g_signal_connect(win->notebook, "switch-page",
         G_CALLBACK(multi_win_page_switched), win);
     g_signal_connect(win->gtkwin, "focus-in-event",
         G_CALLBACK(multi_win_focus_in), win);
+#if GTK_CHECK_VERSION(2, 24, 0)
+    gtk_notebook_set_group_name(notebook, "ROXTerm");
+#else
     gtk_notebook_set_group(notebook, &multi_win_all);
+#endif
     g_signal_connect(win->notebook, "page-reordered",
         G_CALLBACK(page_reordered_callback), win);
     g_signal_connect(win->notebook, "page-added",
@@ -1676,6 +1693,8 @@ MultiWin *multi_win_new_full(const char *display_name, Options *shortcuts,
 
     if (geom)
     {
+        /* Need to show children before parsing geom */
+        gtk_widget_show_all(win->vbox);
         gtk_window_parse_geometry(GTK_WINDOW(win->gtkwin), geom);
     }
     else if (sizing == MULTI_WIN_FULL_SCREEN)
@@ -1822,7 +1841,11 @@ void multi_tab_add_close_button(MultiTab *tab)
     /* gtk_widget_set_size_request(tab->close_button, w + 2, h + 2); */
     rcstyle->xthickness = rcstyle->ythickness = 0;
     gtk_widget_modify_style(tab->close_button, rcstyle);
+#ifdef HAVE_GTK_RC_STYLE_UNREF
     gtk_rc_style_unref(rcstyle);
+#else
+    g_object_unref(rcstyle);
+#endif
     tab->label_packer(GTK_BOX(tab->label_box), tab->close_button,
             FALSE, FALSE, 0);
     g_signal_connect(tab->close_button, "clicked",

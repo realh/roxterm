@@ -34,6 +34,25 @@ ProfileGUI *profilegui_open(const char *profile_name, GdkScreen *scrn);
 
 void profilegui_delete(ProfileGUI *);
 
+/* Handlers declared extern for GtkBuilder */
+void on_ssh_entry_activate(GtkEntry * entry, ProfileGUI * pg);
+void on_ssh_host_changed(GtkWidget * widget, ProfileGUI *pg);
+void on_edit_ssh_clicked(GtkWidget * widget, ProfileGUI *pg);
+void on_Profile_Editor_destroy(GtkWidget * widget, ProfileGUI * pg);
+void on_Profile_Editor_response(GtkWidget *widget, int response,
+        ProfileGUI *pg);
+void on_Profile_Editor_close(GtkWidget * widget, ProfileGUI * pg);
+void on_font_set(GtkFontButton * fontbutton, ProfileGUI * pg);
+void on_entry_activate(GtkEntry * entry, ProfileGUI * pg);
+void on_profile_notebook_switch_page(GtkNotebook * notebook, GtkWidget *page,
+        guint page_num, ProfileGUI * pg);
+void on_bgtype_toggled(GtkToggleButton *button, ProfileGUI *pg);
+void on_command_toggled(GtkToggleButton *button, ProfileGUI *pg);
+void on_close_buttons_toggled(GtkToggleButton *button, ProfileGUI *pg);
+void on_cursor_blinks_toggled(GtkToggleButton *button, ProfileGUI *pg);
+void on_bgimg_chosen(GtkFileChooser *chooser, ProfileGUI *pg);
+void on_reset_compat_clicked(GtkButton *button, ProfileGUI *pg);
+
 #endif /* PROFILEGUI_H */
 
 /* vi:set sw=4 ts=4 noet cindent cino= */

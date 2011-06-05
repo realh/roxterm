@@ -33,18 +33,6 @@
 #include "session.h"
 #endif
 
-/* List of all terminal windows managed by this app */
-static GList *main_all_windows = NULL;
-
-static gboolean main_quit_handler(gpointer data)
-{
-    (void) data;
-
-    /* FIXME: Destroy any windows left? */
-
-    return FALSE;
-}
-
 #define ROXTERM_DBUS_NAME RTDBUS_NAME ".term"
 #define ROXTERM_DBUS_OBJECT_PATH RTDBUS_OBJECT_PATH "/term"
 #define ROXTERM_DBUS_INTERFACE RTDBUS_INTERFACE
@@ -326,7 +314,6 @@ int main(int argc, char **argv)
         dbus_message_unref(message);
     }
 
-    gtk_quit_add(0, main_quit_handler, main_all_windows);
 
     roxterm_init();
     multi_win_set_role_prefix("roxterm");

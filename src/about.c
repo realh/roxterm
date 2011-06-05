@@ -71,7 +71,7 @@ static GtkWidget *about_dialog_create(void)
         NULL };
     GdkPixbuf *logo = about_load_logo();
 
-    gtk_about_dialog_set_name(ad, "ROXTerm");
+    gtk_about_dialog_set_program_name(ad, "ROXTerm");
     gtk_about_dialog_set_version(ad, VERSION);
     gtk_about_dialog_set_copyright(ad, _("(c) 2005-2010 Tony Houghton"));
     gtk_about_dialog_set_website(ad, "http://roxterm.sourceforge.net");
@@ -80,14 +80,6 @@ static GtkWidget *about_dialog_create(void)
         gtk_about_dialog_set_logo(ad, logo);
     return about;
 }
-
-#if USE_ACTIVATE_LINK
-static gboolean about_dialog_activate_link_cb(GtkAboutDialog *dialog,
-        char *uri, gpointer user_data)
-{
-    return TRUE;
-}
-#endif
 
 void about_dialog_show(GtkWindow *parent,
 #if USE_ACTIVATE_LINK

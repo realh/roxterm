@@ -165,7 +165,7 @@ TH_CHECK_ALTERNATIVE_FUNCS(dbus-1,
     dbus_message_iter_get_basic, HAVE_DBUS_MESSAGE_ITER_GET_BASIC,
     dbus_message_iter_get_string, HAVE_DBUS_MESSAGE_ITER_GET_STRING)
 
-AC_CHECK_FUNCS_ONCE(gtk_widget_get_realized g_mkdir_with_parents g_file_set_contents get_current_dir_name gtk_combo_box_text_new)
+AC_CHECK_FUNCS_ONCE(gtk_widget_get_realized g_mkdir_with_parents g_file_set_contents get_current_dir_name gtk_combo_box_text_new gtk_rc_style_unref)
 tmp_CFLAGS="$CFLAGS"
 tmp_LIBS="$LIBS"
 CFLAGS="$vte_CFLAGS"
