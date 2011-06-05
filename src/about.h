@@ -34,8 +34,8 @@ void about_dialog_show(GtkWindow *parent,
 #if USE_ACTIVATE_LINK
         gboolean (*uri_handler)(GtkAboutDialog *, char *, gpointer),
 #else
-        AboutDialogActivateLinkFunc www_hook,
-        AboutDialogActivateLinkFunc email_hook,
+        GtkAboutDialogActivateLinkFunc www_hook,
+        GtkAboutDialogActivateLinkFunc email_hook,
 #endif
         gpointer hook_data
 );

@@ -131,6 +131,10 @@ static void profilegui_set_background_shading(ProfileGUI *pg)
             GTK_TOGGLE_BUTTON(profilegui_widget(pg, "background_type1"))));
     profilegui_set_transparency_shading(pg, !gtk_toggle_button_get_active(
             GTK_TOGGLE_BUTTON(profilegui_widget(pg, "background_type0"))));
+    gtk_widget_set_sensitive(profilegui_widget(pg, "true_translucence"),
+            gtk_toggle_button_get_active(
+                    GTK_TOGGLE_BUTTON(profilegui_widget(pg,
+                            "background_type2"))));
 }
 
 static void profilegui_set_command_shading(ProfileGUI *pg)
@@ -723,7 +727,7 @@ ProfileGUI *profilegui_open(const char *profile_name, GdkScreen *scrn)
     static const char *obj_names[] = { "Profile_Editor", "ssh_dialog",
             "width_adjustment", "height_adjustment",
             "exit_pause_adjustment", "scrollback_lines_adjustment",
-            "init_tabs_adjustment", NULL };
+            "init_tabs_adjustment", "saturation_adjustment", NULL };
     GError *error = NULL;
 
     if (!profilegui_being_edited)
