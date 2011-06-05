@@ -27,6 +27,9 @@
 #include "defns.h"
 #endif
 
+typedef struct _ConfigletList ConfigletList;
+typedef struct _ConfigletData ConfigletData;
+
 gboolean configlet_open(GdkScreen *scrn);
 
 /* Lock when editing a profile etc and unlock when editing is complete. This is
@@ -39,6 +42,18 @@ void configlet_lock_shortcuts(void);
 void configlet_unlock_shortcuts(void);
 void configlet_lock_encodings(void);
 void configlet_unlock_encodings(void);
+
+/* These handlers aren't referred to elsewhere in the code but are used by
+ * GtkBuilder. */
+void on_Configlet_destroy(GtkWidget *widget, ConfigletData *cg);
+void on_Configlet_response(GtkWidget *widget, int response, ConfigletData *cg);
+void on_Configlet_close(GtkWidget *widget, ConfigletData *cg);
+void on_edit_clicked(GtkButton *button, ConfigletList *cl);
+void on_row_activated(GtkTreeView *tvwidget, GtkTreePath *path,
+        GtkTreeViewColumn *column, ConfigletList *cl);
+void on_copy_clicked(GtkButton *button, ConfigletList *cl);
+void on_delete_clicked(GtkButton *button, ConfigletList *cl);
+void on_rename_clicked(GtkButton *button, ConfigletList *cl);
 
 #endif /* CONFIGLET_H */
 

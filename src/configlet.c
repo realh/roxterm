@@ -44,18 +44,16 @@ static int colours_lock = 0;
 static int shortcuts_lock = 0;
 static int encodings_lock = 0;
 
-typedef struct ConfigletData ConfigletData;
-
-typedef struct {
+struct _ConfigletList {
     const char *family;
     GtkTreeView *tvwidget;
     GtkListStore *list;
     gpointer foreach_data;
     Encodings *encodings;
     ConfigletData *cg;
-} ConfigletList;
+};
 
-struct ConfigletData {
+struct _ConfigletData {
     CappletData capp;
     gboolean ignore_destroy;
     GtkWidget *widget;
@@ -120,7 +118,7 @@ static void configlet_set_sensitive_button(const char *wbasename,
 {
     char *button_name = g_strdup_printf("%s_%s", wbasename, butname);
     GtkWidget *widget =
-            GTK_WIDGET(gtk_builder_get_object(configlet_data->builder,
+            GTK_WIDGET(gtk_builder_get_object(configlet_data->capp.builder,
                     button_name));
 
     g_free(button_name);
@@ -132,7 +130,7 @@ static void configlet_set_sensitive(const char *wbasename, gboolean sensitive)
 {
     int lock;
 
-    if (!configlet_builder)
+    if (!configlet_data)
         return;
     if (!strcmp(wbasename, "profile"))
     {
@@ -196,11 +194,10 @@ static void configlet_delete(ConfigletData *cg)
         gtk_widget_destroy(cg->widget);
         cg->widget = NULL;
     }
-    if (cg->glade)
+    if (cg->capp.builder)
     {
-        UNREF_LOG(g_object_unref(cg->glade));
-        cg->glade = NULL;
-        configlet_builder = NULL;
+        UNREF_LOG(g_object_unref(cg->capp.builder));
+        cg->capp.builder = NULL;
     }
     g_free(cg);
     configlet_data = NULL;
@@ -225,7 +222,7 @@ static char *configlet_get_configured_name(ConfigletList *cl)
     const char *optkey = family_name_to_opt_key(cl->family);
 
     g_return_val_if_fail(optkey, NULL);
-    return options_lookup_string_with_default(cl->cg->options, optkey,
+    return options_lookup_string_with_default(cl->cg->capp.options, optkey,
             strcmp(cl->family, "Colours") ? "Default" : "GTK");
 }
 
@@ -343,9 +340,9 @@ static void configlet_cell_toggled(GtkCellRendererToggle *cell,
     if (!active)
     {
         gtk_tree_model_foreach(GTK_TREE_MODEL(cl->list), update_radios, name);
-        options_set_string(cl->cg->options,
+        options_set_string(cl->cg->capp.options,
                 family_name_to_opt_key(cl->family), name);
-        capplet_save_file(cl->cg->options);
+        capplet_save_file(cl->cg->capp.options);
     }
     g_free(name);
 }
@@ -399,7 +396,7 @@ static void configlet_list_init(ConfigletList *cl, GtkWidget *widget,
 /********************************************************************/
 /* Generic handlers */
 
-static void on_Configlet_destroy(GtkWidget * widget, ConfigletData * cg)
+void on_Configlet_destroy(GtkWidget * widget, ConfigletData * cg)
 {
     if (cg->ignore_destroy)
     {
@@ -412,13 +409,12 @@ static void on_Configlet_destroy(GtkWidget * widget, ConfigletData * cg)
     }
 }
 
-static void on_Configlet_response(GtkWidget * widget, int response,
-        ConfigletData * cg)
+void on_Configlet_response(GtkWidget * widget, int response, ConfigletData * cg)
 {
     configlet_delete(cg);
 }
 
-static void on_Configlet_close(GtkWidget * widget, ConfigletData * cg)
+void on_Configlet_close(GtkWidget * widget, ConfigletData * cg)
 {
     configlet_delete(cg);
 }
@@ -744,12 +740,12 @@ static gboolean edit_selected_thing(ConfigletList *cl)
     return TRUE;
 }
 
-static void on_edit_clicked(GtkButton *button, ConfigletList *cl)
+void on_edit_clicked(GtkButton *button, ConfigletList *cl)
 {
     edit_selected_thing(cl);
 }
 
-static void on_row_activated(GtkTreeView *tvwidget, GtkTreePath *path,
+void on_row_activated(GtkTreeView *tvwidget, GtkTreePath *path,
         GtkTreeViewColumn *column, ConfigletList *cl)
 {
     GtkTreeIter iter;
@@ -773,7 +769,7 @@ static void on_tree_selection_changed(GtkTreeSelection *selection,
 }
 
 /* This is Add for Encodings */
-static void on_copy_clicked(GtkButton *button, ConfigletList *cl)
+void on_copy_clicked(GtkButton *button, ConfigletList *cl)
 {
     char *old_name = get_selected_name(cl);
     char *title = NULL;
@@ -819,7 +815,7 @@ static void on_copy_clicked(GtkButton *button, ConfigletList *cl)
     g_free(title);
 }
 
-static void on_delete_clicked(GtkButton *button, ConfigletList *cl)
+void on_delete_clicked(GtkButton *button, ConfigletList *cl)
 {
     char *name;
 
@@ -880,7 +876,7 @@ static void on_delete_clicked(GtkButton *button, ConfigletList *cl)
 }
 
 /* This is Edit for Encodings */
-static void on_rename_clicked(GtkButton *button, ConfigletList *cl)
+void on_rename_clicked(GtkButton *button, ConfigletList *cl)
 {
     char *title = NULL;
     char const **existing = NULL;
@@ -930,7 +926,8 @@ static void configlet_setup_family(ConfigletData *cg, ConfigletList *cl,
 {
     char *wbasename = convert_family_name(family);
     char *widget_name = g_strdup_printf("%s_treeview", wbasename);
-    GtkWidget *widget = glade_xml_get_widget(cg->glade, widget_name);
+    GtkWidget *widget =
+            GTK_WIDGET(gtk_builder_get_object(cg->capp.builder, widget_name));
     char *cname;
 
     g_free(widget_name);
@@ -953,12 +950,24 @@ gboolean configlet_open(GdkScreen *scrn)
     }
     else
     {
+        static char const *build_objs[] = { "Configlet", NULL };
         ConfigletData *cg = configlet_data = g_new0(ConfigletData, 1);
+        GError *error;
 
-        cg->glade = glade_xml_new(capplet_get_glade_filename(),
-                "Configlet", NULL);
-        if (cg->glade)
-            cg->widget = glade_xml_get_widget(cg->glade, "Configlet");
+        cg->capp.builder = gtk_builder_new();
+        if (gtk_builder_add_objects_from_file(cg->capp.builder,
+                capplet_get_glade_filename(), (char **) build_objs, &error))
+        {
+            cg->widget =
+                    GTK_WIDGET(gtk_builder_get_object(cg->capp.builder,
+                            "Configlet"));
+        }
+        else
+        {
+            g_critical(_("Unable to create 'Configlet' from UI definition: %s"),
+                    error->message);
+            g_error_free(error);
+        }
         if (!cg->widget)
         {
             configlet_delete(cg);
@@ -966,24 +975,18 @@ gboolean configlet_open(GdkScreen *scrn)
         }
         if (scrn)
             gtk_window_set_screen(GTK_WINDOW(cg->widget), scrn);
-        configlet_builder = cg->glade;
 
-        cg->options = options_open("Global", "roxterm options");
+        cg->capp.options = options_open("Global", "roxterm options");
 
         cg->encodings.encodings = encodings_load();
-
-        connect_generic_handlers(cg);
-        CONFIGLET_CONNECT(cg->glade, cg->options, on_boolean_toggled);
-        CONFIGLET_CONNECT(cg->glade, cg->options, on_radio_toggled);
 
         configlet_setup_family(cg, &cg->profile, "Profiles");
         configlet_setup_family(cg, &cg->colours, "Colours");
         configlet_setup_family(cg, &cg->shortcuts, "Shortcuts");
         configlet_setup_family(cg, &cg->encodings, "encodings");
         
-        capplet_set_radio(cg->glade, cg->options, "warn_close", 2);
-        capplet_set_boolean_toggle(cg->glade, cg->options,
-                "edit_shortcuts", FALSE);
+        capplet_set_radio(&cg->capp, "warn_close", 2);
+        capplet_set_boolean_toggle(&cg->capp, "edit_shortcuts", FALSE);
 
         capplet_inc_windows();
         gtk_widget_show(cg->widget);

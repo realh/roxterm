@@ -125,6 +125,7 @@ AS_IF([test $enable_gtk3 = no],
 ])
 
 PKG_CHECK_MODULES(dbus, [dbus-glib-1 >= 0.22])
+PKG_CHECK_MODULES(gmodule2, [gmodule-export-2.0])
 CFLAGS="$CFLAGS $gtk_CFLAGS $dbus_CFLAGS"
 LIBS="$LIBS $gtk_LIBS $dbus_LIBS"
 
@@ -182,8 +183,8 @@ dnl Output variables etc
 
 AC_SUBST(roxterm_CFLAGS, ["$vte_CFLAGS $sm_CFLAGS"])
 AC_SUBST(roxterm_LIBS, ["$vte_LIBS $sm_LIBS"])
-AC_SUBST(roxterm_config_CFLAGS, [$gtk_CFLAGS])
-AC_SUBST(roxterm_config_LIBS, [$gtk_LIBS])
+AC_SUBST(roxterm_config_CFLAGS, [$gtk_CFLAGS $gmodule2_CFLAGS])
+AC_SUBST(roxterm_config_LIBS, [$gtk_LIBS $gmodule2_LIBS])
 
 AC_SUBST(APPINFO_STRING, "${VERSION} (${ISODATE})")
 
