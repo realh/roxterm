@@ -952,7 +952,7 @@ gboolean configlet_open(GdkScreen *scrn)
     {
         static char const *build_objs[] = { "Configlet", NULL };
         ConfigletData *cg = configlet_data = g_new0(ConfigletData, 1);
-        GError *error;
+        GError *error = NULL;
 
         cg->capp.builder = gtk_builder_new();
         if (gtk_builder_add_objects_from_file(cg->capp.builder,
