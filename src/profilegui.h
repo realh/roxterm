@@ -52,6 +52,7 @@ void on_close_buttons_toggled(GtkToggleButton *button, ProfileGUI *pg);
 void on_cursor_blinks_toggled(GtkToggleButton *button, ProfileGUI *pg);
 void on_bgimg_chosen(GtkFileChooser *chooser, ProfileGUI *pg);
 void on_reset_compat_clicked(GtkButton *button, ProfileGUI *pg);
+void on_cell_size_toggled(GtkToggleButton * button, ProfileGUI *pg);
 
 #endif /* PROFILEGUI_H */
 

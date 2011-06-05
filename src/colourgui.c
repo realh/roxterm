@@ -506,8 +506,7 @@ void on_fgbg_track_palette_toggled(GtkToggleButton *button, ColourGUI * cg)
     }
 }
 
-static void on_use_custom_colours_toggled(GtkToggleButton *button,
-        ColourGUI *cg)
+void on_use_custom_colours_toggled(GtkToggleButton *button, ColourGUI *cg)
 {
     gboolean state;
     int old_size;

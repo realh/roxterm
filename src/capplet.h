@@ -54,6 +54,11 @@ int capplet_which_radio_is_selected(GtkWidget *widget);
 void capplet_set_radio_by_index(GtkBuilder *builder,
         const char *basename, int index);
 
+/* Currently GtkBuilder doesn't support text combos properly so we have to find
+ * them via parent.
+ */
+GtkWidget *capplet_lookup_combo(GtkBuilder *builder, const char *name);
+
 /**********************************************/
 /* Generic handlers */
 
@@ -93,9 +98,6 @@ void capplet_set_float_range(CappletData *capp,
 
 void capplet_set_combo(CappletData *capp,
     const char *name, int dflt);
-
-/*void capplet_set_filename(GladeXML * glade, Options * options,
-    const char *name);*/
 
 /* Keep track of number of open windows and quit when it reaches 0 */
 void capplet_inc_windows(void);

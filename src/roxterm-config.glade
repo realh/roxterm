@@ -132,6 +132,7 @@
                                     <property name="can_focus">True</property>
                                     <property name="tooltip_text" translatable="yes">New windows with this profile will open at this size.</property>
                                     <property name="invisible_char">&#x2022;</property>
+                                    <property name="adjustment">width_adjustment</property>
                                     <property name="climb_rate">1</property>
                                     <property name="numeric">True</property>
                                     <signal name="value_changed" handler="on_spin_button_changed"/>
@@ -168,6 +169,7 @@
                                     <property name="can_focus">True</property>
                                     <property name="tooltip_text" translatable="yes">New windows with this profile will open at this size.</property>
                                     <property name="invisible_char">&#x2022;</property>
+                                    <property name="adjustment">height_adjustment</property>
                                     <property name="climb_rate">1</property>
                                     <property name="numeric">True</property>
                                     <signal name="value_changed" handler="on_spin_button_changed"/>
@@ -939,6 +941,7 @@
                                 <property name="tooltip_text" translatable="yes">Pause for this number of seconds after the command exits before performing the action above.</property>
                                 <property name="editable">False</property>
                                 <property name="invisible_char">&#x2022;</property>
+                                <property name="adjustment">exit_pause_adjustment</property>
                                 <property name="digits">1</property>
                                 <signal name="value_changed" handler="on_float_spin_button_changed"/>
                               </object>
@@ -1711,6 +1714,7 @@
                                     <property name="can_focus">True</property>
                                     <property name="tooltip_text" translatable="yes">Number of lines of output text to retain in the buffer so that they can still be viewed by scrolling up</property>
                                     <property name="invisible_char">&#x2022;</property>
+                                    <property name="adjustment">scrollback_lines_adjustment</property>
                                     <property name="climb_rate">1</property>
                                     <signal name="value_changed" handler="on_spin_button_changed"/>
                                   </object>
@@ -2161,6 +2165,7 @@
                                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                                     <property name="max_length">2</property>
                                     <property name="invisible_char">&#x25CF;</property>
+                                    <property name="adjustment">init_tabs_adjustment</property>
                                     <property name="climb_rate">1</property>
                                     <property name="numeric">True</property>
                                     <signal name="value_changed" handler="on_spin_button_changed"/>
@@ -4232,5 +4237,42 @@
       <action-widget response="1">revert</action-widget>
       <action-widget response="-7">closebutton1</action-widget>
     </action-widgets>
+  </object>
+  <object class="GtkAdjustment" id="width_adjustment">
+    <property name="value">80</property>
+    <property name="lower">10</property>
+    <property name="upper">1000</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+    <property name="page_size">10</property>
+  </object>
+  <object class="GtkAdjustment" id="height_adjustment">
+    <property name="value">32</property>
+    <property name="lower">5</property>
+    <property name="upper">1000</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+    <property name="page_size">10</property>
+  </object>
+  <object class="GtkAdjustment" id="exit_pause_adjustment">
+    <property name="upper">600</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">5</property>
+    <property name="page_size">5</property>
+  </object>
+  <object class="GtkAdjustment" id="scrollback_lines_adjustment">
+    <property name="value">1000</property>
+    <property name="upper">100000</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+    <property name="page_size">10</property>
+  </object>
+  <object class="GtkAdjustment" id="init_tabs_adjustment">
+    <property name="value">1</property>
+    <property name="lower">1</property>
+    <property name="upper">20</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">5</property>
+    <property name="page_size">5</property>
   </object>
 </interface>

@@ -52,13 +52,13 @@ struct _ProfileGUI {
         guint ssh_options : 1;
         guint win_title : 1;
     } changed;
-    GtkWidget *bgimg;
     DragReceiveData *bgimg_drd;
     GtkListStore *list_store;
 };
 
 static GHashTable *profilegui_being_edited = NULL;
 
+#if 0
 inline static
 GtkWidget *profilegui_widget(ProfileGUI *pg, const char *name)
 {
@@ -66,6 +66,17 @@ GtkWidget *profilegui_widget(ProfileGUI *pg, const char *name)
      * cast here to avoid double GObject cast.
      */
     return (GtkWidget *) gtk_builder_get_object(pg->capp.builder, name);
+}
+#endif
+static
+GtkWidget *profilegui_widget(ProfileGUI *pg, const char *name)
+{
+    GtkWidget *widget =
+            (GtkWidget *)gtk_builder_get_object(pg->capp.builder, name);
+    
+    if (!widget)
+        g_critical(_("Profile widget '%s' not found"), name);
+    return widget;
 }
 
 static void profilegui_update_from_entry(ProfileGUI * pg, const char *name)
@@ -99,7 +110,8 @@ static void profilegui_set_bgimg_shading(ProfileGUI *pg, gboolean sensitive)
 {
     gtk_widget_set_sensitive(profilegui_widget(pg,
                 "scroll_background"), sensitive);
-    gtk_widget_set_sensitive(pg->bgimg, sensitive);
+    gtk_widget_set_sensitive(profilegui_widget(pg, "background_img"),
+            sensitive);
     gtk_widget_set_sensitive(profilegui_widget(pg, "img_label"),
             sensitive);
 }
@@ -261,6 +273,14 @@ void on_cursor_blinks_toggled(GtkToggleButton *button, ProfileGUI *pg)
     
     state = gtk_toggle_button_get_active(button);
     capplet_set_int(pg->capp.options, "cursor_blinks", state);
+}
+
+void on_cell_size_toggled(GtkToggleButton *button, ProfileGUI *pg)
+{
+    gboolean state = gtk_toggle_button_get_active(button);
+    
+    gtk_widget_set_sensitive(profilegui_widget(pg, "width"), state);
+    gtk_widget_set_sensitive(profilegui_widget(pg, "height"), state);
 }
 
 #define PREVIEW_SIZE 160
@@ -513,6 +533,8 @@ static void profilegui_fill_in_dialog(ProfileGUI * pg)
     capplet_set_spin_button(&pg->capp, "width", 80);
     capplet_set_spin_button(&pg->capp, "height", 25);
     capplet_set_radio(&pg->capp, "background_type", 0);
+    on_cell_size_toggled(GTK_TOGGLE_BUTTON(profilegui_widget(pg, "cell_size")),
+            pg);
     profilegui_set_background_shading(pg);
     capplet_set_float_range(&pg->capp, "saturation", 1.0);
     capplet_set_boolean_toggle(&pg->capp, "scroll_background", TRUE);
@@ -549,8 +571,9 @@ static void profilegui_fill_in_dialog(ProfileGUI * pg)
     capplet_set_spin_button_float(&pg->capp, "exit_pause");
     capplet_set_text_entry(&pg->capp, "title_string", "%s");
     capplet_set_text_entry(&pg->capp, "win_title", "%s");
-    exit_action_changed(GTK_COMBO_BOX(profilegui_widget(pg, "exit_action")),
-            pg);
+    exit_action_changed(
+        GTK_COMBO_BOX(capplet_lookup_combo(pg->capp.builder, "exit_action")),
+        pg);
     profilegui_set_command_shading(pg);
 }
 
@@ -680,11 +703,10 @@ static void profilegui_make_a_combo(ProfileGUI *pg, const char *name)
     gtk_buildable_set_name(GTK_BUILDABLE(combo), name);
     gtk_buildable_add_child(GTK_BUILDABLE(box), pg->capp.builder,
             G_OBJECT(combo), NULL);
-    gtk_box_pack_start(box, combo, TRUE, TRUE, 0);
     gtk_widget_show(combo);
 }
 
-static void profile_gui_make_combos(ProfileGUI *pg)
+static void profilegui_make_combos(ProfileGUI *pg)
 {
     profilegui_make_a_combo(pg, "exit_action");
     profilegui_make_a_combo(pg, "backspace_binding");
@@ -698,7 +720,10 @@ ProfileGUI *profilegui_open(const char *profile_name, GdkScreen *scrn)
     static DynamicOptions *profiles = NULL;
     ProfileGUI *pg;
     char *title;
-    static const char *obj_names[] = { "Profile_Editor", "ssh_dialog", NULL };
+    static const char *obj_names[] = { "Profile_Editor", "ssh_dialog",
+            "width_adjustment", "height_adjustment",
+            "exit_pause_adjustment", "scrollback_lines_adjustment",
+            "init_tabs_adjustment", NULL };
     GError *error = NULL;
 
     if (!profilegui_being_edited)
@@ -739,7 +764,7 @@ ProfileGUI *profilegui_open(const char *profile_name, GdkScreen *scrn)
     gtk_window_set_title(GTK_WINDOW(pg->dialog), title);
     g_free(title);
     
-    profile_gui_make_combos(pg);
+    profilegui_make_combos(pg);
     
     profilegui_setup_list_store(pg);
 

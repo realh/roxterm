@@ -43,6 +43,7 @@ void on_set_fgbg_toggled(GtkToggleButton *button, ColourGUI * cg);
 void on_fgbg_track_palette_toggled(GtkToggleButton *button, ColourGUI * cg);
 void on_set_cursor_colour_toggled(GtkToggleButton *button, ColourGUI *cg);
 void on_palette_size_toggled(GtkToggleButton *button, ColourGUI *cg);
+void on_use_custom_colours_toggled(GtkToggleButton *button, ColourGUI *cg);
 
 #endif /* COLOURGUI_H */
 

@@ -41,6 +41,32 @@ static int
 
 gboolean capplet_ignore_changes = FALSE;
 
+GtkWidget *capplet_lookup_combo(GtkBuilder *builder, const char *name)
+{
+    char *box_name = g_strdup_printf("%s_box", name);
+    GObject *box = gtk_builder_get_object(builder, box_name);
+    GList *children;
+    GList *link;
+    GtkWidget *combo = NULL;
+    
+    g_free(box_name);
+    g_return_val_if_fail(box != NULL, NULL);
+    children = gtk_container_get_children(GTK_CONTAINER(box));
+    for (link = children; link; link = g_list_next(link))
+    {
+        if (GTK_IS_COMBO_BOX(link->data) &&
+                !strcmp(gtk_buildable_get_name(link->data), name))
+        {
+            combo = link->data;
+            break;
+        }
+    }
+    g_list_free(children);
+    if (!combo)
+        g_critical(_("Combo '%s' not found"), name);
+    return combo;
+}
+
 void capplet_save_file(Options * options)
 {
     options_file_save(options->kf, options->name);
@@ -99,24 +125,32 @@ void capplet_set_radio(CappletData *capp,
             options_lookup_int_with_default(capp->options, name, dflt));
 }
 
+static void capplet_set_spin_button_value(CappletData *capp,
+        const char *name, gdouble value)
+{
+    GtkSpinButton *spin_button = 
+        GTK_SPIN_BUTTON(gtk_builder_get_object(capp->builder, name));
+    
+    capplet_ignore_changes = TRUE;
+    gtk_spin_button_set_value(spin_button, value);
+    gtk_adjustment_set_value(gtk_spin_button_get_adjustment(spin_button),
+            value);
+    capplet_ignore_changes = FALSE;
+}
+
 void capplet_set_spin_button(CappletData *capp,
     const char *name, int dflt)
 {
-    capplet_ignore_changes = TRUE;
-    gtk_spin_button_set_value(GTK_SPIN_BUTTON
-        (gtk_builder_get_object(capp->builder, name)),
-        options_lookup_int_with_default(capp->options, name, dflt));
-    capplet_ignore_changes = FALSE;
+    capplet_set_spin_button_value(capp, name,
+        (gdouble) options_lookup_int_with_default(capp->options, name, dflt));
+        
 }
 
 void capplet_set_spin_button_float(CappletData *capp,
     const char *name)
 {
-    capplet_ignore_changes = TRUE;
-    gtk_spin_button_set_value(GTK_SPIN_BUTTON
-        (gtk_builder_get_object(capp->builder, name)),
-        options_lookup_double(capp->options, name));
-    capplet_ignore_changes = FALSE;
+    capplet_set_spin_button_value(capp, name,
+            options_lookup_double(capp->options, name));
 }
 
 void capplet_set_float_range(CappletData *capp,
@@ -137,7 +171,7 @@ void capplet_set_combo(CappletData *capp,
 {
     capplet_ignore_changes = TRUE;
     gtk_combo_box_set_active(
-            GTK_COMBO_BOX(gtk_builder_get_object(capp->builder, name)),
+            GTK_COMBO_BOX(capplet_lookup_combo(capp->builder, name)),
             options_lookup_int_with_default(capp->options, name, dflt));
     capplet_ignore_changes = FALSE;
 }
