@@ -13,12 +13,9 @@ done
 
 MAINTAIN="--enable-maintainer-mode"
 if [ -f "$APP_DIR/tony" ]; then
-    #DEV_LDFLAGS="-L/usr/lib/debug -lmcheck $LDFLAGS"
     DEV_LDFLAGS="-L/usr/lib/debug $LDFLAGS"
     DEV_CFLAGS="-g -Wall -Wwrite-strings -Wunused"
-    #TABDRAG="--enable-gtk-native-tab-dragging"
     ulimit -c unlimited
-    #DBGENV='G_SLICE=always-malloc'
 else
     LOGFILE=
 fi
@@ -55,7 +52,7 @@ case $1 in
         fi
         rm -f config.cache
         LDFLAGS="$DEV_LDFLAGS" CFLAGS="$DEV_CFLAGS" \
-            ./configure $MAINTAIN $TABDRAG "$PREFIX" "$@" && \
+            ./configure $MAINTAIN "$PREFIX" "$@" && \
             make && \
             ${APP_DIR}/update-locales --remake && \
             echo Done >&2 && exit 0
