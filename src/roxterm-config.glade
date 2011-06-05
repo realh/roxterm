@@ -60,7 +60,7 @@
                                 <property name="visible">True</property>
                                 <property name="spacing">8</property>
                                 <child>
-                                  <object class="GtkLabel" id="label3">
+                                  <object class="GtkLabel" id="font_label">
                                     <property name="visible">True</property>
                                     <property name="xalign">0</property>
                                     <property name="label" translatable="yes">_Font:</property>
@@ -141,7 +141,7 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkLabel" id="label38">
+                                  <object class="GtkLabel" id="window_columns_label">
                                     <property name="visible">True</property>
                                     <property name="xalign">0</property>
                                     <property name="label" translatable="yes">columns</property>
@@ -177,7 +177,7 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkLabel" id="label39">
+                                  <object class="GtkLabel" id="window_rows_label">
                                     <property name="visible">True</property>
                                     <property name="label" translatable="yes">rows</property>
                                   </object>
@@ -264,7 +264,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkHBox" id="hbox14">
+                              <object class="GtkHBox" id="win_title_hbox">
                                 <property name="visible">True</property>
                                 <property name="spacing">6</property>
                                 <child>
@@ -303,7 +303,7 @@
                       </object>
                     </child>
                     <child type="label">
-                      <object class="GtkLabel" id="label48">
+                      <object class="GtkLabel" id="appearance_label">
                         <property name="visible">True</property>
                         <property name="label" translatable="yes">&lt;b&gt;Appearance&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
@@ -589,7 +589,7 @@
                                 <property name="visible">True</property>
                                 <property name="spacing">8</property>
                                 <child>
-                                  <object class="GtkLabel" id="label4">
+                                  <object class="GtkLabel" id="sel_by_word_label">
                                     <property name="visible">True</property>
                                     <property name="xalign">1</property>
                                     <property name="label" translatable="yes">_Select-by-word characters:</property>
@@ -659,7 +659,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkHBox" id="hbox13">
+                              <object class="GtkHBox" id="term_hbox">
                                 <property name="visible">True</property>
                                 <property name="spacing">8</property>
                                 <child>
@@ -699,7 +699,7 @@
                       </object>
                     </child>
                     <child type="label">
-                      <object class="GtkLabel" id="label2">
+                      <object class="GtkLabel" id="general_label">
                         <property name="visible">True</property>
                         <property name="label" translatable="yes">&lt;b&gt;General&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
@@ -711,7 +711,7 @@
                   </packing>
                 </child>
                 <child type="tab">
-                  <object class="GtkLabel" id="label1">
+                  <object class="GtkLabel" id="general_tab_label">
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">General</property>
                   </object>
@@ -2310,6 +2310,7 @@
                         <property name="spacing">4</property>
                         <child>
                           <object class="GtkScrolledWindow" id="encodings_scroll">
+                            <property name="height_request">100</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="hscrollbar_policy">automatic</property>
@@ -2536,6 +2537,7 @@
                         <property name="spacing">4</property>
                         <child>
                           <object class="GtkScrolledWindow" id="shortcuts_scroll">
+                            <property name="height_request">100</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="hscrollbar_policy">automatic</property>
@@ -2765,6 +2767,7 @@
                         <property name="spacing">4</property>
                         <child>
                           <object class="GtkScrolledWindow" id="colours_scroll">
+                            <property name="height_request">100</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="hscrollbar_policy">automatic</property>
@@ -3034,6 +3037,7 @@
                         <property name="spacing">4</property>
                         <child>
                           <object class="GtkScrolledWindow" id="profile_scroll">
+                            <property name="height_request">100</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="hscrollbar_policy">automatic</property>
@@ -3142,7 +3146,7 @@
                                           </packing>
                                         </child>
                                         <child>
-                                          <object class="GtkLabel" id="label48">
+                                          <object class="GtkLabel" id="profile_delete_label">
                                             <property name="visible">True</property>
                                             <property name="label" translatable="yes">Delete</property>
                                             <property name="use_underline">True</property>
@@ -3383,7 +3387,7 @@
             <property name="column_spacing">8</property>
             <property name="row_spacing">8</property>
             <child>
-              <object class="GtkLabel" id="label1">
+              <object class="GtkLabel" id="ssh_address_label">
                 <property name="visible">True</property>
                 <property name="xalign">0</property>
                 <property name="label" translatable="yes">_Address</property>
@@ -3412,7 +3416,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkLabel" id="label2">
+              <object class="GtkLabel" id="ssh_user_label">
                 <property name="visible">True</property>
                 <property name="xalign">0</property>
                 <property name="label" translatable="yes">_User</property>
@@ -3462,7 +3466,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkLabel" id="label3">
+              <object class="GtkLabel" id="ssh_port_label">
                 <property name="visible">True</property>
                 <property name="xalign">0</property>
                 <property name="label" translatable="yes">_Port</property>
@@ -3493,7 +3497,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkLabel" id="label4">
+              <object class="GtkLabel" id="ssh_options_label">
                 <property name="visible">True</property>
                 <property name="xalign">0</property>
                 <property name="label" translatable="yes">_Other options</property>
@@ -3582,11 +3586,11 @@
               </packing>
             </child>
             <child>
-              <object class="GtkHBox" id="hbox14">
+              <object class="GtkHBox" id="text_colour_hbox">
                 <property name="visible">True</property>
                 <property name="spacing">10</property>
                 <child>
-                  <object class="GtkLabel" id="label38">
+                  <object class="GtkLabel" id="text_colour_label">
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">_Text colour</property>
                     <property name="use_underline">True</property>
@@ -3615,11 +3619,11 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkLabel" id="label39">
+                  <object class="GtkLabel" id="background_colour_label">
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">_Background colour</property>
                     <property name="use_underline">True</property>
-                    <property name="mnemonic_widget">foreground_colour</property>
+                    <property name="mnemonic_widget">background_colour</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -4131,7 +4135,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkHBox" id="hbox13">
+              <object class="GtkHBox" id="cursor_colour_hbox">
                 <property name="visible">True</property>
                 <property name="spacing">10</property>
                 <child>
