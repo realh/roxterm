@@ -103,10 +103,10 @@ AS_IF([test $enable_gtk3 != no],
 [
   PKG_CHECK_MODULES(gtk3, [gtk+-3.0],
   [
-    PKG_CHECK_MODULES(vte3, [vte-2.90],[found_gtk3=yes], [true])
+    PKG_CHECK_MODULES(vte3, [vte-2.90], [found_gtk3=yes], [true])
   ], [true])
 ])
-AS_IF([test $enable_gtk3 = yes -a $found_gtk3=no],
+AS_IF([test $enable_gtk3 = yes -a $found_gtk3 = no],
     AC_MSG_ERROR([--enable-gtk3 given but necessary libraries not found])
 )
 enable_gtk3=$found_gtk3
