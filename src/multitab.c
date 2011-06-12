@@ -23,6 +23,10 @@
 #include "menutree.h"
 #include "multitab.h"
 #include "shortcuts.h"
+#if HAVE_COMPOSITE
+#include <gdk/gdkx.h>
+#include "x11support.h"
+#endif
 
 #define HORIZ_TAB_WIDTH 120
 
@@ -89,10 +93,10 @@ struct MultiWin {
     char *child_title;
 #if HAVE_COMPOSITE
     gboolean composite;
-    gulong composited_changed_tag;
 #endif
     char *display_name;
     gboolean title_template_locked;
+    gboolean clear_demands_attention;
 };
 
 static double multi_win_zoom_factors[] = {
@@ -130,9 +134,6 @@ MultiWinGetDisableMenuShortcuts multi_win_get_disable_menu_shortcuts;
 static MultiWinInitialTabs multi_win_initial_tabs;
 static MultiWinDeleteHandler multi_win_delete_handler;
 static MultiTabGetShowCloseButton multi_tab_get_show_close_button;
-#if HAVE_COMPOSITE
-static MultiWinCompositedChangedHandler multi_win_composited_changed_handler;
-#endif
 
 static gboolean multi_win_notify_tab_removed(MultiWin *, MultiTab *);
 
@@ -202,9 +203,6 @@ void multi_tab_init(MultiTabFiller filler, MultiTabDestructor destructor,
     MultiWinInitialTabs initial_tabs,
     MultiWinDeleteHandler delete_handler,
     MultiTabGetShowCloseButton get_show_close_button
-#if HAVE_COMPOSITE
-    , MultiWinCompositedChangedHandler composited_changed_handler
-#endif
     )
 {
     multi_tab_filler = filler;
@@ -219,9 +217,6 @@ void multi_tab_init(MultiTabFiller filler, MultiTabDestructor destructor,
     multi_win_initial_tabs = initial_tabs;
     multi_win_delete_handler = delete_handler;
     multi_tab_get_show_close_button = get_show_close_button;
-#if HAVE_COMPOSITE
-    multi_win_composited_changed_handler = composited_changed_handler;
-#endif
 }
 
 MultiTab *multi_tab_new(MultiWin * parent, gpointer user_data_template)
@@ -1441,27 +1436,84 @@ void multi_win_show(MultiWin *win)
 }
 
 #if HAVE_COMPOSITE
-static void multi_win_composite_foreach_tab(MultiTab *tab, void *handle)
+void multi_win_set_colormap(MultiWin *win)
 {
-    (void) handle;
-    
-    multi_win_composited_changed_handler(tab->user_data,
-            tab->parent->composite);
+    GdkScreen *screen = gtk_widget_get_screen(win->gtkwin);
+    GdkColormap *colormap = gdk_screen_get_rgba_colormap(screen);
+
+    if (gdk_screen_is_composited(screen) && colormap)
+    {
+        gtk_widget_set_colormap(win->gtkwin, colormap);
+        win->composite = TRUE;
+    }
+    else
+    {
+        gtk_widget_set_colormap(win->gtkwin,
+                gdk_screen_get_default_colormap(screen));
+        win->composite = FALSE;
+    }
 }
 
-static void multi_win_composited_changed(GdkScreen *screen, MultiWin *win)
+static void multi_win_composited_changed(GtkWidget *widget, MultiWin *win)
 {
-    if (gdk_screen_is_composited(screen))
-        win->composite = TRUE;
-    else
-        win->composite = FALSE;
-    /* This handler has to be run before clients, hence we have yet another
-     * callback instead of letting client connect to screen's
-     * composited-changed signal.
-     */
-    if (multi_win_composited_changed_handler)
-        multi_win_foreach_tab(win, multi_win_composite_foreach_tab, NULL);
+    gboolean composited =
+            gdk_screen_is_composited(gtk_widget_get_screen(widget));
+    
+    if (composited != win->composite)
+    {
+        if (GTK_WIDGET_REALIZED(win->gtkwin))
+        {
+            /* This section mostly copied from gnome-terminal */
+            guint32 user_time;
+            gboolean have_desktop;
+            guint32 desktop = 0;
+            gboolean was_minimized;
+            int x, y;
+            
+            user_time = gdk_x11_display_get_user_time(
+                    gtk_widget_get_display (widget));
+            
+            /* If compositing changed, re-realize the window. Bug #563561 */
+            
+            gtk_window_get_position(GTK_WINDOW(win->gtkwin), &x, &y);
+            was_minimized = x11support_window_is_minimized(win->gtkwin->window);
+            have_desktop = x11support_get_wm_desktop(win->gtkwin->window,
+                    &desktop);
+            gtk_widget_hide (widget);
+            gtk_widget_unrealize (widget);
+            
+            multi_win_set_colormap(win);
+            
+            gtk_window_move(GTK_WINDOW(win->gtkwin), x, y);
+            gtk_widget_realize(win->gtkwin);
+            gdk_x11_window_set_user_time(win->gtkwin->window, user_time);
+            if (was_minimized)
+                gtk_window_iconify(GTK_WINDOW(win->gtkwin));
+            else
+                gtk_window_deiconify(GTK_WINDOW(win->gtkwin));
+            gtk_widget_show(widget);
+            if (have_desktop)
+                x11support_set_wm_desktop(win->gtkwin->window, desktop);
+            win->clear_demands_attention = TRUE;
+        }
+        else
+        {
+            multi_win_set_colormap(win);
+        }
+    }
 }
+
+static gboolean multi_win_map_event_handler(GtkWidget *widget,
+        GdkEvent *event, MultiWin *win)
+{
+    if (win->clear_demands_attention)
+    {
+        x11support_clear_demands_attention(widget->window);
+        win->clear_demands_attention = FALSE;
+    }
+    return FALSE;
+}
+
 #endif /* HAVE_COMPOSITE */
 
 MultiWin *multi_win_new_blank(const char *display_name, Options *shortcuts,
@@ -1528,17 +1580,11 @@ MultiWin *multi_win_new_blank(const char *display_name, Options *shortcuts,
     }
     
 #if HAVE_COMPOSITE
-    {
-        GdkScreen *screen = gtk_widget_get_screen(win->gtkwin);
-        GdkColormap *colormap = gdk_screen_get_rgba_colormap(screen);
-    
-        if (colormap)
-            gtk_widget_set_colormap(win->gtkwin, colormap);
-        multi_win_composited_changed(screen, win);
-        win->composited_changed_tag = g_signal_connect(screen,
-                "composited-changed",
-                G_CALLBACK(multi_win_composited_changed), win);
-    }
+    multi_win_set_colormap(win);
+    g_signal_connect(win->gtkwin, "composited-changed",
+            G_CALLBACK(multi_win_composited_changed), win);
+    g_signal_connect(win->gtkwin, "map-event",
+            G_CALLBACK(multi_win_map_event_handler), win);
 #endif
 
     win->vbox = gtk_vbox_new(FALSE, 0);
@@ -1716,13 +1762,6 @@ static void multi_win_destructor(MultiWin *win, gboolean destroy_widgets)
     }
     if (destroy_widgets && win->gtkwin)
     {
-#if HAVE_COMPOSITE
-        if (win->composited_changed_tag)
-        {
-            g_signal_handler_disconnect(gtk_widget_get_screen(win->gtkwin),
-                    win->composited_changed_tag);
-        }
-#endif
         gtk_widget_destroy(win->gtkwin);
         win->gtkwin = NULL;
     }
@@ -2243,7 +2282,7 @@ const char *multi_win_get_title(MultiWin *win)
 gboolean multi_win_composite(MultiWin *win)
 {
 #if HAVE_COMPOSITE
-    return win->composite;
+    return gdk_screen_is_composited(gtk_widget_get_screen(win->gtkwin));
 #else
     return FALSE;
 #endif
