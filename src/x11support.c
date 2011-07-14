@@ -27,20 +27,22 @@
 
 #include "x11support.h"
 
-inline static void get_display(GdkWindow *window)
+inline static GdkDisplay *get_display(GdkWindow *window)
 {
 #ifdef HAVE_GDK_WINDOW_GET_DISPLAY
     return gdk_window_get_display(window);
 #else
     return gdk_drawable_get_display(GDK_DRAWABLE(window));
+#endif
 }
 
-inline static void get_screen(GdkWindow *window)
+inline static GdkScreen *get_screen(GdkWindow *window)
 {
 #ifdef HAVE_GDK_WINDOW_GET_SCREEN
     return gdk_window_get_screen(window);
 #else
     return gdk_drawable_get_screen(GDK_DRAWABLE(window));
+#endif
 }
 
 /* This started off ripped from gnome-terminal */
