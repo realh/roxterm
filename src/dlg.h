@@ -19,13 +19,15 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-
-/* Show messages in dialog boxes and log them using g_log */
+/* Miscellaneous dialog boxes */
 
 #ifndef DEFNS_H
 #include "defns.h"
 #endif
 
+#include "multitab.h"
+
+/* Show messages in dialog boxes and log them using g_log */
 void dlg_message(GtkWindow *parent, const char *, ...);
 void dlg_warning(GtkWindow *parent, const char *, ...);
 void dlg_critical(GtkWindow *parent, const char *, ...);
@@ -33,6 +35,10 @@ void dlg_critical(GtkWindow *parent, const char *, ...);
 GtkWidget *dlg_ok_cancel(GtkWindow *parent, const char *title,
         const char *, ...);
 
-#endif /* CONFIGLET_H */
+#ifdef HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX
+void dlg_open_search(MultiWin *win, VteTerminal *vte);
+#endif
+
+#endif /* DLG_H */
 
 /* vi:set sw=4 ts=4 et cindent cino= */

@@ -114,6 +114,11 @@ static void menutree_build_shell_ap(MenuTree *menu_tree, GtkMenuShell *shell,
                 case MENUTREE_HELP_ABOUT:
                     stock = GTK_STOCK_ABOUT;
                     break;
+#ifdef HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX
+                case MENUTREE_SEARCH_FIND:
+                    stock = GTK_STOCK_FIND;
+                    break;
+#endif
                 default:
                     break;
             }
@@ -263,8 +268,10 @@ void menutree_apply_shortcuts(MenuTree *tree, Options *shortcuts)
     menutree_set_accel_path_for_submenu(tree, MENUTREE_FILE, "File");
     menutree_set_accel_path_for_submenu(tree, MENUTREE_EDIT, "Edit");
     menutree_set_accel_path_for_submenu(tree, MENUTREE_VIEW, "View");
+    menutree_set_accel_path_for_submenu(tree, MENUTREE_SEARCH, "Search");
     menutree_set_accel_path_for_submenu(tree, MENUTREE_PREFERENCES,
             "Preferences");
+    menutree_set_accel_path_for_submenu(tree, MENUTREE_HELP, "Help");
     
     submenu = GTK_MENU(tree->new_win_profiles_menu);
     if (submenu)
@@ -561,6 +568,17 @@ static void menutree_build(MenuTree *menu_tree, Options *shortcuts,
         NULL);
     gtk_menu_item_set_submenu(GTK_MENU_ITEM(menu_tree->item_widgets
             [MENUTREE_VIEW]), submenu);
+
+#ifdef HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX
+    submenu = gtk_menu_new();
+    menutree_build_shell(menu_tree, GTK_MENU_SHELL(submenu),
+        _("_Find..."), MENUTREE_SEARCH_FIND,
+        _("Find _Next"), MENUTREE_SEARCH_FIND_NEXT,
+        _("Find _Previous"), MENUTREE_SEARCH_FIND_PREVIOUS,
+        NULL);
+    gtk_menu_item_set_submenu(GTK_MENU_ITEM(menu_tree->item_widgets
+            [MENUTREE_SEARCH]), submenu);
+#endif
 
     submenu = gtk_menu_new();
     menutree_build_shell(menu_tree, GTK_MENU_SHELL(submenu),
