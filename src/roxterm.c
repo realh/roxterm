@@ -1659,7 +1659,9 @@ static void roxterm_tab_selection_handler(ROXTermData * roxterm, MultiTab * tab)
     check_preferences_submenu_pair(roxterm,
             MENUTREE_PREFERENCES_SELECT_SHORTCUTS,
             options_get_leafname(multi_win_get_shortcut_scheme(roxterm->win)));
+#ifdef HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX
     roxterm_shade_search_menu_items(roxterm);
+#endif
     
     /* Creation of im submenus deferred to this point because vte
      * widget must be realized first */
