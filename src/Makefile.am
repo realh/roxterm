@@ -81,5 +81,5 @@ roxterm_config_SOURCES =	\
 
 roxterm_config_LDADD = @roxterm_config_LIBS@ libroxterm.la
 
-pkgdata_DATA	=	roxterm-config.glade
-EXTRA_DIST	=	roxterm-config.glade missing.c
+pkgdata_DATA	=	roxterm-config.ui
+EXTRA_DIST	=	roxterm-config.ui missing.c

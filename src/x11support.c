@@ -58,6 +58,7 @@ gboolean x11support_window_is_minimized(GdkWindow *window)
     Atom *atoms = NULL;
     gulong i;
     gboolean minimized = FALSE;
+    gint ignored;
     
     type = None;
     gdk_error_trap_push();
@@ -66,7 +67,8 @@ gboolean x11support_window_is_minimized(GdkWindow *window)
                                 "_NET_WM_STATE"),
                         0, G_MAXLONG, False, XA_ATOM, &type, &format, &nitems,
                         &bytes_after, &data);
-    (void) gdk_error_trap_pop();
+    ignored = gdk_error_trap_pop();
+    (void) ignored;
     
     if (type != None)
     {
@@ -98,7 +100,7 @@ gboolean x11support_get_wm_desktop(GdkWindow *window, guint32 *desktop)
     gboolean result = FALSE;
     
     if (XGetWindowProperty(GDK_DISPLAY_XDISPLAY(display),
-            GDK_DRAWABLE_XID (window),
+            GDK_WINDOW_XID (window),
             gdk_x11_get_xatom_by_name_for_display(display, "_NET_WM_DESKTOP"),
             0, G_MAXLONG, False, AnyPropertyType,
             &type, &format, &n_items, &bytes_after, &data) == Success &&
@@ -139,7 +141,7 @@ void x11support_set_wm_desktop(GdkWindow *window, guint32 desktop)
         xclient.type = ClientMessage;
         xclient.serial = 0;
         xclient.send_event = True;
-        xclient.window = GDK_WINDOW_XWINDOW (window);
+        xclient.window = GDK_WINDOW_XID (window);
         xclient.message_type = gdk_x11_get_xatom_by_name_for_display(display,
                 "_NET_WM_DESKTOP");
         xclient.format = 32;
@@ -149,7 +151,7 @@ void x11support_set_wm_desktop(GdkWindow *window, guint32 desktop)
         xclient.data.l[3] = 0;
         xclient.data.l[4] = 0;
         XSendEvent (xdisplay,
-                GDK_WINDOW_XWINDOW(gdk_screen_get_root_window(screen)),
+                GDK_WINDOW_XID(gdk_screen_get_root_window(screen)),
                 False,
                 SubstructureRedirectMask | SubstructureNotifyMask,
                 (XEvent *) &xclient);
@@ -159,7 +161,7 @@ void x11support_set_wm_desktop(GdkWindow *window, guint32 desktop)
         gulong long_desktop = desktop;
     
         XChangeProperty (xdisplay,
-                 GDK_DRAWABLE_XID(window),
+                 GDK_WINDOW_XID(window),
                  gdk_x11_get_xatom_by_name_for_display(display,
                          "_NET_WM_DESKTOP"),
                  XA_CARDINAL, 32, PropModeReplace,
@@ -180,7 +182,7 @@ void x11support_clear_demands_attention(GdkWindow *window)
     xclient.type = ClientMessage;
     xclient.serial = 0;
     xclient.send_event = True;
-    xclient.window = GDK_WINDOW_XWINDOW (window);
+    xclient.window = GDK_WINDOW_XID (window);
     xclient.message_type = gdk_x11_get_xatom_by_name_for_display(display,
             "_NET_WM_STATE");
     xclient.format = 32;
@@ -191,7 +193,7 @@ void x11support_clear_demands_attention(GdkWindow *window)
     xclient.data.l[3] = 0;
     xclient.data.l[4] = 0;
     XSendEvent (GDK_DISPLAY_XDISPLAY(display),
-            GDK_WINDOW_XWINDOW(gdk_screen_get_root_window (screen)),
+            GDK_WINDOW_XID(gdk_screen_get_root_window (screen)),
             False,
             SubstructureRedirectMask | SubstructureNotifyMask,
             (XEvent *) &xclient);
