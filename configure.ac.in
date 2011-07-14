@@ -91,9 +91,9 @@ AC_ARG_ENABLE([sm],
 )
 
 AC_ARG_ENABLE([gtk3],
-    AS_HELP_STRING([--disable-gtk3], [Use GTK+2 instead of GTK+3 and compatible version of VTE]),
+    AS_HELP_STRING([--enable-gtk3], [Use GTK+2 instead of GTK+3 and compatible version of VTE]),
     [],
-    [enable_gtk3="test"]
+    [enable_gtk3="no"]
 )
 
 dnl Checks for libraries.

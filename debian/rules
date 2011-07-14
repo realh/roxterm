@@ -5,6 +5,7 @@
 
 override_dh_auto_configure:
 	dh_auto_configure -- --with-gnome-default-applications=/usr/share/gnome-control-center/default-apps \
+			--disable-gtk3 \
 			CFLAGS="-Wl,--as-needed -Wall"
 
 override_dh_auto_build:
