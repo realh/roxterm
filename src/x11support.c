@@ -27,11 +27,27 @@
 
 #include "x11support.h"
 
-/* This is all ripped from gnome-terminal */
+inline static void get_display(GdkWindow *window)
+{
+#ifdef HAVE_GDK_WINDOW_GET_DISPLAY
+    return gdk_window_get_display(window);
+#else
+    return gdk_drawable_get_display(GDK_DRAWABLE(window));
+}
+
+inline static void get_screen(GdkWindow *window)
+{
+#ifdef HAVE_GDK_WINDOW_GET_SCREEN
+    return gdk_window_get_screen(window);
+#else
+    return gdk_drawable_get_screen(GDK_DRAWABLE(window));
+}
+
+/* This started off ripped from gnome-terminal */
 
 gboolean x11support_window_is_minimized(GdkWindow *window)
 {
-    GdkDisplay *display = gdk_drawable_get_display(window);
+    GdkDisplay *display = get_display(window);
     Atom type;
     gint format;
     gulong nitems;
@@ -48,7 +64,7 @@ gboolean x11support_window_is_minimized(GdkWindow *window)
                                 "_NET_WM_STATE"),
                         0, G_MAXLONG, False, XA_ATOM, &type, &format, &nitems,
                         &bytes_after, &data);
-    gdk_error_trap_pop();
+    (void) gdk_error_trap_pop();
     
     if (type != None)
     {
@@ -72,7 +88,7 @@ gboolean x11support_window_is_minimized(GdkWindow *window)
 
 gboolean x11support_get_wm_desktop(GdkWindow *window, guint32 *desktop)
 {
-    GdkDisplay *display = gdk_drawable_get_display(window);
+    GdkDisplay *display = get_display(window);
     Atom type;
     int format;
     guchar *data;
@@ -98,7 +114,7 @@ gboolean x11support_get_wm_desktop(GdkWindow *window, guint32 *desktop)
 
 void x11support_set_wm_desktop(GdkWindow *window, guint32 desktop)
 {
-    GdkScreen *screen = gdk_drawable_get_screen (window);
+    GdkScreen *screen = get_screen (window);
     GdkDisplay *display = gdk_screen_get_display (screen);
     Display *xdisplay = GDK_DISPLAY_XDISPLAY (display);
     char *wm_selection_name;
@@ -154,7 +170,7 @@ void x11support_set_wm_desktop(GdkWindow *window, guint32 desktop)
 
 void x11support_clear_demands_attention(GdkWindow *window)
 {
-    GdkScreen *screen = gdk_drawable_get_screen(window);
+    GdkScreen *screen = get_screen(window);
     GdkDisplay *display = gdk_screen_get_display(screen);
     XClientMessageEvent xclient;
     
