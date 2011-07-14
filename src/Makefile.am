@@ -61,7 +61,8 @@ roxterm_SOURCES =	\
 	optsdbus.c	optsdbus.h	\
 	roxterm.c	roxterm.h	\
 	shortcuts.c	shortcuts.h	\
-	uri.c		uri.h
+	uri.c		uri.h		\
+	x11support.c	x11support.h
 
 if ENABLE_SM
 roxterm_SOURCES += session.c    session.h

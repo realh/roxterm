@@ -1,9 +1,16 @@
 roxterm (@VERSION@-1) experimental; urgency=low
 
   * New upstream version:
-    + GTK3 support.
+    + Use GtkBuilder instead of libglade.
 
- -- Tony Houghton <h@realh.co.uk>  Fri, 03 Jun 2011 22:48:18 +0100
+ -- Tony Houghton <h@realh.co.uk>  Thu, 14 Jul 2011 17:38:35 +0100
+
+roxterm (1.22.2-1) unstable; urgency=low
+
+  * New upstream version:
+    + Fixes a bug with compositing/colormap (SF bug: 3314176)
+
+ -- Tony Houghton <h@realh.co.uk>  Tue, 21 Jun 2011 21:42:44 +0100
 
 roxterm (1.22.1-1) unstable; urgency=low
 

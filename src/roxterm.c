@@ -2492,6 +2492,14 @@ static void roxterm_connect_menu_signals(MultiWin * win)
     roxterm_add_all_pref_submenus(win);
 }
 
+#if HAVE_COMPOSITE
+static void roxterm_composited_changed_handler(VteTerminal *vte,
+        ROXTermData *roxterm)
+{
+    roxterm_update_background(roxterm, VTE_TERMINAL(roxterm->widget));
+}
+#endif
+
 static void roxterm_connect_misc_signals(ROXTermData * roxterm)
 {
     g_signal_connect(roxterm->widget,
@@ -2533,6 +2541,10 @@ static void roxterm_connect_misc_signals(ROXTermData * roxterm)
             G_CALLBACK(roxterm_text_changed_handler), roxterm);
     g_signal_connect(roxterm->widget, "resize-window",
             G_CALLBACK(roxterm_resize_window_handler), roxterm);
+#if HAVE_COMPOSITE
+    g_signal_connect(roxterm->widget, "composited-changed",
+            G_CALLBACK(roxterm_composited_changed_handler), roxterm);
+#endif
 }
 
 inline static void
@@ -2858,15 +2870,6 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
     *roxterm_out = roxterm;
 
     roxterm->widget = vte_terminal_new();
-#if HAVE_COMPOSITE && !GTK_CHECK_VERSION(3, 0, 0)
-    {
-        GdkScreen *screen = gtk_widget_get_screen(multi_win_get_widget(win));
-        GdkColormap *colormap = gdk_screen_get_rgba_colormap(screen);
-    
-        if (colormap)
-            gtk_widget_set_colormap(roxterm->widget, colormap);
-    }
-#endif
     gtk_widget_grab_focus(roxterm->widget);
     vte = VTE_TERMINAL(roxterm->widget);
     if (vte_widget)
@@ -3928,14 +3931,6 @@ static gboolean roxterm_win_delete_handler(GtkWindow *gtkwin, GdkEvent *event,
     return response;
 }
 
-#if HAVE_COMPOSITE
-static void roxterm_composited_changed_handler(ROXTermData *roxterm,
-        gboolean composited)
-{
-    roxterm_update_background(roxterm, VTE_TERMINAL(roxterm->widget));
-}
-#endif
-
 void roxterm_init(void)
 {
     char *logo_filename = logo_find();
@@ -3966,9 +3961,6 @@ void roxterm_init(void)
         (MultiWinInitialTabs) roxterm_get_initial_tabs,
         (MultiWinDeleteHandler) roxterm_win_delete_handler,
         (MultiTabGetShowCloseButton) roxterm_get_show_tab_close_button
-#if HAVE_COMPOSITE
-        , (MultiWinCompositedChangedHandler) roxterm_composited_changed_handler
-#endif
         );
     roxterm_apply_can_edit_shortcuts();
 }
