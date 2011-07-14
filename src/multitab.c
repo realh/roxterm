@@ -1485,7 +1485,11 @@ static void multi_win_composited_changed(GtkWidget *widget, MultiWin *win)
     
     if (composited != win->composite)
     {
+#ifdef HAVE_GTK_WIDGET_GET_REALIZED
+        if (gtk_widget_get_realized(win->gtkwin))
+#else
         if (GTK_WIDGET_REALIZED(win->gtkwin))
+#endif
         {
             /* This section mostly copied from gnome-terminal */
             guint32 user_time;
@@ -1493,6 +1497,7 @@ static void multi_win_composited_changed(GtkWidget *widget, MultiWin *win)
             guint32 desktop = 0;
             gboolean was_minimized;
             int x, y;
+            GdkWindow *dwin = gtk_widget_get_window(win->gtkwin);
             
             user_time = gdk_x11_display_get_user_time(
                     gtk_widget_get_display (widget));
@@ -1500,8 +1505,8 @@ static void multi_win_composited_changed(GtkWidget *widget, MultiWin *win)
             /* If compositing changed, re-realize the window. Bug #563561 */
             
             gtk_window_get_position(GTK_WINDOW(win->gtkwin), &x, &y);
-            was_minimized = x11support_window_is_minimized(win->gtkwin->window);
-            have_desktop = x11support_get_wm_desktop(win->gtkwin->window,
+            was_minimized = x11support_window_is_minimized(dwin);
+            have_desktop = x11support_get_wm_desktop(dwin,
                     &desktop);
             gtk_widget_hide (widget);
             gtk_widget_unrealize (widget);
@@ -1510,14 +1515,14 @@ static void multi_win_composited_changed(GtkWidget *widget, MultiWin *win)
             
             gtk_window_move(GTK_WINDOW(win->gtkwin), x, y);
             gtk_widget_realize(win->gtkwin);
-            gdk_x11_window_set_user_time(win->gtkwin->window, user_time);
+            gdk_x11_window_set_user_time(dwin, user_time);
             if (was_minimized)
                 gtk_window_iconify(GTK_WINDOW(win->gtkwin));
             else
                 gtk_window_deiconify(GTK_WINDOW(win->gtkwin));
             gtk_widget_show(widget);
             if (have_desktop)
-                x11support_set_wm_desktop(win->gtkwin->window, desktop);
+                x11support_set_wm_desktop(dwin, desktop);
             win->clear_demands_attention = TRUE;
         }
         else
@@ -1532,7 +1537,7 @@ static gboolean multi_win_map_event_handler(GtkWidget *widget,
 {
     if (win->clear_demands_attention)
     {
-        x11support_clear_demands_attention(widget->window);
+        x11support_clear_demands_attention(gtk_widget_get_window(widget));
         win->clear_demands_attention = FALSE;
     }
     return FALSE;

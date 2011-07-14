@@ -268,7 +268,9 @@ void menutree_apply_shortcuts(MenuTree *tree, Options *shortcuts)
     menutree_set_accel_path_for_submenu(tree, MENUTREE_FILE, "File");
     menutree_set_accel_path_for_submenu(tree, MENUTREE_EDIT, "Edit");
     menutree_set_accel_path_for_submenu(tree, MENUTREE_VIEW, "View");
+#ifdef HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX
     menutree_set_accel_path_for_submenu(tree, MENUTREE_SEARCH, "Search");
+#endif
     menutree_set_accel_path_for_submenu(tree, MENUTREE_PREFERENCES,
             "Preferences");
     menutree_set_accel_path_for_submenu(tree, MENUTREE_HELP, "Help");
