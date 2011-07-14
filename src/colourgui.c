@@ -627,7 +627,7 @@ ColourGUI *colourgui_open(const char *scheme_name, GdkScreen *scrn)
 
     cg->capp.builder = gtk_builder_new();
     if (!gtk_builder_add_objects_from_file(cg->capp.builder,
-            capplet_get_glade_filename(),
+            capplet_get_ui_filename(),
             (char **) build_objs, &error))
     {
         g_error(_("Unable to load 'Colour_Scheme_Editor' from UI defs: %s"),

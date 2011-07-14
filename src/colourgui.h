@@ -24,7 +24,7 @@
 #include "defns.h"
 #endif
 
-/* Editing of a Colour with a GUI (using libglade) */
+/* Editing of a Colour with a GUI */
 
 typedef struct _ColourGUI ColourGUI;
 

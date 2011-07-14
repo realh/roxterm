@@ -420,7 +420,7 @@ int main(int argc, char **argv)
     return 0;
 }
 
-const char *capplet_get_glade_filename(void)
+const char *capplet_get_ui_filename(void)
 {
     static char *filename = NULL;
 
@@ -429,12 +429,12 @@ const char *capplet_get_glade_filename(void)
         if (global_options_appdir)
         {
             filename = g_build_filename(global_options_appdir, "src",
-                "roxterm-config.glade", NULL);
+                "roxterm-config.ui", NULL);
         }
         else
         {
             filename = g_build_filename(PKG_DATA_DIR,
-                "roxterm-config.glade", NULL);
+                "roxterm-config.ui", NULL);
         }
     }
     return filename;

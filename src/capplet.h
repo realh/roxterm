@@ -33,7 +33,7 @@ typedef struct {
     Options *options;
 } CappletData;
 
-const char *capplet_get_glade_filename(void);
+const char *capplet_get_ui_filename(void);
 
 /* This is set when one of the widgets is being changed by the program, so we
  * should ignore the resultant signal */

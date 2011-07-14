@@ -1024,7 +1024,7 @@ gboolean configlet_open(GdkScreen *scrn)
 
         cg->capp.builder = gtk_builder_new();
         if (gtk_builder_add_objects_from_file(cg->capp.builder,
-                capplet_get_glade_filename(), (char **) build_objs, &error))
+                capplet_get_ui_filename(), (char **) build_objs, &error))
         {
             cg->widget =
                     GTK_WIDGET(gtk_builder_get_object(cg->capp.builder,

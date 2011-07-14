@@ -754,7 +754,7 @@ ProfileGUI *profilegui_open(const char *profile_name, GdkScreen *scrn)
 
     pg->capp.builder = gtk_builder_new();
     if (!gtk_builder_add_objects_from_file(pg->capp.builder, 
-            capplet_get_glade_filename(), (char **) obj_names, &error))
+            capplet_get_ui_filename(), (char **) obj_names, &error))
     {
         g_error(_("Unable to load GTK UI definitions: %s"), error->message);
     }
