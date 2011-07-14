@@ -25,7 +25,7 @@
 #include "defns.h"
 #endif
 
-#include "multitab.h"
+#define DLG_SPACING 8
 
 /* Show messages in dialog boxes and log them using g_log */
 void dlg_message(GtkWindow *parent, const char *, ...);
@@ -34,10 +34,6 @@ void dlg_critical(GtkWindow *parent, const char *, ...);
 
 GtkWidget *dlg_ok_cancel(GtkWindow *parent, const char *title,
         const char *, ...);
-
-#ifdef HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX
-void dlg_open_search(ROXTerm *roxterm);
-#endif
 
 #endif /* DLG_H */
 

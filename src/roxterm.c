@@ -1841,7 +1841,7 @@ static void roxterm_open_search_action(MultiWin *win);
     ROXTermData *roxterm = multi_win_get_user_data_for_current_tab(win);
 
     g_return_if_fail(roxterm);
-    dlg_open_search(roxterm);
+    search_open_dialog(roxterm);
 }
 
 static void roxterm_find_next_action(MultiWin *win);

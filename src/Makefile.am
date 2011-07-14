@@ -68,6 +68,10 @@ if ENABLE_SM
 roxterm_SOURCES += session.c    session.h
 endif
 
+if HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX
+roxterm_SOURCES += search.c     search.h
+endif
+
 roxterm_LDADD = @roxterm_LIBS@ libroxterm.la
 roxterm_config_CFLAGS += -DROXTERM_CAPPLET
 
