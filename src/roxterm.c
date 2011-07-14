@@ -1659,6 +1659,7 @@ static void roxterm_tab_selection_handler(ROXTermData * roxterm, MultiTab * tab)
     check_preferences_submenu_pair(roxterm,
             MENUTREE_PREFERENCES_SELECT_SHORTCUTS,
             options_get_leafname(multi_win_get_shortcut_scheme(roxterm->win)));
+    roxterm_shade_search_menu_items(roxterm);
     
     /* Creation of im submenus deferred to this point because vte
      * widget must be realized first */
@@ -1830,6 +1831,33 @@ static void roxterm_edit_colour_scheme_action(MultiWin * win)
             options_get_leafname(roxterm->colour_scheme),
             roxterm->display_name);
 }
+
+
+#ifdef HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX
+static void roxterm_open_search_action(MultiWin *win);
+{
+    ROXTermData *roxterm = multi_win_get_user_data_for_current_tab(win);
+
+    g_return_if_fail(roxterm);
+    dlg_open_search(roxterm);
+}
+
+static void roxterm_find_next_action(MultiWin *win);
+{
+    ROXTermData *roxterm = multi_win_get_user_data_for_current_tab(win);
+
+    g_return_if_fail(roxterm);
+    vte_terminal_search_find_next(VTE_TERMINAL(roxterm->widget));
+}
+
+static void roxterm_find_prev_action(MultiWin *win);
+{
+    ROXTermData *roxterm = multi_win_get_user_data_for_current_tab(win);
+
+    g_return_if_fail(roxterm);
+    vte_terminal_search_find_previous(VTE_TERMINAL(roxterm->widget));
+}
+#endif
 
 static void roxterm_show_about(MultiWin * win)
 {
@@ -2488,6 +2516,14 @@ static void roxterm_connect_menu_signals(MultiWin * win)
         G_CALLBACK(roxterm_mailto_action), win, NULL, NULL, NULL);
     multi_win_menu_connect_swapped(win, MENUTREE_COPY_URI,
         G_CALLBACK(roxterm_copy_url_action), win, NULL, NULL, NULL);
+#ifdef HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX
+    multi_win_menu_connect_swapped(win, MENUTREE_SEARCH_FIND,
+        G_CALLBACK(roxterm_open_search_action), win, NULL, NULL, NULL);
+    multi_win_menu_connect_swapped(win, MENUTREE_SEARCH_FIND_NEXT,
+        G_CALLBACK(roxterm_find_next_action), win, NULL, NULL, NULL);
+    multi_win_menu_connect_swapped(win, MENUTREE_SEARCH_FIND_PREVIOUS,
+        G_CALLBACK(roxterm_find_prev_action), win, NULL, NULL, NULL);
+#endif
 
     roxterm_add_all_pref_submenus(win);
 }
@@ -4696,6 +4732,41 @@ gboolean roxterm_load_session(const char *xml, gssize len,
     }
     return result;
 }
+
+#ifdef HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX
+
+inline static void roxterm_shade_mtree_search_items(MenuTree *mtree,
+        gboolean shade)
+{
+    if (mtree)
+    {
+        menutree_shade(mtree, MENUTREE_SEARCH_FIND_NEXT, shade);
+        menutree_shade(mtree, MENUTREE_SEARCH_FIND_PREVIOUS, shade);
+    }
+}
+
+void roxterm_shade_search_menu_items(ROXTermData *roxterm)
+{
+    gboolean shade = vte_terminal_search_get_gregex(
+            VTE_TERMINAL(roxterm->widget)) == NULL;
+    
+    roxterm_shade_mtree_search_items(multi_win_get_menu_bar(roxterm->win),
+            shade);
+    roxterm_shade_mtree_search_items(multi_win_get_popup_menu(roxterm->win),
+            shade);
+}
+
+MultiWin *roxterm_get_multi_win(ROXTermData *roxterm)
+{
+    return roxterm->win;
+}
+
+VteTerminal *roxterm_get_vte(ROXTermData *roxterm)
+{
+    return VTE_TERMINAL(roxterm->widget);
+}
+
+#endif
 
 #endif /* ENABLE_SM */
 

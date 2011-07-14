@@ -18,6 +18,9 @@
 */
 
 #include "dlg.h"
+#ifdef HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX
+#include "roxterm.h"
+#endif
 
 #define DLG_SPACING 8
 
@@ -84,6 +87,7 @@ struct {
     GtkEntry *entry;
     GtkToggleButton *match_case, *entire_word, *as_regex,
             *backwards, *wrap;
+    ROXTermData *roxterm;
     VteTerminal *vte;
     MultiWin *win;
 } dlg_search_data;
@@ -108,18 +112,55 @@ static void dlg_search_response_cb(GtkWidget *widget,
 {
     if (response == GTK_RESPONSE_ACCEPT)
     {
-        /* FIXME: Start search, shade search menu items */
+        const char *entered = gtk_entry_get_text(dlg_search_data->entry);
+        GRegex *regex = NULL;
+        GError *error = NULL;
+        char *pattern;
+        
+        if (!entered)
+        {
+            dlg_warning(_("Nothing to search for"));
+            return;
+        }
+        pattern = gtk_toggle_button_get_state(dlg_search_data->as_regex) ?
+                g_strdup(entered) : g_regex_escape_string(entered);
+        if (gtk_toggle_button_get_state(dlg_search_data->entire_word))
+        {
+            char *tmp = pattern;
+            
+            pattern = g_strdup_printf("\\<%s\\>", tmp);
+            g_free(tmp);
+        }
+        regex = g_regex_new(pattern,
+                (gtk_toggle_button_get_state(dlg_search_data->match_case) ?
+                        0 : G_REGEX_CASELESS) |
+                G_REGEX_OPTIMIZE,
+                G_REGEX_MATCH_NOTEMPTY,
+                &error);
+        g_free(pattern);
+        if (!regex)
+        {
+            dlg_warning(_("Invalid search expression: %s"), error->message);
+            g_error_free(error);
+            return;
+        }
+        vte_terminal_search_set_gregex(dlg_search_data->vte, regex);
+        vte_terminal_search_set_wrap_around(
+                gtk_toggle_button_get_state(dlg_search_data->wrap));
+        roxterm_shade_search_menu_items(dlg_search_data->roxterm);
+        if (gtk_toggle_button_get_state(dlg_search_data->backwards))
+            vte_terminal_search_find_previous(dlg_search_data->vte);
+        else
+            vte_terminal_search_find_next(dlg_search_data->vte);
     }
-    else
-    {
-        gtk_widget_hide(dlg_search_dialog);
-    }
+    gtk_widget_hide(dlg_search_dialog);
 }
 
-void dlg_open_search(MultiWin *win, VteTerminal *vte)
+void dlg_open_search(ROXTerm *roxterm)
 {
-    dlg_search_data->win = win;
-    dlg_search_data->vte = vte;
+    dlg_search_data->roxterm = roxterm;
+    dlg_search_data->win = roxterm_get_multi_win(roxterm);
+    dlg_search_data->vte = roxterm_get_vte(roxterm);
     g_signal_connect(vte, "destroy", dlg_search_vte_destroyed_cb, NULL);
     
     if (!dlg_search_dialog)
@@ -139,30 +180,44 @@ void dlg_open_search(MultiWin *win, VteTerminal *vte)
                 GTK_DIALOG(dlg_search_dialog)));
 
         dlg_search_data->entry = GTK_ENTRY(entry);
+        gtk_widget_set_tooltip_text(entry, _("A search string or "
+                "perl-compatible regular expression."));
         gtk_label_set_mnemonic_widget(GTK_LABEL(w), entry);
         gtk_box_pack_start(GTK_BOX(hbox), w, FALSE, FALSE, 0);
         gtk_box_pack_start(GTK_BOX(hbox), entry, TRUE, TRUE, 0);
         gtk_box_pack_start(vbox, hbox, FALSE, FALSE, DLG_SPACING);
         
         w = gtk_check_button_new_with_mnemonic(_("Match _Case"));
+        gtk_widget_set_tooltip_text(w,
+                _("Whether the search is case sensitive"));
         dlg_search_data->match_case = GTK_TOGGLE_BUTTON(w);
         gtk_box_pack_start(vbox, w, FALSE, FALSE, DLG_SPACING);
         
         w = gtk_check_button_new_with_mnemonic(_("Match _Entire Word"));
+        gtk_widget_set_tooltip_text(w, _("If set the pattern will only match "
+                "when it forms a word on its own."));
         dlg_search_data->entire_word = GTK_TOGGLE_BUTTON(w);
         gtk_box_pack_start(vbox, w, FALSE, FALSE, DLG_SPACING);
         
         w = gtk_check_button_new_with_mnemonic(
                 _("Match As _Regular Expression"));
+        gtk_widget_set_tooltip_text(w, _("If set the pattern is a "
+                "perl-compatible regular expression."));
         dlg_search_data->as_regex = GTK_TOGGLE_BUTTON(w);
         gtk_box_pack_start(vbox, w, FALSE, FALSE, DLG_SPACING);
         
         w = gtk_check_button_new_with_mnemonic(_("Search _Backwards"));
+        gtk_widget_set_tooltip_text(w, _("Whether to search backwards when "
+                "the Find button is clicked. This does not affect the "
+                "Find Next and Find Previous menu items."));
         dlg_search_data->backwards = GTK_TOGGLE_BUTTON(w);
         gtk_toggle_button_set_active(dlg_search_data->backwards, TRUE);
         gtk_box_pack_start(vbox, w, FALSE, FALSE, DLG_SPACING);
         
         w = gtk_check_button_new_with_mnemonic(_("_Wrap Around"));
+        gtk_widget_set_tooltip_text(w, _("Whether to wrap the search to the "
+                "opposite end of the buffer when the beginning or end is "
+                "reached."))
         dlg_search_data->wrap = GTK_TOGGLE_BUTTON(w);
         gtk_toggle_button_set_active(dlg_search_data->wrap, TRUE);
         gtk_box_pack_start(vbox, w, FALSE, FALSE, DLG_SPACING);

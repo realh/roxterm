@@ -36,7 +36,7 @@ GtkWidget *dlg_ok_cancel(GtkWindow *parent, const char *title,
         const char *, ...);
 
 #ifdef HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX
-void dlg_open_search(MultiWin *win, VteTerminal *vte);
+void dlg_open_search(ROXTerm *roxterm);
 #endif
 
 #endif /* DLG_H */

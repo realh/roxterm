@@ -26,6 +26,10 @@
 
 #include <vte/vte.h>
 
+#ifdef HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX
+#include "multitab.h"
+#endif
+
 typedef struct ROXTermData ROXTermData;
 
 /* Make sure global options have been parsed before calling this, but call it
@@ -72,6 +76,16 @@ char const * const *roxterm_get_actual_commandv(ROXTermData *roxterm);
 #if ENABLE_SM
 gboolean roxterm_load_session(const char *xml, gssize len,
         const char *client_id);
+#endif
+
+#ifdef HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX
+
+MultiWin *roxterm_get_multi_win(ROXTermData *roxterm);
+
+VteTerminal *roxterm_get_vte(ROXTermData *roxterm);
+
+void roxterm_shade_search_menu_items(ROXTermData *roxterm);
+
 #endif
 
 #endif /* ROXTERM_H */
