@@ -117,12 +117,15 @@ void search_open_dialog(ROXTermData *roxterm)
                 GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE,
                 GTK_STOCK_FIND, GTK_RESPONSE_ACCEPT,
                 NULL);
+        gtk_dialog_set_default_response(GTK_DIALOG(search_dialog),
+                GTK_RESPONSE_ACCEPT);
                  
         vbox = GTK_BOX(gtk_dialog_get_content_area(
                 GTK_DIALOG(search_dialog)));
 
         search_data.entry = GTK_ENTRY(entry);
         gtk_entry_set_width_chars(search_data.entry, 40);
+        gtk_entry_set_activates_default(search_data.entry, TRUE);
         gtk_widget_set_tooltip_text(entry, _("A search string or "
                 "perl-compatible regular expression."));
         gtk_label_set_mnemonic_widget(GTK_LABEL(w), entry);
