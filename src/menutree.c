@@ -114,7 +114,7 @@ static void menutree_build_shell_ap(MenuTree *menu_tree, GtkMenuShell *shell,
                 case MENUTREE_HELP_ABOUT:
                     stock = GTK_STOCK_ABOUT;
                     break;
-#ifdef HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX
+#if 0 /* def HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX */
                 case MENUTREE_SEARCH_FIND:
                     stock = GTK_STOCK_FIND;
                     break;
