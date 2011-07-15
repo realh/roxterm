@@ -41,6 +41,9 @@
 #include "optsdbus.h"
 #include "roxterm.h"
 #include "multitab.h"
+#ifdef HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX
+#include "search.h"
+#endif
 #include "shortcuts.h"
 #include "uri.h"
 
@@ -109,6 +112,10 @@ struct ROXTermData {
     char *reply;
     int columns, rows;
     char **env;
+#ifdef HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX
+    char *search_pattern;
+    guint search_flags;
+#endif
 };
 
 #define PROFILE_NAME_KEY "roxterm_profile_name"
@@ -1641,6 +1648,29 @@ static void create_im_submenus(ROXTermData *roxterm, VteTerminal *vte)
                 GTK_MENU_SHELL(roxterm->im_submenu3));
     }
 }
+
+#ifdef HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX
+inline static void roxterm_shade_mtree_search_items(MenuTree *mtree,
+        gboolean shade)
+{
+    if (mtree)
+    {
+        menutree_shade(mtree, MENUTREE_SEARCH_FIND_NEXT, shade);
+        menutree_shade(mtree, MENUTREE_SEARCH_FIND_PREVIOUS, shade);
+    }
+}
+
+static void roxterm_shade_search_menu_items(ROXTermData *roxterm)
+{
+    gboolean shade = vte_terminal_search_get_gregex(
+            VTE_TERMINAL(roxterm->widget)) == NULL;
+    
+    roxterm_shade_mtree_search_items(multi_win_get_menu_bar(roxterm->win),
+            shade);
+    roxterm_shade_mtree_search_items(multi_win_get_popup_menu(roxterm->win),
+            shade);
+}
+#endif
 
 static void roxterm_tab_selection_handler(ROXTermData * roxterm, MultiTab * tab)
 {
@@ -4734,29 +4764,9 @@ gboolean roxterm_load_session(const char *xml, gssize len,
     }
     return result;
 }
+#endif /* ENABLE_SM */
 
 #ifdef HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX
-
-inline static void roxterm_shade_mtree_search_items(MenuTree *mtree,
-        gboolean shade)
-{
-    if (mtree)
-    {
-        menutree_shade(mtree, MENUTREE_SEARCH_FIND_NEXT, shade);
-        menutree_shade(mtree, MENUTREE_SEARCH_FIND_PREVIOUS, shade);
-    }
-}
-
-void roxterm_shade_search_menu_items(ROXTermData *roxterm)
-{
-    gboolean shade = vte_terminal_search_get_gregex(
-            VTE_TERMINAL(roxterm->widget)) == NULL;
-    
-    roxterm_shade_mtree_search_items(multi_win_get_menu_bar(roxterm->win),
-            shade);
-    roxterm_shade_mtree_search_items(multi_win_get_popup_menu(roxterm->win),
-            shade);
-}
 
 MultiWin *roxterm_get_multi_win(ROXTermData *roxterm)
 {
@@ -4768,8 +4778,65 @@ VteTerminal *roxterm_get_vte(ROXTermData *roxterm)
     return VTE_TERMINAL(roxterm->widget);
 }
 
-#endif
+gboolean roxterm_set_search(ROXTermData *roxterm,
+        const char *pattern, guint flags, GError **error)
+{
+    GRegex *regex = NULL;
+    char *cooked_pattern = NULL;
+    
+    roxterm->search_flags = flags;
+    
+    if (roxterm->search_pattern)
+    {
+        g_free(roxterm->search_pattern);
+        roxterm->search_pattern = NULL;
+    }
+    
+    if (pattern && pattern[0])
+    {
+        roxterm->search_pattern = g_strdup(pattern);
+        if (!(flags & ROXTERM_SEARCH_AS_REGEX))
+        {
+            cooked_pattern = g_regex_escape_string(pattern, -1);
+            pattern = cooked_pattern;
+        }
+        if (flags & ROXTERM_SEARCH_ENTIRE_WORD)
+        {
+            char *tmp = cooked_pattern;
+            
+            cooked_pattern = g_strdup_printf("\\<%s\\>", pattern);
+            pattern = cooked_pattern;
+            g_free(tmp);
+        }
+        
+        regex = g_regex_new(pattern,
+                ((flags & ROXTERM_SEARCH_MATCH_CASE) ? 0 : G_REGEX_CASELESS) |
+                        G_REGEX_OPTIMIZE,
+                G_REGEX_MATCH_NOTEMPTY,
+                error);
+        g_free(cooked_pattern);
+        if (!regex)
+            return FALSE;
+    }
+    
+    vte_terminal_search_set_gregex(VTE_TERMINAL(roxterm->widget), regex);
+    vte_terminal_search_set_wrap_around(VTE_TERMINAL(roxterm->widget),
+            flags & ROXTERM_SEARCH_WRAP);
+    roxterm_shade_search_menu_items(roxterm);
+    return TRUE;
+}
 
-#endif /* ENABLE_SM */
+const char *roxterm_get_search_pattern(ROXTermData *roxterm)
+{
+    return roxterm->search_pattern;
+}
+
+guint roxterm_get_search_flags(ROXTermData *roxterm)
+{
+    return roxterm->search_flags;
+}
+
+#endif /* HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX */
+
 
 /* vi:set sw=4 ts=4 et cindent cino= */

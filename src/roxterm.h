@@ -84,7 +84,20 @@ MultiWin *roxterm_get_multi_win(ROXTermData *roxterm);
 
 VteTerminal *roxterm_get_vte(ROXTermData *roxterm);
 
-void roxterm_shade_search_menu_items(ROXTermData *roxterm);
+typedef enum {
+    ROXTERM_SEARCH_MATCH_CASE = 1,
+    ROXTERM_SEARCH_ENTIRE_WORD = 2,
+    ROXTERM_SEARCH_AS_REGEX = 4,
+    ROXTERM_SEARCH_BACKWARDS = 8,
+    ROXTERM_SEARCH_WRAP = 16
+} ROXTermSearchFlags;
+
+/* Returns FALSE and sets error if unable to compile regex */
+gboolean roxterm_set_search(ROXTermData *roxterm,
+        const char *pattern, guint flags, GError **error);
+
+const char *roxterm_get_search_pattern(ROXTermData *roxterm);
+guint roxterm_get_search_flags(ROXTermData *roxterm);
 
 #endif
 

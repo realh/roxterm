@@ -42,7 +42,8 @@ static void search_vte_destroyed_cb(VteTerminal *widget, void *handle)
     if (search_data.vte == widget)
     {
         search_data.vte = NULL;
-        gtk_widget_hide(search_dialog);
+        if (search_dialog)
+            gtk_widget_hide(search_dialog);
     }
 }
 
@@ -51,53 +52,49 @@ static void search_response_cb(GtkWidget *widget,
 {
     if (response == GTK_RESPONSE_ACCEPT)
     {
-        const char *entered = gtk_entry_get_text(search_data.entry);
-        GRegex *regex = NULL;
         GError *error = NULL;
-        char *pattern;
-        
-        if (!entered || !entered[0])
-        {
-            dlg_warning(GTK_WINDOW(search_dialog), _("Nothing to search for"));
-            return;
-        }
-        pattern = gtk_toggle_button_get_active(search_data.as_regex) ?
-                g_strdup(entered) : g_regex_escape_string(entered, -1);
-        if (gtk_toggle_button_get_active(search_data.entire_word))
-        {
-            char *tmp = pattern;
-            
-            pattern = g_strdup_printf("\\<%s\\>", tmp);
-            g_free(tmp);
-        }
-        regex = g_regex_new(pattern,
+        const char *pattern = gtk_entry_get_text(search_data.entry);
+        gboolean backwards =
+                gtk_toggle_button_get_active(search_data.backwards);
+        guint flags =
                 (gtk_toggle_button_get_active(search_data.match_case) ?
-                        0 : G_REGEX_CASELESS) |
-                G_REGEX_OPTIMIZE,
-                G_REGEX_MATCH_NOTEMPTY,
-                &error);
-        g_free(pattern);
-        if (!regex)
+                        0 : ROXTERM_SEARCH_MATCH_CASE) |
+                (gtk_toggle_button_get_active(search_data.as_regex) ?
+                        ROXTERM_SEARCH_AS_REGEX : 0) |
+                (gtk_toggle_button_get_active(search_data.entire_word) ?
+                        ROXTERM_SEARCH_ENTIRE_WORD : 0) |
+                (backwards ? 
+                        ROXTERM_SEARCH_BACKWARDS : 0) |
+                (gtk_toggle_button_get_active(search_data.wrap) ?
+                        ROXTERM_SEARCH_WRAP : 0);
+        
+        if (roxterm_set_search(search_data.roxterm, pattern, flags, &error))
+        {
+            if (pattern && pattern[0])
+            {
+                if (backwards)
+                    vte_terminal_search_find_previous(search_data.vte);
+                else
+                    vte_terminal_search_find_next(search_data.vte);
+            }
+        }
+        else
         {
             dlg_warning(GTK_WINDOW(search_dialog),
                     _("Invalid search expression: %s"), error->message);
             g_error_free(error);
+            /* Keep dialog open if there was an error */
             return;
         }
-        vte_terminal_search_set_gregex(search_data.vte, regex);
-        vte_terminal_search_set_wrap_around(search_data.vte,
-                gtk_toggle_button_get_active(search_data.wrap));
-        roxterm_shade_search_menu_items(search_data.roxterm);
-        if (gtk_toggle_button_get_active(search_data.backwards))
-            vte_terminal_search_find_previous(search_data.vte);
-        else
-            vte_terminal_search_find_next(search_data.vte);
     }
     gtk_widget_hide(search_dialog);
 }
 
 void search_open_dialog(ROXTermData *roxterm)
 {
+    const char *pattern = roxterm_get_search_pattern(roxterm);
+    guint flags = roxterm_get_search_flags(roxterm);
+    
     search_data.roxterm = roxterm;
     search_data.win = roxterm_get_multi_win(roxterm);
     search_data.vte = roxterm_get_vte(roxterm);
@@ -157,7 +154,6 @@ void search_open_dialog(ROXTermData *roxterm)
                 "the Find button is clicked. This does not affect the "
                 "Find Next and Find Previous menu items."));
         search_data.backwards = GTK_TOGGLE_BUTTON(w);
-        gtk_toggle_button_set_active(search_data.backwards, TRUE);
         gtk_box_pack_start(vbox, w, FALSE, FALSE, DLG_SPACING);
         
         w = gtk_check_button_new_with_mnemonic(_("_Wrap Around"));
@@ -165,7 +161,6 @@ void search_open_dialog(ROXTermData *roxterm)
                 "opposite end of the buffer when the beginning or end is "
                 "reached."));
         search_data.wrap = GTK_TOGGLE_BUTTON(w);
-        gtk_toggle_button_set_active(search_data.wrap, TRUE);
         gtk_box_pack_start(vbox, w, FALSE, FALSE, DLG_SPACING);
         
         g_signal_connect(search_dialog, "response",
@@ -174,6 +169,29 @@ void search_open_dialog(ROXTermData *roxterm)
                 G_CALLBACK(search_destroy_cb), NULL);
         
     }
+    
+    if (pattern)
+    {
+        gtk_entry_set_text(search_data.entry, pattern);
+        gtk_editable_select_region(GTK_EDITABLE(search_data.entry),
+                0, g_utf8_strlen(pattern, -1));
+    }
+    else
+    {
+        gtk_entry_set_text(search_data.entry, "");
+        flags = ROXTERM_SEARCH_BACKWARDS | ROXTERM_SEARCH_WRAP;
+    }
+    gtk_toggle_button_set_active(search_data.match_case,
+            flags & ROXTERM_SEARCH_MATCH_CASE);
+    gtk_toggle_button_set_active(search_data.entire_word,
+            flags & ROXTERM_SEARCH_ENTIRE_WORD);
+    gtk_toggle_button_set_active(search_data.as_regex,
+            flags & ROXTERM_SEARCH_AS_REGEX);
+    gtk_toggle_button_set_active(search_data.backwards,
+            flags & ROXTERM_SEARCH_BACKWARDS);
+    gtk_toggle_button_set_active(search_data.wrap,
+            flags & ROXTERM_SEARCH_WRAP);
+    
     if (gtk_widget_get_visible(search_dialog))
     {
         gtk_window_present(GTK_WINDOW(search_dialog));
@@ -182,6 +200,7 @@ void search_open_dialog(ROXTermData *roxterm)
     {
         gtk_widget_show_all(search_dialog);
     }
+    gtk_widget_grab_focus(GTK_WIDGET(search_data.entry));
 }
 
 /* vi:set sw=4 ts=4 et cindent cino= */
