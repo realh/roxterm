@@ -42,7 +42,7 @@ libroxterm_la_SOURCES = 	\
 	logo.c			logo.h			\
 	options.c		options.h		\
 	optsfile.c		optsfile.h		\
-	rtdbus.c		rtdbus.h		\
+	rtdbus.c		rtdbus.h
 
 bin_PROGRAMS	= roxterm roxterm-config
 
