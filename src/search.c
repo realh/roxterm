@@ -124,7 +124,8 @@ void search_open_dialog(ROXTermData *roxterm)
         gtk_entry_set_width_chars(search_data.entry, 40);
         gtk_entry_set_activates_default(search_data.entry, TRUE);
         gtk_widget_set_tooltip_text(entry, _("A search string or "
-                "perl-compatible regular expression."));
+                "perl-compatible regular expression. An empty string "
+                "clears any previous search."));
         gtk_label_set_mnemonic_widget(GTK_LABEL(w), entry);
         gtk_box_pack_start(GTK_BOX(hbox), w, FALSE, FALSE, DLG_SPACING);
         gtk_box_pack_start(GTK_BOX(hbox), entry, TRUE, TRUE, DLG_SPACING);
