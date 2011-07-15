@@ -5,12 +5,6 @@ noinst_LTLIBRARIES = libroxterm.la
 
 AM_LDFLAGS = -static
 
-if HAVE_G_FILE_SET_CONTENTS
-MISSING =
-else
-MISSING = missing.c
-endif
-
 # This is to avoid building everything if just the version number changes
 BUILT_SOURCES = rtconfig.h version.h
 DISTCLEANFILES = $(BUILT_SOURCES)
@@ -49,7 +43,6 @@ libroxterm_la_SOURCES = 	\
 	options.c		options.h		\
 	optsfile.c		optsfile.h		\
 	rtdbus.c		rtdbus.h		\
-	$(MISSING)
 
 bin_PROGRAMS	= roxterm roxterm-config
 
@@ -86,4 +79,4 @@ roxterm_config_SOURCES =	\
 roxterm_config_LDADD = @roxterm_config_LIBS@ libroxterm.la
 
 pkgdata_DATA	=	roxterm-config.ui
-EXTRA_DIST	=	roxterm-config.ui missing.c
+EXTRA_DIST	=	roxterm-config.ui
