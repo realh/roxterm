@@ -19,8 +19,6 @@
 
 #include "dlg.h"
 
-#define DLG_SPACING 8
-
 static void run_msg_dialog(GtkWindow *parent, const char *title,
         GtkMessageType mtype, const char *msg)
 {

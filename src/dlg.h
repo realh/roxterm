@@ -25,7 +25,7 @@
 #include "defns.h"
 #endif
 
-#define DLG_SPACING 8
+#define DLG_SPACING 4
 
 /* Show messages in dialog boxes and log them using g_log */
 void dlg_message(GtkWindow *parent, const char *, ...);

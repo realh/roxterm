@@ -160,10 +160,16 @@ static void menutree_build_shell(MenuTree *menu_tree, GtkMenuShell * shell, ...)
         _("_Copy address to clipboard"), MENUTREE_COPY_URI, \
         _("_"), MENUTREE_URI_SEPARATOR
         
+#ifdef HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX
+#define MENUTREE_SEARCH_ITEM _("_Search"), MENUTREE_SEARCH,
+#else
+#define MENUTREE_SEARCH_ITEM
+#endif
 #define TOP_LEVEL_MENU_ITEMS \
         _("_File"), MENUTREE_FILE, \
         _("_Edit"), MENUTREE_EDIT, \
         _("_View"), MENUTREE_VIEW, \
+        MENUTREE_SEARCH_ITEM \
         _("_Preferences"), MENUTREE_PREFERENCES, \
         _("Ta_bs"), MENUTREE_TABS, \
         _("_Help"), MENUTREE_HELP

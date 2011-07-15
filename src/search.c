@@ -56,7 +56,7 @@ static void search_response_cb(GtkWidget *widget,
         GError *error = NULL;
         char *pattern;
         
-        if (!entered)
+        if (!entered || !entered[0])
         {
             dlg_warning(GTK_WINDOW(search_dialog), _("Nothing to search for"));
             return;
@@ -107,7 +107,7 @@ void search_open_dialog(ROXTermData *roxterm)
     if (!search_dialog)
     {
         GtkBox *vbox;
-        GtkWidget *hbox = gtk_hbox_new(FALSE, DLG_SPACING);
+        GtkWidget *hbox = gtk_hbox_new(FALSE, 0);
         GtkWidget *w = gtk_label_new_with_mnemonic(_("_Search for:"));
         GtkWidget *entry = gtk_entry_new();
         
@@ -122,11 +122,12 @@ void search_open_dialog(ROXTermData *roxterm)
                 GTK_DIALOG(search_dialog)));
 
         search_data.entry = GTK_ENTRY(entry);
+        gtk_entry_set_width_chars(search_data.entry, 40);
         gtk_widget_set_tooltip_text(entry, _("A search string or "
                 "perl-compatible regular expression."));
         gtk_label_set_mnemonic_widget(GTK_LABEL(w), entry);
-        gtk_box_pack_start(GTK_BOX(hbox), w, FALSE, FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(hbox), entry, TRUE, TRUE, 0);
+        gtk_box_pack_start(GTK_BOX(hbox), w, FALSE, FALSE, DLG_SPACING);
+        gtk_box_pack_start(GTK_BOX(hbox), entry, TRUE, TRUE, DLG_SPACING);
         gtk_box_pack_start(vbox, hbox, FALSE, FALSE, DLG_SPACING);
         
         w = gtk_check_button_new_with_mnemonic(_("Match _Case"));
