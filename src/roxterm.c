@@ -1836,7 +1836,7 @@ static void roxterm_edit_colour_scheme_action(MultiWin * win)
 
 
 #ifdef HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX
-static void roxterm_open_search_action(MultiWin *win);
+static void roxterm_open_search_action(MultiWin *win)
 {
     ROXTermData *roxterm = multi_win_get_user_data_for_current_tab(win);
 
@@ -1844,7 +1844,7 @@ static void roxterm_open_search_action(MultiWin *win);
     search_open_dialog(roxterm);
 }
 
-static void roxterm_find_next_action(MultiWin *win);
+static void roxterm_find_next_action(MultiWin *win)
 {
     ROXTermData *roxterm = multi_win_get_user_data_for_current_tab(win);
 
@@ -1852,7 +1852,7 @@ static void roxterm_find_next_action(MultiWin *win);
     vte_terminal_search_find_next(VTE_TERMINAL(roxterm->widget));
 }
 
-static void roxterm_find_prev_action(MultiWin *win);
+static void roxterm_find_prev_action(MultiWin *win)
 {
     ROXTermData *roxterm = multi_win_get_user_data_for_current_tab(win);
 
