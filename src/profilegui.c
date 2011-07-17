@@ -719,10 +719,11 @@ ProfileGUI *profilegui_open(const char *profile_name, GdkScreen *scrn)
     static DynamicOptions *profiles = NULL;
     ProfileGUI *pg;
     char *title;
-    static const char *obj_names[] = { "Profile_Editor", "ssh_dialog",
+    static const char *obj_names[] = {
             "width_adjustment", "height_adjustment",
             "exit_pause_adjustment", "scrollback_lines_adjustment",
-            "init_tabs_adjustment", "saturation_adjustment", NULL };
+            "init_tabs_adjustment", "saturation_adjustment",
+            "Profile_Editor", "ssh_dialog", NULL };
     GError *error = NULL;
 
     if (!profilegui_being_edited)
