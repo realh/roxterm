@@ -28,122 +28,144 @@
 
 static char *uri_find_first_listed_in_path(char const *const *programs)
 {
-	int i;
+    int i;
 
-	for (i = 0; programs[i]; ++i)
-	{
-		char *program = g_find_program_in_path(programs[i]);
+    for (i = 0; programs[i]; ++i)
+    {
+        char *program = g_find_program_in_path(programs[i]);
 
-		if (program)
-			return program;
-	}
-	return NULL;
+        if (program)
+            return program;
+    }
+    return NULL;
 }
 
 /* Tries to find a browser the user likes. May include stuff like %s after the
  * command name so bear that in mind */
 static char *uri_get_preferred_browser(void)
 {
-	char const *browsers[] = { "x-www-browser", "firefox", "galeon",
-		"konqueror", "mozilla", "opera", "netscape", "dillo", "amaya", NULL
-	};
-	int i;
-	char *default_choices_path = NULL;
-	char **choices_branches;
-	char *browser = NULL;
-	const char *env = g_getenv("BROWSER");
+    char const *browsers[] = { "x-www-browser", "firefox", "galeon",
+        "konqueror", "mozilla", "opera", "netscape", "dillo", "amaya", NULL
+    };
+    int i;
+    char *default_choices_path = NULL;
+    char **choices_branches;
+    char *browser = NULL;
+    const char *env = g_getenv("BROWSER");
 
-	if (env)
-	{
-		return g_strdup(env);
-	}
+    if (env)
+    {
+        return g_strdup(env);
+    }
 
-	/* Try to find text-html handler in ROX options */
-	env = g_getenv("CHOICESPATH");
-	if (!env)
-	{
-		const char *home = g_get_home_dir();
+    /* Try to find text-html handler in ROX options */
+    env = g_getenv("CHOICESPATH");
+    if (!env)
+    {
+        const char *home = g_get_home_dir();
 
-		default_choices_path = g_strconcat(home, "/.config:",
-			home, "/Choices:/usr/local/share/Choices:/usr/share/Choices", NULL);
-		env = default_choices_path;
-	}
-	choices_branches = g_strsplit(env, ":", 0);
-	if (default_choices_path)
-		g_free(default_choices_path);
-	for (i = 0; choices_branches[i]; ++i)
-	{
-		char *mime_handler = g_strconcat(choices_branches[i],
-			"/MIME-types/text_html", NULL);
+        default_choices_path = g_strconcat(home, "/.config:",
+            home, "/Choices:/usr/local/share/Choices:/usr/share/Choices", NULL);
+        env = default_choices_path;
+    }
+    choices_branches = g_strsplit(env, ":", 0);
+    if (default_choices_path)
+        g_free(default_choices_path);
+    for (i = 0; choices_branches[i]; ++i)
+    {
+        char *mime_handler = g_strconcat(choices_branches[i],
+            "/MIME-types/text_html", NULL);
 
-		/* Check for ROX appdir first */
-		if (g_file_test(mime_handler, G_FILE_TEST_IS_DIR))
-		{
-			char *tmp = mime_handler;
+        /* Check for ROX appdir first */
+        if (g_file_test(mime_handler, G_FILE_TEST_IS_DIR))
+        {
+            char *tmp = mime_handler;
 
-			mime_handler = g_strconcat(mime_handler, "/AppRun", NULL);
-			g_free(tmp);
-		}
-		if (g_file_test(mime_handler, G_FILE_TEST_IS_EXECUTABLE))
-		{
-			browser = mime_handler;
-			break;
-		}
-		g_free(mime_handler);
-	}
-	g_strfreev(choices_branches);
-	if (browser)
-		return browser;
+            mime_handler = g_strconcat(mime_handler, "/AppRun", NULL);
+            g_free(tmp);
+        }
+        if (g_file_test(mime_handler, G_FILE_TEST_IS_EXECUTABLE))
+        {
+            browser = mime_handler;
+            break;
+        }
+        g_free(mime_handler);
+    }
+    g_strfreev(choices_branches);
+    if (browser)
+        return browser;
 
-	browser = uri_find_first_listed_in_path(browsers);
+    browser = uri_find_first_listed_in_path(browsers);
 
-	if (!browser)
-	{
-		dlg_warning(NULL, _("Unable to find a web browser"));
-	}
+    if (!browser)
+    {
+        dlg_warning(NULL, _("Unable to find a web browser"));
+    }
 
-	return browser;
+    return browser;
 }
 
 char *uri_get_browser_command(const char *url, const char *browser)
 {
-	char *preferred_browser = NULL;
-	char *cmd = NULL;
+    char *preferred_browser = NULL;
+    char *cmd = NULL;
 
-	if (!browser || !browser[0])
-		browser = preferred_browser = uri_get_preferred_browser();
-	if (!browser)
-		return NULL;
+    if (!browser || !browser[0])
+        browser = preferred_browser = uri_get_preferred_browser();
+    if (!browser)
+        return NULL;
 
-	if (strstr(browser, "%s"))
-		cmd = g_strdup_printf(browser, url);
-	else
-		cmd = g_strdup_printf("%s '%s'", browser, url);
-	if (preferred_browser)
-		g_free(preferred_browser);
-	return cmd;
+    if (strstr(browser, "%s"))
+        cmd = g_strdup_printf(browser, url);
+    else
+        cmd = g_strdup_printf("%s '%s'", browser, url);
+    if (preferred_browser)
+        g_free(preferred_browser);
+    return cmd;
 }
 
 char *uri_get_mailer_command(const char *address, const char *mailer)
 {
-	char *preferred_mailer = NULL;
-	char *cmd = NULL;
-	const char *mailers[] = { "claws-mail", "thunderbird", "balsa",
-		"evolution", "mutt", "pine", "elm", "mozilla", "mail", NULL
-	};
+    char *preferred_mailer = NULL;
+    char *cmd = NULL;
+    const char *mailers[] = { "claws-mail", "thunderbird", "balsa",
+        "evolution", "mutt", "pine", "elm", "mozilla", "mail", NULL
+    };
 
-	if (!mailer || !mailer[0])
-		mailer = preferred_mailer = uri_find_first_listed_in_path(mailers);
-	if (!mailer)
-		return NULL;
+    if (!mailer || !mailer[0])
+        mailer = preferred_mailer = uri_find_first_listed_in_path(mailers);
+    if (!mailer)
+        return NULL;
 
-	if (strstr(mailer, "%s"))
-		cmd = g_strdup_printf(mailer, address);
-	else
-		cmd = g_strjoin(" ", mailer, address, NULL);
-	if (preferred_mailer)
-		g_free(preferred_mailer);
-	return cmd;
+    if (strstr(mailer, "%s"))
+        cmd = g_strdup_printf(mailer, address);
+    else
+        cmd = g_strjoin(" ", mailer, address, NULL);
+    if (preferred_mailer)
+        g_free(preferred_mailer);
+    return cmd;
+}
+
+char *uri_get_filer_command(const char *address, const char *filer)
+{
+    char *preferred_filer = NULL;
+    char *cmd = NULL;
+    const char *filers[] = { "rox", "thunar", "nautilus",
+        "konqueror",  "dolphin", NULL
+    };
+
+    if (!filer || !filer[0])
+        filer = preferred_filer = uri_find_first_listed_in_path(filers);
+    if (!filer)
+        return NULL;
+
+    if (strstr(filer, "%s"))
+        cmd = g_strdup_printf(filer, address);
+    else
+        cmd = g_strjoin(" ", filer, address, NULL);
+    if (preferred_filer)
+        g_free(preferred_filer);
+    return cmd;
 }
 
 /* vi:set sw=4 ts=4 noet cindent cino= */

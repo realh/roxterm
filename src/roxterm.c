@@ -830,14 +830,35 @@ static void roxterm_launch_email(ROXTermData *roxterm, const char *uri)
     }
 }
 
+static void roxterm_launch_filer(ROXTermData *roxterm, const char *uri)
+{
+    char *filer_o = roxterm_lookup_uri_handler(roxterm, "filer");
+    char *filer = uri_get_mailer_command(uri, filer_o);
+
+    if (filer_o)
+        g_free(filer_o);
+    if (filer)
+    {
+        roxterm_spawn(roxterm, filer, options_lookup_int_with_default
+            (roxterm->profile, "filer_spawn_type", 0));
+        g_free(filer);
+    }
+}
+
 static void roxterm_launch_uri(ROXTermData *roxterm)
 {
     if (roxterm->match_type == ROXTerm_Match_MailTo)
     {
         roxterm_launch_email(roxterm, roxterm->matched_url);
     }
+    else if (g_str_has_prefix(roxterm->matched_url, "file://"))
+    {
+        roxterm_launch_filer(roxterm, roxterm->matched_url);
+    }
     else
+    {
         roxterm_launch_browser(roxterm, roxterm->matched_url);
+    }
 }
 
 static void roxterm_data_delete(ROXTermData *roxterm)

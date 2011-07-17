@@ -33,6 +33,8 @@ char *uri_get_browser_command(const char *url, const char *browser);
 
 char *uri_get_mailer_command(const char *address, const char *mailer);
 
+char *uri_get_filer_command(const char *address, const char *filer);
+
 #endif /* URI_H */
 
 /* vi:set sw=4 ts=4 noet cindent cino= */
