@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: roxterm\n"
 "Report-Msgid-Bugs-To: http://sourceforge.net/projects/roxterm\n"
-"POT-Creation-Date: 2011-07-15 18:29+0100\n"
+"POT-Creation-Date: 2011-07-16 19:23+0100\n"
 "PO-Revision-Date: 2011-05-17 20:32+0100\n"
 "Last-Translator: Tony Houghton <h@realh.co.uk>\n"
 "Language-Team: Spanish (Castilian) (http://www.transifex.net/projects/p/"
@@ -1274,64 +1274,93 @@ msgstr ""
 "Tipo del primer argumento no válido ('%c') en el método NewTerminal de D-"
 "BUS; se esperaba una cadena"
 
-#: src/search.c:84
+#: src/search.c:53
+#, fuzzy, c-format
+msgid "Unable to create config directory '%s': %s"
+msgstr "No se puede crear el directorio de sesiones '%s': %s"
+
+#: src/search.c:79
+#, fuzzy, c-format
+msgid "Unable to read search history file '%s': %s"
+msgstr "No se pueden leer las claves del archivo de atajos %s: %s"
+
+#: src/search.c:105
+#, c-format
+msgid "Error reading search history file: %s"
+msgstr ""
+
+#: src/search.c:106 src/search.c:156
+msgid "Already in use"
+msgstr ""
+
+#: src/search.c:134
+#, fuzzy, c-format
+msgid "Unable to write search history file '%s': %s"
+msgstr "No se puede guardar el archivo de opciones %s: %s"
+
+#: src/search.c:155
+#, c-format
+msgid "Error writing search history file: %s"
+msgstr ""
+
+#: src/search.c:279
 #, c-format
 msgid "Invalid search expression: %s"
 msgstr ""
 
-#: src/search.c:108
+#: src/search.c:303
 msgid "_Search for:"
 msgstr ""
 
-#: src/search.c:111
+#: src/search.c:306
 msgid "Find"
 msgstr ""
 
-#: src/search.c:126
+#: src/search.c:322
 msgid ""
 "A search string or perl-compatible regular expression. An empty string "
 "clears any previous search."
 msgstr ""
 
-#: src/search.c:134
+#: src/search.c:330
 msgid "Match _Case"
 msgstr ""
 
-#: src/search.c:136
+#: src/search.c:332
 msgid "Whether the search is case sensitive"
 msgstr ""
 
-#: src/search.c:140
+#: src/search.c:336
 msgid "Match _Entire Word"
 msgstr ""
 
-#: src/search.c:141
+#: src/search.c:337
 msgid "If set the pattern will only match when it forms a word on its own."
 msgstr ""
 
-#: src/search.c:147
+#: src/search.c:343
 msgid "Match As _Regular Expression"
 msgstr ""
 
-#: src/search.c:148
+#: src/search.c:344
 msgid "If set the pattern is a perl-compatible regular expression."
 msgstr ""
 
-#: src/search.c:153
+#: src/search.c:349
 msgid "Search _Backwards"
 msgstr ""
 
-#: src/search.c:154
+#: src/search.c:350
 msgid ""
 "Whether to search backwards when the Find button is clicked. This does not "
 "affect the Find Next and Find Previous menu items."
 msgstr ""
 
-#: src/search.c:160
+#: src/search.c:356
 msgid "_Wrap Around"
 msgstr ""
 
-#: src/search.c:161
+#: src/search.c:357
 msgid ""
 "Whether to wrap the search to the opposite end of the buffer when the "
 "beginning or end is reached."
