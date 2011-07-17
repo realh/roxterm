@@ -131,10 +131,6 @@ static void profilegui_set_background_shading(ProfileGUI *pg)
             GTK_TOGGLE_BUTTON(profilegui_widget(pg, "background_type1"))));
     profilegui_set_transparency_shading(pg, !gtk_toggle_button_get_active(
             GTK_TOGGLE_BUTTON(profilegui_widget(pg, "background_type0"))));
-    gtk_widget_set_sensitive(profilegui_widget(pg, "true_translucence"),
-            gtk_toggle_button_get_active(
-                    GTK_TOGGLE_BUTTON(profilegui_widget(pg,
-                            "background_type2"))));
 }
 
 static void profilegui_set_command_shading(ProfileGUI *pg)
@@ -545,7 +541,6 @@ static void profilegui_fill_in_dialog(ProfileGUI * pg)
     val = options_lookup_string_with_default(profile, "background_img", "");
     profilegui_fill_in_file_chooser(pg, val);
     g_free(val);
-    capplet_set_boolean_toggle(&pg->capp, "true_translucence", TRUE);
     capplet_set_radio(&pg->capp, "scrollbar_pos", 1);
     capplet_set_spin_button(&pg->capp, "scrollback_lines", 1000);
     capplet_set_boolean_toggle(&pg->capp, "scroll_on_output", FALSE);

@@ -965,9 +965,7 @@ static void roxterm_update_background(ROXTermData * roxterm, VteTerminal * vte)
             break;
         case 2:
             vte_terminal_set_background_image(vte, NULL);
-            true_trans = multi_win_composite(roxterm->win) &&
-                    options_lookup_int_with_default(roxterm->profile,
-                            "true_translucence", 1);
+            true_trans = multi_win_composite(roxterm->win);
             vte_terminal_set_background_transparent(vte,
                     saturation < 1 && !true_trans);
             break;
@@ -3140,8 +3138,7 @@ static void roxterm_reflect_profile_change(Options * profile, const char *key)
         else if (!strcmp(key, "background_img")
                 || !strcmp(key, "background_type")
                 || !strcmp(key, "scroll_background")
-                || !strcmp(key, "saturation")
-                || !strcmp(key, "true_translucence"))
+                || !strcmp(key, "saturation"))
         {
             roxterm_update_background(roxterm, vte);
         }
