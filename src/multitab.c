@@ -2189,16 +2189,20 @@ Options *multi_win_get_shortcut_scheme(MultiWin * win)
     return win->shortcuts;
 }
 
-void multi_win_set_shortcut_scheme(MultiWin *win, Options *shortcuts)
+void multi_win_set_shortcut_scheme(MultiWin *win, Options *shortcuts,
+        gboolean reapply)
 {
-    if (win->shortcuts != shortcuts)
+    if (win->shortcuts != shortcuts || reapply)
     {
-        if (win->shortcuts)
+        if (win->shortcuts && win->shortcuts != shortcuts)
         {
             UNREF_LOG(shortcuts_unref(win->shortcuts));
         }
-        options_ref(shortcuts);
-        win->shortcuts = shortcuts;
+        if (win->shortcuts != shortcuts)
+        {
+            options_ref(shortcuts);
+            win->shortcuts = shortcuts;
+        }
         if (win->menu_bar)
             menutree_apply_shortcuts(win->menu_bar, shortcuts);
         if (win->popup_menu)

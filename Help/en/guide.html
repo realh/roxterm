@@ -208,6 +208,18 @@
 					<span>net.sf.roxterm.Options.StringOption \</span>
 					<span>string:Colours/GTK string:background 'string:#ffffff'</span>
 				</p>
+				
+				<p>A third possible use is to notify roxterm that a profile, colour scheme or shortcuts scheme has been changed by
+				an external program and all terminals using that profile etc need to reload it:</p>
+				
+				<p class="snippet">OptionsChanged("family_name", "profile_name")</p>
+				<p>where family_name is one of "Profiles", "Colours" or "Shortcuts". For example:</p>
+
+				<p class="snippet">
+					<span>dbus-send --session /net/sf/roxterm/Options \</span>
+					<span>net.sf.roxterm.Options.OptionsChanged \</span>
+					<span>string:Profiles string:Default</span>
+				</p>
 			</div>
 		</div>
 

@@ -396,7 +396,8 @@ optsdbus_message_filter(DBusConnection * connection, DBusMessage * message,
     }
     else if (!strcmp(signal_name, OPTSDBUS_DELETED)
              || !strcmp(signal_name, OPTSDBUS_ADDED)
-             || !strcmp(signal_name, OPTSDBUS_RENAMED))
+             || !strcmp(signal_name, OPTSDBUS_RENAMED)
+             || !strcmp(signal_name, OPTSDBUS_CHANGED))
     {
         what_happened = signal_name;
         if (strcmp(signal_name, OPTSDBUS_RENAMED))

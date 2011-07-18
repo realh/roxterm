@@ -343,7 +343,8 @@ MenuTree *multi_win_get_short_popup_menu(MultiWin * win);
 
 Options *multi_win_get_shortcut_scheme(MultiWin * win);
 
-void multi_win_set_shortcut_scheme(MultiWin * win, Options *);
+/* reapply is for forcing an update of the current scheme */
+void multi_win_set_shortcut_scheme(MultiWin * win, Options *, gboolean reapply);
 
 GtkAccelGroup *multi_win_get_accel_group(MultiWin * win);
 

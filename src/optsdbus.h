@@ -34,6 +34,7 @@
 #define OPTSDBUS_DELETED "OptionsDeleted"
 #define OPTSDBUS_ADDED "OptionsAdded"
 #define OPTSDBUS_RENAMED "OptionsRenamed"
+#define OPTSDBUS_CHANGED "OptionsChanged"
 
 #ifdef ROXTERM_CAPPLET
 

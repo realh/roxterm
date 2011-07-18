@@ -124,7 +124,8 @@ static GList *roxterm_terms = NULL;
 
 static DynamicOptions *roxterm_profiles = NULL;
 
-static void roxterm_apply_profile(ROXTermData * roxterm, VteTerminal * vte);
+static void roxterm_apply_profile(ROXTermData * roxterm, VteTerminal * vte,
+        gboolean update_geometry);
 
 /********************** Encodings ***************************/
 
@@ -2139,7 +2140,7 @@ static void roxterm_change_profile(ROXTermData *roxterm, Options *profile)
             pango_font_description_free(roxterm->pango_desc);
             roxterm->pango_desc = NULL;
         }
-        roxterm_apply_profile(roxterm, VTE_TERMINAL(roxterm->widget));
+        roxterm_apply_profile(roxterm, VTE_TERMINAL(roxterm->widget), FALSE);
         roxterm_update_size(roxterm, VTE_TERMINAL(roxterm->widget));
     }
 }
@@ -2328,7 +2329,7 @@ static void roxterm_shortcuts_selected(GtkCheckMenuItem *mitem,
                 MENUTREE_PREFERENCES_SELECT_SHORTCUTS, scheme_name);
     }
     shortcuts = shortcuts_open(scheme_name);
-    multi_win_set_shortcut_scheme(roxterm->win, shortcuts);
+    multi_win_set_shortcut_scheme(roxterm->win, shortcuts, FALSE);
     shortcuts_unref(shortcuts);
     g_free(scheme_name);
 }
@@ -2805,7 +2806,8 @@ static void roxterm_apply_show_tab_status(ROXTermData *roxterm)
     }
 }
 
-static void roxterm_apply_profile(ROXTermData *roxterm, VteTerminal *vte)
+static void roxterm_apply_profile(ROXTermData *roxterm, VteTerminal *vte,
+        gboolean update_geometry)
 {
     roxterm_set_select_by_word_chars(roxterm, vte);
     roxterm_update_audible_bell(roxterm, vte);
@@ -2817,7 +2819,7 @@ static void roxterm_apply_profile(ROXTermData *roxterm, VteTerminal *vte)
     roxterm_apply_colour_scheme(roxterm, vte);
     roxterm_update_background(roxterm, vte);
 
-    roxterm_update_font(roxterm, vte, FALSE);
+    roxterm_update_font(roxterm, vte, update_geometry);
 
     roxterm_set_scrollback_lines(roxterm, vte);
     roxterm_set_scroll_on_output(roxterm, vte);
@@ -2995,7 +2997,7 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
 
     roxterm_add_matches(roxterm, vte);
 
-    roxterm_apply_profile(roxterm, vte);
+    roxterm_apply_profile(roxterm, vte, FALSE);
     tab_name = global_options_lookup_string("tab-name");
     if (tab_name)
     {
@@ -3507,6 +3509,35 @@ static void roxterm_stuff_changed_handler(const char *what_happened,
     GList *link;
     DynamicOptions *dynopts = NULL;
     Options *options = NULL;
+    
+    if (!strcmp(what_happened, OPTSDBUS_CHANGED) &&
+            strcmp(family_name, "Shortcuts"))
+    {
+        for (link = roxterm_terms; link; link = g_list_next(link))
+        {
+            ROXTermData *roxterm = link->data;
+            
+            if (!strcmp(family_name, "Profiles"))
+            {
+                if (!strcmp(options_get_leafname(roxterm->profile),
+                        current_name))
+                {
+                    roxterm_apply_profile(roxterm,
+                            VTE_TERMINAL(roxterm->widget), TRUE);
+                }
+            }
+            else if (!strcmp(family_name, "Colours"))
+            {
+                if (!strcmp(options_get_leafname(roxterm->colour_scheme),
+                        current_name))
+                {
+                    roxterm_apply_colour_scheme(roxterm,
+                            VTE_TERMINAL(roxterm->widget));
+                }
+            }
+        }
+        return;
+    }
 
     if (strcmp(family_name, "encodings"))
     {
@@ -3534,21 +3565,34 @@ static void roxterm_stuff_changed_handler(const char *what_happened,
     for (link = multi_win_all; link; link = g_list_next(link))
     {
         MultiWin *win = (MultiWin *) link->data;
-        MenuTree *mtree = multi_win_get_menu_bar(win);
-
-        multi_win_set_ignore_toggles(win, TRUE);
-        if (mtree)
+        
+        if (strcmp(what_happened, OPTSDBUS_CHANGED))
         {
-            stuff_changed_do_menu(mtree, what_happened, family_name,
-                    current_name, new_name);
+            MenuTree *mtree = multi_win_get_menu_bar(win);
+    
+            multi_win_set_ignore_toggles(win, TRUE);
+            if (mtree)
+            {
+                stuff_changed_do_menu(mtree, what_happened, family_name,
+                        current_name, new_name);
+            }
+            mtree = multi_win_get_popup_menu(win);
+            if (mtree)
+            {
+                stuff_changed_do_menu(mtree, what_happened, family_name,
+                        current_name, new_name);
+            }
+            multi_win_set_ignore_toggles(win, FALSE);
         }
-        mtree = multi_win_get_popup_menu(win);
-        if (mtree)
+        else
         {
-            stuff_changed_do_menu(mtree, what_happened, family_name,
-                    current_name, new_name);
+            Options *shortcuts = multi_win_get_shortcut_scheme(win);
+            
+            if (!strcmp(options_get_leafname(shortcuts), current_name))
+            {
+                multi_win_set_shortcut_scheme(win, shortcuts, TRUE);
+            }
         }
-        multi_win_set_ignore_toggles(win, FALSE);
     }
 }
 
@@ -3616,7 +3660,7 @@ static void roxterm_set_shortcut_scheme_handler(ROXTermData *roxterm,
         return;
         
     Options *shortcuts = shortcuts_open(name);
-    multi_win_set_shortcut_scheme(roxterm->win, shortcuts);
+    multi_win_set_shortcut_scheme(roxterm->win, shortcuts, FALSE);
     shortcuts_unref(shortcuts);
 }
 
