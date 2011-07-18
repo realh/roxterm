@@ -157,6 +157,7 @@ static void menutree_build_shell(MenuTree *menu_tree, GtkMenuShell * shell, ...)
 #define URI_MENU_ITEMS \
         _("_Open URL in browser"), MENUTREE_OPEN_IN_BROWSER, \
         _("_Send email"), MENUTREE_OPEN_IN_MAILER, \
+        _("_Open directory in filer"), MENUTREE_OPEN_IN_FILER, \
         _("_Copy address to clipboard"), MENUTREE_COPY_URI, \
         _("_"), MENUTREE_URI_SEPARATOR
         

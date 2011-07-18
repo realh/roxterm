@@ -834,14 +834,22 @@ static void roxterm_launch_email(ROXTermData *roxterm, const char *uri)
 static void roxterm_launch_filer(ROXTermData *roxterm, const char *uri)
 {
     char *filer_o = roxterm_lookup_uri_handler(roxterm, "filer");
-    char *filer = uri_get_mailer_command(uri, filer_o);
+    char *filer = uri_get_filer_command(uri, filer_o);
 
     if (filer_o)
         g_free(filer_o);
     if (filer)
     {
+        char *dir = NULL;
+        
+        if (!g_file_test(uri + 7, G_FILE_TEST_IS_DIR))
+        {
+            dir = g_path_get_dirname(uri + 7);
+            uri = dir;
+        }
         roxterm_spawn(roxterm, filer, options_lookup_int_with_default
             (roxterm->profile, "filer_spawn_type", 0));
+        g_free(dir);
         g_free(filer);
     }
 }
@@ -918,7 +926,8 @@ static void roxterm_data_delete(ROXTermData *roxterm)
 typedef enum {
     ROXTerm_DontShowURIMenuItems,
     ROXTerm_ShowWebURIMenuItems,
-    ROXTerm_ShowMailURIMenuItems
+    ROXTerm_ShowMailURIMenuItems,
+    ROXTerm_ShowFileURIMenuItems
 } ROXTerm_URIMenuItemsShowType;
 
 static void
@@ -929,6 +938,8 @@ set_show_uri_menu_items(MenuTree *tree, ROXTerm_URIMenuItemsShowType show_type)
         show_type == ROXTerm_ShowWebURIMenuItems);
     menutree_set_show_item(tree, MENUTREE_OPEN_IN_MAILER,
         show_type == ROXTerm_ShowMailURIMenuItems);
+    menutree_set_show_item(tree, MENUTREE_OPEN_IN_MAILER,
+        show_type == ROXTerm_ShowFileURIMenuItems);
     menutree_set_show_item(tree, MENUTREE_COPY_URI,
         show_type != ROXTerm_DontShowURIMenuItems);
     menutree_set_show_item(tree, MENUTREE_URI_SEPARATOR,
@@ -1528,6 +1539,8 @@ static gboolean roxterm_click_handler(GtkWidget *widget,
         {
             if (roxterm->match_type == ROXTerm_Match_MailTo)
                 show_type = ROXTerm_ShowMailURIMenuItems;
+            else if (g_str_has_prefix(roxterm->matched_url, "file://"))
+                show_type = ROXTerm_ShowFileURIMenuItems;
             else
                 show_type = ROXTerm_ShowWebURIMenuItems;
         }
@@ -1764,6 +1777,15 @@ static void roxterm_mailto_action(MultiWin * win)
     g_return_if_fail(roxterm);
     if (roxterm->matched_url)
         roxterm_launch_email(roxterm, roxterm->matched_url);
+}
+
+static void roxterm_open_in_filer_action(MultiWin * win)
+{
+    ROXTermData *roxterm = multi_win_get_user_data_for_current_tab(win);
+
+    g_return_if_fail(roxterm);
+    if (roxterm->matched_url)
+        roxterm_launch_filer(roxterm, roxterm->matched_url);
 }
 
 static void roxterm_copy_url_action(MultiWin * win)
@@ -2566,6 +2588,8 @@ static void roxterm_connect_menu_signals(MultiWin * win)
         G_CALLBACK(roxterm_browser_action), win, NULL, NULL, NULL);
     multi_win_menu_connect_swapped(win, MENUTREE_OPEN_IN_MAILER,
         G_CALLBACK(roxterm_mailto_action), win, NULL, NULL, NULL);
+    multi_win_menu_connect_swapped(win, MENUTREE_OPEN_IN_FILER,
+        G_CALLBACK(roxterm_open_in_filer_action), win, NULL, NULL, NULL);
     multi_win_menu_connect_swapped(win, MENUTREE_COPY_URI,
         G_CALLBACK(roxterm_copy_url_action), win, NULL, NULL, NULL);
 #ifdef HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX
