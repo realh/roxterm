@@ -32,10 +32,25 @@ static char *uri_find_first_listed_in_path(char const *const *programs)
 
     for (i = 0; programs[i]; ++i)
     {
-        char *program = g_find_program_in_path(programs[i]);
+        char *prog_name = g_strdup(programs[i]);
+        char *args = strchr(prog_name, ' ');
+        char *program;
+        
+        if (args)
+            *args++ = 0;
+        program = g_find_program_in_path(prog_name);
 
+        g_free(prog_name);
         if (program)
+        {
+            if (args)
+            {
+                prog_name = program;
+                program = g_strdup_printf("%s %s", prog_name, args);
+                g_free(prog_name);
+            }
             return program;
+        }
     }
     return NULL;
 }
@@ -151,8 +166,8 @@ char *uri_get_filer_command(const char *address, const char *filer)
 {
     char *preferred_filer = NULL;
     char *cmd = NULL;
-    const char *filers[] = { "rox", "thunar", "nautilus",
-        "konqueror",  "dolphin", NULL
+    const char *filers[] = { "rox", "thunar", "nautilus -n --no-desktop",
+        "dolphin", "konqueror", NULL
     };
 
     if (!filer || !filer[0])
