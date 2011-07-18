@@ -44,8 +44,9 @@ static char *uri_find_first_listed_in_path(char const *const *programs)
  * command name so bear that in mind */
 static char *uri_get_preferred_browser(void)
 {
-    char const *browsers[] = { "x-www-browser", "firefox", "galeon",
-        "konqueror", "mozilla", "opera", "netscape", "dillo", "amaya", NULL
+    char const *browsers[] = { "x-www-browser", "firefox", "iceweasel",
+        "chromium", "chrome", "opera", "gnome-www-browser", "epiphany",
+        "konqueror", "mozilla", "netscape", NULL
     };
     int i;
     char *default_choices_path = NULL;
