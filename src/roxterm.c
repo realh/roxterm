@@ -211,8 +211,8 @@ inline static void roxterm_match_add(ROXTermData *roxterm, VteTerminal *vte,
 #define URLUSERANDPASS URLUSER ":[-,?;.:/!%$^*&~\"#'A-Za-z0-9]+"
 #define URLPORT ":[0-9]+"
 */
-#define URLPATHCHARS "-A-Za-z0-9_$.+!*(),;@&=?/~#%"
-#define URLPATH "[/?][" URLPATHCHARS ":']*" URLEND
+#define URLPATHCHARS "-A-Za-z0-9_$.+!(),;@&=?/~#%"
+#define URLPATH "[/?][" URLPATHCHARS ":'*]*" URLEND
 
 static const char *full_urls[] = {
     URLSTART URLSCHEME "//" URLEXTHOST,
