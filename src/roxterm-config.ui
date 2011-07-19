@@ -2109,6 +2109,7 @@
                                     <property name="tooltip_text" translatable="yes">Set the terminal's size in characters from the adjacent values.</property>
                                     <property name="use_action_appearance">False</property>
                                     <property name="use_underline">True</property>
+                                    <property name="xalign">0</property>
                                     <property name="active">True</property>
                                     <property name="draw_indicator">True</property>
                                     <signal name="toggled" handler="on_cell_size_toggled" swapped="no"/>
@@ -2224,6 +2225,7 @@
                                 <property name="tooltip_text" translatable="yes">Use a maximised window.</property>
                                 <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
+                                <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">cell_size</property>
                                 <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
@@ -2244,6 +2246,7 @@
                                 <property name="tooltip_text" translatable="yes">Make the terminal take up the whole screen with no window borders.</property>
                                 <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
+                                <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">cell_size</property>
                                 <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
@@ -2264,6 +2267,7 @@
                                 <property name="tooltip_text" translatable="yes">Whether new windows with this profile will have a menu bar. You can also turn the menu bar on and off from terminal menus.</property>
                                 <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
+                                <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                               </object>
@@ -2284,6 +2288,7 @@
                                 <property name="tooltip_text" translatable="yes">If this option is enabled the tabs at the top of each terminal are always shown, even in windows which only contain one tab</property>
                                 <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
+                                <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                               </object>
@@ -2375,7 +2380,7 @@
                           <object class="GtkTable" id="general_table">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="n_rows">7</property>
+                            <property name="n_rows">8</property>
                             <property name="n_columns">4</property>
                             <property name="column_spacing">16</property>
                             <property name="row_spacing">16</property>
@@ -2387,6 +2392,7 @@
                                 <property name="receives_default">False</property>
                                 <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
+                                <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
                                 <accelerator key="b" signal="clicked" modifiers="GDK_MOD1_MASK"/>
                                 <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
@@ -2407,6 +2413,7 @@
                                 <property name="tooltip_text" translatable="yes">If selected, "printing" an ASCII bell character will cause a beep.</property>
                                 <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
+                                <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                               </object>
@@ -2427,6 +2434,7 @@
                                 <property name="tooltip_text" translatable="yes">If selected, "printing" an ASCII bell character will cause the terminal to flash.</property>
                                 <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
+                                <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                               </object>
@@ -2449,6 +2457,7 @@
                                 <property name="tooltip_text" translatable="yes">The terminal cursor doesn't blink.</property>
                                 <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
+                                <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">cursor_blink_mode0</property>
                                 <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
@@ -2471,6 +2480,7 @@
                                 <property name="tooltip_text" translatable="yes">The terminal cursor blinks.</property>
                                 <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
+                                <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">cursor_blink_mode0</property>
                                 <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
@@ -2506,6 +2516,7 @@
                                 <property name="tooltip_text" translatable="yes">Whether the terminal cursor blinks depends on the GTK system setting.</property>
                                 <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
+                                <property name="xalign">0</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
@@ -2528,6 +2539,7 @@
                                 <property name="tooltip_text" translatable="yes">The cursor is a horizontal line at the bottom of each character.</property>
                                 <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
+                                <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">cursor_shape0</property>
                                 <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
@@ -2550,6 +2562,7 @@
                                 <property name="tooltip_text" translatable="yes">The cursor is a vertical line at the left of each character.</property>
                                 <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
+                                <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">cursor_shape0</property>
                                 <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
@@ -2572,7 +2585,7 @@
                                 <property name="tooltip_text" translatable="yes">The cursor is a rectangle taking up the whole of a character space.</property>
                                 <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
-                                <property name="yalign">0.44999998807907104</property>
+                                <property name="xalign">0</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
@@ -2608,6 +2621,7 @@
                                 <property name="tooltip_text" translatable="yes">If the "bell rings" in a terminal while it isn't the active tab or window, its tab label will flash and/or its window will be marked "urgent". This only works with recent versions of vte.</property>
                                 <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
+                                <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                               </object>
@@ -2628,6 +2642,7 @@
                                 <property name="receives_default">False</property>
                                 <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
+                                <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                               </object>
@@ -2639,18 +2654,17 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkHBox" id="hbox6">
+                              <object class="GtkHBox" id="box5">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="spacing">8</property>
                                 <child>
-                                  <object class="GtkLabel" id="sel_by_word_label">
+                                  <object class="GtkLabel" id="label42">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="xalign">1</property>
-                                    <property name="label" translatable="yes">_Select-by-word characters:</property>
+                                    <property name="xalign">0</property>
+                                    <property name="label" translatable="yes">_TERM environment variable:</property>
                                     <property name="use_underline">True</property>
-                                    <property name="mnemonic_widget">sel_by_word</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -2659,11 +2673,11 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkEntry" id="sel_by_word">
+                                  <object class="GtkEntry" id="term">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
-                                    <property name="tooltip_text" translatable="yes">Words can be selected by double-clicking. Characters not in this list count as the start or end of a word</property>
                                     <property name="invisible_char">•</property>
+                                    <property name="invisible_char_set">True</property>
                                     <signal name="changed" handler="on_editable_changed" swapped="no"/>
                                     <signal name="activate" handler="on_entry_activate" swapped="no"/>
                                   </object>
@@ -2676,13 +2690,13 @@
                               </object>
                               <packing>
                                 <property name="right_attach">4</property>
-                                <property name="top_attach">4</property>
-                                <property name="bottom_attach">5</property>
-                                <property name="y_options">GTK_FILL</property>
+                                <property name="top_attach">6</property>
+                                <property name="bottom_attach">8</property>
+                                <property name="y_options"></property>
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkHBox" id="hbox1">
+                              <object class="GtkHBox" id="box6">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="spacing">8</property>
@@ -2690,10 +2704,9 @@
                                   <object class="GtkLabel" id="label43">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="xalign">1</property>
+                                    <property name="xalign">0</property>
                                     <property name="label" translatable="yes">_COLORTERM environment variable:</property>
                                     <property name="use_underline">True</property>
-                                    <property name="mnemonic_widget">color_term</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -2706,6 +2719,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="invisible_char">•</property>
+                                    <property name="invisible_char_set">True</property>
                                     <signal name="changed" handler="on_editable_changed" swapped="no"/>
                                     <signal name="activate" handler="on_entry_activate" swapped="no"/>
                                   </object>
@@ -2720,21 +2734,21 @@
                                 <property name="right_attach">4</property>
                                 <property name="top_attach">5</property>
                                 <property name="bottom_attach">6</property>
+                                <property name="y_options"></property>
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkHBox" id="term_hbox">
+                              <object class="GtkHBox" id="box7">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="spacing">8</property>
                                 <child>
-                                  <object class="GtkLabel" id="label42">
+                                  <object class="GtkLabel" id="sel_by_word_label">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="xalign">0</property>
-                                    <property name="label" translatable="yes">_TERM environment variable:</property>
+                                    <property name="label" translatable="yes">_Select-by-word characters:</property>
                                     <property name="use_underline">True</property>
-                                    <property name="mnemonic_widget">term</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -2743,10 +2757,14 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkEntry" id="term">
+                                  <object class="GtkEntry" id="sel_by_word">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
+                                    <property name="has_tooltip">True</property>
+                                    <property name="tooltip_markup" translatable="yes">Words can be selected by double-clicking. Characters not in this list count as the start or end of a word</property>
+                                    <property name="tooltip_text" translatable="yes">Words can be selected by double-clicking. Characters not in this list count as the start or end of a word</property>
                                     <property name="invisible_char">•</property>
+                                    <property name="invisible_char_set">True</property>
                                     <signal name="changed" handler="on_editable_changed" swapped="no"/>
                                     <signal name="activate" handler="on_entry_activate" swapped="no"/>
                                   </object>
@@ -2759,8 +2777,9 @@
                               </object>
                               <packing>
                                 <property name="right_attach">4</property>
-                                <property name="top_attach">6</property>
-                                <property name="bottom_attach">7</property>
+                                <property name="top_attach">4</property>
+                                <property name="bottom_attach">5</property>
+                                <property name="y_options"></property>
                               </packing>
                             </child>
                           </object>
@@ -2871,6 +2890,7 @@
                                 <property name="tooltip_text" translatable="yes">Enable the adjacent custom command for this profile.</property>
                                 <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
+                                <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">use_default_shell</property>
                                 <signal name="toggled" handler="on_command_toggled" swapped="no"/>
@@ -2892,6 +2912,7 @@
                                 <property name="tooltip_text" translatable="yes">Connect to a ssh (secure shell) with this profile.</property>
                                 <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
+                                <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">use_default_shell</property>
                                 <signal name="toggled" handler="on_command_toggled" swapped="no"/>
@@ -2951,6 +2972,7 @@
                                 <property name="tooltip_text" translatable="yes">Whether to log sessions to login records (utmp/wtmp/utmpx/wtmpx)</property>
                                 <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
+                                <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                               </object>
@@ -2971,6 +2993,7 @@
                                 <property name="tooltip_text" translatable="yes">Whether shells running in the terminal are login shells</property>
                                 <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
+                                <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                               </object>
@@ -2989,6 +3012,7 @@
                                 <property name="receives_default">False</property>
                                 <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
+                                <property name="xalign">0</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_command_toggled" swapped="no"/>
@@ -3606,7 +3630,6 @@
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
                                         <property name="label" translatable="yes">Filer</property>
-                                        <property name="use_underline">False</property>
                                       </object>
                                       <packing>
                                         <property name="expand">False</property>
@@ -3803,6 +3826,7 @@
                                 <property name="tooltip_text" translatable="yes">Use the background colour from the configured colour scheme</property>
                                 <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
+                                <property name="xalign">0</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_bgtype_toggled" swapped="no"/>
@@ -3827,6 +3851,7 @@
                                     <property name="tooltip_text" translatable="yes">A background image will be blended with the background colour depending on the transparency setting</property>
                                     <property name="use_action_appearance">False</property>
                                     <property name="use_underline">True</property>
+                                    <property name="xalign">0</property>
                                     <property name="draw_indicator">True</property>
                                     <property name="group">background_type0</property>
                                     <signal name="toggled" handler="on_bgtype_toggled" swapped="no"/>
@@ -3918,6 +3943,7 @@
                                             <property name="tooltip_text" translatable="yes">Whether to move the picture with the scrollbar</property>
                                             <property name="use_action_appearance">False</property>
                                             <property name="use_underline">True</property>
+                                            <property name="xalign">0</property>
                                             <property name="draw_indicator">True</property>
                                             <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                                           </object>
@@ -3959,6 +3985,7 @@
                                 <property name="tooltip_text" translatable="yes">The desktop background will show through the terminal background to an extent determined by the transparency setting</property>
                                 <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
+                                <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">background_type0</property>
                                 <signal name="toggled" handler="on_bgtype_toggled" swapped="no"/>
@@ -4158,6 +4185,7 @@
                                 <property name="receives_default">False</property>
                                 <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
+                                <property name="xalign">0</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
@@ -4176,6 +4204,7 @@
                                 <property name="receives_default">False</property>
                                 <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
+                                <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">scrollbar_pos0</property>
                                 <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
@@ -4194,6 +4223,7 @@
                                 <property name="receives_default">False</property>
                                 <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
+                                <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">scrollbar_pos0</property>
                                 <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
@@ -4268,6 +4298,7 @@
                                 <property name="tooltip_text" translatable="yes">Whether to make the scrollbar jump to the bottom when new text is printed in the terminal</property>
                                 <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
+                                <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                               </object>
@@ -4287,6 +4318,7 @@
                                 <property name="tooltip_text" translatable="yes">Whether to make the scrollbar jump to the bottom when text is typed into a terminal</property>
                                 <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
+                                <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                               </object>
@@ -4398,6 +4430,7 @@
                                     <property name="tooltip_text" translatable="yes">This option makes the Next and Previous Tab operations respectively wrap around from the first and last tab to the opposite end of the row; the move tab left/right/up/down menu items are affected similarly.</property>
                                     <property name="use_action_appearance">False</property>
                                     <property name="use_underline">True</property>
+                                    <property name="xalign">0</property>
                                     <property name="draw_indicator">True</property>
                                     <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                                   </object>
@@ -4418,6 +4451,7 @@
                                     <property name="tooltip_text" translatable="yes">If this option is enabled close buttons are shown at the top of tabs.</property>
                                     <property name="use_action_appearance">False</property>
                                     <property name="use_underline">True</property>
+                                    <property name="xalign">0</property>
                                     <property name="draw_indicator">True</property>
                                     <signal name="toggled" handler="on_close_buttons_toggled" swapped="no"/>
                                     <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
@@ -4439,6 +4473,7 @@
                                     <property name="tooltip_text" translatable="yes">If this option is enabled the icons in close buttons may be changed in inactive tabs to reflect the status of their terminals.</property>
                                     <property name="use_action_appearance">False</property>
                                     <property name="use_underline">True</property>
+                                    <property name="xalign">0</property>
                                     <property name="draw_indicator">True</property>
                                     <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                                   </object>
@@ -4572,6 +4607,25 @@
                                 <property name="expand">False</property>
                                 <property name="fill">True</property>
                                 <property name="position">3</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkCheckButton" id="new_tabs_adjacent">
+                                <property name="label" translatable="yes">Open new tabs _adjacent to current tab</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">False</property>
+                                <property name="tooltip_text" translatable="yes">Whether to open new tabs adjacent to the current tab in a window, otherwise append them.</property>
+                                <property name="use_action_appearance">False</property>
+                                <property name="use_underline">True</property>
+                                <property name="xalign">0</property>
+                                <property name="image_position">bottom</property>
+                                <property name="draw_indicator">True</property>
+                              </object>
+                              <packing>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
+                                <property name="position">4</property>
                               </packing>
                             </child>
                           </object>
@@ -5053,6 +5107,20 @@
     <action-widgets>
       <action-widget response="0">button1</action-widget>
     </action-widgets>
+  </object>
+  <object class="GtkSizeGroup" id="general_entries_size_group">
+    <widgets>
+      <widget name="sel_by_word"/>
+      <widget name="color_term"/>
+      <widget name="term"/>
+    </widgets>
+  </object>
+  <object class="GtkSizeGroup" id="general_entry_labels_size_group">
+    <widgets>
+      <widget name="sel_by_word_label"/>
+      <widget name="label43"/>
+      <widget name="label42"/>
+    </widgets>
   </object>
   <object class="GtkAdjustment" id="width_adjustment">
     <property name="lower">10</property>

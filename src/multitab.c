@@ -140,6 +140,7 @@ MultiWinGetDisableMenuShortcuts multi_win_get_disable_menu_shortcuts;
 static MultiWinInitialTabs multi_win_initial_tabs;
 static MultiWinDeleteHandler multi_win_delete_handler;
 static MultiTabGetShowCloseButton multi_tab_get_show_close_button;
+static MultiTabGetNewTabAdjacent multi_tab_get_new_tab_adjacent;
 
 static gboolean multi_win_notify_tab_removed(MultiWin *, MultiTab *);
 
@@ -211,7 +212,8 @@ void multi_tab_init(MultiTabFiller filler, MultiTabDestructor destructor,
     MultiWinGetDisableMenuShortcuts get_disable_menu_shortcuts,
     MultiWinInitialTabs initial_tabs,
     MultiWinDeleteHandler delete_handler,
-    MultiTabGetShowCloseButton get_show_close_button
+    MultiTabGetShowCloseButton get_show_close_button,
+    MultiTabGetNewTabAdjacent get_new_tab_adjacent
     )
 {
     multi_tab_filler = filler;
@@ -226,6 +228,7 @@ void multi_tab_init(MultiTabFiller filler, MultiTabDestructor destructor,
     multi_win_initial_tabs = initial_tabs;
     multi_win_delete_handler = delete_handler;
     multi_tab_get_show_close_button = get_show_close_button;
+    multi_tab_get_new_tab_adjacent = get_new_tab_adjacent;
 }
 
 MultiTab *multi_tab_new(MultiWin * parent, gpointer user_data_template)
@@ -238,7 +241,8 @@ MultiTab *multi_tab_new(MultiWin * parent, gpointer user_data_template)
         &tab->user_data, &tab->active_widget, &tab->adjustment);
     g_object_set_data(G_OBJECT(tab->widget), "roxterm_tab", tab);
 
-    if (parent->current_tab)
+    if (parent->current_tab &&
+            multi_tab_get_new_tab_adjacent(user_data_template))
     {
         pos = multi_tab_get_page_num(parent->current_tab) + 1;
         if (pos == parent->ntabs)

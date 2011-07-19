@@ -102,6 +102,9 @@ typedef gboolean (*MultiTabGetShowCloseButton)(gpointer user_data);
 /* Needed externally */
 MultiWinGetDisableMenuShortcuts multi_win_get_disable_menu_shortcuts;
 
+/* Whether to open a new tab adjacent to current one */
+typedef gboolean (*MultiTabGetNewTabAdjacent)(gpointer user_data);
+
 /* Call to set up function hooks. See MultiTabFiller etc above.
  * menu_signal_connector is called each time a new window is created to give
  * the client a chance to connect its signal handlers; each handler will
@@ -112,7 +115,8 @@ multi_tab_init(MultiTabFiller filler, MultiTabDestructor destructor,
     MultiWinGeometryFunc, MultiWinSizeFunc, MultiWinDefaultSizeFunc,
     MultiTabToNewWindowHandler,
     MultiWinZoomHandler, MultiWinGetDisableMenuShortcuts, MultiWinInitialTabs,
-    MultiWinDeleteHandler, MultiTabGetShowCloseButton
+    MultiWinDeleteHandler, MultiTabGetShowCloseButton,
+    MultiTabGetNewTabAdjacent
     );
 
 /* Register a MultiTabSelectionHandler (see above) */

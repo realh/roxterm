@@ -3113,9 +3113,14 @@ roxterm_update_option(Options * opts, const char *key,
 
 static gboolean roxterm_get_show_tab_close_button(ROXTermData *roxterm)
 {
-    
     return options_lookup_int_with_default(roxterm->profile,
             "tab_close_btn", TRUE);
+}
+
+static gboolean roxterm_get_new_tab_adjacent(ROXTermData *roxterm)
+{
+    return options_lookup_int_with_default(roxterm->profile,
+            "new_tabs_adjacent", FALSE);
 }
 
 static void roxterm_reflect_profile_change(Options * profile, const char *key)
@@ -4124,7 +4129,8 @@ void roxterm_init(void)
         (MultiWinGetDisableMenuShortcuts) roxterm_get_disable_menu_shortcuts,
         (MultiWinInitialTabs) roxterm_get_initial_tabs,
         (MultiWinDeleteHandler) roxterm_win_delete_handler,
-        (MultiTabGetShowCloseButton) roxterm_get_show_tab_close_button
+        (MultiTabGetShowCloseButton) roxterm_get_show_tab_close_button,
+        (MultiTabGetNewTabAdjacent) roxterm_get_new_tab_adjacent
         );
     roxterm_apply_can_edit_shortcuts();
 }
