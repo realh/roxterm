@@ -617,7 +617,7 @@ static void profilegui_setup_list_store(ProfileGUI *pg)
     GtkTreeSelection *sel;
     
     pg->list_store = gtk_list_store_new(2, G_TYPE_STRING, G_TYPE_INT);
-    for (n = 0; n < sizeof(labels) / sizeof(const char *); ++n)
+    for (n = 0; n < G_N_ELEMENTS(labels); ++n)
     {
         gtk_list_store_append(pg->list_store, &iter);
         gtk_list_store_set(pg->list_store, &iter,

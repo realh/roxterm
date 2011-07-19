@@ -58,7 +58,8 @@ typedef enum {
     ROXTerm_Match_Complete,
     ROXTerm_Match_WWW,
     ROXTerm_Match_FTP,
-    ROXTerm_Match_MailTo
+    ROXTerm_Match_MailTo,
+    ROXTerm_Match_File,
 } ROXTerm_MatchType;
 
 typedef struct {
@@ -196,12 +197,7 @@ inline static void roxterm_match_add(ROXTermData *roxterm, VteTerminal *vte,
     g_array_append_val(roxterm->match_map, map);
 }
 
-/* There isn't a portable standard way of expressing a word boundary (POSIX
- * 1003.2 had '[[:<:]]', GNU has '\<') so the most sensible thing to do seems
- * to be to ignore them and allow valid URIs to have any old rubbish tacked on
- * to the front of them (Claws Mail appears to do this).
- */
-#define URLSTART ""
+#define URLSTART "\\b"
 
 #define URLMSGIDSET "[-A-Z\\^_a-z{|}~!\"#$%&'()*+,./0-9;:=?`]"
 #define URLEND "[^].}>) \t\r\n,\\\"]"
@@ -209,13 +205,14 @@ inline static void roxterm_match_add(ROXTermData *roxterm, VteTerminal *vte,
 #define URLEXTHOST "[A-Za-z0-9][-.:!%$^*&~#A-Za-z0-9@]*"
 #define URLFQDNTAIL "\\.[-A-Za-z0-9.]+"
 #define URLFQDN "[A-Za-z0-9]\\.[-A-Za-z0-9.]+"
-#define URLSCHEME "(telnet:|nntp:|file:/|https?:|ftps?:|webcal:)"
+#define URLSCHEME "(telnet:|nntp:|https?:|ftps?:|webcal:)"
 /*
 #define URLUSER "[A-Za-z0-9][-.A-Za-z0-9]*"
 #define URLUSERANDPASS URLUSER ":[-,?;.:/!%$^*&~\"#'A-Za-z0-9]+"
 #define URLPORT ":[0-9]+"
 */
-#define URLPATH "[/?][-A-Za-z0-9_$.+!*(),;:@&=?/~#%']*" URLEND
+#define URLPATHCHARS "-A-Za-z0-9_$.+!*(),;@&=?/~#%"
+#define URLPATH "[/?][" URLPATHCHARS ":']*" URLEND
 
 static const char *full_urls[] = {
     URLSTART URLSCHEME "//" URLEXTHOST,
@@ -242,6 +239,12 @@ static const char *mailto_urls[] = {
         "\\?[A-Za-z]+=" URLMSGIDSET "+"
 };
 
+/* FIXME: Could support ~user but glib doesn't provide a convenience func.
+ * Should also be able to support spaces if escaped or in quotes, but
+ * would complicate expression(s).
+ */
+#define URL_FILE "(\\bfile://)?(\\.|\\.\\.|~)?/[" URLPATHCHARS "]*"
+
 static void roxterm_add_matches(ROXTermData *roxterm, VteTerminal *vte)
 {
     int n;
@@ -255,6 +258,7 @@ static void roxterm_add_matches(ROXTermData *roxterm, VteTerminal *vte)
     for (n = 0; n < G_N_ELEMENTS(mailto_urls); ++n)
         roxterm_match_add(roxterm, vte, mailto_urls[n], ROXTerm_Match_MailTo);
     roxterm_match_add(roxterm, vte, URL_NEWS, ROXTerm_Match_Complete);
+    roxterm_match_add(roxterm, vte, URL_FILE, ROXTerm_Match_File);
 }
 
 static ROXTerm_MatchType roxterm_get_match_type(ROXTermData *roxterm, int tag)
@@ -835,11 +839,17 @@ static void roxterm_launch_filer(ROXTermData *roxterm, const char *uri)
 {
     gboolean is_dir;
     char *dir = NULL;
+    char *expu = NULL;
     char *filer_o;
     char *filer;
     
     if (g_str_has_prefix(uri, "file://"))
         uri += 7;
+    if (uri[0] == '~')
+    {
+        expu = g_build_filename(g_get_home_dir(), uri + 2, NULL);
+        uri = expu;
+    }
     is_dir = g_file_test(uri, G_FILE_TEST_IS_DIR);
     if (!is_dir && options_lookup_int_with_default(roxterm->profile,
                 "file_as_dir", TRUE))
@@ -862,21 +872,22 @@ static void roxterm_launch_filer(ROXTermData *roxterm, const char *uri)
         g_free(filer);
     }
     g_free(dir);
+    g_free(expu);
 }
 
 static void roxterm_launch_uri(ROXTermData *roxterm)
 {
-    if (roxterm->match_type == ROXTerm_Match_MailTo)
+    switch (roxterm->match_type)
     {
-        roxterm_launch_email(roxterm, roxterm->matched_url);
-    }
-    else if (g_str_has_prefix(roxterm->matched_url, "file://"))
-    {
-        roxterm_launch_filer(roxterm, roxterm->matched_url);
-    }
-    else
-    {
-        roxterm_launch_browser(roxterm, roxterm->matched_url);
+        case ROXTerm_Match_MailTo:
+            roxterm_launch_email(roxterm, roxterm->matched_url);
+            break;
+        case ROXTerm_Match_File:
+            roxterm_launch_filer(roxterm, roxterm->matched_url);
+            break;
+        default:
+            roxterm_launch_browser(roxterm, roxterm->matched_url);
+            break;
     }
 }
 
@@ -1547,12 +1558,18 @@ static gboolean roxterm_click_handler(GtkWidget *widget,
 
         if (roxterm->matched_url)
         {
-            if (roxterm->match_type == ROXTerm_Match_MailTo)
-                show_type = ROXTerm_ShowMailURIMenuItems;
-            else if (g_str_has_prefix(roxterm->matched_url, "file://"))
-                show_type = ROXTerm_ShowFileURIMenuItems;
-            else
-                show_type = ROXTerm_ShowWebURIMenuItems;
+            switch (roxterm->match_type)
+            {
+                case ROXTerm_Match_MailTo:
+                    show_type = ROXTerm_ShowMailURIMenuItems;
+                    break;
+                case ROXTerm_Match_File:
+                    show_type = ROXTerm_ShowFileURIMenuItems;
+                    break;
+                default:
+                    show_type = ROXTerm_ShowWebURIMenuItems;
+                    break;
+                }
         }
         roxterm_set_show_uri_menu_items(roxterm, show_type);
         multi_tab_popup_menu(roxterm->tab, event->button, event->time);
