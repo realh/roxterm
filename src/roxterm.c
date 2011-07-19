@@ -204,7 +204,7 @@ inline static void roxterm_match_add(ROXTermData *roxterm, VteTerminal *vte,
 #define URLSTART ""
 
 #define URLMSGIDSET "[-A-Z\\^_a-z{|}~!\"#$%&'()*+,./0-9;:=?`]"
-#define URLEND "[^]'.}>) \t\r\n,\\\"]"
+#define URLEND "[^].}>) \t\r\n,\\\"]"
 #define URLHOST "[A-Za-z0-9][-A-Za-z0-9.]*"
 #define URLEXTHOST "[A-Za-z0-9][-.:!%$^*&~#A-Za-z0-9@]*"
 #define URLFQDNTAIL "\\.[-A-Za-z0-9.]+"
@@ -215,7 +215,7 @@ inline static void roxterm_match_add(ROXTermData *roxterm, VteTerminal *vte,
 #define URLUSERANDPASS URLUSER ":[-,?;.:/!%$^*&~\"#'A-Za-z0-9]+"
 #define URLPORT ":[0-9]+"
 */
-#define URLPATH "[/?][-A-Za-z0-9_$.+!*(),;:@&=?/~#%]*" URLEND
+#define URLPATH "[/?][-A-Za-z0-9_$.+!*(),;:@&=?/~#%']*" URLEND
 
 static const char *full_urls[] = {
     URLSTART URLSCHEME "//" URLEXTHOST,
