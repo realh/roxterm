@@ -948,7 +948,7 @@ set_show_uri_menu_items(MenuTree *tree, ROXTerm_URIMenuItemsShowType show_type)
         show_type == ROXTerm_ShowWebURIMenuItems);
     menutree_set_show_item(tree, MENUTREE_OPEN_IN_MAILER,
         show_type == ROXTerm_ShowMailURIMenuItems);
-    menutree_set_show_item(tree, MENUTREE_OPEN_IN_MAILER,
+    menutree_set_show_item(tree, MENUTREE_OPEN_IN_FILER,
         show_type == ROXTerm_ShowFileURIMenuItems);
     menutree_set_show_item(tree, MENUTREE_COPY_URI,
         show_type != ROXTerm_DontShowURIMenuItems);
