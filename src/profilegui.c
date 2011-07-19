@@ -600,7 +600,7 @@ static void profilegui_setup_list_store(ProfileGUI *pg)
 {
     static char const *labels[] = {
             N_("Appearance"), N_("General"), N_("Command"),
-            N_("URI handling"), N_("Background"), N_("Scrolling"),
+            N_("Net URIs"), N_("File URIs"), N_("Background"), N_("Scrolling"),
             N_("Keyboard"), N_("Tabs")
     };
     GtkTreeIter iter;
@@ -611,7 +611,7 @@ static void profilegui_setup_list_store(ProfileGUI *pg)
     GtkTreeSelection *sel;
     
     pg->list_store = gtk_list_store_new(2, G_TYPE_STRING, G_TYPE_INT);
-    for (n = 0; n < 8; ++n)
+    for (n = 0; n < sizeof(labels) / sizeof(const char *); ++n)
     {
         gtk_list_store_append(pg->list_store, &iter);
         gtk_list_store_set(pg->list_store, &iter,
