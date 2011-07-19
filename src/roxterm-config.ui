@@ -3460,8 +3460,8 @@
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="has_tooltip">True</property>
-                                        <property name="tooltip_markup" translatable="yes">File manager to use when a file:// URI is opened.</property>
-                                        <property name="tooltip_text" translatable="yes">File manager to use when a file:// URI is opened.</property>
+                                        <property name="tooltip_markup" translatable="yes">File manager to use when a directory URI is opened.</property>
+                                        <property name="tooltip_text" translatable="yes">File manager to use when a directory URI is opened.</property>
                                         <property name="invisible_char">•</property>
                                         <property name="invisible_char_set">True</property>
                                         <signal name="changed" handler="on_editable_changed" swapped="no"/>
@@ -3493,8 +3493,8 @@
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">False</property>
                                         <property name="has_tooltip">True</property>
-                                        <property name="tooltip_markup" translatable="yes">Run the filer without a tiler.</property>
-                                        <property name="tooltip_text" translatable="yes">Run the filer without a tiler.</property>
+                                        <property name="tooltip_markup" translatable="yes">Run the filer without a terminal.</property>
+                                        <property name="tooltip_text" translatable="yes">Run the filer without a terminal.</property>
                                         <property name="use_action_appearance">False</property>
                                         <property name="use_underline">True</property>
                                         <property name="xalign">0</property>
@@ -3605,9 +3605,8 @@
                                       <object class="GtkLabel" id="label1">
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
-                                        <property name="label" translatable="yes">_Filer</property>
-                                        <property name="use_underline">True</property>
-                                        <property name="mnemonic_widget">filer</property>
+                                        <property name="label" translatable="yes">Filer</property>
+                                        <property name="use_underline">False</property>
                                       </object>
                                       <packing>
                                         <property name="expand">False</property>
@@ -3620,8 +3619,8 @@
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="has_tooltip">True</property>
-                                        <property name="tooltip_markup" translatable="yes">File manager to use when a file:// URI is opened.</property>
-                                        <property name="tooltip_text" translatable="yes">File manager to use when a file:// URI is opened.</property>
+                                        <property name="tooltip_markup" translatable="yes">File manager to use when a file URI is opened.</property>
+                                        <property name="tooltip_text" translatable="yes">File manager to use when a file URI is opened.</property>
                                         <property name="invisible_char">•</property>
                                         <property name="invisible_char_set">True</property>
                                         <signal name="changed" handler="on_editable_changed" swapped="no"/>
@@ -3654,7 +3653,7 @@
                                         <property name="receives_default">False</property>
                                         <property name="has_tooltip">True</property>
                                         <property name="tooltip_markup" translatable="yes">Run the filer without a terminal.</property>
-                                        <property name="tooltip_text" translatable="yes">Run the filer without a tiler.</property>
+                                        <property name="tooltip_text" translatable="yes">Run the filer without a terminal.</property>
                                         <property name="use_action_appearance">False</property>
                                         <property name="use_underline">True</property>
                                         <property name="xalign">0</property>
@@ -3724,6 +3723,8 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
+                                    <property name="tooltip_markup" translatable="yes">If set open the file's parent directory instead of the file.</property>
+                                    <property name="tooltip_text" translatable="yes">If set open the file's parent directory instead of the file.</property>
                                     <property name="use_action_appearance">False</property>
                                     <property name="use_underline">True</property>
                                     <property name="xalign">0</property>
