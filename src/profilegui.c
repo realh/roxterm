@@ -46,6 +46,7 @@ struct _ProfileGUI {
         guint browser : 1;
         guint mailer : 1;
         guint filer : 1;
+        guint dir_filer : 1;
         guint command : 1;
         guint title_string : 1;
         guint ssh_address : 1;
@@ -103,6 +104,7 @@ void profilegui_check_entries_for_changes(ProfileGUI * pg)
     PG_UPDATE_IF(browser)
     PG_UPDATE_IF(mailer)
     PG_UPDATE_IF(filer)
+    PG_UPDATE_IF(dir_filer)
     PG_UPDATE_IF(command)
     PG_UPDATE_IF(title_string)
     PG_UPDATE_IF(win_title)
@@ -176,7 +178,7 @@ void on_editable_changed(GtkEditable * editable, ProfileGUI *pg)
     else PG_IF_CHANGED(term);
     else PG_IF_CHANGED(browser);
     else PG_IF_CHANGED(mailer);
-    else PG_IF_CHANGED(filer);
+    else PG_IF_CHANGED(dir_filer);
     else PG_IF_CHANGED(command);
     else PG_IF_CHANGED(title_string);
     else PG_IF_CHANGED(ssh_address);
@@ -535,6 +537,9 @@ static void profilegui_fill_in_dialog(ProfileGUI * pg)
     capplet_set_radio(&pg->capp, "mailer_spawn_type", 0);
     capplet_set_text_entry(&pg->capp, "filer", NULL);
     capplet_set_radio(&pg->capp, "filer_spawn_type", 0);
+    capplet_set_text_entry(&pg->capp, "dir_filer", NULL);
+    capplet_set_radio(&pg->capp, "dir_spawn_type", 0);
+    capplet_set_boolean_toggle(&pg->capp, "file_as_dir", TRUE);
     capplet_set_spin_button(&pg->capp, "width", 80);
     capplet_set_spin_button(&pg->capp, "height", 25);
     capplet_set_radio(&pg->capp, "background_type", 0);

@@ -833,24 +833,32 @@ static void roxterm_launch_email(ROXTermData *roxterm, const char *uri)
 
 static void roxterm_launch_filer(ROXTermData *roxterm, const char *uri)
 {
+    gboolean is_dir;
     char *dir = NULL;
     char *filer_o;
     char *filer;
     
-    uri += 7;   /* strip "file://" */
-    if (!g_file_test(uri, G_FILE_TEST_IS_DIR))
+    if (g_str_has_prefix(uri, "file://"))
+        uri += 7;
+    is_dir = g_file_test(uri, G_FILE_TEST_IS_DIR);
+    if (!is_dir && options_lookup_int_with_default(roxterm->profile,
+                "file_as_dir", TRUE))
     {
         dir = g_path_get_dirname(uri);
         uri = dir;
+        is_dir = TRUE;
     }
-    filer_o = roxterm_lookup_uri_handler(roxterm, "filer");
+    filer_o = roxterm_lookup_uri_handler(roxterm,
+            is_dir ? "dir_filer" : "filer");
     filer = uri_get_filer_command(uri, filer_o);
     if (filer_o)
         g_free(filer_o);
     if (filer)
     {
-        roxterm_spawn(roxterm, filer, options_lookup_int_with_default
-            (roxterm->profile, "filer_spawn_type", 0));
+        roxterm_spawn(roxterm, filer,
+            options_lookup_int_with_default(roxterm->profile,
+                is_dir ? "dir_spawn_type" : "filer_spawn_type",
+                0));
         g_free(filer);
     }
     g_free(dir);
