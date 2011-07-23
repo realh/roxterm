@@ -48,6 +48,9 @@ struct MultiTab {
     GtkWidget *label;
     GtkWidget *label_bg;
     GtkWidget *menu_label;
+    /* menu_label is redundant because we now popup our own Tabs submenu.
+     * However, if we just get rid of it whole terminal breaks!
+     */
     GtkAdjustment *adjustment;
     double scroll_step;
     gboolean attention;
@@ -977,6 +980,17 @@ static gboolean multi_win_focus_in(GtkWidget *widget, GdkEventFocus *event,
     return FALSE;
 }
 
+static void popup_tabs_menu(MultiWin *win, GdkEventButton *event)
+{
+    GtkMenuItem *mparent;
+    
+    g_return_if_fail(win->popup_menu != NULL);
+    mparent = GTK_MENU_ITEM(
+            menutree_get_widget_for_id(win->popup_menu, MENUTREE_TABS));
+    gtk_menu_popup(GTK_MENU(gtk_menu_item_get_submenu(mparent)),
+            NULL, NULL, NULL, NULL, event->button, event->time);
+}
+
 static gboolean tab_clicked_handler(GtkWidget *widget,
         GdkEventButton *event, MultiTab *tab)
 {
@@ -989,7 +1003,10 @@ static gboolean tab_clicked_handler(GtkWidget *widget,
             gtk_clipboard_request_text(gtk_clipboard_get(GDK_SELECTION_PRIMARY),
                                        tab_set_name_from_clipboard_callback,
                                        tab);
-            break;
+            return TRUE;
+        case 3:
+            popup_tabs_menu(tab->parent, event);
+            return TRUE;
         default:
             break;
     }
@@ -1679,7 +1696,7 @@ MultiWin *multi_win_new_blank(const char *display_name, Options *shortcuts,
         g_object_set(notebook, "tab-vborder", 0, NULL);
     }
 #endif
-    gtk_notebook_popup_enable(notebook);
+    gtk_notebook_popup_disable(notebook);
     if (always_show_tabs)
     {
         multi_win_set_show_tabs_menu_items(win, TRUE);
