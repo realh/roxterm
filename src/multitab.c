@@ -994,6 +994,7 @@ static gboolean tab_clicked_handler(GtkWidget *widget,
                                        tab);
             return TRUE;
         case 3:
+            multi_win_select_tab(tab->parent, tab);
             popup_tabs_menu(tab->parent, event);
             return TRUE;
         default:
