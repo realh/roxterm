@@ -630,9 +630,16 @@ inline static void multi_win_shade_for_next_and_previous_tab(MultiWin * win)
     multi_win_shade_for_next_tab(win);
 }
 
+inline static void multi_win_shade_for_single_tab(MultiWin * win)
+{
+    multi_win_shade_item_in_both_menus(win, MENUTREE_TABS_CLOSE_OTHER_TABS,
+            win->ntabs <= 1);
+}
+
 inline static void multi_win_shade_menus_for_tabs(MultiWin * win)
 {
     multi_win_shade_for_next_and_previous_tab(win);
+    multi_win_shade_for_single_tab(win);
 }
 
 static void multi_tab_remove_menutree_items(MultiWin * win, MultiTab * tab)
@@ -1122,6 +1129,17 @@ static void multi_win_close_tab_action(MultiWin * win)
     multi_tab_delete(win->current_tab);
 }
 
+static void multi_win_close_other_tabs_action(MultiWin * win)
+{
+    GList *link;
+    
+    while (win->tabs->data != win->current_tab)
+        multi_tab_delete(win->tabs->data);
+    link = win->tabs;
+    while ((link = g_list_next(link)) != NULL)
+        multi_tab_delete(link->data);
+}
+
 static void multi_win_name_tab_action(MultiWin * win)
 {
     MultiTab *tab = win->current_tab;
@@ -1413,6 +1431,10 @@ static void multi_win_connect_actions(MultiWin * win)
         (multi_win_move_tab_right_action), win, NULL, NULL, NULL);
     multi_win_menu_connect_swapped(win, MENUTREE_TABS_NAME_TAB, G_CALLBACK
         (multi_win_name_tab_action), win, NULL, NULL, NULL);
+    multi_win_menu_connect_swapped(win, MENUTREE_TABS_CLOSE_TAB, G_CALLBACK
+        (multi_win_close_tab_action), win, NULL, NULL, NULL);
+    multi_win_menu_connect_swapped(win, MENUTREE_TABS_CLOSE_OTHER_TABS,
+        G_CALLBACK(multi_win_close_other_tabs_action), win, NULL, NULL, NULL);
     multi_win_menu_connect_swapped(win, MENUTREE_EDIT_SET_WINDOW_TITLE,
         G_CALLBACK(multi_win_set_window_title_action), win, NULL, NULL, NULL);
     multi_win_menu_connect(win, MENUTREE_VIEW_SHOW_TAB_BAR, G_CALLBACK

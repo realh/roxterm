@@ -29,14 +29,20 @@
 static char const *menutree_labels[MENUTREE_NUM_IDS];
 static gboolean filled_labels = FALSE;
 
-inline static GtkWidget *menutree_append_new_item_with_mnemonic(GtkMenuShell *
-    shell, const char *label, const char *stock)
+static GtkWidget *menutree_append_new_item_with_mnemonic(
+        GtkMenuShell *shell,
+        const char *label, const char *stock, gboolean separate_label)
 {
     GtkWidget *item;
         
     if (stock)
     {
         item = gtk_image_menu_item_new_from_stock(stock, NULL);
+        if (separate_label)
+        {
+            gtk_menu_item_set_label(GTK_MENU_ITEM(item), label);
+            gtk_menu_item_set_use_underline(GTK_MENU_ITEM(item), TRUE);
+        }
     }
     else
     {
@@ -82,6 +88,7 @@ static void menutree_build_shell_ap(MenuTree *menu_tree, GtkMenuShell *shell,
         }
         else
         {
+            gboolean separate_label = FALSE;
             const char *stock = NULL;
 
             if (!filled_labels &&
@@ -93,11 +100,36 @@ static void menutree_build_shell_ap(MenuTree *menu_tree, GtkMenuShell *shell,
                 label = strip_underscore(label);
             switch (id)
             {
+                case MENUTREE_FILE_NEW_WINDOW:
+                case MENUTREE_FILE_NEW_TAB:
+                    stock = GTK_STOCK_NEW;
+                    separate_label = TRUE;
+                    break;
+                case MENUTREE_FILE_CLOSE_WINDOW:
+                case MENUTREE_FILE_CLOSE_TAB:
+                case MENUTREE_TABS_CLOSE_TAB:
+                    stock = GTK_STOCK_CLOSE;
+                    separate_label = TRUE;
+                    break;
                 case MENUTREE_EDIT_COPY:
                     stock = GTK_STOCK_COPY;
                     break;
                 case MENUTREE_EDIT_PASTE:
                     stock = GTK_STOCK_PASTE;
+                    break;
+                case MENUTREE_EDIT_SET_WINDOW_TITLE:
+                case MENUTREE_TABS_NAME_TAB:
+                    stock = GTK_STOCK_EDIT;
+                    separate_label = TRUE;
+                    break;
+                case MENUTREE_EDIT_RESET:
+                case MENUTREE_EDIT_RESET_AND_CLEAR:
+                    stock = GTK_STOCK_CLEAR;
+                    separate_label = TRUE;
+                    break;
+                case MENUTREE_EDIT_RESPAWN:
+                    stock = GTK_STOCK_REFRESH;
+                    separate_label = TRUE;
                     break;
                 case MENUTREE_VIEW_ZOOM_IN:
                     stock = GTK_STOCK_ZOOM_IN;
@@ -108,17 +140,28 @@ static void menutree_build_shell_ap(MenuTree *menu_tree, GtkMenuShell *shell,
                 case MENUTREE_VIEW_ZOOM_NORM:
                     stock = GTK_STOCK_ZOOM_100;
                     break;
+#ifdef HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX
+                case MENUTREE_SEARCH_FIND:
+                case MENUTREE_SEARCH_FIND_NEXT:
+                case MENUTREE_SEARCH_FIND_PREVIOUS:
+                    stock = GTK_STOCK_FIND;
+                    separate_label = TRUE;
+                    break;
+#endif
+                case MENUTREE_PREFERENCES_EDIT_CURRENT_PROFILE:
+                    stock = GTK_STOCK_PREFERENCES;
+                    separate_label = TRUE;
+                    break;
+                case MENUTREE_PREFERENCES_EDIT_CURRENT_COLOUR_SCHEME:
+                    stock = GTK_STOCK_SELECT_COLOR;
+                    separate_label = TRUE;
+                    break;
                 case MENUTREE_HELP_SHOW_MANUAL:
                     stock = GTK_STOCK_HELP;
                     break;
                 case MENUTREE_HELP_ABOUT:
                     stock = GTK_STOCK_ABOUT;
                     break;
-#if 0 /* def HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX */
-                case MENUTREE_SEARCH_FIND:
-                    stock = GTK_STOCK_FIND;
-                    break;
-#endif
                 default:
                     break;
             }
@@ -133,7 +176,7 @@ static void menutree_build_shell_ap(MenuTree *menu_tree, GtkMenuShell *shell,
                     break;
                 default:
                     item = menutree_append_new_item_with_mnemonic(shell,
-                            label, stock);
+                            label, stock, separate_label);
                     break;
             }
             if (menu_tree->disable_shortcuts)
@@ -312,6 +355,10 @@ void menutree_apply_shortcuts(MenuTree *tree, Options *shortcuts)
     menutree_set_accel_path_for_item(tree,
             MENUTREE_FILE_NEW_TAB_WITH_PROFILE_HEADER,
             "File/New Tab With Profile/Profiles");
+    menutree_set_accel_path_for_item(tree, MENUTREE_TABS_CLOSE_TAB,
+            "Tabs/Close Tab");
+    menutree_set_accel_path_for_item(tree, MENUTREE_TABS_CLOSE_OTHER_TABS,
+            "Tabs/Close Other Tabs");
     menutree_set_accel_path_for_item(tree, MENUTREE_TABS_NAME_TAB,
             "Tabs/Name Tab...");
     menutree_set_accel_path_for_item(tree, MENUTREE_TABS_NEXT_TAB,
@@ -608,6 +655,8 @@ static void menutree_build(MenuTree *menu_tree, Options *shortcuts,
 
     submenu = gtk_menu_new();
     menutree_build_shell(menu_tree, GTK_MENU_SHELL(submenu),
+        _("_Close Tab"), MENUTREE_TABS_CLOSE_TAB,
+        _("Close _Other Tabs"), MENUTREE_TABS_CLOSE_OTHER_TABS,
         _("Na_me Tab..."), MENUTREE_TABS_NAME_TAB,
         "_", MENUTREE_NULL_ID,
         _("_Previous Tab"), MENUTREE_TABS_PREVIOUS_TAB,
