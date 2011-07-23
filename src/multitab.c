@@ -47,10 +47,6 @@ struct MultiTab {
     gpointer user_data;
     GtkWidget *label;
     GtkWidget *label_bg;
-    GtkWidget *menu_label;
-    /* menu_label is redundant because we now popup our own Tabs submenu.
-     * However, if we just get rid of it whole terminal breaks!
-     */
     GtkAdjustment *adjustment;
     double scroll_step;
     gboolean attention;
@@ -441,14 +437,7 @@ static void multi_tab_set_full_window_title(MultiTab * tab,
 
     if (tab->label)
     {
-        char *menu_text = g_strdup_printf("%d. %s",
-                gtk_notebook_page_num(GTK_NOTEBOOK(win->notebook),
-                        tab->widget) + 1,
-                actual_title);
-        
         gtk_label_set_text(GTK_LABEL(tab->label), actual_title);
-        gtk_label_set_text(GTK_LABEL(tab->menu_label), menu_text);
-        g_free(menu_text);
     }
     if (win)
     {
@@ -1968,7 +1957,6 @@ static GtkWidget *make_tab_label(MultiTab *tab, GtkPositionType tab_pos)
     GtkLabel *label;
 
     tab->label = gtk_label_new(NULL);
-    tab->menu_label = gtk_label_new(NULL);
     label = GTK_LABEL(tab->label);
     gtk_label_set_ellipsize(label, PANGO_ELLIPSIZE_MIDDLE);
     multi_tab_set_full_window_title(tab, tab->window_title_template,
@@ -2040,13 +2028,11 @@ static void multi_win_add_tab_to_notebook(MultiWin * win, MultiTab * tab,
 
     if (position == -1)
     {
-        gtk_notebook_append_page_menu(notebook, tab->widget, label,
-                tab->menu_label);
+        gtk_notebook_append_page(notebook, tab->widget, label);
     }
     else
     {
-        gtk_notebook_insert_page_menu(notebook,
-                tab->widget, label, tab->menu_label, position);
+        gtk_notebook_insert_page(notebook, tab->widget, label, position);
     }
     gtk_notebook_set_tab_reorderable(notebook, tab->widget, TRUE);
     gtk_notebook_set_tab_detachable(notebook, tab->widget, TRUE);
