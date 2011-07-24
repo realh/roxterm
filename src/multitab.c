@@ -1,6 +1,6 @@
 /*
     roxterm - GTK+ 2.0 terminal emulator with tabs
-    Copyright (C) 2004 Tony Houghton <h@realh.co.uk>
+    Copyright (C) 2004-2011 Tony Houghton <h@realh.co.uk>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 #include "globalopts.h"
 #include "menutree.h"
 #include "multitab.h"
+#include "multitab-close-button.h"
 #include "shortcuts.h"
 #if HAVE_COMPOSITE
 #include <gdk/gdkx.h>
@@ -55,7 +56,6 @@ struct MultiTab {
     GtkWidget *label_box;
     void (*label_packer)(GtkBox *, GtkWidget *, gboolean, gboolean, guint);
     const char *status_stock;
-    GtkWidget *image;
     GtkWidget *rename_dialog;
     gboolean postponed_free;
     gboolean old_win_destroyed;
@@ -1901,38 +1901,18 @@ static gboolean multi_win_notify_tab_removed(MultiWin * win, MultiTab * tab)
 
 void multi_tab_add_close_button(MultiTab *tab)
 {
-    GtkRcStyle *rcstyle;
-    GtkSettings *settings;
-    int w, h;
     MultiWin *win;
 
     if (tab->close_button)
         return;
     
     win = tab->parent;
-    tab->close_button = gtk_button_new();
-    tab->image = gtk_image_new_from_stock(
-            tab->status_stock ? tab->status_stock : GTK_STOCK_CLOSE,
-            GTK_ICON_SIZE_MENU);
-    rcstyle = gtk_rc_style_new();
-    gtk_container_add(GTK_CONTAINER(tab->close_button), tab->image);
-    gtk_button_set_relief(GTK_BUTTON(tab->close_button), GTK_RELIEF_NONE);
-    gtk_button_set_focus_on_click(GTK_BUTTON(tab->close_button), FALSE);
-    settings = gtk_widget_get_settings(tab->label);
-    gtk_icon_size_lookup_for_settings(settings, GTK_ICON_SIZE_MENU, &w, &h);
-    /* gtk_widget_set_size_request(tab->close_button, w + 2, h + 2); */
-    rcstyle->xthickness = rcstyle->ythickness = 0;
-    gtk_widget_modify_style(tab->close_button, rcstyle);
-#ifdef HAVE_GTK_RC_STYLE_UNREF
-    gtk_rc_style_unref(rcstyle);
-#else
-    g_object_unref(rcstyle);
-#endif
+    tab->close_button = multitab_close_button_new(tab->status_stock);
     tab->label_packer(GTK_BOX(tab->label_box), tab->close_button,
             FALSE, FALSE, 0);
     g_signal_connect(tab->close_button, "clicked",
             G_CALLBACK(multi_win_close_tab_clicked), tab);
-    gtk_widget_show_all(tab->close_button);
+    gtk_widget_show(tab->close_button);
     if (win)
     {
         multi_win_restore_size(win);
@@ -1953,7 +1933,6 @@ void multi_tab_remove_close_button(MultiTab *tab)
             multi_win_restore_size(win);
         }
     }
-    tab->image = NULL;
 }
 
 void multi_tab_set_status_stock(MultiTab *tab, const char *stock)
@@ -1964,10 +1943,10 @@ void multi_tab_set_status_stock(MultiTab *tab, const char *stock)
         return;
     }
     tab->status_stock = stock;
-    if (tab->image)
+    if (tab->close_button)
     {
-        gtk_image_set_from_stock(GTK_IMAGE(tab->image),
-                stock ? stock : GTK_STOCK_CLOSE, GTK_ICON_SIZE_MENU);
+        multitab_close_button_set_image(
+                MULTITAB_CLOSE_BUTTON(tab->close_button), stock);
     }
 }
 

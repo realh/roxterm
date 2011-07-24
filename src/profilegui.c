@@ -1,6 +1,6 @@
 /*
     roxterm - GTK+ 2.0 terminal emulator with tabs
-    Copyright (C) 2004 Tony Houghton <h@realh.co.uk>
+    Copyright (C) 2004-2011 Tony Houghton <h@realh.co.uk>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -734,10 +734,11 @@ ProfileGUI *profilegui_open(const char *profile_name, GdkScreen *scrn)
             "width_adjustment", "height_adjustment",
             "exit_pause_adjustment", "scrollback_lines_adjustment",
             "init_tabs_adjustment", "saturation_adjustment",
-            "general_entries_size_group", "general_entry_labels_size_group", 
             NULL };
     static const char *obj_names[] = {
-            "Profile_Editor", "ssh_dialog", NULL };
+            "Profile_Editor", "ssh_dialog",
+            "general_entries_size_group", "general_entry_labels_size_group", 
+            NULL };
     GError *error = NULL;
 
     if (!profilegui_being_edited)
