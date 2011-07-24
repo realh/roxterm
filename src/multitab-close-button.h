@@ -54,6 +54,9 @@ struct _MultitabCloseButton
 struct _MultitabCloseButtonClass
 {
     GtkButtonClass parent_class;
+#if GTK_CHECK_VERSION(3, 0, 0)
+    GtkCssProvider *style_provider;
+#endif
 };
 
 GType multitab_close_button_get_type (void);
