@@ -1,7 +1,7 @@
 #ifndef DLG_H
 #define DLG_H
 /*
-    roxterm - GTK+ 2.0 terminal emulator with tabs
+    roxterm - VTE/GTK terminal emulator with tabs
     Copyright (C) 2004-2011 Tony Houghton <h@realh.co.uk>
 
     This program is free software; you can redistribute it and/or modify
