@@ -1901,11 +1901,6 @@ static gboolean multi_win_notify_tab_removed(MultiWin * win, MultiTab * tab)
 
 void multi_tab_add_close_button(MultiTab *tab)
 {
-    GtkRcStyle *rcstyle;
-    /*
-    GtkSettings *settings;
-    int w, h;
-    */
     MultiWin *win;
 
     if (tab->close_button)
@@ -1913,19 +1908,6 @@ void multi_tab_add_close_button(MultiTab *tab)
     
     win = tab->parent;
     tab->close_button = multitab_close_button_new(tab->status_stock);
-    rcstyle = gtk_rc_style_new();
-    /*
-    settings = gtk_widget_get_settings(tab->label);
-    gtk_icon_size_lookup_for_settings(settings, GTK_ICON_SIZE_MENU, &w, &h);
-    gtk_widget_set_size_request(tab->close_button, w + 2, h + 2);
-    */
-    rcstyle->xthickness = rcstyle->ythickness = 0;
-    gtk_widget_modify_style(tab->close_button, rcstyle);
-#ifdef HAVE_GTK_RC_STYLE_UNREF
-    gtk_rc_style_unref(rcstyle);
-#else
-    g_object_unref(rcstyle);
-#endif
     tab->label_packer(GTK_BOX(tab->label_box), tab->close_button,
             FALSE, FALSE, 0);
     g_signal_connect(tab->close_button, "clicked",
