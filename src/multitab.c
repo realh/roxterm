@@ -161,7 +161,9 @@ static void multi_win_restore_size(MultiWin *win)
     MultiTab *tab = win->current_tab;
     int w = -1;
     int h = -1;
+#if !GTK_CHECK_VERSION(3, 0, 0)
     GtkRequisition win_rq, term_rq;
+#endif
     
     if (!tab || !tab->active_widget ||
             !gtk_widget_get_realized(tab->active_widget))
@@ -170,6 +172,10 @@ static void multi_win_restore_size(MultiWin *win)
     }
     if (multi_win_is_maximised(win) || multi_win_is_fullscreen(win))
         return;
+#if GTK_CHECK_VERSION(3, 0, 0)
+    multi_win_size_func(tab->user_data, FALSE, &w, &h);
+    gtk_window_resize_to_geometry(GTK_WINDOW(win->gtkwin), w, h);
+#else
     /* Find new difference between window and term widget (padding) */
     gtk_widget_size_request(win->gtkwin, &win_rq);
     gtk_widget_size_request(tab->active_widget, &term_rq);
@@ -183,6 +189,7 @@ static void multi_win_restore_size(MultiWin *win)
     gtk_window_resize(GTK_WINDOW(win->gtkwin),
             w + win_rq.width - term_rq.width,
             h + win_rq.height - term_rq.height);
+#endif
 }
 
 MultiTab *multi_tab_get_from_widget(GtkWidget *widget)
