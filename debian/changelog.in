@@ -3,8 +3,10 @@ roxterm (@VERSION@-1) experimental; urgency=low
   * New upstream version:
     + Use GtkBuilder instead of libglade.
     + Added search feature.
+    + Support file URIs.
+  * debian/control, debian/rules: Build against GTK3.
 
- -- Tony Houghton <h@realh.co.uk>  Fri, 15 Jul 2011 18:16:57 +0100
+ -- Tony Houghton <h@realh.co.uk>  Mon, 25 Jul 2011 17:34:45 +0100
 
 roxterm (1.22.2-1) unstable; urgency=low
 
