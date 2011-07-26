@@ -21,15 +21,29 @@
 
 G_DEFINE_TYPE (MultitabCloseButton, multitab_close_button, GTK_TYPE_BUTTON);
 
-#if ! GTK_CHECK_VERSION(3, 0, 0)
+static void
+multitab_close_button_set_size (MultitabCloseButton *self)
+{
+    int x, y;
+    GtkWidget *w = GTK_WIDGET (self);
+
+    gtk_icon_size_lookup_for_settings (gtk_widget_get_settings (w),
+                       GTK_ICON_SIZE_MENU, &x, &y);
+    gtk_widget_set_size_request (w, x + 2, y + 2);
+}
+
+#if GTK_CHECK_VERSION(3, 0, 0)
+static void
+multitab_close_button_style_updated (GtkWidget *self)
+{
+    multitab_close_button_set_size (MULTITAB_CLOSE_BUTTON (self));
+    GTK_WIDGET_CLASS (multitab_close_button_parent_class)->style_updated (self);
+}
+#else
 static void
 multitab_close_button_style_set (GtkWidget *self, GtkStyle *previous_style)
 {
-    int w, h;
-
-    gtk_icon_size_lookup_for_settings (gtk_widget_get_settings (self),
-                       GTK_ICON_SIZE_MENU, &w, &h);
-    gtk_widget_set_size_request (self, w + 2, h + 2);
+    multitab_close_button_set_size (MULTITAB_CLOSE_BUTTON (self));
     GTK_WIDGET_CLASS (multitab_close_button_parent_class)->style_set (self,
             previous_style);
 }
@@ -52,6 +66,8 @@ multitab_close_button_class_init(MultitabCloseButtonClass *klass)
     klass->style_provider = gtk_css_provider_new ();
     gtk_css_provider_load_from_data (klass->style_provider,
             button_style, -1, NULL);
+    GTK_WIDGET_CLASS (klass)->style_updated =
+            multitab_close_button_style_updated;
 #else
     gtk_rc_parse_string ("style \"multitab-close-button-style\"\n"
            "{\n"
@@ -104,4 +120,5 @@ multitab_close_button_set_image(MultitabCloseButton *self,
     gtk_image_set_from_stock (self->image,
             image_name ? image_name : GTK_STOCK_CLOSE,
             GTK_ICON_SIZE_MENU);
+    multitab_close_button_set_size (self);
 }
