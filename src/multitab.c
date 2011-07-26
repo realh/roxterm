@@ -1961,7 +1961,11 @@ void multi_tab_set_status_stock(MultiTab *tab, const char *stock)
  * the text; the return value is the top-level container. */
 static GtkWidget *make_tab_label(MultiTab *tab, GtkPositionType tab_pos)
 {
+#if GTK_CHECK_VERSION(3, 0, 0)
+    static GdkRGBA amber;
+#else
     static GdkColor amber;
+#endif
     static gboolean parsed_amber = FALSE;
     GtkLabel *label;
 
@@ -1987,11 +1991,22 @@ static GtkWidget *make_tab_label(MultiTab *tab, GtkPositionType tab_pos)
     tab->label_bg = gtk_event_box_new();
     if (!parsed_amber)
     {
+#if GTK_CHECK_VERSION(3, 0, 0)
+        gdk_rgba_parse(&amber, "rgb(255,196,80)");
+#else
         gdk_color_parse("#ffc450", &amber);
+#endif
         parsed_amber = TRUE;
     }
+#if GTK_CHECK_VERSION(3, 0, 0)
+    gtk_widget_override_background_color(tab->label_bg,
+            GTK_STATE_FLAG_NORMAL, &amber);
+    gtk_widget_override_background_color(tab->label_bg,
+            GTK_STATE_FLAG_ACTIVE, &amber);
+#else
     gtk_widget_modify_bg(tab->label_bg, GTK_STATE_NORMAL, &amber);
     gtk_widget_modify_bg(tab->label_bg, GTK_STATE_ACTIVE, &amber);
+#endif
     gtk_event_box_set_visible_window(GTK_EVENT_BOX(tab->label_bg), FALSE);
     tab->label_packer(GTK_BOX(tab->label_box), tab->label_bg, TRUE, TRUE, 0);
     gtk_container_add(GTK_CONTAINER(tab->label_bg), tab->label);
