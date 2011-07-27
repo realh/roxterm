@@ -23,6 +23,7 @@
 #include "menutree.h"
 #include "multitab.h"
 #include "multitab-close-button.h"
+#include "multitab-label.h"
 #include "shortcuts.h"
 #if HAVE_COMPOSITE
 #include <gdk/gdkx.h>
@@ -47,11 +48,8 @@ struct MultiTab {
     GtkWidget *active_widget;
     gpointer user_data;
     GtkWidget *label;
-    GtkWidget *label_bg;
     GtkAdjustment *adjustment;
     double scroll_step;
-    gboolean attention;
-    guint attention_tag;
     GtkWidget *close_button;
     GtkWidget *label_box;
     void (*label_packer)(GtkBox *, GtkWidget *, gboolean, gboolean, guint);
@@ -444,7 +442,7 @@ static void multi_tab_set_full_window_title(MultiTab * tab,
 
     if (tab->label)
     {
-        gtk_label_set_text(GTK_LABEL(tab->label), actual_title);
+        multitab_label_set_text(MULTITAB_LABEL(tab->label), actual_title);
     }
     if (win)
     {
@@ -731,38 +729,14 @@ void multi_tab_move_to_new_window(MultiWin *win, MultiTab *tab, int position)
     g_object_unref(tab->widget);
 }
 
-static gboolean multi_tab_toggle_attention(gpointer data)
-{
-    MultiTab *tab = data;
-    
-    gtk_event_box_set_visible_window(GTK_EVENT_BOX(tab->label_bg),
-            tab->attention = !tab->attention);
-    return TRUE;
-}
-
 void multi_tab_draw_attention(MultiTab *tab)
 {
-    multi_tab_cancel_attention(tab);
-    multi_tab_toggle_attention(tab);
-    tab->attention_tag = g_timeout_add(500, multi_tab_toggle_attention, tab);
+    multitab_label_draw_attention(MULTITAB_LABEL(tab->label));
 }
 
 void multi_tab_cancel_attention(MultiTab *tab)
 {
-    if (tab->attention_tag)
-    {
-        g_source_remove(tab->attention_tag);
-        tab->attention_tag = 0;
-    }
-    else
-    {
-        return;
-    }
-    if (tab->attention)
-    {
-        multi_tab_toggle_attention(tab);
-        tab->attention = FALSE;
-    }
+    multitab_label_cancel_attention(MULTITAB_LABEL(tab->label));
 }
 
 #if 0
@@ -822,7 +796,8 @@ void multi_win_select_tab(MultiWin * win, MultiTab * tab)
     {
         char *title = multi_tab_get_full_window_title(tab);
         
-        multi_tab_cancel_attention(tab);
+        if (tab->label)
+            multitab_label_cancel_attention(MULTITAB_LABEL(tab->label));
         multi_tab_set_status_stock(tab, NULL);
         win->user_data_template = tab->user_data;
         gtk_notebook_set_current_page(GTK_NOTEBOOK(win->notebook),
@@ -1961,17 +1936,7 @@ void multi_tab_set_status_stock(MultiTab *tab, const char *stock)
  * the text; the return value is the top-level container. */
 static GtkWidget *make_tab_label(MultiTab *tab, GtkPositionType tab_pos)
 {
-#if GTK_CHECK_VERSION(3, 0, 0)
-    static GdkRGBA amber;
-#else
-    static GdkColor amber;
-#endif
-    static gboolean parsed_amber = FALSE;
-    GtkLabel *label;
-
-    tab->label = gtk_label_new(NULL);
-    label = GTK_LABEL(tab->label);
-    gtk_label_set_ellipsize(label, PANGO_ELLIPSIZE_MIDDLE);
+    tab->label = multitab_label_new(NULL);
     multi_tab_set_full_window_title(tab, tab->window_title_template,
             tab->window_title);
     switch (tab_pos)
@@ -1988,29 +1953,8 @@ static GtkWidget *make_tab_label(MultiTab *tab, GtkPositionType tab_pos)
             break;
     }
     
-    tab->label_bg = gtk_event_box_new();
-    if (!parsed_amber)
-    {
-#if GTK_CHECK_VERSION(3, 0, 0)
-        gdk_rgba_parse(&amber, "rgb(255,196,80)");
-#else
-        gdk_color_parse("#ffc450", &amber);
-#endif
-        parsed_amber = TRUE;
-    }
-#if GTK_CHECK_VERSION(3, 0, 0)
-    gtk_widget_override_background_color(tab->label_bg,
-            GTK_STATE_FLAG_NORMAL, &amber);
-    gtk_widget_override_background_color(tab->label_bg,
-            GTK_STATE_FLAG_ACTIVE, &amber);
-#else
-    gtk_widget_modify_bg(tab->label_bg, GTK_STATE_NORMAL, &amber);
-    gtk_widget_modify_bg(tab->label_bg, GTK_STATE_ACTIVE, &amber);
-#endif
-    gtk_event_box_set_visible_window(GTK_EVENT_BOX(tab->label_bg), FALSE);
-    tab->label_packer(GTK_BOX(tab->label_box), tab->label_bg, TRUE, TRUE, 0);
-    gtk_container_add(GTK_CONTAINER(tab->label_bg), tab->label);
-    g_signal_connect(tab->label_bg, "button-press-event",
+    tab->label_packer(GTK_BOX(tab->label_box), tab->label, TRUE, TRUE, 0);
+    g_signal_connect(tab->label, "button-press-event",
             G_CALLBACK(tab_clicked_handler), tab);
     if (multi_tab_get_show_close_button(tab->user_data))
     {
