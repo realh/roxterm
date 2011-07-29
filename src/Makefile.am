@@ -51,6 +51,7 @@ roxterm_SOURCES =	\
 	main.c				\
 	multitab.c	multitab.h	\
 	multitab-close-button.c		multitab-close-button.h	\
+	multitab-label.c		multitab-label.h	\
 	menutree.c	menutree.h	\
 	optsdbus.c	optsdbus.h	\
 	roxterm.c	roxterm.h	\
