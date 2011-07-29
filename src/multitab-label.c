@@ -89,36 +89,25 @@ multitab_label_class_init(MultitabLabelClass *klass)
     GObjectClass *oclass = G_OBJECT_CLASS (klass);
     GParamSpec *pspec;
     
-/*
+    /* Make sure theme doesn't override our colour with a gradient or image */
 #if GTK_CHECK_VERSION(3, 0, 0)
-    static const char *button_style =
+    static const char *style =
             "* {\n"
-              "-GtkEventBox-default-border : 0;\n"
-              "-GtkEventBox-default-outside-border : 0;\n"
-              "-GtkEventBox-inner-border: 0;\n"
-              "-GtkWidget-focus-line-width : 0;\n"
-              "-GtkWidget-focus-padding : 0;\n"
-              "padding: 0;\n"
+              "background-image : none;\n"
             "}";
     
     klass->style_provider = gtk_css_provider_new ();
     gtk_css_provider_load_from_data (klass->style_provider,
-            button_style, -1, NULL);
-    GTK_WIDGET_CLASS (klass)->style_updated =
-            multitab_label_style_updated;
+            style, -1, NULL);
 #else
-    gtk_rc_parse_string ("style \"multitab-close-button-style\"\n"
+    gtk_rc_parse_string ("style \"multitab-label-style\"\n"
            "{\n"
-              "GtkWidget::focus-padding = 0\n"
-              "GtkWidget::focus-line-width = 0\n"
-              "xthickness = 0\n"
-              "ythickness = 0\n"
+              "bg-pixmap[NORMAL] = \"<none>\"\n"
+              "bg-pixmap[ACTIVE] = \"<none>\"\n"
            "}\n"
-           "widget \"*.multitab-close-button\" "
-           "style \"multitab-close-button-style\"");
-    GTK_WIDGET_CLASS (klass)->style_set = multitab_label_style_set;
+           "widget \"*.multitab-label\" "
+           "style \"multitab-label-style\"");
 #endif
-*/
     GTK_WIDGET_CLASS (klass)->destroy = multitab_label_destroy;
     
     oclass->set_property = multitab_label_set_property;
