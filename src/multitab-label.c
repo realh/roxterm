@@ -127,19 +127,17 @@ multitab_label_init(MultitabLabel *self)
     static MultitabColor amber;
     static gboolean parsed_amber = FALSE;
     
-/*
 #if GTK_CHECK_VERSION (3, 0, 0)
     gtk_style_context_add_provider (gtk_widget_get_style_context (w),
             GTK_STYLE_PROVIDER (MULTITAB_LABEL_GET_CLASS
                     (self)->style_provider),
             GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
 #endif
-*/
     gtk_widget_set_name (w, "multitab-label");
     if (!parsed_amber)
     {
 #if GTK_CHECK_VERSION(3, 0, 0)
-        gdk_rgba_parse (&amber, "ffc450");
+        gdk_rgba_parse (&amber, "#ffc450");
 #else
         gdk_color_parse ("#ffc450", &amber);
 #endif
