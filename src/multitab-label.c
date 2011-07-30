@@ -76,12 +76,21 @@ multitab_label_toggle_attention (gpointer data)
     return TRUE;
 }
 
+#if GTK_CHECK_VERSION(3, 0, 0)
 static void
 multitab_label_destroy (GtkWidget *w)
 {
     multitab_label_cancel_attention (MULTITAB_LABEL (w));
     GTK_WIDGET_CLASS (multitab_label_parent_class)->destroy (w);
 }
+#else
+static void
+multitab_label_destroy (GtkObject *o)
+{
+    multitab_label_cancel_attention (MULTITAB_LABEL (o));
+    GTK_OBJECT_CLASS (multitab_label_parent_class)->destroy (o);
+}
+#endif
 
 static void
 multitab_label_class_init(MultitabLabelClass *klass)
@@ -99,6 +108,7 @@ multitab_label_class_init(MultitabLabelClass *klass)
     klass->style_provider = gtk_css_provider_new ();
     gtk_css_provider_load_from_data (klass->style_provider,
             style, -1, NULL);
+    GTK_WIDGET_CLASS (klass)->destroy = multitab_label_destroy;
 #else
     gtk_rc_parse_string ("style \"multitab-label-style\"\n"
            "{\n"
@@ -107,8 +117,8 @@ multitab_label_class_init(MultitabLabelClass *klass)
            "}\n"
            "widget \"*.multitab-label\" "
            "style \"multitab-label-style\"");
+    GTK_OBJECT_CLASS (klass)->destroy = multitab_label_destroy;
 #endif
-    GTK_WIDGET_CLASS (klass)->destroy = multitab_label_destroy;
     
     oclass->set_property = multitab_label_set_property;
     oclass->get_property = multitab_label_get_property;
@@ -127,19 +137,17 @@ multitab_label_init(MultitabLabel *self)
     static MultitabColor amber;
     static gboolean parsed_amber = FALSE;
     
-/*
 #if GTK_CHECK_VERSION (3, 0, 0)
     gtk_style_context_add_provider (gtk_widget_get_style_context (w),
             GTK_STYLE_PROVIDER (MULTITAB_LABEL_GET_CLASS
                     (self)->style_provider),
             GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
 #endif
-*/
     gtk_widget_set_name (w, "multitab-label");
     if (!parsed_amber)
     {
 #if GTK_CHECK_VERSION(3, 0, 0)
-        gdk_rgba_parse (&amber, "ffc450");
+        gdk_rgba_parse (&amber, "#ffc450");
 #else
         gdk_color_parse ("#ffc450", &amber);
 #endif
