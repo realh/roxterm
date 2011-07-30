@@ -63,11 +63,9 @@ struct _MultitabLabel
 struct _MultitabLabelClass
 {
     GtkEventBoxClass parent_class;
-/*
 #if GTK_CHECK_VERSION(3, 0, 0)
     GtkCssProvider *style_provider;
 #endif
-*/
 };
 
 GType multitab_label_get_type (void);

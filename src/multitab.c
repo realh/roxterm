@@ -1468,10 +1468,28 @@ void multi_win_show(MultiWin *win)
 }
 
 #if HAVE_COMPOSITE
+#if GTK_CHECK_VERSION(3, 0, 0)
 void multi_win_set_colormap(MultiWin *win)
 {
     GdkScreen *screen = gtk_widget_get_screen(win->gtkwin);
-#if HAVE_COLORMAP
+    GdkVisual *visual = gdk_screen_get_rgba_visual(screen);
+
+    if (gdk_screen_is_composited(screen) && visual)
+    {
+        gtk_widget_set_visual(win->gtkwin, visual);
+        win->composite = TRUE;
+    }
+    else
+    {
+        gtk_widget_set_visual(win->gtkwin,
+                gdk_screen_get_system_visual(screen));
+        win->composite = FALSE;
+    }
+}
+#else
+void multi_win_set_colormap(MultiWin *win)
+{
+    GdkScreen *screen = gtk_widget_get_screen(win->gtkwin);
     GdkColormap *colormap = gdk_screen_get_rgba_colormap(screen);
 
     if (gdk_screen_is_composited(screen) && colormap)
@@ -1485,13 +1503,8 @@ void multi_win_set_colormap(MultiWin *win)
                 gdk_screen_get_default_colormap(screen));
         win->composite = FALSE;
     }
-#else   /* ! HAVE_COLORMAP */
-    if (gdk_screen_is_composited(screen))
-        win->composite = TRUE;
-    else
-        win->composite = FALSE;
-#endif  /* HAVE_COLORMAP */
 }
+#endif
 
 static void multi_win_composited_changed(GtkWidget *widget, MultiWin *win)
 {
