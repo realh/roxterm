@@ -33,7 +33,9 @@ char *uri_get_browser_command(const char *url, const char *browser);
 
 char *uri_get_mailer_command(const char *address, const char *mailer);
 
-char *uri_get_filer_command(const char *address, const char *filer);
+char *uri_get_directory_command(const char *dirname, const char *filer);
+
+char *uri_get_file_command(const char *filename, const char *filer);
 
 #endif /* URI_H */
 

@@ -858,9 +858,16 @@ static void roxterm_launch_filer(ROXTermData *roxterm, const char *uri)
         uri = dir;
         is_dir = TRUE;
     }
-    filer_o = roxterm_lookup_uri_handler(roxterm,
-            is_dir ? "dir_filer" : "filer");
-    filer = uri_get_filer_command(uri, filer_o);
+    if (is_dir)
+    {
+        filer_o = roxterm_lookup_uri_handler(roxterm, "dir_filer");
+        filer = uri_get_directory_command(uri, filer_o);
+    }
+    else
+    {
+        filer_o = roxterm_lookup_uri_handler(roxterm, "filer");
+        filer = uri_get_file_command(uri, filer_o);
+    }
     if (filer_o)
         g_free(filer_o);
     if (filer)

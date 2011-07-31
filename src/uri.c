@@ -121,67 +121,67 @@ static char *uri_get_preferred_browser(void)
     return browser;
 }
 
-char *uri_get_browser_command(const char *url, const char *browser)
+/* cfged is what user has configured. If candidates is NULL,
+ * use specialised browser finder.
+ */
+static char *uri_get_command(const char *uri, const char *cfged,
+        char const **candidates)
 {
-    char *preferred_browser = NULL;
+    char *preferred = NULL;
     char *cmd = NULL;
 
-    if (!browser || !browser[0])
-        browser = preferred_browser = uri_get_preferred_browser();
-    if (!browser)
+    if (!cfged || !cfged[0])
+    {
+        cfged = preferred = candidates ?
+                uri_find_first_listed_in_path(candidates) :
+                uri_get_preferred_browser();
+    }
+    if (!cfged)
         return NULL;
 
-    if (strstr(browser, "%s"))
-        cmd = g_strdup_printf(browser, url);
+    if (strstr(cfged, "%s"))
+    {
+        cmd = g_strdup_printf(cfged, uri);
+    }
     else
-        cmd = g_strdup_printf("%s '%s'", browser, url);
-    if (preferred_browser)
-        g_free(preferred_browser);
+    {
+        cmd = candidates ?
+                g_strdup_printf("%s %s", cfged, uri) :
+                g_strdup_printf("%s '%s'", cfged, uri);
+    }
+    if (preferred)
+        g_free(preferred);
     return cmd;
+}
+
+char *uri_get_browser_command(const char *url, const char *browser)
+{
+    return uri_get_command(url, browser, NULL);
 }
 
 char *uri_get_mailer_command(const char *address, const char *mailer)
 {
-    char *preferred_mailer = NULL;
-    char *cmd = NULL;
     const char *mailers[] = { "claws-mail", "thunderbird", "balsa",
         "evolution", "mutt", "pine", "elm", "mozilla", "mail", NULL
     };
 
-    if (!mailer || !mailer[0])
-        mailer = preferred_mailer = uri_find_first_listed_in_path(mailers);
-    if (!mailer)
-        return NULL;
-
-    if (strstr(mailer, "%s"))
-        cmd = g_strdup_printf(mailer, address);
-    else
-        cmd = g_strjoin(" ", mailer, address, NULL);
-    if (preferred_mailer)
-        g_free(preferred_mailer);
-    return cmd;
+    return uri_get_command(address, mailer, mailers);
 }
 
-char *uri_get_filer_command(const char *address, const char *filer)
+char *uri_get_directory_command(const char *dirname, const char *filer)
 {
-    char *preferred_filer = NULL;
-    char *cmd = NULL;
     const char *filers[] = { "rox", "thunar", "nautilus -n --no-desktop",
         "dolphin", "konqueror", NULL
     };
 
-    if (!filer || !filer[0])
-        filer = preferred_filer = uri_find_first_listed_in_path(filers);
-    if (!filer)
-        return NULL;
+    return uri_get_command(dirname, filer, filers);
+}
 
-    if (strstr(filer, "%s"))
-        cmd = g_strdup_printf(filer, address);
-    else
-        cmd = g_strjoin(" ", filer, address, NULL);
-    if (preferred_filer)
-        g_free(preferred_filer);
-    return cmd;
+char *uri_get_file_command(const char *filename, const char *filer)
+{
+    const char *filers[] = { "xdg-open", "rox", NULL };
+
+    return uri_get_command(filename, filer, filers);
 }
 
 /* vi:set sw=4 ts=4 noet cindent cino= */
