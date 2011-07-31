@@ -192,7 +192,9 @@ inline static void roxterm_match_add(ROXTermData *roxterm, VteTerminal *vte,
 
     map.type = type;
     map.tag = vte_terminal_match_add_gregex(vte,
-            g_regex_new(match, 0, 0, NULL), 0);
+            g_regex_new(match, G_REGEX_MULTILINE | G_REGEX_NEWLINE_CRLF,
+                0, NULL),
+            0);
     vte_terminal_match_set_cursor_type(vte, map.tag, GDK_HAND2);
     g_array_append_val(roxterm->match_map, map);
 }
@@ -243,7 +245,12 @@ static const char *mailto_urls[] = {
  * Should also be able to support spaces if escaped or in quotes, but
  * would complicate expression(s).
  */
-#define URL_FILE "(\\bfile://)?(\\.|\\.\\.|~)?/[" URLPATHCHARS "]*"
+#define URLFILEBODY "(\\.|\\.\\.|~)?/[" URLPATHCHARS "]*"
+static const char *file_urls[] = {
+    "\\bfile://" URLFILEBODY,
+    "\\s" URLFILEBODY,
+    "^" URLFILEBODY
+};
 
 static void roxterm_add_matches(ROXTermData *roxterm, VteTerminal *vte)
 {
@@ -257,8 +264,9 @@ static void roxterm_add_matches(ROXTermData *roxterm, VteTerminal *vte)
         roxterm_match_add(roxterm, vte, ftp_urls[n], ROXTerm_Match_FTP);
     for (n = 0; n < G_N_ELEMENTS(mailto_urls); ++n)
         roxterm_match_add(roxterm, vte, mailto_urls[n], ROXTerm_Match_MailTo);
+    for (n = 0; n < G_N_ELEMENTS(file_urls); ++n)
+        roxterm_match_add(roxterm, vte, file_urls[n], ROXTerm_Match_File);
     roxterm_match_add(roxterm, vte, URL_NEWS, ROXTerm_Match_Complete);
-    roxterm_match_add(roxterm, vte, URL_FILE, ROXTerm_Match_File);
 }
 
 static ROXTerm_MatchType roxterm_get_match_type(ROXTermData *roxterm, int tag)
