@@ -748,6 +748,14 @@ static void multi_win_pack_for_single_tab(MultiWin *win)
 #endif
     gtk_container_child_set(GTK_CONTAINER(win->notebook), tab->widget,
             "tab-expand", FALSE, "tab-fill", TRUE, NULL);
+    multitab_label_set_max_width_chars(MULTITAB_LABEL(tab->label), 40);
+}
+
+static void multi_tab_pack_for_multiple(MultiTab *tab, GtkContainer *nb)
+{
+    gtk_container_child_set(nb, tab->widget,
+            "tab-expand", TRUE, "tab-fill", TRUE, NULL);
+    multitab_label_set_max_width_chars(MULTITAB_LABEL(tab->label), 0);
 }
 
 static void multi_win_pack_for_multiple_tabs(MultiWin *win)
@@ -760,10 +768,7 @@ static void multi_win_pack_for_multiple_tabs(MultiWin *win)
 #endif
     for (link = win->tabs; link; link = g_list_next(link))
     {
-        MultiTab *tab = link->data;
-        
-        gtk_container_child_set(nb, tab->widget,
-                "tab-expand", TRUE, "tab-fill", TRUE, NULL);
+        multi_tab_pack_for_multiple(link->data, nb);
     }
 }
 
@@ -2044,18 +2049,11 @@ static void multi_win_add_tab_to_notebook(MultiWin * win, MultiTab * tab,
      * not how many there were before adding.
      */
     if (win->ntabs == 1)
-    {
         multi_win_pack_for_single_tab(win);
-    }
     else if (win->ntabs == 2)
-    {
         multi_win_pack_for_multiple_tabs(win);
-    }
     else
-    {
-        gtk_container_child_set(GTK_CONTAINER(notebook), tab->widget,
-                "tab-expand", TRUE, "tab-fill", TRUE, NULL);
-    }
+        multi_tab_pack_for_multiple(tab, GTK_CONTAINER(notebook));
 }
 
 /* Keep track of a tab after it's been created; if notify_only is set, it's

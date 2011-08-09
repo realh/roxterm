@@ -93,4 +93,10 @@ multitab_label_set_attention_color (MultitabLabel *label,
 const MultitabColor *
 multitab_label_get_attention_color (MultitabLabel *label);
 
+inline static void
+multitab_label_set_max_width_chars (MultitabLabel *label, gint n_chars)
+{
+    gtk_label_set_max_width_chars (label->label, n_chars);
+}
+
 #endif /* MULTITAB_LABEL_H */
