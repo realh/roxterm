@@ -739,17 +739,33 @@ void multi_tab_cancel_attention(MultiTab *tab)
     multitab_label_cancel_attention(MULTITAB_LABEL(tab->label));
 }
 
-#if 0
-/* Force tab width to something "nice". Unfortunately we can't
- * easily find the window's size when we're adding the first tab. */
-static void multi_tab_set_single_size(MultiTab *tab)
+static void multi_win_pack_for_single_tab(MultiWin *win)
 {
-    g_object_set(G_OBJECT(tab->parent->notebook), "homogeneous", FALSE, NULL);
-    gtk_container_child_set(GTK_CONTAINER(tab->parent->notebook), tab->widget,
-            "tab-expand", FALSE, "tab-fill", FALSE, NULL);
-    gtk_widget_set_size_request(tab->label, 240, -1);
-}
+    MultiTab *tab = win->tabs->data;
+    
+#if !GTK_CHECK_VERSION(3, 0, 0)
+    g_object_set(G_OBJECT(win->notebook), "homogeneous", FALSE, NULL);
 #endif
+    gtk_container_child_set(GTK_CONTAINER(win->notebook), tab->widget,
+            "tab-expand", FALSE, "tab-fill", TRUE, NULL);
+}
+
+static void multi_win_pack_for_multiple_tabs(MultiWin *win)
+{
+    GList *link;
+    GtkContainer *nb = GTK_CONTAINER(win->notebook);
+    
+#if !GTK_CHECK_VERSION(3, 0, 0)
+    g_object_set(G_OBJECT(win->notebook), "homogeneous", TRUE, NULL);
+#endif
+    for (link = win->tabs; link; link = g_list_next(link))
+    {
+        MultiTab *tab = link->data;
+        
+        gtk_container_child_set(nb, tab->widget,
+                "tab-expand", TRUE, "tab-fill", TRUE, NULL);
+    }
+}
 
 static void multi_win_set_full_title(MultiWin *win,
         const char *template, const char *title)
@@ -1028,8 +1044,13 @@ static void page_added_callback(GtkNotebook *notebook, GtkWidget *child,
         multi_tab_to_new_window_handler(win, tab, old_win_destroyed);
         if (win->ntabs == 1)
         {
+            multi_win_pack_for_single_tab(win);
             /* multi_tab_set_single_size(tab); */
             multi_win_show(win);
+        }
+        else if (win->ntabs == 2)
+        {
+            multi_win_pack_for_multiple_tabs(win);
         }
     }
 }
@@ -1882,6 +1903,7 @@ static gboolean multi_win_notify_tab_removed(MultiWin * win, MultiTab * tab)
         if (win->ntabs == 1)
         {
             tab = win->tabs->data;
+            multi_win_pack_for_single_tab(win);
             /*multi_tab_set_single_size(tab);*/
             if (!win->always_show_tabs)
             {
@@ -2021,27 +2043,19 @@ static void multi_win_add_tab_to_notebook(MultiWin * win, MultiTab * tab,
     /* Note at this point ntabs is how many tabs there are about to be,
      * not how many there were before adding.
      */
-    /*
     if (win->ntabs == 1)
     {
-        multi_tab_set_single_size(tab);
+        multi_win_pack_for_single_tab(win);
+    }
+    else if (win->ntabs == 2)
+    {
+        multi_win_pack_for_multiple_tabs(win);
     }
     else
     {
-        GList *link;
-        
-        g_object_set(G_OBJECT(win->notebook), "homogeneous", TRUE, NULL);
-        for (link = win->tabs; link; link = g_list_next(link))
-        {
-            MultiTab *tab = link->data;
-            
-            gtk_container_child_set(GTK_CONTAINER(notebook), tab->widget,
-                    "tab-expand", TRUE, "tab-fill", TRUE, NULL);
-        }
+        gtk_container_child_set(GTK_CONTAINER(notebook), tab->widget,
+                "tab-expand", TRUE, "tab-fill", TRUE, NULL);
     }
-    */
-    gtk_container_child_set(GTK_CONTAINER(notebook), tab->widget,
-            "tab-expand", TRUE, "tab-fill", TRUE, NULL);
 }
 
 /* Keep track of a tab after it's been created; if notify_only is set, it's

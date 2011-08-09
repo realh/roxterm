@@ -112,8 +112,8 @@ multitab_label_class_init(MultitabLabelClass *klass)
 #else
     gtk_rc_parse_string ("style \"multitab-label-style\"\n"
            "{\n"
-              "bg-pixmap[NORMAL] = \"<none>\"\n"
-              "bg-pixmap[ACTIVE] = \"<none>\"\n"
+              "bg_pixmap[NORMAL] = \"<none>\"\n"
+              "bg_pixmap[ACTIVE] = \"<none>\"\n"
            "}\n"
            "widget \"*.multitab-label\" "
            "style \"multitab-label-style\"");
