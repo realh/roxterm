@@ -58,6 +58,7 @@ struct _MultitabLabel
     GtkLabel *label;
     gboolean attention;
     guint timeout_tag;
+    gboolean single;
 };
 
 struct _MultitabLabelClass
@@ -93,10 +94,8 @@ multitab_label_set_attention_color (MultitabLabel *label,
 const MultitabColor *
 multitab_label_get_attention_color (MultitabLabel *label);
 
-inline static void
-multitab_label_set_max_width_chars (MultitabLabel *label, gint n_chars)
-{
-    gtk_label_set_max_width_chars (label->label, n_chars);
-}
+/* Whether the tab is the only one in the window */
+void
+multitab_label_set_single (MultitabLabel *label, gboolean single);
 
 #endif /* MULTITAB_LABEL_H */

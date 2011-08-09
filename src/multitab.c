@@ -748,14 +748,14 @@ static void multi_win_pack_for_single_tab(MultiWin *win)
 #endif
     gtk_container_child_set(GTK_CONTAINER(win->notebook), tab->widget,
             "tab-expand", FALSE, "tab-fill", TRUE, NULL);
-    multitab_label_set_max_width_chars(MULTITAB_LABEL(tab->label), 40);
+    multitab_label_set_single(MULTITAB_LABEL(tab->label), TRUE);
 }
 
 static void multi_tab_pack_for_multiple(MultiTab *tab, GtkContainer *nb)
 {
     gtk_container_child_set(nb, tab->widget,
             "tab-expand", TRUE, "tab-fill", TRUE, NULL);
-    multitab_label_set_max_width_chars(MULTITAB_LABEL(tab->label), 0);
+    multitab_label_set_single(MULTITAB_LABEL(tab->label), FALSE);
 }
 
 static void multi_win_pack_for_multiple_tabs(MultiWin *win)

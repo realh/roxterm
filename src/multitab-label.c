@@ -76,26 +76,89 @@ multitab_label_toggle_attention (gpointer data)
     return TRUE;
 }
 
+static void
+multitab_label_single_width (GtkWidget *widget, gint *width)
+{
+    GtkWidget *parent;
+    GtkAllocation alloc;
+
+    for (parent = gtk_widget_get_parent (widget); parent;
+            parent = gtk_widget_get_parent (parent))
+    {
+        if (GTK_IS_NOTEBOOK (parent))
+            break;
+    }
+    g_return_if_fail (parent != NULL);
+    gtk_widget_get_allocation (parent, &alloc);
+    /* About 40% of width of parent should look good */
+    alloc.width = (alloc.width * 2) / 5;
+    if (alloc.width > *width)
+        *width = alloc.width;
+}
+
 #if GTK_CHECK_VERSION(3, 0, 0)
+
 static void
 multitab_label_destroy (GtkWidget *w)
 {
     multitab_label_cancel_attention (MULTITAB_LABEL (w));
     GTK_WIDGET_CLASS (multitab_label_parent_class)->destroy (w);
 }
-#else
+
+static void multitab_label_get_preferred_width (GtkWidget *widget,
+        gint *minimum_width, gint *natural_width)
+{
+    GTK_WIDGET_CLASS (multitab_label_parent_class)->get_preferred_width
+                    (widget, minimum_width, natural_width);
+    if (MULTITAB_LABEL (widget)->single && minimum_width)
+    {
+        multitab_label_single_width (widget, minimum_width);
+        if (natural_width && *natural_width < *minimum_width)
+            *natural_width = *minimum_width;
+    }
+}
+
+static void multitab_label_get_preferred_width_for_height (GtkWidget *widget,
+        gint height, gint *minimum_width, gint *natural_width)
+{
+    GTK_WIDGET_CLASS
+            (multitab_label_parent_class)->get_preferred_width_for_height
+                    (widget, height, minimum_width, natural_width);
+    if (MULTITAB_LABEL (widget)->single && minimum_width)
+    {
+        multitab_label_single_width (widget, minimum_width);
+        if (natural_width && *natural_width < *minimum_width)
+            *natural_width = *minimum_width;
+    }
+}
+
+#else   /* !GTK3 */
+
 static void
 multitab_label_destroy (GtkObject *o)
 {
     multitab_label_cancel_attention (MULTITAB_LABEL (o));
     GTK_OBJECT_CLASS (multitab_label_parent_class)->destroy (o);
 }
-#endif
+
+static void
+multitab_label_size_request (GtkWidget *widget, GtkRequisition *requisition)
+{
+    GTK_WIDGET_CLASS (multitab_label_parent_class)->size_request
+                    (widget, requisition);
+    if (MULTITAB_LABEL (widget)->single && requisition)
+    {
+        multitab_label_single_width (widget, &requisition->width);
+    }
+}
+
+#endif /* GTK2/3 */
 
 static void
 multitab_label_class_init(MultitabLabelClass *klass)
 {
     GObjectClass *oclass = G_OBJECT_CLASS (klass);
+    GtkWidgetClass *wclass = GTK_WIDGET_CLASS (klass);
     GParamSpec *pspec;
     
     /* Make sure theme doesn't override our colour with a gradient or image */
@@ -127,6 +190,14 @@ multitab_label_class_init(MultitabLabelClass *klass)
             "Attention Color", "Color to flash to draw attention",
             G_PARAM_READWRITE);
     g_object_class_install_property (oclass, PROP_ATTENTION_COLOR, pspec);
+    
+#if GTK_CHECK_VERSION(3, 0, 0)
+    wclass->get_preferred_width = multitab_label_get_preferred_width;
+    wclass->get_preferred_width_for_height =
+            multitab_label_get_preferred_width_for_height;
+#else
+    wclass->size_request = multitab_label_size_request;
+#endif
 }
 
 static void
@@ -137,6 +208,7 @@ multitab_label_init(MultitabLabel *self)
     static MultitabColor amber;
     static gboolean parsed_amber = FALSE;
     
+    self->single = FALSE;
 #if GTK_CHECK_VERSION (3, 0, 0)
     gtk_style_context_add_provider (gtk_widget_get_style_context (w),
             GTK_STYLE_PROVIDER (MULTITAB_LABEL_GET_CLASS
@@ -230,3 +302,12 @@ multitab_label_get_attention_color (MultitabLabel *self)
     return &self->attention_color;
 }
 
+void
+multitab_label_set_single (MultitabLabel *self, gboolean single)
+{
+    if (single != self->single)
+    {
+        self->single = single;
+        gtk_widget_queue_resize (GTK_WIDGET (self));
+    }
+}
