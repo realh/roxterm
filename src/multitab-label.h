@@ -59,6 +59,7 @@ struct _MultitabLabel
     gboolean attention;
     guint timeout_tag;
     gboolean single;
+    gboolean fixed_width;
 };
 
 struct _MultitabLabelClass
@@ -97,5 +98,9 @@ multitab_label_get_attention_color (MultitabLabel *label);
 /* Whether the tab is the only one in the window */
 void
 multitab_label_set_single (MultitabLabel *label, gboolean single);
+
+/* width is in chars; -1 to disable */
+void
+multitab_label_set_fixed_width (MultitabLabel *label, int width);
 
 #endif /* MULTITAB_LABEL_H */

@@ -108,9 +108,13 @@ multitab_label_destroy (GtkWidget *w)
 static void multitab_label_get_preferred_width (GtkWidget *widget,
         gint *minimum_width, gint *natural_width)
 {
+    MultitabLabel *self = MULTITAB_LABEL (widget);
+    
     GTK_WIDGET_CLASS (multitab_label_parent_class)->get_preferred_width
                     (widget, minimum_width, natural_width);
-    if (MULTITAB_LABEL (widget)->single && minimum_width)
+    if (self->fixed_width)
+        return;
+    if (self->single && minimum_width)
     {
         multitab_label_single_width (widget, minimum_width);
         if (natural_width && *natural_width < *minimum_width)
@@ -121,10 +125,14 @@ static void multitab_label_get_preferred_width (GtkWidget *widget,
 static void multitab_label_get_preferred_width_for_height (GtkWidget *widget,
         gint height, gint *minimum_width, gint *natural_width)
 {
+    MultitabLabel *self = MULTITAB_LABEL (widget);
+    
     GTK_WIDGET_CLASS
             (multitab_label_parent_class)->get_preferred_width_for_height
                     (widget, height, minimum_width, natural_width);
-    if (MULTITAB_LABEL (widget)->single && minimum_width)
+    if (self->fixed_width)
+        return;
+    if (self->single && minimum_width)
     {
         multitab_label_single_width (widget, minimum_width);
         if (natural_width && *natural_width < *minimum_width)
@@ -144,9 +152,13 @@ multitab_label_destroy (GtkObject *o)
 static void
 multitab_label_size_request (GtkWidget *widget, GtkRequisition *requisition)
 {
+    MultitabLabel *self = MULTITAB_LABEL (widget);
+    
     GTK_WIDGET_CLASS (multitab_label_parent_class)->size_request
                     (widget, requisition);
-    if (MULTITAB_LABEL (widget)->single && requisition)
+    if (self->fixed_width)
+        return;
+    if (self->single && requisition)
     {
         multitab_label_single_width (widget, &requisition->width);
     }
@@ -228,6 +240,7 @@ multitab_label_init(MultitabLabel *self)
     gtk_event_box_set_visible_window (GTK_EVENT_BOX (self), FALSE);
     multitab_label_set_attention_color (self, &amber);
     self->label = GTK_LABEL (label);
+    self->fixed_width = FALSE;
     gtk_label_set_ellipsize (self->label, PANGO_ELLIPSIZE_MIDDLE);
     gtk_widget_show (label);
     gtk_container_add (GTK_CONTAINER (self), label);
@@ -309,5 +322,19 @@ multitab_label_set_single (MultitabLabel *self, gboolean single)
     {
         self->single = single;
         gtk_widget_queue_resize (GTK_WIDGET (self));
+    }
+}
+
+void
+multitab_label_set_fixed_width (MultitabLabel *self, int width)
+{
+    if (width == -1)
+    {
+        self->fixed_width = FALSE;
+    }
+    else
+    {
+        self->fixed_width = TRUE;
+        gtk_label_set_width_chars (self->label, width);
     }
 }

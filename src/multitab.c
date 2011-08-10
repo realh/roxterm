@@ -30,7 +30,7 @@
 #include "x11support.h"
 #endif
 
-#define HORIZ_TAB_WIDTH 120
+#define HORIZ_TAB_WIDTH_CHARS 16
 
 #if GTK_CHECK_VERSION(3,0,0)
 #define HAVE_COLORMAP 0
@@ -52,7 +52,6 @@ struct MultiTab {
     double scroll_step;
     GtkWidget *close_button;
     GtkWidget *label_box;
-    void (*label_packer)(GtkBox *, GtkWidget *, gboolean, gboolean, guint);
     const char *status_stock;
     GtkWidget *rename_dialog;
     gboolean postponed_free;
@@ -739,6 +738,14 @@ void multi_tab_cancel_attention(MultiTab *tab)
     multitab_label_cancel_attention(MULTITAB_LABEL(tab->label));
 }
 
+static void multi_tab_pack_for_horizontal(MultiTab *tab, GtkContainer *nb)
+{
+    gtk_container_child_set(nb, tab->widget,
+            "tab-expand", FALSE, "tab-fill", TRUE, NULL);
+    multitab_label_set_fixed_width(MULTITAB_LABEL(tab->label),
+            HORIZ_TAB_WIDTH_CHARS);
+}
+
 static void multi_win_pack_for_single_tab(MultiWin *win)
 {
     MultiTab *tab = win->tabs->data;
@@ -749,6 +756,7 @@ static void multi_win_pack_for_single_tab(MultiWin *win)
     gtk_container_child_set(GTK_CONTAINER(win->notebook), tab->widget,
             "tab-expand", FALSE, "tab-fill", TRUE, NULL);
     multitab_label_set_single(MULTITAB_LABEL(tab->label), TRUE);
+    multitab_label_set_fixed_width(MULTITAB_LABEL(tab->label), -1);
 }
 
 static void multi_tab_pack_for_multiple(MultiTab *tab, GtkContainer *nb)
@@ -756,6 +764,7 @@ static void multi_tab_pack_for_multiple(MultiTab *tab, GtkContainer *nb)
     gtk_container_child_set(nb, tab->widget,
             "tab-expand", TRUE, "tab-fill", TRUE, NULL);
     multitab_label_set_single(MULTITAB_LABEL(tab->label), FALSE);
+    multitab_label_set_fixed_width(MULTITAB_LABEL(tab->label), -1);
 }
 
 static void multi_win_pack_for_multiple_tabs(MultiWin *win)
@@ -1047,15 +1056,26 @@ static void page_added_callback(GtkNotebook *notebook, GtkWidget *child,
         }
         multi_win_add_tab(win, tab, page_num, TRUE);
         multi_tab_to_new_window_handler(win, tab, old_win_destroyed);
-        if (win->ntabs == 1)
+        if (win->tab_pos == GTK_POS_LEFT || win->tab_pos == GTK_POS_RIGHT)
         {
-            multi_win_pack_for_single_tab(win);
-            /* multi_tab_set_single_size(tab); */
-            multi_win_show(win);
+            multi_tab_pack_for_horizontal(tab, GTK_CONTAINER(notebook));
         }
-        else if (win->ntabs == 2)
+        else
         {
-            multi_win_pack_for_multiple_tabs(win);
+            if (win->ntabs == 1)
+            {
+                multi_win_pack_for_single_tab(win);
+                /* multi_tab_set_single_size(tab); */
+                multi_win_show(win);
+            }
+            else if (win->ntabs == 2)
+            {
+                multi_win_pack_for_multiple_tabs(win);
+            }
+            else
+            {
+                multi_tab_pack_for_multiple(tab, GTK_CONTAINER(notebook));
+            }
         }
     }
 }
@@ -1908,7 +1928,8 @@ static gboolean multi_win_notify_tab_removed(MultiWin * win, MultiTab * tab)
         if (win->ntabs == 1)
         {
             tab = win->tabs->data;
-            multi_win_pack_for_single_tab(win);
+            if (win->tab_pos == GTK_POS_TOP || win->tab_pos == GTK_POS_BOTTOM)
+                multi_win_pack_for_single_tab(win);
             /*multi_tab_set_single_size(tab);*/
             if (!win->always_show_tabs)
             {
@@ -1930,7 +1951,7 @@ void multi_tab_add_close_button(MultiTab *tab)
     
     win = tab->parent;
     tab->close_button = multitab_close_button_new(tab->status_stock);
-    tab->label_packer(GTK_BOX(tab->label_box), tab->close_button,
+    gtk_box_pack_start(GTK_BOX(tab->label_box), tab->close_button,
             FALSE, FALSE, 0);
     g_signal_connect(tab->close_button, "clicked",
             G_CALLBACK(multi_win_close_tab_clicked), tab);
@@ -1979,21 +2000,8 @@ static GtkWidget *make_tab_label(MultiTab *tab, GtkPositionType tab_pos)
     tab->label = multitab_label_new(NULL);
     multi_tab_set_full_window_title(tab, tab->window_title_template,
             tab->window_title);
-    switch (tab_pos)
-    {
-        case GTK_POS_LEFT:
-        case GTK_POS_RIGHT:
-            tab->label_box = gtk_vbox_new(FALSE, 4);
-            tab->label_packer = gtk_box_pack_end;
-            gtk_widget_set_size_request(tab->label, HORIZ_TAB_WIDTH, -1);
-            break;
-        default:
-            tab->label_box = gtk_hbox_new(FALSE, 4);
-            tab->label_packer = gtk_box_pack_start;
-            break;
-    }
-    
-    tab->label_packer(GTK_BOX(tab->label_box), tab->label, TRUE, TRUE, 0);
+    tab->label_box = gtk_hbox_new(FALSE, 4);
+    gtk_box_pack_start(GTK_BOX(tab->label_box), tab->label, TRUE, TRUE, 0);
     g_signal_connect(tab->label, "button-press-event",
             G_CALLBACK(tab_clicked_handler), tab);
     if (multi_tab_get_show_close_button(tab->user_data))
@@ -2048,12 +2056,19 @@ static void multi_win_add_tab_to_notebook(MultiWin * win, MultiTab * tab,
     /* Note at this point ntabs is how many tabs there are about to be,
      * not how many there were before adding.
      */
-    if (win->ntabs == 1)
-        multi_win_pack_for_single_tab(win);
-    else if (win->ntabs == 2)
-        multi_win_pack_for_multiple_tabs(win);
+    if (win->tab_pos == GTK_POS_TOP || win->tab_pos == GTK_POS_BOTTOM)
+    {
+        if (win->ntabs == 1)
+            multi_win_pack_for_single_tab(win);
+        else if (win->ntabs == 2)
+            multi_win_pack_for_multiple_tabs(win);
+        else
+            multi_tab_pack_for_multiple(tab, GTK_CONTAINER(notebook));
+    }
     else
-        multi_tab_pack_for_multiple(tab, GTK_CONTAINER(notebook));
+    {
+        multi_tab_pack_for_horizontal(tab, GTK_CONTAINER(notebook));
+    }
 }
 
 /* Keep track of a tab after it's been created; if notify_only is set, it's
