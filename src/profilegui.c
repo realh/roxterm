@@ -713,6 +713,7 @@ static void profilegui_make_a_combo(ProfileGUI *pg, const char *name)
     gtk_buildable_set_name(GTK_BUILDABLE(combo), name);
     gtk_buildable_add_child(GTK_BUILDABLE(box), pg->capp.builder,
             G_OBJECT(combo), NULL);
+    g_signal_connect(combo, "changed", G_CALLBACK(on_combo_changed), pg);
     gtk_widget_show(combo);
 }
 

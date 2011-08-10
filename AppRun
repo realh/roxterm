@@ -27,7 +27,10 @@ case $1 in
     --debug) shift
         DEBUGGER="gdb --args"
         ;;
-    --config) shift ; PROG=roxterm-config ;;
+    --config)
+        shift
+        PROG=roxterm-config
+        ;;
     --valgrind) shift ;
         ulimit -c unlimited
         DEBUGGER="valgrind --freelist-vol=50000000"
