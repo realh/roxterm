@@ -4621,6 +4621,7 @@
                                 <property name="xalign">0</property>
                                 <property name="image_position">bottom</property>
                                 <property name="draw_indicator">True</property>
+                                <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                               </object>
                               <packing>
                                 <property name="expand">True</property>
