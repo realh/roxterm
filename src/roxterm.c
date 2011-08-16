@@ -2424,6 +2424,23 @@ static void roxterm_beep_handler(VteTerminal *vte, ROXTermData *roxterm)
     }
 }
 
+/* Ignore keys which are shortcuts, otherwise they get sent to terminal
+ * when menu item is shaded.
+ */
+static gboolean roxterm_key_press_handler(GtkWidget *widget,
+        GdkEventKey *event, ROXTermData *roxterm)
+{
+    Options *shortcuts = multi_win_get_shortcut_scheme(roxterm->win);
+    
+    if (!event->is_modifier &&
+            shortcuts_key_is_shortcut(shortcuts, event->keyval,
+                    event->state & GDK_MODIFIER_MASK))
+    {
+        return TRUE;
+    }
+    return FALSE;
+}
+
 #if ! HAVE_GTK_WIDGET_GET_REALIZED
 #define gtk_widget_get_realized gtk_widget_get_realized
 #endif
@@ -2699,6 +2716,8 @@ static void roxterm_connect_misc_signals(ROXTermData * roxterm)
     g_signal_connect(roxterm->widget, "composited-changed",
             G_CALLBACK(roxterm_composited_changed_handler), roxterm);
 #endif
+    g_signal_connect(roxterm->widget, "key-press-event",
+            G_CALLBACK(roxterm_key_press_handler), roxterm);
 }
 
 inline static void

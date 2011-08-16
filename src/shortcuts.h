@@ -34,6 +34,11 @@ void shortcuts_unref(Options *scheme);
 
 void shortcuts_enable_signal_handler(gboolean enable);
 
+gboolean shortcuts_key_is_shortcut(Options *shortcuts,
+        guint key, GdkModifierType modifiers);
+
+const char *shortcuts_get_index_str(Options *shortcuts);
+
 #endif /* SHORTCUTS_H */
 
 /* vi:set sw=4 ts=4 noet cindent cino= */

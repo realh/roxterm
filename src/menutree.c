@@ -246,7 +246,7 @@ GtkMenu *menutree_submenu_from_id(MenuTree *mtree, MenuTreeID id)
 static char *get_accel_path(Options *shortcuts, const char *branch_name)
 {
     return g_strjoin("/", ACCEL_PATH,
-            (const char *) options_get_data(shortcuts), branch_name, NULL);
+            shortcuts_get_index_str(shortcuts), branch_name, NULL);
 }
 
 static void
