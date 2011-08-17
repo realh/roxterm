@@ -2,32 +2,34 @@
 
 # Split this up a bit to avoid long lines
 CONFIGURE_GDA_PATH = /usr/share/gnome-control-center/default-apps
-CONFIGURE_GDA = --with-gnome-default-applications=$(CONFIGURE_GDA)
+CONFIGURE_GDA = --with-gnome-default-applications=$(CONFIGURE_GDA_PATH)
 CONFIGURE_COMMON = $(CONFIGURE_GDA) CFLAGS="-Wl,--as-needed -Wall"
 
 %:
 	dh $@
 
 override_dh_auto_configure:
-	dh_auto_configure --builddirectory=build-gtk2 \
+	dh_auto_configure -proxterm-legacy --builddirectory=build-gtk2 \
 		-- --disable-gtk3 $(CONFIGURE_COMMON)
-	dh_auto_configure --builddirectory=build-gtk3 \
+	dh_auto_configure -proxterm-common -proxterm \
 		-- --enable-gtk3 $(CONFIGURE_COMMON)
 
 override_dh_auto_build:
-	dh_auto_build --parallel --builddirectory=build-gtk2
-	dh_auto_build --parallel --builddirectory=build-gtk3
+	dh_auto_build -proxterm-legacy --parallel --builddirectory=build-gtk2
+	dh_auto_build -proxterm-common -proxterm --parallel
 
 override_dh_auto_install:
-	dh_install --builddirectory=build-gtk3 \
-		--sourcedir=debian roxterm.xpm /usr/share/pixmaps/
-	dh_auto_install --builddirectory=build-gtk2
-	dh_auto_install --builddirectory=build-gtk3
+	dh_auto_install --builddirectory=build-gtk2 -proxterm-legacy --autodest
+	dh_auto_install -proxterm-common -proxterm --autodest
+	cp debian/roxterm.xpm debian/roxterm-common/usr/share/pixmaps/
+	# The following dh_install copies everything into package's tmp!
+	#dh_install -proxterm-common --sourcedir=debian \
+	#	roxterm.xpm /usr/share/pixmaps/
 
 override_dh_auto_test:
-	dh_auto_test --builddirectory=build-gtk2
-	dh_auto_test --builddirectory=build-gtk3
+	dh_auto_test -proxterm-legacy --builddirectory=build-gtk2
+	dh_auto_test -proxterm-common -proxterm
 
 override_dh_auto_clean:
 	dh_auto_clean
-	rm -rf build-*
+	rm -rf build-gtk2

@@ -27,7 +27,8 @@ Description: Multi-tabbed GTK/VTE terminal emulator
 Package: roxterm
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, librsvg2-common,
-    roxterm-common (${source:Version})
+    roxterm-common (= ${source:Version})
+Conflicts: roxterm-legacy
 Provides: x-terminal-emulator
 Description: Multi-tabbed GTK/VTE terminal emulator
  ROXTerm is a terminal emulator based on the VTE library. It was originally
@@ -39,7 +40,8 @@ Description: Multi-tabbed GTK/VTE terminal emulator
 Package: roxterm-legacy
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, librsvg2-common,
-    roxterm-common (${source:Version})
+    roxterm-common (= ${source:Version})
+Conflicts: roxterm
 Provides: x-terminal-emulator
 Description: Multi-tabbed GTK/VTE terminal emulator
  ROXTerm is a terminal emulator based on the VTE library. It was originally
