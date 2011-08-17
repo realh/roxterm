@@ -1,17 +1,33 @@
 #!/usr/bin/make -f
 
+# Split this up a bit to avoid long lines
+CONFIGURE_GDA_PATH = /usr/share/gnome-control-center/default-apps
+CONFIGURE_GDA = --with-gnome-default-applications=$(CONFIGURE_GDA)
+CONFIGURE_COMMON = $(CONFIGURE_GDA) CFLAGS="-Wl,--as-needed -Wall"
+
 %:
 	dh $@
 
 override_dh_auto_configure:
-	dh_auto_configure -- \
-		--with-gnome-default-applications=/usr/share/gnome-control-center/default-apps \
-		--enable-gtk3 \
-		CFLAGS="-Wl,--as-needed -Wall"
+	dh_auto_configure --builddirectory=build-gtk2 \
+		-- --disable-gtk3 $(CONFIGURE_COMMON)
+	dh_auto_configure --builddirectory=build-gtk3 \
+		-- --enable-gtk3 $(CONFIGURE_COMMON)
 
 override_dh_auto_build:
-	dh_auto_build --parallel
+	dh_auto_build --parallel --builddirectory=build-gtk2
+	dh_auto_build --parallel --builddirectory=build-gtk3
 
 override_dh_auto_install:
-	dh_auto_install
-	dh_install --sourcedir=debian roxterm.xpm /usr/share/pixmaps/
+	dh_install --builddirectory=build-gtk3 \
+		--sourcedir=debian roxterm.xpm /usr/share/pixmaps/
+	dh_auto_install --builddirectory=build-gtk2
+	dh_auto_install --builddirectory=build-gtk3
+
+override_dh_auto_test:
+	dh_auto_test --builddirectory=build-gtk2
+	dh_auto_test --builddirectory=build-gtk3
+
+override_dh_auto_clean:
+	dh_auto_clean
+	rm -rf build-*

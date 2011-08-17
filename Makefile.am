@@ -62,20 +62,23 @@ defaultapps_DATA = roxterm.xml
 endif
 
 EXTRA_DIST = config.rpath m4 roxterm.svg \
-		.DirIcon AppRun AppInfo.xml AppInfo.xml.in \
-		roxterm.desktop $(nobase_pkgdata_DATA) $(HTMLFILES) \
-		$(LOGO_TEXT_ONLY) $(LOGO_PNG) $(TEXT_LOGO) $(FAVICON) \
-		AUTHORS COPYING README $(HELPOTHER) $(HELPLIBFILES) \
-		update-locales roxterm.xml \
-		Help/AUTHORS Help/COPYING Help/Changes Help/README \
-		builddeb INSTALL.Debian \
-		debian/changelog     debian/dirs             \
-		debian/compat        debian/menu             \
-		debian/control       debian/roxterm.doc-base \
-		debian/copyright     debian/roxterm.postinst \
-		debian/roxterm.prerm debian/roxterm.xpm      \
-		debian/rules         debian/watch	     \
-		debian/source/format
+	.DirIcon AppRun AppInfo.xml AppInfo.xml.in \
+	roxterm.desktop $(nobase_pkgdata_DATA) $(HTMLFILES) \
+	$(LOGO_TEXT_ONLY) $(LOGO_PNG) $(TEXT_LOGO) $(FAVICON) \
+	AUTHORS COPYING README $(HELPOTHER) $(HELPLIBFILES) \
+	update-locales roxterm.xml \
+	Help/AUTHORS Help/COPYING Help/Changes Help/README \
+	builddeb INSTALL.Debian \
+	debian/changelog		debian/dirs			\
+	debian/compat			\
+	debian/control			debian/copyright		\
+	debian/rules			debian/watch			\
+	debian/roxterm.xpm		debian/source/format		\
+	debian/roxterm.postinst		debian/roxterm.prerm		\
+	debian/roxterm-legacy.postinst  debian/roxterm-legacy.prerm     \
+	debian/roxterm-common.doc-base  debian/roxterm-common.install   \
+	debian/roxterm.install		debian/roxterm-legacy.install   \
+	debian/roxterm.menu		debian/roxterm-legacy.menu
 
 Help/AUTHORS:
 	ln -nfs ../AUTHORS Help/AUTHORS
