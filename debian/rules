@@ -19,8 +19,10 @@ override_dh_auto_build:
 	dh_auto_build -proxterm-common -proxterm --parallel
 
 override_dh_auto_install:
-	dh_auto_install --builddirectory=build-gtk2 -proxterm-gtk2 --autodest
 	dh_auto_install -proxterm-common -proxterm --autodest
+	install -d debian/roxterm-gtk2/usr/bin/
+	install build-gtk2/src/roxterm build-gtk2/src/roxterm-config \
+		debian/roxterm-gtk2/usr/bin/
 	install -d debian/roxterm-gtk2/usr/share/applications/
 	install -m 0644 roxterm.desktop \
 		debian/roxterm-gtk2/usr/share/applications/
