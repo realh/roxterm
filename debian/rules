@@ -21,6 +21,7 @@ override_dh_auto_build:
 override_dh_auto_install:
 	dh_auto_install --builddirectory=build-gtk2 -proxterm-gtk2 --autodest
 	dh_auto_install -proxterm-common -proxterm --autodest
+	cp roxterm.desktop debian/roxterm-gtk2/usr/share/applications/
 	cp debian/roxterm.xpm debian/roxterm-common/usr/share/pixmaps/
 	# The following dh_install copies everything into package's tmp!
 	#dh_install -proxterm-common --sourcedir=debian \
