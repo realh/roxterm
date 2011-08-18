@@ -15,20 +15,20 @@ Package: roxterm-common
 Architecture: all
 Depends: ${misc:Depends}
 Conflicts: roxterm (<< 2.0.0-1)
-Recommends: roxterm | roxterm-legacy, openssh-client
+Recommends: roxterm | roxterm-gtk2, openssh-client
 Description: Multi-tabbed GTK/VTE terminal emulator
  ROXTerm is a terminal emulator based on the VTE library. It was originally
  intended to be a lightweight alternative to gnome-terminal, but its role has
  shifted to providing a richer range of features for power users.
  .
- This package contains files used by both the GTK2 (roxterm-legacy) and 
+ This package contains files used by both the GTK2 (roxterm-gtk2) and 
  GTK3 (roxterm) versions.
 
 Package: roxterm
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, librsvg2-common,
     roxterm-common (= ${source:Version})
-Conflicts: roxterm-legacy
+Conflicts: roxterm-gtk2
 Provides: x-terminal-emulator
 Description: Multi-tabbed GTK/VTE terminal emulator
  ROXTerm is a terminal emulator based on the VTE library. It was originally
@@ -37,7 +37,7 @@ Description: Multi-tabbed GTK/VTE terminal emulator
  .
  This package contains the GTK3 version of the binaries.
 
-Package: roxterm-legacy
+Package: roxterm-gtk2
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, librsvg2-common,
     roxterm-common (= ${source:Version})

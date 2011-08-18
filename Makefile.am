@@ -75,10 +75,10 @@ EXTRA_DIST = config.rpath m4 roxterm.svg \
 	debian/rules			debian/watch			\
 	debian/roxterm.xpm		debian/source/format		\
 	debian/roxterm.postinst		debian/roxterm.prerm		\
-	debian/roxterm-legacy.postinst  debian/roxterm-legacy.prerm	\
-	debian/roxterm-common.doc-base  debian/roxterm-common.install	\
-	debian/roxterm.install		debian/roxterm-legacy.install	\
-	debian/roxterm.menu		debian/roxterm-legacy.menu
+	debian/roxterm-gtk2.postinst	debian/roxterm-gtk2.prerm	\
+	debian/roxterm-common.doc-base	debian/roxterm-common.install	\
+	debian/roxterm.install		debian/roxterm-gtk2.install	\
+	debian/roxterm.menu		debian/roxterm-gtk2.menu
 
 Help/AUTHORS:
 	ln -nfs ../AUTHORS Help/AUTHORS
