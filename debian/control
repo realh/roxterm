@@ -14,7 +14,8 @@ Vcs-Browser: http://roxterm.git.sourceforge.net/git/gitweb.cgi?p=roxterm/roxterm
 Package: roxterm-common
 Architecture: all
 Depends: ${misc:Depends}
-Conflicts: roxterm (<< 2.0.0-1)
+Replaces: roxterm (<< 2.0.0-1)
+Breaks: roxterm (<< 2.0.0-1)
 Recommends: roxterm | roxterm-gtk2, openssh-client
 Description: Multi-tabbed GTK+/VTE terminal emulator
  ROXTerm is a terminal emulator based on the VTE library. It was originally
@@ -51,4 +52,3 @@ Description: Multi-tabbed GTK+/VTE terminal emulator
  .
  This package provides the GTK+2 version of the binaries. The roxterm package
  provides a GTK+3 version.
-
