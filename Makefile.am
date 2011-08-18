@@ -78,7 +78,9 @@ EXTRA_DIST = config.rpath m4 roxterm.svg \
 	debian/roxterm-gtk2.postinst	debian/roxterm-gtk2.prerm	\
 	debian/roxterm-common.doc-base	debian/roxterm-common.install	\
 	debian/roxterm.install		debian/roxterm-gtk2.install	\
-	debian/roxterm.menu		debian/roxterm-gtk2.menu
+	debian/roxterm.menu		debian/roxterm-gtk2.menu	\
+	debian/roxterm.lintian-overrides				\
+	debian/roxterm-gtk2.lintian-overrides
 
 Help/AUTHORS:
 	ln -nfs ../AUTHORS Help/AUTHORS
