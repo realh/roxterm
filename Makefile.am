@@ -70,16 +70,16 @@ EXTRA_DIST = config.rpath m4 roxterm.svg \
 	Help/AUTHORS Help/COPYING Help/Changes Help/README \
 	builddeb INSTALL.Debian \
 	debian/changelog		debian/dirs			\
-	debian/compat			\
+	debian/compat							\
 	debian/control			debian/copyright		\
 	debian/rules			debian/watch			\
 	debian/roxterm.xpm		debian/source/format		\
-	debian/roxterm.postinst		debian/roxterm.prerm		\
+	debian/roxterm-gtk3.postinst	debian/roxterm-gtk3.prerm	\
 	debian/roxterm-gtk2.postinst	debian/roxterm-gtk2.prerm	\
 	debian/roxterm-common.doc-base	debian/roxterm-common.install	\
-	debian/roxterm.install		debian/roxterm-gtk2.install	\
-	debian/roxterm.menu		debian/roxterm-gtk2.menu	\
-	debian/roxterm.lintian-overrides				\
+	debian/roxterm-gtk3.install	debian/roxterm-gtk2.install	\
+	debian/roxterm-gtk3.menu	debian/roxterm-gtk2.menu	\
+	debian/roxterm-gtk3.lintian-overrides				\
 	debian/roxterm-gtk2.lintian-overrides
 
 Help/AUTHORS:
