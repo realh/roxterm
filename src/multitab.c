@@ -634,13 +634,15 @@ inline static void multi_win_shade_for_next_and_previous_tab(MultiWin * win)
     multi_win_shade_for_next_tab(win);
 }
 
-inline static void multi_win_shade_for_single_tab(MultiWin * win)
+static void multi_win_shade_for_single_tab(MultiWin * win)
 {
     multi_win_shade_item_in_both_menus(win, MENUTREE_TABS_CLOSE_OTHER_TABS,
             win->ntabs <= 1);
+    multi_win_shade_item_in_both_menus(win, MENUTREE_TABS_DETACH_TAB,
+            win->ntabs <= 1);
 }
 
-inline static void multi_win_shade_menus_for_tabs(MultiWin * win)
+static void multi_win_shade_menus_for_tabs(MultiWin * win)
 {
     multi_win_shade_for_next_and_previous_tab(win);
     multi_win_shade_for_single_tab(win);
@@ -1111,7 +1113,8 @@ MultiWin *multi_win_new_for_tab(const char *display_name, int x, int y,
     multi_win_set_geometry_hints_for_tab(win, tab);
     gwin = GTK_WINDOW(win->gtkwin);
     gtk_window_set_default_size(gwin, w, h);
-    gtk_window_move(gwin, MAX(x - 20, 0), MAX(y - 8, 0));
+    if (x != -1 && y != -1)
+        gtk_window_move(gwin, MAX(x - 20, 0), MAX(y - 8, 0));
     gtk_widget_show_all(win->notebook);
     return win;
 }
@@ -1150,6 +1153,15 @@ static void multi_win_new_tab_action(MultiWin * win)
 {
     multi_tab_new(win, win->current_tab ? win->current_tab->user_data :
         win->user_data_template);
+}
+
+static void multi_win_detach_tab_action(MultiWin * win)
+{
+    MultiTab *tab = win->current_tab;
+    
+    win = multi_win_new_for_tab(win->display_name, -1, -1, tab);
+    multi_tab_move_to_new_window(win, tab, -1);
+    gtk_widget_show_all(win->gtkwin);
 }
 
 static void multi_win_close_tab_action(MultiWin * win)
@@ -1441,6 +1453,8 @@ static void multi_win_connect_actions(MultiWin * win)
         (multi_win_new_tab_action), win, NULL, NULL, NULL);
     multi_win_menu_connect_swapped(win, MENUTREE_FILE_CLOSE_TAB, G_CALLBACK
         (multi_win_close_tab_action), win, NULL, NULL, NULL);
+    multi_win_menu_connect_swapped(win, MENUTREE_TABS_DETACH_TAB, G_CALLBACK
+        (multi_win_detach_tab_action), win, NULL, NULL, NULL);
     menutree_signal_connect_swapped(win->popup_menu,
             MENUTREE_FILE_NEW_WINDOW_WITH_PROFILE_HEADER,
             G_CALLBACK(multi_win_popup_new_term_with_profile),

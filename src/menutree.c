@@ -355,6 +355,8 @@ void menutree_apply_shortcuts(MenuTree *tree, Options *shortcuts)
     menutree_set_accel_path_for_item(tree,
             MENUTREE_FILE_NEW_TAB_WITH_PROFILE_HEADER,
             "File/New Tab With Profile/Profiles");
+    menutree_set_accel_path_for_item(tree, MENUTREE_TABS_DETACH_TAB,
+            "Tabs/Detach Tab");
     menutree_set_accel_path_for_item(tree, MENUTREE_TABS_CLOSE_TAB,
             "Tabs/Close Tab");
     menutree_set_accel_path_for_item(tree, MENUTREE_TABS_CLOSE_OTHER_TABS,
@@ -655,6 +657,7 @@ static void menutree_build(MenuTree *menu_tree, Options *shortcuts,
 
     submenu = gtk_menu_new();
     menutree_build_shell(menu_tree, GTK_MENU_SHELL(submenu),
+        _("_Detach Tab"), MENUTREE_TABS_DETACH_TAB,
         _("_Close Tab"), MENUTREE_TABS_CLOSE_TAB,
         _("Close _Other Tabs"), MENUTREE_TABS_CLOSE_OTHER_TABS,
         _("Na_me Tab..."), MENUTREE_TABS_NAME_TAB,
