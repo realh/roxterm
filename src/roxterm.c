@@ -304,12 +304,13 @@ char *roxterm_get_cwd(ROXTermData *roxterm)
 {
     char *pidfile = NULL;
     char *target = NULL;
+    GError *error = NULL;
     
     if (roxterm->pid < 0)
         return NULL;
     
     pidfile = g_strdup_printf("/proc/%d/cwd", roxterm->pid);
-    target = g_file_read_link(pidfile, NULL);
+    target = g_file_read_link(pidfile, &error);
     /* According to a comment in gnome-terminal readlink()
      * returns a NULL/empty string in Solaris but we can still use the
      * /proc link if it exists */
@@ -317,7 +318,7 @@ char *roxterm_get_cwd(ROXTermData *roxterm)
     {
         g_free(target);
         target = NULL;
-        if (g_file_test(pidfile, G_FILE_TEST_IS_SYMLINK))
+        if (!error && g_file_test(pidfile, G_FILE_TEST_EXISTS))
             target = pidfile;
         else
             g_free(pidfile);
@@ -326,6 +327,8 @@ char *roxterm_get_cwd(ROXTermData *roxterm)
     {
         g_free(pidfile);
     }
+    if (error)
+        g_error_free(error);
     return target;
 }
 
