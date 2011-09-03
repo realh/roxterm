@@ -67,7 +67,7 @@ static GtkWidget *about_dialog_create(void)
     GtkWidget *about = gtk_about_dialog_new();
     GtkAboutDialog *ad = GTK_ABOUT_DIALOG(about);
     char const *authors[] = { _("Tony Houghton <h@realh.co.uk>"),
-        _("Thanks to Havoc Pennington et al for libvte"),
+        _("Thanks to the developers of VTE"),
         NULL };
     GdkPixbuf *logo = about_load_logo();
 
