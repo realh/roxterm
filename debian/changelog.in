@@ -1,3 +1,12 @@
+roxterm (@VERSION@-2) unstable; urgency=low
+
+  * New upstream version:
+    + Matching filenames without file:// prefix is optional.
+    + Handle failure to read cwd gracefully (Closes: #639687).
+    + Include traling ')' character in URLs.
+
+ -- Tony Houghton <h@realh.co.uk>  Sat, 03 Sep 2011 16:17:21 +0100
+
 roxterm (@VERSION@-1) experimental; urgency=low
 
   * New upstream version:
