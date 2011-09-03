@@ -541,6 +541,7 @@ static void profilegui_fill_in_dialog(ProfileGUI * pg)
     capplet_set_text_entry(&pg->capp, "dir_filer", NULL);
     capplet_set_radio(&pg->capp, "dir_spawn_type", 0);
     capplet_set_boolean_toggle(&pg->capp, "file_as_dir", TRUE);
+    capplet_set_boolean_toggle(&pg->capp, "match_plain_files", FALSE);
     capplet_set_spin_button(&pg->capp, "width", 80);
     capplet_set_spin_button(&pg->capp, "height", 25);
     capplet_set_radio(&pg->capp, "background_type", 0);

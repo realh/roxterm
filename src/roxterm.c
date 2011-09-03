@@ -117,6 +117,7 @@ struct ROXTermData {
     char *search_pattern;
     guint search_flags;
 #endif
+    int file_match_tag[2];
 };
 
 #define PROFILE_NAME_KEY "roxterm_profile_name"
@@ -185,7 +186,7 @@ static void roxterm_encodings_changed(MenuTree *mtree,
 
 /*********************** URI handling ***********************/
 
-inline static void roxterm_match_add(ROXTermData *roxterm, VteTerminal *vte,
+static int roxterm_match_add(ROXTermData *roxterm, VteTerminal *vte,
         const char *match, ROXTerm_MatchType type)
 {
     ROXTerm_MatchMap map;
@@ -197,6 +198,23 @@ inline static void roxterm_match_add(ROXTermData *roxterm, VteTerminal *vte,
             0);
     vte_terminal_match_set_cursor_type(vte, map.tag, GDK_HAND2);
     g_array_append_val(roxterm->match_map, map);
+    return map.tag;
+}
+
+static void roxterm_match_remove(ROXTermData *roxterm, VteTerminal *vte,
+        int tag)
+{
+    int n;
+    
+    vte_terminal_match_remove(vte, tag);
+    for (n = 0; n < roxterm->match_map->len; ++n)
+    {
+        if (g_array_index(roxterm->match_map, ROXTerm_MatchMap, n).tag == tag)
+        {
+            g_array_remove_index_fast(roxterm->match_map, n);
+            break;
+        }
+    }
 }
 
 #define URLSTART "\\b"
@@ -246,8 +264,9 @@ static const char *mailto_urls[] = {
  * would complicate expression(s).
  */
 #define URLFILEBODY "(\\.|\\.\\.|~)?/[" URLPATHCHARS "]*"
+#define URL_FILE "\\bfile://" URLFILEBODY
+
 static const char *file_urls[] = {
-    "\\bfile://" URLFILEBODY,
     "\\s" URLFILEBODY,
     "^" URLFILEBODY
 };
@@ -264,9 +283,30 @@ static void roxterm_add_matches(ROXTermData *roxterm, VteTerminal *vte)
         roxterm_match_add(roxterm, vte, ftp_urls[n], ROXTerm_Match_FTP);
     for (n = 0; n < G_N_ELEMENTS(mailto_urls); ++n)
         roxterm_match_add(roxterm, vte, mailto_urls[n], ROXTerm_Match_MailTo);
-    for (n = 0; n < G_N_ELEMENTS(file_urls); ++n)
-        roxterm_match_add(roxterm, vte, file_urls[n], ROXTerm_Match_File);
+    roxterm_match_add(roxterm, vte, URL_FILE, ROXTerm_Match_File);
     roxterm_match_add(roxterm, vte, URL_NEWS, ROXTerm_Match_Complete);
+}
+
+static void roxterm_add_file_matches(ROXTermData *roxterm, VteTerminal *vte)
+{
+    int n;
+    
+    for (n = 0; n < 2; ++n)
+    {
+        roxterm->file_match_tag[n] =
+            roxterm_match_add(roxterm, vte, file_urls[n], ROXTerm_Match_File);
+    }
+}
+
+static void roxterm_remove_file_matches(ROXTermData *roxterm, VteTerminal *vte)
+{
+    int n;
+    
+    for (n = 0; n < 2; ++n)
+    {
+        roxterm_match_remove(roxterm, vte, roxterm->file_match_tag[n]);
+        roxterm->file_match_tag[n] = -1;
+    }
 }
 
 static ROXTerm_MatchType roxterm_get_match_type(ROXTermData *roxterm, int tag)
@@ -411,6 +451,7 @@ static ROXTermData *roxterm_data_clone(ROXTermData *old_gt)
         new_gt->columns = vte_terminal_get_column_count(vte);
         new_gt->rows = vte_terminal_get_row_count(vte);
     }
+    new_gt->file_match_tag[0] = new_gt->file_match_tag[1] = -1;
 
     return new_gt;
 }
@@ -2894,6 +2935,22 @@ static void roxterm_apply_show_tab_status(ROXTermData *roxterm)
     }
 }
 
+static void roxterm_apply_match_files(ROXTermData *roxterm, VteTerminal *vte)
+{
+    if (options_lookup_int_with_default(roxterm->profile,
+            "match_plain_files", FALSE))
+    {
+        if (roxterm->file_match_tag[0] == -1)
+            roxterm_add_file_matches(roxterm, vte);
+    }
+    else
+    {
+        if (roxterm->file_match_tag[0] != -1)
+            roxterm_remove_file_matches(roxterm, vte);
+    }
+    
+}
+
 static void roxterm_apply_profile(ROXTermData *roxterm, VteTerminal *vte,
         gboolean update_geometry)
 {
@@ -2925,6 +2982,7 @@ static void roxterm_apply_profile(ROXTermData *roxterm, VteTerminal *vte,
     
     roxterm_apply_title_template(roxterm);
     roxterm_apply_show_tab_status(roxterm);
+    roxterm_apply_match_files(roxterm, vte);
 }
 
 static gboolean
@@ -3339,6 +3397,10 @@ static void roxterm_reflect_profile_change(Options * profile, const char *key)
         else if (!strcmp(key, "show_tab_status"))
         {
             roxterm_apply_show_tab_status(roxterm);
+        }
+        else if (!strcmp(key, "match_plain_files"))
+        {
+            roxterm_apply_match_files(roxterm, vte);
         }
         if (apply_to_win)
         {
@@ -3926,6 +3988,7 @@ static ROXTermData *roxterm_data_new(const char *display_name,
     }
     roxterm->pid = -1;
     roxterm->env = global_options_copy_strv(env);
+    roxterm->file_match_tag[0] = roxterm->file_match_tag[1] = -1;
     return roxterm;
 }
 
