@@ -66,6 +66,14 @@ enum {
 
 #define ROXTERM_LEAF_DIR "roxterm.sourceforge.net"
 
+#ifndef HAVE_GTK_WIDGET_GET_REALIZED
+#define gtk_widget_get_realized GTK_WIDGET_REALIZED
+#endif
+
+#ifndef HAVE_GTK_WIDGET_GET_MAPPED
+#define gtk_widget_get_mapped GTK_WIDGET_MAPPED
+#endif
+
 #endif /* DEFNS_H */
 
 /* vi:set sw=4 ts=4 et cindent cino= */

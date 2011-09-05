@@ -1,11 +1,12 @@
-roxterm (2.1.0-1) unstable; urgency=low
+roxterm (@VERSION@-1) unstable; urgency=low
 
   * New upstream version:
     + Matching filenames without file:// prefix is optional.
     + Handle failure to read cwd gracefully (Closes: #639687).
     + Include traling ')' character in URLs.
+    + Use deprecated versions of get_mapped/realized functions for gtk < 2.20.
 
- -- Tony Houghton <h@realh.co.uk>  Sat, 03 Sep 2011 16:36:29 +0100
+ -- Tony Houghton <h@realh.co.uk>  Mon, 05 Sep 2011 17:23:18 +0100
 
 roxterm (2.0.1-1) experimental; urgency=low
 

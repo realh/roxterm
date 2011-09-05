@@ -2485,10 +2485,6 @@ static gboolean roxterm_key_press_handler(GtkWidget *widget,
     return FALSE;
 }
 
-#if ! HAVE_GTK_WIDGET_GET_REALIZED
-#define gtk_widget_get_realized gtk_widget_get_realized
-#endif
-
 static void roxterm_resize_window_handler(VteTerminal *vte,
         guint width, guint height, ROXTermData *roxterm)
 {

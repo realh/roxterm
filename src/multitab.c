@@ -1573,11 +1573,7 @@ static void multi_win_composited_changed(GtkWidget *widget, MultiWin *win)
     
     if (composited != win->composite)
     {
-#ifdef HAVE_GTK_WIDGET_GET_REALIZED
         if (gtk_widget_get_realized(win->gtkwin))
-#else
-        if (GTK_WIDGET_REALIZED(win->gtkwin))
-#endif
         {
             /* This section mostly copied from gnome-terminal */
             guint32 user_time;
