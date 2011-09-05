@@ -122,3 +122,6 @@ ACLOCAL_AMFLAGS = -I m4
 
 deb:
 	cd $(top_srcdir) && ./builddeb
+
+$(top_srcdir)/configure.ac: $(top_srcdir)/configure.ac.in
+	cd $(top_srcdir) && ./bootstrap.sh
