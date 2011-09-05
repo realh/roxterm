@@ -325,11 +325,23 @@ const char *multi_tab_get_display_name(MultiTab *tab)
     return tab->parent ? tab->parent->display_name : NULL;
 }
 
+#if GTK_CHECK_VERSION(3, 0, 0)
+static gboolean multi_win_clear_geometry_hints(GtkWindow *w)
+{
+    gtk_window_set_geometry_hints(w, NULL, NULL, 0);
+    return FALSE;
+}
+#endif
+
 void multi_win_set_geometry_hints(MultiWin *win, GtkWidget *child,
     GdkGeometry *geometry, GdkWindowHints geom_mask)
 {
     gtk_window_set_geometry_hints(GTK_WINDOW(win->gtkwin), child,
         geometry, geom_mask);
+#if GTK_CHECK_VERSION(3, 0, 0)
+    if (global_options_lookup_int_with_default("no-geometry", FALSE))
+        g_idle_add((GSourceFunc) multi_win_clear_geometry_hints, win->gtkwin);
+#endif
 }
 
 static void multi_win_set_geometry_hints_for_tab(MultiWin * win, MultiTab * tab)
