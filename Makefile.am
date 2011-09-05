@@ -74,12 +74,9 @@ EXTRA_DIST = config.rpath m4 roxterm.svg \
 	debian/control			debian/copyright		\
 	debian/rules			debian/watch			\
 	debian/roxterm.xpm		debian/source/format		\
-	debian/roxterm-gtk3.postinst	debian/roxterm-gtk3.prerm	\
 	debian/roxterm-gtk2.postinst	debian/roxterm-gtk2.prerm	\
 	debian/roxterm-common.doc-base	debian/roxterm-common.install	\
-	debian/roxterm-gtk3.install	debian/roxterm-gtk2.install	\
-	debian/roxterm-gtk3.menu	debian/roxterm-gtk2.menu	\
-	debian/roxterm-gtk3.lintian-overrides				\
+	debian/roxterm-gtk2.install	debian/roxterm-gtk2.menu	\
 	debian/roxterm-gtk2.lintian-overrides
 
 Help/AUTHORS:

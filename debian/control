@@ -3,7 +3,6 @@ Section: x11
 Priority: optional
 Maintainer: Tony Houghton <h@realh.co.uk>
 Build-Depends: debhelper (>= 7.0.50), gettext, autotools-dev,
-    libgtk-3-dev, libvte-2.90-dev,
     libgtk2.0-dev (>=2.18), libvte-dev,
     libsm-dev, libdbus-glib-1-dev, xsltproc, docbook-xsl
 Standards-Version: 3.9.2
@@ -22,22 +21,7 @@ Description: Multi-tabbed GTK+/VTE terminal emulator
  intended to be a lightweight alternative to gnome-terminal, but its role has
  shifted to providing a richer range of features for power users.
  .
- This package contains files used by both the GTK+2 (roxterm-gtk2) and 
- GTK+3 (roxterm-gtk3) versions.
-
-Package: roxterm-gtk3
-Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, librsvg2-common,
-    roxterm-common (= ${source:Version})
-Conflicts: roxterm-gtk2
-Provides: x-terminal-emulator
-Description: Multi-tabbed GTK+/VTE terminal emulator
- ROXTerm is a terminal emulator based on the VTE library. It was originally
- intended to be a lightweight alternative to gnome-terminal, but its role has
- shifted to providing a richer range of features for power users.
- .
- This package provides the GTK+3 version of the binaries. The roxterm-gtk2
- package provides a GTK+2 version.
+ This package contains roxterm's data files.
 
 Package: roxterm-gtk2
 Architecture: any
@@ -50,16 +34,15 @@ Description: Multi-tabbed GTK+/VTE terminal emulator
  intended to be a lightweight alternative to gnome-terminal, but its role has
  shifted to providing a richer range of features for power users.
  .
- This package provides the GTK+2 version of the binaries. The roxterm-gtk3
- package provides a GTK+3 version.
+ This package provides roxterm's binaries linked with GTK+2.
 
 Package: roxterm
 Architecture: all
-Depends: ${misc:Depends}, roxterm-gtk3 (>= ${source:Version})
+Depends: ${misc:Depends},
+    roxterm-gtk3 (>= ${source:Version}) | roxterm-gtk2 (>= ${source:Version})
 Description: Multi-tabbed GTK+/VTE terminal emulator
  ROXTerm is a terminal emulator based on the VTE library. It was originally
  intended to be a lightweight alternative to gnome-terminal, but its role has
  shifted to providing a richer range of features for power users.
  .
- This is a virtual package to ease upgrade to roxterm-gtk3. Install
- roxterm-gtk2 instead if you want to stick with GTK+2.
+ This is a virtual package to ease transition to the multi-package version.
