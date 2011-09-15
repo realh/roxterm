@@ -6,9 +6,10 @@ roxterm (@VERSION@-1) experimental; urgency=low
     + Include trailing ')' character in URLs.
     + Use deprecated versions of get_mapped/realized functions for gtk < 2.20.
     + --no-geometry option to workaround #632403.
-    + Fixed build-dep's gtk2 version.
+    + debian/control: Fix build-dep's gtk2 version.
+    + debian/copyright: comply to DEP-5, clarify GPL-2+.
 
- -- Tony Houghton <h@realh.co.uk>  Wed, 14 Sep 2011 12:18:22 +0100
+ -- Tony Houghton <h@realh.co.uk>  Thu, 15 Sep 2011 13:53:16 +0100
 
 roxterm (2.0.1-1) experimental; urgency=low
 
