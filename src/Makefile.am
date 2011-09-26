@@ -9,7 +9,8 @@ AM_LDFLAGS = -static
 BUILT_SOURCES = rtconfig.h version.h
 DISTCLEANFILES = $(BUILT_SOURCES)
 
-rtconfig.h: ../config.h
+# stamp file is added to deps here to make sure it gets built
+rtconfig.h: ../config.h roxterm-config.ui.stamp
 		@sed 's/ CONFIG_H/ RTCONFIG_H/;/define PACKAGE_/d;/define VERSION/d' ../config.h > rtconfig.h.tmp
 		@test -f rtconfig.h || touch rtconfig.h
 		@diff rtconfig.h rtconfig.h.tmp > /dev/null 2>&1 && rm rtconfig.h.tmp || true
@@ -32,9 +33,8 @@ version.h: ../config.h
 
 # Replace abstract bases with instantiable widgets for GTK2 compatibility
 roxterm-config.ui.stamp: roxterm-config.ui
-	sed -i 's/class="GtkBox" id=\(.*\)hbox/class="GtkHBox" id=\1hbox/;' \
-		's/class="GtkBox" id=\(.*\)vbox/class="GtkVBox" id=\1vbox/' \
-		roxterm-config.ui
+	sed -e 's/class="GtkBox" id=\(.*\)hbox/class="GtkHBox" id=\1hbox/; s/class="GtkBox" id=\(.*\)vbox/class="GtkVBox" id=\1vbox/' \
+		-i roxterm-config.ui
 	touch roxterm-config.ui.stamp
 
 libroxterm_la_SOURCES = 	\
