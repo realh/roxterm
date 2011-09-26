@@ -30,6 +30,13 @@ version.h: ../config.h
 		@test -f version.h.tmp && rm -f version.h || true
 		@test -f version.h.tmp && mv version.h.tmp version.h || true
 
+# Replace abstract bases with instantiable widgets for GTK2 compatibility
+roxterm-config.ui.stamp: roxterm-config.ui
+	sed -i 's/class="GtkBox" id=\(.*\)hbox/class="GtkHBox" id=\1hbox/;' \
+		's/class="GtkBox" id=\(.*\)vbox/class="GtkVBox" id=\1vbox/' \
+		roxterm-config.ui
+	touch roxterm-config.ui.stamp
+
 libroxterm_la_SOURCES = 	\
 	colourscheme.c	colourscheme.h	\
 				defns.h			\

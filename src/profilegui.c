@@ -791,7 +791,7 @@ ProfileGUI *profilegui_open(const char *profile_name, GdkScreen *scrn)
 
     profilegui_setup_file_chooser(pg);
     pg->bgimg_drd = drag_receive_setup_dest_widget(
-            profilegui_widget(pg, "bgimg_drag_target"),
+            profilegui_widget(pg, "bgimg_drag_target_vbox"),
             bgimg_drag_data_received, NULL, pg);
     profilegui_fill_in_dialog(pg);
     profilegui_connect_handlers(pg);
