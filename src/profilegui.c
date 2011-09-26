@@ -701,7 +701,7 @@ static void profilegui_add_combo_items_by_name(GtkWidget *combo,
 
 static void profilegui_make_a_combo(ProfileGUI *pg, const char *name)
 {
-    char *box_name = g_strdup_printf("%s_box", name);
+    char *box_name = g_strdup_printf("%s_hbox", name);
     GtkBox *box = GTK_BOX(gtk_builder_get_object(pg->capp.builder, box_name));
     GtkWidget *combo;
     
