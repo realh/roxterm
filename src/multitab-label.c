@@ -77,7 +77,8 @@ multitab_label_toggle_attention (gpointer data)
 }
 
 static void
-multitab_label_single_width (GtkWidget *widget, gint *width)
+multitab_label_single_width (GtkWidget *widget, gint *width,
+        gint *parent_width)
 {
     GtkWidget *parent;
     GtkAllocation alloc;
@@ -90,6 +91,8 @@ multitab_label_single_width (GtkWidget *widget, gint *width)
     }
     g_return_if_fail (parent != NULL);
     gtk_widget_get_allocation (parent, &alloc);
+    if (parent_width)
+        *parent_width = alloc.width;
     /* About 40% of width of parent should look good */
     alloc.width = (alloc.width * 2) / 5;
     if (alloc.width > *width)
@@ -105,24 +108,59 @@ multitab_label_destroy (GtkWidget *w)
     GTK_WIDGET_CLASS (multitab_label_parent_class)->destroy (w);
 }
 
-static void multitab_label_get_preferred_width (GtkWidget *widget,
+static void
+multitab_modify_width (MultitabLabel *self,
+        gint *minimum_width, gint *natural_width)
+{
+    if (self->fixed_width)
+        return;
+    /*
+    if (self->single && natural_width)
+    {
+        multitab_label_single_width ((GtkWidget *) self, natural_width);
+        if (minimum_width && *minimum_width > *natural_width)
+            *minimum_width = *natural_width;
+    }
+    */
+    if (self->single && minimum_width)
+    {
+        int parent_width;
+        
+        multitab_label_single_width ((GtkWidget *) self, minimum_width,
+                &parent_width);
+#if GTK_CHECK_VERSION(3, 0, 0)
+        {
+            MultitabLabelClass *klass = MULTITAB_LABEL_GET_CLASS (self);
+            
+            if (*minimum_width < klass->minimum_width &&
+                    *minimum_width < parent_width)
+            {
+                klass->minimum_width = *minimum_width;
+            }
+            else if (*minimum_width > klass->minimum_width)
+            {
+                *minimum_width = klass->minimum_width;
+            }
+        }
+#endif
+        if (natural_width && *natural_width < *minimum_width)
+            *natural_width = *minimum_width;
+    }
+}
+
+static void
+multitab_label_get_preferred_width (GtkWidget *widget,
         gint *minimum_width, gint *natural_width)
 {
     MultitabLabel *self = MULTITAB_LABEL (widget);
     
     GTK_WIDGET_CLASS (multitab_label_parent_class)->get_preferred_width
                     (widget, minimum_width, natural_width);
-    if (self->fixed_width)
-        return;
-    if (self->single && minimum_width)
-    {
-        multitab_label_single_width (widget, minimum_width);
-        if (natural_width && *natural_width < *minimum_width)
-            *natural_width = *minimum_width;
-    }
+    multitab_modify_width (self, minimum_width, natural_width);
 }
 
-static void multitab_label_get_preferred_width_for_height (GtkWidget *widget,
+static void
+multitab_label_get_preferred_width_for_height (GtkWidget *widget,
         gint height, gint *minimum_width, gint *natural_width)
 {
     MultitabLabel *self = MULTITAB_LABEL (widget);
@@ -130,14 +168,7 @@ static void multitab_label_get_preferred_width_for_height (GtkWidget *widget,
     GTK_WIDGET_CLASS
             (multitab_label_parent_class)->get_preferred_width_for_height
                     (widget, height, minimum_width, natural_width);
-    if (self->fixed_width)
-        return;
-    if (self->single && minimum_width)
-    {
-        multitab_label_single_width (widget, minimum_width);
-        if (natural_width && *natural_width < *minimum_width)
-            *natural_width = *minimum_width;
-    }
+    multitab_modify_width (self, minimum_width, natural_width);
 }
 
 #else   /* !GTK3 */
@@ -160,7 +191,7 @@ multitab_label_size_request (GtkWidget *widget, GtkRequisition *requisition)
         return;
     if (self->single && requisition)
     {
-        multitab_label_single_width (widget, &requisition->width);
+        multitab_label_single_width (widget, &requisition->width, NULL);
     }
 }
 
@@ -184,6 +215,7 @@ multitab_label_class_init(MultitabLabelClass *klass)
     gtk_css_provider_load_from_data (klass->style_provider,
             style, -1, NULL);
     GTK_WIDGET_CLASS (klass)->destroy = multitab_label_destroy;
+    klass->minimum_width = G_MAXINT;
 #else
     gtk_rc_parse_string ("style \"multitab-label-style\"\n"
            "{\n"
@@ -338,3 +370,6 @@ multitab_label_set_fixed_width (MultitabLabel *self, int width)
         gtk_label_set_width_chars (self->label, width);
     }
 }
+
+void
+multitab_label_window_resizing (MultitabLabel *label, int width);
