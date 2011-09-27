@@ -60,6 +60,9 @@ struct _MultitabLabel
     guint timeout_tag;
     gboolean single;
     gboolean fixed_width;
+#if MULTITAB_LABEL_GTK3_SIZE_KLUDGE
+    int *best_width;
+#endif
 };
 
 struct _MultitabLabelClass
@@ -67,16 +70,19 @@ struct _MultitabLabelClass
     GtkEventBoxClass parent_class;
 #if GTK_CHECK_VERSION(3, 0, 0)
     GtkCssProvider *style_provider;
-    /* Kludge to prevent tab from being too wide to unmaximize correctly */
-    gint minimum_width;
 #endif
 };
 
 GType multitab_label_get_type (void);
 
 
+#if MULTITAB_LABEL_GTK3_SIZE_KLUDGE
+GtkWidget *
+multitab_label_new (const char *text, int *best_width);
+#else
 GtkWidget *
 multitab_label_new (const char *text);
+#endif
 
 void
 multitab_label_set_text (MultitabLabel *label, const char *text);
@@ -104,9 +110,5 @@ multitab_label_set_single (MultitabLabel *label, gboolean single);
 /* width is in chars; -1 to disable */
 void
 multitab_label_set_fixed_width (MultitabLabel *label, int width);
-
-/* If window is about to be resized, make sure label isn't too wide */
-void
-multitab_label_window_resizing (MultitabLabel *label, int width);
 
 #endif /* MULTITAB_LABEL_H */

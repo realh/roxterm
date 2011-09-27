@@ -99,6 +99,9 @@ struct MultiWin {
     char *display_name;
     gboolean title_template_locked;
     gboolean clear_demands_attention;
+#if MULTITAB_LABEL_GTK3_SIZE_KLUDGE
+    int best_tab_width;
+#endif
 };
 
 static double multi_win_zoom_factors[] = {
@@ -1662,6 +1665,9 @@ MultiWin *multi_win_new_blank(const char *display_name, Options *shortcuts,
     }
 #endif
 
+#if MULTITAB_LABEL_GTK3_SIZE_KLUDGE
+    win->best_tab_width = G_MAXINT;
+#endif
     win->tab_pos = tab_pos;
     win->always_show_tabs = always_show_tabs;
     win->scroll_bar_pos = MultiWinScrollBar_Query;
@@ -2019,7 +2025,11 @@ void multi_tab_set_status_stock(MultiTab *tab, const char *stock)
  * the text; the return value is the top-level container. */
 static GtkWidget *make_tab_label(MultiTab *tab, GtkPositionType tab_pos)
 {
+#if MULTITAB_LABEL_GTK3_SIZE_KLUDGE
+    tab->label = multitab_label_new(NULL, &tab->parent->best_tab_width);
+#else
     tab->label = multitab_label_new(NULL);
+#endif
     multi_tab_set_full_window_title(tab, tab->window_title_template,
             tab->window_title);
     tab->label_box = gtk_hbox_new(FALSE, 4);
