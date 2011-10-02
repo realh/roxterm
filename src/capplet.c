@@ -43,7 +43,7 @@ gboolean capplet_ignore_changes = FALSE;
 
 GtkWidget *capplet_lookup_combo(GtkBuilder *builder, const char *name)
 {
-    char *box_name = g_strdup_printf("%s_box", name);
+    char *box_name = g_strdup_printf("%s_hbox", name);
     GObject *box = gtk_builder_get_object(builder, box_name);
     GList *children;
     GList *link;

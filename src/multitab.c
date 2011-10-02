@@ -99,6 +99,9 @@ struct MultiWin {
     char *display_name;
     gboolean title_template_locked;
     gboolean clear_demands_attention;
+#if MULTITAB_LABEL_GTK3_SIZE_KLUDGE
+    int best_tab_width;
+#endif
 };
 
 static double multi_win_zoom_factors[] = {
@@ -1395,31 +1398,78 @@ static void multi_win_zoom_norm_action(MultiWin *win)
     }
 }
 
-static void multi_win_vscroll_by(MultiWin *win, double multiplier)
+typedef enum {
+    MULTI_TAB_SCROLL_STEP_LINE,
+    MULTI_TAB_SCROLL_STEP_PAGE,
+    MULTI_TAB_SCROLL_STEP_END
+} MultiTabScrollStep;
+
+static void multi_win_vscroll_by(MultiWin *win, double multiplier,
+        MultiTabScrollStep step_type)
 {
     GtkAdjustment *adj;
     double newval;
+    double bottom;
     
     adj = win->current_tab->adjustment;
     if (!adj)
         return;
-    newval = gtk_adjustment_get_value(adj) +
-            multiplier * gtk_adjustment_get_step_increment(adj);
-    newval = CLAMP(newval, 0,
-            gtk_adjustment_get_upper(adj) - gtk_adjustment_get_page_size(adj));
+    bottom = gtk_adjustment_get_upper(adj) - gtk_adjustment_get_page_size(adj);
+    if (step_type == MULTI_TAB_SCROLL_STEP_END)
+    {
+        if (multiplier < 0)
+            newval = 0;
+        else
+            newval = bottom;
+    }
+    else
+    {
+        double step;
+        
+        if (step_type == MULTI_TAB_SCROLL_STEP_PAGE)
+            step = gtk_adjustment_get_page_increment(adj);
+        else
+            step = gtk_adjustment_get_step_increment(adj);
+        newval = gtk_adjustment_get_value(adj) + multiplier * step;
+        newval = CLAMP(newval, 0, bottom);
+    }
     gtk_adjustment_set_value(adj, newval);
 }
 
 static void multi_win_scroll_up_action(MultiWin *win)
 {
     g_return_if_fail(win->current_tab != NULL);
-    multi_win_vscroll_by(win, -1);
+    multi_win_vscroll_by(win, -1, MULTI_TAB_SCROLL_STEP_LINE);
 }
 
 static void multi_win_scroll_down_action(MultiWin *win)
 {
     g_return_if_fail(win->current_tab != NULL);
-    multi_win_vscroll_by(win, 1);
+    multi_win_vscroll_by(win, 1, MULTI_TAB_SCROLL_STEP_LINE);
+}
+
+static void multi_win_scroll_page_up_action(MultiWin *win)
+{
+    g_return_if_fail(win->current_tab != NULL);
+    multi_win_vscroll_by(win, -1, MULTI_TAB_SCROLL_STEP_PAGE);
+}
+
+static void multi_win_scroll_page_down_action(MultiWin *win)
+{
+    g_return_if_fail(win->current_tab != NULL);
+    multi_win_vscroll_by(win, 1, MULTI_TAB_SCROLL_STEP_PAGE);
+}
+
+static void multi_win_scroll_to_top_action(MultiWin *win)
+{
+    g_return_if_fail(win->current_tab != NULL);
+    multi_win_vscroll_by(win, -1, MULTI_TAB_SCROLL_STEP_END);
+}
+
+static void multi_win_scroll_to_bottom_action(MultiWin *win)
+{
+    g_return_if_fail(win->current_tab != NULL);
+    multi_win_vscroll_by(win, 1, MULTI_TAB_SCROLL_STEP_END);
 }
 
 static void multi_win_move_tab_by_one(MultiWin *win, int dir)
@@ -1503,10 +1553,18 @@ static void multi_win_connect_actions(MultiWin * win)
         (multi_win_zoom_out_action), win, NULL, NULL, NULL);
     multi_win_menu_connect_swapped(win, MENUTREE_VIEW_ZOOM_NORM, G_CALLBACK
         (multi_win_zoom_norm_action), win, NULL, NULL, NULL);
-    multi_win_menu_connect_swapped(win, MENUTREE_VIEW_SCROLL_UP, G_CALLBACK
-        (multi_win_scroll_up_action), win, NULL, NULL, NULL);
-    multi_win_menu_connect_swapped(win, MENUTREE_VIEW_SCROLL_DOWN, G_CALLBACK
-        (multi_win_scroll_down_action), win, NULL, NULL, NULL);
+    multi_win_menu_connect_swapped(win, MENUTREE_VIEW_SCROLL_UP,
+        G_CALLBACK(multi_win_scroll_up_action), win, NULL, NULL, NULL);
+    multi_win_menu_connect_swapped(win, MENUTREE_VIEW_SCROLL_DOWN,
+        G_CALLBACK(multi_win_scroll_down_action), win, NULL, NULL, NULL);
+    multi_win_menu_connect_swapped(win, MENUTREE_VIEW_SCROLL_PAGE_UP,
+        G_CALLBACK(multi_win_scroll_page_up_action), win, NULL, NULL, NULL);
+    multi_win_menu_connect_swapped(win, MENUTREE_VIEW_SCROLL_PAGE_DOWN,
+        G_CALLBACK(multi_win_scroll_page_down_action), win, NULL, NULL, NULL);
+    multi_win_menu_connect_swapped(win, MENUTREE_VIEW_SCROLL_TO_TOP,
+        G_CALLBACK(multi_win_scroll_to_top_action), win, NULL, NULL, NULL);
+    multi_win_menu_connect_swapped(win, MENUTREE_VIEW_SCROLL_TO_BOTTOM,
+        G_CALLBACK(multi_win_scroll_to_bottom_action), win, NULL, NULL, NULL);
 }
 
 static void multi_win_set_show_tabs_menu_items(MultiWin *win, gboolean active)
@@ -1662,6 +1720,9 @@ MultiWin *multi_win_new_blank(const char *display_name, Options *shortcuts,
     }
 #endif
 
+#if MULTITAB_LABEL_GTK3_SIZE_KLUDGE
+    win->best_tab_width = G_MAXINT;
+#endif
     win->tab_pos = tab_pos;
     win->always_show_tabs = always_show_tabs;
     win->scroll_bar_pos = MultiWinScrollBar_Query;
@@ -2019,7 +2080,11 @@ void multi_tab_set_status_stock(MultiTab *tab, const char *stock)
  * the text; the return value is the top-level container. */
 static GtkWidget *make_tab_label(MultiTab *tab, GtkPositionType tab_pos)
 {
+#if MULTITAB_LABEL_GTK3_SIZE_KLUDGE
+    tab->label = multitab_label_new(NULL, &tab->parent->best_tab_width);
+#else
     tab->label = multitab_label_new(NULL);
+#endif
     multi_tab_set_full_window_title(tab, tab->window_title_template,
             tab->window_title);
     tab->label_box = gtk_hbox_new(FALSE, 4);

@@ -74,6 +74,11 @@ enum {
 #define gtk_widget_get_mapped GTK_WIDGET_MAPPED
 #endif
 
+/* Whether to try to prevent tabs from being too wide to unmaximize correctly.
+ * <http://mail.gnome.org/archives/gtk-devel-list/2011-September/msg00214.html
+ */
+#define MULTITAB_LABEL_GTK3_SIZE_KLUDGE GTK_CHECK_VERSION(3, 0, 0)
+
 #endif /* DEFNS_H */
 
 /* vi:set sw=4 ts=4 et cindent cino= */

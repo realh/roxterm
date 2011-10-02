@@ -701,7 +701,7 @@ static void profilegui_add_combo_items_by_name(GtkWidget *combo,
 
 static void profilegui_make_a_combo(ProfileGUI *pg, const char *name)
 {
-    char *box_name = g_strdup_printf("%s_box", name);
+    char *box_name = g_strdup_printf("%s_hbox", name);
     GtkBox *box = GTK_BOX(gtk_builder_get_object(pg->capp.builder, box_name));
     GtkWidget *combo;
     
@@ -791,7 +791,7 @@ ProfileGUI *profilegui_open(const char *profile_name, GdkScreen *scrn)
 
     profilegui_setup_file_chooser(pg);
     pg->bgimg_drd = drag_receive_setup_dest_widget(
-            profilegui_widget(pg, "bgimg_drag_target"),
+            profilegui_widget(pg, "bgimg_drag_target_vbox"),
             bgimg_drag_data_received, NULL, pg);
     profilegui_fill_in_dialog(pg);
     profilegui_connect_handlers(pg);

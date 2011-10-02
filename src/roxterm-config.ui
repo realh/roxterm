@@ -11,7 +11,7 @@
     <signal name="close" handler="on_Colour_Editor_close" swapped="no"/>
     <signal name="response" handler="on_Colour_Editor_response" swapped="no"/>
     <child internal-child="vbox">
-      <object class="GtkBox" id="dialog-vbox5">
+      <object class="GtkVBox" id="dialog-vbox5">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
@@ -748,7 +748,7 @@
     <signal name="close" handler="on_Configlet_close" swapped="no"/>
     <signal name="response" handler="on_Configlet_response" swapped="no"/>
     <child internal-child="vbox">
-      <object class="GtkBox" id="dialog-vbox3">
+      <object class="GtkVBox" id="dialog-vbox3">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
@@ -1970,7 +1970,7 @@
     <signal name="close" handler="on_Profile_Editor_close" swapped="no"/>
     <signal name="response" handler="on_Profile_Editor_response" swapped="no"/>
     <child internal-child="vbox">
-      <object class="GtkBox" id="dialog-vbox2">
+      <object class="GtkVBox" id="dialog-vbox2">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
@@ -2654,7 +2654,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkHBox" id="box5">
+                              <object class="GtkDevel" id="box5">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="spacing">8</property>
@@ -2696,7 +2696,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkHBox" id="box6">
+                              <object class="GtkHBox" id="hbox6">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="spacing">8</property>
@@ -2738,7 +2738,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkHBox" id="box7">
+                              <object class="GtkHBox" id="hbox7a">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="spacing">8</property>
@@ -3059,7 +3059,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkHBox" id="exit_action_box">
+                              <object class="GtkHBox" id="exit_action_hbox">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <child>
@@ -3168,7 +3168,7 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkHBox" id="box1">
+                                  <object class="GtkHBox" id="hbox1">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="homogeneous">True</property>
@@ -3325,7 +3325,7 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkHBox" id="box2">
+                                  <object class="GtkHBox" id="hbox2a">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="homogeneous">True</property>
@@ -3506,7 +3506,7 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkHBox" id="box4">
+                                  <object class="GtkHBox" id="hbox4a">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="homogeneous">True</property>
@@ -3664,7 +3664,7 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkHBox" id="box3">
+                                  <object class="GtkHBox" id="hbox3a">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="homogeneous">True</property>
@@ -3783,7 +3783,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkBox" id="box8">
+                      <object class="GtkHBox" id="hbox8a">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <child>
@@ -3869,7 +3869,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkVBox" id="bgimg_drag_target">
+                              <object class="GtkVBox" id="bgimg_drag_target_vbox">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <child>
@@ -3899,7 +3899,7 @@
                                     <property name="can_focus">False</property>
                                     <property name="spacing">8</property>
                                     <child>
-                                      <object class="GtkHBox" id="background_img_box">
+                                      <object class="GtkHBox" id="background_img_hbox">
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
                                         <property name="spacing">4</property>
@@ -4620,7 +4620,7 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkHBox" id="tab_pos_box">
+                                  <object class="GtkHBox" id="tab_pos_hbox">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <child>
@@ -4743,7 +4743,7 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkHBox" id="backspace_binding_box">
+                                  <object class="GtkHBox" id="backspace_binding_hbox">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <child>
@@ -4756,7 +4756,7 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkHBox" id="delete_binding_box">
+                                  <object class="GtkHBox" id="delete_binding_hbox">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <child>
@@ -4955,7 +4955,7 @@
     <property name="type_hint">dialog</property>
     <property name="transient_for">Profile_Editor</property>
     <child internal-child="vbox">
-      <object class="GtkBox" id="dialog-vbox4">
+      <object class="GtkVBox" id="dialog-vbox4">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="orientation">vertical</property>

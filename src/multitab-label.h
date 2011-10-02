@@ -60,6 +60,9 @@ struct _MultitabLabel
     guint timeout_tag;
     gboolean single;
     gboolean fixed_width;
+#if MULTITAB_LABEL_GTK3_SIZE_KLUDGE
+    int *best_width;
+#endif
 };
 
 struct _MultitabLabelClass
@@ -73,8 +76,13 @@ struct _MultitabLabelClass
 GType multitab_label_get_type (void);
 
 
+#if MULTITAB_LABEL_GTK3_SIZE_KLUDGE
+GtkWidget *
+multitab_label_new (const char *text, int *best_width);
+#else
 GtkWidget *
 multitab_label_new (const char *text);
+#endif
 
 void
 multitab_label_set_text (MultitabLabel *label, const char *text);

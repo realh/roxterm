@@ -614,7 +614,7 @@ static void menutree_build(MenuTree *menu_tree, Options *shortcuts,
     submenu = gtk_menu_new();
     menutree_build_shell(menu_tree, GTK_MENU_SHELL(submenu),
         SHOW_MENU_BAR_ITEM,
-        _("Always Show _Tab Bar"), MENUTREE_VIEW_SHOW_TAB_BAR,
+        _("_Always Show Tab Bar"), MENUTREE_VIEW_SHOW_TAB_BAR,
         _("_Full Screen"), MENUTREE_VIEW_FULLSCREEN,
         "_", MENUTREE_NULL_ID,
         _("Zoom _In"), MENUTREE_VIEW_ZOOM_IN,
@@ -623,6 +623,10 @@ static void menutree_build(MenuTree *menu_tree, Options *shortcuts,
         "_", MENUTREE_NULL_ID,
         _("Scroll _Up One Line"), MENUTREE_VIEW_SCROLL_UP,
         _("Scroll _Down One Line"), MENUTREE_VIEW_SCROLL_DOWN,
+        _("Scroll Up One _Page"), MENUTREE_VIEW_SCROLL_PAGE_UP,
+        _("Scroll Do_wn One Page"), MENUTREE_VIEW_SCROLL_PAGE_DOWN,
+        _("Scroll To _Top"), MENUTREE_VIEW_SCROLL_TO_TOP,
+        _("Scroll To _Bottom"), MENUTREE_VIEW_SCROLL_TO_BOTTOM,
         NULL);
     gtk_menu_item_set_submenu(GTK_MENU_ITEM(menu_tree->item_widgets
             [MENUTREE_VIEW]), submenu);

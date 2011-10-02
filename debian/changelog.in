@@ -1,13 +1,25 @@
-roxterm (@VERSION@-1) unstable; urgency=low
+roxterm (2.2.1-1ppa1lucid1) lucid; urgency=low
+
+  * New upstream version:
+    + --no-geometry option to workaround #632403.
+    + debian/control: Fix build-dep's gtk2 version.
+    + debian/copyright: comply to DEP-5, clarify GPL-2+.
+    + Replace abstracts in roxterm-config.ui for backwards compatibility.
+    + Restrict tab label size to prevent incorrect unmaximizing in GTK3.
+    + Added extra scrolling menu items.
+
+ -- Tony Houghton <h@realh.co.uk>  Sun, 02 Oct 2011 14:50:57 +0100
+ 
+roxterm (2.1.1-1ppa4lucid1) lucid; urgency=low
 
   * New upstream version:
     + Matching filenames without file:// prefix is optional.
     + Handle failure to read cwd gracefully (Closes: #639687).
-    + Include traling ')' character in URLs.
+    + Include trailing ')' character in URLs.
     + Use deprecated versions of get_mapped/realized functions for gtk < 2.20.
 
  -- Tony Houghton <h@realh.co.uk>  Mon, 05 Sep 2011 19:49:35 +0100
-
+ 
 roxterm (2.0.1-1) experimental; urgency=low
 
   * New upstream version:
