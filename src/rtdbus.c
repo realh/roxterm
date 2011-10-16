@@ -90,10 +90,6 @@ gboolean rtdbus_send_message_with_reply(DBusMessage *message)
         result = FALSE;
         g_warning("%s", reply_msg);
     }
-#if ROXTERM_DBUS_OLD_ARGS_SEMANTICS
-    if (reply_msg)
-        dbus_free(reply_msg);
-#endif
     UNREF_LOG(dbus_message_unref(reply));
     return result;
 }
@@ -316,9 +312,6 @@ char **rtdbus_get_message_args_as_strings(DBusMessageIter *iter)
             /* Always g_strdup in case dbus' memory management was incompatible
              * with glib's */
             argv[argc] = g_strdup(arg);
-#if ROXTERM_DBUS_OLD_ARGS_SEMANTICS
-            dbus_free(arg);
-#endif
         }
         argv[++argc] = NULL;
     }

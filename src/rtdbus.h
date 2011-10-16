@@ -26,16 +26,10 @@
 #include "defns.h"
 #endif
 
-#define DBUS_API_SUBJECT_TO_CHANGE
 #include <dbus/dbus-glib-lowlevel.h>
 
-#if ROXTERM_DBUS_OLD_ARGS_SEMANTICS
-#define RTDBUS_ARG(a) a
-#define RTDBUS_ARG_CONST
-#else
 #define RTDBUS_ARG(a) &(a)
 #define RTDBUS_ARG_CONST const
-#endif
 
 /* These are just stubs; they should have a specific suffix appended */
 #define RTDBUS_NAME "net.sf.roxterm"

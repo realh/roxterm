@@ -24,7 +24,7 @@
  * Always include this first.
  */
 
-#include "rtconfig.h"
+#include "config.h"
 
 #include <gtk/gtk.h>
 
