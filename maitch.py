@@ -965,6 +965,9 @@ class Rule(object):
     def is_uptodate(self):
         """ Returns False if any target is older than any source, dep, or result
         of dep_func (implicit/dynamic deps). """
+        # If there are no dependencies target(s) must be rebuilt every time
+        if not self.cached_deps:
+            return False
         # First find whether uptodate wrt static deps.
         # If result is True extra variable newest_dep is available
         uptodate = True
