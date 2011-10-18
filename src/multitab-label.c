@@ -124,7 +124,7 @@ multitab_modify_width (MultitabLabel *self,
     */
     if (self->single && minimum_width)
     {
-        int parent_width;
+        int parent_width = 0;
         
         multitab_label_single_width ((GtkWidget *) self, minimum_width,
                 &parent_width);
