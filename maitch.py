@@ -116,7 +116,8 @@ class Context(object):
             syntax = True
         else:
             self.mode = sys.argv[1]
-        if not self.mode in "help configure build dist install clean".split():
+        if not syntax and not self.mode in \
+                "help configure build dist install clean".split():
             syntax = True
         if syntax:
             self.mode == 'help'
@@ -546,8 +547,8 @@ Predefined variables and their default values:
                 shell = use_shell, cwd = self.build_dir)
         result = proc.communicate()
         if proc.returncode:
-            raise MaitchChildError("%s failed: %d" % \
-                    (' '.join(prog), proc.returncode))
+            raise MaitchChildError("%s failed: %d: %s" % \
+                    (' '.join(prog), proc.returncode, result[1].strip()))
         return result
     
     
@@ -1765,10 +1766,16 @@ add_var('BINDIR', '${PREFIX}/bin', "Installation directory for binaries", True)
 add_var('LIBDIR', '${PREFIX}/lib',
         "Installation directory for shared libraries "
         "(you should use multiarch where possible)", True)
-add_var('DATADIR', '${PREFIX}/share',
-        "Installation directory for data files", True)
 add_var('SYSCONFDIR', '/etc',
         "Installation directory for system config files", True)
+add_var('DATADIR', '${PREFIX}/share',
+        "Installation directory for data files", True)
+add_var('PKGDATADIR', '${PREFIX}/share/${PACKAGE}',
+        "Installation directory for this package's data files", True)
+add_var('DOCDIR', '${PREFIX}/share/doc/${PACKAGE}',
+        "Installation directory for this package's documentation", True)
+add_var('HTMLDIR', '${DOCDIR}',
+        "Installation directory for this package's HTML documentation", True)
 add_var('DESTDIR', '',
         "Prepended to prefix at installation (for packaging)", True)
 

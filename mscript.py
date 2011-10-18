@@ -5,7 +5,7 @@ import errno, os, sys
 from maitch import *
 
 ctx = Context(PACKAGE = "roxterm", SRC_DIR = "${TOP_DIR}/src",
-        CFLAGS = "-O2 -g -Wall -I${SRC_DIR} -I. -DHAVE_CONFIG_H")
+        CFLAGS = "-O2 -g -Wall -I${SRC_DIR} -I. -D_GNU_SOURCE -DHAVE_CONFIG_H")
 
 
 MINILIB_SOURCES = "colourscheme.c dlg.c display.c dragrcv.c dynopts.c " \
@@ -121,10 +121,11 @@ if ctx.mode == 'configure':
     ctx.setenv('ROXTERM_LIBS',
             "${LIBS} ${VTE_LIBS} ${SM_LIBS} ${DBUS_LIBS}")
     ctx.setenv('ROXTERM_CONFIG_CFLAGS',
-            "${CFLAGS} ${GTK_CFLAGS} ${DBUS_CFLAGS}")
+            "${CFLAGS} ${GTK_CFLAGS} ${DBUS_CFLAGS} -DROXTERM_CAPPLET")
     ctx.setenv('ROXTERM_CONFIG_LIBS',
             "${LIBS} ${GTK_LIBS} ${DBUS_LIBS}")
     
+    ctx.define_from_var('PACKAGE')
     ctx.define('DO_OWN_TAB_DRAGGING',
             ctx.env.get('ENABLE_GTK_NATIVE_TAB_DRAGGING', True))
     ctx.define('SYS_CONF_DIR', ctx.env['SYSCONFDIR'])
@@ -133,6 +134,7 @@ if ctx.mode == 'configure':
     ctx.define('ICON_DIR',
             opj(ctx.env['DATADIR'], "icons", "hicolor", "scalable", "apps"))
     ctx.define('LOCALE_DIR', opj(ctx.env['DATADIR'], "locale"))
+    ctx.define('HTML_DIR', ctx.env['HTMLDIR'])
 
 elif ctx.mode == 'build':
 
