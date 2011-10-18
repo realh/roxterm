@@ -108,15 +108,7 @@ gboolean rtdbus_start_service(const char *name, const char *object_path,
     flags = DBUS_NAME_FLAG_ALLOW_REPLACEMENT | DBUS_NAME_FLAG_DO_NOT_QUEUE;
     if (replace)
         flags |= DBUS_NAME_FLAG_REPLACE_EXISTING;
-    result =
-#if HAVE_DBUS_BUS_REQUEST_NAME
-        dbus_bus_request_name
-#elif HAVE_DBUS_BUS_ACQUIRE_SERVICE
-        dbus_bus_acquire_service
-#else
-#error "Don't know how to request D-BUS service name"
-#endif
-            (rtdbus_connection, name, flags, &derror);
+    result = dbus_bus_request_name(rtdbus_connection, name, flags, &derror);
     switch (result)
     {
         case -1:
@@ -295,13 +287,7 @@ char **rtdbus_get_message_args_as_strings(DBusMessageIter *iter)
         }
         if (argc + 1 >= len)
             argv = g_renew(char *, argv, len = len ? len * 2 : 2);
-#if HAVE_DBUS_MESSAGE_ITER_GET_BASIC
         dbus_message_iter_get_basic(iter, &arg);
-#elif HAVE_DBUS_MESSAGE_ITER_GET_STRING
-        arg = dbus_message_iter_get_string(iter);
-#else
-#error "Don't know how to read D-BUS message arguments from iterator"
-#endif
         /* Check in case arg may be NULL string (probably not) */
         if (!arg)
         {

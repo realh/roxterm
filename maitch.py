@@ -160,6 +160,9 @@ Predefined variables and their default values:
         self.get_build_dir(kwargs)
         self.build_dir = self.subst(self.env['BUILD_DIR'])
         self.ensure_out_dir(self.build_dir)
+        # This message is to help text editors find the cwd in case errors
+        # are reported relative to it
+        sys.stdout.write('make[0]: Entering directory "%s"' % self.build_dir)
         os.chdir(self.build_dir)
         
         # Get lock on BUILD_DIR
@@ -858,7 +861,7 @@ class Rule(object):
         overridden here would commonly want to refer to itself (as ${VAR}) but
         can't due to recursion. So accompanying variables should refer to one
         set here with the trailing _. If kw var is not present, env[VAR_] is set
-        to ${VAR}. See CRule's use of rules and cflags for an example. """
+        to ${VAR}. See CRule's use of libs and cflags for an example. """
         val = kwargs.get(var)
         if not val:
             val = "${%s}" % var.upper()
@@ -1206,7 +1209,7 @@ class LibtoolProgramRule(ProgramRule):
         self.init_var(kwargs, 'libtool_mode_arg')
         set_default(kwargs, 'rule',
                 "${LIBTOOL} --mode=link ${LIBTOOL_FLAGS_} "
-                "gcc ${LIBTOOL_MODE_ARG_} -rpath ${LIBDIR} "
+                "gcc -rpath ${LIBDIR} "
                 "${CFLAGS_} ${LIBS_} -o ${TGT} ${SRC}")
         ProgramRule.__init__(self, **kwargs)
 

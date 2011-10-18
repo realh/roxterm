@@ -135,6 +135,7 @@ if ctx.mode == 'configure':
             opj(ctx.env['DATADIR'], "icons", "hicolor", "scalable", "apps"))
     ctx.define('LOCALE_DIR', opj(ctx.env['DATADIR'], "locale"))
     ctx.define('HTML_DIR', ctx.env['HTMLDIR'])
+    ctx.define('BIN_DIR', ctx.env['BINDIR'])
 
 elif ctx.mode == 'build':
 
@@ -176,7 +177,7 @@ elif ctx.mode == 'build':
                     ".c", ".o", "roxterm-"),
             targets = "roxterm",
             cflags = "${ROXTERM_CFLAGS}",
-            libs = "${ROXTERM_LIBS} -llibroxterm.la",
+            libs = "${ROXTERM_LIBS} -lroxterm",
             deps = "libroxterm.la",
             quiet = True))
 
@@ -189,7 +190,7 @@ elif ctx.mode == 'build':
                     ".c", ".o", "roxterm-config-"),
             targets = "roxterm-config",
             cflags = "${ROXTERM_CONFIG_CFLAGS}",
-            libs = "${ROXTERM_CONFIG_LIBS} -llibroxterm.la",
+            libs = "${ROXTERM_CONFIG_LIBS} -lroxterm",
             deps = "libroxterm.la",
             quiet = True))
     
