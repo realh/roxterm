@@ -162,7 +162,7 @@ Predefined variables and their default values:
         self.ensure_out_dir(self.build_dir)
         # This message is to help text editors find the cwd in case errors
         # are reported relative to it
-        sys.stdout.write('make[0]: Entering directory "%s"' % self.build_dir)
+        sys.stdout.write('make[0]: Entering directory "%s"\n' % self.build_dir)
         os.chdir(self.build_dir)
         
         # Get lock on BUILD_DIR
@@ -232,6 +232,7 @@ Predefined variables and their default values:
         self.top_dir = self.subst(self.env['TOP_DIR'])
         self.src_dir = self.subst(self.env['SRC_DIR'])
         self.check_build_dir()
+        self.dest_dir = self.subst(self.env['DESTDIR'])
         
         self.definitions = {}
     
@@ -717,6 +718,8 @@ int main() { %s(); return 0; }
         SRC_DIR, returning full path or raising exception if not found. Returns
         absolute paths unchanged. """
         name = self.subst(name)
+        if os.path.exists(name):
+            return name
         if os.path.isabs(name):
             if os.path.exists(name):
                 return name
@@ -782,6 +785,42 @@ int main() { %s(); return 0; }
         """ Like global version, but runs subst() and find_source() on each
         item, so may raise MaitchNotFoundError or KeyError. """
         return self.get_extreme_stamp(nodes, lambda a, b: a > b, where)
+    
+    
+    def subst_file(self, source, target):
+        """ As global version, using self.env. """
+        subst_file(self.env, source, target)
+        
+    
+    def install(self, directory, sources = None,
+            mode = None, other_options = None):
+        """ Uses the install program to install files. Default mode is install's
+        default mode, which in turn defaults to rwxr-xr-x (but you should
+        specify a number). sources may be string with multiple files separated
+        by spaces, or a list, or None to create directory. other_options, which
+        may also be a string or a list, are additional options for install. """
+        cmd = ["${INSTALL}"]
+        if self.dest_dir:
+            directory = opj(self.dest_dir, directory)
+        if isinstance(other_options, basestring):
+            cmd += other_options.split()
+        elif other_options:
+            cmd += list(other_options)
+        if mode:
+            cmd += ["-m", mode]
+        if not sources:
+            cmd.append("-d")
+        elif isinstance(sources, basestring):
+            sources = sources.split()
+        if sources and len(sources) > 1:
+            cmd += ["-t", directory] + sources
+        else:
+            cmd += sources + directory
+        for n in range(len(cmd)):
+            cmd[n] = self.subst(cmnd[n])
+        sys.stdout.write("%s\n", ' '.join(cmd))
+        if subprocess.call(prog, cwd = self.build_dir) != 0:
+            raise MaithChildError("install failed")
     
 
 
@@ -1129,10 +1168,11 @@ class TouchRule(Rule):
         Rule.__init__(self, **kwargs)
     
     
-    def touch(self, ctx, tgts, srcs):
+    def touch(self, ctx, env, tgts, srcs):
         for t in tgts:
-            os.utime(t, None)
-
+            fp = open(t, 'w')
+            fp.close()
+                
 
 
 class CRule(SuffixRule):
@@ -1209,7 +1249,7 @@ class LibtoolProgramRule(ProgramRule):
         self.init_var(kwargs, 'libtool_mode_arg')
         set_default(kwargs, 'rule',
                 "${LIBTOOL} --mode=link ${LIBTOOL_FLAGS_} "
-                "gcc -rpath ${LIBDIR} "
+                "gcc ${LIBTOOL_MODE_ARG_} -rpath ${LIBDIR} "
                 "${CFLAGS_} ${LIBS_} -o ${TGT} ${SRC}")
         ProgramRule.__init__(self, **kwargs)
 
@@ -1284,6 +1324,17 @@ def print_wrapped(s, columns = 80, indent = 0, first_indent = None,
 
 
 
+def subst_file(env, source, target):
+    """ Run during configure phase to create a copy of source as target
+    with ${} constructs substituted. """
+    fp = open(subst(env, source), 'r')
+    s = fp.read()
+    fp.close()
+    fp = open(subst(env, target), 'w')
+    fp.write(subst(env, s))
+    fp.close()
+    
+    
 def save_if_different(filename, content):
     """ Saves content to filename, only if file doesn't already contain
     identical content. """
@@ -1690,7 +1741,7 @@ class BuildGroup(object):
                 continue
             
             # Does file already exist?
-            self.ctx.find_source(dep)
+            self.ctx.find_source(dep, job.where)
             
     
     def mark_blocking(self, blocked, blocker):
@@ -1791,7 +1842,8 @@ add_var('CDEP', '${CPP} -M', "C preprocessor with option to print deps")
 add_var('CFLAGS', '-O2 -g -Wall -I${SRC_DIR}', "C compiler flags")
 add_var('LIBS', '', "C libraries and linker options")
 add_var('CXXFLAGS', '${CFLAGS}', "C++ compiler flags")
+add_var('LIBTOOL_MODE_ARG', '', "Default libtool mode argument(s)")
 add_var('LIBTOOL_FLAGS', '', "Additional libtool flags")
 add_var('PKG_CONFIG', find_prog_by_var, "pkg-config")
+add_var('INSTALL', find_prog_by_var, "install program")
 
-add_prog('PKG_CONFIG', 'pkg-config')

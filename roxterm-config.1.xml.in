@@ -62,7 +62,7 @@ and docbook-xsl in your Build-Depends control field.
     &dhucpackage;
     &dhsection;
     <refmiscinfo class="source">&product;</refmiscinfo>
-    <refmiscinfo class="version">@PACKAGE_VERSION@</refmiscinfo>
+    <refmiscinfo class="version">${VERSION}</refmiscinfo>
     <refmiscinfo class="manual">User Commands</refmiscinfo>
   </refmeta>
   <refnamediv>
@@ -134,7 +134,7 @@ and docbook-xsl in your Build-Depends control field.
 
         <para>roxterm-config is usually run by roxterm. The package is
             documented fully by the HTML file
-            <filename>file://@htmldir@/en/index.html</filename>.</para>
+            <filename>file://${HTMLDIR}/en/index.html</filename>.</para>
   </refsect1>
   <refsect1>
     <title>AUTHOR</title>
