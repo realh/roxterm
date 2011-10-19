@@ -48,7 +48,7 @@ if ctx.mode == 'configure':
     ctx.setenv('VERSION', version)
 
     try:
-        ctx.find_prog_env("xmlto", "XMLTOMAN")
+        ctx.find_prog_env("xmltoman", "XMLTOMAN")
     except MaitchNotFoundError:
         try:
             ctx.find_prog_env("xsltproc", "XMLTOMAN")
@@ -61,8 +61,10 @@ if ctx.mode == 'configure':
                     "--param man.charmap.use.subset 0 " \
                     "http://docbook.sourceforge.net/release/xsl/" \
                     "current/manpages/docbook.xsl")
+            ctx.setenv("XMLTOMAN_OUTPUT", "")
     else:
         ctx.setenv("XMLTOMAN_OPTS", "")
+        ctx.setenv("XMLTOMAN_OUTPUT", "> ${TGT}")
     
     ctx.find_prog_env("convert")
     ctx.find_prog_env("composite")
@@ -223,14 +225,37 @@ elif ctx.mode == 'build':
     
     # man pages
     if ctx.env['XMLTOMAN']:
-        ctx.add_rule(SuffixRule(rule = "${XMLTOMAN} ${XMLTOMAN_OPTS} ${SRC}",
+        ctx.add_rule(SuffixRule(
+                rule = "${XMLTOMAN} ${XMLTOMAN_OPTS} ${SRC} ${XMLTOMAN_OUTPUT}",
                 targets = ".1",
                 sources = ".1.xml",
+                use_shell = True,
                 where = TOP))
         # Force invocation of above suffix rule
         ctx.add_rule(TouchRule(
                 targets = "manpages",
                 sources = "roxterm.1 roxterm-config.1"))
-            
+
+elif ctx.mode == "install":
+
+    ctx.install_bin("roxterm roxterm-config")
+    ctx.install_data("roxterm-config.ui")
+    ctx.install_data("roxterm.desktop", "${DATADIR}/applications")
+    if ctx.env['XMLTOMAN']:
+        ctx.install_man("roxterm.1 roxterm-config.1")
+    ctx.install_doc("AUTHORS ChangeLog COPYING README")
+    ctx.install_doc(ctx.glob("*", subdir = "${TOP_DIR}/Help/en"),
+            "${HTMLDIR}/en")
+    ctx.install_doc(ctx.glob("*", subdir = "${TOP_DIR}/Help/lib"),
+            "${HTMLDIR}/lib")
+    ctx.install_data("roxterm.svg", "${DATADIR}/icons/hicolor/scalable/apps")
+    ctx.install_data(["Config/Colours/Tango", "Config/Colours/GTK"],
+            "${PKGDATADIR}/Config/Colours")
+    ctx.install_data("Config/Shortcuts/Default",
+            "${PKGDATADIR}/Config/Shortcuts")
+    gda = ctx.env['WITH_GNOME_DEFAULT_APPLICATIONS']
+    if gda:
+        ctx.install_data("roxterm.xml", gda)
+    
 
 ctx.run()

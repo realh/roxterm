@@ -113,6 +113,9 @@ class Context(object):
         # Make sure a package name was specified
         self.package_name = kwargs['PACKAGE']
         
+        self.created_by_config = {}
+        self.installed = []
+        
         # Check mode
         syntax = False
         if len(sys.argv) < 2:
@@ -120,7 +123,7 @@ class Context(object):
         else:
             self.mode = sys.argv[1]
         if not syntax and not self.mode in \
-                "help configure build dist install clean".split():
+                "help configure build dist install uninstall clean".split():
             syntax = True
         if syntax:
             self.mode == 'help'
@@ -130,9 +133,9 @@ USAGE:
   ./mscript help
   ./mscript configure [ARGS]
   ./mscript build [TARGETS]
-  ./mscript install [SOURCES]
+  ./mscript install
+  ./mscript uninstall
   ./mscript clean
-  ./mscript clean_fatal
 
 ARGS may be specified in the form VAR=value, or VAR on its own for True.
 Special variables may also be specified in the form --var or --var=value.
@@ -238,6 +241,8 @@ Predefined variables and their default values:
         self.dest_dir = self.subst(self.env['DESTDIR'])
         
         self.definitions = {}
+        
+        self.created_by_config[opj(self.build_dir, ".maitch")] = True
     
     
     def define(self, key, value):
@@ -338,7 +343,9 @@ Predefined variables and their default values:
                     v = self.subst(v)
             s += "#define %s %s\n\n" % (k, v)
         s += "#endif /* %s */\n" % sentinel
-        self.save_if_different(opj(self.build_dir, "config.h"), s)
+        filename = opj(self.build_dir, "config.h")
+        self.save_if_different(filename, s)
+        self.created_by_config[filename] = True
         
     
     @staticmethod
@@ -430,10 +437,16 @@ Predefined variables and their default values:
             rules.append(rule)
     
     
-    def glob(self, pattern, dir, subdir = None):
-        """ Returns a list of matching filenames relative to dir. subdir, if
-        given, is preserved at the start of each filename. """
+    def glob(self, pattern, dir = None, subdir = None):
+        """ Returns a list of matching filenames relative to dir (default
+        ${BUILD_DIR}). subdir, if given, is preserved at the start of each
+        filename. """
+        if dir:
+            dir = self.subst(dir)
+        else:
+            dir = self.build_dir
         if subdir:
+            subdir = self.subst(subdir)
             dir = opj(dir, subdir)
         matches = fnmatch.filter(os.listdir(dir), pattern)
         if subdir:
@@ -467,6 +480,10 @@ Predefined variables and their default values:
             fp.close()
             if self.definitions:
                 self.output_config_h()
+            fp = open(opj(self.build_dir, ".maitch", "manifest"), 'w')
+            for f in self.created_by_config.keys():
+                fp.write("%s\n" % f)
+            fp.close()
         elif self.mode == 'build':
             if len(self.cli_targets):
                 tgts = self.cli_targets
@@ -474,16 +491,23 @@ Predefined variables and their default values:
                 tgts = self.explicit_rules.keys()
             BuildGroup(self, tgts)
         elif self.mode == 'clean':
+            filename = opj(self.build_dir, ".maitch", "manifest")
+            if os.path.exists(filename):
+                fp = open(filename, 'r')
+                for f in fp.readlines():
+                    self.created_by_config[f.strip()] = True
+                fp.close()
             self.clean(False)
-        elif self.mode == 'clean_fatal':
-            self.clean(True)
     
     
-    def clean(self, fatal):
+    def clean(self, fatal, distclean = False):
         if not self.check_build_dir():
             return
-        recursively_remove(self.build_dir, fatal,
-                [opj(self.build_dir, ".maitch")])
+        if distclean:
+            keep = []
+        else:
+            keep = self.created_by_config
+        recursively_remove(self.build_dir, fatal, keep)
         recursively_remove(opj(self.build_dir, ".maitch", "deps"), fatal, [])
                 
     
@@ -716,10 +740,11 @@ int main() { %s(); return 0; }
         return present == 1
     
     
-    def find_source(self, name, where = SRC):
+    def find_source(self, name, where = SRC, fatal = True):
         """ Finds a source file relative to BUILD_DIR (higher priority) or
         SRC_DIR, returning full path or raising exception if not found. Returns
-        absolute paths unchanged. """
+        absolute paths unchanged. If fatal is False, unfound files are
+        returned unchanged"""
         name = self.subst(name)
         if os.path.exists(name):
             return name
@@ -739,7 +764,10 @@ int main() { %s(); return 0; }
             p = opj(self.top_dir, name)
             if os.path.exists(p):
                 return p
-        self.not_found(name)
+        if fatal:
+            self.not_found(name)
+        else:
+            return name
     
     
     @staticmethod
@@ -793,38 +821,96 @@ int main() { %s(); return 0; }
     def subst_file(self, source, target):
         """ As global version, using self.env. """
         subst_file(self.env, source, target)
+        self.created_by_config[self.subst(target)] = True
         
     
     def install(self, directory, sources = None,
-            mode = None, other_options = None):
+            mode = None, libtool = False, other_options = None):
         """ Uses the install program to install files. Default mode is install's
-        default mode, which in turn defaults to rwxr-xr-x (but you should
-        specify a number). sources may be string with multiple files separated
-        by spaces, or a list, or None to create directory. other_options, which
-        may also be a string or a list, are additional options for install. """
-        cmd = ["${INSTALL}"]
+        default mode, which in turn defaults to rwxr-xr-x. sources may be string
+        with multiple files separated by spaces, or a list, or None to create
+        directory. other_options, which may also be a string or a list, are
+        additional options for install.
+        Automatically creates target directories. """
+        directory = process_nodes(directory)
         if self.dest_dir:
-            directory = opj(self.dest_dir, directory)
+            directory = [opj(self.build_dir, self.dest_dir, d) \
+                    for d in directory]
+        if not sources:
+            sources = []
+        elif isinstance(sources, basestring):
+            sources = sources.split()
+        sources = [self.find_source(s, TOP | SRC, False) for s in sources]
+        if libtool:
+            cmd = ["${LIBTOOL}", "--mode=install", "${INSTALL}"]
+        else:
+            cmd = ["${INSTALL}"]
         if isinstance(other_options, basestring):
             cmd += other_options.split()
         elif other_options:
             cmd += list(other_options)
         if mode:
-            cmd += ["-m", mode]
+            cmd += ["-m", str(mode)]
         if not sources:
             cmd.append("-d")
-        elif isinstance(sources, basestring):
-            sources = sources.split()
-        if sources and len(sources) > 1:
-            cmd += ["-t", directory] + sources
-        else:
-            cmd += sources + directory
-        for n in range(len(cmd)):
-            cmd[n] = self.subst(cmnd[n])
-        sys.stdout.write("%s\n", ' '.join(cmd))
-        if subprocess.call(prog, cwd = self.build_dir) != 0:
-            raise MaithChildError("install failed")
+        cmd += sources + directory
+        if sources:
+            if other_options and "-T" in other_options:
+                dir = os.path.dirname(sources[0])
+            else:
+                dir = directory[0]
+            if not os.path.isdir(dir):
+                dd = self.dest_dir
+                self.dest_dir = None
+                try:
+                    self.install(dir)
+                except:
+                    raise
+                finally:
+                    self.dest_dir = dd
+        cmd = [self.subst(c) for c in cmd]
+        sys.stdout.write("%s\n" % ' '.join(cmd))
+        if subprocess.call(cmd, cwd = self.build_dir) != 0:
+            raise MaitchChildError("install failed")
     
+    
+    def install_bin(self, sources, directory = "${BINDIR}", mode = None,
+            libtool = True, other_options = None):
+        self.install(directory, sources, mode, libtool, other_options)
+    
+
+    def install_lib(self, sources, directory = "${LIBDIR}", mode = '0644',
+            libtool = True, other_options = None):
+        self.install(directory, sources, mode, libtool, other_options)
+    
+
+    def install_data(self, sources, directory = "${PKGDATADIR}", mode = '0644',
+            libtool = False, other_options = None):
+        self.install(directory, sources, mode, libtool, other_options)
+    
+
+    def install_doc(self, sources, directory = "${DOCDIR}", mode = '0644',
+            libtool = False, other_options = None):
+        self.install(directory, sources, mode, libtool, other_options)
+    
+    
+    def install_man(self, sources, mode = '0644', other_options = None):
+        sources = process_nodes(sources)
+        dirs = {}
+        for s in sources:
+            if s.endswith('.gz'):
+                f = s[:-3]
+            else:
+                f = s
+            sec = f.rsplit('.', 1)[1]
+            d = dirs.get(sec)
+            if not d:
+                d = []
+                dirs[sec] = d
+            d.append(s)
+        for d, s in dirs.items():
+            self.install(opj("${MANDIR}", "man%d" % int(d)), s, '0644')
+            
 
 
 class Rule(object):
@@ -1401,12 +1487,10 @@ def process_nodes(nodes):
     separated by spaces, or a list of strings - one per node, each may
     contain spaces. Returns a list of nodes.
     """
-    if hasattr(nodes, "append"):
-        return nodes
-    elif ' ' in nodes:
+    if isinstance(nodes, basestring):
         return nodes.split()
     else:
-        return [nodes]
+        return list(nodes)
 
 
 def recursively_remove(path, fatal, excep):
@@ -1824,6 +1908,8 @@ add_var('LIBDIR', '${PREFIX}/lib',
         "(you should use multiarch where possible)", True)
 add_var('SYSCONFDIR', '/etc',
         "Installation directory for system config files", True)
+add_var('MANDIR', '${DATADIR}/man',
+        "Installation directory for man pages", True)
 add_var('DATADIR', '${PREFIX}/share',
         "Installation directory for data files", True)
 add_var('PKGDATADIR', '${PREFIX}/share/${PACKAGE}',
