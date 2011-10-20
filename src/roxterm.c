@@ -28,6 +28,9 @@
 #include <unistd.h>
 
 #include <gdk/gdkx.h>
+#if !GTK_CHECK_VERSION(3, 0, 0)
+#include <gdk/gdkkeysyms.h>
+#endif
 
 #include "about.h"
 #include "colourscheme.h"
@@ -2967,6 +2970,21 @@ static void roxterm_apply_match_files(ROXTermData *roxterm, VteTerminal *vte)
     
 }
 
+#if GTK_CHECK_VERSION(3, 0, 0)
+static void roxterm_apply_show_resize_grip(ROXTermData *roxterm,
+        VteTerminal *vte)
+{
+    GtkWindow *w = roxterm_get_toplevel(roxterm);
+    
+    if (w)
+    {
+        gtk_window_set_has_resize_grip(w,
+                options_lookup_int_with_default(roxterm->profile,
+                        "show_resize_grip", TRUE));
+    }
+}
+#endif
+
 static void roxterm_apply_profile(ROXTermData *roxterm, VteTerminal *vte,
         gboolean update_geometry)
 {
@@ -2999,6 +3017,9 @@ static void roxterm_apply_profile(ROXTermData *roxterm, VteTerminal *vte,
     roxterm_apply_title_template(roxterm);
     roxterm_apply_show_tab_status(roxterm);
     roxterm_apply_match_files(roxterm, vte);
+#if GTK_CHECK_VERSION(3, 0, 0)
+    roxterm_apply_show_resize_grip(roxterm, vte);
+#endif
 }
 
 static gboolean
@@ -3418,6 +3439,12 @@ static void roxterm_reflect_profile_change(Options * profile, const char *key)
         {
             roxterm_apply_match_files(roxterm, vte);
         }
+#if GTK_CHECK_VERSION(3, 0, 0)
+        else if (!strcmp(key, "show_resize_grip"))
+        {
+            roxterm_apply_show_resize_grip(roxterm, vte);
+        }
+#endif
         if (apply_to_win)
         {
             multi_win_foreach_tab(roxterm->win,

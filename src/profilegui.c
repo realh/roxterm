@@ -531,6 +531,10 @@ static void profilegui_fill_in_dialog(ProfileGUI * pg)
     capplet_set_boolean_toggle(&pg->capp, "show_tab_status", FALSE);
     capplet_set_boolean_toggle(&pg->capp, "always_show_tabs", TRUE);
     capplet_set_boolean_toggle(&pg->capp, "new_tabs_adjacent", FALSE);
+    capplet_set_boolean_toggle(&pg->capp, "show_resize_grip", TRUE);
+#if ! GTK_CHECK_VERSION(3, 0, 0)
+    gtk_widget_hide(profilegui_widget(pg, "show_resize_grip"));
+#endif
     profilegui_set_close_buttons_shading(pg);
     capplet_set_text_entry(&pg->capp, "browser", NULL);
     capplet_set_radio(&pg->capp, "browser_spawn_type", 0);
