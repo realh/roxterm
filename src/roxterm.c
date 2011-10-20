@@ -2874,19 +2874,39 @@ inline static void roxterm_apply_always_show_tabs(ROXTermData *roxterm)
 static void roxterm_apply_disable_menu_access(ROXTermData *roxterm)
 {
     static char *orig_menu_access = NULL;
-
+    static gboolean disabled = FALSE;
+    gboolean disable = options_lookup_int_with_default(roxterm->profile,
+            "disable_menu_access", FALSE);
+    GtkSettings *settings;
+    GtkBindingSet *binding_set;
+#if GTK_CHECK_VERSION(3, 0, 0)
+#define F10_KEY GDK_KEY_F10
+#else
+#define F10_KEY GDK_F10
+#endif
+    
+    if (disable == disabled)
+        return;
+    settings = gtk_settings_get_default();
     if (!orig_menu_access)
     {
-        g_object_get(G_OBJECT(gtk_settings_get_default()),
-                "gtk-menu-bar-accel", &orig_menu_access, NULL);
+        g_object_get(settings, "gtk-menu-bar-accel", &orig_menu_access, NULL);
     }
-    gtk_settings_set_string_property(gtk_settings_get_default(),
-            "gtk-menu-bar-accel",
-            options_lookup_int_with_default(roxterm->profile,
-                    "disable_menu_access", FALSE) ?
-                "<Shift><Control><Mod1><Mod2><Mod3><Mod4><Mod5>F10" :
-                orig_menu_access,
-            "roxterm");
+    disabled = disable;
+    g_type_class_unref(g_type_class_ref(GTK_TYPE_MENU_BAR));
+    g_object_set(settings, "gtk-menu-bar-accel",
+            disable ? NULL: orig_menu_access,
+            NULL);
+    binding_set = gtk_binding_set_by_class(
+            VTE_TERMINAL_GET_CLASS(roxterm->widget));
+    if (disable)
+    {
+        gtk_binding_entry_skip(binding_set, F10_KEY, GDK_SHIFT_MASK);
+    }
+    else
+    {
+        gtk_binding_entry_remove(binding_set, F10_KEY, GDK_SHIFT_MASK);
+    }
 }
 
 static void roxterm_apply_title_template(ROXTermData *roxterm)
