@@ -1188,11 +1188,15 @@ static void multi_win_close_other_tabs_action(MultiWin * win)
 {
     GList *link;
     
-    while (win->tabs->data != win->current_tab)
-        multi_tab_delete(win->tabs->data);
-    link = win->tabs;
-    while ((link = g_list_next(link)) != NULL)
-        multi_tab_delete(link->data);
+    while ((link = win->tabs) != NULL)
+    {
+        if (link->data == win->current_tab)
+            link = g_list_next(link);
+        if (link)
+            multi_tab_delete(link->data);
+        else
+            break;
+    }
 }
 
 static void multi_win_name_tab_action(MultiWin * win)
