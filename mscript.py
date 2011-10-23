@@ -40,6 +40,7 @@ if ctx.mode == 'configure':
     vfile = opj("${TOP_DIR}", "version")
     if os.path.exists(ctx.subst(opj("${TOP_DIR}", ".git"))):
         version = ctx.prog_output(["git", "describe"])[0].strip()
+        version = version.replace('-', '.', 1).replace('-', '~', 1)
         ctx.save_if_different(vfile, version + '\n')
     else:
         fp = open(vfile, 'r')
@@ -160,7 +161,7 @@ if ctx.mode == 'configure':
     tgt = "${TOP_DIR}/debian/changelog"
     src = tgt + ".in"
     if os.path.exists(ctx.subst(src)):
-        ctx.subst_file(src, tgt)
+        ctx.subst_file(src, tgt, at = True)
 
 elif ctx.mode == 'build':
 
@@ -299,7 +300,9 @@ elif ctx.mode == 'dist':
             "roxterm.1.xml.in roxterm-config.1.xml.in " \
             "roxterm.desktop roxterm.lsm.in roxterm.spec.in " \
             "roxterm.svg roxterm.xml src TODO update-locales " \
-            "src debian builddeb ")
+            "src")
+    # Debian files
+    ctx.add_dist("debian builddeb")
     # maitch-specific
     ctx.add_dist("version maitch.py mscript.py")
     # ROX bits

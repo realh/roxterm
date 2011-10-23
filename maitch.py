@@ -199,7 +199,7 @@ Predefined variables and their default values:
         
         # From now on reconfigure is the same as configure
         if self.mode == 'reconfigure':
-            self.mode == 'configure'
+            self.mode = 'configure'
         
         # Get more env vars from kwargs
         for k, v in kwargs.items():
@@ -688,9 +688,9 @@ Predefined variables and their default values:
             sys.stdout.write("ok\n")
     
     
-    def subst(self, s, novar = NOVAR_FATAL, recurse = True):
+    def subst(self, s, novar = NOVAR_FATAL, recurse = True, at = False):
         " Runs global subst() using self.env. "
-        return subst(self.env, s, novar, recurse)
+        return subst(self.env, s, novar, recurse, at)
     
     
     def deps_from_cpp(self, sources, cflags = None):
@@ -874,9 +874,9 @@ int main() { %s(); return 0; }
         return self.get_extreme_stamp(nodes, lambda a, b: a > b, where)
     
     
-    def subst_file(self, source, target):
+    def subst_file(self, source, target, at = False):
         """ As global version, using self.env. """
-        subst_file(self.env, source, target)
+        subst_file(self.env, source, target, at)
         self.created_by_config[self.subst(target)] = True
         
     
@@ -1470,14 +1470,14 @@ def print_wrapped(s, columns = 80, indent = 0, first_indent = None,
 
 
 
-def subst_file(env, source, target):
+def subst_file(env, source, target, at = False):
     """ Run during configure phase to create a copy of source as target
     with ${} constructs substituted. Uses save_if_different() to avoid
     unnecessary rebuilds. """
     fp = open(subst(env, source), 'r')
     s = fp.read()
     fp.close()
-    save_if_different(subst(env, target), s)
+    save_if_different(subst(env, target), subst(env, s, at = at))
     
     
 def save_if_different(filename, content):
@@ -1510,19 +1510,24 @@ def opj(*args):
     
 
 _subst_re = re.compile(r"(\$\{-?([a-zA-Z0-9_]+)\})")
+_subst_re_at = re.compile(r"(@-?([a-zA-Z0-9_]+)@)")
 
-def subst(env, s, novar = NOVAR_FATAL, recurse = True):
+def subst(env, s, novar = NOVAR_FATAL, recurse = True, at = False):
     """
     Processes string s, substituting ${var} with values from dict env
     with var as the key. To prevent substitution put a '-' after the
     opening brace. It will be removed. Most variables are expanded
     recursively immediately before use.
     If fatal is False, bad matches are left unexpanded.
+    If at is True, substitute @VAR@ instead.
     """
     def ms(match):
         s = match.group(2)
         if s[0] == '-':
-            return "${%s}" % s[1:]
+            if at:
+                return "@%s@" % s[1:]
+            else:
+                return "${%s}" % s[1:]
         elif novar == NOVAR_FATAL:
             return env[s]
         else:
@@ -1531,9 +1536,13 @@ def subst(env, s, novar = NOVAR_FATAL, recurse = True):
             else:
                 dr = match.group(0)
             return env.get(s, dr)
-    result, n = _subst_re.subn(ms, s)
+    if at:
+        rex = _subst_re_at
+    else:
+        rex = _subst_re
+    result, n = rex.subn(ms, s)
     if recurse and n:
-        return subst(env, result, novar)
+        return subst(env, result, novar, True, at)
     return result
 
 
