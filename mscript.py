@@ -157,6 +157,10 @@ if ctx.mode == 'configure':
             '#define VERSION_H\n' \
             '#define VERSION "${VERSION}"\n' \
             '#endif\n')
+    tgt = "${TOP_DIR}/debian/changelog"
+    src = tgt + ".in"
+    if os.path.exists(ctx.subst(src)):
+        ctx.subst_file(src, tgt)
 
 elif ctx.mode == 'build':
 
