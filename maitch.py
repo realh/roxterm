@@ -123,7 +123,8 @@ class Context(object):
         else:
             self.mode = sys.argv[1]
         if not syntax and not self.mode in \
-                "help configure build dist install uninstall clean".split():
+                "help configure reconfigure build dist install uninstall " \
+                "clean distclean".split():
             syntax = True
         if syntax:
             self.mode == 'help'
@@ -132,6 +133,7 @@ class Context(object):
 USAGE:
   ./mscript help
   ./mscript configure [ARGS]
+  ./mscript reconfigure [ARGS]
   ./mscript build [TARGETS]
   ./mscript install
   ./mscript uninstall
@@ -189,6 +191,10 @@ Predefined variables and their default values:
                     if k != 'BUILD_DIR':
                         self.env[k] = v.rstrip()
                 fp.close()
+        
+        # From now on reconfigure is the same as configure
+        if self.mode == 'reconfigure':
+            self.mode == 'configure'
         
         # Get more env vars from kwargs
         for k, v in kwargs.items():
@@ -498,6 +504,8 @@ Predefined variables and their default values:
                     self.created_by_config[f.strip()] = True
                 fp.close()
             self.clean(False)
+        elif self.mode == 'distclean':
+            self.clean(False, True)
     
     
     def clean(self, fatal, distclean = False):
