@@ -256,6 +256,14 @@ elif ctx.mode == "install":
     gda = ctx.env['WITH_GNOME_DEFAULT_APPLICATIONS']
     if gda:
         ctx.install_data("roxterm.xml", gda)
+
+elif ctx.mode == 'distclean':
     
+    for f in [LOGO_PNG, TEXT_LOGO, FAVICON, opj("${TOP_DIR}", version)]:
+        f = ctx.subst(f)
+        try:
+            os.unlink(f)
+        except OSError:
+            pass
 
 ctx.run()

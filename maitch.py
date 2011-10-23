@@ -702,7 +702,7 @@ Predefined variables and their default values:
             result = 'yes'
             try:
                 os.unlink(tmp)
-            except:
+            except OSError:
                 pass
         os.unlink(tmp + ".c")
         if msg:
@@ -1527,7 +1527,7 @@ def recursively_remove(path, fatal, excep):
             else:
                 try:
                     os.unlink(f)
-                except:
+                except OSError:
                     removable = False
     if removable:
         if fatal:
@@ -1535,7 +1535,7 @@ def recursively_remove(path, fatal, excep):
         else:
             try:
                 os.rmdir(path)
-            except:
+            except OSError:
                 removable = False
     return removable
         
