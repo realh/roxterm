@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import errno, os, sys, time
+import errno, os, re, sys, time
 
 from maitch import *
 
@@ -235,6 +235,22 @@ elif ctx.mode == 'build':
         ctx.add_rule(TouchRule(
                 targets = "manpages",
                 sources = "roxterm.1 roxterm-config.1"))
+    
+    # Make sure .ui file is GTK2-compatible
+    def process_ui(ctx, env, targets, sources):
+        fp = open(sources[0], 'r')
+        s = fp.read(fp)
+        fp.close()
+        s = re.sub(r'class="GtkBox" id=(.*)hbox',
+                r'class="GtkHBox" id=\1hbox', s)
+        s = re.sub(r'class="GtkBox" id=(.*)vbox',
+                r'class="GtkVBox" id=\1vbox', s)
+        save_if_different(sources[0], s)
+        fp = open(targets[0], 'w')
+        fp.close()
+    ctx.add_rule(Rule(rule = process_ui,
+            sources = "${SRC_DIR}/roxterm-config.ui",
+            targets = "roxterm-config.ui-stamp"))
 
 elif ctx.mode == "install":
 

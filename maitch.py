@@ -1261,7 +1261,8 @@ class TouchRule(Rule):
     """ Use this as a dummy rule rather than use a Rule with no rule parameter.
     The target(s) will be "touched" to update their timestamp. """
     def __init__(self, **kwargs):
-        kwargs['rule'] = self.touch
+        if not kwargs.get('rule'):
+            kwargs['rule'] = self.touch
         Rule.__init__(self, **kwargs)
     
     
