@@ -269,17 +269,6 @@ void on_close_buttons_toggled(GtkToggleButton *button, ProfileGUI *pg)
     profilegui_set_close_buttons_shading(pg);
 }
 
-void on_cursor_blinks_toggled(GtkToggleButton *button, ProfileGUI *pg)
-{
-    gboolean state;
-    
-    if (capplet_ignore_changes)
-        return;
-    
-    state = gtk_toggle_button_get_active(button);
-    capplet_set_int(pg->capp.options, "cursor_blinks", state);
-}
-
 void on_cell_size_toggled(GtkToggleButton *button, ProfileGUI *pg)
 {
     gboolean state = gtk_toggle_button_get_active(button);
