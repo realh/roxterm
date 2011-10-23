@@ -82,7 +82,8 @@ class Context(object):
                 to it.
         TOP_DIR = top level of package directory, defaults to ".."
         SRC_DIR = top level of source directory, defaults to ${TOP_DIR}.
-        
+                Otherwise it should be specified relative to TOP_DIR to make
+                sure dist stage works correctly.
         
         Special env variables. These are expanded in all modes, not just
         configure. They are not saved in the env file.
@@ -115,6 +116,7 @@ class Context(object):
         
         self.created_by_config = {}
         self.installed = []
+        self.tar_contents = []
         
         # Check mode
         syntax = False
@@ -138,6 +140,7 @@ USAGE:
   ./mscript install
   ./mscript uninstall
   ./mscript clean
+  ./mscript dist
 
 ARGS may be specified in the form VAR=value, or VAR on its own for True.
 Special variables may also be specified in the form --var or --var=value.
@@ -166,11 +169,13 @@ Predefined variables and their default values:
         # We have to get BUILD_DIR from kwargs early one. Setting it from
         # CLI is disallowed
         self.get_build_dir(kwargs)
-        self.build_dir = self.subst(self.env['BUILD_DIR'])
+        self.build_dir = os.path.abspath(self.subst(self.env['BUILD_DIR']))
         self.ensure_out_dir(self.build_dir)
-        # This message is to help text editors find the cwd in case errors
-        # are reported relative to it
-        sys.stdout.write('make[0]: Entering directory "%s"\n' % self.build_dir)
+        if self.mode != "dist":
+            # This message is to help text editors find the cwd in case errors
+            # are reported relative to it
+            sys.stdout.write('make[0]: Entering directory "%s"\n' % \
+                    self.build_dir)
         os.chdir(self.build_dir)
         
         # Get lock on BUILD_DIR
@@ -249,6 +254,15 @@ Predefined variables and their default values:
         self.definitions = {}
         
         self.created_by_config[opj(self.build_dir, ".maitch")] = True
+        
+        # In dist mode everything is relative to TOP_DIR
+        if self.mode == "dist":
+            self.env['TOP_DIR'] = os.curdir
+            bd = os.path.abspath(self.build_dir)
+            self.env['BUILD_DIR'] = bd
+            td = os.path.abspath(self.top_dir)
+            sys.stdout.write('make[0]: Entering directory "%s"\n' % td)
+            os.chdir(td)
     
     
     def define(self, key, value):
@@ -383,7 +397,7 @@ Predefined variables and their default values:
         
     
     def get_build_dir(self, kwargs = None):
-        """ Sets env's BUILD_DIR and SRC_DIR, looking in kwargs or self.env,
+        """ Sets env's TOP_DIR and SRC_DIR, looking in kwargs or self.env,
         setting defaults if necessary. """
         if not kwargs:
             kwargs = self.env
@@ -443,21 +457,28 @@ Predefined variables and their default values:
             rules.append(rule)
     
     
-    def glob(self, pattern, dir = None, subdir = None):
+    def glob(self, pattern, dir = None, subdir = None, expand = None):
         """ Returns a list of matching filenames relative to dir (default
         ${BUILD_DIR}). subdir, if given, is preserved at the start of each
-        filename. """
+        filename. expand is whether to use the substituted/expanded version
+        of dir in the output. If not given/None it's True in all modes except
+        dist. """
+        if expand == None:
+            expand = self.mode != "dist"
         if dir:
+            orig_dir = dir
             dir = self.subst(dir)
         else:
+            orig_dir = self.build_dir
             dir = self.build_dir
         if subdir:
             subdir = self.subst(subdir)
             dir = opj(dir, subdir)
         matches = fnmatch.filter(os.listdir(dir), pattern)
-        if subdir:
-            for i in range(len(matches)):
-                matches[i] = opj(subdir, matches[i])
+        if expand:
+            dir = orig_dir
+        for i in range(len(matches)):
+            matches[i] = opj(dir, matches[i])
         return matches
     
     
@@ -506,6 +527,33 @@ Predefined variables and their default values:
             self.clean(False)
         elif self.mode == 'distclean':
             self.clean(False, True)
+        elif self.mode == 'dist':
+            self.make_tarball()
+    
+    
+    def make_tarball(self):
+        import tarfile
+        basedir = self.subst("${PACKAGE}-${VERSION}")
+        filename = os.path.abspath(
+                self.subst("${BUILD_DIR}/%s.tar.bz2" % basedir))
+        tar = tarfile.open(filename, 'w:bz2')
+        for f, kwargs in self.tar_contents:
+            kwargs = dict(kwargs)
+            dest = kwargs.get('arcname')
+            if dest:
+                dest = os.path.normpath(opj(basedir, dest))
+            else:
+                dest = os.path.normpath(opj(basedir, f))
+            kwargs['arcname'] = dest
+            tar.add(self.subst(f), **kwargs)
+        tar.close()
+    
+    
+    def add_dist(self, objects, **kwargs):
+        if isinstance(objects, basestring):
+            objects = objects.split()
+        for o in objects:
+            self.tar_contents.append([o, kwargs])
     
     
     def clean(self, fatal, distclean = False):

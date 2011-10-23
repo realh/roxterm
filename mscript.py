@@ -286,4 +286,33 @@ elif ctx.mode == 'distclean':
         except OSError:
             pass
 
+elif ctx.mode == 'dist':
+    
+    ctx.add_dist("AUTHORS builddeb " \
+            "ChangeLog ChangeLog.old Config " \
+            "COPYING debian Help/en Help/lib/header.png " \
+            "Help/lib/logo_text_only.png Help/lib/logo_text.xcf " \
+            "Help/lib/roxterm.css Help/lib/roxterm_ie.css "
+            "Help/lib/sprites.png " \
+            "INSTALL INSTALL.Debian " \
+            "NEWS README README.translations " \
+            "roxterm.1.xml.in roxterm-config.1.xml.in " \
+            "roxterm.desktop roxterm.lsm.in roxterm.spec.in " \
+            "roxterm.svg roxterm.xml src TODO update-locales " \
+            "src debian builddeb ")
+    # maitch-specific
+    ctx.add_dist("version maitch.py mscript.py")
+    # ROX bits
+    ctx.add_dist("AppInfo.xml.in AppRun .DirIcon " \
+            "Help/Changes Help/COPYING Help/NEWS Help/README")
+    # Translations (currently not properly supported)
+    ctx.add_dist("ABOUT-NLS po po4a")
+    # Stuff to be removed when we no longer support autotools
+    ctx.add_dist("m4 acinclude.m4 aclocal.m4 " \
+            "bootstrap.sh compile config.guess config.h.in " \
+            "config.sub config.rpath configure configure.ac configure.ac.in " \
+            "depcomp install-sh intl ltmain.sh Makefile.am Makefile.in " \
+            "missing")
+            
+
 ctx.run()
