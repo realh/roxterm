@@ -38,10 +38,22 @@ if ctx.mode == 'configure' or ctx.mode == 'help':
 if ctx.mode == 'configure':
 
     vfile = opj("${TOP_DIR}", "version")
-    if os.path.exists(ctx.subst(opj("${TOP_DIR}", ".git"))):
-        version = ctx.prog_output(["git", "describe"])[0].strip()
+    git = os.path.exists(ctx.subst(opj("${TOP_DIR}", ".git")))
+    try:
+        ctx.find_prog_env("git")
+    except MaitchNotFoundError:
+        git = False
+    if git:
+        version = ctx.prog_output(["${GIT}", "describe"])[0].strip()
         version = version.replace('-', '.', 1).replace('-', '~', 1)
         ctx.save_if_different(vfile, version + '\n')
+        gitlog = ctx.prog_output(["${GIT}", "log"])[0]
+        fp = open(ctx.subst("${TOP_DIR}/ChangeLog.old"), 'r')
+        gitlog += fp.read()
+        fp.close()
+        # Can't use ctx.save_if_different because it tries to subst
+        # content and fails
+        save_if_different(ctx.subst("${TOP_DIR}/ChangeLog"), gitlog)
     else:
         fp = open(vfile, 'r')
         version = fp.read().strip()
@@ -158,6 +170,7 @@ if ctx.mode == 'configure':
             '#define VERSION_H\n' \
             '#define VERSION "${VERSION}"\n' \
             '#endif\n')
+    
     tgt = "${TOP_DIR}/debian/changelog"
     src = tgt + ".in"
     if os.path.exists(ctx.subst(src)):
