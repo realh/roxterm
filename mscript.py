@@ -324,11 +324,16 @@ elif ctx.mode == 'dist':
     # Translations (currently not properly supported)
     ctx.add_dist("ABOUT-NLS po po4a")
     # Stuff to be removed when we no longer support autotools
-    ctx.add_dist("m4 acinclude.m4 aclocal.m4 " \
-            "bootstrap.sh compile config.guess config.h.in " \
-            "config.sub config.rpath configure configure.ac configure.ac.in " \
-            "depcomp install-sh intl ltmain.sh Makefile.am Makefile.in " \
-            "missing")
+    ctx.add_dist("acinclude.m4 bootstrap.sh configure.ac.in " \
+            "Makefile.am src/Makefile.am")
+    try:
+        ctx.add_dist("m4 acinclude.m4 aclocal.m4 " \
+                "bootstrap.sh compile config.guess config.h.in " \
+                "config.sub config.rpath configure configure.ac " \
+                "depcomp install-sh intl ltmain.sh" \
+                "Makefile.in src/Makefile.in missing")
+    except:
+        pass
             
 
 ctx.run()
