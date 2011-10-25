@@ -257,7 +257,7 @@ elif ctx.mode == 'build':
     # Make sure .ui file is GTK2-compatible
     def process_ui(ctx, env, targets, sources):
         fp = open(sources[0], 'r')
-        s = fp.read(fp)
+        s = fp.read()
         fp.close()
         s = re.sub(r'class="GtkBox" id=(.*)hbox',
                 r'class="GtkHBox" id=\1hbox', s)
@@ -270,7 +270,7 @@ elif ctx.mode == 'build':
             sources = "${SRC_DIR}/roxterm-config.ui",
             targets = "roxterm-config.ui-stamp"))
 
-elif ctx.mode == "install":
+elif ctx.mode == "install" or ctx.mode == "uninstall":
 
     ctx.install_bin("roxterm roxterm-config")
     ctx.install_data("roxterm-config.ui")
@@ -330,10 +330,16 @@ elif ctx.mode == 'dist':
         ctx.add_dist("m4 acinclude.m4 aclocal.m4 " \
                 "bootstrap.sh compile config.guess config.h.in " \
                 "config.sub config.rpath configure configure.ac " \
-                "depcomp install-sh intl ltmain.sh" \
+                "depcomp install-sh intl ltmain.sh " \
                 "Makefile.in src/Makefile.in missing")
     except:
         pass
             
 
 ctx.run()
+
+if ctx.mode == 'uninstall':
+    ctx.prune_directory("${DATADIR}/icons")
+    ctx.prune_directory("${PKGDATADIR}")
+    ctx.prune_directory("${DOCDIR}")
+    ctx.prune_directory("${HTMLDIR}")

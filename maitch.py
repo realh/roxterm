@@ -59,6 +59,9 @@ class MaitchRecursionError(MaitchError):
 class MaitchJobError(MaitchError):
     pass
 
+class MaitchInstallError(MaitchError):
+    pass
+
 
 
 # subst behaviour if a variable isn't found
@@ -472,11 +475,12 @@ Predefined variables and their default values:
             orig_dir = self.build_dir
             dir = self.build_dir
         if subdir:
+            orig_subdir = subdir
             subdir = self.subst(subdir)
             dir = opj(dir, subdir)
         matches = fnmatch.filter(os.listdir(dir), pattern)
-        if expand:
-            dir = orig_dir
+        if not expand:
+            dir = opj(orig_dir, orig_subdir)
         for i in range(len(matches)):
             matches[i] = opj(dir, matches[i])
         return matches
@@ -529,6 +533,8 @@ Predefined variables and their default values:
             self.clean(False, True)
         elif self.mode == 'dist':
             self.make_tarball()
+        elif self.mode == 'uninstall':
+            self.uninstall()
     
     
     def make_tarball(self):
@@ -887,7 +893,10 @@ int main() { %s(); return 0; }
         with multiple files separated by spaces, or a list, or None to create
         directory. other_options, which may also be a string or a list, are
         additional options for install.
-        Automatically creates target directories. """
+        Automatically creates target directories.
+        If other_options contains -T, directory is the target filename.
+        In uninstall mode each installed file/directory is instead added to a
+        list which will be deleted in reverse order when run() is called. """
         directory = process_nodes(directory)
         if self.dest_dir:
             directory = [opj(self.build_dir, self.dest_dir, d) \
@@ -896,6 +905,22 @@ int main() { %s(); return 0; }
             sources = []
         elif isinstance(sources, basestring):
             sources = sources.split()
+        if len(directory) > 1 and sources:
+            raise MaitchInstallError("Can't install files to multiple " \
+                    "directories")
+        if len(sources) > 1 and other_options and "-T" in other_options:
+            raise MaitchInstallError("Can only install one file where " \
+                    "target is a filename instead of a directory")
+        if self.mode == 'uninstall':
+            if other_options and "-T" in other_options:
+                f = [directory[0]]
+            elif sources:
+                f = [opj(directory[0], os.path.basename(f)) \
+                        for f in sources]
+            else:
+                f = directory
+            self.installed.append([f, libtool])
+            return
         sources = [self.find_source(s, TOP | SRC, False) for s in sources]
         if libtool:
             cmd = ["${LIBTOOL}", "--mode=install", "${INSTALL}"]
@@ -912,7 +937,7 @@ int main() { %s(); return 0; }
         cmd += sources + directory
         if sources:
             if other_options and "-T" in other_options:
-                dir = os.path.dirname(sources[0])
+                dir = os.path.dirname(directory[0])
             else:
                 dir = directory[0]
             if not os.path.isdir(dir):
@@ -967,6 +992,42 @@ int main() { %s(); return 0; }
         for d, s in dirs.items():
             self.install(opj("${MANDIR}", "man%d" % int(d)), s, '0644')
             
+    
+    def uninstall(self):
+        if not self.installed:
+            sys.stdout.write("Noting to uninstall\n")
+            return
+        self.installed.reverse()
+        for fs, libtool in self.installed:
+            if libtool:
+                cmd = ["${LIBTOOL}", "--mode=uninstall", "rm", "-f"] + fs
+                cmd = [self.subst(c) for c in cmd]
+                sys.stdout.write("%s\n" % ' '.join(cmd))
+                subprocess.call(cmd, cwd = self.build_dir)
+            else:
+                fs = [self.subst(f) for f in fs]
+                if os.path.isdir(fs[0]):
+                    # If first is directory, then so are the rest
+                    rm = os.rmdir
+                else:
+                    rm = os.unlink
+                for f in fs:
+                    try:
+                        rm(f)
+                    except OSError:
+                        sys.stderr.write("Failed to delete '%s'\n" % f)
+                    else:
+                        sys.stdout.write("Removed '%s'\n" % f)
+    
+    
+    def prune_directory(self, root):
+        """ Expands variables in root and prefixes ${DESTDIR} before
+        calling global version. """
+        # Note we can't use opj because root is (usually) absolute
+        root = os.path.normpath(self.subst("${DESTDIR}" + os.sep + root))
+        sys.stdout.write("Removing empty directories from '%s'\n" % root)
+        return prune_directory(root)
+    
 
 
 class Rule(object):
@@ -1504,9 +1565,27 @@ def set_default(d, k, v):
 
 
 def opj(*args):
-    " Convenience shorthand for os.path.join "
-    return os.path.join(*args)
+    """ Like os.path.join and also calls os.path.normpath """
+    return os.path.normpath(os.path.join(*args))
     
+    
+    
+def prune_directory(root):
+    """ Recursively moves all empty directories at root. Returns False if
+    remaining files meant one or more directories could not be deleted. """
+    if not os.path.exists(root):
+        return True
+    success = True
+    for n in os.listdir(root):
+        n = opj(root, n)
+        if os.path.isdir(n):
+            success = prune_directory(n) and success
+        elif os.path.exists(n):
+            sys.stderr.write("Unable to remove non-empty directory '%s'\n" % \
+                    root)
+            success = False
+    return success
+
     
 
 _subst_re = re.compile(r"(\$\{-?([a-zA-Z0-9_]+)\})")
