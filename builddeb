@@ -3,10 +3,11 @@
 rm -rf debtmp
 mkdir debtmp
 
-Version=`grep ^AC_INIT configure.ac | sed 's/.*, //;s/)//'`
+[ -f version ] || python ./mscript.py configure
 
-[ -f Makefile ] || ./configure
-make dist
+Version=`cat version`
+
+python ./mscript.py dist
 ln "roxterm-$Version.tar.gz" "debtmp/roxterm_$Version.orig.tar.gz"
 
 cd debtmp
