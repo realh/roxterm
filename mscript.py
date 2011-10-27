@@ -45,10 +45,11 @@ if ctx.mode == 'configure':
         ctx.find_prog_env("git")
     except MaitchNotFoundError:
         git = False
+    vfile = ctx.subst(VFILE)
     if git:
         version = ctx.prog_output(["${GIT}", "describe"])[0].strip()
         version = version.replace('-', '.', 1).replace('-', '~', 1)
-        ctx.save_if_different(VFILE, version + '\n')
+        ctx.save_if_different(vfile, version + '\n')
         gitlog = ctx.prog_output(["${GIT}", "log"])[0]
         fp = open(ctx.subst("${TOP_DIR}/ChangeLog.old"), 'r')
         gitlog += fp.read()
@@ -57,7 +58,7 @@ if ctx.mode == 'configure':
         # content and fails
         save_if_different(ctx.subst("${TOP_DIR}/ChangeLog"), gitlog)
     else:
-        fp = open(VFILE, 'r')
+        fp = open(vfile, 'r')
         version = fp.read().strip()
         fp.close()
     ctx.setenv('VERSION', version)

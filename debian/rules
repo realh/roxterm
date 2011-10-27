@@ -3,7 +3,7 @@
 # Split this up a bit to avoid long lines
 CONFIGURE_GDA_PATH = /usr/share/gnome-control-center/default-apps
 CONFIGURE_GDA = --with-gnome-default-applications=$(CONFIGURE_GDA_PATH)
-CONFIGURE_CFLAGS = CFLAGS="-Wl,--as-needed -Wall -g -O2"
+CONFIGURE_CFLAGS = LIBS="-Wl,--as-needed"
 CONFIGURE_DIRS = TOP_DIR=../.. PREFIX=/usr
 CONFIGURE_COMMON = $(CONFIGURE_GDA) $(CONFIGURE_CFLAGS) $(CONFIGURE_DIRS)
 
@@ -43,3 +43,5 @@ override_dh_auto_test:
 override_dh_auto_clean:
 	python mscript.py clean --build-dir=debian/build-gtk2
 	rm -rf debian/build-gtk2 debian/build-gtk3
+	rm -f maitch.py[co]
+

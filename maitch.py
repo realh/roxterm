@@ -159,8 +159,9 @@ Predefined variables and their default values:
                     default = 'dynamic'
                 else:
                     default = v[1]
-                sys.stdout.write("  %s%s [%s]: %s\n" %
-                        (v[0], alt, default, v[2]))
+                print_wrapped("  %s%s [%s]: %s" %
+                        (v[0], alt, default, v[2]),
+                        80, 8, 0)
             self.showed_var_header = False
             if syntax:
                 sys.exit(0)
@@ -169,9 +170,42 @@ Predefined variables and their default values:
         
         self.env = {}
         
-        # We have to get BUILD_DIR from kwargs early one. Setting it from
-        # CLI is disallowed
-        self.get_build_dir(kwargs)
+        # From now on reconfigure is the same as configure
+        if self.mode == 'reconfigure':
+            self.mode = 'configure'
+        
+        # Get more env vars from kwargs
+        for k, v in kwargs.items():
+            self.env[k] = v
+        
+        self.explicit_rules = {}
+        self.implicit_rules = {}
+        
+        self.cli_targets = []
+        
+        # Process command-line args
+        if len(sys.argv) > 2:
+            special_vars = []
+            for v in _var_repository:
+                if v[3]:
+                    special_vars.append(v[0])
+            for a in sys.argv[2:]:
+                if '=' in a:
+                    k, v = a.split('=', 1)
+                elif self.mode != 'build' or k.startswith('--'):
+                    k = a
+                    v = True
+                elif self.mode == 'build':
+                    self.cli_targets.append(a)
+                if k.startswith('--'):
+                    k_ = k
+                    k = arg_to_var(k)
+                if self.var_is_special(k):
+                    raise MaitchDirError("%s is a reserved variable" % k)
+                self.env[k] = v
+        
+        # Everything hinges on BUILD_DIR
+        self.get_build_dir()
         self.build_dir = os.path.abspath(self.subst(self.env['BUILD_DIR']))
         self.ensure_out_dir(self.build_dir)
         if self.mode != "dist":
@@ -179,6 +213,7 @@ Predefined variables and their default values:
             # are reported relative to it
             sys.stdout.write('make[0]: Entering directory "%s"\n' % \
                     self.build_dir)
+            sys.stdout.flush()
         os.chdir(self.build_dir)
         
         # Get lock on BUILD_DIR
@@ -199,46 +234,6 @@ Predefined variables and their default values:
                     if k != 'BUILD_DIR':
                         self.env[k] = v.rstrip()
                 fp.close()
-        
-        # From now on reconfigure is the same as configure
-        if self.mode == 'reconfigure':
-            self.mode = 'configure'
-        
-        # Get more env vars from kwargs
-        for k, v in kwargs.items():
-            self.env[k] = v
-        
-        self.explicit_rules = {}
-        self.implicit_rules = {}
-        
-        self.cli_targets = []
-        
-        # Process command-line args
-        if self.mode == 'configure' and len(sys.argv) > 2:
-            special_vars = []
-            for v in _var_repository:
-                if v[3]:
-                    special_vars.append(v[0])
-            for a in sys.argv[2:]:
-                if '=' in a:
-                    k, v = a.split('=', 1)
-                else:
-                    k = a
-                    v = True
-                if k.startswith('--'):
-                    k_ = k
-                    k = arg_to_var(k)
-                    if not k in special_vars:
-                        raise MaitchArgError("Invalid argument '%s'" % k_)
-                if k == 'BUILD_DIR':
-                    raise MaitchDirError("BUILD_DIR may only be set "
-                            "in Context constructor")
-                elif self.var_is_special(k):
-                    raise MaitchDirError("%s is a reserved variable" % k)
-                self.env[k] = v
-        elif self.mode =='build' and len(sys.argv) > 2:
-            for a in sys.argv[2:]:
-                self.cli_targets.append(a)
         
         # Set defaults
         for v in _var_repository:
@@ -288,11 +283,10 @@ Predefined variables and their default values:
     def __arg(self, help_name, help_body, var, antivar, default):
         if self.mode == 'help':
             if not self.showed_var_header:
-                sys.stdout.write("\n%s supports these configure options:\n\n",
+                sys.stdout.write("\n%s supports these configure options:\n\n" %
                         self.package_name)
                 self.showed_var_header = True
-            print_formatted(help, 80, help_name, 20)
-            sys.stdout.write("\n")
+            print_formatted(help_body, 80, help_name, 20)
         else:
             if self.env.get(antivar):
                 self.setenv(var, False)
@@ -408,7 +402,9 @@ Predefined variables and their default values:
         self.env['MSCRIPT_REAL_DIR'] = \
                 os.path.abspath(os.path.dirname(os.path.realpath(sys.argv[0])))
         bd = kwargs.get('BUILD_DIR')
-        if not bd:
+        if bd:
+            bd = os.path.abspath(bd)
+        else:
             bd = opj("${MSCRIPT_REAL_DIR}", "build")
         self.env['BUILD_DIR'] = bd
         td = kwargs.get('TOP_DIR')
@@ -520,7 +516,9 @@ Predefined variables and their default values:
                 tgts = self.cli_targets
             else:
                 tgts = self.explicit_rules.keys()
-            BuildGroup(self, tgts)
+            bg = BuildGroup(self, tgts)
+            if bg.cancelled:
+                sys.exit(1)
         elif self.mode == 'clean':
             filename = opj(self.build_dir, ".maitch", "manifest")
             if os.path.exists(filename):
@@ -1499,17 +1497,14 @@ class StaticLibRule(LibtoolProgramRule):
 def print_formatted(body, columns = 80, heading = None, h_columns = 20):
     """ Prints body, wrapped at the specified number of columns. If heading is
     given, h_columns are reserved on the left for it. """
-    if heading:
-        b_cols = columns - h_columns
-    else:
-        b_cols = columns
-    if len(heading) >= h_columns:
+    if heading and len(heading) >= h_columns:
         print_wrapped(heading, columns)
-        pre = h_columns
+        print_wrapped(body, columns, h_columns)
+    elif heading:
+        print_wrapped(heading + ' ' * (h_columns - len(heading)) + body,
+                columns, h_columns, 0)
     else:
-        sys.stdout.write(heading + ' ' * (h_columns - len(heading)))
-        pre = 0
-    print_wrapped(body, columns - h_columns, h_columns, pre)
+        print_wrapped(body, columns, h_columns)
 
 
 def print_wrapped(s, columns = 80, indent = 0, first_indent = None,
@@ -1519,15 +1514,21 @@ def print_wrapped(s, columns = 80, indent = 0, first_indent = None,
     if first_indent == None:
         first_indent = indent
     i = ' ' * first_indent
-    while len(s) > columns:
-        l = s[:columns]
-        s = s[columns:]
-        split = l.rsplit(None, 1)
-        if split:
+    current_indent = first_indent
+    while len(s) > columns - current_indent:
+        l = s[:columns - current_indent]
+        s = s[columns - current_indent:]
+        if ascii.isspace(l[-1]):
+            l = l[:-1]
+            split = []
+        else:
+            split = l.rsplit(None, 1)
+        if len(split) > 1:
             l = split[0]
-            s = split[1] + ' ' + s
+            s = split[1] + s
         file.write("%s%s\n" % (i, l))
         i = ' ' * indent
+        current_indent = indent
     if s:
         file.write("%s%s\n" % (i, s))
 
@@ -1918,8 +1919,13 @@ class BuildGroup(object):
     def make_job_ready(self, job):
         " Moves a job from pending_jobs to ready_queue. "
         self.cond.acquire()
-        self.pending_jobs.remove(job)
-        self.ready_queue.append(job)
+        # We may still get here after all jobs have been cancelled due
+        # to an error
+        try:
+            self.pending_jobs.remove(job)
+            self.ready_queue.append(job)
+        except ValueError:
+            pass
         self.cond.notify()
         self.cond.release()
     
@@ -2040,6 +2046,7 @@ class Builder(threading.Thread):
                     job.run()
                     self.bg.job_done(job)
         except:
+            sys.stderr.write("Cancelling all remaining jobs\n")
             self.bg.cancel_all_jobs()
             raise
             
