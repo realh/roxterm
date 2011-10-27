@@ -3,7 +3,7 @@
 rm -rf debtmp
 mkdir debtmp
 
-[ -f version ] || python ./mscript.py configure
+python ./mscript.py configure
 
 Version=`cat version`
 

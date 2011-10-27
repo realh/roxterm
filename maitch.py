@@ -30,6 +30,15 @@ from curses import ascii
 from lockfile import FileLock
 
 
+def mprint(*args, **kwargs):
+    """ Equivalent to python 3's print but also works in python < 2.6 """
+    sep = kwargs.get('sep', '')
+    end = kwargs.get('end', '\n')
+    file = kwargs.get('file', sys.stdout)
+    file.write(sep.join(args) + end)
+    file.flush()
+
+
 # Where to look for sources, may be combined with bitwise or
 SRC = 1
 TOP = 2
@@ -134,7 +143,7 @@ class Context(object):
         if syntax:
             self.mode == 'help'
         if self.mode == 'help':
-            sys.stdout.write("""Help for maitch:
+            mprint("""Help for maitch:
 USAGE:
   ./mscript help
   ./mscript configure [ARGS]
@@ -184,6 +193,7 @@ Predefined variables and their default values:
         self.cli_targets = []
         
         # Process command-line args
+        cli_env = {}
         if len(sys.argv) > 2:
             special_vars = []
             for v in _var_repository:
@@ -203,6 +213,7 @@ Predefined variables and their default values:
                 if self.var_is_special(k):
                     raise MaitchDirError("%s is a reserved variable" % k)
                 self.env[k] = v
+                cli_env[k] = v
         
         # Everything hinges on BUILD_DIR
         self.get_build_dir()
@@ -211,9 +222,8 @@ Predefined variables and their default values:
         if self.mode != "dist":
             # This message is to help text editors find the cwd in case errors
             # are reported relative to it
-            sys.stdout.write('make[0]: Entering directory "%s"\n' % \
+            mprint('make[0]: Entering directory "%s"' % \
                     self.build_dir)
-            sys.stdout.flush()
         os.chdir(self.build_dir)
         
         # Get lock on BUILD_DIR
@@ -231,8 +241,19 @@ Predefined variables and their default values:
                 fp = open(n, 'r')
                 for l in fp.readlines():
                     k, v = l.split('=', 1)
-                    if k != 'BUILD_DIR':
-                        self.env[k] = v.rstrip()
+                    # Don't override command line or constructor
+                    if not k in cli_env:
+                        v = v.rstrip()
+                        if v == 'True':
+                            v = True
+                        elif v == 'False':
+                            v = False
+                        elif len(v) \
+                                and (ascii.isdigit(v[0]) \
+                                    or (v[0] == '-' and len(v) > 1)) \
+                                and all([ascii.isdigit(a) for a in v[1:]]):
+                            v = int(v)
+                        self.env[k] = v
                 fp.close()
         
         # Set defaults
@@ -259,7 +280,7 @@ Predefined variables and their default values:
             bd = os.path.abspath(self.build_dir)
             self.env['BUILD_DIR'] = bd
             td = os.path.abspath(self.top_dir)
-            sys.stdout.write('make[0]: Entering directory "%s"\n' % td)
+            mprint('make[0]: Entering directory "%s"' % td)
             os.chdir(td)
     
     
@@ -283,7 +304,7 @@ Predefined variables and their default values:
     def __arg(self, help_name, help_body, var, antivar, default):
         if self.mode == 'help':
             if not self.showed_var_header:
-                sys.stdout.write("\n%s supports these configure options:\n\n" %
+                mprint("\n%s supports these configure options:\n" %
                         self.package_name)
                 self.showed_var_header = True
             print_formatted(help_body, 80, help_name, 20)
@@ -377,8 +398,8 @@ Predefined variables and their default values:
         elif self.src_dir == self.build_dir or self.src_dir == ".":
             clash = 'SRC_DIR'
         if clash:
-            sys.stderr.write("WARNING: BUILD_DIR == %s, unable to clean\n" %
-                    clash)
+            mprint("WARNING: BUILD_DIR == %s, unable to clean" % clash,
+                    file = sys.stderr)
             return False
         return True
     
@@ -540,7 +561,7 @@ Predefined variables and their default values:
         basedir = self.subst("${PACKAGE}-${VERSION}")
         filename = os.path.abspath(
                 self.subst("${BUILD_DIR}/%s.tar.bz2" % basedir))
-        sys.stdout.write("Creating tarball '%s'\n" % filename)
+        mprint("Creating tarball '%s'" % filename)
         tar = tarfile.open(filename, 'w:bz2')
         for f, kwargs in self.tar_contents:
             kwargs = dict(kwargs)
@@ -550,7 +571,7 @@ Predefined variables and their default values:
             else:
                 dest = os.path.normpath(opj(basedir, f))
             kwargs['arcname'] = dest
-            sys.stdout.write("Adding '%s' to tarball\n" % dest)
+            mprint("Adding '%s' to tarball" % dest)
             tar.add(self.subst(f), **kwargs)
         tar.close()
     
@@ -604,14 +625,14 @@ Predefined variables and their default values:
     
     def find_prog(self, prog, expand = False):
         " Finds a binary in context's PATH. prog not expanded by default. "
-        sys.stdout.write("Searching for program %s... " % prog)
+        mprint("Searching for program %s... " % prog, end = '')
         if expand:
             prog = self.subst(prog)
         try:
             p = find_prog(prog, self.env)
-            sys.stdout.write("%s\n" % p)
+            mprint("%s" % p)
         except:
-            sys.stdout.write("not found\n")
+            mprint("not found")
             raise
         return p
     
@@ -658,14 +679,14 @@ Predefined variables and their default values:
         eg "gobject-2.0 sqlite3" becomes GOBJECT_2_0_SQLITE3.
         If version is given, also check that package's version is at least
         as new (only works on one package at a time). """
-        sys.stdout.write("Checking pkg-config %s..." % pkgs)
+        mprint("Checking pkg-config %s..." % pkgs, end = '')
         try:
             if version:
                 try:
                     pvs = self.prog_output(
                             [pkg_config, '--modversion', pkgs])[0].strip()
                 except:
-                    sys.stdout.write("not found\n")
+                    mprint("not found")
                 pkg_v = pvs.split('.')
                 v = version.split('.')
                 new_enough = True
@@ -677,7 +698,7 @@ Predefined variables and their default values:
                         new_enough = False
                         break
                     if not new_enough:
-                        sys.stdout.write("too old\n")
+                        mprint("too old")
                         raise MaitchPkgError("%s has version %s, "
                                 "%s needs at least %s" %
                                 (pkgs, pvs, self.package_name, version))
@@ -689,9 +710,9 @@ Predefined variables and their default values:
             self.prog_to_var([pkg_config, '--libs'] + pkgs,
                     prefix + '_LIBS')
         except:
-            sys.stdout.write("error\n")
+            mprint("error")
         else:
-            sys.stdout.write("ok\n")
+            mprint("ok")
     
     
     def subst(self, s, novar = NOVAR_FATAL, recurse = True, at = False):
@@ -718,7 +739,7 @@ Predefined variables and their default values:
     def find_sys_header(self, header, cflags = None):
         """ Uses deps_from_cpp() to find the full path of a header in the
         include path. Returns None if not found. """
-        sys.stdout.write("Looking for header '%s'... " % header)
+        mprint("Looking for header '%s'... " % header, end = '')
         tmp = self.tmpname() + ".c"
         fp = open(tmp, 'w')
         fp.write("#include <%s>\n" % header)
@@ -727,9 +748,9 @@ Predefined variables and their default values:
         os.unlink(tmp)
         for d in deps:
             if d.endswith(os.sep + header):
-                sys.stdout.write("%s\n" % d)
+                mprint("%s" % d)
                 return d
-        sys.stdout.write("not found\n")
+        mprint("not found")
         return None
     
     
@@ -737,7 +758,7 @@ Predefined variables and their default values:
         """ Checks whether the program code can be compiled as C, returns
         True or False. If msg is given prints "Checking msg... ". """
         if msg:
-            sys.stdout.write("Checking %s... " % msg)
+            mprint("Checking %s... " % msg, end = '')
         if not cflags:
             cflags = self.env.get('CFLAGS', "")
         if not libs:
@@ -747,7 +768,7 @@ Predefined variables and their default values:
         fp.write(code)
         fp.close()
         prog = self.subst("${CC} %s %s -o %s %s" %
-                (cflags, libs, tmp, tmp + ".c")).split()
+                (libs, cflags, tmp, tmp + ".c")).split()
         try:
             self.prog_output(prog)
         except MaitchChildError:
@@ -760,7 +781,7 @@ Predefined variables and their default values:
                 pass
         os.unlink(tmp + ".c")
         if msg:
-            sys.stdout.write("%s\n" % result)
+            mprint("%s" % result)
         return result == 'yes'
 
 
@@ -899,8 +920,8 @@ int main() { %s(); return 0; }
         list which will be deleted in reverse order when run() is called. """
         directory = process_nodes(directory)
         if self.dest_dir:
-            directory = [opj(self.build_dir, self.dest_dir, d) \
-                    for d in directory]
+            directory = [self.dest_dir + os.sep + d for d in directory]
+        directory = [os.path.abspath(d) for d in directory]
         if not sources:
             sources = []
         elif isinstance(sources, basestring):
@@ -950,7 +971,7 @@ int main() { %s(); return 0; }
                 finally:
                     self.dest_dir = dd
         cmd = [self.subst(c) for c in cmd]
-        sys.stdout.write("%s\n" % ' '.join(cmd))
+        mprint("%s" % ' '.join(cmd))
         if subprocess.call(cmd, cwd = self.build_dir) != 0:
             raise MaitchChildError("install failed")
     
@@ -995,14 +1016,14 @@ int main() { %s(); return 0; }
     
     def uninstall(self):
         if not self.installed:
-            sys.stdout.write("Noting to uninstall\n")
+            mprint("Noting to uninstall")
             return
         self.installed.reverse()
         for fs, libtool in self.installed:
             if libtool:
                 cmd = ["${LIBTOOL}", "--mode=uninstall", "rm", "-f"] + fs
                 cmd = [self.subst(c) for c in cmd]
-                sys.stdout.write("%s\n" % ' '.join(cmd))
+                mprint("%s" % ' '.join(cmd))
                 subprocess.call(cmd, cwd = self.build_dir)
             else:
                 fs = [self.subst(f) for f in fs]
@@ -1015,9 +1036,9 @@ int main() { %s(); return 0; }
                     try:
                         rm(f)
                     except OSError:
-                        sys.stderr.write("Failed to delete '%s'\n" % f)
+                        mprint("Failed to delete '%s'" % f)
                     else:
-                        sys.stdout.write("Removed '%s'\n" % f)
+                        mprint("Removed '%s'" % f)
     
     
     def prune_directory(self, root):
@@ -1025,7 +1046,7 @@ int main() { %s(); return 0; }
         calling global version. """
         # Note we can't use opj because root is (usually) absolute
         root = os.path.normpath(self.subst("${DESTDIR}" + os.sep + root))
-        sys.stdout.write("Removing empty directories from '%s'\n" % root)
+        mprint("Removing empty directories from '%s'" % root)
         return prune_directory(root)
     
 
@@ -1177,13 +1198,13 @@ class Rule(object):
         env, targets, sources = self.process_env_tgt_src()        
         if callable(self.rule):
             if not self.quiet:
-                sys.stdout.write("Internal function: %s(%s, %s)\n" %
+                mprint("Internal function: %s(%s, %s)" %
                         (self.rule.__name__, str(targets), str(sources)))
             self.rule(self.ctx, env, targets, sources)
         else:
             rule = subst(env, self.rule)
             if not self.quiet:
-                sys.stdout.write(rule + '\n')
+                mprint(rule)
             if self.use_shell:
                 prog = rule
             else:
@@ -1444,7 +1465,7 @@ class ProgramRule(Rule):
         self.init_cflags(kwargs)
         self.init_libs(kwargs)
         set_default(kwargs, 'rule',
-                "${CC} ${CFLAGS_} ${LIBS_} -o ${TGT} ${SRC}")
+                "${CC} ${LIBS_} ${CFLAGS_} -o ${TGT} ${SRC}")
         Rule.__init__(self, **kwargs)
 
 
@@ -1531,6 +1552,7 @@ def print_wrapped(s, columns = 80, indent = 0, first_indent = None,
         current_indent = indent
     if s:
         file.write("%s%s\n" % (i, s))
+    file.flush()
 
 
 
@@ -1554,9 +1576,15 @@ def save_if_different(filename, content):
     else:
         old = None
     if content != old:
+        if old == None:
+            mprint("Creating '%s'" % filename)
+        else:
+            mprint("Updating '%s'" % filename)
         fp = open(filename, 'w')
         fp.write(content)
         fp.close()
+    else:
+        mprint("'%s' is unchanged" % filename)
             
 
 
@@ -1584,8 +1612,8 @@ def prune_directory(root):
         if os.path.isdir(n):
             success = prune_directory(n) and success
         elif os.path.exists(n):
-            sys.stderr.write("Unable to remove non-empty directory '%s'\n" % \
-                    root)
+            mprint("Unable to remove non-empty directory '%s'" % root,
+                    file = sys.stderr)
             success = False
     return success
 
@@ -2046,7 +2074,6 @@ class Builder(threading.Thread):
                     job.run()
                     self.bg.job_done(job)
         except:
-            sys.stderr.write("Cancelling all remaining jobs\n")
             self.bg.cancel_all_jobs()
             raise
             

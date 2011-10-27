@@ -5,7 +5,7 @@ import errno, os, re, sys, time
 from maitch import *
 
 ctx = Context(PACKAGE = "roxterm", SRC_DIR = "${TOP_DIR}/src",
-        CFLAGS = "-O2 -g -Wall -I${SRC_DIR} -I. -D_GNU_SOURCE -DHAVE_CONFIG_H")
+        CFLAGS = "-O2 -g -Wall -I. -I${SRC_DIR} -D_GNU_SOURCE -DHAVE_CONFIG_H")
 
 
 MINILIB_SOURCES = "colourscheme.c dlg.c display.c dragrcv.c dynopts.c " \
@@ -69,8 +69,8 @@ if ctx.mode == 'configure':
         try:
             ctx.find_prog_env("xsltproc", "XMLTOMAN")
         except MaitchNotFoundError:
-            sys.stderr.write(
-                    "Unable to build manpages without xmlto or xsltproc\n")
+            mprint("Unable to build manpages without xmlto or xsltproc",
+                    file = sys.stderr)
             ctx.setenv("XMLTOMAN", "")
         else:
             ctx.setenv("XMLTOMAN_OPTS", "--nonet --novalid " \
@@ -194,9 +194,9 @@ elif ctx.mode == 'build':
             quiet = True))
     
     # roxterm
-    if ctx.env['ENABLE_SM']:
+    if bool(ctx.env['ENABLE_SM']):
         ROXTERM_SOURCES += " session.c"
-    if ctx.env['HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX']:
+    if bool(ctx.env['HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX']):
         ROXTERM_SOURCES += " search.c"
     ctx.add_rule(CRule(
             cflags = "${ROXTERM_CFLAGS}",
