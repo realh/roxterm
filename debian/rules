@@ -3,8 +3,9 @@
 # Split this up a bit to avoid long lines
 CONFIGURE_GDA_PATH = /usr/share/gnome-control-center/default-apps
 CONFIGURE_GDA = --with-gnome-default-applications=$(CONFIGURE_GDA_PATH)
+CONFIGURE_LDFLAGS = LDFLAGS=-Wl,--as-needed
 CONFIGURE_DIRS = TOP_DIR=../.. PREFIX=/usr
-CONFIGURE_COMMON = $(CONFIGURE_GDA) $(CONFIGURE_DIRS)
+CONFIGURE_COMMON = $(CONFIGURE_GDA) $(CONFIGURE_LDFLAGS) $(CONFIGURE_DIRS)
 
 ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 NUMJOBS = $(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))

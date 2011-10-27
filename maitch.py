@@ -1464,8 +1464,9 @@ class ProgramRule(Rule):
     def __init__(self, **kwargs):
         self.init_cflags(kwargs)
         self.init_libs(kwargs)
+        self.init_var(kwargs, 'ldflags')
         set_default(kwargs, 'rule',
-                "${CC} ${LIBS_} ${CFLAGS_} -o ${TGT} ${SRC}")
+                "${CC} ${CFLAGS_} ${LIBS_} ${LDFLAGS_} -o ${TGT} ${SRC}")
         Rule.__init__(self, **kwargs)
 
 
@@ -1477,8 +1478,8 @@ class LibtoolProgramRule(ProgramRule):
         self.init_var(kwargs, 'libtool_mode_arg')
         set_default(kwargs, 'rule',
                 "${LIBTOOL} --mode=link ${LIBTOOL_FLAGS_} "
-                "gcc ${LIBTOOL_MODE_ARG_} -rpath ${LIBDIR} "
-                "${CFLAGS_} ${LIBS_} -o ${TGT} ${SRC}")
+                "gcc ${LIBTOOL_MODE_ARG_} "
+                "${CFLAGS_} ${LIBS_} ${LDFLAGS_} -o ${TGT} ${SRC}")
         ProgramRule.__init__(self, **kwargs)
 
 
@@ -2109,7 +2110,8 @@ add_var('CPP', find_prog_by_var, "C preprocessor")
 add_var('LIBTOOL', find_prog_by_var, "libtool compiler frontend for libraries")
 add_var('CDEP', '${CPP} -M', "C preprocessor with option to print deps")
 add_var('CFLAGS', '-O2 -g -Wall -I${SRC_DIR}', "C compiler flags")
-add_var('LIBS', '', "C libraries and linker options")
+add_var('LIBS', '', "libraries and linker options")
+add_var('LDFLAGS', '', "Extra linker options")
 add_var('CXXFLAGS', '${CFLAGS}', "C++ compiler flags")
 add_var('LIBTOOL_MODE_ARG', '', "Default libtool mode argument(s)")
 add_var('LIBTOOL_FLAGS', '', "Additional libtool flags")

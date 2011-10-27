@@ -64,14 +64,20 @@ if ctx.mode == 'configure':
     ctx.setenv('VERSION', version)
 
     try:
-        ctx.find_prog_env("xmltoman", "XMLTOMAN")
+        ctx.find_prog_env("xslto", "XMLTOMAN")
     except MaitchNotFoundError:
         try:
             ctx.find_prog_env("xsltproc", "XMLTOMAN")
         except MaitchNotFoundError:
-            mprint("Unable to build manpages without xmlto or xsltproc",
-                    file = sys.stderr)
-            ctx.setenv("XMLTOMAN", "")
+            try:
+                ctx.find_prog_env("xmltoman", "XMLTOMAN")
+            except MaitchNotFoundError:
+                mprint("Unable to build manpages without xmlto or xsltproc",
+                        file = sys.stderr)
+                ctx.setenv("XMLTOMAN", "")
+            else:
+                ctx.setenv("XMLTOMAN_OPTS", "")
+                ctx.setenv("XMLTOMAN_OUTPUT", "> ${TGT}")
         else:
             ctx.setenv("XMLTOMAN_OPTS", "--nonet --novalid " \
                     "--param man.charmap.use.subset 0 " \
@@ -79,8 +85,8 @@ if ctx.mode == 'configure':
                     "current/manpages/docbook.xsl")
             ctx.setenv("XMLTOMAN_OUTPUT", "")
     else:
-        ctx.setenv("XMLTOMAN_OPTS", "")
-        ctx.setenv("XMLTOMAN_OUTPUT", "> ${TGT}")
+        ctx.setenv("XMLTOMAN_OPTS", "man")
+        ctx.setenv("XMLTOMAN_OUTPUT", "")
     
     ctx.find_prog_env("convert")
     ctx.find_prog_env("composite")
@@ -295,9 +301,9 @@ elif ctx.mode == "install" or ctx.mode == "uninstall":
 
 elif ctx.mode == 'distclean' or ctx.mode == 'clean':
     
-    clean = [LOGO_PNG, TEXT_LOGO, FAVICON]
+    clean = [LOGO_PNG, TEXT_LOGO, FAVICON, APPINFO]
     if ctx.mode == 'distclean':
-        clean += [VFILE, APPINFO, DCH]
+        clean += [VFILE, DCH]
     for f in clean:
         f = ctx.subst(f)
         try:
