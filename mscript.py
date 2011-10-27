@@ -316,8 +316,9 @@ elif ctx.mode == 'dist':
             "NEWS README README.translations " \
             "roxterm.1.xml.in roxterm-config.1.xml.in " \
             "roxterm.desktop roxterm.lsm.in roxterm.spec.in " \
-            "roxterm.svg roxterm.xml src TODO update-locales " \
-            "src")
+            "roxterm.svg roxterm.xml src TODO update-locales")
+    ctx.add_dist(ctx.glob("*.[c|h]", os.curdir, "src"))
+    ctx.add_dist("src/roxterm-config.ui src/roxterm-config.glade")
     # Debian files
     ctx.add_dist("debian builddeb")
     # maitch-specific

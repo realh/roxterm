@@ -542,6 +542,7 @@ Predefined variables and their default values:
         basedir = self.subst("${PACKAGE}-${VERSION}")
         filename = os.path.abspath(
                 self.subst("${BUILD_DIR}/%s.tar.bz2" % basedir))
+        sys.stdout.write("Creating tarball '%s'\n" % filename)
         tar = tarfile.open(filename, 'w:bz2')
         for f, kwargs in self.tar_contents:
             kwargs = dict(kwargs)
@@ -551,6 +552,7 @@ Predefined variables and their default values:
             else:
                 dest = os.path.normpath(opj(basedir, f))
             kwargs['arcname'] = dest
+            sys.stdout.write("Adding '%s' to tarball\n" % dest)
             tar.add(self.subst(f), **kwargs)
         tar.close()
     
