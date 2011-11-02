@@ -1,0 +1,28 @@
+Installation Instructions
+*************************
+
+ROXTerm now uses a new bespoke build system called maitch, aimed at reducing the
+time spent bootstrapping and running the configure script etc. autoconf is still
+supported as an alternative in case of major teething problems in maitch, but my
+intention is to commit entirely to maitch and remove the complication of
+maintaining legacy autoconf support before long, so package maintainers should
+migrate to maitch ASAP. If you do need/want to use autoconf read INSTALL
+instead.
+
+Requirements
+************
+
+The maitch build system requires python and the lockfile module
+(python-lockfile), libtool, pkg-config and install. ROXTerm additionally needs
+convert and composite from image-magick, and one of xsltproc + docbook-xsl or
+xmlto or xmltoman, and everything else required to compile an application
+linked with vte.
+
+Using maitch
+************
+
+maitch is invoked via a script, usually called mscript.py. Its first argument
+specifies which mode of operation to use. In normal use you will use configure,
+build and then install which are analogous to ./configure, make and
+make install. For more details run "./mscript.py help" or
+"python mscript.py help".

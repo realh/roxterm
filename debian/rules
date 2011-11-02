@@ -3,34 +3,43 @@
 # Split this up a bit to avoid long lines
 CONFIGURE_GDA_PATH = /usr/share/gnome-control-center/default-apps
 CONFIGURE_GDA = --with-gnome-default-applications=$(CONFIGURE_GDA_PATH)
-CONFIGURE_COMMON = $(CONFIGURE_GDA) CFLAGS="-Wl,--as-needed -Wall"
+CONFIGURE_LDFLAGS = LDFLAGS=-Wl,--as-needed
+CONFIGURE_DIRS = TOP_DIR=../.. PREFIX=/usr
+CONFIGURE_COMMON = $(CONFIGURE_GDA) $(CONFIGURE_LDFLAGS) $(CONFIGURE_DIRS)
+
+ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
+NUMJOBS = $(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
+CONFIGURE_COMMON += --parallel=$(NUMJOBS)
+endif
 
 %:
 	dh $@
 
 override_dh_auto_configure:
-	dh_auto_configure --builddirectory=build-gtk2 -proxterm-gtk2 \
-		-- --disable-gtk3 $(CONFIGURE_COMMON)
-	dh_auto_configure -proxterm-common -proxterm-gtk3 \
-		-- --enable-gtk3 $(CONFIGURE_COMMON)
+	python mscript.py configure $(CONFIGURE_COMMON) \
+		--build-dir=debian/build-gtk2 --disable-gtk3
+	python mscript.py configure $(CONFIGURE_COMMON) \
+		--build-dir=debian/build-gtk3 --enable-gtk3
 
 override_dh_auto_build:
-	dh_auto_build --parallel --builddirectory=build-gtk2 -proxterm-gtk2
-	dh_auto_build --parallel -proxterm-common -proxterm-gtk3
+	python mscript.py build --build-dir=debian/build-gtk2
+	python mscript.py build --build-dir=debian/build-gtk3
 
 override_dh_auto_install:
-	dh_auto_install -proxterm-common -proxterm-gtk3
+	python mscript.py install --build-dir=debian/build-gtk3 --destdir=../tmp
 
 override_dh_install:
 	dh_install
-	dh_install -proxterm-gtk2 build-gtk2/src/roxterm usr/bin/
-	dh_install -proxterm-gtk2 build-gtk2/src/roxterm-config usr/bin/
+	install -d debian/roxterm-gtk2/usr/bin
+	libtool --mode=install install debian/build-gtk2/roxterm \
+		debian/build-gtk2/roxterm-config \
+		`pwd`/debian/roxterm-gtk2/usr/bin
 	dh_install -proxterm-common debian/roxterm.xpm usr/share/pixmaps/
 
 override_dh_auto_test:
-	dh_auto_test -proxterm-gtk2 --builddirectory=build-gtk2
-	dh_auto_test -proxterm-common -proxterm-gtk3
 
 override_dh_auto_clean:
-	dh_auto_clean
-	rm -rf build-gtk2
+	python mscript.py clean --build-dir=debian/build-gtk2
+	rm -rf debian/build-gtk2 debian/build-gtk3
+	rm -f maitch.py[co]
+
