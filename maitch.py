@@ -30,13 +30,22 @@ from curses import ascii
 from lockfile import FileLock
 
 
+_mprint_lock = threading.Lock()
+
 def mprint(*args, **kwargs):
     """ Equivalent to python 3's print but also works in python < 2.6 """
-    sep = kwargs.get('sep', '')
-    end = kwargs.get('end', '\n')
-    file = kwargs.get('file', sys.stdout)
-    file.write(sep.join(args) + end)
-    file.flush()
+    global _mprint_lock
+    _mprint_lock.acquire()
+    try:
+        sep = kwargs.get('sep', '')
+        end = kwargs.get('end', '\n')
+        file = kwargs.get('file', sys.stdout)
+        file.write(sep.join(args) + end)
+        file.flush()
+    except:
+        raise
+    finally:
+        _mprint_lock.release()
 
 
 # Where to look for sources, may be combined with bitwise or
@@ -1035,12 +1044,21 @@ int main() { %s(); return 0; }
                 else:
                     rm = os.unlink
                 for f in fs:
-                    try:
-                        rm(f)
-                    except OSError:
-                        mprint("Failed to delete '%s'" % f)
-                    else:
-                        mprint("Removed '%s'" % f)
+                    self.delete(f, rm)
+
+    
+    def delete(self, f, rm = None):
+        """ Delete a file, which is processed with self.subst(). The default
+        for rm is os.unlink, use os.rmdir for directories. """
+        if not rm:
+            rm = os.unlink
+        f = self.subst(f)
+        try:
+            rm(f)
+        except OSError:
+            mprint("Failed to delete '%s'" % f)
+        else:
+            mprint("Removed '%s'" % f)
     
     
     def prune_directory(self, root):
@@ -1893,6 +1911,7 @@ class BuildGroup(object):
         n = int(self.ctx.env.get('PARALLEL', 1))
         if n < 1:
             n = 1
+        mprint("Starting %d build threads" % n)
         for n in range(n):
             t = Builder(self)
             self.threads.append(t)
@@ -2050,7 +2069,9 @@ class BuildGroup(object):
 class Builder(threading.Thread):
     """ A Builder starts a new thread which waits for jobs to be added to
     BuildGroup's ready_queue, pops one at a time and runs it. """
+    
     def __init__(self, build_group):
+        global builder_index
         self.bg = build_group
         threading.Thread.__init__(self)
     

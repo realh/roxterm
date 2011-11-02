@@ -305,11 +305,7 @@ elif ctx.mode == 'distclean' or ctx.mode == 'clean':
     if ctx.mode == 'distclean':
         clean += [VFILE, DCH]
     for f in clean:
-        f = ctx.subst(f)
-        try:
-            os.unlink(f)
-        except OSError:
-            pass
+        ctx.delete(f)
 
 elif ctx.mode == 'dist':
     
