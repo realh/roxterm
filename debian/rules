@@ -6,7 +6,7 @@ CONFIGURE_GDA = --with-gnome-default-applications=$(CONFIGURE_GDA_PATH)
 CONFIGURE_LDFLAGS = LDFLAGS=-Wl,--as-needed
 CONFIGURE_DIRS = PREFIX=/usr
 CONFIGURE_COMMON = $(CONFIGURE_GDA) $(CONFIGURE_LDFLAGS) $(CONFIGURE_DIRS)
-COMMON_DIRS = --top-dir=../.. --src-dir=${TOP_DIR}/src
+COMMON_DIRS = --top-dir=../.. --src-dir='$${TOP_DIR}/src'
 DIRS_GTK2 = --build-dir=debian/build-gtk2 $(COMMON_DIRS)
 DIRS_GTK3 = --build-dir=debian/build-gtk3 $(COMMON_DIRS)
 
