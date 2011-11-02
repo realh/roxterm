@@ -23,16 +23,13 @@ will say which packages are missing in its error message.
 
 Additionally install the devscripts package, which includes debuild.
 
-Use of git
-----------
+You may also need to install the following packages, depending on the version
+of roxterm already known to your distro:
 
-If using a clean git checkout you will also need autoconf, automake, autopoint,
-libtool, autotools-dev, po4a, librsvg2-bin and the transifex client (tx). If
-your distro does not include the transifex-client package install
-python-setuptools and see
-<http://help.transifex.net/user-guide/client/client-0.3.html>.
+    imagemagick python python-lockfile libgtk-3-dev libvte-2.90-dev
 
-Once you have installed all the above run ./bootstrap.sh before proceeding.
+To build on older distros where libgtk-3-dev and libvte-2.90-dev are not
+available, checkout the "lucid" branch from git.
 
 Building the package
 --------------------
@@ -45,7 +42,7 @@ the tarball or checked out by git, run:
 This will build the package in a subdirectory called debtmp.
 
 Alternatively, if using a release tarball, copy/rename/link the tarball to
-roxterm_<version>.orig.tar.gz in the parent directory and run:
+roxterm_<version>.orig.tar.bz2 in the parent directory and run:
     
     debuild -uc -us
 

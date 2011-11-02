@@ -131,34 +131,39 @@ class Context(object):
         self.tar_contents = []
         
         # Check mode
-        syntax = False
         if len(sys.argv) < 2:
-            syntax = True
+            self.mode = 'help'
         else:
             self.mode = sys.argv[1]
-        if not syntax and not self.mode in \
-                "help configure reconfigure build dist install uninstall " \
-                "clean distclean".split():
-            syntax = True
-        if syntax:
-            self.mode == 'help'
+            if not self.mode in \
+                    "help configure reconfigure build dist install uninstall " \
+                    "clean distclean".split():
+                self.mode = 'help'
         if self.mode == 'help':
-            mprint("""Help for maitch:
-USAGE:
-  ./mscript help
-  ./mscript configure [ARGS]
-  ./mscript reconfigure [ARGS]
-  ./mscript build [TARGETS]
-  ./mscript install
-  ./mscript uninstall
-  ./mscript clean
-  ./mscript dist
+            ms = os.path.basename(sys.argv[0])
+            mprint("Help for maitch:\nUSAGE:")
+            for m in ["help", "configure", "reconfigure",
+                    "build [TARGETS]", "install", "uninstall",
+                    "clean", "distclean", "dist"]:
+                mprint("  python %s %s" % (ms, m))
+            mprint("""
+Further variables may be set after the mode argument in the form VAR=value, or
+VAR on its own for True. "--foo-bar" is equivalent to "FOO_BAR". Variables may
+refer to each other eg FOO='${BAR}.baz'.
 
-ARGS may be specified in the form VAR=value, or VAR on its own for True.
-Special variables may also be specified in the form --var or --var=value.
+The most pivotal variable is BUILD_DIR which is the working directory and where
+built files are saved. It will be created if necessary. If not specified it
+defaults to a directory "build" in the same directory as %s
+(symbolic links are followed).
 
-Predefined variables and their default values:
-""")
+TOP_DIR and SRC_DIR are the top level directory of the package, and the
+subdirectory containing source files respectively. SRC_DIR is commonly
+"${TOP_DIR}/src" or just "${TOP_DIR}". It is recommended that they are specified
+as relative paths assuming a working directory of $BUILD_DIR. For example, when
+the default BUILD_DIR is used, TOP_DIR='..'
+
+Other predefined variables [default values shown in squarer brackets]:
+""" % ms)
             for v in _var_repository:
                 if v[3]:
                     alt = "/%s" % var_to_arg(v[0])
@@ -172,10 +177,7 @@ Predefined variables and their default values:
                         (v[0], alt, default, v[2]),
                         80, 8, 0)
             self.showed_var_header = False
-            if syntax:
-                sys.exit(0)
-            else:
-                return
+            return
         
         self.env = {}
         
