@@ -35,17 +35,12 @@ _mprint_lock = threading.Lock()
 def mprint(*args, **kwargs):
     """ Equivalent to python 3's print but also works in python < 2.6 """
     global _mprint_lock
-    _mprint_lock.acquire()
-    try:
+    with _mprint_lock:
         sep = kwargs.get('sep', '')
         end = kwargs.get('end', '\n')
         file = kwargs.get('file', sys.stdout)
         file.write(sep.join(args) + end)
         file.flush()
-    except:
-        raise
-    finally:
-        _mprint_lock.release()
 
 
 # Where to look for sources, may be combined with bitwise or
@@ -418,10 +413,9 @@ Other predefined variables [default values shown in squarer brackets]:
     def tmpname(self):
         """ Returns the name of a temporary file in ${BUILD_DIR}/.maitch
         which is unique for this context. """
-        self.lock.acquire()
-        self.tmpfile_index += 1
-        i = self.tmpfile_index
-        self.lock.release()
+        with self.lock:
+            self.tmpfile_index += 1
+            i = self.tmpfile_index
         return opj(self.build_dir, ".maitch", "tmp%03d" % i)
         
     
@@ -613,10 +607,9 @@ Other predefined variables [default values shown in squarer brackets]:
             path = args
         else:
             path = self.make_out_path(*args)
-        self.lock.acquire()
-        if not os.path.isdir(path):
-            os.makedirs(path)
-        self.lock.release()
+        with self.lock:
+            if not os.path.isdir(path):
+                os.makedirs(path)
 
 
     def ensure_out_dir_for_file(self, path):
@@ -1931,9 +1924,8 @@ class BuildGroup(object):
         if job in self.pending_jobs:
             return
         job.calculating = True
-        self.cond.acquire()
-        self.pending_jobs.append(job)
-        self.cond.release()
+        with self.cond:
+            self.pending_jobs.append(job)
         for t in job.targets:
             self.queued[t] = job
         self.satisfy_deps(job)
@@ -1957,27 +1949,26 @@ class BuildGroup(object):
     
     
     def cancel_all_jobs(self):
-        self.cond.acquire()
-        if not self.cancelled:
-            self.cancelled = True
-            self.ready_queue = []
-            self.pending_jobs = []
-            self.cond.notify_all()
-        self.cond.release()
+        with self.cond:
+            if not self.cancelled:
+                self.cancelled = True
+                self.ready_queue = []
+                self.pending_jobs = []
+                self.cond.notify_all()
         
     
     def make_job_ready(self, job):
         " Moves a job from pending_jobs to ready_queue. "
-        self.cond.acquire()
-        # We may still get here after all jobs have been cancelled due
-        # to an error
-        try:
-            self.pending_jobs.remove(job)
-            self.ready_queue.append(job)
-        except ValueError:
-            pass
-        self.cond.notify()
-        self.cond.release()
+        with self.cond:
+            # We may still get here after all jobs have been cancelled due
+            # to an error
+            try:
+                self.pending_jobs.remove(job)
+            except ValueError:
+                pass
+            else:
+                self.ready_queue.append(job)
+            self.cond.notify()
     
     
     def satisfy_deps(self, job):
@@ -2034,21 +2025,19 @@ class BuildGroup(object):
             
     
     def mark_blocking(self, blocked, blocker):
-        self.cond.acquire()
-        if not blocked in blocker.blocking:
-            blocker.blocking.append(blocked)
-        if not blocker in blocked.blocked_by:
-            blocked.blocked_by.append(blocker)
-        self.cond.release()
+        with self.cond:
+            if not blocked in blocker.blocking:
+                blocker.blocking.append(blocked)
+            if not blocker in blocked.blocked_by:
+                blocked.blocked_by.append(blocker)
     
     
     def job_done(self, job):
         for j in job.blocking:
             self.do_while_locked(self.unblock_job, j, job)
         if not len(self.ready_queue) and not len(self.pending_jobs):
-            self.cond.acquire()
-            self.cond.notify_all()
-            self.cond.release()
+            with self.cond:
+                self.cond.notify_all()
     
     
     def unblock_job(self, blocked, blocker):
@@ -2077,23 +2066,22 @@ class Builder(threading.Thread):
     
     
     def run(self):
+        finished = False
         try:
-            while 1:
+            while not finished:
                 job = None
-                self.bg.cond.acquire()
-                if not len(self.bg.ready_queue):
-                    if len(self.bg.pending_jobs):
-                        self.bg.cond.wait()
-                # Check both queues again, because they could have both
-                # changed while we were waiting
-                if not len(self.bg.ready_queue) and \
-                        not len(self.bg.pending_jobs):
-                    # No jobs left, we're done
-                    self.bg.cond.release()
-                    break
-                if len(self.bg.ready_queue):
-                    job = self.bg.ready_queue.pop()
-                self.bg.cond.release()
+                with self.bg.cond:
+                    if not len(self.bg.ready_queue):
+                        if len(self.bg.pending_jobs):
+                            self.bg.cond.wait()
+                    # Check both queues again, because they could have both
+                    # changed while we were waiting
+                    if not len(self.bg.ready_queue) and \
+                            not len(self.bg.pending_jobs):
+                        # No jobs left, we're done
+                        finished = True
+                    elif len(self.bg.ready_queue):
+                        job = self.bg.ready_queue.pop()
                 if job:
                     job.run()
                     self.bg.job_done(job)
