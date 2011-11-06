@@ -14,7 +14,6 @@ done
 MAINTAIN="--enable-maintainer-mode"
 if [ -f "$APP_DIR/tony" ]; then
     DEV_LDFLAGS="-L/usr/lib/debug $LDFLAGS"
-    DEV_CFLAGS="-g -Wall -Wwrite-strings -Wunused"
     ulimit -c unlimited
 else
     LOGFILE=
@@ -49,16 +48,11 @@ case $1 in
         fi
         echo "Compiling $APP_DIR... please wait..." >&2
         cd "$APP_DIR"
-        if [ ! -x configure ] ; then
-            echo "No configure script; running bootstrap.sh"
-            ./bootstrap.sh
-        fi
-        rm -f config.cache
-        LDFLAGS="$DEV_LDFLAGS" CFLAGS="$DEV_CFLAGS" \
-            ./configure $MAINTAIN "$PREFIX" "$@" && \
-            make && \
-            ${APP_DIR}/update-locales --remake && \
-            echo Done >&2 && exit 0
+        python ./mscript.py configure "$PREFIX" \
+            LDFLAGS="$DEV_LDFLAGS" SRC_DIR='${TOP_DIR}/src' "$@" && \
+        python ./mscript.py build SRC_DIR='${TOP_DIR}/src' && \
+        echo Done >&2 && exit 0
+        #${APP_DIR}/update-locales --remake
         echo Compile failed >&2
         echo Press Return... >&2
         read WAIT
@@ -68,10 +62,10 @@ esac
 exitcode=1
 
 if [ -d "${APP_DIR}/src" ] ; then
-    BIN="${APP_DIR}/src/$PROG"
+    BIN="${APP_DIR}/build/$PROG"
     if [ ! -x "$BIN" ]; then
         echo "ERROR from $APPRUN:" >&2
-        echo "I cannot find an executable file for your host type ($PLATFORM)." >&2
+        echo "I cannot find an executable file." >&2
         echo "Trying to compile..." >&2
         if [ -n "$DISPLAY" ] && echo $TERM | egrep -q -v 'term|rxvt' ; then
             xterm -e "$APPRUN" --compile
@@ -89,15 +83,15 @@ else
     IFS="$old_ifs"
 fi
 
-if [ -n "$LANG" -a -d "${APP_DIR}/po" ] ; then
-    lcstamp="${APP_DIR}/locale/stamp"
-    postamp="${APP_DIR}/po/stamp-po"
-    if [ ! -f "$postamp" ] ; then
-        "${APP_DIR}/update-locales" --remake
-    elif [ ! -f "$lcstamp" -o "$lcstamp" -ot "$postamp" ] ; then
-        "${APP_DIR}/update-locales"
-    fi
-fi
+#if [ -n "$LANG" -a -d "${APP_DIR}/po" ] ; then
+#    lcstamp="${APP_DIR}/locale/stamp"
+#    postamp="${APP_DIR}/po/stamp-po"
+#    if [ ! -f "$postamp" ] ; then
+#        "${APP_DIR}/update-locales" --remake
+#    elif [ ! -f "$lcstamp" -o "$lcstamp" -ot "$postamp" ] ; then
+#        "${APP_DIR}/update-locales"
+#    fi
+#fi
 
 if [ -x "$BIN" ]; then
     exitcode=0
