@@ -189,6 +189,12 @@ Other predefined variables [default values shown in squarer brackets]:
         if self.mode == 'reconfigure':
             self.mode = 'configure'
         
+        # Process MAITCHFLAGS first because it's lowest priority and
+        # subsequent processing will overwrite it
+        mf = os.environ.get('MAITCHFLAGS')
+        if mf:
+            self.__process_args(mf.split())
+        
         # Get more env vars from kwargs
         for k, v in kwargs.items():
             self.env[k] = v
@@ -199,27 +205,10 @@ Other predefined variables [default values shown in squarer brackets]:
         self.cli_targets = []
         
         # Process command-line args
-        cli_env = {}
         if len(sys.argv) > 2:
-            special_vars = []
-            for v in _var_repository:
-                if v[3]:
-                    special_vars.append(v[0])
-            for a in sys.argv[2:]:
-                if '=' in a:
-                    k, v = a.split('=', 1)
-                elif self.mode != 'build' or k.startswith('--'):
-                    k = a
-                    v = True
-                elif self.mode == 'build':
-                    self.cli_targets.append(a)
-                if k.startswith('--'):
-                    k_ = k
-                    k = arg_to_var(k)
-                if self.var_is_special(k):
-                    raise MaitchDirError("%s is a reserved variable" % k)
-                self.env[k] = v
-                cli_env[k] = v
+            cli_env = self.__process_args(sys.argv[2:])
+        else:
+            cli_env = {}
         
         # Everything hinges on BUILD_DIR
         self.get_build_dir()
@@ -288,6 +277,25 @@ Other predefined variables [default values shown in squarer brackets]:
             td = os.path.abspath(self.top_dir)
             mprint('make[0]: Entering directory "%s"' % td)
             os.chdir(td)
+    
+
+    def __process_args(self, args):
+        cli_env = {}
+        for a in args:
+            if '=' in a:
+                k, v = a.split('=', 1)
+            elif self.mode != 'build' or a.startswith('--'):
+                k = a
+                v = True
+            elif self.mode == 'build':
+                self.cli_targets.append(a)
+            if k.startswith('--'):
+                k = arg_to_var(k)
+            if self.var_is_special(k):
+                raise MaitchDirError("%s is a reserved variable" % k)
+            self.env[k] = v
+            cli_env[k] = v
+        return cli_env
     
     
     def define(self, key, value):
@@ -1904,7 +1912,7 @@ class BuildGroup(object):
         n = int(self.ctx.env.get('PARALLEL', 1))
         if n < 1:
             n = 1
-        mprint("Starting %d build threads" % n)
+        mprint("Starting %d build thread(s)" % n)
         for n in range(n):
             t = Builder(self)
             self.threads.append(t)
