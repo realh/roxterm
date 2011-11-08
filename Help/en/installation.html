@@ -55,18 +55,21 @@
 
 				<h2>Requirements <a class="pageAnchor" name="Requirements">:</a></h2>
 
-				<p>You need the libraries for GTK+2 which is pretty much standard on all free Unix derivatives these days. It
-				definitely needs at least version 2.6 of glib and probably GTK+ 2.6 too. You will also need libglade 2 - usually,
-				but not always installed; libvte, a Gnome component; and D-BUS (see below).</p>
+				<p>You need the libraries for GTK+2 which is pretty much
+				standard on all free Unix derivatives these days, and/or GTK+3.
+				It needs at least version 2.16 of glib and GTK+ 2.18. You will
+				also need vte/libvte (at least version 0.20), a Gnome component;
+				most distros package separate versions for GTK+2 and GTK+3.
+				D-BUS is also required (see below).</p>
 
-				<p>To compile ROXTerm you will need the header files for all the above libraries. In packaging systems they usually
-				come in packages whose names end in "-dev" or "-devel".</p>
+				<p>To compile ROXTerm you will need the header files for the
+				above libraries. In packaging systems they usually come in
+				packages whose names end in "-dev" or "-devel".</p>
 
-				<p>Additionally, to build a git checkout of ROXTerm you need autoconf, automake and libtool. Use the latest
-				versions possible. Old versions of automake (older than 1.7?) will cause building to fail because ROXTerm uses
-				per-target CFLAGS.</p>
-				
-				<h3>D-Bus</h3>
+				<p>ROXTerm uses a new, bespoke build system called maitch. This
+				requires python and the python 'lockfile' module.</p>
+
+                <h3>D-Bus</h3>
 
 				<p>D-Bus is a messaging system which ROXTerm uses to connect terminals with its configure tool. ROXTerm uses the
 				"session" bus, which should be started along with your desktop environment. Current versions of ROX, GNOME and KDE
@@ -85,18 +88,28 @@
 
 				<h2>Installing <a class="pageAnchor" name="Installing">:</a></h2>
 
-				<p>To install ROXTerm for ROX all you need to do is unpack the tarball in your Apps directory and run it from there,
-				but you will probably want to rename the folder to ROXTerm. For other systems ROXTerm may be installed in the same
-				way as any autoconf-based source package:</p>
+				<p>To install ROXTerm for ROX all you need to do is unpack the
+				tarball in your Apps directory and run it from there, but you
+				will probably want to rename the folder to ROXTerm. For other
+				systems ROXTerm may be installed in a similar way to an
+				autoconf-based source package, but using maitch's analogues:</p>
 
 				<p class="snippet">
-					<span>./configure</span>
-					<span>make</span>
-					<span>make install</span>
+					<span>python ./mscript.py configure</span>
+					<span>python ./mscript.py build</span>
+					<span>python ./mscript.py install</span>
 				</p>
+				
+				<p>Various options are available, run 
+				<p class="snippet">
+					<span>python ./mscript.py help</span>
+				</p>
+				for details.</p>
 
-				<p>If you are using a version fetched by git instead of a release tarball run the bootstrap.sh script first to
-				create the configure script and various other files needed for building.</p>
+				<p>Autoconf builds are still supported, but deprecated. If you
+				are using a version fetched by git instead of a release tarball
+				run the bootstrap.sh script first to create the configure script
+				and various other files needed for building.</p>
 
 				<h3>Debian &amp; Ubuntu</h3>
 
@@ -108,11 +121,15 @@
 				<p>For instructions on building a debian package refer to the file INSTALL.Debian in the unpacked tarball/git
 				working directory.</p>
 
-				<p>Ubuntu also has official roxterm packages, but due to Ubuntu's release cycle these may lag behind the latest
-				upstream releases. Therefore I have set up a PPA at https://launchpad.net/~h-realh/+archive/ppa to provide the
-				most recent releases of ROXTerm for Ubuntu's current release when appropriate.</p>
-			</div>
-		</div>
+				<p>Ubuntu also has official roxterm packages, but due to
+				Ubuntu's release cycle these may lag behind the latest upstream
+				releases. Therefore I have set up a
+				<a href="https://launchpad.net/~h-realh/+archive/ppa">PPA</a>
+                to provide the most recent releases of ROXTerm for Ubuntu's
+                current release when appropriate.</p>
+
+            </div>
+        </div>
 
 		<div id="Footer">
 			<div id="FooterButtons">
