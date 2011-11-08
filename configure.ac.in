@@ -233,3 +233,6 @@ AC_OUTPUT(Makefile src/Makefile po4a/Makefile
     roxterm.lsm roxterm.spec AppInfo.xml
     intl/Makefile po/Makefile.in
     roxterm.1.xml roxterm-config.1.xml)
+
+AC_MSG_WARN([autoconf is deprecated for roxterm.
+           Please use maitch instead. See INSTALL.ReadFirst])
