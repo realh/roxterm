@@ -1544,14 +1544,21 @@ class StaticLibRule(LibtoolProgramRule):
 
 
 
-def PotRules(**kwargs):
+def PotRules(ctx, **kwargs):
     """ Returns a pair (list) of rules for generating a .pot file from a list of
     source files eg POTFILES.in where filenames are relative to TOP_DIR. Default
     source is "${TOP_DIR}/po/POTFILES.in", default target is po/${PACKAGE}.pot
     (relative to ${BUILD_DIR}).
     rule defaults to ${XGETTEXT}, may be overridden - note that source for this
     rule is generated POTFILES, not POTFILES.in.
-    XGETTEXT is not set by default. """
+    XGETTEXT is not set by default. XGETTEXT_OPTS_ is generated on the fly.
+    
+    Special args:
+    copyright_holder
+    package
+    version
+    bugs_addr
+     """
     def generate_potfiles(ctx, env, targets, sources):
         potfiles = []
         for s in sources:
@@ -1591,9 +1598,35 @@ def PotRules(**kwargs):
     if not 'targets' in kwargs:
         kwargs['targets'] = ["po/${PACKAGE}.pot"]
     if not 'rule' in kwargs:
-        kwargs['rule'] = "${XGETTEXT} -f ${SRC} -o ${TGT}"
+        kwargs['rule'] = "${XGETTEXT} ${XGETTEXT_OPTS_} -f ${SRC} -o ${TGT}"
     if not 'dep_func' in kwargs:
         kwargs['dep_func'] = pot_deps
+    xgto = []
+    copyrt = kwargs.get('copyright_holder')
+    if copyrt:
+        xgto.append('--copyright-holder=%s' % copyrt)
+    pkg = kwargs.get('package')
+    if not pkg:
+        pkg = "${PACKAGE}"
+    xgto.append('--package-name=${PACKAGE}')
+    ver = kwargs.get('version')
+    if ver:
+        xgto.append('--package-version=%s' % ver)
+    ba = kwargs.get('bugs_addr')
+    if ba:
+        xgto.append('--msgid-bugs-address=%s' % ba)
+    for n in range(len(xgto)):
+        s = ctx.subst(xgto[n])
+        if any([ascii.isspace(c) for c in s]):
+            if "'" in s:
+                if '"' in s:
+                    raise MaitchRuleError(
+                            "Unable to quote xgettext option: %s" % s)
+                xgto[n] = '"%s"' % s
+            else:
+                xgto[n] = "'%s'" % s
+            kwargs['use_shell'] = True
+    ctx.setenv('XGETTEXT_OPTS_', ' '.join(xgto))
     rule2 = Rule(**kwargs)
     
     return [rule1, rule2]

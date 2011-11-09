@@ -288,7 +288,10 @@ elif ctx.mode == 'build':
     
     # Translations
     if ctx.env.get('XGETTEXT') and ctx.env.get('GETTEXT'):
-        pot_rules = PotRules()
+        pot_rules = PotRules(ctx, copyright_holder = "(c) 2011 Tony Houghton",
+                version = "'${VERSION}'",
+                bugs_addr = "'http://sourceforge.net/tracker/?group_id=124080'",
+                use_shell = True)
     for r in pot_rules:
         ctx.add_rule(r)
 
