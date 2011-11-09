@@ -93,6 +93,12 @@ if ctx.mode == 'configure':
     ctx.find_prog_env("convert")
     ctx.find_prog_env("composite")
     
+    try:
+        ctx.find_prog_env("xgettext")
+        ctx.find_prog_env("gettext")
+    except MaitchNotFoundError:
+        pass
+    
     gda = ctx.env.get("WITH_GNOME_DEFAULT_APPLICATIONS")
     if gda == None or gda == True:
         try:
@@ -279,6 +285,12 @@ elif ctx.mode == 'build':
     ctx.add_rule(Rule(rule = process_ui,
             sources = "${SRC_DIR}/roxterm-config.ui",
             targets = "roxterm-config.ui-stamp"))
+    
+    # Translations
+    if ctx.env.get('XGETTEXT') and ctx.env.get('GETTEXT'):
+        pot_rules = PotRules()
+    for r in pot_rules:
+        ctx.add_rule(r)
 
 elif ctx.mode == "install" or ctx.mode == "uninstall":
 

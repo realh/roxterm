@@ -475,7 +475,7 @@ Other predefined variables [default values shown in squarer brackets]:
     def add_explicit_rule(self, rule):
         " Adds an explicit rule. "
         for t in rule.targets:
-            self.explicit_rules[t] = rule
+            self.explicit_rules[self.subst(t)] = rule
         
 
     def add_implicit_rule(self, rule):
@@ -483,6 +483,7 @@ Other predefined variables [default values shown in squarer brackets]:
         # There may be more than one implicit rule with the same target
         # suffix.
         for t in rule.targets:
+            t = self.subst(t)
             rules = self.implicit_rules.get(t)
             if not rules:
                 rules = []
@@ -1549,19 +1550,22 @@ def PotRules(**kwargs):
     source is "${TOP_DIR}/po/POTFILES.in", default target is po/${PACKAGE}.pot
     (relative to ${BUILD_DIR}).
     rule defaults to ${XGETTEXT}, may be overridden - note that source for this
-    rule is gernerated POTFILES, not POTFILES.in. """
+    rule is generated POTFILES, not POTFILES.in.
+    XGETTEXT is not set by default. """
     def generate_potfiles(ctx, env, targets, sources):
         potfiles = []
         for s in sources:
             fp = open(subst(env, s), 'r')
             for f in fp.readlines():
-                potfiles.append(opj(env['TOP_DIR'], f.strip()))
+                f = f.strip()
+                if len(f) and f[0] != '#':
+                    potfiles.append(opj(env['TOP_DIR'], f.strip()))
             fp.close()
         t = subst(env, targets[0])
         ctx.ensure_out_dir_for_file(t)
         fp = open(t, 'w')
         for f in potfiles:
-            fp.write("%s\n", f)
+            fp.write("%s\n" % f)
         fp.close()
     
     def pot_deps(ctx, rule):
@@ -1579,13 +1583,13 @@ def PotRules(**kwargs):
     except KeyError:
         src1 = ["${TOP_DIR}/po/POTFILES.in"]
     rule1 = Rule(rule = generate_potfiles,
-            sources = kwargs['sources'],
-            targets = ["po/POTFILES"],
+            sources = src1,
+            targets = ["${BUILD_DIR}/po/POTFILES"],
             where = kwargs['where'])
     
-    kwargs['sources'] = ["po/POTFILES"]
+    kwargs['sources'] = ["${BUILD_DIR}/po/POTFILES"]
     if not 'targets' in kwargs:
-        kwargs['targets'] = ["po/${PACKAGE}.po"]
+        kwargs['targets'] = ["po/${PACKAGE}.pot"]
     if not 'rule' in kwargs:
         kwargs['rule'] = "${XGETTEXT} -f ${SRC} -o ${TGT}"
     if not 'dep_func' in kwargs:
@@ -1993,7 +1997,7 @@ class BuildGroup(object):
         with self.cond:
             self.pending_jobs.append(job)
         for t in job.targets:
-            self.queued[t] = job
+            self.queued[self.ctx.subst(t)] = job
         self.satisfy_deps(job)
         job.calculating = False
         if not len(job.blocked_by):
