@@ -43,7 +43,10 @@ def mprint(*args, **kwargs):
         file.flush()
 
 
-# Where to look for sources, may be combined with bitwise or
+# Where to look for sources if a relative path is given and the file
+# doesn't exist relative to cwd.
+# May be combined with bitwise or.
+NOWHERE = 0
 SRC = 1
 TOP = 2
 
@@ -881,14 +884,14 @@ int main() { %s(); return 0; }
         return self.env.get(k)
     
     
-    def get_stamp(self, name, where = SRC | TOP):
+    def get_stamp(self, name, where = NOWHERE):
         """ Returns the mtime for named file. Uses find_source() and subst and
         therefore may raise MaitchNotFoundError or KeyError. """
         n = self.find_source(self.subst(name), where)
         return os.stat(name).st_mtime
 
 
-    def get_extreme_stamp(self, nodes, comparator, where = SRC | TOP):
+    def get_extreme_stamp(self, nodes, comparator, where = NOWHERE):
         """ Like global version, but runs subst() and find_source() on each
         item. Items that don't exist are skipped because some suffix rules
         don't necessarily use all sources or targets (eg gob2 doesn't always
@@ -902,13 +905,13 @@ int main() { %s(); return 0; }
         return get_extreme_stamp(pnodes, comparator)
     
     
-    def get_oldest(self, nodes, where = SRC | TOP):
+    def get_oldest(self, nodes, where = NOWHERE):
         """ Like global version, but runs subst() and find_source() on each
         item, so may raise MaitchNotFoundError or KeyError. """
         return self.get_extreme_stamp(nodes, lambda a, b: a < b, where)
     
     
-    def get_newest(self, nodes, where = SRC | TOP):
+    def get_newest(self, nodes, where = NOWHERE):
         """ Like global version, but runs subst() and find_source() on each
         item, so may raise MaitchNotFoundError or KeyError. """
         return self.get_extreme_stamp(nodes, lambda a, b: a > b, where)
@@ -1270,7 +1273,7 @@ class Rule(object):
         # If result is True extra variable newest_dep is available
         uptodate = True
         try:
-            oldest_target = self.ctx.get_oldest(self.targets, self.where)
+            oldest_target = self.ctx.get_oldest(self.targets, NOWHERE)
         except MaitchNotFoundError, KeyError:
             oldest_target = None
         if not oldest_target:

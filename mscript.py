@@ -247,15 +247,17 @@ elif ctx.mode == 'build':
             sources = "roxterm.svg",
             where = TOP))
             
+    # Note 'where' is NOWHERE for following two rules because sources already
+    # start with ${TOP_DIR}.
     ctx.add_rule(Rule(rule = "${CONVERT} ${SRC} -geometry 16x16 ${TGT}",
             targets = FAVICON,
             sources = LOGO_PNG,
-            where = TOP))
+            where = NOWHERE))
     
     ctx.add_rule(Rule(rule = "${COMPOSITE} -gravity SouthWest ${SRC} ${TGT}",
             targets = TEXT_LOGO,
             sources = [LOGO_PNG, "${TOP_DIR}/Help/lib/logo_text_only.png"],
-            where = TOP))
+            where = NOWHERE))
     
     # man pages
     if ctx.env['XMLTOMAN']:

@@ -20,9 +20,9 @@ endif
 
 override_dh_auto_configure:
 	python mscript.py configure $(CONFIGURE_COMMON) \
-		 --disable-gtk3 $(DIRS_GTK2) --top-dir=../..
+		 --disable-gtk3 $(DIRS_GTK2)
 	python mscript.py configure $(CONFIGURE_COMMON) \
-		--enable-gtk3 $(DIRS_GTK3) --top-dir=../..
+		--enable-gtk3 $(DIRS_GTK3)
 
 override_dh_auto_build:
 	python mscript.py build $(DIRS_GTK2)
