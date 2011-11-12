@@ -142,6 +142,7 @@ if ctx.mode == 'configure':
     
     ctx.pkg_config('dbus-1', 'DBUS', '1.0')
     ctx.pkg_config('dbus-glib-1', 'DBUS', '0.22')
+    ctx.pkg_config('gmodule-export-2.0', 'GMODULE')
     
     for f in "get_current_dir_name g_mkdir_with_parents " \
             "gdk_window_get_display gdk_window_get_screen " \
@@ -160,9 +161,10 @@ if ctx.mode == 'configure':
     ctx.setenv('ROXTERM_LIBS',
             "${LIBS} ${VTE_LIBS} ${SM_LIBS} ${DBUS_LIBS}")
     ctx.setenv('ROXTERM_CONFIG_CFLAGS',
-            "${CFLAGS} ${GTK_CFLAGS} ${DBUS_CFLAGS} -DROXTERM_CAPPLET")
+            "${CFLAGS} ${GTK_CFLAGS} ${DBUS_CFLAGS} ${GMODULE_CFLAGS} "
+            "-DROXTERM_CAPPLET")
     ctx.setenv('ROXTERM_CONFIG_LIBS',
-            "${LIBS} ${GTK_LIBS} ${DBUS_LIBS}")
+            "${LIBS} ${GTK_LIBS} ${DBUS_LIBS} ${GMODULE_LIBS}")
     
     ctx.define_from_var('PACKAGE')
     ctx.define('DO_OWN_TAB_DRAGGING',
