@@ -27,8 +27,6 @@ import sys
 import threading
 from curses import ascii
 
-from lockfile import FileLock
-
 
 _mprint_lock = threading.Lock()
 
@@ -41,6 +39,16 @@ def mprint(*args, **kwargs):
         file = kwargs.get('file', sys.stdout)
         file.write(sep.join(args) + end)
         file.flush()
+
+
+
+try:
+    from lockfile import FileLock
+except:
+    _nolock = True
+else:
+    _nolock = False
+
 
 
 # Where to look for sources if a relative path is given and the file
@@ -225,12 +233,22 @@ Other predefined variables [default values shown in squarer brackets]:
         os.chdir(self.build_dir)
         
         # Get lock on BUILD_DIR
-        global _lock_file
-        f = self.get_lock_file_name()
-        self.ensure_out_dir_for_file(f)
-        _lock_file = FileLock(f)
-        _lock_file.acquire(0)
-        atexit.register(lambda x: x.release(), _lock_file)
+        if not self.env.get('NO_LOCK'):
+            global _nolock
+            if _nolock:
+                mprint("Error: lockfile module unavailable. "
+                        "Please install it or, as a last resort, "
+                        "use the --no-lock option:\n"
+                        "%s -l %s --no-lock ..." % (sys.argv[0], sys.argv[1]),
+                        file = sys.stderr)
+                sys.exit(1)
+            f = self.get_lock_file_name()
+            self.ensure_out_dir_for_file(f)
+            _lock_file = FileLock(f)
+            _lock_file.acquire(0)
+            atexit.register(lambda x: x.release(), _lock_file)
+        else:
+            mprint("Warning: Locking disabled. This is not recommended.")
         
         # If not in configure mode load a previous saved env. 
         if self.mode != 'configure':
@@ -463,7 +481,25 @@ Other predefined variables [default values shown in squarer brackets]:
         
     
     def get_lock_file_name(self):
-        return opj(self.subst("${BUILD_DIR}"), ".maitch", "lock")
+        if self.env.get("LOCK_TOP"):
+            return os.path.abspath(opj(self.subst("${TOP_DIR}"), ".maitchlock"))
+        else:
+            return os.path.abspath(opj(self.subst("${BUILD_DIR}"),
+                    ".maitch", "lock"))
+    
+    
+    def release_lock(self, lock, lockname):
+        try:
+            lock.release()
+        except:
+            pass
+        try:
+            if os.path.isdir(lockname):
+                os.unlink(lockname)
+            else:
+                recursively_remove(lockname, False, [])
+        except:
+            pass
         
     
     def add_rule(self, rule):
@@ -2219,6 +2255,9 @@ add_var('HTMLDIR', '${DOCDIR}',
         "Installation directory for this package's HTML documentation", True)
 add_var('DESTDIR', '',
         "Prepended to prefix at installation (for packaging)", True)
+
+add_var('LOCK_TOP', False, "Lock ${TOP_DIR} instead of ${BUILD_DIR}")
+add_var('NO_LOCK', False, "Disable locking (not recommended)")
 
 add_var('CC', '${GCC}', "C compiler")
 add_var('CXX', '${GCC}', "C++ compiler")
