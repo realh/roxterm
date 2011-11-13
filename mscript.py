@@ -262,13 +262,15 @@ elif ctx.mode == 'build':
             where = NOWHERE))
     
     # man pages
+    # NB overlapping calls to xsltproc seem to cause hangs, hence lock
     if ctx.env['XMLTOMAN']:
         ctx.add_rule(SuffixRule(
                 rule = "${XMLTOMAN} ${XMLTOMAN_OPTS} ${SRC} ${XMLTOMAN_OUTPUT}",
                 targets = ".1",
                 sources = ".1.xml",
                 use_shell = True,
-                where = TOP))
+                where = TOP,
+                lock = threading.Lock()))
         # Force invocation of above suffix rule
         ctx.add_rule(TouchRule(
                 targets = "manpages",

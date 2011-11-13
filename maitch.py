@@ -1172,6 +1172,8 @@ class Rule(object):
                 from the Context.
         quiet: If True don't print the command about to be executed.
         where: Where to look for sources: SRC, TOP or both (default SRC).
+        lock: Some jobs can't be run simultaneously so you can pass in a Lock
+                object to prevent that.
         """
         if not 'where' in kwargs:
             kwargs['where'] = SRC
@@ -1204,6 +1206,7 @@ class Rule(object):
         self.cached_sources = None
         self.cached_deps = []
         self.where = kwargs['where']
+        self.lock = kwargs.get('lock')
     
     
     @staticmethod
@@ -1283,23 +1286,31 @@ class Rule(object):
         if self.is_uptodate():
             return
         env, targets, sources = self.process_env_tgt_src()        
-        for rule in self.rules:
-            if callable(rule):
-                if not self.quiet:
-                    mprint("Internal function: %s(%s, %s)" %
-                            (rule.__name__, str(targets), str(sources)))
-                rule(self.ctx, env, targets, sources)
-            else:
-                r = subst(env, rule)
-                if not self.quiet:
-                    mprint(r)
-                if self.use_shell:
-                    prog = r
+        if self.lock:
+            self.lock.acquire()
+        try:
+            for rule in self.rules:
+                if callable(rule):
+                    if not self.quiet:
+                        mprint("Internal function: %s(%s, %s)" %
+                                (rule.__name__, str(targets), str(sources)))
+                    rule(self.ctx, env, targets, sources)
                 else:
-                    prog = r.split()
-                if subprocess.call(prog,
-                        shell = self.use_shell, cwd = self.ctx.build_dir):
-                    raise MaitchChildError("Rule '%s' failed" % rule)
+                    r = subst(env, rule)
+                    if not self.quiet:
+                        mprint(r)
+                    if self.use_shell:
+                        prog = r
+                    else:
+                        prog = r.split()
+                    if subprocess.call(prog,
+                            shell = self.use_shell, cwd = self.ctx.build_dir):
+                        raise MaitchChildError("Rule '%s' failed" % rule)
+        except:
+            raise
+        finally:
+            if self.lock:
+                self.lock.release()
     
     
     def __repr__(self):
