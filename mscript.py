@@ -95,7 +95,7 @@ if ctx.mode == 'configure':
     
     try:
         ctx.find_prog_env("xgettext")
-        ctx.find_prog_env("gettext")
+        ctx.find_prog_env("msgmerge")
     except MaitchNotFoundError:
         pass
     
@@ -293,13 +293,14 @@ elif ctx.mode == 'build':
             targets = "roxterm-config.ui-stamp"))
     
     # Translations
-    if ctx.env.get('XGETTEXT') and ctx.env.get('GETTEXT'):
-        pot_rules = PotRules(ctx, copyright_holder = "(c) 2011 Tony Houghton",
+    if ctx.env.get('XGETTEXT') and ctx.env.get('MSGMERGE'):
+        trans_rules = StandardTranslationRules(ctx,
+                copyright_holder = "(c) 2011 Tony Houghton",
                 version = "'${VERSION}'",
                 bugs_addr = "'http://sourceforge.net/tracker/?group_id=124080'",
                 use_shell = True)
-    for r in pot_rules:
-        ctx.add_rule(r)
+        for r in trans_rules:
+            ctx.add_rule(r)
 
 elif ctx.mode == "install" or ctx.mode == "uninstall":
 
@@ -355,7 +356,7 @@ elif ctx.mode == 'dist':
             "roxterm-gtk3.lintian-overrides roxterm-gtk3.menu " \
             "roxterm-gtk3.postinst roxterm-gtk3.prerm roxterm.xpm rules " \
             "source/format watch"
-    ctx.add_dist(["debian/" + f for f in debfiles.split()]
+    ctx.add_dist(["debian/" + f for f in debfiles.split()])
     # maitch-specific
     ctx.add_dist("version maitch.py mscript.py")
     # ROX bits

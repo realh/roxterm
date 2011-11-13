@@ -1618,18 +1618,19 @@ class StaticLibRule(LibtoolProgramRule):
 def PotRules(ctx, **kwargs):
     """ Returns a pair (list) of rules for generating a .pot file from a list of
     source files eg POTFILES.in where filenames are relative to TOP_DIR. Default
-    source is "${TOP_DIR}/po/POTFILES.in", default target is po/${PACKAGE}.pot
-    (relative to ${BUILD_DIR}).
+    source is "${TOP_DIR}/po/POTFILES.in", default target is
+    ${TOP_DIR}/po/${PACKAGE}.pot.
     rule defaults to ${XGETTEXT}, may be overridden - note that source for this
     rule is generated POTFILES, not POTFILES.in.
-    XGETTEXT is not set by default. XGETTEXT_OPTS_ is generated on the fly.
+    XGETTEXT is not set by default. *_XGETTEXT_OPTS is generated on the fly.
     
     Special args:
     copyright_holder
     package
     version
     bugs_addr
-     """
+    opts_prefix: Goes on front of _XGETTEXT_OPTS added to env.
+    """
     def generate_potfiles(ctx, env, targets, sources):
         potfiles = []
         for s in sources:
@@ -1654,6 +1655,8 @@ def PotRules(ctx, **kwargs):
                 deps.append(f.strip())
         return deps
     
+    opts_prefix = kwargs.get('opts_prefix', "")
+    varname = "%s_XGETTEXT_OPTS" % opts_prefix
     if not 'where' in kwargs:
         kwargs['where'] = SRC | TOP
     try:
@@ -1667,9 +1670,9 @@ def PotRules(ctx, **kwargs):
     
     kwargs['sources'] = ["${BUILD_DIR}/po/POTFILES"]
     if not 'targets' in kwargs:
-        kwargs['targets'] = ["po/${PACKAGE}.pot"]
+        kwargs['targets'] = ["${TOP_DIR}/po/${PACKAGE}.pot"]
     if not 'rule' in kwargs:
-        kwargs['rule'] = "${XGETTEXT} ${XGETTEXT_OPTS_} -f ${SRC} -o ${TGT}"
+        kwargs['rule'] = "${XGETTEXT} ${%s} -f ${SRC} -o ${TGT}" % varname
     if not 'dep_func' in kwargs:
         kwargs['dep_func'] = pot_deps
     xgto = []
@@ -1697,11 +1700,59 @@ def PotRules(ctx, **kwargs):
             else:
                 xgto[n] = "'%s'" % s
             kwargs['use_shell'] = True
-    ctx.setenv('XGETTEXT_OPTS_', ' '.join(xgto))
+    ctx.setenv(varname, ' '.join(xgto))
     rule2 = Rule(**kwargs)
     
     return [rule1, rule2]
+
+
+
+class PoRule(Rule):
+    """ Updates a po file from a pot (default src is
+    ${TOP_DIR}/po/${PACKAGE}.pot). """
+    def __init__(self, *args, **kwargs):
+        if not 'sources' in kwargs:
+            kwargs['sources'] = "${TOP_DIR}/po/${PACKAGE}.pot"
+        if not 'rule' in kwargs:
+            kwargs['rule'] = "${MSGMERGE} -q -U ${TGT} ${SRC}"
+        Rule.__init__(self, *args, **kwargs)
+
+
+
+def PoRulesFromLinguas(ctx, *args, **kwargs):
+    """ Generates a PoRule for each language listed in linguas. Default linguas
+    is podir/LINGUAS. Default podir is ${TOP_DIR}/po. Other args are passed to
+    each PoRule. """
+    podir = kwargs.get('podir')
+    if not podir:
+        podir = opj("${TOP_DIR}", "po")
+    linguas = kwargs.get('linguas')
+    if not linguas:
+        linguas = opj(podir, "LINGUAS")
+    rules = []
+    fp = open(ctx.subst(linguas), 'r')
+    for l in fp.readlines():
+        l = l.strip()
+        if not l or l[0] == '#':
+            continue
+        f = opj(podir, l + ".po")
+        if not os.path.isfile(ctx.subst(f)):
+            raise MaitchNotFoundError("Linguas file %s includes %s, "
+                    "but no corresponding po file found" % (linguas, l))
+        kwargs['targets'] = f
+        rules.append(PoRule(*args, **kwargs))
+    fp.close()
+    return rules
+
+
+
+def StandardTranslationRules(ctx, *args, **kwargs):
+    """ Returns all rules necessary to build translation files. kwargs are as
+    for PotRules + PoRulesForLinguas """
+    return PotRules(ctx, *args, **kwargs) + \
+            PoRulesFromLinguas(ctx, *args, **kwargs)
  
+
 
 def print_formatted(body, columns = 80, heading = None, h_columns = 20):
     """ Prints body, wrapped at the specified number of columns. If heading is
