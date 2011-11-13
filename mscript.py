@@ -346,7 +346,16 @@ elif ctx.mode == 'dist':
     ctx.add_dist(ctx.glob("*.[c|h]", os.curdir, "src"))
     ctx.add_dist("src/roxterm-config.ui src/roxterm-config.glade")
     # Debian files
-    ctx.add_dist("debian builddeb")
+    ctx.add_dist("builddeb")
+    debfiles = "changelog changelog.in compat control copyright " \
+            "dirs roxterm-common.doc-base " \
+            "roxterm-common.install roxterm-gtk2.install " \
+            "roxterm-gtk2.lintian-overrides roxterm-gtk2.menu " \
+            "roxterm-gtk2.postinst roxterm-gtk2.prerm roxterm-gtk3.install " \
+            "roxterm-gtk3.lintian-overrides roxterm-gtk3.menu " \
+            "roxterm-gtk3.postinst roxterm-gtk3.prerm roxterm.xpm rules " \
+            "source/format watch"
+    ctx.add_dist(["debian/" + f for f in debfiles.split()]
     # maitch-specific
     ctx.add_dist("version maitch.py mscript.py")
     # ROX bits
