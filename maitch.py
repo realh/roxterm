@@ -29,17 +29,29 @@ from curses import ascii
 
 
 _mprint_lock = threading.Lock()
+_mprint_fp = None
 
 def mprint(*args, **kwargs):
     """ Equivalent to python 3's print but also works in python < 2.6 """
     global _mprint_lock
     with _mprint_lock:
-        sep = kwargs.get('sep', '')
+        sep = kwargs.get('sep', ' ')
         end = kwargs.get('end', '\n')
         file = kwargs.get('file', sys.stdout)
-        file.write(sep.join(args) + end)
+        s = sep.join(args) + end
+        file.write(s)
         file.flush()
+        if _mprint_fp and file != _mprint_fp:
+            _mprint_fp.write(s)
 
+
+_debug = False
+def dprint(*args, **kwargs):
+    if _debug:
+        mprint(*args, **kwargs)
+    elif _mprint_fp:
+        kwargs['file'] = _mprint_fp
+        mprint(*args, **kwargs)
 
 
 try:
@@ -225,6 +237,10 @@ Other predefined variables [default values shown in squarer brackets]:
         self.get_build_dir()
         self.build_dir = os.path.abspath(self.subst(self.env['BUILD_DIR']))
         self.ensure_out_dir(self.build_dir)
+        log_file = opj(self.build_dir, ".maitch", "log")
+        self.ensure_out_dir_for_file(log_file)
+        global _mprint_fp
+        _mprint_fp = open(log_file, 'w')
         if self.mode != "dist":
             # This message is to help text editors find the cwd in case errors
             # are reported relative to it
@@ -298,6 +314,10 @@ Other predefined variables [default values shown in squarer brackets]:
             td = os.path.abspath(self.top_dir)
             mprint('make[0]: Entering directory "%s"' % td)
             os.chdir(td)
+        
+        if self.env.get('ENABLE_DEBUG'):
+            global _debug
+            _debug = True
     
 
     def __process_args(self, args):
@@ -335,6 +355,7 @@ Other predefined variables [default values shown in squarer brackets]:
     def define_from_var(self, key, default = None):
         """ Calls self.define() with env variable's value. """
         self.define(key, self.env.get(key, default))
+    
     
     def __arg(self, help_name, help_body, var, antivar, default):
         if self.mode == 'help':
@@ -2054,6 +2075,7 @@ class BuildGroup(object):
         
         # Wait for threads; doesn't matter what order they finish in
         for t in self.threads:
+            dprint("Main loop waiting for %s to finish" % t.describe())
             t.join()
         
     
@@ -2079,24 +2101,29 @@ class BuildGroup(object):
     def do_while_locked(self, func, *args, **kwargs):
         """ Lock cond and run func(*args, **kwargs), handling errors in a
         thread-safe way. Returns result of func. """
+        dprint("do_while_locked acquiring lock to run", func.__name__)
         self.cond.acquire()
         try:
             result = func(*args, **kwargs)
         except:
+            dprint("do_while_locked: exception in", func.__name__)
             self.cancel_all_jobs()
             self.cond.release()
             raise
         self.cond.release()
+        dprint("do_while_locked completed", func.__name__)
         return result
     
     
     def cancel_all_jobs(self):
+        dprint("Entering cancel_all_jobs")
         with self.cond:
             if not self.cancelled:
                 self.cancelled = True
                 self.ready_queue = []
                 self.pending_jobs = []
                 self.cond.notify_all()
+        dprint("Leaving cancel_all_jobs")
         
     
     def make_job_ready(self, job):
@@ -2197,39 +2224,60 @@ class BuildGroup(object):
 
 
 
+_thread_index = 0
+
 class Builder(threading.Thread):
     """ A Builder starts a new thread which waits for jobs to be added to
     BuildGroup's ready_queue, pops one at a time and runs it. """
     
     def __init__(self, build_group):
         global builder_index
+        with build_group.cond:
+            global _thread_index
+            self.index = _thread_index
+            _thread_index += 1
         self.bg = build_group
         threading.Thread.__init__(self)
     
     
+    def describe(self):
+        return "Builder Thread %d" % self.index
+    
+    
     def run(self):
         finished = False
+        dprint("Starting %s" % self.describe())
         try:
             while not finished:
                 job = None
+                dprint("%s acquiring cond" % self.describe())
                 with self.bg.cond:
                     if not len(self.bg.ready_queue):
                         if len(self.bg.pending_jobs):
+                            dprint("%s waiting for jobs" % self.describe())
                             self.bg.cond.wait()
+                            dprint("%s awoken" % self.describe())
                     # Check both queues again, because they could have both
                     # changed while we were waiting
                     if not len(self.bg.ready_queue) and \
                             not len(self.bg.pending_jobs):
                         # No jobs left, we're done
+                        dprint("%s finished" % self.describe())
                         finished = True
                     elif len(self.bg.ready_queue):
                         job = self.bg.ready_queue.pop()
                 if job:
+                    dprint("%s running job %s" % (self.describe(), str(job)))
                     job.run()
+                    dprint("%s completed job %s" % (self.describe(), str(job)))
                     self.bg.job_done(job)
+                    dprint("%s marked job %s done" % \
+                            (self.describe(), str(job)))
         except:
+            dprint("Exception in %s" % self.describe())
             self.bg.cancel_all_jobs()
             raise
+        dprint("%s finished" % self.describe())
             
 
 
@@ -2255,10 +2303,9 @@ add_var('HTMLDIR', '${DOCDIR}',
         "Installation directory for this package's HTML documentation", True)
 add_var('DESTDIR', '',
         "Prepended to prefix at installation (for packaging)", True)
-
 add_var('LOCK_TOP', False, "Lock ${TOP_DIR} instead of ${BUILD_DIR}")
 add_var('NO_LOCK', False, "Disable locking (not recommended)")
-
+add_var('ENABLE_DEBUG', False, "Enable the printing of maitch debug messages")
 add_var('CC', '${GCC}', "C compiler")
 add_var('CXX', '${GCC}', "C++ compiler")
 add_var('GCC', find_prog_by_var, "GNU C compiler")
