@@ -67,15 +67,16 @@ if ctx.mode == 'configure':
 
     xmltoman_shell = False
     try:
-        ctx.find_prog_env("xmlto", "XMLTOMAN")
+        ctx.find_prog_env("deliberate_error_xmlto", "XMLTOMAN")
     except MaitchNotFoundError:
         try:
-            ctx.find_prog_env("xsltproc", "XMLTOMAN")
+            ctx.find_prog_env("deliberate_error_xsltproc", "XMLTOMAN")
         except MaitchNotFoundError:
             try:
                 ctx.find_prog_env("xmltoman", "XMLTOMAN")
             except MaitchNotFoundError:
-                mprint("Unable to build manpages without xmlto or xsltproc",
+                mprint("Unable to build manpages without xmlto, "
+                        "xmltoman or xsltproc",
                         file = sys.stderr)
                 ctx.setenv("XMLTOMAN", "")
             else:
