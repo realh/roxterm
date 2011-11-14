@@ -1305,7 +1305,10 @@ class Rule(object):
                         prog = r.split()
                     if subprocess.call(prog,
                             shell = self.use_shell, cwd = self.ctx.build_dir):
+                        dprint("%s NZ error code" % r)
                         raise MaitchChildError("Rule '%s' failed" % rule)
+                    else:
+                        dprint("%s executed successfully" % r)
         except:
             raise
         finally:
@@ -2163,17 +2166,14 @@ class BuildGroup(object):
     def do_while_locked(self, func, *args, **kwargs):
         """ Lock cond and run func(*args, **kwargs), handling errors in a
         thread-safe way. Returns result of func. """
-        dprint("do_while_locked acquiring lock to run", func.__name__)
         self.cond.acquire()
         try:
             result = func(*args, **kwargs)
         except:
-            dprint("do_while_locked: exception in", func.__name__)
             self.cancel_all_jobs()
             self.cond.release()
             raise
         self.cond.release()
-        dprint("do_while_locked completed", func.__name__)
         return result
     
     

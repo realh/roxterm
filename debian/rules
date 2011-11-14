@@ -6,6 +6,7 @@ CONFIGURE_GDA = --with-gnome-default-applications=$(CONFIGURE_GDA_PATH)
 CONFIGURE_LDFLAGS = LDFLAGS=-Wl,--as-needed
 CONFIGURE_DIRS = PREFIX=/usr
 CONFIGURE_COMMON = $(CONFIGURE_GDA) $(CONFIGURE_LDFLAGS) $(CONFIGURE_DIRS)
+MSCRIPT_OPTS = --lock-top
 COMMON_DIRS = --top-dir=../.. --src-dir='$${TOP_DIR}/src'
 DIRS_GTK2 = --build-dir=debian/build-gtk2 $(COMMON_DIRS)
 DIRS_GTK3 = --build-dir=debian/build-gtk3 $(COMMON_DIRS)
@@ -19,17 +20,17 @@ endif
 	dh $@
 
 override_dh_auto_configure:
-	python mscript.py configure $(CONFIGURE_COMMON) \
+	python mscript.py configure $(MSCRIPT_OPTS) $(CONFIGURE_COMMON) \
 		 --disable-gtk3 $(DIRS_GTK2)
-	python mscript.py configure $(CONFIGURE_COMMON) \
+	python mscript.py configure $(MSCRIPT_OPTS) $(CONFIGURE_COMMON) \
 		--enable-gtk3 $(DIRS_GTK3)
 
 override_dh_auto_build:
-	python mscript.py build $(DIRS_GTK2)
-	python mscript.py build $(DIRS_GTK3)
+	python mscript.py build $(MSCRIPT_OPTS) $(DIRS_GTK2)
+	python mscript.py build $(MSCRIPT_OPTS) $(DIRS_GTK3)
 
 override_dh_auto_install:
-	python mscript.py install $(DIRS_GTK3) --destdir=../tmp
+	python mscript.py install $(MSCRIPT_OPTS) $(DIRS_GTK3) --destdir=../tmp
 
 override_dh_install:
 	dh_install
@@ -42,7 +43,7 @@ override_dh_install:
 override_dh_auto_test:
 
 override_dh_auto_clean:
-	python mscript.py clean $(DIRS_GTK3)
+	python mscript.py clean $(MSCRIPT_OPTS) $(DIRS_GTK3)
 	rm -rf debian/build-gtk2 debian/build-gtk3
 	rm -f maitch.py[co]
 

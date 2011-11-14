@@ -65,8 +65,9 @@ if ctx.mode == 'configure':
         fp.close()
     ctx.setenv('VERSION', version)
 
+    xmltoman_shell = False
     try:
-        ctx.find_prog_env("xslto", "XMLTOMAN")
+        ctx.find_prog_env("xmlto", "XMLTOMAN")
     except MaitchNotFoundError:
         try:
             ctx.find_prog_env("xsltproc", "XMLTOMAN")
@@ -80,6 +81,7 @@ if ctx.mode == 'configure':
             else:
                 ctx.setenv("XMLTOMAN_OPTS", "")
                 ctx.setenv("XMLTOMAN_OUTPUT", "> ${TGT}")
+                xmltoman_shell = True
         else:
             ctx.setenv("XMLTOMAN_OPTS", "--nonet --novalid " \
                     "--param man.charmap.use.subset 0 " \
@@ -89,6 +91,7 @@ if ctx.mode == 'configure':
     else:
         ctx.setenv("XMLTOMAN_OPTS", "man")
         ctx.setenv("XMLTOMAN_OUTPUT", "")
+    ctx.setenv("XMLTOMAN_SHELL", xmltoman_shell)
     
     ctx.find_prog_env("convert")
     ctx.find_prog_env("composite")
@@ -262,15 +265,13 @@ elif ctx.mode == 'build':
             where = NOWHERE))
     
     # man pages
-    # NB overlapping calls to xsltproc seem to cause hangs, hence lock
     if ctx.env['XMLTOMAN']:
         ctx.add_rule(SuffixRule(
                 rule = "${XMLTOMAN} ${XMLTOMAN_OPTS} ${SRC} ${XMLTOMAN_OUTPUT}",
                 targets = ".1",
                 sources = ".1.xml",
-                use_shell = True,
-                where = TOP,
-                lock = threading.Lock()))
+                use_shell = ctx.env['XMLTOMAN_SHELL'],
+                where = TOP))
         # Force invocation of above suffix rule
         ctx.add_rule(TouchRule(
                 targets = "manpages",
