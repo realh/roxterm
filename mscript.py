@@ -65,34 +65,17 @@ if ctx.mode == 'configure':
         fp.close()
     ctx.setenv('VERSION', version)
 
-    xmltoman_shell = False
     try:
-        ctx.find_prog_env("deliberate_error_xmlto", "XMLTOMAN")
+        ctx.find_prog_env("xsltproc", "XMLTOMAN")
     except MaitchNotFoundError:
-        try:
-            ctx.find_prog_env("deliberate_error_xsltproc", "XMLTOMAN")
-        except MaitchNotFoundError:
-            try:
-                ctx.find_prog_env("xmltoman", "XMLTOMAN")
-            except MaitchNotFoundError:
-                mprint("Unable to build manpages without xmlto, "
-                        "xmltoman or xsltproc",
-                        file = sys.stderr)
-                ctx.setenv("XMLTOMAN", "")
-            else:
-                ctx.setenv("XMLTOMAN_OPTS", "")
-                ctx.setenv("XMLTOMAN_OUTPUT", "> ${TGT}")
-                xmltoman_shell = True
-        else:
-            ctx.setenv("XMLTOMAN_OPTS", "--nonet --novalid " \
-                    "--param man.charmap.use.subset 0 " \
-                    "http://docbook.sourceforge.net/release/xsl/" \
-                    "current/manpages/docbook.xsl")
-            ctx.setenv("XMLTOMAN_OUTPUT", "")
+        mprint("Unable to build manpages without xsltproc", file = sys.stderr)
+        ctx.setenv("XMLTOMAN", "")
     else:
-        ctx.setenv("XMLTOMAN_OPTS", "man")
+        ctx.setenv("XMLTOMAN_OPTS", "--nonet --novalid " \
+                "--param man.charmap.use.subset 0 " \
+                "http://docbook.sourceforge.net/release/xsl/" \
+                "current/manpages/docbook.xsl")
         ctx.setenv("XMLTOMAN_OUTPUT", "")
-    ctx.setenv("XMLTOMAN_SHELL", xmltoman_shell)
     
     ctx.find_prog_env("convert")
     ctx.find_prog_env("composite")
@@ -271,7 +254,6 @@ elif ctx.mode == 'build':
                 rule = "${XMLTOMAN} ${XMLTOMAN_OPTS} ${SRC} ${XMLTOMAN_OUTPUT}",
                 targets = ".1",
                 sources = ".1.xml",
-                use_shell = ctx.env['XMLTOMAN_SHELL'],
                 where = TOP))
         # Force invocation of above suffix rule
         ctx.add_rule(TouchRule(
