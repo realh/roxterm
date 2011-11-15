@@ -2206,7 +2206,7 @@ class BuildGroup(object):
         dprint("Cancelling all jobs")
         # Cond.notify_all() sometimes freezes all threads instead of
         # awakening them, so only choice is to exit
-        sys.exit(0)
+        sys.exit(1)
         with self.cond:
             if not self.cancelled:
                 self.cancelled = True
