@@ -25,6 +25,7 @@ import re
 import subprocess
 import sys
 import threading
+import traceback
 from curses import ascii
 
 
@@ -1303,7 +1304,7 @@ class Rule(object):
                         prog = r
                     else:
                         prog = r.split()
-                    if subprocess.call(prog,
+                    if call_subprocess(prog,
                             shell = self.use_shell, cwd = self.ctx.build_dir):
                         dprint("%s NZ error code" % r)
                         raise MaitchChildError("Rule '%s' failed" % rule)
@@ -1757,6 +1758,30 @@ def StandardTranslationRules(ctx, *args, **kwargs):
  
 
 
+def call_subprocess(*args, **kwargs):
+    """ Like subprocess.Call() with stdout and stderr logged.
+    stdout and stderr in kwargs are overridden. """
+    kwargs['stdout'] = subprocess.PIPE
+    kwargs['stderr'] = subprocess.PIPE
+    sp = subprocess.Popen(*args, **kwargs)
+    dprint("%s has pid %d" % (args, sp.pid))
+    [out, err] = sp.communicate()
+    dprint("pid %d finished, output follows" % sp.pid)
+    out = out.strip()
+    if out: 
+        mprint(out)
+    err = err.strip()
+    if err: 
+        mprint(err, file = sys.stderr)
+    return sp.returncode
+
+
+def report_exception():
+    """ Reports the last raised exception. """
+    mprint(traceback.format_exc(), file = sys.stderr)
+    
+    
+
 def print_formatted(body, columns = 80, heading = None, h_columns = 20):
     """ Prints body, wrapped at the specified number of columns. If heading is
     given, h_columns are reserved on the left for it. """
@@ -2178,7 +2203,10 @@ class BuildGroup(object):
     
     
     def cancel_all_jobs(self):
-        dprint("Entering cancel_all_jobs")
+        dprint("Cancelling all jobs")
+        # Cond.notify_all() sometimes freezes all threads instead of
+        # awakening them, so only choice is to exit
+        sys.exit(0)
         with self.cond:
             if not self.cancelled:
                 self.cancelled = True
@@ -2328,6 +2356,7 @@ class Builder(threading.Thread):
                         finished = True
                     elif len(self.bg.ready_queue):
                         job = self.bg.ready_queue.pop()
+                dprint("%s released cond" % self.describe())
                 if job:
                     dprint("%s running job %s" % (self.describe(), str(job)))
                     job.run()
@@ -2337,8 +2366,8 @@ class Builder(threading.Thread):
                             (self.describe(), str(job)))
         except:
             dprint("Exception in %s" % self.describe())
+            report_exception()
             self.bg.cancel_all_jobs()
-            raise
         dprint("%s finished" % self.describe())
             
 
