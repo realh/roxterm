@@ -1723,29 +1723,49 @@ class PoRule(Rule):
 
 
 
-def PoRulesFromLinguas(ctx, *args, **kwargs):
-    """ Generates a PoRule for each language listed in linguas. Default linguas
-    is podir/LINGUAS. Default podir is ${TOP_DIR}/po. Other args are passed to
-    each PoRule. """
+def parse_linguas(ctx, podirs = None, linguas = None):
     podir = kwargs.get('podir')
     if not podir:
         podir = opj("${TOP_DIR}", "po")
     linguas = kwargs.get('linguas')
     if not linguas:
         linguas = opj(podir, "LINGUAS")
-    rules = []
+    langs = []
     fp = open(ctx.subst(linguas), 'r')
     for l in fp.readlines():
         l = l.strip()
         if not l or l[0] == '#':
             continue
+        langs.append(l)
+    fp.close()
+    return langs
+
+
+
+def PoRulesFromLinguas(ctx, *args, **kwargs):
+    """ Generates a PoRule for each language listed in linguas. Default linguas
+    is podir/LINGUAS. Default podir is ${TOP_DIR}/po. Other args are passed to
+    each PoRule. Also generates .mo rules unless nomo is True. """
+    podir = kwargs.get('podir')
+    if not podir:
+        podir = opj("${TOP_DIR}", "po")
+    linguas = kwargs.get('linguas')
+    if not linguas:
+        linguas = opj(podir, "LINGUAS")
+    nomo = kwargs.get("nomo")
+    langs = parse_linguas(linguas = linguas)
+    rules = []
+    for l in langs:
         f = opj(podir, l + ".po")
         if not os.path.isfile(ctx.subst(f)):
             raise MaitchNotFoundError("Linguas file %s includes %s, "
                     "but no corresponding po file found" % (linguas, l))
         kwargs['targets'] = f
         rules.append(PoRule(*args, **kwargs))
-    fp.close()
+        if not nomo:
+            rules.append(Rule(rule = "${MSGFMT} -c -o ${TGT} ${SRC}",
+                    targets = opj(podir, l + ".po"),
+                    sources = f))
     return rules
 
 
