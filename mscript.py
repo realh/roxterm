@@ -40,6 +40,8 @@ if ctx.mode == 'configure' or ctx.mode == 'help':
 
 if ctx.mode == 'configure':
 
+    ctx.find_prog_env("sed")
+
     git = os.path.exists(ctx.subst(opj("${TOP_DIR}", ".git")))
     try:
         ctx.find_prog_env("git")
@@ -315,7 +317,7 @@ elif ctx.mode == 'build':
     
     # Translations (po4a)
     linguas = parse_linguas(ctx)
-    charset_rule = "sed -i s/charset=CHARSET/charset=UTF-8/ ${TGT}"
+    charset_rule = "${SED} -i s/charset=CHARSET/charset=UTF-8/ ${TGT}"
     if ctx.env['HAVE_PO4A']:
         ctx.ensure_out_dir("po4a")
         if ctx.env['XMLTOMAN']:
@@ -344,7 +346,7 @@ elif ctx.mode == 'build':
                             targets = "po4a/%s.1.%s.xml.in" % (m, l),
                             where = NOWHERE,
                             use_shell = True))
-                    ctx.add_rule(Rule(rule = "sed " \
+                    ctx.add_rule(Rule(rule = "${SED} " \
                             "'s/@VERSION@/${VERSION}/; " \
                             "s#@htmldir@#${HTMLDIR}#' <${SRC} >${TGT}",
                             sources = "po4a/%s.1.%s.xml.in" % (m, l),
@@ -352,12 +354,47 @@ elif ctx.mode == 'build':
                             where = NOWHERE,
                             use_shell = True))
                     ctx.add_rule(Rule( \
-                            rule = [lambda ctx, env, targets, sources: \
-                            ctx.ensure_out_dir_for_file(targets[0]),
-                            xmltomanrule],
+                            rule = [mkdir_rule, xmltomanrule],
                             sources = "po4a/%s.1.%s.xml" % (m, l),
                             targets = "po4a/%s/%s.1" % (l, m),
                             where = NOWHERE))
+        for h in "guide index installation news". split():
+            master = "${TOP_DIR}/Help/en/%s.html" % h
+            pot = "${PO4ADIR}/%s.html.pot" % h
+            ctx.add_rule(Rule(rule = ["${PO4A_GETTEXTIZE} ${PO4AOPTS} " \
+                    "-f xhtml -m ${SRC} -p ${TGT}",
+                    charset_rule,
+                    "${SED} -i 's/SOME DESCRIPTIVE TITLE/" \
+                            "Translations for roxterm docs/' ${TGT}",
+                    "${SED} -i 's/Copyright (C) YEAR/Copyright (C) 2010/' " \
+                            "${TGT}",
+                    "${SED} -i 's/FIRST AUTHOR <EMAIL@ADDRESS>, YEAR/"
+                            "Tony Houghton <h@realh.co.uk>, 2010/' ${TGT}"],
+                    sources = master,
+                    targets = pot,
+                    where = NOWHERE,
+                    use_shell = True))
+            for l in linguas:
+                ldir = "${TOP_DIR}/Help/%s" % l
+                ctx.ensure_out_dir(ldir)
+                po = "${PO4ADIR}/%s.html.%s.po" % (h, l)
+                ctx.add_rule(Rule(rule = ["${PO4A_UPDATEPO} ${PO4AOPTS} " \
+                        "-f xhtml -m ${SRC} -p ${TGT}",
+                        charset_rule],
+                        sources = [master, pot],
+                        targets = po,
+                        where = NOWHERE,
+                        use_shell = True))
+                ctx.add_rule(Rule(rule = [mkdir_rule,
+                        "${PO4A_TRANSLATE} "
+                        "${PO4ACHARSET} " \
+                        "-k 0 -f xhtml -m %s " \
+                        "-p ${SRC} -l ${TGT}" % master],
+                        sources = po,
+                        targets = "%s/%s.html" % (ldir, h),
+                        where = NOWHERE,
+                        use_shell = True))
+            
 
 elif ctx.mode == "install" or ctx.mode == "uninstall":
 

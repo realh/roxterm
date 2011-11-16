@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: roxterm\n"
-"Report-Msgid-Bugs-To: h@realh.co.uk\n"
-"POT-Creation-Date: 2011-06-21 22:06+0200\n"
+"Report-Msgid-Bugs-To: http://sourceforge.net/tracker/?group_id=124080\n"
+"POT-Creation-Date: 2011-11-16 16:52+0000\n"
 "PO-Revision-Date: 2011-03-22 15:47+0000\n"
 "Last-Translator: realh <h@realh.co.uk>\n"
 "Language-Team: Spanish (Castilian) <None>\n"
@@ -33,7 +33,7 @@ msgid "<a id=\"Logo\" href=\"index.html\">"
 msgstr "<a id=\"Logo\" href=\"index.html\">"
 
 #. type: Content of: <html><body><div><div><div>
-#: ../Help/en/installation.html:21 ../Help/en/installation.html:122
+#: ../Help/en/installation.html:21 ../Help/en/installation.html:139
 msgid "</a>"
 msgstr "</a>"
 
@@ -125,11 +125,19 @@ msgstr "Requisitos <a class=\"pageAnchor\" name=\"Requirements\">:</a>"
 
 #. type: Content of: <html><body><div><div><div><p>
 #: ../Help/en/installation.html:58
+#, fuzzy
+#| msgid ""
+#| "You need the libraries for GTK+2 which is pretty much standard on all "
+#| "free Unix derivatives these days. It definitely needs at least version "
+#| "2.6 of glib and probably GTK+ 2.6 too. You will also need libglade 2 - "
+#| "usually, but not always installed; libvte, a Gnome component; and D-BUS "
+#| "(see below)."
 msgid ""
 "You need the libraries for GTK+2 which is pretty much standard on all free "
-"Unix derivatives these days. It definitely needs at least version 2.6 of "
-"glib and probably GTK+ 2.6 too. You will also need libglade 2 - usually, but "
-"not always installed; libvte, a Gnome component; and D-BUS (see below)."
+"Unix derivatives these days, and/or GTK+3.  It needs at least version 2.16 "
+"of glib and GTK+ 2.18. You will also need vte/libvte (at least version "
+"0.20), a Gnome component; most distros package separate versions for GTK+2 "
+"and GTK+3.  D-BUS is also required (see below)."
 msgstr ""
 "Necesita las librerías GTK+2 que son bastante estándar en todos los "
 "derivados Unix libres hoy en día. Es imprescindible al menos la versión 2.6 "
@@ -138,36 +146,35 @@ msgstr ""
 "abajo)."
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/installation.html:62
+#: ../Help/en/installation.html:65
+#, fuzzy
+#| msgid ""
+#| "To compile ROXTerm you will need the header files for all the above "
+#| "libraries. In packaging systems they usually come in packages whose names "
+#| "end in \"-dev\" or \"-devel\"."
 msgid ""
-"To compile ROXTerm you will need the header files for all the above "
-"libraries. In packaging systems they usually come in packages whose names "
-"end in \"-dev\" or \"-devel\"."
+"To compile ROXTerm you will need the header files for the above libraries. "
+"In packaging systems they usually come in packages whose names end in \"-dev"
+"\" or \"-devel\"."
 msgstr ""
 "Para compilar ROXTerm necesitará las cabeceras de las siguientes librerías. "
 "En los sistemas de paquetes normalmente vienen en paquetes cuyos nombres "
 "terminan en «-dev» o «-devel»."
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/installation.html:65
+#: ../Help/en/installation.html:69
 msgid ""
-"Additionally, to build a git checkout of ROXTerm you need autoconf, automake "
-"and libtool. Use the latest versions possible. Old versions of automake "
-"(older than 1.7?) will cause building to fail because ROXTerm uses per-"
-"target CFLAGS."
+"ROXTerm uses a new, bespoke build system called maitch. This requires python "
+"and the python 'lockfile' module."
 msgstr ""
-"Adicionalmente, para compilar una versión obtenida mediante git necesita "
-"autoconf, automake y libtool. Utilice las últimas versiones disponibles. Las "
-"versiones viejas de automake (¿anteriores a la 1.7?) provocarán fallos en la "
-"compilación porque ROXTerm utiliza CFLAGS por objetivo."
 
 #. type: Content of: <html><body><div><div><div><h3>
-#: ../Help/en/installation.html:69
+#: ../Help/en/installation.html:72
 msgid "D-Bus"
 msgstr "D-Bus"
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/installation.html:71
+#: ../Help/en/installation.html:74
 msgid ""
 "D-Bus is a messaging system which ROXTerm uses to connect terminals with its "
 "configure tool. ROXTerm uses the \"session\" bus, which should be started "
@@ -185,7 +192,7 @@ msgstr ""
 "xinitrc o .xsession:"
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/installation.html:77
+#: ../Help/en/installation.html:80
 msgid ""
 "<span>if test -z \"$DBUS_SESSION_BUS_ADDRESS\" ; then</span> <span class="
 "\"indented\">eval `dbus-launch --sh-syntax --exit-with-session`</span> <span "
@@ -196,7 +203,7 @@ msgstr ""
 "class=\"indented\">export DBUS_SESSION_BUS_ADDRESS</span> <span>fi</span>"
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/installation.html:83
+#: ../Help/en/installation.html:86
 msgid ""
 "The reason for using a bespoke configuration messaging system over D-Bus "
 "instead of gconf is because gconf doesn't provide a way to map an arbitrary "
@@ -208,17 +215,24 @@ msgstr ""
 "configuración."
 
 #. type: Content of: <html><body><div><div><div><h2>
-#: ../Help/en/installation.html:86
+#: ../Help/en/installation.html:89
 msgid "Installing <a class=\"pageAnchor\" name=\"Installing\">:</a>"
 msgstr "Instalando <a class=\"pageAnchor\" name=\"Installing\">:</a>"
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/installation.html:88
+#: ../Help/en/installation.html:91
+#, fuzzy
+#| msgid ""
+#| "To install ROXTerm for ROX all you need to do is unpack the tarball in "
+#| "your Apps directory and run it from there, but you will probably want to "
+#| "rename the folder to ROXTerm. For other systems ROXTerm may be installed "
+#| "in the same way as any autoconf-based source package:"
 msgid ""
 "To install ROXTerm for ROX all you need to do is unpack the tarball in your "
 "Apps directory and run it from there, but you will probably want to rename "
-"the folder to ROXTerm. For other systems ROXTerm may be installed in the "
-"same way as any autoconf-based source package:"
+"the folder to ROXTerm. For other systems ROXTerm may be installed in a "
+"similar way to an autoconf-based source package, but using maitch's "
+"analogues:"
 msgstr ""
 "Para instalar ROXTerm para ROX todo lo que necesita es descomprimir el "
 "archivo en su directorio Apps y ejecutarlo desde ahí, pero probablemente "
@@ -227,28 +241,53 @@ msgstr ""
 "autoconf:"
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/installation.html:93
-msgid "<span>./configure</span> <span>make</span> <span>make install</span>"
+#: ../Help/en/installation.html:98
+#, fuzzy
+#| msgid "<span>./configure</span> <span>make</span> <span>make install</span>"
+msgid ""
+"<span>python ./mscript.py configure</span> <span>python ./mscript.py build</"
+"span> <span>python ./mscript.py install</span>"
 msgstr "<span>./configure</span> <span>make</span> <span>make install</span>"
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/installation.html:98
+#: ../Help/en/installation.html:103
+msgid "Various options are available, run"
+msgstr ""
+
+#. type: Content of: <html><body><div><div><div><p><p>
+#: ../Help/en/installation.html:105
+msgid "<span>python ./mscript.py help</span>"
+msgstr ""
+
+#. type: Content of: <html><body><div><div><div><p>
+#: ../Help/en/installation.html:107
+msgid "for details."
+msgstr ""
+
+#. type: Content of: <html><body><div><div><div><p>
+#: ../Help/en/installation.html:109
+#, fuzzy
+#| msgid ""
+#| "If you are using a version fetched by git instead of a release tarball "
+#| "run the bootstrap.sh script first to create the configure script and "
+#| "various other files needed for building."
 msgid ""
-"If you are using a version fetched by git instead of a release tarball run "
-"the bootstrap.sh script first to create the configure script and various "
-"other files needed for building."
+"Autoconf builds are still supported, but deprecated. If you are using a "
+"version fetched by git instead of a release tarball run the bootstrap.sh "
+"script first to create the configure script and various other files needed "
+"for building."
 msgstr ""
 "Si está utilizando una versión obtenida mediante git en lugar de un conjunto "
 "de fuentes publicado ejecute primero el script bootstrap.sh para crear el "
 "script configure y otros archivos necesarios para la compilación."
 
 #. type: Content of: <html><body><div><div><div><h3>
-#: ../Help/en/installation.html:101
+#: ../Help/en/installation.html:114
 msgid "Debian &amp; Ubuntu"
 msgstr "Debian y Ubuntu"
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/installation.html:103
+#: ../Help/en/installation.html:116
 msgid ""
 "Up-to-date official Debian packages are now available. See <a href=\"http://"
 "packages.debian.org/roxterm\">http://packages.debian.org/roxterm</a>. For "
@@ -265,7 +304,7 @@ msgstr ""
 "conjuntos de fuentes publicados desde la versión 1.19.1."
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/installation.html:108
+#: ../Help/en/installation.html:121
 msgid ""
 "For instructions on building a debian package refer to the file INSTALL."
 "Debian in the unpacked tarball/git working directory."
@@ -274,12 +313,20 @@ msgstr ""
 "INSTALL.Debian incluido con las fuentes del programa."
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/installation.html:111
+#: ../Help/en/installation.html:124
+#, fuzzy
+#| msgid ""
+#| "Ubuntu also has official roxterm packages, but due to Ubuntu's release "
+#| "cycle these may lag behind the latest upstream releases. Therefore I have "
+#| "set up a PPA at https://launchpad.net/~h-realh/+archive/ppa to provide "
+#| "the most recent releases of ROXTerm for Ubuntu's current release when "
+#| "appropriate."
 msgid ""
 "Ubuntu also has official roxterm packages, but due to Ubuntu's release cycle "
 "these may lag behind the latest upstream releases. Therefore I have set up a "
-"PPA at https://launchpad.net/~h-realh/+archive/ppa to provide the most "
-"recent releases of ROXTerm for Ubuntu's current release when appropriate."
+"<a href=\"https://launchpad.net/~h-realh/+archive/ppa\">PPA</a> to provide "
+"the most recent releases of ROXTerm for Ubuntu's current release when "
+"appropriate."
 msgstr ""
 "Ubuntu también tiene paquetes de roxterm oficiales, pero debido a su ciclo "
 "de publicaciones éstos podrían no ser las versiones más recientes. Por lo "
@@ -288,7 +335,7 @@ msgstr ""
 "de Ubuntu cuando convenga."
 
 #. type: Content of: <html><body><div><div><div><a>
-#: ../Help/en/installation.html:119
+#: ../Help/en/installation.html:136
 msgid ""
 "<a id=\"SourceforgeLink\" href=\"http://sourceforge.net/projects/roxterm\" "
 "title=\"RoxTerm Sourceforge\">"
@@ -297,7 +344,7 @@ msgstr ""
 "title=\"RoxTerm Sourceforge\">"
 
 #. type: Attribute 'alt' of: <html><body><div><div><div><a><img>
-#: ../Help/en/installation.html:121
+#: ../Help/en/installation.html:138
 msgid ""
 "Get RoxTerm at SourceForge.net. Fast, secure and Free Open Source software "
 "downloads"
@@ -306,7 +353,7 @@ msgstr ""
 "rápidas, seguras y gratis"
 
 #. type: Content of: <html><body><div><div><div>
-#: ../Help/en/installation.html:126
+#: ../Help/en/installation.html:143
 msgid ""
 "<a id=\"DonationLink\" class=\"spriteLink\" href=\"http://sourceforge.net/"
 "donate/index.php?group_id=124080\">Donate</a> <a id=\"ValidMarkupLink\" "
@@ -319,7 +366,7 @@ msgstr ""
 "Válido</a>"
 
 #. type: Content of: <html><body><div><div><p>
-#: ../Help/en/installation.html:130
+#: ../Help/en/installation.html:147
 msgid ""
 "ROXTerm is licensed under the <a href=\"http://www.gnu.org/licenses/gpl-3.0-"
 "standalone.html\">GPL</a> | Site design by Adrian Sampson"
@@ -327,3 +374,14 @@ msgstr ""
 "ROXTerm se publica bajo la licencia <a href=\"http://www.gnu.org/licenses/"
 "gpl-3.0-standalone.html\">GPL</a> | Diseño de la página web por Adrian "
 "Sampson | Traducción al español por F&eacute;lix Medrano"
+
+#~ msgid ""
+#~ "Additionally, to build a git checkout of ROXTerm you need autoconf, "
+#~ "automake and libtool. Use the latest versions possible. Old versions of "
+#~ "automake (older than 1.7?) will cause building to fail because ROXTerm "
+#~ "uses per-target CFLAGS."
+#~ msgstr ""
+#~ "Adicionalmente, para compilar una versión obtenida mediante git necesita "
+#~ "autoconf, automake y libtool. Utilice las últimas versiones disponibles. "
+#~ "Las versiones viejas de automake (¿anteriores a la 1.7?) provocarán "
+#~ "fallos en la compilación porque ROXTerm utiliza CFLAGS por objetivo."

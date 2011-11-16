@@ -1618,6 +1618,12 @@ class StaticLibRule(LibtoolProgramRule):
         LibtoolProgramRule.__init__(self, **kwargs)
 
 
+def mkdir_rule(ctx, env, targets, sources):
+    """ A rule function to ensure targets' directories exist. """
+    for t in targets:
+        ctx.ensure_out_dir_for_file(t)
+
+
 
 def PotRules(ctx, **kwargs):
     """ Returns a pair (list) of rules for generating a .pot file from a list of
@@ -1996,7 +2002,7 @@ def recursively_remove(path, fatal, excep):
 def find_prog(name, env = os.environ):
     if os.path.isabs(name):
         return name
-    path = env.get('PATH', '/usr/bin:/usr/local/bin')
+    path = env.get('PATH', '/bin:/usr/bin:/usr/local/bin')
     for p in path.split(':'):
         n = opj(p, name)
         if os.path.exists(n):
