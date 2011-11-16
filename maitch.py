@@ -1723,11 +1723,9 @@ class PoRule(Rule):
 
 
 
-def parse_linguas(ctx, podirs = None, linguas = None):
-    podir = kwargs.get('podir')
+def parse_linguas(ctx, podir = None, linguas = None):
     if not podir:
         podir = opj("${TOP_DIR}", "po")
-    linguas = kwargs.get('linguas')
     if not linguas:
         linguas = opj(podir, "LINGUAS")
     langs = []
@@ -1753,7 +1751,7 @@ def PoRulesFromLinguas(ctx, *args, **kwargs):
     if not linguas:
         linguas = opj(podir, "LINGUAS")
     nomo = kwargs.get("nomo")
-    langs = parse_linguas(linguas = linguas)
+    langs = parse_linguas(ctx, linguas = linguas)
     rules = []
     for l in langs:
         f = opj(podir, l + ".po")
@@ -1764,7 +1762,7 @@ def PoRulesFromLinguas(ctx, *args, **kwargs):
         rules.append(PoRule(*args, **kwargs))
         if not nomo:
             rules.append(Rule(rule = "${MSGFMT} -c -o ${TGT} ${SRC}",
-                    targets = opj(podir, l + ".po"),
+                    targets = opj(podir, l + ".mo"),
                     sources = f))
     return rules
 
