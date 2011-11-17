@@ -204,9 +204,10 @@ and docbook-xsl in your Build-Depends control field.
         </term>
         <listitem>
           <para>If possible open the new terminal in an existing window rather
-          than open a new window. The window chosen is the most recently
-          focused window with the same profile as the new terminal. This option
-          overrides <option>--zoom</option> and
+          than open a new window. If used in conjunction with
+          <option>-T</option>/<option>--title</option> the tab will be placed
+          in an existing window with the same title if one exists.
+          This option overrides <option>--zoom</option> and
           <option>--fullscreen</option>.</para>
         </listitem>
       </varlistentry>
