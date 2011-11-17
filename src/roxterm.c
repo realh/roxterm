@@ -2914,7 +2914,7 @@ static void roxterm_apply_disable_menu_access(ROXTermData *roxterm)
 
 static void roxterm_apply_title_template(ROXTermData *roxterm)
 {
-    const char *win_title = global_options_lookup_string("title");
+    char *win_title = global_options_lookup_string("title");
     gboolean custom_win_title;
     
     if (win_title)
@@ -2933,6 +2933,7 @@ static void roxterm_apply_title_template(ROXTermData *roxterm)
         global_options_reset_string("title");
         multi_win_set_title_template_locked(roxterm->win, TRUE);
     }
+    g_free(win_title);
 }
     
 static void roxterm_apply_show_tab_status(ROXTermData *roxterm)
@@ -4078,8 +4079,31 @@ void roxterm_launch(const char *display_name, char **env)
     if (global_options_tab)
     {
         ROXTermData *partner;
+        char *wtitle = global_options_lookup_string("title");
+        MultiWin *focused = NULL;
+        GList *link;
         
-        win = multi_win_all ? multi_win_all->data : NULL;
+        win = NULL;
+        for (link = multi_win_all; link; link = g_list_next(link))
+        {
+            win = link->data;
+            if (wtitle && !g_strcmp0(multi_win_get_title_template(win), wtitle))
+                break;
+            if (gtk_window_is_active(GTK_WINDOW(multi_win_get_widget(win))))
+            {
+                focused = NULL;
+                if (!wtitle)
+                    break;
+            }
+            win = NULL;
+        }
+        if (!win)
+        {
+            if (focused)
+                win = focused;
+            else if (multi_win_all)
+                win = multi_win_all->data;
+        }
         partner = win ? multi_win_get_user_data_for_current_tab(win) : NULL;
         if (partner)
         {
