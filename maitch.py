@@ -1618,6 +1618,12 @@ class StaticLibRule(LibtoolProgramRule):
         LibtoolProgramRule.__init__(self, **kwargs)
 
 
+def mkdir_rule(ctx, env, targets, sources):
+    """ A rule function to ensure targets' directories exist. """
+    for t in targets:
+        ctx.ensure_out_dir_for_file(t)
+
+
 
 def PotRules(ctx, **kwargs):
     """ Returns a pair (list) of rules for generating a .pot file from a list of
@@ -1723,29 +1729,47 @@ class PoRule(Rule):
 
 
 
+def parse_linguas(ctx, podir = None, linguas = None):
+    if not podir:
+        podir = opj("${TOP_DIR}", "po")
+    if not linguas:
+        linguas = opj(podir, "LINGUAS")
+    langs = []
+    fp = open(ctx.subst(linguas), 'r')
+    for l in fp.readlines():
+        l = l.strip()
+        if not l or l[0] == '#':
+            continue
+        langs.append(l)
+    fp.close()
+    return langs
+
+
+
 def PoRulesFromLinguas(ctx, *args, **kwargs):
     """ Generates a PoRule for each language listed in linguas. Default linguas
     is podir/LINGUAS. Default podir is ${TOP_DIR}/po. Other args are passed to
-    each PoRule. """
+    each PoRule. Also generates .mo rules unless nomo is True. """
     podir = kwargs.get('podir')
     if not podir:
         podir = opj("${TOP_DIR}", "po")
     linguas = kwargs.get('linguas')
     if not linguas:
         linguas = opj(podir, "LINGUAS")
+    nomo = kwargs.get("nomo")
+    langs = parse_linguas(ctx, linguas = linguas)
     rules = []
-    fp = open(ctx.subst(linguas), 'r')
-    for l in fp.readlines():
-        l = l.strip()
-        if not l or l[0] == '#':
-            continue
+    for l in langs:
         f = opj(podir, l + ".po")
         if not os.path.isfile(ctx.subst(f)):
             raise MaitchNotFoundError("Linguas file %s includes %s, "
                     "but no corresponding po file found" % (linguas, l))
         kwargs['targets'] = f
         rules.append(PoRule(*args, **kwargs))
-    fp.close()
+        if not nomo:
+            rules.append(Rule(rule = "${MSGFMT} -c -o ${TGT} ${SRC}",
+                    targets = opj(podir, l + ".mo"),
+                    sources = f))
     return rules
 
 
@@ -1978,7 +2002,7 @@ def recursively_remove(path, fatal, excep):
 def find_prog(name, env = os.environ):
     if os.path.isabs(name):
         return name
-    path = env.get('PATH', '/usr/bin:/usr/local/bin')
+    path = env.get('PATH', '/bin:/usr/bin:/usr/local/bin')
     for p in path.split(':'):
         n = opj(p, name)
         if os.path.exists(n):

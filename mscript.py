@@ -40,6 +40,8 @@ if ctx.mode == 'configure' or ctx.mode == 'help':
 
 if ctx.mode == 'configure':
 
+    ctx.find_prog_env("sed")
+
     git = os.path.exists(ctx.subst(opj("${TOP_DIR}", ".git")))
     try:
         ctx.find_prog_env("git")
@@ -71,7 +73,7 @@ if ctx.mode == 'configure':
         mprint("Unable to build manpages without xsltproc", file = sys.stderr)
         ctx.setenv("XMLTOMAN", "")
     else:
-        ctx.setenv("XMLTOMAN_OPTS", "--nonet --novalid " \
+        ctx.setenv("XMLTOMAN_OPTS", "-o ${TGT} --nonet --novalid " \
                 "--param man.charmap.use.subset 0 " \
                 "http://docbook.sourceforge.net/release/xsl/" \
                 "current/manpages/docbook.xsl")
@@ -80,11 +82,35 @@ if ctx.mode == 'configure':
     ctx.find_prog_env("convert")
     ctx.find_prog_env("composite")
     
+    ctx.setenv('BUG_TRACKER', "http://sourceforge.net/tracker/?group_id=124080")
+    
     try:
         ctx.find_prog_env("xgettext")
         ctx.find_prog_env("msgmerge")
+        ctx.find_prog_env("msgfmt")
     except MaitchNotFoundError:
-        pass
+        mprint("WARNING: gettext tools not found, not building " \
+                "programs' translations", file = sys.stderr)
+        ctx.setenv('HAVE_GETTEXT', False)
+    else:
+        ctx.setenv('HAVE_GETTEXT', True)
+    
+    try:
+        ctx.find_prog_env("po4a-gettextize")
+        ctx.find_prog_env("po4a-updatepo")
+        ctx.find_prog_env("po4a-translate")
+    except MaitchNotFoundError:
+        mprint("WARNING: po4a tools not found, not building " \
+                "documentation's translations", file = sys.stderr)
+        ctx.setenv('HAVE_PO4A', False)
+    else:
+        ctx.setenv('HAVE_PO4A', True)
+        ctx.setenv('PO4ACHARSET', "-M UTF-8")
+        ctx.setenv('PO4AOPTS', "${PO4ACHARSET} --package-name=${PACKAGE} " \
+                "--package-version=${VERSION} " \
+                "--copyright-holder='Tony Houghton' " \
+                "--msgid-bugs-address=${BUG_TRACKER}")
+        ctx.setenv('PO4ADIR', "${TOP_DIR}/po4a")
     
     gda = ctx.env.get("WITH_GNOME_DEFAULT_APPLICATIONS")
     if gda == None or gda == True:
@@ -163,10 +189,12 @@ if ctx.mode == 'configure':
             opj(ctx.env['DATADIR'], "icons", "hicolor", "scalable", "apps"))
     ctx.define('LOCALE_DIR', opj(ctx.env['DATADIR'], "locale"))
     ctx.define('HTML_DIR', ctx.env['HTMLDIR'])
+    ctx.setenv('htmldir', "${HTMLDIR}")
     ctx.define('BIN_DIR', ctx.env['BINDIR'])
     
-    ctx.subst_file("${TOP_DIR}/roxterm.1.xml.in", "roxterm.1.xml")
-    ctx.subst_file("${TOP_DIR}/roxterm-config.1.xml.in", "roxterm-config.1.xml")
+    ctx.subst_file("${TOP_DIR}/roxterm.1.xml.in", "roxterm.1.xml", True)
+    ctx.subst_file("${TOP_DIR}/roxterm-config.1.xml.in", "roxterm-config.1.xml",
+            True)
     ctx.setenv('APPINFO_STRING', "${VERSION} (%s)" % \
             time.strftime("%Y-%m-%d", time.gmtime(time.time())))
     ctx.subst_file(APPINFO + ".in", APPINFO)
@@ -250,8 +278,9 @@ elif ctx.mode == 'build':
     
     # man pages
     if ctx.env['XMLTOMAN']:
+        xmltomanrule = "${XMLTOMAN} ${XMLTOMAN_OPTS} ${SRC} ${XMLTOMAN_OUTPUT}"
         ctx.add_rule(SuffixRule(
-                rule = "${XMLTOMAN} ${XMLTOMAN_OPTS} ${SRC} ${XMLTOMAN_OUTPUT}",
+                rule = xmltomanrule,
                 targets = ".1",
                 sources = ".1.xml",
                 where = TOP))
@@ -276,15 +305,96 @@ elif ctx.mode == 'build':
             sources = "${SRC_DIR}/roxterm-config.ui",
             targets = "roxterm-config.ui-stamp"))
     
-    # Translations
-    if ctx.env.get('XGETTEXT') and ctx.env.get('MSGMERGE'):
+    # Translations (gettext)
+    if ctx.env['HAVE_GETTEXT']:
         trans_rules = StandardTranslationRules(ctx,
                 copyright_holder = "(c) 2011 Tony Houghton",
-                version = "'${VERSION}'",
-                bugs_addr = "'http://sourceforge.net/tracker/?group_id=124080'",
+                version = "${VERSION}",
+                bugs_addr = "${BUG_TRACKER}",
                 use_shell = True)
         for r in trans_rules:
             ctx.add_rule(r)
+    
+    # Translations (po4a)
+    linguas = parse_linguas(ctx)
+    charset_rule = "${SED} -i s/charset=CHARSET/charset=UTF-8/ ${TGT}"
+    if ctx.env['HAVE_PO4A']:
+        ctx.ensure_out_dir("po4a")
+        if ctx.env['XMLTOMAN']:
+            for m in ["roxterm", "roxterm-config"]:
+                ctx.add_rule(Rule(rule = ["${PO4A_GETTEXTIZE} ${PO4AOPTS} " \
+                        "-f docbook -m ${SRC} -p ${TGT}",
+                        charset_rule],
+                        sources = "${TOP_DIR}/%s.1.xml.in" % m,
+                        targets = "${PO4ADIR}/%s.1.pot" % m,
+                        where = NOWHERE,
+                        use_shell = True))
+                for l in linguas:
+                    ctx.add_rule(Rule(rule = ["${PO4A_UPDATEPO} ${PO4AOPTS} " \
+                            "-f docbook -m ${SRC} -p ${TGT}",
+                            charset_rule],
+                            sources = ["${TOP_DIR}/%s.1.xml.in" % m,
+                                    "${PO4ADIR}/%s.1.pot" % m],
+                            targets = "${PO4ADIR}/%s.1.%s.po" % (m, l),
+                            where = NOWHERE,
+                            use_shell = True))
+                    ctx.add_rule(Rule(rule = "${PO4A_TRANSLATE} "
+                            "${PO4ACHARSET} " \
+                            "-k 0 -f docbook -m ${TOP_DIR}/%s.1.xml.in " \
+                            "-p ${SRC} -l ${TGT}" % m,
+                            sources = "${PO4ADIR}/%s.1.%s.po" % (m, l),
+                            targets = "po4a/%s.1.%s.xml.in" % (m, l),
+                            where = NOWHERE,
+                            use_shell = True))
+                    ctx.add_rule(Rule(rule = "${SED} " \
+                            "'s/@VERSION@/${VERSION}/; " \
+                            "s#@htmldir@#${HTMLDIR}#' <${SRC} >${TGT}",
+                            sources = "po4a/%s.1.%s.xml.in" % (m, l),
+                            targets = "po4a/%s.1.%s.xml" % (m, l),
+                            where = NOWHERE,
+                            use_shell = True))
+                    ctx.add_rule(Rule( \
+                            rule = [mkdir_rule, xmltomanrule],
+                            sources = "po4a/%s.1.%s.xml" % (m, l),
+                            targets = "po4a/%s/%s.1" % (l, m),
+                            where = NOWHERE))
+        for h in "guide index installation news". split():
+            master = "${TOP_DIR}/Help/en/%s.html" % h
+            pot = "${PO4ADIR}/%s.html.pot" % h
+            ctx.add_rule(Rule(rule = ["${PO4A_GETTEXTIZE} ${PO4AOPTS} " \
+                    "-f xhtml -m ${SRC} -p ${TGT}",
+                    charset_rule,
+                    "${SED} -i 's/SOME DESCRIPTIVE TITLE/" \
+                            "Translations for roxterm docs/' ${TGT}",
+                    "${SED} -i 's/Copyright (C) YEAR/Copyright (C) 2010/' " \
+                            "${TGT}",
+                    "${SED} -i 's/FIRST AUTHOR <EMAIL@ADDRESS>, YEAR/"
+                            "Tony Houghton <h@realh.co.uk>, 2010/' ${TGT}"],
+                    sources = master,
+                    targets = pot,
+                    where = NOWHERE,
+                    use_shell = True))
+            for l in linguas:
+                ldir = "${TOP_DIR}/Help/%s" % l
+                ctx.ensure_out_dir(ldir)
+                po = "${PO4ADIR}/%s.html.%s.po" % (h, l)
+                ctx.add_rule(Rule(rule = ["${PO4A_UPDATEPO} ${PO4AOPTS} " \
+                        "-f xhtml -m ${SRC} -p ${TGT}",
+                        charset_rule],
+                        sources = [master, pot],
+                        targets = po,
+                        where = NOWHERE,
+                        use_shell = True))
+                ctx.add_rule(Rule(rule = [mkdir_rule,
+                        "${PO4A_TRANSLATE} "
+                        "${PO4ACHARSET} " \
+                        "-k 0 -f xhtml -m %s " \
+                        "-p ${SRC} -l ${TGT}" % master],
+                        sources = po,
+                        targets = "%s/%s.html" % (ldir, h),
+                        where = NOWHERE,
+                        use_shell = True))
+            
 
 elif ctx.mode == "install" or ctx.mode == "uninstall":
 
