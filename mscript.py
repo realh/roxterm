@@ -18,6 +18,8 @@ ROXTERM_SOURCES = "about.c main.c multitab.c multitab-close-button.c " \
         "multitab-label.c menutree.c optsdbus.c roxterm.c shortcuts.c " \
         "uri.c x11support.c"
 
+ROXTERM_HTML_BASENAMES = "guide index installation news".split()
+
 LOGO_PNG = "${TOP_DIR}/Help/lib/roxterm_logo.png"
 FAVICON = "${TOP_DIR}/Help/lib/favicon.ico"
 TEXT_LOGO = "${TOP_DIR}/Help/lib/logo_text.png"
@@ -358,7 +360,7 @@ elif ctx.mode == 'build':
                             sources = "po4a/%s.1.%s.xml" % (m, l),
                             targets = "po4a/%s/%s.1" % (l, m),
                             where = NOWHERE))
-        for h in "guide index installation news". split():
+        for h in ROXTERM_HTML_BASENAMES:
             master = "${TOP_DIR}/Help/en/%s.html" % h
             pot = "${PO4ADIR}/%s.html.pot" % h
             ctx.add_rule(Rule(rule = ["${PO4A_GETTEXTIZE} ${PO4AOPTS} " \
@@ -404,7 +406,7 @@ elif ctx.mode == "install" or ctx.mode == "uninstall":
     if ctx.env['XMLTOMAN']:
         ctx.install_man("roxterm.1 roxterm-config.1")
     ctx.install_doc("AUTHORS ChangeLog COPYING README")
-    ctx.install_doc(ctx.glob("*", subdir = "${TOP_DIR}/Help/en"),
+    ctx.install_doc(ctx.glob("*.html", subdir = "${TOP_DIR}/Help/en"),
             "${HTMLDIR}/en")
     ctx.install_doc(ctx.glob("*", subdir = "${TOP_DIR}/Help/lib"),
             "${HTMLDIR}/lib")
@@ -416,6 +418,19 @@ elif ctx.mode == "install" or ctx.mode == "uninstall":
     gda = ctx.env['WITH_GNOME_DEFAULT_APPLICATIONS']
     if gda:
         ctx.install_data("roxterm.xml", gda)
+    
+    linguas = parse_linguas(ctx)
+    if ctx.env['HAVE_GETTEXT']:
+        for l in linguas:
+            ctx.install_data("po/%s.mo" % l, "${LOCALEDIR}/%s/LC_MESSAGES" % l)
+    if ctx.env['HAVE_PO4A']:
+        for l in linguas:
+            if ctx.env['XMLTOMAN']:
+                ctx.install_man("po4a/%s/roxterm.1 po4a/%s/roxterm-config.1" % \
+                        (l, l), opj("${MANDIR}", l))
+            ctx.install_doc( \
+                    ctx.glob("*.html", subdir = "${TOP_DIR}/Help/%s" % l),
+                    "${HTMLDIR}/%s" % l)
 
 elif ctx.mode == 'distclean' or ctx.mode == 'clean':
     

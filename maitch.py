@@ -1070,7 +1070,10 @@ int main() { %s(); return 0; }
         self.install(directory, sources, mode, libtool, other_options)
     
     
-    def install_man(self, sources, mode = '0644', other_options = None):
+    def install_man(self, sources, directory = None, mode = '0644',
+            other_options = None):
+        if not directory:
+            directory = "${MANDIR}"
         sources = process_nodes(sources)
         dirs = {}
         for s in sources:
@@ -1085,7 +1088,7 @@ int main() { %s(); return 0; }
                 dirs[sec] = d
             d.append(s)
         for d, s in dirs.items():
-            self.install(opj("${MANDIR}", "man%d" % int(d)), s, '0644')
+            self.install(opj(directory, "man%d" % int(d)), s, '0644')
             
     
     def uninstall(self):
@@ -1768,7 +1771,7 @@ def PoRulesFromLinguas(ctx, *args, **kwargs):
         rules.append(PoRule(*args, **kwargs))
         if not nomo:
             rules.append(Rule(rule = "${MSGFMT} -c -o ${TGT} ${SRC}",
-                    targets = opj(podir, l + ".mo"),
+                    targets = opj("po", l + ".mo"),
                     sources = f))
     return rules
 
@@ -2410,6 +2413,8 @@ add_var('MANDIR', '${DATADIR}/man',
         "Installation directory for man pages", True)
 add_var('DATADIR', '${PREFIX}/share',
         "Installation directory for data files", True)
+add_var('LOCALEDIR', '${DATADIR}/locale',
+        "Installation directory for locale data", True)
 add_var('PKGDATADIR', '${PREFIX}/share/${PACKAGE}',
         "Installation directory for this package's data files", True)
 add_var('DOCDIR', '${PREFIX}/share/doc/${PACKAGE}',

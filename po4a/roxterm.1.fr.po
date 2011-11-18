@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: roxterm\n"
 "Report-Msgid-Bugs-To: http://sourceforge.net/tracker/?group_id=124080\n"
-"POT-Creation-Date: 2011-11-16 15:39+0000\n"
+"POT-Creation-Date: 2011-11-18 23:09+0000\n"
 "PO-Revision-Date: 2011-04-27 19:14+0000\n"
 "Last-Translator: christo2so <christo.2so@gmail.com>\n"
 "Language-Team: French (http://www.transifex.net/projects/p/roxterm/team/"
@@ -380,11 +380,18 @@ msgstr "<option> - Onglet </option>"
 
 #. type: Content of: <refentry><refsect1><variablelist><varlistentry><listitem><para>
 #: ../roxterm.1.xml.in:206
+#, fuzzy
+#| msgid ""
+#| "If possible open the new terminal in an existing window rather than open "
+#| "a new window. The window chosen is the most recently focused window with "
+#| "the same profile as the new terminal. This option overrides <option>--"
+#| "zoom</option> and <option>--fullscreen</option>."
 msgid ""
 "If possible open the new terminal in an existing window rather than open a "
-"new window. The window chosen is the most recently focused window with the "
-"same profile as the new terminal. This option overrides <option>--zoom</"
-"option> and <option>--fullscreen</option>."
+"new window. If used in conjunction with <option>-T</option>/<option>--title</"
+"option> the tab will be placed in an existing window with the same title if "
+"one exists.  This option overrides <option>--zoom</option> and <option>--"
+"fullscreen</option>."
 msgstr ""
 "Si possible ouvrir le nouveau terminal dans une fenêtre existante plutôt que "
 "de l'ouvrir dans une nouvelle. La fenêtre choisie est celle la plus "
@@ -393,7 +400,7 @@ msgstr ""
 "option> ."
 
 #. type: Content of: <refentry><refsect1><variablelist><varlistentry><term>
-#: ../roxterm.1.xml.in:214
+#: ../roxterm.1.xml.in:215
 msgid ""
 "<option>--zoom=<replaceable>ZOOM</replaceable></option> <option>-z "
 "<replaceable>ZOOM</replaceable></option>"
@@ -402,14 +409,14 @@ msgstr ""
 "<replaceable>ZOOM</replaceable></option>"
 
 #. type: Content of: <refentry><refsect1><variablelist><varlistentry><listitem><para>
-#: ../roxterm.1.xml.in:218
+#: ../roxterm.1.xml.in:219
 msgid "Scale terminal's font by a factor of ZOOM (1.0 is normal size)."
 msgstr ""
 "Echelle de police de terminal par un facteur de zoom (1.0 est la taille "
 "normale)."
 
 #. type: Content of: <refentry><refsect1><variablelist><varlistentry><term>
-#: ../roxterm.1.xml.in:223
+#: ../roxterm.1.xml.in:224
 msgid ""
 "<option>-p <replaceable>PROFILE</replaceable></option> <option>--"
 "profile=<replaceable>PROFILE</replaceable></option>"
@@ -418,12 +425,12 @@ msgstr ""
 "profile=<replaceable>PROFIL</replaceable></option>"
 
 #. type: Content of: <refentry><refsect1><variablelist><varlistentry><listitem><para>
-#: ../roxterm.1.xml.in:227
+#: ../roxterm.1.xml.in:228
 msgid "Use the named profile."
 msgstr "Utilisez le profil nommé."
 
 #. type: Content of: <refentry><refsect1><variablelist><varlistentry><term>
-#: ../roxterm.1.xml.in:231
+#: ../roxterm.1.xml.in:232
 msgid ""
 "<option>-c <replaceable>SCHEME</replaceable></option> <option>--colour-"
 "scheme=<replaceable>SCHEME</replaceable></option> <option>--color-"
@@ -434,12 +441,12 @@ msgstr ""
 "color-scheme=<replaceable>JEU DE COULEURS</replaceable></option>"
 
 #. type: Content of: <refentry><refsect1><variablelist><varlistentry><listitem><para>
-#: ../roxterm.1.xml.in:236
+#: ../roxterm.1.xml.in:237
 msgid "Use the named colour scheme."
 msgstr "Utilisez le jeu de couleurs nommée."
 
 #. type: Content of: <refentry><refsect1><variablelist><varlistentry><term>
-#: ../roxterm.1.xml.in:240
+#: ../roxterm.1.xml.in:241
 msgid ""
 "<option>-s <replaceable>SCHEME</replaceable></option> <option>--shortcut-"
 "scheme=<replaceable>SCHEME</replaceable></option>"
@@ -448,12 +455,12 @@ msgstr ""
 "shortcut-scheme=<replaceable>JEU DE COULEURS</replaceable></option>"
 
 #. type: Content of: <refentry><refsect1><variablelist><varlistentry><listitem><para>
-#: ../roxterm.1.xml.in:244
+#: ../roxterm.1.xml.in:245
 msgid "Use the named keyboard shortcut scheme."
 msgstr "Utilisez le jeu de raccourcis clavier nommé."
 
 #. type: Content of: <refentry><refsect1><variablelist><varlistentry><term>
-#: ../roxterm.1.xml.in:248
+#: ../roxterm.1.xml.in:249
 msgid ""
 "<option>--title=<replaceable>TITLE</replaceable></option> <option>-T "
 "<replaceable>TITLE</replaceable></option>"
@@ -462,14 +469,14 @@ msgstr ""
 "<replaceable>TITRE</replaceable></option>"
 
 #. type: Content of: <refentry><refsect1><variablelist><varlistentry><listitem><para>
-#: ../roxterm.1.xml.in:252
+#: ../roxterm.1.xml.in:253
 msgid ""
 "Set window title. May include \"%s\" which is substituted with the full "
 "contents of the tab's label."
 msgstr "Titres des fenêtres. Ils peuvent inclure \"%s\" pour se substituer ."
 
 #. type: Content of: <refentry><refsect1><variablelist><varlistentry><term>
-#: ../roxterm.1.xml.in:257
+#: ../roxterm.1.xml.in:258
 msgid ""
 "<option>--tab-name=<replaceable>NAME</replaceable></option> <option>-n "
 "<replaceable>NAME</replaceable></option>"
@@ -478,7 +485,7 @@ msgstr ""
 "<replaceable>NOM</replaceable></option>"
 
 #. type: Content of: <refentry><refsect1><variablelist><varlistentry><listitem><para>
-#: ../roxterm.1.xml.in:261
+#: ../roxterm.1.xml.in:262
 msgid ""
 "Set tab name as displayed in its label. May include \"%s\" which is "
 "substituted with the window title string set by the terminal."
@@ -487,34 +494,34 @@ msgstr ""
 "\" qui est remplacé par l'intagralité du contenu des téiquettes de l'onglet."
 
 #. type: Content of: <refentry><refsect1><variablelist><varlistentry><term>
-#: ../roxterm.1.xml.in:267
+#: ../roxterm.1.xml.in:268
 msgid "<option>--separate</option>"
 msgstr "<option>--separate</option>"
 
 #. type: Content of: <refentry><refsect1><variablelist><varlistentry><listitem><para>
-#: ../roxterm.1.xml.in:270
+#: ../roxterm.1.xml.in:271
 msgid "Use a separate process for this terminal."
 msgstr "Utiliser un processus distinct pour ce terminal."
 
 #. type: Content of: <refentry><refsect1><variablelist><varlistentry><term>
-#: ../roxterm.1.xml.in:274
+#: ../roxterm.1.xml.in:275
 msgid "<option>--replace</option>"
 msgstr "<option>--replace</option>"
 
 #. type: Content of: <refentry><refsect1><variablelist><varlistentry><listitem><para>
-#: ../roxterm.1.xml.in:277
+#: ../roxterm.1.xml.in:278
 msgid "Replace any existing instance as ROXTerm D-BUS service provider."
 msgstr "Remplacer toute instance existante du service D-BUS de ROXTerm."
 
 #. type: Content of: <refentry><refsect1><variablelist><varlistentry><term>
-#: ../roxterm.1.xml.in:282
+#: ../roxterm.1.xml.in:283
 #, fuzzy
 #| msgid "<option>--xname=<replaceable>NAME</replaceable></option>"
 msgid "<option>--role=<replaceable>ROLE</replaceable></option>"
 msgstr "<option>--xname=<replaceable>NOM</replaceable></option>"
 
 #. type: Content of: <refentry><refsect1><variablelist><varlistentry><listitem><para>
-#: ../roxterm.1.xml.in:285
+#: ../roxterm.1.xml.in:286
 #, fuzzy
 #| msgid "Set's the X window system \"name\" hint for the new window."
 msgid "Sets the X window system \"role\" hint for the window being created."
@@ -522,12 +529,12 @@ msgstr ""
 "Définit le \"nom\" du système X Window conseillé pour la nouvelle fenêtre."
 
 #. type: Content of: <refentry><refsect1><variablelist><varlistentry><term>
-#: ../roxterm.1.xml.in:291
+#: ../roxterm.1.xml.in:292
 msgid "<option>-e</option> <option>--execute</option>"
 msgstr "<option>-e</option> <option>--execute</option>"
 
 #. type: Content of: <refentry><refsect1><variablelist><varlistentry><listitem><para>
-#: ../roxterm.1.xml.in:295
+#: ../roxterm.1.xml.in:296
 msgid ""
 "Execute remainder of command line inside the terminal. Must be the final "
 "option."
@@ -536,12 +543,12 @@ msgstr ""
 "dernière option."
 
 #. type: Content of: <refentry><refsect1><title>
-#: ../roxterm.1.xml.in:303
+#: ../roxterm.1.xml.in:304
 msgid "SEE ALSO"
 msgstr "VOIR AUSSI"
 
 #. type: Content of: <refentry><refsect1><para>
-#: ../roxterm.1.xml.in:305
+#: ../roxterm.1.xml.in:306
 msgid ""
 "The program is documented fully by the HTML file <filename>file://@htmldir@/"
 "en/index.html</filename>."
@@ -550,12 +557,12 @@ msgstr ""
 "file://@htmldir@/fr/index.html </filename> ."
 
 #. type: Content of: <refentry><refsect1><title>
-#: ../roxterm.1.xml.in:309
+#: ../roxterm.1.xml.in:310
 msgid "AUTHOR"
 msgstr "AUTEUR"
 
 #. type: Content of: <refentry><refsect1><para>
-#: ../roxterm.1.xml.in:311
+#: ../roxterm.1.xml.in:312
 msgid ""
 "This manual page was written by &dhusername; &dhemail;.  Permission is "
 "granted to copy, distribute and/or modify this document under the terms of "
@@ -568,7 +575,7 @@ msgstr ""
 "ultérieure publiée par la Free Software Foundation."
 
 #. type: Content of: <refentry><refsect1><para>
-#: ../roxterm.1.xml.in:317
+#: ../roxterm.1.xml.in:318
 msgid ""
 "On Debian systems, the complete text of the GNU General Public License can "
 "be found in /usr/share/common-licenses/GPL."
