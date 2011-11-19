@@ -28,7 +28,7 @@ and docbook-xsl in your Build-Depends control field.
   <!ENTITY dhfirstname "<firstname>Tony</firstname>">
   <!ENTITY dhsurname   "<surname>Houghton</surname>">
   <!-- Please adjust the date whenever revising the manpage. -->
-  <!ENTITY dhdate      "<date>November 27, 2009</date>">
+  <!ENTITY dhdate      "<date>November 19, 2011</date>">
   <!-- SECTION should be 1-8, maybe w/ subsection other parameters are
        allowed: see man(7), man(1). -->
   <!ENTITY dhsection   "<manvolnum>1</manvolnum>">
@@ -53,7 +53,7 @@ and docbook-xsl in your Build-Depends control field.
       &dhfirstname; &dhsurname;
     </author>
     <copyright>
-      <year>2005</year>
+      <year>2005-2011</year>
       <holder>&dhusername;</holder>
     </copyright>
     &dhdate;
@@ -206,7 +206,7 @@ and docbook-xsl in your Build-Depends control field.
           <para>If possible open the new terminal in an existing window rather
           than open a new window. If used in conjunction with
           <option>-T</option>/<option>--title</option> the tab will be placed
-          in an existing window with the same title if one exists.
+          in an existing window with the same title template if one exists.
           This option overrides <option>--zoom</option> and
           <option>--fullscreen</option>.</para>
         </listitem>
@@ -250,8 +250,8 @@ and docbook-xsl in your Build-Depends control field.
           <option>-T <replaceable>TITLE</replaceable></option>
         </term>
         <listitem>
-          <para>Set window title. May include "%s" which is substituted with
-          the full contents of the tab's label.</para>
+          <para>Set window title template. May include "%s" which is substituted
+          with the full contents of the tab's label.</para>
         </listitem>
       </varlistentry>
       <varlistentry>
