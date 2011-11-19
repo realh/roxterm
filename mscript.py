@@ -506,7 +506,7 @@ elif ctx.mode == 'dist':
         try:
             ctx.add_dist("ABOUT-NLS")
             ctx.add_dist("po4a/LINGUAS po4a/Makefile.in po4a/Makefile.am")
-            ctx.add_dist(["po/%s" %f for f in "insert-header.sin " \
+            ctx.add_dist(["po/%s" % f for f in "insert-header.sin " \
                     "Makefile.in.in Rules-quot boldquot.sed en@quot.header " \
                     "en@boldquot.header Makevars remove-potcdate.sin " \
                     "stamp-po quot.sed".split()])
