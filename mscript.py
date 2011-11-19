@@ -39,6 +39,11 @@ if ctx.mode == 'configure' or ctx.mode == 'help':
     ctx.arg_disable('sm', "Don't enable session management")
     ctx.arg_disable('gtk3', "Use GTK+2 instead of GTK+3 and compatible "
             "version of VTE", default = None)
+    ctx.arg_disable('gettext', "Disable translation of program strings with " \
+            "gettext", default = None)
+    ctx.arg_disable('po4a', "Disable translation of documentation with po4a",
+            default = None)
+    ctx.arg_disable('translations', "Disable all translations", default = None)
 
 if ctx.mode == 'configure':
 
@@ -86,33 +91,48 @@ if ctx.mode == 'configure':
     
     ctx.setenv('BUG_TRACKER', "http://sourceforge.net/tracker/?group_id=124080")
     
-    try:
-        ctx.find_prog_env("xgettext")
-        ctx.find_prog_env("msgmerge")
-        ctx.find_prog_env("msgfmt")
-    except MaitchNotFoundError:
-        mprint("WARNING: gettext tools not found, not building " \
-                "programs' translations", file = sys.stderr)
+    gt = ctx.env['ENABLE_GETTEXT']
+    po4a = ctx.env['ENABLE_PO4A']
+    trans = ctx.env['ENABLE_TRANSLATIONS']
+    if trans != False and gt != False:
+        try:
+            ctx.find_prog_env("xgettext")
+            ctx.find_prog_env("msgmerge")
+            ctx.find_prog_env("msgfmt")
+        except MaitchNotFoundError:
+            if trans == True or gt == True:
+                raise
+            else:
+                mprint("WARNING: gettext tools not found, not building " \
+                        "programs' translations", file = sys.stderr)
+                ctx.setenv('HAVE_GETTEXT', False)
+        else:
+            ctx.setenv('HAVE_GETTEXT', True)
+    else:
         ctx.setenv('HAVE_GETTEXT', False)
-    else:
-        ctx.setenv('HAVE_GETTEXT', True)
     
-    try:
-        ctx.find_prog_env("po4a-gettextize")
-        ctx.find_prog_env("po4a-updatepo")
-        ctx.find_prog_env("po4a-translate")
-    except MaitchNotFoundError:
-        mprint("WARNING: po4a tools not found, not building " \
-                "documentation's translations", file = sys.stderr)
-        ctx.setenv('HAVE_PO4A', False)
+    if trans != False and po4a != False:
+        try:
+            ctx.find_prog_env("po4a-gettextize")
+            ctx.find_prog_env("po4a-updatepo")
+            ctx.find_prog_env("po4a-translate")
+        except MaitchNotFoundError:
+            if trans == True or po4a == True:
+                raise
+            else:
+                    mprint("WARNING: po4a tools not found, not building " \
+                            "documentation's translations", file = sys.stderr)
+                    ctx.setenv('HAVE_PO4A', False)
+        else:
+            ctx.setenv('HAVE_PO4A', True)
+            ctx.setenv('PO4ACHARSET', "-M UTF-8")
+            ctx.setenv('PO4AOPTS', "${PO4ACHARSET} --package-name=${PACKAGE} " \
+                    "--package-version=${VERSION} " \
+                    "--copyright-holder='Tony Houghton' " \
+                    "--msgid-bugs-address=${BUG_TRACKER}")
+            ctx.setenv('PO4ADIR', "${TOP_DIR}/po4a")
     else:
-        ctx.setenv('HAVE_PO4A', True)
-        ctx.setenv('PO4ACHARSET', "-M UTF-8")
-        ctx.setenv('PO4AOPTS', "${PO4ACHARSET} --package-name=${PACKAGE} " \
-                "--package-version=${VERSION} " \
-                "--copyright-holder='Tony Houghton' " \
-                "--msgid-bugs-address=${BUG_TRACKER}")
-        ctx.setenv('PO4ADIR', "${TOP_DIR}/po4a")
+        ctx.setenv('HAVE_PO4A', False)
     
     gda = ctx.env.get("WITH_GNOME_DEFAULT_APPLICATIONS")
     if gda == None or gda == True:
@@ -452,9 +472,11 @@ elif ctx.mode == 'dist':
             "NEWS README README.translations " \
             "roxterm.1.xml.in roxterm-config.1.xml.in " \
             "roxterm.desktop roxterm.lsm.in roxterm.spec.in " \
-            "roxterm.svg roxterm.xml src TODO update-locales")
+            "roxterm.svg roxterm.xml TODO " \
+            "src/roxterm-config.glade src/roxterm-config.ui " \
+            "src/roxterm-config.ui.stamp")
     ctx.add_dist(ctx.glob("*.[c|h]", os.curdir, "src"))
-    ctx.add_dist("src/roxterm-config.ui src/roxterm-config.glade")
+    ctx.add_dist(ctx.glob("*.[c|h]", os.curdir, "src"))
     # Debian files
     ctx.add_dist("builddeb")
     debfiles = "changelog changelog.in compat control copyright " \
@@ -471,11 +493,28 @@ elif ctx.mode == 'dist':
     # ROX bits
     ctx.add_dist("AppInfo.xml.in AppRun .DirIcon " \
             "Help/Changes Help/COPYING Help/NEWS Help/README")
-    # Translations (currently not properly supported)
-    ctx.add_dist("ABOUT-NLS po po4a")
+    # Translations
+    ctx.add_dist("po/LINGUAS")
+    if ctx.env['HAVE_PO4A']:
+        ctx.add_dist(ctx.glob("*.po", os.curdir, "po4a"))
+        ctx.add_dist(ctx.glob("*.pot", os.curdir, "po4a"))
+    if ctx.env['HAVE_GETTEXT']:
+        ctx.add_dist("po/POTFILES.in")
+        ctx.add_dist("po/roxterm.pot")
+        ctx.add_dist(ctx.glob("*.po", os.curdir, "po", False))
+        # Only needed for autotools
+        try:
+            ctx.add_dist("ABOUT-NLS")
+            ctx.add_dist("po4a/LINGUAS po4a/Makefile.in po4a/Makefile.am")
+            ctx.add_dist(["po/%s" %f for f in "insert-header.sin " \
+                    "Makefile.in.in Rules-quot boldquot.sed en@quot.header " \
+                    "en@boldquot.header Makevars remove-potcdate.sin " \
+                    "stamp-po quot.sed".split()])
+        except:
+            pass
     # Stuff to be removed when we no longer support autotools
     ctx.add_dist("acinclude.m4 bootstrap.sh configure.ac.in " \
-            "Makefile.am src/Makefile.am")
+            "Makefile.am src/Makefile.am update-locales")
     try:
         ctx.add_dist("m4 acinclude.m4 aclocal.m4 " \
                 "bootstrap.sh compile config.guess config.h.in " \

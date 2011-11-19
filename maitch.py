@@ -564,8 +564,8 @@ Other predefined variables [default values shown in squarer brackets]:
             orig_dir = dir
             dir = self.subst(dir)
         else:
-            orig_dir = self.build_dir
-            dir = self.build_dir
+            orig_dir = os.curdir
+            dir = os.path.abspath(orig_dir)
         if subdir:
             orig_subdir = subdir
             subdir = self.subst(subdir)
@@ -1901,13 +1901,20 @@ def prune_directory(root):
     if not os.path.exists(root):
         return True
     success = True
-    for n in os.listdir(root):
+    subs = os.listdir(root)
+    for n in subs:
         n = opj(root, n)
         if os.path.isdir(n):
             success = prune_directory(n) and success
         elif os.path.exists(n):
             mprint("Unable to remove non-empty directory '%s'" % root,
                     file = sys.stderr)
+            success = False
+    if success:
+        try:
+            os.rmdir(root)
+        except:
+            mprint("Unable to remove directory '%s'" % root, file = sys.stderr)
             success = False
     return success
 
