@@ -495,34 +495,34 @@ elif ctx.mode == 'dist':
             "Help/Changes Help/COPYING Help/NEWS Help/README")
     # Translations
     ctx.add_dist("po/LINGUAS")
-    if ctx.env['HAVE_PO4A']:
-        ctx.add_dist(ctx.glob("*.po", os.curdir, "po4a"))
-        ctx.add_dist(ctx.glob("*.pot", os.curdir, "po4a"))
-    if ctx.env['HAVE_GETTEXT']:
+    files = ctx.glob("*.po", os.curdir, "po4a") + \
+            ctx.glob("*.pot", os.curdir, "po4a")
+    if files:
+        ctx.add_dist(files)
+    if os.path.exists("po/POTFILES.in"):
         ctx.add_dist("po/POTFILES.in")
+    if os.path.exists("po/roxterm.pot"):
         ctx.add_dist("po/roxterm.pot")
-        ctx.add_dist(ctx.glob("*.po", os.curdir, "po", False))
-        # Only needed for autotools
-        try:
-            ctx.add_dist("ABOUT-NLS")
-            ctx.add_dist("po4a/LINGUAS po4a/Makefile.in po4a/Makefile.am")
-            ctx.add_dist(["po/%s" % f for f in "insert-header.sin " \
+    files = ctx.glob("*.po", os.curdir, "po", False)
+    if files:
+        ctx.add_dist(files)
+    # Only needed for autotools
+    files = "ABOUT-NLS po4a/LINGUAS po4a/Makefile.in po4a/Makefile.am".split()
+    files += ["po/%s" % f for f in "insert-header.sin " \
                     "Makefile.in.in Rules-quot boldquot.sed en@quot.header " \
                     "en@boldquot.header Makevars remove-potcdate.sin " \
-                    "stamp-po quot.sed".split()])
-        except:
-            pass
-    # Stuff to be removed when we no longer support autotools
-    ctx.add_dist("acinclude.m4 bootstrap.sh configure.ac.in " \
-            "Makefile.am src/Makefile.am update-locales")
-    try:
-        ctx.add_dist("m4 acinclude.m4 aclocal.m4 " \
+                    "stamp-po quot.sed".split()]
+    # Other stuff to be removed when we no longer support autotools
+    files += "acinclude.m4 bootstrap.sh configure.ac.in " \
+            "Makefile.am src/Makefile.am update-locales".split()
+    files += "m4 acinclude.m4 aclocal.m4 " \
                 "bootstrap.sh compile config.guess config.h.in " \
                 "config.sub config.rpath configure configure.ac " \
                 "depcomp install-sh intl ltmain.sh " \
-                "Makefile.in src/Makefile.in missing")
-    except:
-        pass
+                "Makefile.in src/Makefile.in missing".split()
+    for f in files:
+        if os.path.exists(f):
+            ctx.add_dist(f)
             
 
 ctx.run()
