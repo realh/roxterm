@@ -61,10 +61,8 @@ if ctx.mode == 'configure':
         version = ctx.prog_output(["${GIT}", "describe"])[0].strip()
         version = version.replace('-', '.', 1).replace('-', '~', 1)
         ctx.save_if_different(vfile, version + '\n')
-        gitlog = ctx.prog_output(["${GIT}", "log"])[0]
-        fp = open(ctx.subst("${TOP_DIR}/ChangeLog.old"), 'r')
-        gitlog += fp.read()
-        fp.close()
+        gitlog = ctx.prog_output([os.path.abspath(
+                ctx.subst("${TOP_DIR}/genlog"))])[0]
         # Can't use ctx.save_if_different because it tries to subst
         # content and fails
         save_if_different(ctx.subst("${TOP_DIR}/ChangeLog"), gitlog)

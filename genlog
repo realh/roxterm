@@ -1,0 +1,16 @@
+#!/bin/sh
+
+prev=HEAD
+for i in `git tag | grep '^[0-9]' | sort -r` ; do
+    if [ -n "`git log $i..$prev`" ] ; then
+        [ "$prev" != "HEAD" ] && printf "Version "
+        echo $prev
+        git log '--pretty=format:Author: %an <%ae>%nDate:   %aD' $i..$prev \
+                | head -n 2
+        git log '--pretty=format:%s' $i..$prev | sed 's/^/  * /'
+    fi
+    prev=$i
+    echo
+    echo
+done
+cat `dirname $0`/ChangeLog.old
