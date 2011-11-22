@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: roxterm\n"
 "Report-Msgid-Bugs-To: http://sourceforge.net/tracker/?group_id=124080\n"
-"POT-Creation-Date: 2011-11-18 23:09+0000\n"
+"POT-Creation-Date: 2011-11-22 16:34+0000\n"
 "PO-Revision-Date: 2011-05-27 20:06+0100\n"
 "Last-Translator: Tony Houghton <h@realh.co.uk>\n"
 "Language-Team: Spanish (Castilian) <None>\n"
@@ -29,7 +29,9 @@ msgstr "<surname>Houghton</surname>"
 
 #. type: Content of the dhdate entity
 #: ../roxterm.1.xml.in:31
-msgid "<date>November 27, 2009</date>"
+#, fuzzy
+#| msgid "<date>November 27, 2009</date>"
+msgid "<date>November 19, 2011</date>"
 msgstr "<date>5 de Septiembre de 2010</date>"
 
 #. type: Content of the dhsection entity
@@ -94,10 +96,15 @@ msgstr ""
 
 #. type: Content of: <refentry><refentryinfo>
 #: ../roxterm.1.xml.in:48
+#, fuzzy
+#| msgid ""
+#| "<placeholder type=\"address\" id=\"0\"/> <author> <contrib>Developer</"
+#| "contrib> &dhfirstname; &dhsurname; </author> <copyright> <year>2005</"
+#| "year> <holder>&dhusername;</holder> </copyright> &dhdate;"
 msgid ""
 "<placeholder type=\"address\" id=\"0\"/> <author> <contrib>Developer</"
-"contrib> &dhfirstname; &dhsurname; </author> <copyright> <year>2005</year> "
-"<holder>&dhusername;</holder> </copyright> &dhdate;"
+"contrib> &dhfirstname; &dhsurname; </author> <copyright> <year>2005-2011</"
+"year> <holder>&dhusername;</holder> </copyright> &dhdate;"
 msgstr ""
 "<placeholder type=\"address\" id=\"0\"/> <author> <contrib>Programador</"
 "contrib> &dhfirstname; &dhsurname; </author> <copyright> <year>2005</year> "
@@ -387,9 +394,9 @@ msgstr "<option>--tab</option>"
 msgid ""
 "If possible open the new terminal in an existing window rather than open a "
 "new window. If used in conjunction with <option>-T</option>/<option>--title</"
-"option> the tab will be placed in an existing window with the same title if "
-"one exists.  This option overrides <option>--zoom</option> and <option>--"
-"fullscreen</option>."
+"option> the tab will be placed in an existing window with the same title "
+"template if one exists.  This option overrides <option>--zoom</option> and "
+"<option>--fullscreen</option>."
 msgstr ""
 "Abre la terminal en una ventana existente si es posible en lugar de abrir "
 "una nueva ventana. La ventana elegida es la ventana enfocada más reciente "
@@ -467,9 +474,13 @@ msgstr ""
 
 #. type: Content of: <refentry><refsect1><variablelist><varlistentry><listitem><para>
 #: ../roxterm.1.xml.in:253
+#, fuzzy
+#| msgid ""
+#| "Set window title. May include \"%s\" which is substituted with the full "
+#| "contents of the tab's label."
 msgid ""
-"Set window title. May include \"%s\" which is substituted with the full "
-"contents of the tab's label."
+"Set window title template. May include \"%s\" which is substituted with the "
+"full contents of the tab's label."
 msgstr ""
 "Cambia el título de la ventana. Puede incluir \"%s\" que se sustituye por el "
 "contenido de la etiqueta de la pestaña."

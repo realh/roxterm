@@ -57,6 +57,7 @@ struct MultiTab {
     gboolean postponed_free;
     gboolean old_win_destroyed;
     gboolean title_template_locked;
+    int middle_click_action;
 };
 
 struct MultiWin {
@@ -1025,9 +1026,19 @@ static gboolean tab_clicked_handler(GtkWidget *widget,
     switch (event->button)
     {
         case 2:
-            gtk_clipboard_request_text(gtk_clipboard_get(GDK_SELECTION_PRIMARY),
-                                       tab_set_name_from_clipboard_callback,
-                                       tab);
+            switch (tab->middle_click_action)
+            {
+                case 1:
+                    multi_tab_delete(tab);
+                    break;
+                case 2:
+                    gtk_clipboard_request_text(
+                            gtk_clipboard_get(GDK_SELECTION_PRIMARY),
+                            tab_set_name_from_clipboard_callback, tab);
+                    break;
+                default:
+                    break;
+            }
             return TRUE;
         case 3:
             multi_win_select_tab(tab->parent, tab);
@@ -2078,6 +2089,11 @@ void multi_tab_set_status_stock(MultiTab *tab, const char *stock)
         multitab_close_button_set_image(
                 MULTITAB_CLOSE_BUTTON(tab->close_button), stock);
     }
+}
+
+void multi_tab_set_middle_click_tab_action(MultiTab *tab, int action)
+{
+    tab->middle_click_action = action;
 }
 
 /* Creates the label widget for a tab. tab->label is the GtkLabel containing

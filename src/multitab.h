@@ -203,6 +203,8 @@ void multi_tab_add_close_button(MultiTab *tab);
 void multi_tab_remove_close_button(MultiTab *tab);
 void multi_tab_set_status_stock(MultiTab *tab, const char *stock);
 
+void multi_tab_set_middle_click_tab_action(MultiTab *tab, int action);
+
 /* In following functions a zoom_index of -1 means default */
 
 typedef enum {

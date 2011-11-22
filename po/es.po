@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: roxterm\n"
 "Report-Msgid-Bugs-To: http://sourceforge.net/tracker/?group_id=124080\n"
-"POT-Creation-Date: 2011-11-13 23:38+0000\n"
+"POT-Creation-Date: 2011-11-22 16:38+0000\n"
 "PO-Revision-Date: 2011-05-17 20:32+0100\n"
 "Last-Translator: Tony Houghton <h@realh.co.uk>\n"
 "Language-Team: Spanish (Castilian) (http://www.transifex.net/projects/p/"
@@ -794,11 +794,72 @@ msgstr "<b>Desplazamiento</b>"
 msgid "Scrolling"
 msgstr "Desplazamiento"
 
-#: ../src/roxterm-config.glade:3784
+#: ../src/roxterm-config.glade:3788
+msgid "_Delete key generates:"
+msgstr "La tecla de _borrado genera:"
+
+#: ../src/roxterm-config.glade:3803
+msgid "_Backspace key generates:"
+msgstr "La tecla de _retroceso genera:"
+
+#: ../src/roxterm-config.glade:3852
+msgid "_Reset to defaults"
+msgstr "_Configuración predeterminada"
+
+#: ../src/roxterm-config.glade:3858
+msgid "Reset the backspace and delete keys to their defaults"
+msgstr "Pone los valores predeterminados para las teclas borrado y retroceso"
+
+#: ../src/roxterm-config.glade:3878
+msgid "Disable menu _access key (F10 by default)"
+msgstr "Deshabilitar la tecla de _acceso al menú (F10 por defecto)"
+
+#: ../src/roxterm-config.glade:3885
+msgid ""
+"This option disables the keyboard shortcut for opening the first menu. The "
+"default shortcut is F10."
+msgstr ""
+"Esta opción deshabilita el atajo de teclado para abrir el primer menú. El "
+"atajo predeterminado es F10."
+
+#: ../src/roxterm-config.glade:3899
+msgid "Disable other menu _shortcut keys (Alt+...)"
+msgstr "Deshabilitar otros atajos de menú (Alt+...)"
+
+#: ../src/roxterm-config.glade:3906
+msgid ""
+"This option disables the underlined shortcut keys in the menus (eg Alt+F for "
+"the File menu)."
+msgstr ""
+"Esta opción deshabilita los atajos asociados a las opciones del menú (ej: Alt"
+"+A para el menú Archivo)."
+
+#: ../src/roxterm-config.glade:3920
+msgid "Disable _tab switching shortcut keys (Alt+number)"
+msgstr "Deshabilitar los atajos para cambiar de _pestaña (Alt+número)"
+
+#: ../src/roxterm-config.glade:3927
+msgid ""
+"This option disables the shortcut keys for switching tabs (Alt+1-9 and Alt+0 "
+"by default)"
+msgstr ""
+"Esta opción deshabilita los atajos para cambiar de pestaña (Alt+1-9 y Alt+0 "
+"por defecto)"
+
+#: ../src/roxterm-config.glade:3948
+#, fuzzy
+msgid "<b>Keyboard</b>"
+msgstr "<b>Atajos de teclado</b>"
+
+#: ../src/roxterm-config.glade:3961
+msgid "Keyboard"
+msgstr "Teclado"
+
+#: ../src/roxterm-config.glade:3995
 msgid "_Tab title:"
 msgstr "_Título de pestaña:"
 
-#: ../src/roxterm-config.glade:3798
+#: ../src/roxterm-config.glade:4009
 msgid ""
 "The title string may include '%s' which is substituted with the title set by "
 "the child command (usually the current directory for shells). No other % "
@@ -810,11 +871,29 @@ msgstr ""
 "permiten otros caracteres o secuencias % excepto '%%' que se muestra como un "
 "solo %."
 
-#: ../src/roxterm-config.glade:3822
+#: ../src/roxterm-config.glade:4041
+msgid "<b>Middle click on label action</b>"
+msgstr ""
+
+#: ../src/roxterm-config.glade:4056
+msgid "Do nothing"
+msgstr ""
+
+#: ../src/roxterm-config.glade:4087
+#, fuzzy
+msgid "Close tab"
+msgstr "Ce_rrar pestaña"
+
+#: ../src/roxterm-config.glade:4118
+#, fuzzy
+msgid "Paste tab name"
+msgstr "Cambia el nombre de la pestaña"
+
+#: ../src/roxterm-config.glade:4156
 msgid "_Wrap when switching tabs"
 msgstr "_Rotar al cambiar de pestaña"
 
-#: ../src/roxterm-config.glade:3829
+#: ../src/roxterm-config.glade:4163 ../src/roxterm-config.glade:4164
 msgid ""
 "This option makes the Next and Previous Tab operations respectively wrap "
 "around from the first and last tab to the opposite end of the row; the move "
@@ -824,20 +903,20 @@ msgstr ""
 "primera y última pestaña hasta el extremo opuesto de la fila; las opciones "
 "del menú que mueven las pestañas se ven afectados de forma similar."
 
-#: ../src/roxterm-config.glade:3844
+#: ../src/roxterm-config.glade:4179
 msgid "Show _Close buttons on tabs"
 msgstr "_Botón para cerrar las pestañas"
 
-#: ../src/roxterm-config.glade:3851
+#: ../src/roxterm-config.glade:4186 ../src/roxterm-config.glade:4187
 msgid "If this option is enabled close buttons are shown at the top of tabs."
 msgstr ""
 "Si se habilita esta opción se muestran botones para cerrar las pestañas."
 
-#: ../src/roxterm-config.glade:3867
+#: ../src/roxterm-config.glade:4203
 msgid "Show terminal _status in close buttons"
 msgstr "_Estado de la terminal en los botones de cierre"
 
-#: ../src/roxterm-config.glade:3874
+#: ../src/roxterm-config.glade:4210 ../src/roxterm-config.glade:4211
 msgid ""
 "If this option is enabled the icons in close buttons may be changed in "
 "inactive tabs to reflect the status of their terminals."
@@ -845,7 +924,17 @@ msgstr ""
 "Si se habilita esta opción los iconos en los botones de cierre pueden "
 "cambiar en pestañas inactivas para reflejar su estado."
 
-#: ../src/roxterm-config.glade:3919
+#: ../src/roxterm-config.glade:4226
+msgid "Open new tabs _adjacent to current tab"
+msgstr ""
+
+#: ../src/roxterm-config.glade:4232 ../src/roxterm-config.glade:4233
+msgid ""
+"Whether to open new tabs adjacent to the current tab in a window, otherwise "
+"append them."
+msgstr ""
+
+#: ../src/roxterm-config.glade:4286
 msgid ""
 "The following tab options do not apply to windows that are already open; "
 "they only apply to windows opened subsequently."
@@ -853,146 +942,75 @@ msgstr ""
 "Las siguientes opciones de pestaña no se aplican a las ventanas que están "
 "abiertas; solo a las ventanas que se abren posteriormente"
 
-#: ../src/roxterm-config.glade:3945
+#: ../src/roxterm-config.glade:4312
 msgid "Initial _number of tabs:"
 msgstr "_Número inicial de pestañas:"
 
-#: ../src/roxterm-config.glade:3981
+#: ../src/roxterm-config.glade:4348
 msgid "Tab _position:"
 msgstr "_Posición de pestañas:"
 
-#: ../src/roxterm-config.glade:4015
-msgid "Open new tabs _adjacent to current tab"
-msgstr ""
-
-#: ../src/roxterm-config.glade:4020
-msgid ""
-"Whether to open new tabs adjacent to the current tab in a window, otherwise "
-"append them."
-msgstr ""
-
-#: ../src/roxterm-config.glade:4042
+#: ../src/roxterm-config.glade:4388
 msgid "<b>Tabs</b>"
 msgstr "<b>Pestañas</b>"
 
-#: ../src/roxterm-config.glade:4055
-msgid "Keyboard"
-msgstr "Teclado"
-
-#: ../src/roxterm-config.glade:4093
-msgid "_Delete key generates:"
-msgstr "La tecla de _borrado genera:"
-
-#: ../src/roxterm-config.glade:4108
-msgid "_Backspace key generates:"
-msgstr "La tecla de _retroceso genera:"
-
-#: ../src/roxterm-config.glade:4157
-msgid "_Reset to defaults"
-msgstr "_Configuración predeterminada"
-
-#: ../src/roxterm-config.glade:4163
-msgid "Reset the backspace and delete keys to their defaults"
-msgstr "Pone los valores predeterminados para las teclas borrado y retroceso"
-
-#: ../src/roxterm-config.glade:4183
-msgid "Disable menu _access key (F10 by default)"
-msgstr "Deshabilitar la tecla de _acceso al menú (F10 por defecto)"
-
-#: ../src/roxterm-config.glade:4190
-msgid ""
-"This option disables the keyboard shortcut for opening the first menu. The "
-"default shortcut is F10."
-msgstr ""
-"Esta opción deshabilita el atajo de teclado para abrir el primer menú. El "
-"atajo predeterminado es F10."
-
-#: ../src/roxterm-config.glade:4204
-msgid "Disable other menu _shortcut keys (Alt+...)"
-msgstr "Deshabilitar otros atajos de menú (Alt+...)"
-
-#: ../src/roxterm-config.glade:4211
-msgid ""
-"This option disables the underlined shortcut keys in the menus (eg Alt+F for "
-"the File menu)."
-msgstr ""
-"Esta opción deshabilita los atajos asociados a las opciones del menú (ej: Alt"
-"+A para el menú Archivo)."
-
-#: ../src/roxterm-config.glade:4225
-msgid "Disable _tab switching shortcut keys (Alt+number)"
-msgstr "Deshabilitar los atajos para cambiar de _pestaña (Alt+número)"
-
-#: ../src/roxterm-config.glade:4232
-msgid ""
-"This option disables the shortcut keys for switching tabs (Alt+1-9 and Alt+0 "
-"by default)"
-msgstr ""
-"Esta opción deshabilita los atajos para cambiar de pestaña (Alt+1-9 y Alt+0 "
-"por defecto)"
-
-#: ../src/roxterm-config.glade:4253
-#, fuzzy
-msgid "<b>Keyboard</b>"
-msgstr "<b>Atajos de teclado</b>"
-
-#: ../src/roxterm-config.glade:4267
+#: ../src/roxterm-config.glade:4402
 msgid "Tabs"
 msgstr "Pestañas"
 
-#: ../src/roxterm-config.glade:4298
+#: ../src/roxterm-config.glade:4433
 msgid "ROXTerm Colour Scheme"
 msgstr "Esquema de color de ROXTerm"
 
-#: ../src/roxterm-config.glade:4317
+#: ../src/roxterm-config.glade:4452
 msgid "_Revert"
 msgstr "_Deshacer"
 
-#: ../src/roxterm-config.glade:4341
+#: ../src/roxterm-config.glade:4476
 msgid "Close this window"
 msgstr "Cierra esta ventana"
 
-#: ../src/roxterm-config.glade:4367
+#: ../src/roxterm-config.glade:4502
 msgid "_Set text and background colours"
 msgstr "_Cambia los colores de texto y fondo"
 
-#: ../src/roxterm-config.glade:4373
+#: ../src/roxterm-config.glade:4508
 msgid ""
 "Whether to set terminals' text and background colours using the fields below"
 msgstr ""
 "Indica cuando cambiar los colores de texto y fondo de la terminal según los "
 "siguientes campos"
 
-#: ../src/roxterm-config.glade:4394
+#: ../src/roxterm-config.glade:4529
 msgid "_Text colour"
 msgstr "Color de _texto"
 
-#: ../src/roxterm-config.glade:4411
+#: ../src/roxterm-config.glade:4546
 msgid "Foreground colour of text; click to change"
 msgstr "Color de primer plano del texto; click para cambiar"
 
-#: ../src/roxterm-config.glade:4426
+#: ../src/roxterm-config.glade:4561
 msgid "_Background colour"
 msgstr "Color de _fondo"
 
-#: ../src/roxterm-config.glade:4443
+#: ../src/roxterm-config.glade:4578
 msgid "Background colour of terminals; click to change"
 msgstr "Color de fondo de las terminales; click para cambiar"
 
-#: ../src/roxterm-config.glade:4463
+#: ../src/roxterm-config.glade:4598
 msgid "Use custom _palette"
 msgstr "Usar una _paleta personalizada"
 
-#: ../src/roxterm-config.glade:4469
+#: ../src/roxterm-config.glade:4604
 msgid "Whether to set the terminal's colours from the table below"
 msgstr ""
 "Indica cuando cambiar los colores de la terminal según la siguiente tabla"
 
-#: ../src/roxterm-config.glade:4483
+#: ../src/roxterm-config.glade:4618
 msgid "_Get text and background colours from palette"
 msgstr "_Obtener los colores de fondo y texto de la paleta"
 
-#: ../src/roxterm-config.glade:4489
+#: ../src/roxterm-config.glade:4624
 msgid ""
 "Whether to use the palette table below to set the background and text "
 "foreground colours"
@@ -1000,55 +1018,55 @@ msgstr ""
 "Indica cuando usar la siguiente paleta para establecer los colores de primer "
 "plano y fondo"
 
-#: ../src/roxterm-config.glade:4964
+#: ../src/roxterm-config.glade:5099
 msgid "Set 16 palette entries from both rows"
 msgstr "Pone 16 entradas en la paleta desde ambas filas"
 
-#: ../src/roxterm-config.glade:4985
+#: ../src/roxterm-config.glade:5120
 msgid "Set just the first 8 palette entries from this row"
 msgstr "Pone las primeras 8 entradas en la paleta desde esta fila"
 
-#: ../src/roxterm-config.glade:5011
+#: ../src/roxterm-config.glade:5146
 msgid "Set _cursor colour"
 msgstr "_Cambia el color del cursor"
 
-#: ../src/roxterm-config.glade:5017
+#: ../src/roxterm-config.glade:5152
 msgid "Set the cursor colour from the adjacent field"
 msgstr "Cambia el color del cursor según lo indicado"
 
-#: ../src/roxterm-config.glade:5036
+#: ../src/roxterm-config.glade:5171
 msgid "Click to change the cursor colour"
 msgstr "Click para cambiar el color del cursor"
 
-#: ../src/roxterm-config.glade:5155
+#: ../src/roxterm-config.glade:5290
 msgid "_Address"
 msgstr "_Dirección"
 
-#: ../src/roxterm-config.glade:5168
+#: ../src/roxterm-config.glade:5303
 msgid "Ssh server address."
 msgstr "Dirección del servidor ssh."
 
-#: ../src/roxterm-config.glade:5185
+#: ../src/roxterm-config.glade:5320
 msgid "_User"
 msgstr "_Usuario"
 
-#: ../src/roxterm-config.glade:5199
+#: ../src/roxterm-config.glade:5334
 msgid "Remote username."
 msgstr "Usuario remoto."
 
-#: ../src/roxterm-config.glade:5216
+#: ../src/roxterm-config.glade:5351
 msgid "Ssh server port."
 msgstr "Puerto del servidor ssh."
 
-#: ../src/roxterm-config.glade:5236
+#: ../src/roxterm-config.glade:5371
 msgid "_Port"
 msgstr "_Puerto"
 
-#: ../src/roxterm-config.glade:5250
+#: ../src/roxterm-config.glade:5385
 msgid "Miscellaneous options to add to the ssh command line."
 msgstr "Opciones varias para añadir a la línea de comandos ssh."
 
-#: ../src/roxterm-config.glade:5268
+#: ../src/roxterm-config.glade:5403
 msgid "_Other options"
 msgstr "_Otras opciones"
 
@@ -1305,9 +1323,6 @@ msgstr "_Otras opciones"
 #~ msgid "TITLE"
 #~ msgstr "TÍTULO"
 
-#~ msgid "Set tab name"
-#~ msgstr "Cambia el nombre de la pestaña"
-
 #~ msgid "NAME"
 #~ msgstr "NOMBRE"
 
@@ -1409,9 +1424,6 @@ msgstr "_Otras opciones"
 
 #~ msgid "New Tab With _Profile"
 #~ msgstr "Nueva p_estaña con perfil"
-
-#~ msgid "C_lose Tab"
-#~ msgstr "Ce_rrar pestaña"
 
 #~ msgid "_Close Window"
 #~ msgstr "_Cerrar ventana"

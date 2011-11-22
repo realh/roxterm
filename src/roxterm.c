@@ -2972,8 +2972,7 @@ static void roxterm_apply_match_files(ROXTermData *roxterm, VteTerminal *vte)
 }
 
 #if GTK_CHECK_VERSION(3, 0, 0)
-static void roxterm_apply_show_resize_grip(ROXTermData *roxterm,
-        VteTerminal *vte)
+static void roxterm_apply_show_resize_grip(ROXTermData *roxterm)
 {
     GtkWindow *w = roxterm_get_toplevel(roxterm);
     
@@ -2985,6 +2984,13 @@ static void roxterm_apply_show_resize_grip(ROXTermData *roxterm,
     }
 }
 #endif
+
+inline static void roxterm_apply_middle_click_tab(ROXTermData *roxterm)
+{
+    multi_tab_set_middle_click_tab_action(roxterm->tab,
+            options_lookup_int_with_default(roxterm->profile,
+                    "middle_click_tab", 0));
+}
 
 static void roxterm_apply_profile(ROXTermData *roxterm, VteTerminal *vte,
         gboolean update_geometry)
@@ -3019,8 +3025,9 @@ static void roxterm_apply_profile(ROXTermData *roxterm, VteTerminal *vte,
     roxterm_apply_show_tab_status(roxterm);
     roxterm_apply_match_files(roxterm, vte);
 #if GTK_CHECK_VERSION(3, 0, 0)
-    roxterm_apply_show_resize_grip(roxterm, vte);
+    roxterm_apply_show_resize_grip(roxterm);
 #endif
+    roxterm_apply_middle_click_tab(roxterm);
 }
 
 static gboolean
@@ -3443,9 +3450,13 @@ static void roxterm_reflect_profile_change(Options * profile, const char *key)
 #if GTK_CHECK_VERSION(3, 0, 0)
         else if (!strcmp(key, "show_resize_grip"))
         {
-            roxterm_apply_show_resize_grip(roxterm, vte);
+            roxterm_apply_show_resize_grip(roxterm);
         }
 #endif
+        else if (!strcmp(key, "middle_click_tab"))
+        {
+            roxterm_apply_middle_click_tab(roxterm);
+        }
         if (apply_to_win)
         {
             multi_win_foreach_tab(roxterm->win,
