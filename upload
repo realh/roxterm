@@ -1,18 +1,18 @@
 #!/bin/sh
 
 if [ -n "$1" ] ; then
-	if echo $1 | grep -qv roxterm ; then
-	    s=bz2
-		f=roxterm-${1}.tar.bz2
-		if [ ! -f "$f" ] ; then
-            f=roxterm-${1}.tar.gz
+    s=bz2
+    f=build/roxterm-${1}.tar.bz2
+    if [ ! -f "$f" ] ; then
+        f=roxterm-${1}.tar.gz
+        s=gz
+        if [ ! -f "$f" ] ; then
+            echo >&2 "Can't find a tarball for $1"
+            exit 1
         fi
-	else
-	    f="$1"
-	    s=gz
-	fi
+    fi
 else
-	f=roxterm-*.tar.bz2
+	f=build/roxterm-*.tar.bz2
 	s=bz2
 	if echo $f | egrep -q ' |\*' ; then
         f=roxterm-*.tar.gz
@@ -24,10 +24,14 @@ else
     fi
 fi
 
-d=`echo $f | sed "s/roxterm-//;s/.tar.$s//"`
+if [ $s = "bz2" ] ; then
+    d=`echo $f | sed 's|build/roxterm-||;s/.tar.bz2//'`
+else
+    d=`echo $f | sed 's/roxterm-//;s/.tar.gz//'`
+fi
 mkdir $d
 cp $f $d
 
-#rsync -avP -e ssh $d realh,roxterm@frs.sourceforge.net:/home/frs/project/r/ro/roxterm/roxterm/
+rsync -avP -e ssh $d realh,roxterm@frs.sourceforge.net:/home/frs/project/r/ro/roxterm/roxterm/
 
-#rm -rf $d
+rm -rf $d
