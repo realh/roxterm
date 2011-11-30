@@ -467,7 +467,7 @@ elif ctx.mode == 'dist':
             "Help/lib/logo_text_only.png " \
             "Help/lib/roxterm.css Help/lib/roxterm_ie.css "
             "Help/lib/sprites.png " \
-            "INSTALL INSTALL.Debian " \
+            "INSTALL INSTALL.Debian INSTALL.ReadFirst " \
             "NEWS README README.translations " \
             "roxterm.1.xml.in roxterm-config.1.xml.in " \
             "roxterm.desktop roxterm.lsm.in roxterm.spec.in " \
