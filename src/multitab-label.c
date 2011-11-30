@@ -186,11 +186,17 @@ multitab_label_size_request (GtkWidget *widget, GtkRequisition *requisition)
     
     GTK_WIDGET_CLASS (multitab_label_parent_class)->size_request
                     (widget, requisition);
+    g_debug ("multitab_label_size_request: parent req %d", requisition_width);
     if (self->fixed_width)
+    {
+        g_debug ("multitab_label_size_request: fixed width");
         return;
+    }
     if (self->single && requisition)
     {
         multitab_label_single_width (widget, &requisition->width, NULL);
+        g_debug ("multitab_label_size_request: adjusted req to %d",
+                requisition->width);
     }
 }
 
