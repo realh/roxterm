@@ -48,25 +48,19 @@ AS_IF([test "x$HAVE_DIFF" != "xyes"],
 PKG_PROG_PKG_CONFIG
 
 # Can we build the manpages?
-AC_CHECK_PROG(HAVE_XMLTOMAN, xmltoman, yes, no)
 AC_CHECK_PROG(HAVE_XMLTO, xmlto, yes, no)
 AC_CHECK_PROG(HAVE_XSLTPROC, xsltproc, yes, no)
-AS_IF([test "x$HAVE_XMLTOMAN" = "xyes"],
-    [XMLTOMAN="xmltoman"
-    XMLTOMAN_OPTS=""],
-    [test "x$HAVE_XMLTO" = "xyes"],
+AS_IF([test "x$HAVE_XMLTO" = "xyes"],
     [XMLTOMAN="xmlto man"
     XMLTOMAN_OPTS=""],
-    [test "x$HAVE_XSLTPROC" = "xyes"],
+  [test "x$HAVE_XSLTPROC" = "xyes"],
     [XMLTOMAN="xsltproc"
     XMLTOMAN_OPTS="--nonet --novalid --param man.charmap.use.subset 0 http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl"],
-    [AC_MSG_WARN([Unable to build manpages without xmlto or xsltproc])
+  [AC_MSG_WARN([Unable to build manpages without xmlto or xsltproc])
     XMLTOMAN=""])
 AM_CONDITIONAL(BUILD_MANPAGES, test "x$XMLTOMAN" != x)
-AM_CONDITIONAL(XMLTOMAN_IS_XMLTOMAN, test "x$XMLTOMAN" = "xxmltoman")
 AC_SUBST(XMLTOMAN)
 AC_SUBST(XMLTOMAN_OPTS)
-AC_SUBST(XMLTOMAN_TGT)
 
 AM_GNU_GETTEXT
 AM_GNU_GETTEXT_VERSION(0.17)
