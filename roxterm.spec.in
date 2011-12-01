@@ -3,7 +3,7 @@
 # Copyright (c) 2004-2011 Tony Houghton h@realh.co.uk
 #
 %define name roxterm
-%define version @VERSION@
+%define version ${VERSION}
 %define release 1
 %define manifest %{_builddir}/%{name}-%{version}-%{release}.manifest
 %define debug_package %{nil}

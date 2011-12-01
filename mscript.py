@@ -215,7 +215,7 @@ if ctx.mode == 'configure':
     ctx.subst_file("${TOP_DIR}/roxterm.1.xml.in", "roxterm.1.xml", True)
     ctx.subst_file("${TOP_DIR}/roxterm-config.1.xml.in", "roxterm-config.1.xml",
             True)
-    ctx.subst_file("${TOP_DIR}/roxterm.spec.in", "roxterm.spec", True)
+    ctx.subst_file("${TOP_DIR}/roxterm.spec.in", "roxterm.spec")
     ctx.setenv('APPINFO_STRING', "${VERSION} (%s)" % \
             time.strftime("%Y-%m-%d", time.gmtime(time.time())))
     ctx.subst_file(APPINFO + ".in", APPINFO)

@@ -32,6 +32,9 @@ fi
 
 ./po4a/genmake.sh
 
+# Can't make roxterm.spec.in compatible with both autoconf and maitch
+sed "s/\\\${VERSION}/$Rev/" roxterm.spec.in > roxterm.spec
+
 # Refresh GNU autotools toolchain.
 echo Cleaning autotools files...
 find -type d -name autom4te.cache -print0 | xargs -0 rm -rf \;
