@@ -233,7 +233,7 @@ TH_EXPAND_VARS(exec_prefix)
 AC_DEFINE_UNQUOTED([BIN_DIR], "$exec_prefix/bin", [bindir])
 
 AC_OUTPUT(Makefile src/Makefile po4a/Makefile
-    roxterm.lsm roxterm.spec AppInfo.xml
+    roxterm.lsm AppInfo.xml
     intl/Makefile po/Makefile.in
     roxterm.1.xml roxterm-config.1.xml)
 
