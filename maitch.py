@@ -177,7 +177,13 @@ class Context(object):
             mprint("""
 Further variables may be set after the mode argument in the form VAR=value, or
 VAR on its own for True. "--foo-bar" is equivalent to "FOO_BAR". Variables may
-refer to each other eg FOO='${BAR}.baz'.
+refer to each other eg FOO='${BAR}.baz', but be careful because there is no
+protection against recursion.
+
+You can use the MAITCHFLAGS environment variable to pass common default options
+without having to specify them on the command line every time, eg
+MAITCHFLAGS="PARALLEL=4". Separate multiple options with spaces (remember to
+use quotes).
 
 The most pivotal variable is BUILD_DIR which is the working directory and where
 built files are saved. It will be created if necessary. If not specified it
