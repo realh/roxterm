@@ -200,7 +200,7 @@ multitab_label_dispose (GObject *gobject)
     
     if (self->parent)
     {
-        g_signal_handler_disconect (self->parent, self->parent_salloc_tag);
+        g_signal_handler_disconnect (self->parent, self->parent_salloc_tag);
         self->parent = NULL;
     }
     G_OBJECT_CLASS (multitab_label_parent_class)->dispose (gobject);
