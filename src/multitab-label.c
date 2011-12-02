@@ -276,7 +276,9 @@ multitab_label_init(MultitabLabel *self)
     
     self->single = FALSE;
     self->parent = NULL;
+#if MULTITAB_LABEL_USE_PARENT_SALLOC
     self->parent_salloc_tag = 0;
+#endif
 #if MULTITAB_LABEL_GTK3_SIZE_KLUDGE
     self->best_width = NULL;
 #endif
