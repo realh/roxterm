@@ -425,9 +425,11 @@ elif ctx.mode == "install" or ctx.mode == "uninstall":
     if ctx.env['XMLTOMAN']:
         ctx.install_man("roxterm.1 roxterm-config.1")
     ctx.install_doc("AUTHORS ChangeLog COPYING README")
-    ctx.install_doc(ctx.glob("*.html", subdir = "${TOP_DIR}/Help/en"),
+    ctx.install_doc(ctx.glob("*.html",
+            subdir = ctx.subst("${TOP_DIR}/Help/en")),
             "${HTMLDIR}/en")
-    ctx.install_doc(ctx.glob("*", subdir = "${TOP_DIR}/Help/lib"),
+    ctx.install_doc(ctx.glob("*",
+            subdir = ctx.subst("${TOP_DIR}/Help/lib")),
             "${HTMLDIR}/lib")
     ctx.install_data("roxterm.svg", "${DATADIR}/icons/hicolor/scalable/apps")
     ctx.install_data(["Config/Colours/Tango", "Config/Colours/GTK"],
@@ -448,7 +450,8 @@ elif ctx.mode == "install" or ctx.mode == "uninstall":
                 ctx.install_man("po4a/%s/roxterm.1 po4a/%s/roxterm-config.1" % \
                         (l, l), opj("${MANDIR}", l))
             ctx.install_doc( \
-                    ctx.glob("*.html", subdir = "${TOP_DIR}/Help/%s" % l),
+                    ctx.glob("*.html",
+                    subdir = ctx.subst("${TOP_DIR}/Help/%s" % l)),
                     "${HTMLDIR}/%s" % l)
 
 elif ctx.mode == 'distclean' or ctx.mode == 'clean':
