@@ -100,9 +100,7 @@ struct MultiWin {
     char *display_name;
     gboolean title_template_locked;
     gboolean clear_demands_attention;
-#if MULTITAB_LABEL_GTK3_SIZE_KLUDGE
     int best_tab_width;
-#endif
 };
 
 static double multi_win_zoom_factors[] = {
@@ -1735,9 +1733,7 @@ MultiWin *multi_win_new_blank(const char *display_name, Options *shortcuts,
     }
 #endif
 
-#if MULTITAB_LABEL_GTK3_SIZE_KLUDGE
     win->best_tab_width = G_MAXINT;
-#endif
     win->tab_pos = tab_pos;
     win->always_show_tabs = always_show_tabs;
     win->scroll_bar_pos = MultiWinScrollBar_Query;
