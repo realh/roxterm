@@ -2100,11 +2100,8 @@ void multi_tab_set_middle_click_tab_action(MultiTab *tab, int action)
  * the text; the return value is the top-level container. */
 static GtkWidget *make_tab_label(MultiTab *tab, GtkPositionType tab_pos)
 {
-#if MULTITAB_LABEL_GTK3_SIZE_KLUDGE
-    tab->label = multitab_label_new(NULL, &tab->parent->best_tab_width);
-#else
-    tab->label = multitab_label_new(NULL);
-#endif
+    tab->label = multitab_label_new(tab->parent->notebook, NULL,
+            &tab->parent->best_tab_width);
     multi_tab_set_full_window_title(tab, tab->window_title_template,
             tab->window_title);
     tab->label_box = gtk_hbox_new(FALSE, 4);

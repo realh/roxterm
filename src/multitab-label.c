@@ -77,20 +77,13 @@ multitab_label_toggle_attention (gpointer data)
 }
 
 static void
-multitab_label_single_width (GtkWidget *widget, gint *width,
+multitab_label_single_width (MultitabLabel *self, gint *width,
         gint *parent_width)
 {
-    GtkWidget *parent;
     GtkAllocation alloc;
 
-    for (parent = gtk_widget_get_parent (widget); parent;
-            parent = gtk_widget_get_parent (parent))
-    {
-        if (GTK_IS_NOTEBOOK (parent))
-            break;
-    }
-    g_return_if_fail (parent != NULL);
-    gtk_widget_get_allocation (parent, &alloc);
+    g_return_if_fail (self->parent != NULL);
+    gtk_widget_get_allocation (self->parent, &alloc);
     if (parent_width)
         *parent_width = alloc.width;
     /* About 40% of width of parent should look good */
@@ -117,7 +110,7 @@ multitab_modify_width (MultitabLabel *self,
     /*
     if (self->single && natural_width)
     {
-        multitab_label_single_width ((GtkWidget *) self, natural_width);
+        multitab_label_single_width (self, natural_width);
         if (minimum_width && *minimum_width > *natural_width)
             *minimum_width = *natural_width;
     }
@@ -126,8 +119,7 @@ multitab_modify_width (MultitabLabel *self,
     {
         int parent_width = 0;
         
-        multitab_label_single_width ((GtkWidget *) self, minimum_width,
-                &parent_width);
+        multitab_label_single_width (self, minimum_width, &parent_width);
 #if MULTITAB_LABEL_GTK3_SIZE_KLUDGE
         if (self->best_width)
         {
@@ -194,11 +186,36 @@ multitab_label_size_request (GtkWidget *widget, GtkRequisition *requisition)
     {
         int w;
         
-        multitab_label_single_width (widget, &requisition->width, &w);
+        multitab_label_single_width (self, &requisition->width, &w);
     }
 }
 
 #endif /* GTK2/3 */
+
+#if MULTITAB_LABEL_USE_PARENT_SALLOC
+static void
+multitab_label_dispose (GObject *gobject)
+{
+    MultitabLabel *self = MULTITAB_LABEL (gobject);
+    
+    if (self->parent)
+    {
+        g_signal_handler_disconect (self->parent, self->parent_salloc_tag);
+        self->parent = NULL;
+    }
+    G_OBJECT_CLASS (multitab_label_parent_class)->dispose (gobject);
+}
+
+static void
+multitab_label_parent_size_alloc_cb (GtkWidget *parent,
+        GdkRectangle *allocation, MultitabLabel *self)
+{
+    int width;
+    
+    multitab_label_single_width (self, &width, NULL);
+    gtk_widget_set_size_request (GTK_WIDGET (self), width, -1);
+}
+#endif
 
 static void
 multitab_label_class_init(MultitabLabelClass *klass)
@@ -229,6 +246,9 @@ multitab_label_class_init(MultitabLabelClass *klass)
     GTK_OBJECT_CLASS (klass)->destroy = multitab_label_destroy;
 #endif
     
+#if MULTITAB_LABEL_USE_PARENT_SALLOC
+    oclass->dispose = multitab_label_dispose;
+#endif
     oclass->set_property = multitab_label_set_property;
     oclass->get_property = multitab_label_get_property;
     
@@ -255,6 +275,8 @@ multitab_label_init(MultitabLabel *self)
     static gboolean parsed_amber = FALSE;
     
     self->single = FALSE;
+    self->parent = NULL;
+    self->parent_salloc_tag = 0;
 #if MULTITAB_LABEL_GTK3_SIZE_KLUDGE
     self->best_width = NULL;
 #endif
@@ -284,15 +306,16 @@ multitab_label_init(MultitabLabel *self)
 }
 
 GtkWidget *
-multitab_label_new (const char *text
-#if MULTITAB_LABEL_GTK3_SIZE_KLUDGE
-    , int *best_width
-#endif
-)
+multitab_label_new (GtkWidget *parent, const char *text, int *best_width)
 {
     MultitabLabel *self = (MultitabLabel *)
             g_object_new (MULTITAB_TYPE_LABEL, NULL);
     
+    self->parent = parent;
+#if MULTITAB_LABEL_USE_PARENT_SALLOC
+    self->parent_salloc_tag = g_signal_connect(parent, "size-allocate",
+            G_CALLBACK(multitab_label_parent_size_alloc_cb), self);
+#endif
     if (text)
         multitab_label_set_text (self, text);
 #if MULTITAB_LABEL_GTK3_SIZE_KLUDGE
