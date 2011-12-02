@@ -300,15 +300,29 @@ elif ctx.mode == 'build':
     # man pages
     if ctx.env['XMLTOMAN']:
         xmltomanrule = "${XMLTOMAN} ${XMLTOMAN_OPTS} ${SRC} ${XMLTOMAN_OUTPUT}"
-        ctx.add_rule(SuffixRule(
+        # Something is causing a thread to hang between calling xsltproc
+        # and exiting from subprocess.Popen. Could it be trying to run two
+        # at once. Making one wdep on the other should stop jobs overlapping.
+        ctx.add_rule(Rule(
                 rule = xmltomanrule,
-                targets = ".1",
-                sources = ".1.xml",
+                targets = "roxterm.1",
+                sources = "roxterm.1.xml",
                 where = TOP))
+        ctx.add_rule(Rule(
+                rule = xmltomanrule,
+                targets = "roxterm-config.1",
+                sources = "roxterm-config.1.xml",
+                wdeps = "roxterm.1",
+                where = TOP))
+        #ctx.add_rule(SuffixRule(
+        #        rule = xmltomanrule,
+        #        targets = ".1",
+        #        sources = ".1.xml",
+        #        where = TOP))
         # Force invocation of above suffix rule
-        ctx.add_rule(TouchRule(
-                targets = "manpages",
-                sources = "roxterm.1 roxterm-config.1"))
+        #ctx.add_rule(TouchRule(
+        #        targets = "manpages",
+        #        sources = "roxterm.1 roxterm-config.1"))
     
     # Make sure .ui file is GTK2-compatible
     def process_ui(ctx, env, targets, sources):
@@ -342,6 +356,7 @@ elif ctx.mode == 'build':
     if ctx.env['HAVE_PO4A']:
         ctx.ensure_out_dir("po4a")
         if ctx.env['XMLTOMAN']:
+            lastmtarget = None
             for m in ["roxterm", "roxterm-config"]:
                 ctx.add_rule(Rule(rule = ["${PO4A_GETTEXTIZE} ${PO4AOPTS} " \
                         "-f docbook -m ${SRC} -p ${TGT}",
@@ -374,11 +389,14 @@ elif ctx.mode == 'build':
                             targets = "po4a/%s.1.%s.xml" % (m, l),
                             where = NOWHERE,
                             use_shell = True))
+                    mtarget = "po4a/%s/%s.1" % (l, m)
                     ctx.add_rule(Rule( \
                             rule = [mkdir_rule, xmltomanrule],
                             sources = "po4a/%s.1.%s.xml" % (m, l),
-                            targets = "po4a/%s/%s.1" % (l, m),
+                            targets = mtarget,
+                            wdeps = lastmtarget,
                             where = NOWHERE))
+                    lastmtarget = mtarget
         for h in ROXTERM_HTML_BASENAMES:
             master = "${TOP_DIR}/Help/en/%s.html" % h
             pot = "${PO4ADIR}/%s.html.pot" % h

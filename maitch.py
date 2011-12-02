@@ -1790,7 +1790,6 @@ def call_subprocess(*args, **kwargs):
     kwargs['stdout'] = subprocess.PIPE
     kwargs['stderr'] = subprocess.PIPE
     sp = subprocess.Popen(*args, **kwargs)
-    print "*** %s is running", args
     dprint("%s has pid %d" % (args, sp.pid))
     [out, err] = sp.communicate()
     dprint("pid %d finished, output follows" % sp.pid)
