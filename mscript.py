@@ -300,15 +300,29 @@ elif ctx.mode == 'build':
     # man pages
     if ctx.env['XMLTOMAN']:
         xmltomanrule = "${XMLTOMAN} ${XMLTOMAN_OPTS} ${SRC} ${XMLTOMAN_OUTPUT}"
-        ctx.add_rule(SuffixRule(
+        # Something is causing a thread to hang between calling xsltproc
+        # and exiting from subprocess.Popen. Could it be trying to run two
+        # at once. Making one wdep on the other should stop jobs overlapping.
+        ctx.add_rule(Rule(
                 rule = xmltomanrule,
-                targets = ".1",
-                sources = ".1.xml",
+                targets = "roxterm.1",
+                sources = "roxterm.1.xml",
                 where = TOP))
+        ctx.add_rule(Rule(
+                rule = xmltomanrule,
+                targets = "roxterm-config.1",
+                sources = "roxterm-config.1.xml",
+                wdeps = "roxterm.1",
+                where = TOP))
+        #ctx.add_rule(SuffixRule(
+        #        rule = xmltomanrule,
+        #        targets = ".1",
+        #        sources = ".1.xml",
+        #        where = TOP))
         # Force invocation of above suffix rule
-        ctx.add_rule(TouchRule(
-                targets = "manpages",
-                sources = "roxterm.1 roxterm-config.1"))
+        #ctx.add_rule(TouchRule(
+        #        targets = "manpages",
+        #        sources = "roxterm.1 roxterm-config.1"))
     
     # Make sure .ui file is GTK2-compatible
     def process_ui(ctx, env, targets, sources):
@@ -342,6 +356,7 @@ elif ctx.mode == 'build':
     if ctx.env['HAVE_PO4A']:
         ctx.ensure_out_dir("po4a")
         if ctx.env['XMLTOMAN']:
+            lastmtarget = None
             for m in ["roxterm", "roxterm-config"]:
                 ctx.add_rule(Rule(rule = ["${PO4A_GETTEXTIZE} ${PO4AOPTS} " \
                         "-f docbook -m ${SRC} -p ${TGT}",
@@ -374,11 +389,14 @@ elif ctx.mode == 'build':
                             targets = "po4a/%s.1.%s.xml" % (m, l),
                             where = NOWHERE,
                             use_shell = True))
+                    mtarget = "po4a/%s/%s.1" % (l, m)
                     ctx.add_rule(Rule( \
                             rule = [mkdir_rule, xmltomanrule],
                             sources = "po4a/%s.1.%s.xml" % (m, l),
-                            targets = "po4a/%s/%s.1" % (l, m),
+                            targets = mtarget,
+                            wdeps = lastmtarget,
                             where = NOWHERE))
+                    lastmtarget = mtarget
         for h in ROXTERM_HTML_BASENAMES:
             master = "${TOP_DIR}/Help/en/%s.html" % h
             pot = "${PO4ADIR}/%s.html.pot" % h
@@ -425,9 +443,11 @@ elif ctx.mode == "install" or ctx.mode == "uninstall":
     if ctx.env['XMLTOMAN']:
         ctx.install_man("roxterm.1 roxterm-config.1")
     ctx.install_doc("AUTHORS ChangeLog COPYING README")
-    ctx.install_doc(ctx.glob("*.html", subdir = "${TOP_DIR}/Help/en"),
+    ctx.install_doc(ctx.glob("*.html",
+            subdir = ctx.subst("${TOP_DIR}/Help/en")),
             "${HTMLDIR}/en")
-    ctx.install_doc(ctx.glob("*", subdir = "${TOP_DIR}/Help/lib"),
+    ctx.install_doc(ctx.glob("*",
+            subdir = ctx.subst("${TOP_DIR}/Help/lib")),
             "${HTMLDIR}/lib")
     ctx.install_data("roxterm.svg", "${DATADIR}/icons/hicolor/scalable/apps")
     ctx.install_data(["Config/Colours/Tango", "Config/Colours/GTK"],
@@ -448,7 +468,8 @@ elif ctx.mode == "install" or ctx.mode == "uninstall":
                 ctx.install_man("po4a/%s/roxterm.1 po4a/%s/roxterm-config.1" % \
                         (l, l), opj("${MANDIR}", l))
             ctx.install_doc( \
-                    ctx.glob("*.html", subdir = "${TOP_DIR}/Help/%s" % l),
+                    ctx.glob("*.html",
+                    subdir = ctx.subst("${TOP_DIR}/Help/%s" % l)),
                     "${HTMLDIR}/%s" % l)
 
 elif ctx.mode == 'distclean' or ctx.mode == 'clean':
