@@ -177,13 +177,7 @@ class Context(object):
             mprint("""
 Further variables may be set after the mode argument in the form VAR=value, or
 VAR on its own for True. "--foo-bar" is equivalent to "FOO_BAR". Variables may
-refer to each other eg FOO='${BAR}.baz', but be careful because there is no
-protection against recursion.
-
-You can use the MAITCHFLAGS environment variable to pass common default options
-without having to specify them on the command line every time, eg
-MAITCHFLAGS="PARALLEL=4". Separate multiple options with spaces (remember to
-use quotes).
+refer to each other eg FOO='${BAR}.baz'.
 
 The most pivotal variable is BUILD_DIR which is the working directory and where
 built files are saved. It will be created if necessary. If not specified it
@@ -573,27 +567,26 @@ Other predefined variables [default values shown in squarer brackets]:
             orig_dir = os.curdir
             dir = os.path.abspath(orig_dir)
         if subdir:
-            orig_subdir = subdir
-            subdir = self.subst(subdir)
             dir = opj(dir, subdir)
         matches = fnmatch.filter(os.listdir(dir), pattern)
-        if not expand:
-            dir = opj(orig_dir, orig_subdir)
-        for i in range(len(matches)):
-            matches[i] = opj(dir, matches[i])
+        if expand or subdir:
+            if not expand:
+                dir = subdir
+            for i in range(len(matches)):
+                matches[i] = opj(dir, matches[i])
         return matches
     
     
-    def glob_src(self, pattern, subdir = None):
+    def glob_src(self, pattern, subdir = None, expand = None):
         " Performs glob on src_dir. "
-        return self.glob(pattern, self.src_dir, subdir)
+        return self.glob(pattern, self.src_dir, subdir, expand)
     
     
-    def glob_all(self, pattern, subdir = None):
+    def glob_all(self, pattern, subdir = None, expand = None):
         """ Performs glob on both build_dir/src_dir. No pathname component
         is added other than subdir. """
-        matches = self.glob(pattern, self.build_dir, subdir)
-        for n in self.glob_src(pattern, subdir):
+        matches = self.glob(pattern, self.build_dir, subdir, expand)
+        for n in self.glob_src(pattern, subdir, expand):
             if not n in matches:
                 matches.append(n)
         return matches
@@ -699,7 +692,7 @@ Other predefined variables [default values shown in squarer brackets]:
         string or list). """
         if isinstance(args, basestring):
             args = (args)
-        args = (self.env['BUILD_DIR'],) + args
+        args = (self.build_dir,) + args
         return self.subst(opj(*args))
     
     
@@ -1540,7 +1533,7 @@ class LibtoolCRule(CRule):
     " libtool version of CRule. "
     def __init__(self, **kwargs):
         """ Additional kwargs:
-            libtool_flags. sh_or_st should be
+            libtool_flags.
             libtool_mode_arg: -shared, -static etc.
         """
         self.init_var(kwargs, 'libtool_flags')
@@ -2246,7 +2239,6 @@ class BuildGroup(object):
         dprint("Cancelling all jobs")
         # Cond.notify_all() sometimes freezes all threads instead of
         # awakening them, so only choice is to exit
-        sys.exit(1)
         with self.cond:
             if not self.cancelled:
                 self.cancelled = True
