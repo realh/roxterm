@@ -210,13 +210,11 @@ static void
 multitab_label_parent_size_alloc_cb (GtkWidget *parent,
         GdkRectangle *allocation, MultitabLabel *self)
 {
+    int width = -1;
+    
     if (self->single)
-    {
-        int width;
-        
         multitab_label_single_width (self, &width, NULL);
-        gtk_widget_set_size_request (GTK_WIDGET (self), width, -1);
-    }
+    gtk_widget_set_size_request (GTK_WIDGET (self), width, -1);
 }
 #endif
 
