@@ -71,8 +71,7 @@ typedef struct {
 } ROXTerm_MatchMap;
 
 struct ROXTermData {
-    /* We do not own references to win, tab or widget */
-    MultiWin *win;
+    /* We do not own references to tab or widget */
     MultiTab *tab;
     GtkWidget *widget;            /* VteTerminal */
     GtkWidget *hbox;
@@ -400,7 +399,6 @@ static ROXTermData *roxterm_data_clone(ROXTermData *old_gt)
     *new_gt = *old_gt;
     new_gt->status_stock = NULL;
     new_gt->widget = NULL;
-    new_gt->win = NULL;
     new_gt->tab = NULL;
     new_gt->running = FALSE;
     new_gt->postponed_free = FALSE;
@@ -992,6 +990,10 @@ static void roxterm_data_delete(ROXTermData *roxterm)
     if (roxterm->im_submenu2)
     {
         UNREF_LOG(g_object_unref(roxterm->im_submenu2));
+    }
+    if (roxterm->im_submenu3)
+    {
+        UNREF_LOG(g_object_unref(roxterm->im_submenu3));
     }
     drag_receive_data_delete(roxterm->drd);
     if (roxterm->actual_commandv != roxterm->commandv)
@@ -3145,12 +3147,13 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
     MultiWinScrollBar_Position scrollbar_pos;
     char *tab_name;
     gboolean custom_tab_name = FALSE;
+    MultiWin *template_win = roxterm_get_win(roxterm_template);
 
     roxterm_terms = g_list_append(roxterm_terms, roxterm);
 
-    if (roxterm_template->win)
+    if (template_win)
     {
-        hide_menu_bar = !multi_win_get_show_menu_bar(roxterm_template->win);
+        hide_menu_bar = !multi_win_get_show_menu_bar(template_win);
     }
     else
     {
