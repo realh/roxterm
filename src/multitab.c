@@ -740,7 +740,10 @@ void multi_tab_move_to_new_window(MultiWin *win, MultiTab *tab, int position)
     multi_win_add_tab(win, tab, position, FALSE);
     multi_win_set_geometry_hints_for_tab(win, tab);
     if (multi_tab_to_new_window_handler)
-        multi_tab_to_new_window_handler(win, tab, old_win_destroyed);
+    {
+        multi_tab_to_new_window_handler(win, tab,
+                old_win_destroyed ? NULL : old_win);
+    }
     /* Remove extra references added by multi_tab_remove_from_parent */
     g_object_unref(tab->widget);
 }

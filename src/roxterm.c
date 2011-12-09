@@ -970,7 +970,9 @@ static void roxterm_data_delete(ROXTermData *roxterm)
     gwin = roxterm_get_toplevel(roxterm);
     if (gwin && roxterm->win_state_changed_tag)
     {
+        g_debug(">> roxterm_data_delete: win_state_changed");
         g_signal_handler_disconnect(gwin, roxterm->win_state_changed_tag);
+        g_debug("<< roxterm_data_delete: win_state_changed");
     }
     if (roxterm->post_exit_tag)
         g_source_remove(roxterm->post_exit_tag);
@@ -1507,7 +1509,9 @@ static void roxterm_clear_hold_over_uri(ROXTermData *roxterm)
 {
     if (roxterm->hold_over_uri)
     {
+        g_debug(">> roxterm_clear_hold_over_uri");
         g_signal_handler_disconnect(roxterm->widget, roxterm->hold_handler_id);
+        g_debug("<< roxterm_clear_hold_over_uri");
         roxterm->hold_over_uri = FALSE;
     }
 }
@@ -4214,13 +4218,13 @@ void roxterm_launch(const char *display_name, char **env)
 }
 
 static void roxterm_tab_to_new_window(MultiWin *win, MultiTab *tab,
-        gboolean old_win_destroyed)
+        MultiWin *old_win)
 {
     ROXTermData *roxterm = multi_tab_get_user_data(tab);
     ROXTermData *match_roxterm;
     MultiTab *match_tab = multi_win_get_current_tab(win);
-    GtkWindow *old_gwin = old_win_destroyed ? NULL :
-            roxterm_get_toplevel(roxterm);
+    GtkWindow *old_gwin = old_win ?
+            GTK_WINDOW(multi_win_get_widget(old_win)) : NULL;
 
     if (old_gwin)
     {

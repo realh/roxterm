@@ -75,10 +75,10 @@ typedef void (*MultiTabSelectionHandler) (gpointer user_data, MultiTab * tab);
 
 /* Called when a tab is dragged to a new window; should be used to try to make
  * sure page is same size as other tabs in new window and to update references.
- * old_win_destroyed is TRUE if the tab's previous window was destroyed.
+ * old_win is NULL if the tab's previous window was destroyed.
  */
 typedef void (*MultiTabToNewWindowHandler)(MultiWin *win, MultiTab *tab,
-        gboolean old_win_destroyed);
+        MultiWin *old_win);
 
 /* Called when the zoom factor is changed */
 typedef void (*MultiWinZoomHandler)(gpointer user_data, double zoom_factor,
