@@ -132,6 +132,11 @@ static DynamicOptions *roxterm_profiles = NULL;
 static void roxterm_apply_profile(ROXTermData * roxterm, VteTerminal * vte,
         gboolean update_geometry);
 
+inline static MultiWin *roxterm_get_win(ROXTermData *roxterm)
+{
+    return roxterm->tab ? multi_tab_get_parent(roxterm->tab) : NULL;
+}
+
 /********************** Encodings ***************************/
 
 static Encodings *roxterm_encodings = NULL;
@@ -574,9 +579,11 @@ static char **roxterm_get_environment(ROXTermData *roxterm, const char *term)
 
 static GtkWindow *roxterm_get_toplevel(ROXTermData *roxterm)
 {
-    if (roxterm && roxterm->win)
+    MultiWin *w;
+    
+    if (roxterm && (w = roxterm_get_win(roxterm)) != NULL)
     {
-        GtkWidget *tl = multi_win_get_widget(roxterm->win);
+        GtkWidget *tl = multi_win_get_widget(w);
         if (tl && gtk_widget_is_toplevel(tl))
             return GTK_WINDOW(tl);
     }
@@ -622,7 +629,8 @@ static void roxterm_show_status_stock(ROXTermData *roxterm, const char *stock)
 
 static gboolean roxterm_command_failed(ROXTermData *roxterm)
 {
-    GtkWidget *w = roxterm->win ? multi_win_get_widget(roxterm->win) : NULL;
+    MultiWin *win = roxterm_get_win(roxterm);
+    GtkWidget *w = win ? multi_win_get_widget(win) : NULL;
     
     dlg_critical(w ? GTK_WINDOW(w) : NULL, "%s", roxterm->reply);
     g_free(roxterm->reply);
@@ -958,6 +966,7 @@ static void roxterm_data_delete(ROXTermData *roxterm)
     /* This doesn't delete widgets because they're deleted when removed from
      * the parent */
     GtkWindow *gwin;
+    
     g_return_if_fail(roxterm);
     
     gwin = roxterm_get_toplevel(roxterm);
@@ -1033,10 +1042,10 @@ static void
 roxterm_set_show_uri_menu_items(ROXTermData * roxterm,
     ROXTerm_URIMenuItemsShowType show_type)
 {
-    set_show_uri_menu_items(multi_win_get_popup_menu(roxterm->win),
-            show_type);
-    set_show_uri_menu_items(multi_win_get_short_popup_menu(roxterm->win),
-            show_type);
+    MultiWin *win = roxterm_get_win(roxterm);
+    
+    set_show_uri_menu_items(multi_win_get_popup_menu(win), show_type);
+    set_show_uri_menu_items(multi_win_get_short_popup_menu(win), show_type);
 }
 
 static void roxterm_update_background(ROXTermData * roxterm, VteTerminal * vte)
@@ -1081,7 +1090,7 @@ static void roxterm_update_background(ROXTermData * roxterm, VteTerminal * vte)
             break;
         case 2:
             vte_terminal_set_background_image(vte, NULL);
-            true_trans = multi_win_composite(roxterm->win);
+            true_trans = multi_win_composite(roxterm_get_win(roxterm));
             vte_terminal_set_background_transparent(vte,
                     saturation < 1 && !true_trans);
             break;
@@ -1190,7 +1199,8 @@ roxterm_set_vte_size(ROXTermData *roxterm, VteTerminal *vte,
     int cw, ch, ww, wh;
     GtkWidget *vw = GTK_WIDGET(vte);
     GdkWindow *drbl = gtk_widget_get_window(vw);
-    GtkWidget *pw = roxterm->win ? multi_win_get_widget(roxterm->win) : NULL;
+    MultiWin *win = roxterm_get_win(roxterm);
+    GtkWidget *pw = win ? multi_win_get_widget(win) : NULL;
     GdkWindow *pd = pw ? gtk_widget_get_window(pw) : NULL;
     
     if (drbl && pd)
@@ -1265,7 +1275,7 @@ static void roxterm_default_size_func(ROXTermData *roxterm,
 
 static void roxterm_update_size(ROXTermData * roxterm, VteTerminal * vte)
 {
-    if (multi_win_get_current_tab(roxterm->win) == roxterm->tab)
+    if (multi_win_get_current_tab(roxterm_get_win(roxterm)) == roxterm->tab)
     {
         int w, h;
         
@@ -1276,13 +1286,13 @@ static void roxterm_update_size(ROXTermData * roxterm, VteTerminal * vte)
 
 static void roxterm_update_geometry(ROXTermData * roxterm, VteTerminal * vte)
 {
-    if (multi_win_get_current_tab(roxterm->win) == roxterm->tab)
+    if (multi_win_get_current_tab(roxterm_get_win(roxterm)) == roxterm->tab)
     {
         GdkGeometry geom;
         GdkWindowHints hints;
 
         roxterm_geometry_func(roxterm, &geom, &hints);
-        multi_win_set_geometry_hints(roxterm->win, roxterm->widget,
+        multi_win_set_geometry_hints(roxterm_get_win(roxterm), roxterm->widget,
             &geom, hints);
     }
 }
@@ -1729,19 +1739,20 @@ static void check_preferences_submenu(MenuTree *tree, MenuTreeID id,
 static void check_preferences_submenu_pair(ROXTermData *roxterm, MenuTreeID id,
         const char *current_name)
 {
-    MenuTree *tree = multi_win_get_popup_menu(roxterm->win);
+    MultiWin *win = roxterm_get_win(roxterm);
+    MenuTree *tree = multi_win_get_popup_menu(win);
 
-    multi_win_set_ignore_toggles(roxterm->win, TRUE);
+    multi_win_set_ignore_toggles(win, TRUE);
     if (tree)
     {
         check_preferences_submenu(tree, id, current_name);
     }
-    tree = multi_win_get_menu_bar(roxterm->win);
+    tree = multi_win_get_menu_bar(win);
     if (tree)
     {
         check_preferences_submenu(tree, id, current_name);
     }
-    multi_win_set_ignore_toggles(roxterm->win, FALSE);
+    multi_win_set_ignore_toggles(win, FALSE);
 }
 
 static void create_im_submenus(ROXTermData *roxterm, VteTerminal *vte)
@@ -1784,22 +1795,22 @@ inline static void roxterm_shade_mtree_search_items(MenuTree *mtree,
 
 static void roxterm_shade_search_menu_items(ROXTermData *roxterm)
 {
+    MultiWin *win = roxterm_get_win(roxterm);
     gboolean shade = vte_terminal_search_get_gregex(
             VTE_TERMINAL(roxterm->widget)) == NULL;
     
-    roxterm_shade_mtree_search_items(multi_win_get_menu_bar(roxterm->win),
-            shade);
-    roxterm_shade_mtree_search_items(multi_win_get_popup_menu(roxterm->win),
-            shade);
+    roxterm_shade_mtree_search_items(multi_win_get_menu_bar(win), shade);
+    roxterm_shade_mtree_search_items(multi_win_get_popup_menu(win), shade);
 }
 #endif
 
 static void roxterm_tab_selection_handler(ROXTermData * roxterm, MultiTab * tab)
 {
+    MultiWin *win = roxterm_get_win(roxterm);
     VteTerminal *vte = VTE_TERMINAL(roxterm->widget);
-    MenuTree *menu_bar = multi_win_get_menu_bar(roxterm->win);
-    MenuTree *popup_menu = multi_win_get_popup_menu(roxterm->win);
-    MenuTree *short_popup = multi_win_get_short_popup_menu(roxterm->win);
+    MenuTree *menu_bar = multi_win_get_menu_bar(win);
+    MenuTree *popup_menu = multi_win_get_popup_menu(win);
+    MenuTree *short_popup = multi_win_get_short_popup_menu(win);
 
     roxterm->status_stock = NULL;
     check_preferences_submenu_pair(roxterm,
@@ -1810,7 +1821,7 @@ static void roxterm_tab_selection_handler(ROXTermData * roxterm, MultiTab * tab)
             options_get_leafname(roxterm->colour_scheme));
     check_preferences_submenu_pair(roxterm,
             MENUTREE_PREFERENCES_SELECT_SHORTCUTS,
-            options_get_leafname(multi_win_get_shortcut_scheme(roxterm->win)));
+            options_get_leafname(multi_win_get_shortcut_scheme(win)));
 #ifdef HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX
     roxterm_shade_search_menu_items(roxterm);
 #endif
@@ -1822,7 +1833,7 @@ static void roxterm_tab_selection_handler(ROXTermData * roxterm, MultiTab * tab)
     menutree_attach_im_submenu(menu_bar, roxterm->im_submenu2);
     menutree_attach_im_submenu(short_popup, roxterm->im_submenu3);
 
-    multi_win_set_ignore_toggles(roxterm->win, TRUE);
+    multi_win_set_ignore_toggles(win, TRUE);
     if (!roxterm->setup_encodings)
     {
         char const **encodings = roxterm_list_encodings();
@@ -1840,7 +1851,7 @@ static void roxterm_tab_selection_handler(ROXTermData * roxterm, MultiTab * tab)
     menutree_select_encoding(popup_menu, roxterm->encoding);
     menutree_select_encoding(menu_bar, roxterm->encoding);
     menutree_select_encoding(short_popup, roxterm->encoding);
-    multi_win_set_ignore_toggles(roxterm->win, FALSE);
+    multi_win_set_ignore_toggles(win, FALSE);
 }
 
 static gboolean run_child_when_idle(ROXTermData *roxterm)
@@ -2154,6 +2165,7 @@ static void roxterm_hide_menutree(GtkMenuItem *item, gpointer handle)
 
 static gboolean roxterm_post_child_exit(ROXTermData *roxterm)
 {
+    MultiWin *win = roxterm_get_win(roxterm);
     roxterm_ChildExitAction action =
         options_lookup_int_with_default(roxterm->profile, "exit_action",
                 roxterm_ChildExitClose);
@@ -2188,11 +2200,10 @@ static gboolean roxterm_post_child_exit(ROXTermData *roxterm)
         case roxterm_ChildExitClose:
             gtk_container_foreach(
                     GTK_CONTAINER(
-                            multi_win_get_menu_bar(roxterm->win)->top_level),
+                            multi_win_get_menu_bar(win)->top_level),
                     (GtkCallback) roxterm_hide_menutree, NULL);
-            gtk_widget_hide(multi_win_get_popup_menu(roxterm->win)->top_level);
-            gtk_widget_hide(multi_win_get_short_popup_menu(roxterm->win)->
-                    top_level);
+            gtk_widget_hide(multi_win_get_popup_menu(win)->top_level);
+            gtk_widget_hide(multi_win_get_short_popup_menu(win)->top_level);
             multi_tab_delete(roxterm->tab);
             break;
         case roxterm_ChildExitHold:
@@ -2289,7 +2300,7 @@ static void roxterm_new_term_with_profile(GtkMenuItem *mitem,
     if (!roxterm)
         return;
 
-    win = roxterm->win;
+    win = roxterm_get_win(roxterm);
     profile_name = g_object_get_data(G_OBJECT(mitem), PROFILE_NAME_KEY);
     if (!profile_name)
     {
@@ -2322,7 +2333,7 @@ static void roxterm_new_term_with_profile(GtkMenuItem *mitem,
     /*
     if (just_tab && strcmp(profile_name, options_get_leafname(old_profile)))
     {
-        multi_win_foreach_tab(roxterm->win, match_text_size_foreach_tab,
+        multi_win_foreach_tab(win, match_text_size_foreach_tab,
                 multi_tab_get_user_data(tab));
     }
     */
@@ -2342,8 +2353,9 @@ static void roxterm_profile_selected(GtkCheckMenuItem *mitem, MenuTree *mtree)
 {
     ROXTermData *roxterm = roxterm_from_menutree(mtree);
     const char *profile_name;
+    MultiWin *win = roxterm ? roxterm_get_win(roxterm) : NULL;
 
-    if (!roxterm || multi_win_get_ignore_toggles(roxterm->win))
+    if (!roxterm || multi_win_get_ignore_toggles(win))
         return;
 
     profile_name = g_object_get_data(G_OBJECT(mitem), PROFILE_NAME_KEY);
@@ -2367,7 +2379,7 @@ static void roxterm_profile_selected(GtkCheckMenuItem *mitem, MenuTree *mtree)
         {
             roxterm_change_profile(roxterm, profile);
             /* All tabs in the same window must have same size */
-            multi_win_foreach_tab(roxterm->win, match_text_size_foreach_tab,
+            multi_win_foreach_tab(win, match_text_size_foreach_tab,
                     roxterm);
             /* Have one more ref than we need, so decrease it */
             options_unref(profile);
@@ -2386,7 +2398,7 @@ static void roxterm_colour_scheme_selected(GtkCheckMenuItem *mitem,
     ROXTermData *roxterm = roxterm_from_menutree(mtree);
     const char *scheme_name;
 
-    if (!roxterm || multi_win_get_ignore_toggles(roxterm->win))
+    if (!roxterm || multi_win_get_ignore_toggles(roxterm_get_win(roxterm)))
         return;
 
     scheme_name = g_object_get_data(G_OBJECT(mitem), PROFILE_NAME_KEY);
@@ -2422,10 +2434,11 @@ static void roxterm_shortcuts_selected(GtkCheckMenuItem *mitem,
         MenuTree *mtree)
 {
     ROXTermData *roxterm = roxterm_from_menutree(mtree);
+    MultiWin *win = roxterm ? roxterm_get_win(roxterm) : NULL;
     char *scheme_name;
     Options *shortcuts;
 
-    if (!roxterm || multi_win_get_ignore_toggles(roxterm->win))
+    if (!roxterm || multi_win_get_ignore_toggles(win))
         return;
 
     scheme_name = g_object_get_data(G_OBJECT(mitem), PROFILE_NAME_KEY);
@@ -2440,14 +2453,14 @@ static void roxterm_shortcuts_selected(GtkCheckMenuItem *mitem,
                 MENUTREE_PREFERENCES_SELECT_SHORTCUTS, scheme_name);
     }
     shortcuts = shortcuts_open(scheme_name);
-    multi_win_set_shortcut_scheme(roxterm->win, shortcuts, FALSE);
+    multi_win_set_shortcut_scheme(win, shortcuts, FALSE);
     shortcuts_unref(shortcuts);
     g_free(scheme_name);
 }
 
 static void roxterm_text_changed_handler(VteTerminal *vte, ROXTermData *roxterm)
 {
-    if (roxterm->tab != multi_win_get_current_tab(roxterm->win))
+    if (roxterm->tab != multi_win_get_current_tab(roxterm_get_win(roxterm)))
     {
         roxterm_show_status_stock(roxterm, GTK_STOCK_DIALOG_INFO);
     }
@@ -2455,19 +2468,21 @@ static void roxterm_text_changed_handler(VteTerminal *vte, ROXTermData *roxterm)
 
 static void roxterm_beep_handler(VteTerminal *vte, ROXTermData *roxterm)
 {
-    if (roxterm->tab != multi_win_get_current_tab(roxterm->win))
+    MultiWin *win = roxterm_get_win(roxterm);
+    
+    if (roxterm->tab != multi_win_get_current_tab(win))
     {
         roxterm_show_status_stock(roxterm, GTK_STOCK_DIALOG_WARNING);
     }
     if (options_lookup_int_with_default(roxterm->profile,
             "bell_highlights_tab", TRUE))
     {
-        GtkWindow *win = GTK_WINDOW(multi_win_get_widget(roxterm->win));
+        GtkWindow *gwin = GTK_WINDOW(multi_win_get_widget(win));
         
-        if (roxterm->tab != multi_win_get_current_tab(roxterm->win))
+        if (roxterm->tab != multi_win_get_current_tab(win))
             multi_tab_draw_attention(roxterm->tab);
-        if (!gtk_window_is_active(win))
-            gtk_window_set_urgency_hint(win, TRUE);
+        if (!gtk_window_is_active(gwin))
+            gtk_window_set_urgency_hint(gwin, TRUE);
     }
 }
 
@@ -2477,7 +2492,8 @@ static void roxterm_beep_handler(VteTerminal *vte, ROXTermData *roxterm)
 static gboolean roxterm_key_press_handler(GtkWidget *widget,
         GdkEventKey *event, ROXTermData *roxterm)
 {
-    Options *shortcuts = multi_win_get_shortcut_scheme(roxterm->win);
+    Options *shortcuts = multi_win_get_shortcut_scheme(
+            roxterm_get_win(roxterm));
     
     if (!event->is_modifier &&
             shortcuts_key_is_shortcut(shortcuts, event->keyval,
@@ -2491,7 +2507,7 @@ static gboolean roxterm_key_press_handler(GtkWidget *widget,
 static void roxterm_resize_window_handler(VteTerminal *vte,
         guint width, guint height, ROXTermData *roxterm)
 {
-    MultiWin *win = roxterm->win;
+    MultiWin *win = roxterm_get_win(roxterm);
     int pad_w, pad_h;
     GtkAllocation alloc;
     int columns, rows;
@@ -2862,14 +2878,14 @@ static void roxterm_set_delete_binding(ROXTermData * roxterm,
 
 inline static void roxterm_apply_wrap_switch_tab(ROXTermData *roxterm)
 {
-    multi_win_set_wrap_switch_tab(roxterm->win,
+    multi_win_set_wrap_switch_tab(roxterm_get_win(roxterm),
         options_lookup_int_with_default(roxterm->profile,
             "wrap_switch_tab", FALSE));
 }
 
 inline static void roxterm_apply_always_show_tabs(ROXTermData *roxterm)
 {
-    multi_win_set_always_show_tabs(roxterm->win,
+    multi_win_set_always_show_tabs(roxterm_get_win(roxterm),
         options_lookup_int_with_default(roxterm->profile,
             "always_show_tabs", TRUE));
 }
@@ -2916,6 +2932,7 @@ static void roxterm_apply_title_template(ROXTermData *roxterm)
 {
     char *win_title = global_options_lookup_string("title");
     gboolean custom_win_title;
+    MultiWin *win = roxterm_get_win(roxterm);
     
     if (win_title)
     {
@@ -2927,11 +2944,11 @@ static void roxterm_apply_title_template(ROXTermData *roxterm)
         win_title = options_lookup_string_with_default(roxterm->profile,
                     "win_title", "%s");
     }
-    multi_win_set_title_template(roxterm->win, win_title);
+    multi_win_set_title_template(win, win_title);
     if (custom_win_title)
     {
         global_options_reset_string("title");
-        multi_win_set_title_template_locked(roxterm->win, TRUE);
+        multi_win_set_title_template_locked(win, TRUE);
     }
     g_free(win_title);
 }
@@ -3107,12 +3124,13 @@ roxterm_tab_received(GtkWidget *rcvd_widget, ROXTermData *roxterm)
     
     if (tab != roxterm->tab)
     {
+        MultiWin *win = roxterm_get_win(roxterm);
         int page_num = multi_tab_get_page_num(roxterm->tab);
         
-        if (multi_tab_get_parent(tab) == roxterm->win)
+        if (multi_tab_get_parent(tab) == win)
             multi_tab_move_to_position(tab, page_num, TRUE);
         else
-            multi_tab_move_to_new_window(roxterm->win, tab, page_num);
+            multi_tab_move_to_new_window(win, tab, page_num);
     }
 }
 
@@ -3145,7 +3163,6 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
     }
     multi_win_set_show_menu_bar(win, !hide_menu_bar);
 
-    roxterm->win = win;
     roxterm->tab = tab;
     *roxterm_out = roxterm;
 
@@ -3288,6 +3305,7 @@ static void roxterm_reflect_profile_change(Options * profile, const char *key)
     {
         ROXTermData *roxterm = link->data;
         VteTerminal *vte;
+        MultiWin *win = roxterm_get_win(roxterm);
         gboolean apply_to_win = FALSE;
 
         if (roxterm->profile != profile || roxterm->profile->deleted)
@@ -3304,9 +3322,9 @@ static void roxterm_reflect_profile_change(Options * profile, const char *key)
             roxterm_update_allow_bold(roxterm, vte);
         }
         else if (!strcmp(key, "hide_menubar") &&
-            multi_win_get_current_tab(roxterm->win) == roxterm->tab)
+            multi_win_get_current_tab(win) == roxterm->tab)
         {
-            multi_win_set_show_menu_bar(roxterm->win,
+            multi_win_set_show_menu_bar(win,
                 !options_lookup_int(roxterm->profile, "hide_menubar"));
         }
         else if (!strcmp(key, "audible_bell"))
@@ -3350,7 +3368,7 @@ static void roxterm_reflect_profile_change(Options * profile, const char *key)
         }
         else if (!strcmp(key, "full_screen"))
         {
-            multi_win_set_fullscreen(roxterm->win,
+            multi_win_set_fullscreen(win,
                     options_lookup_int(roxterm->profile, "full_screen"));
             apply_to_win = TRUE;
         }
@@ -3406,7 +3424,7 @@ static void roxterm_reflect_profile_change(Options * profile, const char *key)
         {
             gboolean disable = options_lookup_int(roxterm->profile,
                     "disable_menu_shortcuts");
-            MenuTree *mtree = multi_win_get_menu_bar(roxterm->win);
+            MenuTree *mtree = multi_win_get_menu_bar(win);
 
             menutree_disable_shortcuts(mtree, disable);
         }
@@ -3414,10 +3432,10 @@ static void roxterm_reflect_profile_change(Options * profile, const char *key)
         {
             gboolean disable = options_lookup_int(roxterm->profile,
                     "disable_tab_menu_shortcuts");
-            MenuTree *mtree = multi_win_get_popup_menu(roxterm->win);
+            MenuTree *mtree = multi_win_get_popup_menu(win);
 
             menutree_disable_tab_shortcuts(mtree, disable);
-            mtree = multi_win_get_menu_bar(roxterm->win);
+            mtree = multi_win_get_menu_bar(win);
             menutree_disable_tab_shortcuts(mtree, disable);
         }
         else if (!strcmp(key, "title_string"))
@@ -3428,7 +3446,7 @@ static void roxterm_reflect_profile_change(Options * profile, const char *key)
         }
         else if (!strcmp(key, "win_title"))
         {
-            multi_win_set_title_template(roxterm->win,
+            multi_win_set_title_template(win,
                     options_lookup_string_with_default(roxterm->profile,
                             "win_title", "%s"));
         }
@@ -3459,8 +3477,7 @@ static void roxterm_reflect_profile_change(Options * profile, const char *key)
         }
         if (apply_to_win)
         {
-            multi_win_foreach_tab(roxterm->win,
-                    match_text_size_foreach_tab, roxterm);
+            multi_win_foreach_tab(win, match_text_size_foreach_tab, roxterm);
         }
     }
 }
@@ -3832,7 +3849,7 @@ static void roxterm_set_profile_handler(ROXTermData *roxterm, const char *name)
     if (profile)
     {
         roxterm_change_profile(roxterm, profile);
-        multi_win_foreach_tab(roxterm->win,
+        multi_win_foreach_tab(roxterm_get_win(roxterm),
                 match_text_size_foreach_tab, roxterm);
         options_unref(profile);
     }
@@ -3870,7 +3887,7 @@ static void roxterm_set_shortcut_scheme_handler(ROXTermData *roxterm,
         return;
         
     Options *shortcuts = shortcuts_open(name);
-    multi_win_set_shortcut_scheme(roxterm->win, shortcuts, FALSE);
+    multi_win_set_shortcut_scheme(roxterm_get_win(roxterm), shortcuts, FALSE);
     shortcuts_unref(shortcuts);
 }
 
@@ -4134,7 +4151,6 @@ void roxterm_launch(const char *display_name, char **env)
             /* roxterm_data_clone needs to see a widget to get geometry
              * correct */
             roxterm->widget = partner->widget;
-            roxterm->win = partner->win;
             roxterm->tab = partner->tab;
             multi_tab_new(win, roxterm);
             gtk_window_present(GTK_WINDOW(multi_win_get_widget(win)));
@@ -4207,7 +4223,6 @@ static void roxterm_tab_to_new_window(MultiWin *win, MultiTab *tab,
     {
         g_signal_handler_disconnect(old_gwin, roxterm->win_state_changed_tag);
     }
-    roxterm->win = win;
     roxterm_attach_state_changed_handler(roxterm);
     if (!match_tab);
         return;
@@ -4366,6 +4381,7 @@ void roxterm_spawn(ROXTermData *roxterm, const char *command,
     GtkPositionType tab_pos;
     int num_tabs;
     char *cwd;
+    MultiWin *win = roxterm_get_win(roxterm);
 
     roxterm_get_initial_tabs(roxterm, &tab_pos, &num_tabs);
     switch (spawn_type)
@@ -4374,14 +4390,14 @@ void roxterm_spawn(ROXTermData *roxterm, const char *command,
             roxterm->special_command = g_strdup(command);
             roxterm->no_respawn = TRUE;
             multi_win_new(roxterm->display_name,
-                    multi_win_get_shortcut_scheme(roxterm->win),
+                    multi_win_get_shortcut_scheme(win),
                     roxterm->zoom_index, roxterm, num_tabs, tab_pos,
-                    multi_win_get_always_show_tabs(roxterm->win));
+                    multi_win_get_always_show_tabs(win));
             break;
         case ROXTerm_SpawnNewTab:
             roxterm->special_command = g_strdup(command);
             roxterm->no_respawn = TRUE;
-            multi_tab_new(roxterm->win, roxterm);
+            multi_tab_new(win, roxterm);
             break;
         default:
             cwd = roxterm_get_cwd(roxterm);
@@ -5067,7 +5083,7 @@ gboolean roxterm_load_session(const char *xml, gssize len,
 
 MultiWin *roxterm_get_multi_win(ROXTermData *roxterm)
 {
-    return roxterm->win;
+    return roxterm_get_win(roxterm);
 }
 
 VteTerminal *roxterm_get_vte(ROXTermData *roxterm)

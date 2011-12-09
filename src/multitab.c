@@ -241,6 +241,7 @@ MultiTab *multi_tab_new(MultiWin * parent, gpointer user_data_template)
     MultiTab *tab = g_new0(MultiTab, 1);
     int pos;
 
+    tab->parent = parent;
     tab->status_stock = NULL;
     tab->widget = multi_tab_filler(parent, tab, user_data_template,
         &tab->user_data, &tab->active_widget, &tab->adjustment);
