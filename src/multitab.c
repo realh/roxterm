@@ -1066,6 +1066,7 @@ static void page_added_callback(GtkNotebook *notebook, GtkWidget *child,
 {
     MultiTab *tab = multi_tab_get_from_widget(child);
     gboolean old_win_destroyed;
+    MultiWin *old_win = tab->parent;
 
     g_return_if_fail(tab);
     if (!win->ignore_tabs_moving)
@@ -1085,7 +1086,8 @@ static void page_added_callback(GtkNotebook *notebook, GtkWidget *child,
             g_warning("Page added had no previous parent");
         }
         multi_win_add_tab(win, tab, page_num, TRUE);
-        multi_tab_to_new_window_handler(win, tab, old_win_destroyed);
+        multi_tab_to_new_window_handler(win, tab,
+                old_win_destroyed ? NULL : old_win);
         if (win->tab_pos == GTK_POS_LEFT || win->tab_pos == GTK_POS_RIGHT)
         {
             multi_tab_pack_for_horizontal(tab, GTK_CONTAINER(notebook));
