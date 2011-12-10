@@ -493,8 +493,7 @@ elif ctx.mode == 'dist':
             "roxterm.1.xml.in roxterm-config.1.xml.in " \
             "roxterm.desktop roxterm.lsm.in roxterm.spec.in " \
             "roxterm.svg roxterm.xml TODO " \
-            "src/roxterm-config.glade src/roxterm-config.ui " \
-            "src/roxterm-config.ui.stamp")
+            "src/roxterm-config.glade src/roxterm-config.ui")
     ctx.add_dist(ctx.glob("*.[c|h]", os.curdir, "src"))
     ctx.add_dist(ctx.glob("*.[c|h]", os.curdir, "src"))
     # Debian files
