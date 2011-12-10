@@ -197,6 +197,12 @@ multitab_label_size_request (GtkWidget *widget, GtkRequisition *requisition)
 #endif /* GTK2/3 */
 
 #if MULTITAB_LABEL_USE_PARENT_SALLOC
+inline static void
+multitab_label_disconnect_parent_salloc (MultitabLabel *self, GtkWidget *parent)
+{
+    g_signal_handler_disconnect (parent, self->parent_salloc_tag);
+}
+
 static void
 multitab_label_dispose (GObject *gobject)
 {
@@ -204,7 +210,7 @@ multitab_label_dispose (GObject *gobject)
     
     if (self->parent)
     {
-        g_signal_handler_disconnect (self->parent, self->parent_salloc_tag);
+        multitab_label_disconnect_parent_salloc (self, self->parent);
         self->parent = NULL;
     }
     G_OBJECT_CLASS (multitab_label_parent_class)->dispose (gobject);
@@ -312,6 +318,15 @@ multitab_label_init(MultitabLabel *self)
     gtk_container_add (GTK_CONTAINER (self), label);
 }
 
+#if MULTITAB_LABEL_USE_PARENT_SALLOC
+inline static void
+multitab_label_connect_parent_salloc (MultitabLabel *self, GtkWidget *parent)
+{
+    self->parent_salloc_tag = g_signal_connect(parent, "size-allocate",
+            G_CALLBACK(multitab_label_parent_size_alloc_cb), self);
+}
+#endif
+
 GtkWidget *
 multitab_label_new (GtkWidget *parent, const char *text, int *best_width)
 {
@@ -320,8 +335,7 @@ multitab_label_new (GtkWidget *parent, const char *text, int *best_width)
     
     self->parent = parent;
 #if MULTITAB_LABEL_USE_PARENT_SALLOC
-    self->parent_salloc_tag = g_signal_connect(parent, "size-allocate",
-            G_CALLBACK(multitab_label_parent_size_alloc_cb), self);
+    multitab_label_connect_parent_salloc (self, parent);
 #endif
     if (text)
         multitab_label_set_text (self, text);
@@ -333,6 +347,11 @@ void
 multitab_label_set_parent (MultitabLabel *self,
         GtkWidget *parent, int *best_width)
 {
+#if MULTITAB_LABEL_USE_PARENT_SALLOC
+    if (self->parent)
+        multitab_label_disconnect_parent_salloc (self, self->parent);
+    multitab_label_connect_parent_salloc (self, parent);
+#endif
     self->parent = parent;
     self->best_width = best_width;
 }
