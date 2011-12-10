@@ -970,9 +970,7 @@ static void roxterm_data_delete(ROXTermData *roxterm)
     gwin = roxterm_get_toplevel(roxterm);
     if (gwin && roxterm->win_state_changed_tag)
     {
-        g_debug(">> roxterm_data_delete: win_state_changed");
         g_signal_handler_disconnect(gwin, roxterm->win_state_changed_tag);
-        g_debug("<< roxterm_data_delete: win_state_changed");
     }
     if (roxterm->post_exit_tag)
         g_source_remove(roxterm->post_exit_tag);

@@ -766,6 +766,14 @@ static void multi_tab_pack_for_horizontal(MultiTab *tab, GtkContainer *nb)
             HORIZ_TAB_WIDTH_CHARS);
 }
 
+static void multi_tab_pack_for_single(MultiTab *tab, GtkContainer *nb)
+{
+    gtk_container_child_set(nb, tab->widget,
+            "tab-expand", FALSE, "tab-fill", TRUE, NULL);
+    multitab_label_set_single(MULTITAB_LABEL(tab->label), TRUE);
+    multitab_label_set_fixed_width(MULTITAB_LABEL(tab->label), -1);
+}
+
 static void multi_win_pack_for_single_tab(MultiWin *win)
 {
     MultiTab *tab = win->tabs->data;
@@ -773,10 +781,7 @@ static void multi_win_pack_for_single_tab(MultiWin *win)
 #if !GTK_CHECK_VERSION(3, 0, 0)
     g_object_set(G_OBJECT(win->notebook), "homogeneous", FALSE, NULL);
 #endif
-    gtk_container_child_set(GTK_CONTAINER(win->notebook), tab->widget,
-            "tab-expand", FALSE, "tab-fill", TRUE, NULL);
-    multitab_label_set_single(MULTITAB_LABEL(tab->label), TRUE);
-    multitab_label_set_fixed_width(MULTITAB_LABEL(tab->label), -1);
+    multi_tab_pack_for_single(tab, GTK_CONTAINER(win->notebook));
 }
 
 static void multi_tab_pack_for_multiple(MultiTab *tab, GtkContainer *nb)
@@ -1097,6 +1102,7 @@ static void page_added_callback(GtkNotebook *notebook, GtkWidget *child,
             if (win->ntabs == 1)
             {
                 multi_win_pack_for_single_tab(win);
+                gtk_widget_queue_resize(win->notebook);
                 /* multi_tab_set_single_size(tab); */
                 multi_win_show(win);
             }
@@ -1119,6 +1125,8 @@ static GtkNotebook *multi_win_notebook_creation_hook(GtkNotebook *source,
     MultiWin *win;
 
     g_return_val_if_fail(tab, NULL);
+    /* Need to set !expand in advance */
+    multi_tab_pack_for_single(tab, GTK_CONTAINER(tab->parent->notebook));
     win = multi_win_new_for_tab(tab->parent->display_name, x, y, tab);
     /* Defer showing till page_added_callback because we can't set size
      * correctly until the tab has been added to the notebook */
@@ -2184,6 +2192,11 @@ static void multi_win_add_tab(MultiWin * win, MultiTab * tab, int position,
         gboolean notify_only)
 {
     tab->parent = win;
+    if (tab->label)
+    {
+        multitab_label_set_parent(MULTITAB_LABEL(tab->label),
+                tab->parent->notebook, &tab->parent->best_tab_width);
+    }
     win->ignore_tabs_moving = TRUE;
     if (position == -1)
         win->tabs = g_list_append(win->tabs, tab);

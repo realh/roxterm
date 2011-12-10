@@ -106,7 +106,9 @@ multitab_modify_width (MultitabLabel *self,
         gint *minimum_width, gint *natural_width)
 {
     if (self->fixed_width)
+    {
         return;
+    }
     /*
     if (self->single && natural_width)
     {
@@ -135,7 +137,9 @@ multitab_modify_width (MultitabLabel *self,
         }
 #endif
         if (natural_width && *natural_width < *minimum_width)
+        {
             *natural_width = *minimum_width;
+        }
     }
 }
 
@@ -321,10 +325,16 @@ multitab_label_new (GtkWidget *parent, const char *text, int *best_width)
 #endif
     if (text)
         multitab_label_set_text (self, text);
-#if MULTITAB_LABEL_GTK3_SIZE_KLUDGE
     self->best_width = best_width;
-#endif
     return GTK_WIDGET (self);
+}
+
+void
+multitab_label_set_parent (MultitabLabel *self,
+        GtkWidget *parent, int *best_width)
+{
+    self->parent = parent;
+    self->best_width = best_width;
 }
 
 void
