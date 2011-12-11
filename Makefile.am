@@ -61,16 +61,17 @@ defaultappsdir = $(DEFAULTAPPS_DIR)
 defaultapps_DATA = roxterm.xml
 endif
 
-EXTRA_DIST = config.rpath m4 roxterm.svg \
-	.DirIcon AppRun AppInfo.xml AppInfo.xml.in \
+EXTRA_DIST = bootstrap.sh configure.ac.in config.rpath m4 roxterm.svg \
+	.gitignore .DirIcon AppRun AppInfo.xml AppInfo.xml.in \
 	roxterm.desktop $(nobase_pkgdata_DATA) $(HTMLFILES) \
 	$(LOGO_TEXT_ONLY) $(LOGO_PNG) $(TEXT_LOGO) $(FAVICON) \
 	AUTHORS COPYING README $(HELPOTHER) $(HELPLIBFILES) \
 	update-locales roxterm.xml \
 	Help/AUTHORS Help/COPYING Help/Changes Help/README \
-	builddeb INSTALL.Debian \
-	debian/changelog		debian/dirs			\
-	debian/compat							\
+	ChangeLog.old maitch.py mscript.py version \
+	builddeb INSTALL.Debian INSTALL.ReadFirst \
+	debian/changelog		debian/changelog.in \
+	debian/compat			debian/dirs			\
 	debian/control			debian/copyright		\
 	debian/rules			debian/watch			\
 	debian/roxterm.xpm		debian/source/format		\

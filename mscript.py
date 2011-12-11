@@ -482,9 +482,9 @@ elif ctx.mode == 'distclean' or ctx.mode == 'clean':
 
 elif ctx.mode == 'dist':
     
-    ctx.add_dist("AUTHORS builddeb " \
+    ctx.add_dist("AUTHORS Help/AUTHORS " \
             "ChangeLog ChangeLog.old Config " \
-            "COPYING debian Help/en Help/lib/header.png " \
+            "COPYING Help/en Help/lib/header.png " \
             "Help/lib/logo_text_only.png " \
             "Help/lib/roxterm.css Help/lib/roxterm_ie.css "
             "Help/lib/sprites.png " \
@@ -494,7 +494,9 @@ elif ctx.mode == 'dist':
             "roxterm.desktop roxterm.lsm.in roxterm.spec.in " \
             "roxterm.svg roxterm.xml TODO " \
             "src/roxterm-config.glade src/roxterm-config.ui")
-    ctx.add_dist(ctx.glob("*.[c|h]", os.curdir, "src"))
+    for f in [LOGO_PNG, FAVICON, TEXT_LOGO]:
+        if os.path.exists(f):
+            ctx.add_dist(f)
     ctx.add_dist(ctx.glob("*.[c|h]", os.curdir, "src"))
     # Debian files
     ctx.add_dist("builddeb")
@@ -512,6 +514,8 @@ elif ctx.mode == 'dist':
     # ROX bits
     ctx.add_dist("AppInfo.xml.in AppRun .DirIcon " \
             "Help/Changes Help/COPYING Help/NEWS Help/README")
+    if os.path.exists("AppInfo.xml"):
+        ctx.add_dist("AppInfo.xml")
     # Translations
     ctx.add_dist("po/LINGUAS")
     files = ctx.glob("*.po", os.curdir, "po4a") + \
@@ -534,14 +538,17 @@ elif ctx.mode == 'dist':
     # Other stuff to be removed when we no longer support autotools
     files += "acinclude.m4 bootstrap.sh configure.ac.in " \
             "Makefile.am src/Makefile.am update-locales".split()
-    files += "m4 acinclude.m4 aclocal.m4 " \
-                "bootstrap.sh compile config.guess config.h.in " \
-                "config.sub config.rpath configure configure.ac " \
+    files += "m4 aclocal.m4 " \
+                "compile config.h.in " \
+                "config.rpath configure configure.ac " \
                 "depcomp install-sh intl ltmain.sh " \
                 "Makefile.in src/Makefile.in missing".split()
     for f in files:
         if os.path.exists(f):
             ctx.add_dist(f)
+    for f in ["config.sub", "config.guess"]:
+        if os.path.exists(f):
+            ctx.add_dist(os.path.realpath(f), arcname = f)
             
 
 ctx.run()
