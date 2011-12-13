@@ -1139,6 +1139,7 @@ MultiWin *multi_win_new_for_tab(const char *display_name, int x, int y,
     int w, h;
     GtkWindow *gwin = GTK_WINDOW(win->gtkwin);
     const char *title_template = win->title_template;
+    gboolean show_menubar = win->show_menu_bar;
 
     gtk_window_get_size(gwin, &w, &h);
     multi_win_get_disable_menu_shortcuts(tab->user_data,
@@ -1147,6 +1148,7 @@ MultiWin *multi_win_new_for_tab(const char *display_name, int x, int y,
                 multi_win_get_shortcut_scheme(win), win->zoom_index,
                 disable_menu_shortcuts, disable_tab_shortcuts,
                 win->tab_pos, win->always_show_tabs);
+    multi_win_set_show_menu_bar(win, show_menubar);
     multi_win_set_geometry_hints_for_tab(win, tab);
     multi_win_set_title_template(win, title_template);
     gwin = GTK_WINDOW(win->gtkwin);
