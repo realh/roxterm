@@ -2214,7 +2214,7 @@ static void multi_win_add_tab(MultiWin * win, MultiTab * tab, int position,
     {
         multi_win_add_tab_to_notebook(win, tab, position);
         gtk_widget_show(tab->widget);
-        if (win->ntabs > 1)
+        if (win->ntabs > 1 && gtk_widget_get_visible(win->gtkwin))
             gtk_window_present(GTK_WINDOW(win->gtkwin));
     }
     multi_win_shade_menus_for_tabs(win);
