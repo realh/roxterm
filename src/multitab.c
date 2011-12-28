@@ -92,7 +92,6 @@ struct MultiWin {
     int zoom_index;
     gboolean fullscreen;
     char *title_template;
-    char *default_title_template;
     char *child_title;
 #if HAVE_COMPOSITE
     gboolean composite;
@@ -731,10 +730,8 @@ void multi_tab_move_to_new_window(MultiWin *win, MultiTab *tab, int position)
         gtk_window_maximize(GTK_WINDOW(win->gtkwin));
     if (!win->tabs)
     {
-        win->default_title_template = old_win->default_title_template ?
-                g_strdup(old_win->default_title_template) : NULL;
-        win->title_template = old_win->default_title_template ?
-                g_strdup(old_win->default_title_template) : NULL;
+        win->title_template = old_win->title_template ?
+                g_strdup(old_win->title_template) : NULL;
     }
     old_win_destroyed = old_win && old_win->ntabs <= 1;
     multi_tab_remove_from_parent(tab, FALSE);
@@ -1141,6 +1138,8 @@ MultiWin *multi_win_new_for_tab(const char *display_name, int x, int y,
     MultiWin *win = tab->parent;
     int w, h;
     GtkWindow *gwin = GTK_WINDOW(win->gtkwin);
+    const char *title_template = win->title_template;
+    gboolean show_menubar = win->show_menu_bar;
 
     gtk_window_get_size(gwin, &w, &h);
     multi_win_get_disable_menu_shortcuts(tab->user_data,
@@ -1149,7 +1148,9 @@ MultiWin *multi_win_new_for_tab(const char *display_name, int x, int y,
                 multi_win_get_shortcut_scheme(win), win->zoom_index,
                 disable_menu_shortcuts, disable_tab_shortcuts,
                 win->tab_pos, win->always_show_tabs);
+    multi_win_set_show_menu_bar(win, show_menubar);
     multi_win_set_geometry_hints_for_tab(win, tab);
+    multi_win_set_title_template(win, title_template);
     gwin = GTK_WINDOW(win->gtkwin);
     gtk_window_set_default_size(gwin, w, h);
     if (x != -1 && y != -1)
@@ -1996,7 +1997,6 @@ static void multi_win_destructor(MultiWin *win, gboolean destroy_widgets)
     UNREF_LOG(options_unref(win->shortcuts));
     g_free(win->display_name);
     g_free(win->title_template);
-    g_free(win->default_title_template);
     g_free(win->child_title);
     g_free(win);
     multi_win_all = g_list_remove(multi_win_all, win);
