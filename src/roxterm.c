@@ -4140,6 +4140,8 @@ void roxterm_launch(const char *display_name, char **env)
         partner = win ? multi_win_get_user_data_for_current_tab(win) : NULL;
         if (partner)
         {
+            GtkWidget *gwin = multi_win_get_widget(win);
+            
             roxterm->dont_lookup_dimensions = TRUE;
             roxterm->target_zoom_factor = partner->target_zoom_factor;
             roxterm->zoom_index = partner->zoom_index;
@@ -4158,7 +4160,8 @@ void roxterm_launch(const char *display_name, char **env)
             roxterm->widget = partner->widget;
             roxterm->tab = partner->tab;
             multi_tab_new(win, roxterm);
-            gtk_window_present(GTK_WINDOW(multi_win_get_widget(win)));
+            if (gtk_widget_get_visible(gwin))
+                gtk_window_present(GTK_WINDOW());
         }
         else
         {
