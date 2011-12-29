@@ -4017,6 +4017,26 @@
                                     <property name="position">1</property>
                                   </packing>
                                 </child>
+                                <child>
+                                  <object class="GtkCheckButton" id="show_tab_num">
+                                    <property name="label" translatable="yes">S_how number</property>
+                                    <property name="use_action_appearance">False</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="receives_default">False</property>
+                                    <property name="tooltip_text" translatable="yes">This option causes the tab number to be shown at the start of the title.</property>
+                                    <property name="use_action_appearance">False</property>
+                                    <property name="use_underline">True</property>
+                                    <property name="xalign">0</property>
+                                    <property name="draw_indicator">True</property>
+                                    <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">False</property>
+                                    <property name="position">2</property>
+                                  </packing>
+                                </child>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -4053,12 +4073,14 @@
                                         <property name="can_focus">False</property>
                                         <child>
                                           <object class="GtkRadioButton" id="middle_click_tab0">
-                                            <property name="label" translatable="yes">Do nothing</property>
+                                            <property name="label" translatable="yes">Do n_othing</property>
                                             <property name="use_action_appearance">False</property>
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
                                             <property name="receives_default">False</property>
+                                            <property name="tooltip_markup" translatable="yes">Nothing happens if the tab label is middle-clicked.</property>
                                             <property name="use_action_appearance">False</property>
+                                            <property name="use_underline">True</property>
                                             <property name="xalign">0</property>
                                             <property name="active">True</property>
                                             <property name="draw_indicator">True</property>
@@ -4084,12 +4106,14 @@
                                         <property name="can_focus">False</property>
                                         <child>
                                           <object class="GtkRadioButton" id="middle_click_tab1">
-                                            <property name="label" translatable="yes">Close tab</property>
+                                            <property name="label" translatable="yes">C_lose tab</property>
                                             <property name="use_action_appearance">False</property>
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
                                             <property name="receives_default">False</property>
+                                            <property name="tooltip_markup" translatable="yes">If the tab label is middle-clicked the tab is closed.</property>
                                             <property name="use_action_appearance">False</property>
+                                            <property name="use_underline">True</property>
                                             <property name="xalign">0</property>
                                             <property name="draw_indicator">True</property>
                                             <property name="group">middle_click_tab0</property>
@@ -4115,12 +4139,14 @@
                                         <property name="can_focus">False</property>
                                         <child>
                                           <object class="GtkRadioButton" id="middle_click_tab2">
-                                            <property name="label" translatable="yes">Paste tab name</property>
+                                            <property name="label" translatable="yes">_Paste tab name</property>
                                             <property name="use_action_appearance">False</property>
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
                                             <property name="receives_default">False</property>
+                                            <property name="tooltip_markup" translatable="yes">If the tab label is middle-clicked the tab's name is pasted from the clipboard.</property>
                                             <property name="use_action_appearance">False</property>
+                                            <property name="use_underline">True</property>
                                             <property name="xalign">0</property>
                                             <property name="draw_indicator">True</property>
                                             <property name="group">middle_click_tab0</property>

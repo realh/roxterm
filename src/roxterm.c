@@ -2976,6 +2976,13 @@ static void roxterm_apply_show_tab_status(ROXTermData *roxterm)
     }
 }
 
+static void roxterm_apply_show_tab_number(ROXTermData *roxterm)
+{
+    multi_tab_set_show_number(roxterm->tab,
+            options_lookup_int_with_default(roxterm->profile,
+                    "show_tab_num", TRUE));
+}
+
 static void roxterm_apply_match_files(ROXTermData *roxterm, VteTerminal *vte)
 {
     if (options_lookup_int_with_default(roxterm->profile,
@@ -3043,6 +3050,7 @@ static void roxterm_apply_profile(ROXTermData *roxterm, VteTerminal *vte,
     roxterm_apply_disable_menu_access(roxterm);
     
     roxterm_apply_title_template(roxterm);
+    roxterm_apply_show_tab_number(roxterm);
     roxterm_apply_show_tab_status(roxterm);
     roxterm_apply_match_files(roxterm, vte);
 #if GTK_CHECK_VERSION(3, 0, 0)
@@ -3461,6 +3469,10 @@ static void roxterm_reflect_profile_change(Options * profile, const char *key)
                 multi_tab_add_close_button(roxterm->tab);
             else
                 multi_tab_remove_close_button(roxterm->tab);
+        }
+        else if (!strcmp(key, "show_tab_num"))
+        {
+            roxterm_apply_show_tab_number(roxterm);
         }
         else if (!strcmp(key, "show_tab_status"))
         {

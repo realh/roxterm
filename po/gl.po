@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: roxterm\n"
 "Report-Msgid-Bugs-To: http://sourceforge.net/tracker/?group_id=124080\n"
-"POT-Creation-Date: 2011-12-29 15:38+0000\n"
+"POT-Creation-Date: 2011-12-29 18:45+0000\n"
 "PO-Revision-Date: 2011-12-13 22:49+0000\n"
 "Last-Translator: Tony Houghton <h@realh.co.uk>\n"
 "Language-Team: Galician (http://www.transifex.net/projects/p/roxterm/team/"
@@ -789,186 +789,209 @@ msgid ""
 "single %."
 msgstr ""
 
-#: ../src/roxterm-config.glade:4041
+#: ../src/roxterm-config.glade:4022
+msgid "S_how number"
+msgstr ""
+
+#: ../src/roxterm-config.glade:4027
+msgid ""
+"This option causes the tab number to be shown at the start of the title."
+msgstr ""
+
+#: ../src/roxterm-config.glade:4061
 msgid "<b>Middle click on label action</b>"
 msgstr ""
 
-#: ../src/roxterm-config.glade:4056
-msgid "Do nothing"
+#: ../src/roxterm-config.glade:4076
+msgid "Do n_othing"
 msgstr ""
 
-#: ../src/roxterm-config.glade:4087
-msgid "Close tab"
+#: ../src/roxterm-config.glade:4081
+msgid "Nothing happens if the tab label is middle-clicked."
 msgstr ""
 
-#: ../src/roxterm-config.glade:4118
-msgid "Paste tab name"
+#: ../src/roxterm-config.glade:4109
+msgid "C_lose tab"
 msgstr ""
 
-#: ../src/roxterm-config.glade:4156
+#: ../src/roxterm-config.glade:4114
+msgid "If the tab label is middle-clicked the tab is closed."
+msgstr ""
+
+#: ../src/roxterm-config.glade:4142
+msgid "_Paste tab name"
+msgstr ""
+
+#: ../src/roxterm-config.glade:4147
+msgid ""
+"If the tab label is middle-clicked the tab's name is pasted from the "
+"clipboard."
+msgstr ""
+
+#: ../src/roxterm-config.glade:4182
 msgid "_Wrap when switching tabs"
 msgstr ""
 
-#: ../src/roxterm-config.glade:4163 ../src/roxterm-config.glade:4164
+#: ../src/roxterm-config.glade:4189 ../src/roxterm-config.glade:4190
 msgid ""
 "This option makes the Next and Previous Tab operations respectively wrap "
 "around from the first and last tab to the opposite end of the row; the move "
 "tab left/right/up/down menu items are affected similarly."
 msgstr ""
 
-#: ../src/roxterm-config.glade:4179
+#: ../src/roxterm-config.glade:4205
 msgid "Show _Close buttons on tabs"
 msgstr ""
 
-#: ../src/roxterm-config.glade:4186 ../src/roxterm-config.glade:4187
+#: ../src/roxterm-config.glade:4212 ../src/roxterm-config.glade:4213
 msgid "If this option is enabled close buttons are shown at the top of tabs."
 msgstr ""
 
-#: ../src/roxterm-config.glade:4203
+#: ../src/roxterm-config.glade:4229
 msgid "Show terminal _status in close buttons"
 msgstr ""
 
-#: ../src/roxterm-config.glade:4210 ../src/roxterm-config.glade:4211
+#: ../src/roxterm-config.glade:4236 ../src/roxterm-config.glade:4237
 msgid ""
 "If this option is enabled the icons in close buttons may be changed in "
 "inactive tabs to reflect the status of their terminals."
 msgstr ""
 
-#: ../src/roxterm-config.glade:4226
+#: ../src/roxterm-config.glade:4252
 msgid "Open new tabs _adjacent to current tab"
 msgstr ""
 
-#: ../src/roxterm-config.glade:4232 ../src/roxterm-config.glade:4233
+#: ../src/roxterm-config.glade:4258 ../src/roxterm-config.glade:4259
 msgid ""
 "Whether to open new tabs adjacent to the current tab in a window, otherwise "
 "append them."
 msgstr ""
 
-#: ../src/roxterm-config.glade:4286
+#: ../src/roxterm-config.glade:4312
 msgid ""
 "The following tab options do not apply to windows that are already open; "
 "they only apply to windows opened subsequently."
 msgstr ""
 
-#: ../src/roxterm-config.glade:4312
+#: ../src/roxterm-config.glade:4338
 msgid "Initial _number of tabs:"
 msgstr ""
 
-#: ../src/roxterm-config.glade:4348
+#: ../src/roxterm-config.glade:4374
 msgid "Tab _position:"
 msgstr ""
 
-#: ../src/roxterm-config.glade:4388
+#: ../src/roxterm-config.glade:4414
 msgid "<b>Tabs</b>"
 msgstr ""
 
-#: ../src/roxterm-config.glade:4402
+#: ../src/roxterm-config.glade:4428
 msgid "Tabs"
 msgstr ""
 
-#: ../src/roxterm-config.glade:4433
+#: ../src/roxterm-config.glade:4459
 msgid "ROXTerm Colour Scheme"
 msgstr ""
 
-#: ../src/roxterm-config.glade:4452
+#: ../src/roxterm-config.glade:4478
 msgid "_Revert"
 msgstr ""
 
-#: ../src/roxterm-config.glade:4476
+#: ../src/roxterm-config.glade:4502
 msgid "Close this window"
 msgstr ""
 
-#: ../src/roxterm-config.glade:4502
+#: ../src/roxterm-config.glade:4528
 msgid "_Set text and background colours"
 msgstr ""
 
-#: ../src/roxterm-config.glade:4508
+#: ../src/roxterm-config.glade:4534
 msgid ""
 "Whether to set terminals' text and background colours using the fields below"
 msgstr ""
 
-#: ../src/roxterm-config.glade:4529
+#: ../src/roxterm-config.glade:4555
 msgid "_Text colour"
 msgstr ""
 
-#: ../src/roxterm-config.glade:4546
+#: ../src/roxterm-config.glade:4572
 msgid "Foreground colour of text; click to change"
 msgstr ""
 
-#: ../src/roxterm-config.glade:4561
+#: ../src/roxterm-config.glade:4587
 msgid "_Background colour"
 msgstr ""
 
-#: ../src/roxterm-config.glade:4578
+#: ../src/roxterm-config.glade:4604
 msgid "Background colour of terminals; click to change"
 msgstr ""
 
-#: ../src/roxterm-config.glade:4598
+#: ../src/roxterm-config.glade:4624
 msgid "Use custom _palette"
 msgstr ""
 
-#: ../src/roxterm-config.glade:4604
+#: ../src/roxterm-config.glade:4630
 msgid "Whether to set the terminal's colours from the table below"
 msgstr ""
 
-#: ../src/roxterm-config.glade:4618
+#: ../src/roxterm-config.glade:4644
 msgid "_Get text and background colours from palette"
 msgstr ""
 
-#: ../src/roxterm-config.glade:4624
+#: ../src/roxterm-config.glade:4650
 msgid ""
 "Whether to use the palette table below to set the background and text "
 "foreground colours"
 msgstr ""
 
-#: ../src/roxterm-config.glade:5099
+#: ../src/roxterm-config.glade:5125
 msgid "Set 16 palette entries from both rows"
 msgstr ""
 
-#: ../src/roxterm-config.glade:5120
+#: ../src/roxterm-config.glade:5146
 msgid "Set just the first 8 palette entries from this row"
 msgstr ""
 
-#: ../src/roxterm-config.glade:5146
+#: ../src/roxterm-config.glade:5172
 msgid "Set _cursor colour"
 msgstr ""
 
-#: ../src/roxterm-config.glade:5152
+#: ../src/roxterm-config.glade:5178
 msgid "Set the cursor colour from the adjacent field"
 msgstr ""
 
-#: ../src/roxterm-config.glade:5171
+#: ../src/roxterm-config.glade:5197
 msgid "Click to change the cursor colour"
 msgstr ""
 
-#: ../src/roxterm-config.glade:5290
+#: ../src/roxterm-config.glade:5316
 msgid "_Address"
 msgstr ""
 
-#: ../src/roxterm-config.glade:5303
+#: ../src/roxterm-config.glade:5329
 msgid "Ssh server address."
 msgstr ""
 
-#: ../src/roxterm-config.glade:5320
+#: ../src/roxterm-config.glade:5346
 msgid "_User"
 msgstr ""
 
-#: ../src/roxterm-config.glade:5334
+#: ../src/roxterm-config.glade:5360
 msgid "Remote username."
 msgstr ""
 
-#: ../src/roxterm-config.glade:5351
+#: ../src/roxterm-config.glade:5377
 msgid "Ssh server port."
 msgstr ""
 
-#: ../src/roxterm-config.glade:5371
+#: ../src/roxterm-config.glade:5397
 msgid "_Port"
 msgstr ""
 
-#: ../src/roxterm-config.glade:5385
+#: ../src/roxterm-config.glade:5411
 msgid "Miscellaneous options to add to the ssh command line."
 msgstr ""
 
-#: ../src/roxterm-config.glade:5403
+#: ../src/roxterm-config.glade:5429
 msgid "_Other options"
 msgstr ""

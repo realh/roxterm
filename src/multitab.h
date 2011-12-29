@@ -134,12 +134,15 @@ const char *multi_tab_get_display_name(MultiTab *tab);
 
 void multi_tab_set_icon_title(MultiTab *, const char *);
 
-/* Sets the title which is used to build the actaul title from title_template.
+/* Sets the title which is used to build the actual title from title_template.
  */
 void multi_tab_set_window_title(MultiTab *, const char *);
 
 /* See multi_win_set-title */
 void multi_tab_set_window_title_template(MultiTab *, const char *);
+
+/* Whether to show number in tab title */
+void multi_tab_set_show_number(MultiTab *tab, gboolean show);
 
 const char *multi_tab_get_window_title_template(MultiTab *);
 
