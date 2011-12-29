@@ -4161,7 +4161,7 @@ void roxterm_launch(const char *display_name, char **env)
             roxterm->tab = partner->tab;
             multi_tab_new(win, roxterm);
             if (gtk_widget_get_visible(gwin))
-                gtk_window_present(GTK_WINDOW());
+                gtk_window_present(GTK_WINDOW(gwin));
         }
         else
         {

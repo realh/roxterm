@@ -22,6 +22,7 @@ import atexit
 import fnmatch
 import os
 import re
+import shutil
 import subprocess
 import sys
 import threading
@@ -1177,6 +1178,14 @@ class Rule(object):
         where: Where to look for sources: SRC, TOP or both (default SRC).
         lock: Some jobs can't be run simultaneously so you can pass in a Lock
                 object to prevent that.
+        diffpat: If this is given (a list or string) it invokes special
+                behaviour. For each target T, if T already exists it's backed
+                up to T.old before running the rule. Then T is compared
+                line-by-line with T.old. Lines containing a match for a regex
+                in diffpat are considered equal. If the files are equal T is
+                replaced by T.old and touched.
+                This is to prevent VCS conflicts when a build changes a
+                POT-Creation-Date but not the content.
         """
         if not 'where' in kwargs:
             kwargs['where'] = SRC
@@ -1210,6 +1219,13 @@ class Rule(object):
         self.cached_deps = []
         self.where = kwargs['where']
         self.lock = kwargs.get('lock')
+        diffpat = kwargs.get('diffpat')
+        if isinstance(diffpat, basestring):
+            diffpat = [diffpat]
+        if diffpat:
+            self.diffpat = [re.compile(d) for d in diffpat]
+        else:
+            self.diffpat = None
     
     
     @staticmethod
@@ -1291,6 +1307,10 @@ class Rule(object):
         env, targets, sources = self.process_env_tgt_src()        
         if self.lock:
             self.lock.acquire()
+        if self.diffpat:
+            for t in self.targets:
+                if os.path.exists(t):
+                    shutil.copy(t, t + '.old')
         try:
             for rule in self.rules:
                 if callable(rule):
@@ -1314,6 +1334,33 @@ class Rule(object):
                         dprint("%s executed successfully" % r)
         except:
             raise
+        else:
+            if self.diffpat:
+                for t in self.targets:
+                    same = False
+                    s = t + '.old'
+                    if os.path.exists(t) and os.path.exists(s):
+                        f = open(s, 'r')
+                        u = f.readlines()
+                        f.close()
+                        f = open(t, 'r')
+                        v = f.readlines()
+                        f.close()
+                        if len(u) == len(v):
+                            same = True
+                            for n in range(len(u)):
+                                if u[n] != v[n]:
+                                    same = False
+                                    for p in self.diffpat:
+                                        if p.search(u[n]) and p.search(v[n]):
+                                            same = True
+                                            break
+                                    if not same:
+                                        break
+                        if same:
+                            os.rename(s, t)
+                        else:
+                            os.unlink(s)
         finally:
             if self.lock:
                 self.lock.release()
@@ -1620,6 +1667,7 @@ class StaticLibRule(LibtoolProgramRule):
         LibtoolProgramRule.__init__(self, **kwargs)
 
 
+
 def mkdir_rule(ctx, env, targets, sources):
     """ A rule function to ensure targets' directories exist. """
     for t in targets:
@@ -1642,6 +1690,8 @@ def PotRules(ctx, **kwargs):
     version
     bugs_addr
     opts_prefix: Goes on front of _XGETTEXT_OPTS added to env.
+    
+    '^"POT-Creation-Date:' is added to a new or existing diffpat.
     """
     def generate_potfiles(ctx, env, targets, sources):
         potfiles = []
@@ -1713,6 +1763,15 @@ def PotRules(ctx, **kwargs):
                 xgto[n] = "'%s'" % s
             kwargs['use_shell'] = True
     ctx.setenv(varname, ' '.join(xgto))
+    diffpat = kwargs.get('diffpat')
+    if not diffpat:
+        diffpat = []
+        kwargs['diffpat'] = diffpat
+    elif isinstance(diffpat, basestring):
+        diffpat = [diffpat]
+        kwargs['diffpat'] = diffpat
+    if not '^"POT-Creation-Date:' in diffpat:
+        diffpat.append('^"POT-Creation-Date:')
     rule2 = Rule(**kwargs)
     
     return [rule1, rule2]
@@ -1727,6 +1786,15 @@ class PoRule(Rule):
             kwargs['sources'] = "${TOP_DIR}/po/${PACKAGE}.pot"
         if not 'rule' in kwargs:
             kwargs['rule'] = "${MSGMERGE} -q -U ${TGT} ${SRC}"
+        diffpat = kwargs.get('diffpat')
+        if not diffpat:
+            diffpat = []
+            kwargs['diffpat'] = diffpat
+        elif isinstance(diffpat, basestring):
+            diffpat = [diffpat]
+            kwargs['diffpat'] = diffpat
+        if not '^"POT-Creation-Date:' in diffpat:
+            diffpat.append('^"POT-Creation-Date:')
         Rule.__init__(self, *args, **kwargs)
 
 

@@ -346,6 +346,7 @@ elif ctx.mode == 'build':
                 copyright_holder = "(c) 2011 Tony Houghton",
                 version = "${VERSION}",
                 bugs_addr = "${BUG_TRACKER}",
+                diffpat = '^"Project-Id-Version:',
                 use_shell = True)
         for r in trans_rules:
             ctx.add_rule(r)
@@ -364,6 +365,8 @@ elif ctx.mode == 'build':
                         sources = "${TOP_DIR}/%s.1.xml.in" % m,
                         targets = "${PO4ADIR}/%s.1.pot" % m,
                         where = NOWHERE,
+                        diffpat = ['^"Project-Id-Version:',
+                                '^"POT-Creation-Date:'],
                         use_shell = True))
                 for l in linguas:
                     ctx.add_rule(Rule(rule = ["${PO4A_UPDATEPO} ${PO4AOPTS} " \
@@ -372,6 +375,7 @@ elif ctx.mode == 'build':
                             sources = ["${TOP_DIR}/%s.1.xml.in" % m,
                                     "${PO4ADIR}/%s.1.pot" % m],
                             targets = "${PO4ADIR}/%s.1.%s.po" % (m, l),
+                            diffpat = '^"POT-Creation-Date:',
                             where = NOWHERE,
                             use_shell = True))
                     ctx.add_rule(Rule(rule = "${PO4A_TRANSLATE} "
