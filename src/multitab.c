@@ -693,23 +693,18 @@ static void multi_tab_remove_menutree_items(MultiWin * win, MultiTab * tab)
     }
 }
 
-static void renumber_tabs(MultiWin *win, int position)
+static void renumber_tabs(MultiWin *win)
 {
-    if (position != -1 && position != win->ntabs - 1)
+    GList *link;
+    int n = 0;
+    
+    for (link = win->tabs; link; link = g_list_next(link))
     {
-        int n;
-        GList *link = win->tabs;
+        MultiTab *tab = link->data;
         
-        for (n = 0; n < position; ++n)
-            link = g_list_next(link);
-        while (link)
-        {
-            MultiTab *tab = link->data;
-            
-            multi_tab_set_full_window_title(tab, tab->window_title_template,
-                    tab->window_title);
-            link = g_list_next(link);
-        }
+        multi_tab_set_full_window_title(tab, tab->window_title_template,
+                tab->window_title);
+        ++n;
     }
 }
 
@@ -724,7 +719,7 @@ void multi_tab_move_to_position(MultiTab *tab, int position, gboolean reorder)
     }
     win->tabs = g_list_remove(win->tabs, tab);
     win->tabs = g_list_insert(win->tabs, tab, position);
-    renumber_tabs(win, position);
+    renumber_tabs(win);
     multi_win_shade_menus_for_tabs(win);
     multi_tab_remove_menutree_items(win, tab);
     multi_tab_add_menutree_items(win, tab, position);
@@ -2074,6 +2069,7 @@ static gboolean multi_win_notify_tab_removed(MultiWin * win, MultiTab * tab)
     }
     else
     {
+        renumber_tabs(win);
         if (win->ntabs == 1)
         {
             tab = win->tabs->data;
@@ -2262,7 +2258,7 @@ static void multi_win_add_tab(MultiWin * win, MultiTab * tab, int position,
         if (win->ntabs > 1 && gtk_widget_get_visible(win->gtkwin))
             gtk_window_present(GTK_WINDOW(win->gtkwin));
     }
-    renumber_tabs(win, position);
+    renumber_tabs(win);
     multi_win_shade_menus_for_tabs(win);
     multi_win_select_tab(win, tab);
     win->ignore_tabs_moving = FALSE;
