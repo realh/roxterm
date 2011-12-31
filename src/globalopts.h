@@ -51,6 +51,9 @@ extern gboolean global_options_maximise;
 /* Whether to try to open new terminal in an existing window */
 extern gboolean global_options_tab;
 
+/* Fork first instance */
+extern gboolean global_options_fork;
+
 /* For session management */
 extern gboolean global_options_disable_sm;
 extern char *global_options_restart_session_id;

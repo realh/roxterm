@@ -88,6 +88,7 @@ and docbook-xsl in your Build-Depends control field.
         | <option>-s <replaceable>SCHEME</replaceable></option></arg>
       <arg><option>--separate</option></arg>
       <arg><option>--replace</option></arg>
+      <arg><option>--fork</option></arg>
       <arg><option>--directory=<replaceable>DIR</replaceable></option> |
         <option>-d <replaceable>DIR</replaceable></option></arg>
       <arg><option>--show-menubar</option></arg>
@@ -269,6 +270,18 @@ and docbook-xsl in your Build-Depends control field.
         </term>
         <listitem>
           <para>Use a separate process for this terminal.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--fork</option>
+        </term>
+        <listitem>
+          <para>Always fork into the background. Usually the first instance
+          stays in the foreground and subsequent invocations return once they
+          have asked the master instance to handle their command. This option
+          causes the master instance to fork itself into the background; the
+          foreground process returns once the master is ready to handle further
+          commands.</para>
         </listitem>
       </varlistentry>
       <varlistentry>
