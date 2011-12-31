@@ -103,7 +103,7 @@ inline static void global_options_reset_string(const char *key)
     options_set_string(global_options, key, NULL);
 }
 
-/* Checks CLI args for --appdir without altering argv */
+/* Checks CLI args for --appdir and --fork without altering argv */
 void global_options_init_appdir(int argc, char **argv);
 
 /* Detects bindir from argv[0] */

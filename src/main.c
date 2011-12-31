@@ -204,13 +204,16 @@ static int wait_for_child(int pipe_r)
 /* Only single-byte exit codes are supported */
 static int roxterm_exit(int pipe_w, char exit_code)
 {
-    if (write(pipe_w, &exit_code, 1) != 1)
+    if (global_options_fork)
     {
-        g_error(_("Child failed to signal parent for --fork: %s"),
-                strerror(errno));
-        exit_code = 1;
+        if (write(pipe_w, &exit_code, 1) != 1)
+        {
+            g_error(_("Child failed to signal parent for --fork: %s"),
+                    strerror(errno));
+            exit_code = 1;
+        }
+        close(pipe_w);
     }
-    close(pipe_w);
     return exit_code;
 }
 
@@ -230,10 +233,34 @@ int main(int argc, char **argv)
     gboolean launched = FALSE;
     gboolean dbus_ok;
     pid_t fork_result = 0;
-    static int fork_pipe[2];
+    static int fork_pipe[2] = { -1, -1};
 
     global_options_init_appdir(argc, argv);
     global_options_init_bindir(argv[0]);
+    if (global_options_fork)
+    {
+        if (pipe(fork_pipe))
+        {
+            g_error(_("Unable to open pipe to implement --fork: %s"),
+                    strerror(errno));
+        }
+        if ((fork_result = fork()) > 0)
+        {
+            /* parent doesn't write */
+            close(fork_pipe[1]);
+            return wait_for_child(fork_pipe[0]);
+        }
+        else if (!fork_result)
+        {
+            /* child doesn't read */
+            close(fork_pipe[0]);
+        }
+        else
+        {
+            g_error(_("Unable to fork to implement --fork: %s"),
+                    strerror(errno));
+        }
+    }
 #if ENABLE_SM
     if (!global_options_disable_sm)
     {
@@ -318,30 +345,6 @@ int main(int argc, char **argv)
     g_free(display);
     
     global_options_init(&argc, &argv, TRUE);
-    if (global_options_fork)
-    {
-        if (pipe(fork_pipe))
-        {
-            g_error(_("Unable to open pipe to implement --fork: %s"),
-                    strerror(errno));
-        }
-        if ((fork_result = fork()) > 0)
-        {
-            /* parent doesn't write */
-            close(fork_pipe[1]);
-            return wait_for_child(fork_pipe[0]);
-        }
-        else if (!fork_result)
-        {
-            /* child doesn't read */
-            close(fork_pipe[0]);
-        }
-        else
-        {
-            g_error(_("Unable to fork to implement --fork: %s"),
-                    strerror(errno));
-        }
-    }
 
     if (dbus_ok)
     {

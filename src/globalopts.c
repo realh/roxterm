@@ -327,7 +327,10 @@ void global_options_init_appdir(int argc, char **argv)
         if (g_str_has_prefix(argv[n], "--appdir=") && strlen(argv[n]) > 9)
         {
             global_options_appdir = g_strdup(argv[n] + 9);
-            break;
+        }
+        else if (!strcmp(argv[n], "--fork"))
+        {
+            global_options_fork = TRUE;
         }
     }
 }
