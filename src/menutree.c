@@ -956,8 +956,19 @@ void menutree_set_show_item(MenuTree * tree, MenuTreeID id, gboolean show)
 
 void menutree_attach_im_submenu(MenuTree *tree, GtkWidget *submenu)
 {
-    gtk_menu_item_set_submenu(GTK_MENU_ITEM(tree->item_widgets
-            [MENUTREE_PREFERENCES_INPUT_METHODS]), submenu);
+    GtkMenuItem *item = GTK_MENU_ITEM(tree->item_widgets
+            [MENUTREE_PREFERENCES_INPUT_METHODS]);
+    GtkWidget *oldsub = gtk_menu_item_get_submenu(item);
+    GtkMenu *smm = GTK_MENU(submenu);
+    
+    if (oldsub == submenu)
+        return;
+    if (oldsub)
+        gtk_menu_item_set_submenu(item, NULL);
+    if (gtk_menu_get_attach_widget(smm))
+        gtk_menu_detach(smm);
+    if (oldsub != submenu)
+        gtk_menu_item_set_submenu(item, submenu);
 }
 
 void menutree_disable_shortcuts(MenuTree *tree, gboolean disable)

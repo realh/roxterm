@@ -1,20 +1,34 @@
 #!/bin/sh
 
 if [ -n "$1" ] ; then
-	if echo $1 | grep -qv roxterm ; then
-		f=roxterm-${1}.tar.gz
-	else
-	    f="$1"
-	fi
+    s=bz2
+    f=build/roxterm-${1}.tar.bz2
+    if [ ! -f "$f" ] ; then
+        f=roxterm-${1}.tar.gz
+        s=gz
+        if [ ! -f "$f" ] ; then
+            echo >&2 "Can't find a tarball for $1"
+            exit 1
+        fi
+    fi
 else
-	f=roxterm-*.tar.gz
+	f=build/roxterm-*.tar.bz2
+	s=bz2
 	if echo $f | egrep -q ' |\*' ; then
-		echo >&2 "Can't work out what version you want to upload"
-		exit 1
-	fi
+        f=roxterm-*.tar.gz
+        if echo $f | egrep -q ' |\*' ; then
+            echo >&2 "Can't work out what version you want to upload"
+            exit 1
+        fi
+        s=gz
+    fi
 fi
 
-d=`echo $f | sed 's/roxterm-//;s/.tar.gz//'`
+if [ $s = "bz2" ] ; then
+    d=`echo $f | sed 's|build/roxterm-||;s/.tar.bz2//'`
+else
+    d=`echo $f | sed 's/roxterm-//;s/.tar.gz//'`
+fi
 mkdir $d
 cp $f $d
 

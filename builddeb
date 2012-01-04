@@ -3,14 +3,15 @@
 rm -rf debtmp
 mkdir debtmp
 
-Version=`grep ^AC_INIT configure.ac | sed 's/.*, //;s/)//'`
+python ./mscript.py configure
 
-[ -f Makefile ] || ./configure
-make dist
-ln "roxterm-$Version.tar.gz" "debtmp/roxterm_$Version.orig.tar.gz"
+Version=`cat version`
+
+python ./mscript.py dist
+ln "build/roxterm-$Version.tar.bz2" "debtmp/roxterm_$Version.orig.tar.bz2"
 
 cd debtmp
-tar xf "roxterm_$Version.orig.tar.gz"
+tar xf "roxterm_$Version.orig.tar.bz2"
 cd "roxterm-$Version"
 
 if [ "$EMAIL" != "h@realh.co.uk" ] ; then

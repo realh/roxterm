@@ -6,6 +6,15 @@ AC_CONFIG_MACRO_DIR([m4])
 AM_INIT_AUTOMAKE
 dnl Process this file with autoconf to produce a configure script.
 
+AC_ARG_ENABLE([autoconf],
+    AS_HELP_STRING([--enable-autoconf],
+        [Enable building with autoconf etc]),
+    [],
+    [AC_MSG_ERROR([autoconf is deprecated for roxterm.
+           Please use maitch instead. See INSTALL.ReadFirst.
+           If you have to use autoconf this configure script can be enabled
+           by using the --enable-autoconf option.])])
+
 AM_CONFIG_HEADER(config.h)
 AM_MAINTAINER_MODE
 
@@ -44,10 +53,10 @@ AC_CHECK_PROG(HAVE_XSLTPROC, xsltproc, yes, no)
 AS_IF([test "x$HAVE_XMLTO" = "xyes"],
     [XMLTOMAN="xmlto man"
     XMLTOMAN_OPTS=""],
-    [test "x$HAVE_XSLTPROC" = "xyes"],
+  [test "x$HAVE_XSLTPROC" = "xyes"],
     [XMLTOMAN="xsltproc"
     XMLTOMAN_OPTS="--nonet --novalid --param man.charmap.use.subset 0 http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl"],
-    [AC_MSG_WARN([Unable to build manpages without xmlto or xsltproc])
+  [AC_MSG_WARN([Unable to build manpages without xmlto or xsltproc])
     XMLTOMAN=""])
 AM_CONDITIONAL(BUILD_MANPAGES, test "x$XMLTOMAN" != x)
 AC_SUBST(XMLTOMAN)
@@ -224,6 +233,7 @@ TH_EXPAND_VARS(exec_prefix)
 AC_DEFINE_UNQUOTED([BIN_DIR], "$exec_prefix/bin", [bindir])
 
 AC_OUTPUT(Makefile src/Makefile po4a/Makefile
-    roxterm.lsm roxterm.spec AppInfo.xml
+    roxterm.lsm AppInfo.xml
     intl/Makefile po/Makefile.in
     roxterm.1.xml roxterm-config.1.xml)
+

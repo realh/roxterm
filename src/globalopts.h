@@ -51,6 +51,9 @@ extern gboolean global_options_maximise;
 /* Whether to try to open new terminal in an existing window */
 extern gboolean global_options_tab;
 
+/* Fork first instance */
+extern gboolean global_options_fork;
+
 /* For session management */
 extern gboolean global_options_disable_sm;
 extern char *global_options_restart_session_id;
@@ -100,7 +103,7 @@ inline static void global_options_reset_string(const char *key)
     options_set_string(global_options, key, NULL);
 }
 
-/* Checks CLI args for --appdir without altering argv */
+/* Checks CLI args for --appdir and --fork without altering argv */
 void global_options_init_appdir(int argc, char **argv);
 
 /* Detects bindir from argv[0] */

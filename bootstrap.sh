@@ -14,8 +14,7 @@ Line1=`head -n 1 debian/changelog.in | sed "s/@VERSION@/$Rev/"`
 echo $Line1 > debian/changelog
 tail -n +2 debian/changelog.in >> debian/changelog
 
-git log > ChangeLog
-cat ChangeLog.old >> ChangeLog
+./genlog > ChangeLog
 
 if test x$1 = x--tx
 then
@@ -32,6 +31,9 @@ then
 fi
 
 ./po4a/genmake.sh
+
+# Can't make roxterm.spec.in compatible with both autoconf and maitch
+sed "s/\\\${VERSION}/$Rev/" roxterm.spec.in > roxterm.spec
 
 # Refresh GNU autotools toolchain.
 echo Cleaning autotools files...

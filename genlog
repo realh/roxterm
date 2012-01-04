@@ -1,0 +1,23 @@
+#!/bin/sh
+
+prev=HEAD
+use_grep=1
+for i in `git tag | grep '^[0-9]' | sort -r` ; do
+    [ "$prev" = "2.3.1" ] && use_grep=0
+    if [ -n "`git log $i..$prev`" ] ; then
+        [ "$prev" != "HEAD" ] && printf "Version "
+        echo $prev
+        git log '--pretty=format:Author: %an <%ae>%nDate:   %aD' $i..$prev \
+                | head -n 2
+        if [ $use_grep = 1 ] ; then
+            git log '--pretty=format:%s' --grep='^\*' \
+                    $i..$prev | sed 's/^\*/ */'
+        else
+            git log '--pretty=format:%s' $i..$prev | sed 's/^/ * /'
+        fi
+    fi
+    prev=$i
+    echo
+    echo
+done
+cat `dirname $0`/ChangeLog.old

@@ -1,3 +1,27 @@
+roxterm (2.4.1-1ppa1lucid1) lucid; urgency=low
+
+  * New upstream version:
+    + Replaced autotools buildsystem with maitch.
+    + Modified action of "Disable menu access key".
+    + Added option to disable window resize grip.
+    + Fixed search dialog bug.
+    + --tab may be used with -T to specify which window to reuse.
+    + Action on middle-clicking a tab label is configurable.
+    + Force label resize on parent size-allocate in gtk2.
+    + Fixed some bugs related to dragging tabs.
+    + debian/watch: Supports bz2.
+    + Set title template in windows created for dragged out tabs.
+    + New window for dragged out tab gets old window's show menubar setting.
+    + Optionally show tab number in label.
+    + Avoid unnecessary rebuilding of po(t) files.
+    + Only present a window if it's visible - was causing profiles with
+      multiple tabs to open windows too small.
+    + Added --fork option.
+  * debian/copyright: Overdue attribution of Tango colour scheme file to
+    Trustin Lee.
+
+ -- Tony Houghton <h@realh.co.uk>  Wed, 04 Jan 2012 17:16:54 +0000
+
 roxterm (2.2.2-1ppa1lucid1) lucid; urgency=low
 
   * New upstream version:

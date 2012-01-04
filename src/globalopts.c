@@ -41,6 +41,7 @@ gboolean global_options_replace = FALSE;
 gboolean global_options_fullscreen = FALSE;
 gboolean global_options_maximise = FALSE;
 gboolean global_options_tab = FALSE;
+gboolean global_options_fork = FALSE;
 
 static void correct_scheme(const char *bad_name, const char *good_name)
 {
@@ -86,6 +87,7 @@ static gboolean global_options_show_usage(const gchar *option_name,
       "    [--separate] [--replace] [--tab]\n"
       "    [--directory=DIRECTORY|-d DIRECTORY] [--disable-sm]\n"
       "    [--show-menubar] [--hide-menubar]\n"
+      "    [--fork]\n"
       "    [--role=ROLE]\n"
       "    [--no-geometry]\n"
       "    [-e|--execute COMMAND]\n");
@@ -248,6 +250,10 @@ static GOptionEntry global_g_options[] = {
         N_("Open a tab in an existing window instead of\n"
         "                                   a new window if possible"),
         NULL },
+    { "fork", 0, G_OPTION_FLAG_IN_MAIN,
+        G_OPTION_ARG_NONE, &global_options_fork,
+        N_("Fork into the background even if this is the first instance"),
+        NULL },
     { "disable-sm", 0, G_OPTION_FLAG_IN_MAIN,
         G_OPTION_ARG_NONE, &global_options_disable_sm,
         N_("Disable session management"), NULL },
@@ -321,7 +327,10 @@ void global_options_init_appdir(int argc, char **argv)
         if (g_str_has_prefix(argv[n], "--appdir=") && strlen(argv[n]) > 9)
         {
             global_options_appdir = g_strdup(argv[n] + 9);
-            break;
+        }
+        else if (!strcmp(argv[n], "--fork"))
+        {
+            global_options_fork = TRUE;
         }
     }
 }

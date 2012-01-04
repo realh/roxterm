@@ -1,17 +1,18 @@
 # roxterm.spec
 #
-# Copyright (c) 2004 Tony Houghton h@realh.co.uk
+# Copyright (c) 2004-2011 Tony Houghton h@realh.co.uk
 #
 %define name roxterm
-%define version @VERSION@
+%define version ${VERSION}
 %define release 1
 %define manifest %{_builddir}/%{name}-%{version}-%{release}.manifest
+%define debug_package %{nil}
 
 # required items
 Name: %{name}
 Version: %{version}
 Release: %{release}
-Copyright: GPL
+License: GPL
 Group: Application/Misc
 
 # optional items
@@ -36,10 +37,10 @@ Source: %{name}-%{version}.tar.gz
 #Prefix: /usr
 BuildRoot: /var/tmp/%{name}-%{version}
 
-Summary: GTK+ 2.0 terminal emulator with tabs
+Summary: GTK+ 3.0 terminal emulator with tabs
 
 %description
-GTK+ 2.0 terminal emulator with tabs
+GTK+ 3.0 terminal emulator with tabs
 @configure_input@
 Please edit roxterm.spec.in to add several more lines of description
 here if appropriate, and to delete these instructions.
@@ -49,16 +50,21 @@ here if appropriate, and to delete these instructions.
 #%patch0 -p1
 
 %build
-%configure
-make
+./mscript.py configure PREFIX=/usr
+./mscript.py build
+# Deprecated autoconf rules:
+#%configure
+#make
 
 %install
 rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT
-%makeinstall
+./mscript.py install DESTDIR=$RPM_BUILD_ROOT
+# Deprecated autoconf:
+#%makeinstall
 
 # __os_install_post is implicitly expanded after the
-# %install section... do it now, and then disable it,
+# install section... do it now, and then disable it,
 # so all work is done before building manifest.
 
 %{?__os_install_post}

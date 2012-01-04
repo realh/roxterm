@@ -1,16 +1,17 @@
 # Translations for roxterm docs
 # Copyright (C) 2010 Tony Houghton
 # This file is distributed under the same license as the roxterm package.
-# Tony Houghton <h@realh.co.uk>, 2010.
 # 
+# Translators:
+# Tony Houghton <h@realh.co.uk>, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: roxterm\n"
 "Report-Msgid-Bugs-To: https://sourceforge.net/tracker/?group_id=124080\n"
-"POT-Creation-Date: 2010-12-20 18:24+0000\n"
-"PO-Revision-Date: 2011-03-22 15:47+0000\n"
-"Last-Translator: realh <h@realh.co.uk>\n"
-"Language-Team: Galician <None>\n"
+"POT-Creation-Date: 2011-11-16 16:52+0000\n"
+"PO-Revision-Date: 2011-11-24 19:00+0000\n"
+"Last-Translator: Tony Houghton <h@realh.co.uk>\n"
+"Language-Team: Galician (http://www.transifex.net/projects/p/roxterm/team/gl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -33,7 +34,7 @@ msgid "<a id=\"Logo\" href=\"index.html\">"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div>
-#: ../Help/en/installation.html:21 ../Help/en/installation.html:122
+#: ../Help/en/installation.html:21 ../Help/en/installation.html:139
 msgid "</a>"
 msgstr ""
 
@@ -115,35 +116,34 @@ msgstr ""
 #: ../Help/en/installation.html:58
 msgid ""
 "You need the libraries for GTK+2 which is pretty much standard on all free "
-"Unix derivatives these days. It definitely needs at least version 2.6 of "
-"glib and probably GTK+ 2.6 too. You will also need libglade 2 - usually, but"
-" not always installed; libvte, a Gnome component; and D-BUS (see below)."
-msgstr ""
-
-#. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/installation.html:62
-msgid ""
-"To compile ROXTerm you will need the header files for all the above "
-"libraries. In packaging systems they usually come in packages whose names "
-"end in \"-dev\" or \"-devel\"."
+"Unix derivatives these days, and/or GTK+3.  It needs at least version 2.16 "
+"of glib and GTK+ 2.18. You will also need vte/libvte (at least version "
+"0.20), a Gnome component; most distros package separate versions for GTK+2 "
+"and GTK+3.  D-BUS is also required (see below)."
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
 #: ../Help/en/installation.html:65
 msgid ""
-"Additionally, to build a git checkout of ROXTerm you need autoconf, automake"
-" and libtool. Use the latest versions possible. Old versions of automake "
-"(older than 1.7?) will cause building to fail because ROXTerm uses per-"
-"target CFLAGS."
+"To compile ROXTerm you will need the header files for the above libraries. "
+"In packaging systems they usually come in packages whose names end in "
+"\"-dev\" or \"-devel\"."
+msgstr ""
+
+#. type: Content of: <html><body><div><div><div><p>
+#: ../Help/en/installation.html:69
+msgid ""
+"ROXTerm uses a new, bespoke build system called maitch. This requires python"
+" and the python 'lockfile' module."
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><h3>
-#: ../Help/en/installation.html:69
+#: ../Help/en/installation.html:72
 msgid "D-Bus"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/installation.html:71
+#: ../Help/en/installation.html:74
 msgid ""
 "D-Bus is a messaging system which ROXTerm uses to connect terminals with its"
 " configure tool. ROXTerm uses the \"session\" bus, which should be started "
@@ -155,7 +155,7 @@ msgid ""
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/installation.html:77
+#: ../Help/en/installation.html:80
 msgid ""
 "<span>if test -z \"$DBUS_SESSION_BUS_ADDRESS\" ; then</span> <span "
 "class=\"indented\">eval `dbus-launch --sh-syntax --exit-with-session`</span>"
@@ -164,7 +164,7 @@ msgid ""
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/installation.html:83
+#: ../Help/en/installation.html:86
 msgid ""
 "The reason for using a bespoke configuration messaging system over D-Bus "
 "instead of gconf is because gconf doesn't provide a way to map an arbitrary "
@@ -172,39 +172,58 @@ msgid ""
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><h2>
-#: ../Help/en/installation.html:86
+#: ../Help/en/installation.html:89
 msgid "Installing <a class=\"pageAnchor\" name=\"Installing\">:</a>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/installation.html:88
+#: ../Help/en/installation.html:91
 msgid ""
 "To install ROXTerm for ROX all you need to do is unpack the tarball in your "
 "Apps directory and run it from there, but you will probably want to rename "
-"the folder to ROXTerm. For other systems ROXTerm may be installed in the "
-"same way as any autoconf-based source package:"
-msgstr ""
-
-#. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/installation.html:93
-msgid "<span>./configure</span> <span>make</span> <span>make install</span>"
+"the folder to ROXTerm. For other systems ROXTerm may be installed in a "
+"similar way to an autoconf-based source package, but using maitch's "
+"analogues:"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
 #: ../Help/en/installation.html:98
 msgid ""
-"If you are using a version fetched by git instead of a release tarball run "
-"the bootstrap.sh script first to create the configure script and various "
-"other files needed for building."
-msgstr ""
-
-#. type: Content of: <html><body><div><div><div><h3>
-#: ../Help/en/installation.html:101
-msgid "Debian &amp; Ubuntu"
+"<span>python ./mscript.py configure</span> <span>python ./mscript.py "
+"build</span> <span>python ./mscript.py install</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
 #: ../Help/en/installation.html:103
+msgid "Various options are available, run"
+msgstr ""
+
+#. type: Content of: <html><body><div><div><div><p><p>
+#: ../Help/en/installation.html:105
+msgid "<span>python ./mscript.py help</span>"
+msgstr ""
+
+#. type: Content of: <html><body><div><div><div><p>
+#: ../Help/en/installation.html:107
+msgid "for details."
+msgstr ""
+
+#. type: Content of: <html><body><div><div><div><p>
+#: ../Help/en/installation.html:109
+msgid ""
+"Autoconf builds are still supported, but deprecated. If you are using a "
+"version fetched by git instead of a release tarball run the bootstrap.sh "
+"script first to create the configure script and various other files needed "
+"for building."
+msgstr ""
+
+#. type: Content of: <html><body><div><div><div><h3>
+#: ../Help/en/installation.html:114
+msgid "Debian &amp; Ubuntu"
+msgstr ""
+
+#. type: Content of: <html><body><div><div><div><p>
+#: ../Help/en/installation.html:116
 msgid ""
 "Up-to-date official Debian packages are now available. See <a "
 "href=\"http://packages.debian.org/roxterm\">http://packages.debian.org/roxterm</a>."
@@ -215,37 +234,38 @@ msgid ""
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/installation.html:108
+#: ../Help/en/installation.html:121
 msgid ""
 "For instructions on building a debian package refer to the file "
 "INSTALL.Debian in the unpacked tarball/git working directory."
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/installation.html:111
+#: ../Help/en/installation.html:124
 msgid ""
 "Ubuntu also has official roxterm packages, but due to Ubuntu's release cycle"
 " these may lag behind the latest upstream releases. Therefore I have set up "
-"a PPA at https://launchpad.net/~h-realh/+archive/ppa to provide the most "
-"recent releases of ROXTerm for Ubuntu's current release when appropriate."
+"a <a href=\"https://launchpad.net/~h-realh/+archive/ppa\">PPA</a> to provide"
+" the most recent releases of ROXTerm for Ubuntu's current release when "
+"appropriate."
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><a>
-#: ../Help/en/installation.html:119
+#: ../Help/en/installation.html:136
 msgid ""
 "<a id=\"SourceforgeLink\" href=\"http://sourceforge.net/projects/roxterm\" "
 "title=\"RoxTerm Sourceforge\">"
 msgstr ""
 
 #. type: Attribute 'alt' of: <html><body><div><div><div><a><img>
-#: ../Help/en/installation.html:121
+#: ../Help/en/installation.html:138
 msgid ""
 "Get RoxTerm at SourceForge.net. Fast, secure and Free Open Source software "
 "downloads"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div>
-#: ../Help/en/installation.html:126
+#: ../Help/en/installation.html:143
 msgid ""
 "<a id=\"DonationLink\" class=\"spriteLink\" "
 "href=\"http://sourceforge.net/donate/index.php?group_id=124080\">Donate</a> "
@@ -254,9 +274,11 @@ msgid ""
 msgstr ""
 
 #. type: Content of: <html><body><div><div><p>
-#: ../Help/en/installation.html:130
+#: ../Help/en/installation.html:147
 msgid ""
 "ROXTerm is licensed under the <a "
 "href=\"http://www.gnu.org/licenses/gpl-3.0-standalone.html\">GPL</a> | Site "
 "design by Adrian Sampson"
 msgstr ""
+
+

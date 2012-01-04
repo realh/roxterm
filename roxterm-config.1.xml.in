@@ -28,7 +28,7 @@ and docbook-xsl in your Build-Depends control field.
   <!ENTITY dhfirstname "<firstname>Tony</firstname>">
   <!ENTITY dhsurname   "<surname>Houghton</surname>">
   <!-- Please adjust the date whenever revising the manpage. -->
-  <!ENTITY dhdate      "<date>November 27, 2009</date>">
+  <!ENTITY dhdate      "<date>November 19, 2011</date>">
   <!-- SECTION should be 1-8, maybe w/ subsection other parameters are
        allowed: see man(7), man(1). -->
   <!ENTITY dhsection   "<manvolnum>1</manvolnum>">
@@ -53,7 +53,7 @@ and docbook-xsl in your Build-Depends control field.
       &dhfirstname; &dhsurname;
     </author>
     <copyright>
-      <year>2005</year>
+      <year>2005-2011</year>
       <holder>&dhusername;</holder>
     </copyright>
     &dhdate;
@@ -62,7 +62,7 @@ and docbook-xsl in your Build-Depends control field.
     &dhucpackage;
     &dhsection;
     <refmiscinfo class="source">&product;</refmiscinfo>
-    <refmiscinfo class="version">@PACKAGE_VERSION@</refmiscinfo>
+    <refmiscinfo class="version">@VERSION@</refmiscinfo>
     <refmiscinfo class="manual">User Commands</refmiscinfo>
   </refmeta>
   <refnamediv>

@@ -75,10 +75,10 @@ typedef void (*MultiTabSelectionHandler) (gpointer user_data, MultiTab * tab);
 
 /* Called when a tab is dragged to a new window; should be used to try to make
  * sure page is same size as other tabs in new window and to update references.
- * old_win_destroyed is TRUE if the tab's previous window was destroyed.
+ * old_win is NULL if the tab's previous window was destroyed.
  */
 typedef void (*MultiTabToNewWindowHandler)(MultiWin *win, MultiTab *tab,
-        gboolean old_win_destroyed);
+        MultiWin *old_win);
 
 /* Called when the zoom factor is changed */
 typedef void (*MultiWinZoomHandler)(gpointer user_data, double zoom_factor,
@@ -134,12 +134,15 @@ const char *multi_tab_get_display_name(MultiTab *tab);
 
 void multi_tab_set_icon_title(MultiTab *, const char *);
 
-/* Sets the title which is used to build the actaul title from title_template.
+/* Sets the title which is used to build the actual title from title_template.
  */
 void multi_tab_set_window_title(MultiTab *, const char *);
 
 /* See multi_win_set-title */
 void multi_tab_set_window_title_template(MultiTab *, const char *);
+
+/* Whether to show number in tab title */
+void multi_tab_set_show_number(MultiTab *tab, gboolean show);
 
 const char *multi_tab_get_window_title_template(MultiTab *);
 
@@ -202,6 +205,8 @@ void multi_tab_cancel_attention(MultiTab *tab);
 void multi_tab_add_close_button(MultiTab *tab);
 void multi_tab_remove_close_button(MultiTab *tab);
 void multi_tab_set_status_stock(MultiTab *tab, const char *stock);
+
+void multi_tab_set_middle_click_tab_action(MultiTab *tab, int action);
 
 /* In following functions a zoom_index of -1 means default */
 

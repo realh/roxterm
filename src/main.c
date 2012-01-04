@@ -19,8 +19,10 @@
 
 #include "defns.h"
 
+#include <errno.h>
 #include <stdio.h>
 #include <locale.h>
+#include <unistd.h>
 
 #include <gdk/gdk.h>
 
@@ -185,6 +187,42 @@ static char *abs_bin(const char *filename)
     return g_build_filename(global_options_bindir, "roxterm", NULL);
 }
 
+static int wait_for_child(int pipe_r)
+{
+    char result;
+    
+    if (read(pipe_r, &result, 1) != 1)
+    {
+        g_error(_("Parent failed to read signal from child for --fork: %s"),
+                strerror(errno));
+        result = 1;
+    }
+    close(pipe_r);
+    return (int) result;
+}
+
+/* Only single-byte exit codes are supported */
+static int roxterm_exit(int pipe_w, char exit_code)
+{
+    if (global_options_fork)
+    {
+        if (write(pipe_w, &exit_code, 1) != 1)
+        {
+            g_error(_("Child failed to signal parent for --fork: %s"),
+                    strerror(errno));
+            exit_code = 1;
+        }
+        close(pipe_w);
+    }
+    return exit_code;
+}
+
+static gboolean roxterm_idle_ok(gpointer ppipe)
+{
+    roxterm_exit(*(int *) ppipe, 0);
+    return FALSE;
+}
+
 int main(int argc, char **argv)
 {
     gboolean preparse_ok;
@@ -194,9 +232,35 @@ int main(int argc, char **argv)
     int n;
     gboolean launched = FALSE;
     gboolean dbus_ok;
+    pid_t fork_result = 0;
+    static int fork_pipe[2] = { -1, -1};
 
     global_options_init_appdir(argc, argv);
     global_options_init_bindir(argv[0]);
+    if (global_options_fork)
+    {
+        if (pipe(fork_pipe))
+        {
+            g_error(_("Unable to open pipe to implement --fork: %s"),
+                    strerror(errno));
+        }
+        if ((fork_result = fork()) > 0)
+        {
+            /* parent doesn't write */
+            close(fork_pipe[1]);
+            return wait_for_child(fork_pipe[0]);
+        }
+        else if (!fork_result)
+        {
+            /* child doesn't read */
+            close(fork_pipe[0]);
+        }
+        else
+        {
+            g_error(_("Unable to fork to implement --fork: %s"),
+                    strerror(errno));
+        }
+    }
 #if ENABLE_SM
     if (!global_options_disable_sm)
     {
@@ -301,9 +365,9 @@ int main(int argc, char **argv)
         switch (run_via_dbus(message))
         {
             case 0:
-                return 0;
+                return roxterm_exit(fork_pipe[1], 0);
             case 1:
-                return 1;
+                return roxterm_exit(fork_pipe[1], 1);
             case -1:
                 /* DBUS failure, run as if --separate */
                 break;
@@ -337,6 +401,8 @@ int main(int argc, char **argv)
         session_init(global_options_restart_session_id);
     }
 #endif
+
+    g_idle_add(roxterm_idle_ok, &fork_pipe[1]);
 
     gtk_main();
     

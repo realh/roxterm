@@ -43,6 +43,7 @@ struct MultiTab {
     GtkWidget *widget;            /* Top-level widget in notebook */
     char *window_title;
     char *window_title_template;
+    gboolean show_number;
     char *icon_title;
     GtkWidget *popup_menu_item, *menu_bar_item;
     GtkWidget *active_widget;
@@ -57,6 +58,7 @@ struct MultiTab {
     gboolean postponed_free;
     gboolean old_win_destroyed;
     gboolean title_template_locked;
+    int middle_click_action;
 };
 
 struct MultiWin {
@@ -91,7 +93,6 @@ struct MultiWin {
     int zoom_index;
     gboolean fullscreen;
     char *title_template;
-    char *default_title_template;
     char *child_title;
 #if HAVE_COMPOSITE
     gboolean composite;
@@ -99,9 +100,7 @@ struct MultiWin {
     char *display_name;
     gboolean title_template_locked;
     gboolean clear_demands_attention;
-#if MULTITAB_LABEL_GTK3_SIZE_KLUDGE
     int best_tab_width;
-#endif
 };
 
 static double multi_win_zoom_factors[] = {
@@ -242,7 +241,9 @@ MultiTab *multi_tab_new(MultiWin * parent, gpointer user_data_template)
     MultiTab *tab = g_new0(MultiTab, 1);
     int pos;
 
+    tab->parent = parent;
     tab->status_stock = NULL;
+    tab->show_number = TRUE;
     tab->widget = multi_tab_filler(parent, tab, user_data_template,
         &tab->user_data, &tab->active_widget, &tab->adjustment);
     g_object_set_data(G_OBJECT(tab->widget), "roxterm_tab", tab);
@@ -453,10 +454,14 @@ static void multi_tab_set_full_window_title(MultiTab * tab,
     MultiWin *win = tab->parent;
     char *actual_title = g_strdup_printf(template ? template : "%s",
             title ? title : "");
+    char *numbered_title = g_strdup_printf("%d. %s",
+                    multi_tab_get_page_num(tab) + 1, actual_title);
+    char *tab_label = (tab->show_number && tab->parent && tab->parent->notebook)
+            ? numbered_title : actual_title;
 
     if (tab->label)
     {
-        multitab_label_set_text(MULTITAB_LABEL(tab->label), actual_title);
+        multitab_label_set_text(MULTITAB_LABEL(tab->label), tab_label);
     }
     if (win)
     {
@@ -466,19 +471,20 @@ static void multi_tab_set_full_window_title(MultiTab * tab,
         if (tab->popup_menu_item)
         {
             tab->popup_menu_item = menutree_change_tab_title
-                (win->popup_menu, tab->popup_menu_item, actual_title);
+                (win->popup_menu, tab->popup_menu_item, numbered_title);
             g_signal_connect(tab->popup_menu_item, "toggled",
                 G_CALLBACK(multi_win_select_tab_action), tab);
         }
         if (tab->menu_bar_item)
         {
             tab->menu_bar_item = menutree_change_tab_title
-                (win->menu_bar, tab->menu_bar_item, actual_title);
+                (win->menu_bar, tab->menu_bar_item, numbered_title);
             g_signal_connect(tab->menu_bar_item, "toggled",
                 G_CALLBACK(multi_win_select_tab_action), tab);
         }
         win->ignore_toggles = FALSE;
     }
+    g_free(numbered_title);
     g_free(actual_title);
 }
 
@@ -503,6 +509,16 @@ void multi_tab_set_window_title_template(MultiTab * tab, const char *template)
     g_free(tab->window_title_template);
     tab->window_title_template = template ? g_strdup(template) : NULL;
     multi_tab_set_full_window_title(tab, template, tab->window_title);
+}
+
+void multi_tab_set_show_number(MultiTab *tab, gboolean show)
+{
+    if (show != tab->show_number)
+    {
+        tab->show_number = show;
+        multi_tab_set_full_window_title(tab, tab->window_title_template,
+                tab->window_title);
+    }
 }
 
 gboolean multi_tab_get_title_template_locked(MultiTab *tab)
@@ -677,6 +693,21 @@ static void multi_tab_remove_menutree_items(MultiWin * win, MultiTab * tab)
     }
 }
 
+static void renumber_tabs(MultiWin *win)
+{
+    GList *link;
+    int n = 0;
+    
+    for (link = win->tabs; link; link = g_list_next(link))
+    {
+        MultiTab *tab = link->data;
+        
+        multi_tab_set_full_window_title(tab, tab->window_title_template,
+                tab->window_title);
+        ++n;
+    }
+}
+
 void multi_tab_move_to_position(MultiTab *tab, int position, gboolean reorder)
 {
     MultiWin *win = tab->parent;
@@ -688,9 +719,12 @@ void multi_tab_move_to_position(MultiTab *tab, int position, gboolean reorder)
     }
     win->tabs = g_list_remove(win->tabs, tab);
     win->tabs = g_list_insert(win->tabs, tab, position);
+    renumber_tabs(win);
     multi_win_shade_menus_for_tabs(win);
     multi_tab_remove_menutree_items(win, tab);
     multi_tab_add_menutree_items(win, tab, position);
+    multi_tab_set_full_window_title(tab, tab->window_title_template,
+            tab->window_title);
 }
 
 gboolean multi_tab_remove_from_parent(MultiTab *tab, gboolean notify_only)
@@ -703,6 +737,7 @@ gboolean multi_tab_remove_from_parent(MultiTab *tab, gboolean notify_only)
     if (!notify_only)
     {
         g_object_ref(tab->widget);
+        tab->label = NULL;
         gtk_notebook_remove_page(GTK_NOTEBOOK(win->notebook),
                 multi_tab_get_page_num(tab));
         tab->close_button = NULL;
@@ -730,17 +765,18 @@ void multi_tab_move_to_new_window(MultiWin *win, MultiTab *tab, int position)
         gtk_window_maximize(GTK_WINDOW(win->gtkwin));
     if (!win->tabs)
     {
-        win->default_title_template = old_win->default_title_template ?
-                g_strdup(old_win->default_title_template) : NULL;
-        win->title_template = old_win->default_title_template ?
-                g_strdup(old_win->default_title_template) : NULL;
+        win->title_template = old_win->title_template ?
+                g_strdup(old_win->title_template) : NULL;
     }
     old_win_destroyed = old_win && old_win->ntabs <= 1;
     multi_tab_remove_from_parent(tab, FALSE);
     multi_win_add_tab(win, tab, position, FALSE);
     multi_win_set_geometry_hints_for_tab(win, tab);
     if (multi_tab_to_new_window_handler)
-        multi_tab_to_new_window_handler(win, tab, old_win_destroyed);
+    {
+        multi_tab_to_new_window_handler(win, tab,
+                old_win_destroyed ? NULL : old_win);
+    }
     /* Remove extra references added by multi_tab_remove_from_parent */
     g_object_unref(tab->widget);
 }
@@ -763,6 +799,14 @@ static void multi_tab_pack_for_horizontal(MultiTab *tab, GtkContainer *nb)
             HORIZ_TAB_WIDTH_CHARS);
 }
 
+static void multi_tab_pack_for_single(MultiTab *tab, GtkContainer *nb)
+{
+    gtk_container_child_set(nb, tab->widget,
+            "tab-expand", FALSE, "tab-fill", TRUE, NULL);
+    multitab_label_set_single(MULTITAB_LABEL(tab->label), TRUE);
+    multitab_label_set_fixed_width(MULTITAB_LABEL(tab->label), -1);
+}
+
 static void multi_win_pack_for_single_tab(MultiWin *win)
 {
     MultiTab *tab = win->tabs->data;
@@ -770,10 +814,7 @@ static void multi_win_pack_for_single_tab(MultiWin *win)
 #if !GTK_CHECK_VERSION(3, 0, 0)
     g_object_set(G_OBJECT(win->notebook), "homogeneous", FALSE, NULL);
 #endif
-    gtk_container_child_set(GTK_CONTAINER(win->notebook), tab->widget,
-            "tab-expand", FALSE, "tab-fill", TRUE, NULL);
-    multitab_label_set_single(MULTITAB_LABEL(tab->label), TRUE);
-    multitab_label_set_fixed_width(MULTITAB_LABEL(tab->label), -1);
+    multi_tab_pack_for_single(tab, GTK_CONTAINER(win->notebook));
 }
 
 static void multi_tab_pack_for_multiple(MultiTab *tab, GtkContainer *nb)
@@ -1025,9 +1066,19 @@ static gboolean tab_clicked_handler(GtkWidget *widget,
     switch (event->button)
     {
         case 2:
-            gtk_clipboard_request_text(gtk_clipboard_get(GDK_SELECTION_PRIMARY),
-                                       tab_set_name_from_clipboard_callback,
-                                       tab);
+            switch (tab->middle_click_action)
+            {
+                case 1:
+                    multi_tab_delete(tab);
+                    break;
+                case 2:
+                    gtk_clipboard_request_text(
+                            gtk_clipboard_get(GDK_SELECTION_PRIMARY),
+                            tab_set_name_from_clipboard_callback, tab);
+                    break;
+                default:
+                    break;
+            }
             return TRUE;
         case 3:
             multi_win_select_tab(tab->parent, tab);
@@ -1053,6 +1104,7 @@ static void page_added_callback(GtkNotebook *notebook, GtkWidget *child,
 {
     MultiTab *tab = multi_tab_get_from_widget(child);
     gboolean old_win_destroyed;
+    MultiWin *old_win = tab->parent;
 
     g_return_if_fail(tab);
     if (!win->ignore_tabs_moving)
@@ -1072,7 +1124,8 @@ static void page_added_callback(GtkNotebook *notebook, GtkWidget *child,
             g_warning("Page added had no previous parent");
         }
         multi_win_add_tab(win, tab, page_num, TRUE);
-        multi_tab_to_new_window_handler(win, tab, old_win_destroyed);
+        multi_tab_to_new_window_handler(win, tab,
+                old_win_destroyed ? NULL : old_win);
         if (win->tab_pos == GTK_POS_LEFT || win->tab_pos == GTK_POS_RIGHT)
         {
             multi_tab_pack_for_horizontal(tab, GTK_CONTAINER(notebook));
@@ -1082,6 +1135,7 @@ static void page_added_callback(GtkNotebook *notebook, GtkWidget *child,
             if (win->ntabs == 1)
             {
                 multi_win_pack_for_single_tab(win);
+                gtk_widget_queue_resize(win->notebook);
                 /* multi_tab_set_single_size(tab); */
                 multi_win_show(win);
             }
@@ -1104,6 +1158,8 @@ static GtkNotebook *multi_win_notebook_creation_hook(GtkNotebook *source,
     MultiWin *win;
 
     g_return_val_if_fail(tab, NULL);
+    /* Need to set !expand in advance */
+    multi_tab_pack_for_single(tab, GTK_CONTAINER(tab->parent->notebook));
     win = multi_win_new_for_tab(tab->parent->display_name, x, y, tab);
     /* Defer showing till page_added_callback because we can't set size
      * correctly until the tab has been added to the notebook */
@@ -1117,6 +1173,8 @@ MultiWin *multi_win_new_for_tab(const char *display_name, int x, int y,
     MultiWin *win = tab->parent;
     int w, h;
     GtkWindow *gwin = GTK_WINDOW(win->gtkwin);
+    const char *title_template = win->title_template;
+    gboolean show_menubar = win->show_menu_bar;
 
     gtk_window_get_size(gwin, &w, &h);
     multi_win_get_disable_menu_shortcuts(tab->user_data,
@@ -1125,7 +1183,9 @@ MultiWin *multi_win_new_for_tab(const char *display_name, int x, int y,
                 multi_win_get_shortcut_scheme(win), win->zoom_index,
                 disable_menu_shortcuts, disable_tab_shortcuts,
                 win->tab_pos, win->always_show_tabs);
+    multi_win_set_show_menu_bar(win, show_menubar);
     multi_win_set_geometry_hints_for_tab(win, tab);
+    multi_win_set_title_template(win, title_template);
     gwin = GTK_WINDOW(win->gtkwin);
     gtk_window_set_default_size(gwin, w, h);
     if (x != -1 && y != -1)
@@ -1188,11 +1248,15 @@ static void multi_win_close_other_tabs_action(MultiWin * win)
 {
     GList *link;
     
-    while (win->tabs->data != win->current_tab)
-        multi_tab_delete(win->tabs->data);
-    link = win->tabs;
-    while ((link = g_list_next(link)) != NULL)
-        multi_tab_delete(link->data);
+    while ((link = win->tabs) != NULL)
+    {
+        if (link->data == win->current_tab)
+            link = g_list_next(link);
+        if (link)
+            multi_tab_delete(link->data);
+        else
+            break;
+    }
 }
 
 static void multi_win_name_tab_action(MultiWin * win)
@@ -1720,9 +1784,7 @@ MultiWin *multi_win_new_blank(const char *display_name, Options *shortcuts,
     }
 #endif
 
-#if MULTITAB_LABEL_GTK3_SIZE_KLUDGE
     win->best_tab_width = G_MAXINT;
-#endif
     win->tab_pos = tab_pos;
     win->always_show_tabs = always_show_tabs;
     win->scroll_bar_pos = MultiWinScrollBar_Query;
@@ -1970,7 +2032,6 @@ static void multi_win_destructor(MultiWin *win, gboolean destroy_widgets)
     UNREF_LOG(options_unref(win->shortcuts));
     g_free(win->display_name);
     g_free(win->title_template);
-    g_free(win->default_title_template);
     g_free(win->child_title);
     g_free(win);
     multi_win_all = g_list_remove(multi_win_all, win);
@@ -2008,6 +2069,7 @@ static gboolean multi_win_notify_tab_removed(MultiWin * win, MultiTab * tab)
     }
     else
     {
+        renumber_tabs(win);
         if (win->ntabs == 1)
         {
             tab = win->tabs->data;
@@ -2076,15 +2138,17 @@ void multi_tab_set_status_stock(MultiTab *tab, const char *stock)
     }
 }
 
+void multi_tab_set_middle_click_tab_action(MultiTab *tab, int action)
+{
+    tab->middle_click_action = action;
+}
+
 /* Creates the label widget for a tab. tab->label is the GtkLabel containing
  * the text; the return value is the top-level container. */
 static GtkWidget *make_tab_label(MultiTab *tab, GtkPositionType tab_pos)
 {
-#if MULTITAB_LABEL_GTK3_SIZE_KLUDGE
-    tab->label = multitab_label_new(NULL, &tab->parent->best_tab_width);
-#else
-    tab->label = multitab_label_new(NULL);
-#endif
+    tab->label = multitab_label_new(tab->parent->notebook, NULL,
+            &tab->parent->best_tab_width);
     multi_tab_set_full_window_title(tab, tab->window_title_template,
             tab->window_title);
     tab->label_box = gtk_hbox_new(FALSE, 4);
@@ -2106,11 +2170,14 @@ static void multi_tab_add_menutree_items(MultiWin * win, MultiTab * tab,
         int position)
 {
     char *title = multi_tab_get_full_window_title(tab);
+    char *n_and_title = g_strdup_printf("%d. %s",
+            multi_tab_get_page_num(tab), title);
     
     tab->popup_menu_item = menutree_add_tab_at_position(win->popup_menu,
-            title, position);
+            n_and_title, position);
     tab->menu_bar_item = menutree_add_tab_at_position(win->menu_bar,
-            title, position);
+            n_and_title, position);
+    g_free(n_and_title);
     g_free(title);
     g_signal_connect(tab->popup_menu_item, "toggled",
         G_CALLBACK(multi_win_select_tab_action), tab);
@@ -2165,6 +2232,13 @@ static void multi_win_add_tab(MultiWin * win, MultiTab * tab, int position,
         gboolean notify_only)
 {
     tab->parent = win;
+    if (tab->label)
+    {
+        multitab_label_set_parent(MULTITAB_LABEL(tab->label),
+                tab->parent->notebook, &tab->parent->best_tab_width);
+        multi_tab_set_full_window_title(tab, tab->window_title_template,
+                tab->window_title);
+    }
     win->ignore_tabs_moving = TRUE;
     if (position == -1)
         win->tabs = g_list_append(win->tabs, tab);
@@ -2181,9 +2255,10 @@ static void multi_win_add_tab(MultiWin * win, MultiTab * tab, int position,
     {
         multi_win_add_tab_to_notebook(win, tab, position);
         gtk_widget_show(tab->widget);
-        if (win->ntabs > 1)
+        if (win->ntabs > 1 && gtk_widget_get_visible(win->gtkwin))
             gtk_window_present(GTK_WINDOW(win->gtkwin));
     }
+    renumber_tabs(win);
     multi_win_shade_menus_for_tabs(win);
     multi_win_select_tab(win, tab);
     win->ignore_tabs_moving = FALSE;

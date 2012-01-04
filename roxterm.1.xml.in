@@ -28,7 +28,7 @@ and docbook-xsl in your Build-Depends control field.
   <!ENTITY dhfirstname "<firstname>Tony</firstname>">
   <!ENTITY dhsurname   "<surname>Houghton</surname>">
   <!-- Please adjust the date whenever revising the manpage. -->
-  <!ENTITY dhdate      "<date>November 27, 2009</date>">
+  <!ENTITY dhdate      "<date>November 19, 2011</date>">
   <!-- SECTION should be 1-8, maybe w/ subsection other parameters are
        allowed: see man(7), man(1). -->
   <!ENTITY dhsection   "<manvolnum>1</manvolnum>">
@@ -53,7 +53,7 @@ and docbook-xsl in your Build-Depends control field.
       &dhfirstname; &dhsurname;
     </author>
     <copyright>
-      <year>2005</year>
+      <year>2005-2011</year>
       <holder>&dhusername;</holder>
     </copyright>
     &dhdate;
@@ -62,7 +62,7 @@ and docbook-xsl in your Build-Depends control field.
     &dhucpackage;
     &dhsection;
     <refmiscinfo class="source">&product;</refmiscinfo>
-    <refmiscinfo class="version">@PACKAGE_VERSION@</refmiscinfo>
+    <refmiscinfo class="version">@VERSION@</refmiscinfo>
     <refmiscinfo class="manual">User Commands</refmiscinfo>
   </refmeta>
   <refnamediv>
@@ -88,6 +88,7 @@ and docbook-xsl in your Build-Depends control field.
         | <option>-s <replaceable>SCHEME</replaceable></option></arg>
       <arg><option>--separate</option></arg>
       <arg><option>--replace</option></arg>
+      <arg><option>--fork</option></arg>
       <arg><option>--directory=<replaceable>DIR</replaceable></option> |
         <option>-d <replaceable>DIR</replaceable></option></arg>
       <arg><option>--show-menubar</option></arg>
@@ -204,9 +205,10 @@ and docbook-xsl in your Build-Depends control field.
         </term>
         <listitem>
           <para>If possible open the new terminal in an existing window rather
-          than open a new window. The window chosen is the most recently
-          focused window with the same profile as the new terminal. This option
-          overrides <option>--zoom</option> and
+          than open a new window. If used in conjunction with
+          <option>-T</option>/<option>--title</option> the tab will be placed
+          in an existing window with the same title template if one exists.
+          This option overrides <option>--zoom</option> and
           <option>--fullscreen</option>.</para>
         </listitem>
       </varlistentry>
@@ -249,8 +251,8 @@ and docbook-xsl in your Build-Depends control field.
           <option>-T <replaceable>TITLE</replaceable></option>
         </term>
         <listitem>
-          <para>Set window title. May include "%s" which is substituted with
-          the full contents of the tab's label.</para>
+          <para>Set window title template. May include "%s" which is substituted
+          with the full contents of the tab's label.</para>
         </listitem>
       </varlistentry>
       <varlistentry>
@@ -268,6 +270,18 @@ and docbook-xsl in your Build-Depends control field.
         </term>
         <listitem>
           <para>Use a separate process for this terminal.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--fork</option>
+        </term>
+        <listitem>
+          <para>Always fork into the background. Usually the first instance
+          stays in the foreground and subsequent invocations return once they
+          have asked the master instance to handle their command. This option
+          causes the master instance to fork itself into the background; the
+          foreground process returns once the master is ready to handle further
+          commands.</para>
         </listitem>
       </varlistentry>
       <varlistentry>

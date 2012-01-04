@@ -45,6 +45,8 @@
 typedef struct _MultitabLabel        MultitabLabel;
 typedef struct _MultitabLabelClass   MultitabLabelClass;
 
+#define MULTITAB_LABEL_USE_PARENT_SALLOC !GTK_CHECK_VERSION(3, 0, 0)
+
 #if GTK_CHECK_VERSION(3, 0, 0)
 typedef GdkRGBA MultitabColor;
 #else
@@ -60,9 +62,11 @@ struct _MultitabLabel
     guint timeout_tag;
     gboolean single;
     gboolean fixed_width;
-#if MULTITAB_LABEL_GTK3_SIZE_KLUDGE
-    int *best_width;
+    GtkWidget *parent;
+#if MULTITAB_LABEL_USE_PARENT_SALLOC
+    gulong parent_salloc_tag;
 #endif
+    int *best_width;
 };
 
 struct _MultitabLabelClass
@@ -76,13 +80,15 @@ struct _MultitabLabelClass
 GType multitab_label_get_type (void);
 
 
-#if MULTITAB_LABEL_GTK3_SIZE_KLUDGE
+/* best_width may not be used, depending on GTK version etc.
+ * parent should be the GtkNotebook containing the tab.
+ */
 GtkWidget *
-multitab_label_new (const char *text, int *best_width);
-#else
-GtkWidget *
-multitab_label_new (const char *text);
-#endif
+multitab_label_new (GtkWidget *parent, const char *text, int *best_width);
+
+void
+multitab_label_set_parent (MultitabLabel *label,
+        GtkWidget *parent, int *best_width);
 
 void
 multitab_label_set_text (MultitabLabel *label, const char *text);

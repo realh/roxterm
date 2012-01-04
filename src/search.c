@@ -192,7 +192,7 @@ static void search_update_completion(const char *pattern)
     {
         char *line;
         
-        gtk_tree_model_get(search_data.model, &iter, 0, &line);
+        gtk_tree_model_get(search_data.model, &iter, 0, &line, -1);
         if (!strcmp(line, pattern))
         {
             GtkTreeIter top;
