@@ -21,18 +21,6 @@ endif
 	dh $@
 
 override_dh_auto_configure:
-<<<<<<< HEAD
-
-override_dh_auto_build:
-	dh_auto_build --parallel
-
-override_dh_auto_install:
-	dh_auto_install
-
-override_dh_install:
-	dh_install
-	dh_install -proxterm-common debian/roxterm.xpm usr/share/pixmaps/
-=======
 	python mscript.py configure $(MSCRIPT_OPTS) $(CONFIGURE_COMMON) \
 		 --disable-gtk3 $(DIRS_GTK2)
 
