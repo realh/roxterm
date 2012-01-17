@@ -1,5 +1,5 @@
 #  maitch.py - Simple but flexible build system tool
-#  Copyright (C) 2011 Tony Houghton <h@realh.co.uk>
+#  Copyright (C) 2012 Tony Houghton <h@realh.co.uk>
 #
 #  This program is free software; you can redistribute it and/or modify it
 #  under the terms of the GNU Lesser General Public License as published by the
@@ -2342,45 +2342,50 @@ class BuildGroup(object):
             return
         for dep in deps:
             dep = self.ctx.subst(dep)
-            # Has a rule to build this dep already been queued?
-            rule = self.queued.get(dep)
-            if rule:
-                if rule.calculating:
-                    raise MaitchRecursionError("%s and %s have circular "
-                            "dependencies" % (rule, dep))
-                self.mark_blocking(job, rule)
-                continue
-                
-            # Is there an explicit rule for it?
-            rule = self.ctx.explicit_rules.get(dep)
-            # Is there a suffix rule?
-            if not rule:
-                # Attempt quick lookup if dep has . suffix
-                r0 = None
-                if '.' in dep:
-                    suffix = '.' + dep.rsplit('.', 1)[1]
-                    rl = self.ctx.implicit_rules.get(suffix)
-                    if rl:
+            try:
+                # Has a rule to build this dep already been queued?
+                rule = self.queued.get(dep)
+                if rule:
+                    if rule.calculating:
+                        raise MaitchRecursionError("%s and %s have circular "
+                                "dependencies" % (rule, dep))
+                    self.mark_blocking(job, rule)
+                    continue
+                    
+                # Is there an explicit rule for it?
+                rule = self.ctx.explicit_rules.get(dep)
+                # Is there a suffix rule?
+                if not rule:
+                    # Attempt quick lookup if dep has . suffix
+                    r0 = None
+                    if '.' in dep:
+                        suffix = '.' + dep.rsplit('.', 1)[1]
+                        rl = self.ctx.implicit_rules.get(suffix)
+                        if rl:
+                            for r in rl:
+                                rule = r.get_rule_for_target(dep, self.queued)
+                                if rule:
+                                    break
+                if not rule:
+                    # Might be some other eligible suffix rule
+                    for rl in self.ctx.implicit_rules.values():
                         for r in rl:
                             rule = r.get_rule_for_target(dep, self.queued)
                             if rule:
                                 break
-            if not rule:
-                # Might be some other eligible suffix rule
-                for rl in self.ctx.implicit_rules.values():
-                    for r in rl:
-                        rule = r.get_rule_for_target(dep, self.queued)
                         if rule:
                             break
-                    if rule:
-                        break
-            if rule:
-                self.mark_blocking(job, rule)
-                self.add_job(rule)
-                continue
-            
-            # Does file already exist?
-            self.ctx.find_source(dep, job.where)
+                if rule:
+                    self.mark_blocking(job, rule)
+                    self.add_job(rule)
+                    continue
+                
+                # Does file already exist?
+                self.ctx.find_source(dep, job.where)
+            except:
+                mprint("Error trying to satisfy dep '%s' of '%s'" % (dep, job),
+                        file = sys.stderr)
+                raise
             
     
     def mark_blocking(self, blocked, blocker):
