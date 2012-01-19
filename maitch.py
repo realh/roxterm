@@ -735,7 +735,7 @@ Other predefined variables [default values shown in squarer brackets]:
                 shell = use_shell, cwd = self.build_dir)
         result = proc.communicate()
         if proc.returncode:
-            raise MaitchChildError("%s failed: %d: %s" % \
+            raise MaitchChildError("%s failed: %d:\n%s" % \
                     (' '.join(prog), proc.returncode, result[1].strip()))
         return result
     
