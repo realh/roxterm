@@ -257,7 +257,7 @@ Other predefined variables [default values shown in squarer brackets]:
                 mprint("Error: lockfile module unavailable. "
                         "Please install it or, as a last resort, "
                         "use the --no-lock option:\n"
-                        "%s -l %s --no-lock ..." % (sys.argv[0], sys.argv[1]),
+                        "%s %s --no-lock ..." % (sys.argv[0], sys.argv[1]),
                         file = sys.stderr)
                 sys.exit(1)
             f = self.get_lock_file_name()
