@@ -1,4 +1,10 @@
-roxterm (@VERSION@-1) experimental; urgency=low
+roxterm (@VERSION@-1) unstable; urgency=low
+
+  * debian/control: Added librsvg2-bin to Build-Depends.
+
+ -- Tony Houghton <h@realh.co.uk>  Mon, 20 Feb 2012 15:04:35 +0000
+
+roxterm (2.4.2-1) experimental; urgency=low
 
   * New upstream version:
     + Replaced autotools buildsystem with maitch.
