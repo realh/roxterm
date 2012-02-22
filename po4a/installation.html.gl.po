@@ -1,21 +1,22 @@
 # Translations for roxterm docs
 # Copyright (C) 2010 Tony Houghton
 # This file is distributed under the same license as the roxterm package.
-# 
+#
 # Translators:
 # Tony Houghton <h@realh.co.uk>, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: roxterm\n"
-"Report-Msgid-Bugs-To: https://sourceforge.net/tracker/?group_id=124080\n"
-"POT-Creation-Date: 2011-11-16 16:52+0000\n"
+"Report-Msgid-Bugs-To: http://sourceforge.net/tracker/?group_id=124080\n"
+"POT-Creation-Date: 2012-02-22 17:54+0000\n"
 "PO-Revision-Date: 2011-11-24 19:00+0000\n"
 "Last-Translator: Tony Houghton <h@realh.co.uk>\n"
-"Language-Team: Galician (http://www.transifex.net/projects/p/roxterm/team/gl/)\n"
+"Language-Team: Galician (http://www.transifex.net/projects/p/roxterm/team/"
+"gl/)\n"
+"Language: gl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: gl\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
 #. type: Attribute 'lang' of: <html>
@@ -50,7 +51,8 @@ msgstr ""
 
 #. type: Content of: <html><body><div><div><div><ul><li>
 #: ../Help/en/installation.html:26
-msgid "<a id=\"MainNav_Installation\" class=\"active\" href=\"#\">Installation</a>"
+msgid ""
+"<a id=\"MainNav_Installation\" class=\"active\" href=\"#\">Installation</a>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><ul><li>
@@ -61,8 +63,8 @@ msgstr ""
 #. type: Content of: <html><body><div><div><div><ul><li>
 #: ../Help/en/installation.html:28
 msgid ""
-"<a id=\"MainNav_Forums\" "
-"href=\"https://sourceforge.net/projects/roxterm/forums\">Forums</a>"
+"<a id=\"MainNav_Forums\" href=\"https://sourceforge.net/projects/roxterm/"
+"forums\">Forums</a>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><ol><li>
@@ -103,8 +105,8 @@ msgstr ""
 #. type: Content of: <html><body><div><div><div><p>
 #: ../Help/en/installation.html:53
 msgid ""
-"<span>git clone "
-"git://roxterm.git.sourceforge.net/gitroot/roxterm/roxterm</span>"
+"<span>git clone git://roxterm.git.sourceforge.net/gitroot/roxterm/roxterm</"
+"span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><h2>
@@ -126,15 +128,15 @@ msgstr ""
 #: ../Help/en/installation.html:65
 msgid ""
 "To compile ROXTerm you will need the header files for the above libraries. "
-"In packaging systems they usually come in packages whose names end in "
-"\"-dev\" or \"-devel\"."
+"In packaging systems they usually come in packages whose names end in \"-dev"
+"\" or \"-devel\"."
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
 #: ../Help/en/installation.html:69
 msgid ""
-"ROXTerm uses a new, bespoke build system called maitch. This requires python"
-" and the python 'lockfile' module."
+"ROXTerm uses a new, bespoke build system called maitch. This requires python "
+"and the python 'lockfile' module."
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><h3>
@@ -145,22 +147,20 @@ msgstr ""
 #. type: Content of: <html><body><div><div><div><p>
 #: ../Help/en/installation.html:74
 msgid ""
-"D-Bus is a messaging system which ROXTerm uses to connect terminals with its"
-" configure tool. ROXTerm uses the \"session\" bus, which should be started "
+"D-Bus is a messaging system which ROXTerm uses to connect terminals with its "
+"configure tool. ROXTerm uses the \"session\" bus, which should be started "
 "along with your desktop environment. Current versions of ROX, GNOME and KDE "
-"session managers all launch D-Bus. If you use some other "
-"session/desktop/window manager which doesn't launch D-Bus you can start it "
-"by inserting something like this near the start of your .xinitrc or "
-".xsession:"
+"session managers all launch D-Bus. If you use some other session/desktop/"
+"window manager which doesn't launch D-Bus you can start it by inserting "
+"something like this near the start of your .xinitrc or .xsession:"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
 #: ../Help/en/installation.html:80
 msgid ""
-"<span>if test -z \"$DBUS_SESSION_BUS_ADDRESS\" ; then</span> <span "
-"class=\"indented\">eval `dbus-launch --sh-syntax --exit-with-session`</span>"
-" <span class=\"indented\">export DBUS_SESSION_BUS_ADDRESS</span> "
-"<span>fi</span>"
+"<span>if test -z \"$DBUS_SESSION_BUS_ADDRESS\" ; then</span> <span class="
+"\"indented\">eval `dbus-launch --sh-syntax --exit-with-session`</span> <span "
+"class=\"indented\">export DBUS_SESSION_BUS_ADDRESS</span> <span>fi</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
@@ -189,8 +189,8 @@ msgstr ""
 #. type: Content of: <html><body><div><div><div><p>
 #: ../Help/en/installation.html:98
 msgid ""
-"<span>python ./mscript.py configure</span> <span>python ./mscript.py "
-"build</span> <span>python ./mscript.py install</span>"
+"<span>python ./mscript.py configure</span> <span>python ./mscript.py build</"
+"span> <span>python ./mscript.py install</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
@@ -225,28 +225,28 @@ msgstr ""
 #. type: Content of: <html><body><div><div><div><p>
 #: ../Help/en/installation.html:116
 msgid ""
-"Up-to-date official Debian packages are now available. See <a "
-"href=\"http://packages.debian.org/roxterm\">http://packages.debian.org/roxterm</a>."
-" For those that want to build their own debian packages, the debian "
-"packaging files used to have a separate module in subversion but this has "
-"now been merged into the main trunk, and is also included with release "
-"tarballs from 1.19.1 onwards."
+"Up-to-date official Debian packages are now available. See <a href=\"http://"
+"packages.debian.org/roxterm\">http://packages.debian.org/roxterm</a>. For "
+"those that want to build their own debian packages, the debian packaging "
+"files used to have a separate module in subversion but this has now been "
+"merged into the main trunk, and is also included with release tarballs from "
+"1.19.1 onwards."
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
 #: ../Help/en/installation.html:121
 msgid ""
-"For instructions on building a debian package refer to the file "
-"INSTALL.Debian in the unpacked tarball/git working directory."
+"For instructions on building a debian package refer to the file INSTALL."
+"Debian in the unpacked tarball/git working directory."
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
 #: ../Help/en/installation.html:124
 msgid ""
-"Ubuntu also has official roxterm packages, but due to Ubuntu's release cycle"
-" these may lag behind the latest upstream releases. Therefore I have set up "
-"a <a href=\"https://launchpad.net/~h-realh/+archive/ppa\">PPA</a> to provide"
-" the most recent releases of ROXTerm for Ubuntu's current release when "
+"Ubuntu also has official roxterm packages, but due to Ubuntu's release cycle "
+"these may lag behind the latest upstream releases. Therefore I have set up a "
+"<a href=\"https://launchpad.net/~h-realh/+archive/ppa\">PPA</a> to provide "
+"the most recent releases of ROXTerm for Ubuntu's current release when "
 "appropriate."
 msgstr ""
 
@@ -267,18 +267,15 @@ msgstr ""
 #. type: Content of: <html><body><div><div><div>
 #: ../Help/en/installation.html:143
 msgid ""
-"<a id=\"DonationLink\" class=\"spriteLink\" "
-"href=\"http://sourceforge.net/donate/index.php?group_id=124080\">Donate</a> "
-"<a id=\"ValidMarkupLink\" class=\"spriteLink\" "
-"href=\"http://validator.w3.org/check?uri=referer\">Valid XHTML</a>"
+"<a id=\"DonationLink\" class=\"spriteLink\" href=\"http://sourceforge.net/"
+"donate/index.php?group_id=124080\">Donate</a> <a id=\"ValidMarkupLink\" "
+"class=\"spriteLink\" href=\"http://validator.w3.org/check?uri=referer"
+"\">Valid XHTML</a>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><p>
 #: ../Help/en/installation.html:147
 msgid ""
-"ROXTerm is licensed under the <a "
-"href=\"http://www.gnu.org/licenses/gpl-3.0-standalone.html\">GPL</a> | Site "
-"design by Adrian Sampson"
+"ROXTerm is licensed under the <a href=\"http://www.gnu.org/licenses/gpl-3.0-"
+"standalone.html\">GPL</a> | Site design by Adrian Sampson"
 msgstr ""
-
-

@@ -4145,7 +4145,7 @@ void roxterm_launch(const char *display_name, char **env)
                 if (!wtitle)
                     break;
             }
-            if (x11support_get_workspace(gtk_widget_get_window(w), &workspace)
+            if (x11support_get_wm_desktop(gtk_widget_get_window(w), &workspace)
                     && (int) workspace == global_options_workspace)
             {
                 focused = win;
