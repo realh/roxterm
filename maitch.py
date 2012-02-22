@@ -735,14 +735,17 @@ Other predefined variables [default values shown in squarer brackets]:
                 shell = use_shell, cwd = self.build_dir)
         result = proc.communicate()
         if proc.returncode:
-            raise MaitchChildError("%s failed: %d:\n%s" % \
+            raise MaitchChildError("%s failed:\n%d:\n%s" % \
                     (' '.join(prog), proc.returncode, result[1].strip()))
         return result
     
     
     def prog_to_var(self, prog, var, use_shell = False):
         " As prog_output(), storing stripped result into self.env[var]. "
-        self.env[var] = self.prog_output(prog, use_shell)[0].strip()
+        output = self.prog_output(prog, use_shell)[0].strip()
+        dprint("prog_to_var: input: %s" % ' '.join(prog))
+        dprint("prog_to_var: output: %s" % output)
+        self.env[var] = output
     
     
     def pkg_config(self, pkgs, prefix = None, version = None,
@@ -841,22 +844,26 @@ Other predefined variables [default values shown in squarer brackets]:
         fp = open(tmp + ".c", 'w')
         fp.write(code)
         fp.close()
-        prog = self.subst("${CC} %s %s -o %s %s" %
-                (libs, cflags, tmp, tmp + ".c")).split()
+        prog = self.subst("${CC} -o %s %s %s %s" %
+                (tmp, tmp + ".c", libs, cflags)).split()
         try:
             self.prog_output(prog)
-        except MaitchChildError:
-            result = 'no'
+        except MaitchChildError as e:
+            if msg:
+                mprint("no")
+            dprint("check_compile failed:\n%s" % str(e))
+            dprint("code was:\n%s" % code)
+            result = False
         else:
-            result = 'yes'
+            if msg:
+                mprint("yes")
             try:
                 os.unlink(tmp)
             except OSError:
                 pass
+            result = True
         os.unlink(tmp + ".c")
-        if msg:
-            mprint("%s" % result)
-        return result == 'yes'
+        return result
 
 
     def check_header(self, header, cflags = None, libs = None):
