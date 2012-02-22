@@ -50,6 +50,7 @@ extern gboolean global_options_maximise;
 
 /* Whether to try to open new terminal in an existing window */
 extern gboolean global_options_tab;
+extern int global_options_workspace;
 
 /* Fork first instance */
 extern gboolean global_options_fork;

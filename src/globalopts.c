@@ -42,6 +42,7 @@ gboolean global_options_fullscreen = FALSE;
 gboolean global_options_maximise = FALSE;
 gboolean global_options_tab = FALSE;
 gboolean global_options_fork = FALSE;
+int global_options_workspace = -1;
 
 static void correct_scheme(const char *bad_name, const char *good_name)
 {
@@ -68,6 +69,7 @@ static void global_options_reset(void)
     global_options_replace = FALSE;
     global_options_fullscreen = FALSE;
     global_options_tab = FALSE;
+    global_options_workspace = -1;
     global_options_disable_sm = FALSE;
     options_reload_keyfile(global_options);
     correct_schemes();
@@ -171,6 +173,17 @@ static gboolean global_options_set_double(const gchar *option_name,
     return TRUE;
 }
 
+static gboolean global_options_set_tab(const gchar *option_name,
+        const gchar *value, gpointer data, GError **error)
+{
+    global_options_tab = TRUE;
+    if (value)
+        global_options_workspace = atoi(value);
+    else
+        global_options_workspace = -1;
+    return TRUE;
+}
+
 static GOptionEntry global_g_options[] = {
     { "usage", 'u', G_OPTION_FLAG_IN_MAIN | G_OPTION_FLAG_NO_ARG,
         G_OPTION_ARG_CALLBACK, global_options_show_usage,
@@ -245,8 +258,8 @@ static GOptionEntry global_g_options[] = {
     { "tab-name", 'n', G_OPTION_FLAG_IN_MAIN,
         G_OPTION_ARG_CALLBACK, global_options_set_string,
         N_("Set tab name"), N_("NAME") },
-    { "tab", 0, G_OPTION_FLAG_IN_MAIN,
-        G_OPTION_ARG_NONE, &global_options_tab,
+    { "tab", 0, G_OPTION_FLAG_IN_MAIN | G_OPTION_FLAG_OPTIONAL_ARG,
+        G_OPTION_ARG_CALLBACK, global_options_set_tab,
         N_("Open a tab in an existing window instead of\n"
         "                                   a new window if possible"),
         NULL },

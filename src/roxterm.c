@@ -49,6 +49,7 @@
 #endif
 #include "shortcuts.h"
 #include "uri.h"
+#include "x11support.h"
 
 #if VTE_CHECK_VERSION(0, 26, 0)
 #define VTE_HAS_PTY_OBJECT 1
@@ -4131,14 +4132,23 @@ void roxterm_launch(const char *display_name, char **env)
         win = NULL;
         for (link = multi_win_all; link; link = g_list_next(link))
         {
+            GtkWidget *w;
+            guint32 workspace;
+            
             win = link->data;
             if (wtitle && !g_strcmp0(multi_win_get_title_template(win), wtitle))
                 break;
-            if (gtk_window_is_active(GTK_WINDOW(multi_win_get_widget(win))))
+            w = multi_win_get_widget(win);
+            if (gtk_window_is_active(GTK_WINDOW(w)))
             {
-                focused = NULL;
+                focused = win;
                 if (!wtitle)
                     break;
+            }
+            if (x11support_get_workspace(gtk_widget_get_window(w), &workspace)
+                    && (int) workspace == global_options_workspace)
+            {
+                focused = win;
             }
             win = NULL;
         }
@@ -4146,8 +4156,6 @@ void roxterm_launch(const char *display_name, char **env)
         {
             if (focused)
                 win = focused;
-            else if (multi_win_all)
-                win = multi_win_all->data;
         }
         partner = win ? multi_win_get_user_data_for_current_tab(win) : NULL;
         if (partner)
