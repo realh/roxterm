@@ -372,6 +372,7 @@ int main(int argc, char **argv)
     g_free(display);
     
     global_options_init(&argc, &argv, TRUE);
+    global_options_apply_dark_theme();
 
     if (dbus_ok)
     {

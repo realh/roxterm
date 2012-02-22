@@ -2015,7 +2015,6 @@
                             <property name="receives_default">False</property>
                             <property name="use_action_appearance">False</property>
                             <property name="xalign">0</property>
-                            <property name="active">True</property>
                             <property name="draw_indicator">True</property>
                             <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
                           </object>
@@ -2034,8 +2033,8 @@
                             <property name="receives_default">False</property>
                             <property name="use_action_appearance">False</property>
                             <property name="xalign">0</property>
-                            <property name="active">True</property>
                             <property name="draw_indicator">True</property>
+                            <property name="group">warn_close0</property>
                             <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
                           </object>
                           <packing>
@@ -2053,8 +2052,8 @@
                             <property name="receives_default">False</property>
                             <property name="use_action_appearance">False</property>
                             <property name="xalign">0</property>
-                            <property name="active">True</property>
                             <property name="draw_indicator">True</property>
+                            <property name="group">warn_close0</property>
                             <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
                           </object>
                           <packing>
@@ -2074,6 +2073,7 @@
                             <property name="xalign">0</property>
                             <property name="active">True</property>
                             <property name="draw_indicator">True</property>
+                            <property name="group">warn_close0</property>
                             <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
                           </object>
                           <packing>
@@ -2089,6 +2089,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
+                            <property name="tooltip_markup" translatable="yes">This option applies to terminal windows' menus and borders etc; terminal colours are handled separately. It does not apply to the configuration applet.</property>
                             <property name="use_action_appearance">False</property>
                             <property name="xalign">0</property>
                             <property name="draw_indicator">True</property>

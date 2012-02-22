@@ -1057,6 +1057,7 @@ gboolean configlet_open(GdkScreen *scrn)
         
         capplet_set_radio(&cg->capp, "warn_close", 2);
         capplet_set_boolean_toggle(&cg->capp, "edit_shortcuts", FALSE);
+        capplet_set_boolean_toggle(&cg->capp, "prefer_dark_theme", FALSE);
 
         capplet_inc_windows();
         gtk_widget_show(cg->widget);

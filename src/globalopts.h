@@ -123,6 +123,8 @@ char **global_options_copy_strv(char **ps);
 #define FREE_CURRENT_DIR g_free
 #endif
 
+void global_options_apply_dark_theme(void);
+
 #endif /* GLOBALOPTS_H */
 
 /* vi:set sw=4 ts=4 noet cindent cino= */
