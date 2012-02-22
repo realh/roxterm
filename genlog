@@ -5,8 +5,12 @@ use_grep=1
 for i in `git tag | grep '^[0-9]' | sort -r` ; do
     [ "$prev" = "2.3.1" ] && use_grep=0
     if [ -n "`git log $i..$prev`" ] ; then
-        [ "$prev" != "HEAD" ] && printf "Version "
-        echo $prev
+        printf "Version "
+        if [ "$prev" = "HEAD" ] ; then
+            git describe | sed 's/-/./;s/-/~/'
+        else
+            echo $prev
+        fi
         git log '--pretty=format:Author: %an <%ae>%nDate:   %aD' $i..$prev \
                 | head -n 2
         if [ $use_grep = 1 ] ; then
