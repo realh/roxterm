@@ -84,8 +84,18 @@ if ctx.mode == 'configure':
                 "current/manpages/docbook.xsl")
         ctx.setenv("XMLTOMAN_OUTPUT", "")
     
-    ctx.find_prog_env("convert")
-    ctx.find_prog_env("composite")
+    try:
+        ctx.find_prog_env("convert")
+        ctx.find_prog_env("composite")
+        ctx.find_prog_env("rsvg")
+    except:
+        mprint("WARNING: ImageMagick and/or rsvg binaries appear " \
+                "not to be installed.\n" \
+                "This will cause errors later unless the generated pixmaps " \
+                "are already present,\neg supplied with a release tarball.",
+                file = sys.stderr)
+        ctx.setenv("CONVERT", "")
+        ctx.setenv("COMPOSITE", "")
     
     ctx.setenv('BUG_TRACKER', "http://sourceforge.net/tracker/?group_id=124080")
     
@@ -279,23 +289,25 @@ elif ctx.mode == 'build':
     # Stuff other than the program
     
     # Graphics
-    ctx.add_rule(Rule(rule = "${CONVERT} -background #0000 " \
-            "${SRC} -geometry 64x64 ${TGT}",
-            targets = LOGO_PNG,
-            sources = "roxterm.svg",
-            where = TOP))
-            
-    # Note 'where' is NOWHERE for following two rules because sources already
-    # start with ${TOP_DIR}.
-    ctx.add_rule(Rule(rule = "${CONVERT} ${SRC} -geometry 16x16 ${TGT}",
-            targets = FAVICON,
-            sources = LOGO_PNG,
-            where = NOWHERE))
-    
-    ctx.add_rule(Rule(rule = "${COMPOSITE} -gravity SouthWest ${SRC} ${TGT}",
-            targets = TEXT_LOGO,
-            sources = [LOGO_PNG, "${TOP_DIR}/Help/lib/logo_text_only.png"],
-            where = NOWHERE))
+    if ctx.env['CONVERT']:
+        ctx.add_rule(Rule(rule = "${CONVERT} -background #0000 " \
+                "${SRC} -geometry 64x64 ${TGT}",
+                targets = LOGO_PNG,
+                sources = "roxterm.svg",
+                where = TOP))
+                
+        # Note 'where' is NOWHERE for following two rules because sources
+        # already start with ${TOP_DIR}.
+        ctx.add_rule(Rule(rule = "${CONVERT} ${SRC} -geometry 16x16 ${TGT}",
+                targets = FAVICON,
+                sources = LOGO_PNG,
+                where = NOWHERE))
+        
+        ctx.add_rule(Rule( \
+                rule = "${COMPOSITE} -gravity SouthWest ${SRC} ${TGT}",
+                targets = TEXT_LOGO,
+                sources = [LOGO_PNG, "${TOP_DIR}/Help/lib/logo_text_only.png"],
+                where = NOWHERE))
     
     # man pages
     if ctx.env['XMLTOMAN']:
@@ -478,7 +490,7 @@ elif ctx.mode == "install" or ctx.mode == "uninstall":
 
 elif ctx.mode == 'distclean' or ctx.mode == 'clean':
     
-    clean = [LOGO_PNG, TEXT_LOGO, FAVICON, APPINFO]
+    clean = [APPINFO]
     if ctx.mode == 'distclean':
         clean += [VFILE, DCH]
     for f in clean:
@@ -498,9 +510,7 @@ elif ctx.mode == 'dist':
             "roxterm.desktop roxterm.lsm.in roxterm.spec.in " \
             "roxterm.svg roxterm.xml TODO " \
             "src/roxterm-config.glade src/roxterm-config.ui")
-    for f in [LOGO_PNG, FAVICON, TEXT_LOGO]:
-        if os.path.exists(f):
-            ctx.add_dist(f)
+    ctx.add_dist([LOGO_PNG, FAVICON, TEXT_LOGO])
     ctx.add_dist(ctx.glob("*.[c|h]", os.curdir, "src"))
     # Debian files
     ctx.add_dist("builddeb")
