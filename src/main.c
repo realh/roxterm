@@ -64,16 +64,20 @@ static DBusMessage *create_dbus_message(int argc, char **argv,
         char *arg;
         char tmp[16];
         
-        if (g_str_has_prefix(arg, "--tab"))
+        if (g_str_has_prefix(argv[n], "--tab"))
         {
             if (global_options_workspace == -1)
             {
                 guint32 ws;
                 
-                if (x11support_get_wm_desktop(gdk_get_default_root_window(),
-                        &ws))
+                if (x11support_get_current_desktop(
+                        gdk_get_default_root_window(), &ws))
                 {
                     global_options_workspace = (int) ws;
+                }
+                else
+                {
+                    g_warning(_("Unable to read current workspace"));
                 }
             }
             sprintf(tmp, "--tab=%d", global_options_workspace);

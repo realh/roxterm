@@ -1508,9 +1508,7 @@ static void roxterm_clear_hold_over_uri(ROXTermData *roxterm)
 {
     if (roxterm->hold_over_uri)
     {
-        g_debug(">> roxterm_clear_hold_over_uri");
         g_signal_handler_disconnect(roxterm->widget, roxterm->hold_handler_id);
-        g_debug("<< roxterm_clear_hold_over_uri");
         roxterm->hold_over_uri = FALSE;
     }
 }
