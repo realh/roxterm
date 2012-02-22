@@ -1,8 +1,10 @@
 roxterm (@VERSION@-1) unstable; urgency=low
 
+  * maitch.py: Reorder args in compiler checks: libs must come after source
+    on some systems.
   * debian/control: Added librsvg2-bin to Build-Depends.
 
- -- Tony Houghton <h@realh.co.uk>  Mon, 20 Feb 2012 15:04:35 +0000
+ -- Tony Houghton <h@realh.co.uk>  Wed, 22 Feb 2012 16:28:40 +0000
 
 roxterm (2.4.2-1) experimental; urgency=low
 
