@@ -93,8 +93,12 @@ typedef void (*MultiWinGetDisableMenuShortcuts)(gpointer user_data,
 typedef void (*MultiWinInitialTabs)(gpointer user_data,
         GtkPositionType *p_pos, int *p_num);
 
-/* A handler for delete-event */
-typedef void (*MultiWinDeleteHandler)(GtkWidget *, GdkEvent *, MultiWin *win);
+/* Called when a window or tab is about to be closed. If it's a tab, event is
+ * NULL and data is the tab's user_data. If event is non-NULL data is a
+ * MultiWin *.
+ * Return FALSE to close, TRUE to keep open. */
+typedef gboolean (*MultiWinDeleteHandler)(GtkWidget *, GdkEvent *,
+        gpointer data);
 
 /* Return whether to show close buttons in tabs */
 typedef gboolean (*MultiTabGetShowCloseButton)(gpointer user_data);

@@ -3612,6 +3612,7 @@ roxterm_opt_signal_handler(const char *profile_name, const char *key,
     }
     else if (!strcmp(profile_name, "Global") &&
             (!strcmp(key, "warn_close") ||
+            !strcmp(key, "only_warn_running") ||
             !strcmp(key, "edit_shortcuts") ||
             !strcmp(key, "prefer_dark_theme")))
     {
@@ -4281,6 +4282,7 @@ static void roxterm_get_disable_menu_shortcuts(ROXTermData *roxterm,
 typedef struct {
     guint ntabs;
     int warn;
+    gboolean only_running;
 } DontShowData;
 
 static void dont_show_again_toggled(GtkToggleButton *button, DontShowData *d)
@@ -4289,7 +4291,9 @@ static void dont_show_again_toggled(GtkToggleButton *button, DontShowData *d)
     
     if (gtk_toggle_button_get_active(button))
     {
-        if (d->ntabs > 1)
+        if (!d->ntabs)
+            val = 2;
+        else if (d->ntabs > 1)
             val = 0;
         else
             val = 1;
@@ -4302,38 +4306,98 @@ static void dont_show_again_toggled(GtkToggleButton *button, DontShowData *d)
     options_file_save(global_options->kf, "Global");
 }
 
-static gboolean roxterm_win_delete_handler(GtkWindow *gtkwin, GdkEvent *event,
-        MultiWin * win)
+static void only_running_toggled(GtkToggleButton *button, DontShowData *d)
+{
+    options_set_int(global_options, "only_warn_running", 
+            gtk_toggle_button_get_active(button));
+    options_file_save(global_options->kf, "Global");
+}
+
+static void check_each_tab_running(MultiTab *tab, void *data)
+{
+    if (((ROXTermData *) multi_tab_get_user_data(tab))->running)
+    {
+        gboolean *prunning = data;
+        
+        *prunning = TRUE;
+    }
+}
+
+static gboolean roxterm_delete_handler(GtkWindow *gtkwin, GdkEvent *event,
+        gpointer data)
 {
     GtkWidget *dialog;
     GtkWidget *noshow;
+    GtkWidget *only_running;
     gboolean response;
     DontShowData d;
+    const char *msg;
+    MultiWin *win = event ? data : NULL;
+    ROXTermData *roxterm = event ? NULL : data;
+    GtkBox *ca_box;
     
-    (void) event;
-    
-    d.warn = options_lookup_int_with_default(global_options, "warn_close", 2);
-    d.ntabs = multi_win_get_ntabs(win);
-    if (!d.warn || (d.warn == 1 && d.ntabs <= 1))
+    d.warn = global_options_lookup_int_with_default("warn_close", 3);
+    d.only_running = global_options_lookup_int_with_default("only_warn_running",
+            FALSE);
+    d.ntabs = win ? multi_win_get_ntabs(win) : 0;
+    if ((!win && d.warn < 3) || !d.warn || (d.warn == 1 && d.ntabs <= 1))
         return FALSE;
+    if (d.only_running)
+    {
+        if (win)
+        {
+            gboolean running = FALSE;
+            
+            multi_win_foreach_tab(win, check_each_tab_running, &running);
+            if (!running)
+                return FALSE;
+        }
+        else if (!roxterm->running)
+        {
+            return FALSE;
+        }
+    }
         
+    switch (d.ntabs)
+    {
+        case 0:
+            msg = _("Closing this ROXTerm tab may cause loss of data. "
+                    "Are you sure you want to continue?");
+            break;
+        case 1:
+            msg = _("You are about to close a ROXTerm window; this may cause "
+                    "loss of data. Are you sure you want to continue?");
+            break;
+        default:
+            msg = _("You are about to close a window containing multiple "
+                    "ROXTerm tabs; this may cause loss of data. Are you sure "
+                    "you want to continue?");
+            break;
+    }
     dialog = gtk_message_dialog_new(gtkwin,
             GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
             GTK_MESSAGE_WARNING, GTK_BUTTONS_OK_CANCEL,
-            d.ntabs <= 1 ?
-                _("You are about to close a ROXTerm window; this may cause "
-                    "loss of data. Are you sure you want to continue?") :
-                _("You are about to close a window containing multiple "
-                    "ROXTerm tabs; this may cause loss of data. Are you sure "
-                    "you want to continue?"));
+            msg);
     gtk_window_set_title(GTK_WINDOW(dialog), _("ROXTerm: Confirm close"));
+    
+    ca_box = GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog)));
+    
     noshow = gtk_check_button_new_with_mnemonic(_("_Don't show this again"));
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(noshow), FALSE);
     g_signal_connect(noshow, "toggled",
             G_CALLBACK(dont_show_again_toggled), &d);
-    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),
-            noshow, FALSE, FALSE, 0);
+    gtk_box_pack_start(ca_box, noshow, FALSE, FALSE, 0);
     gtk_widget_show(noshow);
+    
+    only_running = gtk_check_button_new_with_mnemonic(
+            _("Only warn if tasks are still _running"));
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(only_running),
+            d.only_running);
+    g_signal_connect(only_running, "toggled",
+            G_CALLBACK(only_running_toggled), &d);
+    gtk_box_pack_start(ca_box, only_running, FALSE, FALSE, 0);
+    gtk_widget_show(only_running);
+    
     response = gtk_dialog_run(GTK_DIALOG(dialog)) != GTK_RESPONSE_OK;
     gtk_widget_destroy(dialog);
     return response;
@@ -4367,7 +4431,7 @@ void roxterm_init(void)
         (MultiWinZoomHandler) roxterm_set_zoom_factor,
         (MultiWinGetDisableMenuShortcuts) roxterm_get_disable_menu_shortcuts,
         (MultiWinInitialTabs) roxterm_get_initial_tabs,
-        (MultiWinDeleteHandler) roxterm_win_delete_handler,
+        (MultiWinDeleteHandler) roxterm_delete_handler,
         (MultiTabGetShowCloseButton) roxterm_get_show_tab_close_button,
         (MultiTabGetNewTabAdjacent) roxterm_get_new_tab_adjacent
         );

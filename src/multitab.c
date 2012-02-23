@@ -1241,7 +1241,12 @@ static void multi_win_detach_tab_action(MultiWin * win)
 
 static void multi_win_close_tab_action(MultiWin * win)
 {
-    multi_tab_delete(win->current_tab);
+    if (!multi_win_delete_handler ||
+            !multi_win_delete_handler(win->gtkwin, NULL,
+                    win->current_tab->user_data))
+    {
+        multi_tab_delete(win->current_tab);
+    }
 }
 
 static void multi_win_close_other_tabs_action(MultiWin * win)

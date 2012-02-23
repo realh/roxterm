@@ -1055,8 +1055,9 @@ gboolean configlet_open(GdkScreen *scrn)
         configlet_setup_family(cg, &cg->shortcuts, "Shortcuts");
         configlet_setup_family(cg, &cg->encodings, "encodings");
         
-        capplet_set_radio(&cg->capp, "warn_close", 2);
         capplet_set_boolean_toggle(&cg->capp, "edit_shortcuts", FALSE);
+        capplet_set_radio(&cg->capp, "warn_close", 3);
+        capplet_set_boolean_toggle(&cg->capp, "only_warn_running", FALSE);
         capplet_set_boolean_toggle(&cg->capp, "prefer_dark_theme", FALSE);
 
         capplet_inc_windows();
