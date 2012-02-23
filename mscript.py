@@ -58,7 +58,8 @@ if ctx.mode == 'configure':
     if git:
         # Might have an obsolete version.h from earlier build
         ctx.delete("${SRC_DIR}/version.h")
-        version = ctx.prog_output(["${GIT}", "describe"])[0].strip()
+        version = ctx.prog_output(["${GIT}", "describe",
+                "--match", "[0-9]*"])[0].strip()
         version = version.replace('-', '.', 1).replace('-', '~', 1)
         ctx.save_if_different(vfile, version + '\n')
         gitlog = ctx.prog_output([os.path.abspath(

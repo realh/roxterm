@@ -7,7 +7,7 @@ for i in `git tag | grep '^[0-9]' | sort -r` ; do
     if [ -n "`git log $i..$prev`" ] ; then
         printf "Version "
         if [ "$prev" = "HEAD" ] ; then
-            git describe | sed 's/-/./;s/-/~/'
+            git describe --match '[0-9]*' | sed 's/-/./;s/-/~/'
         else
             echo $prev
         fi
