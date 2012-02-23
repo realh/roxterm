@@ -26,7 +26,11 @@ Additionally install the devscripts package, which includes debuild.
 You may also need to install the following packages, depending on the version
 of roxterm already known to your distro:
 
-    imagemagick python python-lockfile libgtk-3-dev libvte-2.90-dev
+    python python-lockfile libgtk-3-dev libvte-2.90-dev
+
+and if not using a tarball which includes the pixmaps derived from the SVG file:
+
+    imagemagick librsvg2-bin
 
 To build on older distros where libgtk-3-dev and libvte-2.90-dev are not
 available, checkout the "lucid" branch from git.

@@ -504,7 +504,7 @@ elif ctx.mode == 'dist':
             "Help/lib/logo_text_only.png " \
             "Help/lib/roxterm.css Help/lib/roxterm_ie.css "
             "Help/lib/sprites.png " \
-            "INSTALL INSTALL.Debian INSTALL.ReadFirst " \
+            "INSTALL INSTALL.Debian " \
             "NEWS README README.translations " \
             "roxterm.1.xml.in roxterm-config.1.xml.in " \
             "roxterm.desktop roxterm.lsm.in roxterm.spec.in " \
@@ -531,7 +531,7 @@ elif ctx.mode == 'dist':
     if os.path.exists("AppInfo.xml"):
         ctx.add_dist("AppInfo.xml")
     # Translations
-    ctx.add_dist("po/LINGUAS")
+    ctx.add_dist("po/LINGUAS po4a/LINGUAS")
     files = ctx.glob("*.po", os.curdir, "po4a") + \
             ctx.glob("*.pot", os.curdir, "po4a")
     if files:
@@ -543,26 +543,6 @@ elif ctx.mode == 'dist':
     files = ctx.glob("*.po", os.curdir, "po", False)
     if files:
         ctx.add_dist(files)
-    # Only needed for autotools
-    files = "ABOUT-NLS po4a/LINGUAS po4a/Makefile.in po4a/Makefile.am".split()
-    files += ["po/%s" % f for f in "insert-header.sin " \
-                    "Makefile.in.in Rules-quot boldquot.sed en@quot.header " \
-                    "en@boldquot.header Makevars remove-potcdate.sin " \
-                    "stamp-po quot.sed".split()]
-    # Other stuff to be removed when we no longer support autotools
-    files += "acinclude.m4 bootstrap.sh configure.ac.in " \
-            "Makefile.am src/Makefile.am update-locales".split()
-    files += "m4 aclocal.m4 " \
-                "compile config.h.in " \
-                "config.rpath configure configure.ac " \
-                "depcomp install-sh intl ltmain.sh " \
-                "Makefile.in src/Makefile.in missing".split()
-    for f in files:
-        if os.path.exists(f):
-            ctx.add_dist(f)
-    for f in ["config.sub", "config.guess"]:
-        if os.path.exists(f):
-            ctx.add_dist(os.path.realpath(f), arcname = f)
             
 
 ctx.run()
