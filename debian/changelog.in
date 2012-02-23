@@ -1,10 +1,18 @@
 roxterm (@VERSION@-1) unstable; urgency=low
 
-  * maitch.py: Reorder args in compiler checks: libs must come after source
-    on some systems.
-  * debian/control: Added librsvg2-bin to Build-Depends.
+  * New upstream version:
+    + maitch.py: Reorder args in compiler checks: libs must come after source
+      on some systems.
+    + More flexible close window/tab warnings.
+    + Added global option to use dark theme.
+    + Revamped "configlet" (Configuration Manager).
+    + --tab only reuses windows on current workspace unless overridden
+      by --title.
+    + SVG-derived pixmaps are included in release tarballs for convenience.
+  * debian/control: Removed imagemagick and librsvg2-bin from Build-Depends
+    (see above).
 
- -- Tony Houghton <h@realh.co.uk>  Wed, 22 Feb 2012 16:28:40 +0000
+ -- Tony Houghton <h@realh.co.uk>  Thu, 23 Feb 2012 15:35:53 +0000
 
 roxterm (2.4.2-1) experimental; urgency=low
 
