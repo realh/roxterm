@@ -236,6 +236,16 @@ if ctx.mode == 'configure':
             '#define VERSION "${VERSION}"\n' \
             '#endif\n')
     
+    # Make symlinks expected by ROX
+    for f in "AUTHORS ChangeLog COPYING COPYING-LGPL NEWS README".split():
+        if f == "ChangeLog":
+            dest = "${TOP_DIR}/Help/Changes"
+        else:
+            dest = "${TOP_DIR}/Help/" + f
+        src = "../" + f
+        if subprocess.call(["ln", "-nfs", src, ctx.subst(dest)]):
+            raise MaitchChildError("Failed to link '%s' Help file" % f)
+    
 elif ctx.mode == 'build':
 
     # Private library
@@ -513,7 +523,7 @@ elif ctx.mode == 'dist':
     ctx.add_dist("version maitch.py mscript.py")
     # ROX bits
     ctx.add_dist("AppInfo.xml.in AppRun .DirIcon " \
-            "Help/Changes Help/COPYING Help/NEWS Help/README")
+            "Help/Changes Help/COPYING Help/COPYING-LGPL Help/NEWS Help/README")
     if os.path.exists("AppInfo.xml"):
         ctx.add_dist("AppInfo.xml")
     # Translations
