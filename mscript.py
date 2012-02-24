@@ -501,7 +501,7 @@ elif ctx.mode == 'distclean' or ctx.mode == 'clean':
         clean += [VFILE, "${TOP_DIR}/ChangeLog"] + \
             ["${TOP_DIR}/Help/" + f for f in \
                 "AUTHORS COPYING COPYING-LGPL Changes NEWS README".split()] + \
-            ["${TOP_DIR}/Help/" + f for f in \
+            ["${TOP_DIR}/Help/lib/" + f for f in \
                 "favicon.ico logo_text.png roxterm_logo.png".split()] + \
             ctx.glob("*.pot", "${TOP_DIR}", "po") + \
             ctx.glob("*.pot", "${TOP_DIR}", "po4a")
