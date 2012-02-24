@@ -23,7 +23,6 @@ ROXTERM_HTML_BASENAMES = "guide index installation news".split()
 LOGO_PNG = "${TOP_DIR}/Help/lib/roxterm_logo.png"
 FAVICON = "${TOP_DIR}/Help/lib/favicon.ico"
 TEXT_LOGO = "${TOP_DIR}/Help/lib/logo_text.png"
-DCH = "${TOP_DIR}/debian/changelog"
 APPINFO = "${TOP_DIR}/AppInfo.xml"
 VFILE = "${TOP_DIR}/version"
 
@@ -237,10 +236,6 @@ if ctx.mode == 'configure':
             '#define VERSION "${VERSION}"\n' \
             '#endif\n')
     
-    src = DCH + ".in"
-    if os.path.exists(ctx.subst(src)):
-        ctx.subst_file(src, DCH, at = True)
-
 elif ctx.mode == 'build':
 
     # Private library
@@ -459,7 +454,7 @@ elif ctx.mode == "install" or ctx.mode == "uninstall":
     ctx.install_data("roxterm.desktop", "${DATADIR}/applications")
     if ctx.env['XMLTOMAN']:
         ctx.install_man("roxterm.1 roxterm-config.1")
-    ctx.install_doc("AUTHORS ChangeLog COPYING README")
+    ctx.install_doc("AUTHORS ChangeLog COPYING COPYING-LGPL README")
     ctx.install_doc(ctx.glob("*.html",
             subdir = ctx.subst("${TOP_DIR}/Help/en")),
             "${HTMLDIR}/en")
@@ -501,7 +496,7 @@ elif ctx.mode == 'dist':
     
     ctx.add_dist("AUTHORS Help/AUTHORS " \
             "ChangeLog ChangeLog.old Config " \
-            "COPYING Help/en Help/lib/header.png " \
+            "COPYING COPYING-LGPL Help/en Help/lib/header.png " \
             "Help/lib/logo_text_only.png " \
             "Help/lib/roxterm.css Help/lib/roxterm_ie.css "
             "Help/lib/sprites.png " \
@@ -511,19 +506,9 @@ elif ctx.mode == 'dist':
             "roxterm.desktop roxterm.lsm.in roxterm.spec.in " \
             "roxterm.svg roxterm.xml TODO " \
             "src/roxterm-config.glade src/roxterm-config.ui")
-    ctx.add_dist([LOGO_PNG, FAVICON, TEXT_LOGO])
+    ctx.add_dist([f.replace("${TOP_DIR}/", "") \
+            for f in [LOGO_PNG, FAVICON, TEXT_LOGO]])
     ctx.add_dist(ctx.glob("*.[c|h]", os.curdir, "src"))
-    # Debian files
-    ctx.add_dist("builddeb")
-    debfiles = "changelog changelog.in compat control copyright " \
-            "dirs roxterm-common.doc-base " \
-            "roxterm-common.install roxterm-gtk2.install " \
-            "roxterm-gtk2.lintian-overrides roxterm-gtk2.menu " \
-            "roxterm-gtk2.postinst roxterm-gtk2.prerm roxterm-gtk3.install " \
-            "roxterm-gtk3.lintian-overrides roxterm-gtk3.menu " \
-            "roxterm-gtk3.postinst roxterm-gtk3.prerm roxterm.xpm rules " \
-            "source/format watch"
-    ctx.add_dist(["debian/" + f for f in debfiles.split()])
     # maitch-specific
     ctx.add_dist("version maitch.py mscript.py")
     # ROX bits

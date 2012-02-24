@@ -113,13 +113,18 @@
 
 				<h3>Debian &amp; Ubuntu</h3>
 
-				<p>Up-to-date official Debian packages are now available. See
-				<a href="http://packages.debian.org/roxterm">http://packages.debian.org/roxterm</a>. For those that want to
-				build their own debian packages, the debian packaging files used to have a separate module in subversion but
-				this has now been merged into the main trunk, and is also included with release tarballs from 1.19.1 onwards.</p>
-
-				<p>For instructions on building a debian package refer to the file INSTALL.Debian in the unpacked tarball/git
-				working directory.</p>
+				<p>Up-to-date official Debian packages are now available. See <a
+				href="http://packages.debian.org/roxterm">http://packages.debian.org/roxterm</a>. For those that
+				want to build their own debian packages, the debian packaging files are now maintained in
+				separate branches of the git repository, managed by git-buildpackage (gbp). gbp has its own documentation
+				but some points you need to know when using it to build roxterm:</p>
+				
+				<ul><li>gbp's master branch is "debian" or "lucid".</li>
+				<li>The lucid branch is for distros lacking support for the GTK3 version (eg Debian Squeeze,
+				Ubuntu Maverick and earlier).</li>
+				<li>For building snapshots between releases you may additionally
+				need imagemagick and librsvg2-bin, but these don't work together
+				properly in Lucid.</li></ul>
 
 				<p>Ubuntu also has official roxterm packages, but due to
 				Ubuntu's release cycle these may lag behind the latest upstream

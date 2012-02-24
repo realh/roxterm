@@ -2,7 +2,11 @@
 
 prev=HEAD
 use_grep=1
-for i in `git tag | grep '^[0-9]' | sort -r` ; do
+# Merge x.y.0 entries with their subsequent release
+all=`git tag | grep '^[0-9]' | sort -r`
+first=`for i in $all; do echo $i; done | head -n 1`
+rest=`for i in $all; do echo $i; done | tail -n +2 | grep -v '\.0$'`
+for i in $first $rest; do
     [ "$prev" = "2.3.1" ] && use_grep=0
     if [ -n "`git log $i..$prev`" ] ; then
         printf "Version "
@@ -19,9 +23,9 @@ for i in `git tag | grep '^[0-9]' | sort -r` ; do
         else
             git log '--pretty=format:%s' $i..$prev | sed 's/^/ * /; s/:$//'
         fi
+        echo
+        echo
     fi
     prev=$i
-    echo
-    echo
 done
 cat `dirname $0`/ChangeLog.old
