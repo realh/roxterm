@@ -498,7 +498,7 @@ elif ctx.mode == 'distclean' or ctx.mode == 'clean':
     
     clean = [APPINFO]
     if ctx.mode == 'distclean':
-        clean += [VFILE, DCH, "${TOP_DIR}/ChangeLog"] + \
+        clean += [VFILE, "${TOP_DIR}/ChangeLog"] + \
             ["${TOP_DIR}/Help/" + f for f in \
                 "AUTHORS COPYING COPYING-LGPL Changes NEWS README".split()] + \
             ["${TOP_DIR}/Help/" + f for f in \
