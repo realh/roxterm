@@ -498,7 +498,13 @@ elif ctx.mode == 'distclean' or ctx.mode == 'clean':
     
     clean = [APPINFO]
     if ctx.mode == 'distclean':
-        clean += [VFILE, DCH]
+        clean += [VFILE, DCH, "${TOP_DIR}/ChangeLog"] + \
+            ["${TOP_DIR}/Help/" + f for f in \
+                "AUTHORS COPYING COPYING-LGPL Changes NEWS README".split()] + \
+            ["${TOP_DIR}/Help/" + f for f in \
+                "favicon.ico logo_text.png roxterm_logo.png".split()] + \
+            ctx.glob("*.pot", "${TOP_DIR}", "po") + \
+            ctx.glob("*.pot", "${TOP_DIR}", "po4a")
     for f in clean:
         ctx.delete(f)
 
