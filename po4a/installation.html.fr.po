@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: roxterm\n"
 "Report-Msgid-Bugs-To: http://sourceforge.net/tracker/?group_id=124080\n"
-"POT-Creation-Date: 2012-02-22 17:54+0000\n"
+"POT-Creation-Date: 2012-02-24 19:50+0000\n"
 "PO-Revision-Date: 2011-11-24 19:00+0000\n"
 "Last-Translator: Tony Houghton <h@realh.co.uk>\n"
 "Language-Team: French (http://www.transifex.net/projects/p/roxterm/team/"
@@ -35,7 +35,7 @@ msgid "<a id=\"Logo\" href=\"index.html\">"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div>
-#: ../Help/en/installation.html:21 ../Help/en/installation.html:139
+#: ../Help/en/installation.html:21 ../Help/en/installation.html:144
 msgid "</a>"
 msgstr ""
 
@@ -228,20 +228,33 @@ msgid ""
 "Up-to-date official Debian packages are now available. See <a href=\"http://"
 "packages.debian.org/roxterm\">http://packages.debian.org/roxterm</a>. For "
 "those that want to build their own debian packages, the debian packaging "
-"files used to have a separate module in subversion but this has now been "
-"merged into the main trunk, and is also included with release tarballs from "
-"1.19.1 onwards."
+"files are now maintained in separate branches of the git repository, managed "
+"by git-buildpackage (gbp). gbp has its own documentation but some points you "
+"need to know when using it to build roxterm:"
 msgstr ""
 
-#. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/installation.html:121
+#. type: Content of: <html><body><div><div><div><ul><li>
+#: ../Help/en/installation.html:122
+msgid "gbp's master branch is \"debian\" or \"lucid\"."
+msgstr ""
+
+#. type: Content of: <html><body><div><div><div><ul><li>
+#: ../Help/en/installation.html:123
 msgid ""
-"For instructions on building a debian package refer to the file INSTALL."
-"Debian in the unpacked tarball/git working directory."
+"The lucid branch is for distros lacking support for the GTK3 version (eg "
+"Debian Squeeze, Ubuntu Maverick and earlier)."
+msgstr ""
+
+#. type: Content of: <html><body><div><div><div><ul><li>
+#: ../Help/en/installation.html:125
+msgid ""
+"For building snapshots between releases you may additionally need "
+"imagemagick and librsvg2-bin, but these don't work together properly in "
+"Lucid."
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/installation.html:124
+#: ../Help/en/installation.html:129
 msgid ""
 "Ubuntu also has official roxterm packages, but due to Ubuntu's release cycle "
 "these may lag behind the latest upstream releases. Therefore I have set up a "
@@ -251,21 +264,21 @@ msgid ""
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><a>
-#: ../Help/en/installation.html:136
+#: ../Help/en/installation.html:141
 msgid ""
 "<a id=\"SourceforgeLink\" href=\"http://sourceforge.net/projects/roxterm\" "
 "title=\"RoxTerm Sourceforge\">"
 msgstr ""
 
 #. type: Attribute 'alt' of: <html><body><div><div><div><a><img>
-#: ../Help/en/installation.html:138
+#: ../Help/en/installation.html:143
 msgid ""
 "Get RoxTerm at SourceForge.net. Fast, secure and Free Open Source software "
 "downloads"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div>
-#: ../Help/en/installation.html:143
+#: ../Help/en/installation.html:148
 msgid ""
 "<a id=\"DonationLink\" class=\"spriteLink\" href=\"http://sourceforge.net/"
 "donate/index.php?group_id=124080\">Donate</a> <a id=\"ValidMarkupLink\" "
@@ -274,7 +287,7 @@ msgid ""
 msgstr ""
 
 #. type: Content of: <html><body><div><div><p>
-#: ../Help/en/installation.html:147
+#: ../Help/en/installation.html:152
 msgid ""
 "ROXTerm is licensed under the <a href=\"http://www.gnu.org/licenses/gpl-3.0-"
 "standalone.html\">GPL</a> | Site design by Adrian Sampson"

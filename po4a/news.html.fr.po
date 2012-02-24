@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: roxterm\n"
 "Report-Msgid-Bugs-To: http://sourceforge.net/tracker/?group_id=124080\n"
-"POT-Creation-Date: 2012-02-22 17:52+0000\n"
+"POT-Creation-Date: 2012-02-24 19:50+0000\n"
 "PO-Revision-Date: 2011-12-11 16:10+0000\n"
 "Last-Translator: Tony Houghton <h@realh.co.uk>\n"
 "Language-Team: French (http://www.transifex.net/projects/p/roxterm/team/"
@@ -35,7 +35,7 @@ msgid "<a id=\"Logo\" href=\"index.html\">"
 msgstr "<a id=\"Logo\" href=\"index.html\">"
 
 #. type: Content of: <html><body><div><div><div>
-#: ../Help/en/news.html:21 ../Help/en/news.html:361
+#: ../Help/en/news.html:21 ../Help/en/news.html:374
 msgid "</a>"
 msgstr "</a>"
 
@@ -79,66 +79,103 @@ msgstr ""
 #. type: Content of: <html><body><div><div><div><div>
 #: ../Help/en/news.html:41
 msgid ""
+"<span class=\"newsItemHeader\">2012-02-24</span> <span class="
+"\"newsItemSubHeader\">Version 2.5.1</span>"
+msgstr ""
+
+#. type: Content of: <html><body><div><div><div><div><ul><li>
+#: ../Help/en/news.html:44
+msgid "<span>Debian packaging now managed by git-buildpackage.</span>"
+msgstr ""
+
+#. type: Content of: <html><body><div><div><div><div><ul><li>
+#: ../Help/en/news.html:45
+msgid "<span>Removed autoconf support.</span>"
+msgstr ""
+
+#. type: Content of: <html><body><div><div><div><div><ul><li>
+#: ../Help/en/news.html:46
+msgid "<span>Improved close window/tab warning options.</span>"
+msgstr ""
+
+#. type: Content of: <html><body><div><div><div><div><ul><li>
+#: ../Help/en/news.html:47
+msgid "<span>Implemented dark theme option.</span>"
+msgstr ""
+
+#. type: Content of: <html><body><div><div><div><div><ul><li>
+#: ../Help/en/news.html:48
+msgid "<span>--tab only reuses windows on current workspace.</span>"
+msgstr ""
+
+#. type: Content of: <html><body><div><div><div><div><ul><li>
+#: ../Help/en/news.html:49
+msgid "<span>Generated graphics are included in tarballs.</span>"
+msgstr ""
+
+#. type: Content of: <html><body><div><div><div><div>
+#: ../Help/en/news.html:54
+msgid ""
 "<span class=\"newsItemHeader\">2011-11-24</span> <span class="
 "\"newsItemSubHeader\">Version 2.3.1</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:44
+#: ../Help/en/news.html:57
 msgid "<span>New bespoke build system, maitch.</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div>
-#: ../Help/en/news.html:49
+#: ../Help/en/news.html:62
 msgid ""
 "<span class=\"newsItemHeader\">2011-08-21</span> <span class="
 "\"newsItemSubHeader\">Version 2.0.1</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:52
+#: ../Help/en/news.html:65
 msgid "<span>Uses GTK+3 by default, GTK+2 support still available.</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:54
+#: ../Help/en/news.html:67
 msgid "<span>Added search functionality.</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:55
+#: ../Help/en/news.html:68
 msgid "<span>Added support for file URIs.</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:56
+#: ../Help/en/news.html:69
 msgid "<span>Much improved tab bar.</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:57
+#: ../Help/en/news.html:70
 msgid "<span>Uses GtkBuilder instead of libglade.</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div>
-#: ../Help/en/news.html:62
+#: ../Help/en/news.html:75
 msgid ""
 "<span class=\"newsItemHeader\">2011-06-02</span> <span class="
 "\"newsItemSubHeader\">Version 1.22.1</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:65
+#: ../Help/en/news.html:78
 msgid "<span>Improved compositing support.</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:66
+#: ../Help/en/news.html:79
 msgid "<span>Added --role option.</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:67
+#: ../Help/en/news.html:80
 msgid ""
 "<span>--xclass and --xname options removed.  --name and/or --class are "
 "alternatives but should be used in conjunction with --separate.  Use --role "
@@ -146,7 +183,7 @@ msgid ""
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:70
+#: ../Help/en/news.html:83
 msgid ""
 "<span>Tries to avoid creating redundant session state files.  Consider "
 "running 'rm ~/.config/roxterm.sourceforge.net/Sessions/*' to clean up the "
@@ -154,272 +191,272 @@ msgid ""
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div>
-#: ../Help/en/news.html:77
+#: ../Help/en/news.html:90
 msgid ""
 "<span class=\"newsItemHeader\">2011-02-12</span> <span class="
 "\"newsItemSubHeader\">Version 1.21.1</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:80
+#: ../Help/en/news.html:93
 msgid "<span>Support TERM setting with vte >= 0.26.</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:81
+#: ../Help/en/news.html:94
 msgid "<span>Command line options to set window class hints.</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:82
+#: ../Help/en/news.html:95
 msgid "<span>Window title can be configured in profiles.</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div>
-#: ../Help/en/news.html:87
+#: ../Help/en/news.html:100
 msgid ""
 "<span class=\"newsItemHeader\">2010-11-17</span> <span class="
 "\"newsItemSubHeader\">Version 1.20.0</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:90
+#: ../Help/en/news.html:103
 msgid "<span>Improved terminal geometry management.</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:91
+#: ../Help/en/news.html:104
 msgid "<span>Changes to tab/window title handling.</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div>
-#: ../Help/en/news.html:98
+#: ../Help/en/news.html:111
 msgid ""
 "<span class=\"newsItemHeader\">2010-09-21</span> <span class="
 "\"newsItemSubHeader\">Version 1.19.1</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:101
+#: ../Help/en/news.html:114
 msgid "<span>New website design by Cameron Sampson.</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:102
+#: ../Help/en/news.html:115
 msgid "<span>Spanish translation by F&eacute;lix Medrano Sanz.</span>"
 msgstr "<span>Traduction espagnol par F&eacute;lix Medrano Sanz.</span>"
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:103
+#: ../Help/en/news.html:116
 msgid "<span>Switched from subversion (svn) to git for VCS.</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:104
+#: ../Help/en/news.html:117
 msgid "<span>Rewritten code for multiple tab management.</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div>
-#: ../Help/en/news.html:111
+#: ../Help/en/news.html:124
 msgid ""
 "<span class=\"newsItemHeader\">2010-03-23</span> <span class="
 "\"newsItemSubHeader\">Version 1.18.1</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:115
+#: ../Help/en/news.html:128
 msgid "<span>Supports X session management.</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:116
+#: ../Help/en/news.html:129
 msgid "<span>Rudimentary ssh support.</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:117
+#: ../Help/en/news.html:130
 msgid ""
 "<span>Profile editor redesign, including new fullscreen &amp; maximise "
 "options.</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:118
+#: ../Help/en/news.html:131
 msgid "<span>New menu items to open a terminal with a specific profile.</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:119
+#: ../Help/en/news.html:132
 msgid "<span>Ability to restart a command.</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:120
+#: ../Help/en/news.html:133
 msgid ""
 "<span>Always show tabs is on by default and single tabs only take up as much "
 "space as they need.</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div>
-#: ../Help/en/news.html:125
+#: ../Help/en/news.html:138
 msgid ""
 "<span class=\"newsItemHeader\">2008-09-13</span> <span class="
 "\"newsItemSubHeader\">Version 1.13.0</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:130
+#: ../Help/en/news.html:143
 msgid "<span>Options to warn before closing windows</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:131
+#: ../Help/en/news.html:144
 msgid ""
 "<span>Use -T instead of -t to set title (for x-terminal-emulator)</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:132
+#: ../Help/en/news.html:145
 msgid "<span>New --tab option</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:133
+#: ../Help/en/news.html:146
 msgid "<span>Man pages are in main distribution instead of Debian only</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div>
-#: ../Help/en/news.html:138
+#: ../Help/en/news.html:151
 msgid ""
 "<span class=\"newsItemHeader\">2008-05-20</span> <span class="
 "\"newsItemSubHeader\">Version 1.12.0</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:142
+#: ../Help/en/news.html:155
 msgid "<span>i18n support</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:143
+#: ../Help/en/news.html:156
 msgid "<span>Fixed command line parsing</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:144
+#: ../Help/en/news.html:157
 msgid "<span>\"Hidden\" tabs option</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:145
+#: ../Help/en/news.html:158
 msgid "<span>--title option</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div>
-#: ../Help/en/news.html:150
+#: ../Help/en/news.html:163
 msgid ""
 "<span class=\"newsItemHeader\">2008-03-27</span> <span class="
 "\"newsItemSubHeader\">Version 1.11.0</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:155
+#: ../Help/en/news.html:168
 msgid "<span>Fixed and improved colour scheme dialog</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:156
+#: ../Help/en/news.html:169
 msgid "<span>Terminal title bar string can be customised</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div>
-#: ../Help/en/news.html:161
+#: ../Help/en/news.html:174
 msgid ""
 "<span class=\"newsItemHeader\">2007-12-31</span> <span class="
 "\"newsItemSubHeader\">Version 1.9.0</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:166
+#: ../Help/en/news.html:179
 msgid "<span>Enhanced tab options (mostly thanks to Sven Schnelle)</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div>
-#: ../Help/en/news.html:171
+#: ../Help/en/news.html:184
 msgid ""
 "<span class=\"newsItemHeader\">2007-09-11</span> <span class="
 "\"newsItemSubHeader\">Version 1.7.0</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:176
+#: ../Help/en/news.html:189
 msgid "<span>Added zoom and fullscreen facilities</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:177
+#: ../Help/en/news.html:190
 msgid ""
 "<span>New windows/tabs have same cwd as the terminal they're opened from</"
 "span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:178
+#: ../Help/en/news.html:191
 msgid ""
 "<span>Official Debian packages are available for 1.5.2 onwards instead of my "
 "unofficial ones</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:179
+#: ../Help/en/news.html:192
 msgid "<span>CLI options have changed</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div>
-#: ../Help/en/news.html:184
+#: ../Help/en/news.html:197
 msgid ""
 "<span class=\"newsItemHeader\">2007-08-22</span> <span class="
 "\"newsItemSubHeader\">Version 1.6.0</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:189
+#: ../Help/en/news.html:202
 msgid "<span>Removed extraneous Debian packages</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:190
+#: ../Help/en/news.html:203
 msgid ""
 "<span>Many messages are now shown in dialog boxes instead of logged to "
 "console</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:191
+#: ../Help/en/news.html:204
 msgid "<span>Added option to wrap around when switching tabs</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div>
-#: ../Help/en/news.html:196
+#: ../Help/en/news.html:209
 msgid ""
 "<span class=\"newsItemHeader\">2007-03-23</span> <span class="
 "\"newsItemSubHeader\">Version 1.5.1</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:201
+#: ../Help/en/news.html:214
 msgid "<span>Debianised</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div>
-#: ../Help/en/news.html:206
+#: ../Help/en/news.html:219
 msgid ""
 "<span class=\"newsItemHeader\">2006-07-05</span> <span class="
 "\"newsItemSubHeader\">Version 1.2.0</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:211
+#: ../Help/en/news.html:224
 msgid ""
 "<span>Encodings are a separate family of settings instead of being part of a "
 "profile</span>"
@@ -427,129 +464,129 @@ msgstr ""
 
 #.  Several changes: 
 #. type: Content of: <html><body><div><div><div><div>
-#: ../Help/en/news.html:216
+#: ../Help/en/news.html:229
 msgid ""
 "<span class=\"newsItemHeader\">2006-06-20</span> <span class="
 "\"newsItemSubHeader\">Version 1.1.0</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:222
+#: ../Help/en/news.html:235
 msgid "<span>Much improved drag &amp; drop support</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:223
+#: ../Help/en/news.html:236
 msgid "<span>roxterm-capplet renamed to roxterm-config</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:224
+#: ../Help/en/news.html:237
 msgid "<span>Runs all terminals in a single process by default</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div>
-#: ../Help/en/news.html:229
+#: ../Help/en/news.html:242
 msgid ""
 "<span class=\"newsItemHeader\">2006-05-30</span> <span class="
 "\"newsItemSubHeader\">Version 1.0.3</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:234
+#: ../Help/en/news.html:247
 msgid ""
 "<span>Terminal window and capplet background image widget are now drag &amp; "
 "drop destinations.</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div>
-#: ../Help/en/news.html:239
+#: ../Help/en/news.html:252
 msgid "<span class=\"newsItemHeader\">2006-04-29</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:242
+#: ../Help/en/news.html:255
 msgid "<span>First full release.</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div>
-#: ../Help/en/news.html:247
+#: ../Help/en/news.html:260
 msgid "<span class=\"newsItemHeader\">2006-02-27</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:250
+#: ../Help/en/news.html:263
 msgid "<span>CVS discontinued. Use subversion (svn) fron now on.</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div>
-#: ../Help/en/news.html:255
+#: ../Help/en/news.html:268
 msgid ""
 "<span class=\"newsItemHeader\">2006-02-27</span> <span class="
 "\"newsItemSubHeader\">Version 0.11.0</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:260
+#: ../Help/en/news.html:273
 msgid ""
 "<span>Migration to keyfile options done! Make sure you read README if you "
 "were using an older version.</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div>
-#: ../Help/en/news.html:265
+#: ../Help/en/news.html:278
 msgid ""
 "<span class=\"newsItemHeader\">2006-02-26</span> <span class="
 "\"newsItemSubHeader\">Version 0.10.14</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:270
+#: ../Help/en/news.html:283
 msgid ""
 "<span>Everything now apparently complete and working except for docs. Going "
 "to use keyfiles instead of XML before release.</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div>
-#: ../Help/en/news.html:275
+#: ../Help/en/news.html:288
 msgid ""
 "<span class=\"newsItemHeader\">2006-02-25</span> <span class="
 "\"newsItemSubHeader\">Version 0.10.11</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:280
+#: ../Help/en/news.html:293
 msgid ""
 "<span>Nearly everything now works (or seems to!) save for roxterm taking "
 "appropriate action when a shortcut scheme is renamed or deleted.</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div>
-#: ../Help/en/news.html:285
+#: ../Help/en/news.html:298
 msgid ""
 "<span class=\"newsItemHeader\">2005-07-07</span> <span class="
 "\"newsItemSubHeader\">Version 0.9.7</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:290
+#: ../Help/en/news.html:303
 msgid ""
 "<span>The profile editor dialogue is just about complete, including keyboard "
 "shortcuts, but not yet tooltips (tomorrow)</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div>
-#: ../Help/en/news.html:295
+#: ../Help/en/news.html:308
 msgid "<span class=\"newsItemHeader\">2005-06-05</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:298
+#: ../Help/en/news.html:311
 msgid "<span>Added functional background tab to profile editor.</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:299
+#: ../Help/en/news.html:312
 msgid ""
 "<span>Can't be bothered to maintain a fully detailed changelog any more. "
 "Nobody could possibly be that interested, and if they were they could use "
@@ -559,85 +596,85 @@ msgid ""
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div>
-#: ../Help/en/news.html:306 ../Help/en/news.html:314
+#: ../Help/en/news.html:319 ../Help/en/news.html:327
 msgid "<span class=\"newsItemHeader\">2005-04-06</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:309
+#: ../Help/en/news.html:322
 msgid "<span>Now installs correctly when not using ROX</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:317
+#: ../Help/en/news.html:330
 msgid "<span>Terminal can now launch capplet to edit current profile</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div>
-#: ../Help/en/news.html:322
+#: ../Help/en/news.html:335
 msgid "<span class=\"newsItemHeader\">2005-04-05</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:325
+#: ../Help/en/news.html:338
 msgid "<span>Tidied up build system</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div>
-#: ../Help/en/news.html:330
+#: ../Help/en/news.html:343
 msgid "<span class=\"newsItemHeader\">2005-04-04</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:333
+#: ../Help/en/news.html:346
 msgid "<span>Matches email addresses and launches mailer</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div>
-#: ../Help/en/news.html:338
+#: ../Help/en/news.html:351
 msgid "<span class=\"newsItemHeader\">2005-04-02</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:341
+#: ../Help/en/news.html:354
 msgid "<span>A working, but incomplete capplet, using dbus 0.22</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div>
-#: ../Help/en/news.html:346
+#: ../Help/en/news.html:359
 msgid "<span class=\"newsItemHeader\">2004-11-28</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:349
+#: ../Help/en/news.html:362
 msgid ""
 "<span>Shortcuts XML file has changed from using attributes to content for "
 "key name</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><div><ul><li>
-#: ../Help/en/news.html:350
+#: ../Help/en/news.html:363
 msgid ""
 "<span>I've started building the config applet. It opens a dialogue but "
 "doesn't do much with it yet</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><a>
-#: ../Help/en/news.html:358
+#: ../Help/en/news.html:371
 msgid ""
 "<a id=\"SourceforgeLink\" href=\"http://sourceforge.net/projects/roxterm\" "
 "title=\"RoxTerm Sourceforge\">"
 msgstr ""
 
 #. type: Attribute 'alt' of: <html><body><div><div><div><a><img>
-#: ../Help/en/news.html:360
+#: ../Help/en/news.html:373
 msgid ""
 "Get RoxTerm at SourceForge.net. Fast, secure and Free Open Source software "
 "downloads"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div>
-#: ../Help/en/news.html:365
+#: ../Help/en/news.html:378
 msgid ""
 "<a id=\"DonationLink\" class=\"spriteLink\" href=\"http://sourceforge.net/"
 "donate/index.php?group_id=124080\">Donate</a> <a id=\"ValidMarkupLink\" "
@@ -646,7 +683,7 @@ msgid ""
 msgstr ""
 
 #. type: Content of: <html><body><div><div><p>
-#: ../Help/en/news.html:369
+#: ../Help/en/news.html:382
 msgid ""
 "ROXTerm is licensed under the <a href=\"http://www.gnu.org/licenses/gpl-3.0-"
 "standalone.html\">GPL</a> | Site design by Adrian Sampson"
