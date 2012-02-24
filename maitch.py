@@ -58,6 +58,21 @@ def dprint(*args, **kwargs):
 
 try:
     from lockfile import FileLock
+    
+    class FLock(FileLock):
+        def __init__(self, *args, **kwargs):
+            self.maitch_locked = False
+            FileLock.__init__(self, *args, **kwargs)
+        
+        def acquire(self, timeout = None):
+            FileLock.acquire(self, timeout)
+            self.maitch_locked = True
+        
+        def release(self):
+            if self.maitch_locked:
+                FileLock.release(self)
+                self.maitch_locked = False
+            
 except:
     _nolock = True
 else:
@@ -262,9 +277,9 @@ Other predefined variables [default values shown in squarer brackets]:
                 sys.exit(1)
             f = self.get_lock_file_name()
             self.ensure_out_dir_for_file(f)
-            _lock_file = FileLock(f)
-            _lock_file.acquire(0)
-            atexit.register(lambda x: x.release(), _lock_file)
+            self.lock_file = FLock(f)
+            self.lock_file.acquire(0)
+            atexit.register(lambda x: x.release(), self.lock_file)
         else:
             mprint("Warning: Locking disabled. This is not recommended.")
         
@@ -662,6 +677,8 @@ Other predefined variables [default values shown in squarer brackets]:
         if not self.check_build_dir():
             return
         if distclean:
+            # Release lock prematurely because we're about to delete it!
+            self.lock_file.release()
             keep = []
         else:
             keep = self.created_by_config
