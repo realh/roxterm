@@ -511,7 +511,7 @@ elif ctx.mode == 'distclean' or ctx.mode == 'clean':
 elif ctx.mode == 'dist':
     
     ctx.add_dist("AUTHORS Help/AUTHORS " \
-            "ChangeLog ChangeLog.old Config " \
+            "genlog ChangeLog ChangeLog.old Config " \
             "COPYING COPYING-LGPL Help/en Help/lib/header.png " \
             "Help/lib/logo_text_only.png " \
             "Help/lib/roxterm.css Help/lib/roxterm_ie.css "
