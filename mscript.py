@@ -50,13 +50,13 @@ if ctx.mode == 'configure':
 
     ctx.find_prog_env("sed")
 
+    vfile = ctx.subst(VFILE)
     if ctx.env['ENABLE_GIT'] != False:
         git = os.path.exists(ctx.subst(opj("${TOP_DIR}", ".git")))
         try:
             ctx.find_prog_env("git")
         except MaitchNotFoundError:
             git = False
-        vfile = ctx.subst(VFILE)
     else:
         git = False
     if git:
