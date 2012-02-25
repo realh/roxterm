@@ -1,0 +1,51 @@
+#!/usr/bin/make -f
+
+# Split this up a bit to avoid long lines
+CONFIGURE_GDA_PATH = /usr/share/gnome-control-center/default-apps
+CONFIGURE_GDA = --with-gnome-default-applications=$(CONFIGURE_GDA_PATH)
+CONFIGURE_LDFLAGS = LDFLAGS=-Wl,--as-needed
+CONFIGURE_DIRS = PREFIX=/usr
+CONFIGURE_TRANS = --disable-translations
+CONFIGURE_MISC = $(CONFIGURE_DIRS) $(CONFIGURE_TRANS) --disable-git
+CONFIGURE_COMMON = $(CONFIGURE_GDA) $(CONFIGURE_LDFLAGS) $(CONFIGURE_MISC)
+MSCRIPT_OPTS = --lock-top
+COMMON_DIRS = --top-dir=../.. --src-dir='$${TOP_DIR}/src'
+DIRS_GTK2 = --build-dir=debian/build-gtk2 $(COMMON_DIRS)
+DIRS_GTK3 = --build-dir=debian/build-gtk3 $(COMMON_DIRS)
+
+ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
+NUMJOBS = $(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
+CONFIGURE_COMMON += --parallel=$(NUMJOBS)
+endif
+
+%:
+	dh $@
+
+override_dh_auto_configure:
+	python mscript.py configure $(MSCRIPT_OPTS) $(CONFIGURE_COMMON) \
+		 --disable-gtk3 $(DIRS_GTK2)
+	python mscript.py configure $(MSCRIPT_OPTS) $(CONFIGURE_COMMON) \
+		--enable-gtk3 $(DIRS_GTK3)
+
+override_dh_auto_build:
+	python mscript.py build $(MSCRIPT_OPTS) $(DIRS_GTK2)
+	python mscript.py build $(MSCRIPT_OPTS) $(DIRS_GTK3)
+
+override_dh_auto_install:
+	python mscript.py install $(MSCRIPT_OPTS) $(DIRS_GTK3) --destdir=../tmp
+
+override_dh_install:
+	dh_install
+	install -d debian/roxterm-gtk2/usr/bin
+	libtool --mode=install install debian/build-gtk2/roxterm \
+		debian/build-gtk2/roxterm-config \
+		`pwd`/debian/roxterm-gtk2/usr/bin
+	dh_install -proxterm-common debian/roxterm.xpm usr/share/pixmaps/
+
+override_dh_auto_test:
+
+override_dh_auto_clean:
+	python mscript.py clean $(MSCRIPT_OPTS) $(DIRS_GTK3)
+	rm -rf debian/build-gtk2 debian/build-gtk3
+	rm -f maitch.py[co]
+
