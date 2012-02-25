@@ -43,17 +43,22 @@ if ctx.mode == 'configure' or ctx.mode == 'help':
     ctx.arg_disable('po4a', "Disable translation of documentation with po4a",
             default = None)
     ctx.arg_disable('translations', "Disable all translations", default = None)
+    ctx.arg_disable('git', "Assume this is a release tarball: "
+            "don't attempt to generate changelogs, pixmaps etc")
 
 if ctx.mode == 'configure':
 
     ctx.find_prog_env("sed")
 
-    git = os.path.exists(ctx.subst(opj("${TOP_DIR}", ".git")))
-    try:
-        ctx.find_prog_env("git")
-    except MaitchNotFoundError:
+    if ctx.env['ENABLE_GIT'] != False:
+        git = os.path.exists(ctx.subst(opj("${TOP_DIR}", ".git")))
+        try:
+            ctx.find_prog_env("git")
+        except MaitchNotFoundError:
+            git = False
+        vfile = ctx.subst(VFILE)
+    else:
         git = False
-    vfile = ctx.subst(VFILE)
     if git:
         # Might have an obsolete version.h from earlier build
         ctx.delete("${SRC_DIR}/version.h")
@@ -84,16 +89,21 @@ if ctx.mode == 'configure':
                 "current/manpages/docbook.xsl")
         ctx.setenv("XMLTOMAN_OUTPUT", "")
     
-    try:
-        ctx.find_prog_env("convert")
-        ctx.find_prog_env("composite")
-        ctx.find_prog_env("rsvg")
-    except:
-        mprint("WARNING: ImageMagick and/or rsvg binaries appear " \
-                "not to be installed.\n" \
-                "This will cause errors later unless the generated pixmaps " \
-                "are already present,\neg supplied with a release tarball.",
-                file = sys.stderr)
+    if ctx.env['ENABLE_GIT'] != False:
+        try:
+            ctx.find_prog_env("convert")
+            ctx.find_prog_env("composite")
+            ctx.find_prog_env("rsvg")
+        except:
+            mprint("WARNING: ImageMagick and/or rsvg binaries appear " \
+                    "not to be installed.\n" \
+                    "This will cause errors later unless the generated " \
+                    "pixmaps are already present,\neg supplied with a " \
+                    "release tarball.",
+                    file = sys.stderr)
+            ctx.setenv("CONVERT", "")
+            ctx.setenv("COMPOSITE", "")
+    else:
         ctx.setenv("CONVERT", "")
         ctx.setenv("COMPOSITE", "")
     
