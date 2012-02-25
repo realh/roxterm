@@ -494,17 +494,20 @@ elif ctx.mode == "install" or ctx.mode == "uninstall":
                     subdir = ctx.subst("${TOP_DIR}/Help/%s" % l)),
                     "${HTMLDIR}/%s" % l)
 
-elif ctx.mode == 'distclean' or ctx.mode == 'clean':
+elif ctx.mode == 'pristine' or ctx.mode == 'clean':
     
-    clean = [APPINFO]
-    if ctx.mode == 'distclean':
+    clean = [APPINFO, "maitch.pyc"]
+    if ctx.mode == 'pristine':
         clean += [VFILE, "${TOP_DIR}/ChangeLog"] + \
             ["${TOP_DIR}/Help/" + f for f in \
                 "AUTHORS COPYING COPYING-LGPL Changes NEWS README".split()] + \
+            ["${TOP_DIR}/Help/" + f for f in "es fr gl".split()] + \
             ["${TOP_DIR}/Help/lib/" + f for f in \
                 "favicon.ico logo_text.png roxterm_logo.png".split()] + \
             ctx.glob("*.pot", "${TOP_DIR}", "po") + \
-            ctx.glob("*.pot", "${TOP_DIR}", "po4a")
+            ctx.glob("*.pot", "${TOP_DIR}", "po4a") + \
+            ctx.glob("*.po~", "${TOP_DIR}", "po") + \
+            ctx.glob("*.po~", "${TOP_DIR}", "po4a")
     for f in clean:
         ctx.delete(f)
 
