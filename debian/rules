@@ -40,5 +40,3 @@ override_dh_auto_clean:
 	python mscript.py clean $(MSCRIPT_OPTS) $(DIRS_GTK2)
 	rm -rf debian/build-gtk2
 	rm -f maitch.py[co]
-	rm -f Help/lib/logo_text.png Help/lib/roxterm_logo.png \
-		Help/lib/favicon.ico
