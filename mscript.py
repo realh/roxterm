@@ -506,7 +506,7 @@ elif ctx.mode == "install" or ctx.mode == "uninstall":
 
 elif ctx.mode == 'pristine' or ctx.mode == 'clean':
     
-    clean = [APPINFO, "maitch.pyc"]
+    clean = [APPINFO, "${TOP_DIR}/maitch.pyc"]
     if ctx.mode == 'pristine':
         clean += [VFILE, "${TOP_DIR}/ChangeLog"] + \
             ["${TOP_DIR}/Help/" + f for f in \
