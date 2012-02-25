@@ -52,7 +52,6 @@ case $1 in
             LDFLAGS="$DEV_LDFLAGS" SRC_DIR='${TOP_DIR}/src' "$@" && \
         python ./mscript.py build SRC_DIR='${TOP_DIR}/src' && \
         echo Done >&2 && exit 0
-        #${APP_DIR}/update-locales --remake
         echo Compile failed >&2
         echo Press Return... >&2
         read WAIT
@@ -82,16 +81,6 @@ else
     done
     IFS="$old_ifs"
 fi
-
-#if [ -n "$LANG" -a -d "${APP_DIR}/po" ] ; then
-#    lcstamp="${APP_DIR}/locale/stamp"
-#    postamp="${APP_DIR}/po/stamp-po"
-#    if [ ! -f "$postamp" ] ; then
-#        "${APP_DIR}/update-locales" --remake
-#    elif [ ! -f "$lcstamp" -o "$lcstamp" -ot "$postamp" ] ; then
-#        "${APP_DIR}/update-locales"
-#    fi
-#fi
 
 if [ -x "$BIN" ]; then
     exitcode=0

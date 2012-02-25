@@ -1,23 +1,21 @@
 # Translations for roxterm docs
 # Copyright (C) 2010 Tony Houghton
 # This file is distributed under the same license as the roxterm package.
-#
-# Translators:
 # Tony Houghton <h@realh.co.uk>, 2010.
+#
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: roxterm\n"
+"Project-Id-Version: roxterm 2.5.1\n"
 "Report-Msgid-Bugs-To: http://sourceforge.net/tracker/?group_id=124080\n"
-"POT-Creation-Date: 2012-02-24 19:50+0000\n"
-"PO-Revision-Date: 2011-08-21 16:08+0000\n"
-"Last-Translator: Tony Houghton <h@realh.co.uk>\n"
-"Language-Team: Galician (http://www.transifex.net/projects/p/roxterm/team/"
-"gl/)\n"
-"Language: gl\n"
+"POT-Creation-Date: 2012-02-25 17:21+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
 #. type: Attribute 'lang' of: <html>
 #: ../Help/en/guide.html:3
@@ -56,8 +54,7 @@ msgstr ""
 
 #. type: Content of: <html><body><div><div><div><ul><li>
 #: ../Help/en/guide.html:28
-msgid ""
-"<a id=\"MainNav_Installation\" href=\"installation.html\">Installation</a>"
+msgid "<a id=\"MainNav_Installation\" href=\"installation.html\">Installation</a>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><ul><li>
@@ -68,8 +65,8 @@ msgstr ""
 #. type: Content of: <html><body><div><div><div><ul><li>
 #: ../Help/en/guide.html:30
 msgid ""
-"<a id=\"MainNav_Forums\" href=\"https://sourceforge.net/projects/roxterm/"
-"forums\">Forums</a>"
+"<a id=\"MainNav_Forums\" "
+"href=\"https://sourceforge.net/projects/roxterm/forums\">Forums</a>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><ol><li>
@@ -170,12 +167,12 @@ msgid ""
 "When the pointer is over an address that ROXTerm recognises as a URI "
 "(typically a web URL or email address) it is highlighted by underlining and "
 "a change of pointer shape. You can open the address either by right-clicking "
-"on it and choosing Open... in the menu or by holding Ctrl and left-clicking. "
-"The applications used to handle these addresses may be set with the "
-"configuration tool, otherwise it will try to find a suitable default. Also "
-"by holding Ctrl you can drag a URI to pass it to another application which "
-"is willing to accept it as a URI or text; dragging it into the same window "
-"it came from pastes the address back in."
+"on it and choosing Open... in the menu or by holding Ctrl and "
+"left-clicking. The applications used to handle these addresses may be set "
+"with the configuration tool, otherwise it will try to find a suitable "
+"default. Also by holding Ctrl you can drag a URI to pass it to another "
+"application which is willing to accept it as a URI or text; dragging it into "
+"the same window it came from pastes the address back in."
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
@@ -256,29 +253,28 @@ msgstr ""
 
 #. type: Content of: <html><body><div><div><div><h2>
 #: ../Help/en/guide.html:111
-msgid ""
-"Keyboard Shortcuts <a class=\"pageAnchor\" name=\"KeyboardShortcuts\">:</a>"
+msgid "Keyboard Shortcuts <a class=\"pageAnchor\" name=\"KeyboardShortcuts\">:</a>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
 #: ../Help/en/guide.html:113
 msgid ""
 "There is no editor for keyboard shortcuts; instead they can be changed by "
-"pressing keys while the mouse is hovering over a menu item in the terminal. "
-"This feature must be enabled with the \"Enable editing\" option under the "
-"\"Keyboard shortcuts\" section of the <a href=\"#ConfigurationManagement"
-"\">Configuration Manager</a>. There is also a \"hidden\" global GNOME "
-"setting to determine whether GTK applications can have their shortcuts "
-"edited in this way. The global option is managed by gconf, which roxterm is "
-"not linked with, so in some circumstances the global and roxterm options may "
-"conflict with each other."
+"pressing keys while the mouse is hovering over a menu item in the "
+"terminal. This feature must be enabled with the \"Enable editing\" option "
+"under the \"Keyboard shortcuts\" section of the <a "
+"href=\"#ConfigurationManagement\">Configuration Manager</a>. There is also a "
+"\"hidden\" global GNOME setting to determine whether GTK applications can "
+"have their shortcuts edited in this way. The global option is managed by "
+"gconf, which roxterm is not linked with, so in some circumstances the global "
+"and roxterm options may conflict with each other."
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><h2>
 #: ../Help/en/guide.html:120
 msgid ""
-"Configuration Management <a class=\"pageAnchor\" name="
-"\"ConfigurationManagement\">:</a>"
+"Configuration Management <a class=\"pageAnchor\" "
+"name=\"ConfigurationManagement\">:</a>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
@@ -308,15 +304,15 @@ msgstr ""
 #. type: Content of: <html><body><div><div><div><ol><li>
 #: ../Help/en/guide.html:133
 msgid ""
-"<span>${XDG_CONFIG_HOME}/roxterm.sourceforge.net defaulting to ~/.config/"
-"roxterm.sourceforge.net</span>"
+"<span>${XDG_CONFIG_HOME}/roxterm.sourceforge.net defaulting to "
+"~/.config/roxterm.sourceforge.net</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><ol><li>
 #: ../Help/en/guide.html:134
 msgid ""
-"<span>${XDG_CONFIG_DIRS}/roxtem.sourceforge.net defaulting to /etc/xdg/"
-"roxtem.sourceforge.net</span>"
+"<span>${XDG_CONFIG_DIRS}/roxtem.sourceforge.net defaulting to "
+"/etc/xdg/roxtem.sourceforge.net</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><ol><li>
@@ -348,8 +344,8 @@ msgstr ""
 #. type: Content of: <html><body><div><div><div><h2>
 #: ../Help/en/guide.html:145
 msgid ""
-"Command-line Options <a class=\"pageAnchor\" name=\"CommandlineOptions\">:</"
-"a>"
+"Command-line Options <a class=\"pageAnchor\" "
+"name=\"CommandlineOptions\">:</a>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
@@ -389,7 +385,8 @@ msgstr ""
 #. type: Content of: <html><body><div><div><div><h2>
 #: ../Help/en/guide.html:163
 msgid ""
-"Advanced D-Bus Usage <a class=\"pageAnchor\" name=\"AdvancedDbusUsage\">:</a>"
+"Advanced D-Bus Usage <a class=\"pageAnchor\" "
+"name=\"AdvancedDbusUsage\">:</a>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
@@ -400,8 +397,8 @@ msgid ""
 "for this purpose; they require an id code to target a specific terminal; "
 "each terminal's id code can be read from the environment variable ROXTERM_ID "
 "in the shell/application running in it.  The D-Bus object path and interface "
-"for the methods are \"net.sf.roxterm.Options\" and \"/net/sf/roxterm/Options"
-"\" respectively. The methods are:"
+"for the methods are \"net.sf.roxterm.Options\" and "
+"\"/net/sf/roxterm/Options\" respectively. The methods are:"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
@@ -450,8 +447,9 @@ msgstr ""
 #. type: Content of: <html><body><div><div><div><p>
 #: ../Help/en/guide.html:187
 msgid ""
-"<span>dbus-send --session /net/sf/roxterm/Options \\</span> <span>net.sf."
-"roxterm.Options.SetColourScheme string:$ROXTERM_ID string:GTK</span>"
+"<span>dbus-send --session /net/sf/roxterm/Options \\</span> "
+"<span>net.sf.roxterm.Options.SetColourScheme string:$ROXTERM_ID "
+"string:GTK</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
@@ -467,8 +465,8 @@ msgstr ""
 #. type: Content of: <html><body><div><div><div><ul><li>
 #: ../Help/en/guide.html:197
 msgid ""
-"<span>Full profile name, including a prefix of \"Profiles/\" or \"Colours/"
-"\"</span>"
+"<span>Full profile name, including a prefix of \"Profiles/\" or "
+"\"Colours/\"</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><ul><li>
@@ -491,9 +489,9 @@ msgstr ""
 #. type: Content of: <html><body><div><div><div><p>
 #: ../Help/en/guide.html:207
 msgid ""
-"<span>dbus-send --session /net/sf/roxterm/Options \\</span> <span>net.sf."
-"roxterm.Options.StringOption \\</span> <span>string:Colours/GTK string:"
-"background 'string:#ffffff'</span>"
+"<span>dbus-send --session /net/sf/roxterm/Options \\</span> "
+"<span>net.sf.roxterm.Options.StringOption \\</span> <span>string:Colours/GTK "
+"string:background 'string:#ffffff'</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
@@ -519,9 +517,9 @@ msgstr ""
 #. type: Content of: <html><body><div><div><div><p>
 #: ../Help/en/guide.html:219
 msgid ""
-"<span>dbus-send --session /net/sf/roxterm/Options \\</span> <span>net.sf."
-"roxterm.Options.OptionsChanged \\</span> <span>string:Profiles string:"
-"Default</span>"
+"<span>dbus-send --session /net/sf/roxterm/Options \\</span> "
+"<span>net.sf.roxterm.Options.OptionsChanged \\</span> <span>string:Profiles "
+"string:Default</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><a>
@@ -541,15 +539,16 @@ msgstr ""
 #. type: Content of: <html><body><div><div><div>
 #: ../Help/en/guide.html:235
 msgid ""
-"<a id=\"DonationLink\" class=\"spriteLink\" href=\"http://sourceforge.net/"
-"donate/index.php?group_id=124080\">Donate</a> <a id=\"ValidMarkupLink\" "
-"class=\"spriteLink\" href=\"http://validator.w3.org/check?uri=referer"
-"\">Valid XHTML</a>"
+"<a id=\"DonationLink\" class=\"spriteLink\" "
+"href=\"http://sourceforge.net/donate/index.php?group_id=124080\">Donate</a> "
+"<a id=\"ValidMarkupLink\" class=\"spriteLink\" "
+"href=\"http://validator.w3.org/check?uri=referer\">Valid XHTML</a>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><p>
 #: ../Help/en/guide.html:239
 msgid ""
-"ROXTerm is licensed under the <a href=\"http://www.gnu.org/licenses/gpl-3.0-"
-"standalone.html\">GPL</a> | Site design by Adrian Sampson"
+"ROXTerm is licensed under the <a "
+"href=\"http://www.gnu.org/licenses/gpl-3.0-standalone.html\">GPL</a> | Site "
+"design by Adrian Sampson"
 msgstr ""

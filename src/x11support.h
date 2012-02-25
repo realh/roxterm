@@ -30,8 +30,26 @@
  */
 gboolean x11support_window_is_minimized(GdkWindow *window);
 
+/* This would probably work for any uint32 property,
+ * but we only use it for desktops.
+ */
+gboolean x11support_get_desktop_prop(GdkWindow *window,
+        const char *prop_name, guint32 *desktop);
+
 /* Allow us to make sure a window stays on the same desktop when re-realizing */
-gboolean x11support_get_wm_desktop(GdkWindow *window, guint32 *desktop);
+inline static gboolean x11support_get_wm_desktop(GdkWindow *window,
+        guint32 *desktop)
+{
+    return x11support_get_desktop_prop(window, "_NET_WM_DESKTOP", desktop);
+}
+
+/* _NET_WM_DESKTOP doesn't always seem to be present on root */
+inline static gboolean x11support_get_current_desktop(GdkWindow *window,
+        guint32 *desktop)
+{
+    return x11support_get_desktop_prop(window, "_NET_CURRENT_DESKTOP", desktop);
+}
+
 void x11support_set_wm_desktop(GdkWindow *window, guint32 desktop);
 
 void x11support_clear_demands_attention(GdkWindow *window);

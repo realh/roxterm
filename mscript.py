@@ -23,7 +23,6 @@ ROXTERM_HTML_BASENAMES = "guide index installation news".split()
 LOGO_PNG = "${TOP_DIR}/Help/lib/roxterm_logo.png"
 FAVICON = "${TOP_DIR}/Help/lib/favicon.ico"
 TEXT_LOGO = "${TOP_DIR}/Help/lib/logo_text.png"
-DCH = "${TOP_DIR}/debian/changelog"
 APPINFO = "${TOP_DIR}/AppInfo.xml"
 VFILE = "${TOP_DIR}/version"
 
@@ -44,24 +43,30 @@ if ctx.mode == 'configure' or ctx.mode == 'help':
     ctx.arg_disable('po4a', "Disable translation of documentation with po4a",
             default = None)
     ctx.arg_disable('translations', "Disable all translations", default = None)
+    ctx.arg_disable('git', "Assume this is a release tarball: "
+            "don't attempt to generate changelogs, pixmaps etc")
 
 if ctx.mode == 'configure':
 
     ctx.find_prog_env("sed")
 
-    git = os.path.exists(ctx.subst(opj("${TOP_DIR}", ".git")))
-    try:
-        ctx.find_prog_env("git")
-    except MaitchNotFoundError:
-        git = False
     vfile = ctx.subst(VFILE)
+    if ctx.env['ENABLE_GIT'] != False:
+        git = os.path.exists(ctx.subst(opj("${TOP_DIR}", ".git")))
+        try:
+            ctx.find_prog_env("git")
+        except MaitchNotFoundError:
+            git = False
+    else:
+        git = False
     if git:
         # Might have an obsolete version.h from earlier build
         ctx.delete("${SRC_DIR}/version.h")
-        version = ctx.prog_output(["${GIT}", "describe"])[0].strip()
+        version = ctx.prog_output(["${GIT}", "describe",
+                "--match", "[0-9]*"])[0].strip()
         version = version.replace('-', '.', 1).replace('-', '~', 1)
         ctx.save_if_different(vfile, version + '\n')
-        gitlog = ctx.prog_output([os.path.abspath(
+        gitlog = ctx.prog_output(["/bin/sh", os.path.abspath(
                 ctx.subst("${TOP_DIR}/genlog"))])[0].lstrip()
         # Can't use ctx.save_if_different because it tries to subst
         # content and fails
@@ -84,8 +89,23 @@ if ctx.mode == 'configure':
                 "current/manpages/docbook.xsl")
         ctx.setenv("XMLTOMAN_OUTPUT", "")
     
-    ctx.find_prog_env("convert")
-    ctx.find_prog_env("composite")
+    if ctx.env['ENABLE_GIT'] != False:
+        try:
+            ctx.find_prog_env("convert")
+            ctx.find_prog_env("composite")
+            ctx.find_prog_env("rsvg")
+        except:
+            mprint("WARNING: ImageMagick and/or rsvg binaries appear " \
+                    "not to be installed.\n" \
+                    "This will cause errors later unless the generated " \
+                    "pixmaps are already present,\neg supplied with a " \
+                    "release tarball.",
+                    file = sys.stderr)
+            ctx.setenv("CONVERT", "")
+            ctx.setenv("COMPOSITE", "")
+    else:
+        ctx.setenv("CONVERT", "")
+        ctx.setenv("COMPOSITE", "")
     
     ctx.setenv('BUG_TRACKER', "http://sourceforge.net/tracker/?group_id=124080")
     
@@ -226,10 +246,16 @@ if ctx.mode == 'configure':
             '#define VERSION "${VERSION}"\n' \
             '#endif\n')
     
-    src = DCH + ".in"
-    if os.path.exists(ctx.subst(src)):
-        ctx.subst_file(src, DCH, at = True)
-
+    # Make symlinks expected by ROX
+    for f in "AUTHORS ChangeLog COPYING COPYING-LGPL NEWS README".split():
+        if f == "ChangeLog":
+            dest = "${TOP_DIR}/Help/Changes"
+        else:
+            dest = "${TOP_DIR}/Help/" + f
+        src = "../" + f
+        if subprocess.call(["ln", "-nfs", src, ctx.subst(dest)]):
+            raise MaitchChildError("Failed to link '%s' Help file" % f)
+    
 elif ctx.mode == 'build':
 
     # Private library
@@ -279,23 +305,25 @@ elif ctx.mode == 'build':
     # Stuff other than the program
     
     # Graphics
-    ctx.add_rule(Rule(rule = "${CONVERT} -background #0000 " \
-            "${SRC} -geometry 64x64 ${TGT}",
-            targets = LOGO_PNG,
-            sources = "roxterm.svg",
-            where = TOP))
-            
-    # Note 'where' is NOWHERE for following two rules because sources already
-    # start with ${TOP_DIR}.
-    ctx.add_rule(Rule(rule = "${CONVERT} ${SRC} -geometry 16x16 ${TGT}",
-            targets = FAVICON,
-            sources = LOGO_PNG,
-            where = NOWHERE))
-    
-    ctx.add_rule(Rule(rule = "${COMPOSITE} -gravity SouthWest ${SRC} ${TGT}",
-            targets = TEXT_LOGO,
-            sources = [LOGO_PNG, "${TOP_DIR}/Help/lib/logo_text_only.png"],
-            where = NOWHERE))
+    if ctx.env['CONVERT']:
+        ctx.add_rule(Rule(rule = "${CONVERT} -background #0000 " \
+                "${SRC} -geometry 64x64 ${TGT}",
+                targets = LOGO_PNG,
+                sources = "roxterm.svg",
+                where = TOP))
+                
+        # Note 'where' is NOWHERE for following two rules because sources
+        # already start with ${TOP_DIR}.
+        ctx.add_rule(Rule(rule = "${CONVERT} ${SRC} -geometry 16x16 ${TGT}",
+                targets = FAVICON,
+                sources = LOGO_PNG,
+                where = NOWHERE))
+        
+        ctx.add_rule(Rule( \
+                rule = "${COMPOSITE} -gravity SouthWest ${SRC} ${TGT}",
+                targets = TEXT_LOGO,
+                sources = [LOGO_PNG, "${TOP_DIR}/Help/lib/logo_text_only.png"],
+                where = NOWHERE))
     
     # man pages
     if ctx.env['XMLTOMAN']:
@@ -446,7 +474,7 @@ elif ctx.mode == "install" or ctx.mode == "uninstall":
     ctx.install_data("roxterm.desktop", "${DATADIR}/applications")
     if ctx.env['XMLTOMAN']:
         ctx.install_man("roxterm.1 roxterm-config.1")
-    ctx.install_doc("AUTHORS ChangeLog COPYING README")
+    ctx.install_doc("AUTHORS ChangeLog COPYING COPYING-LGPL README")
     ctx.install_doc(ctx.glob("*.html",
             subdir = ctx.subst("${TOP_DIR}/Help/en")),
             "${HTMLDIR}/en")
@@ -476,52 +504,51 @@ elif ctx.mode == "install" or ctx.mode == "uninstall":
                     subdir = ctx.subst("${TOP_DIR}/Help/%s" % l)),
                     "${HTMLDIR}/%s" % l)
 
-elif ctx.mode == 'distclean' or ctx.mode == 'clean':
+elif ctx.mode == 'pristine' or ctx.mode == 'clean':
     
-    clean = [LOGO_PNG, TEXT_LOGO, FAVICON, APPINFO]
-    if ctx.mode == 'distclean':
-        clean += [VFILE, DCH]
+    clean = [APPINFO, "${TOP_DIR}/maitch.pyc"]
+    if ctx.mode == 'pristine':
+        clean += [VFILE, "${TOP_DIR}/ChangeLog"] + \
+            ["${TOP_DIR}/Help/" + f for f in \
+                "AUTHORS COPYING COPYING-LGPL Changes NEWS README".split()] + \
+            ["${TOP_DIR}/Help/lib/" + f for f in \
+                "favicon.ico logo_text.png roxterm_logo.png".split()] + \
+            ctx.glob("*.pot", "${TOP_DIR}", "po") + \
+            ctx.glob("*.pot", "${TOP_DIR}", "po4a") + \
+            ctx.glob("*.po~", "${TOP_DIR}", "po") + \
+            ctx.glob("*.po~", "${TOP_DIR}", "po4a")
+        for d in \
+                [ctx.subst("${TOP_DIR}/Help/" + d) for d in "es fr gl".split()]:
+            recursively_remove(d, False, [])
     for f in clean:
         ctx.delete(f)
 
 elif ctx.mode == 'dist':
     
     ctx.add_dist("AUTHORS Help/AUTHORS " \
-            "ChangeLog ChangeLog.old Config " \
-            "COPYING Help/en Help/lib/header.png " \
+            "genlog ChangeLog ChangeLog.old Config " \
+            "COPYING COPYING-LGPL Help/en Help/lib/header.png " \
             "Help/lib/logo_text_only.png " \
             "Help/lib/roxterm.css Help/lib/roxterm_ie.css "
             "Help/lib/sprites.png " \
-            "INSTALL INSTALL.Debian INSTALL.ReadFirst " \
+            "INSTALL INSTALL.Debian " \
             "NEWS README README.translations " \
             "roxterm.1.xml.in roxterm-config.1.xml.in " \
             "roxterm.desktop roxterm.lsm.in roxterm.spec.in " \
             "roxterm.svg roxterm.xml TODO " \
             "src/roxterm-config.glade src/roxterm-config.ui")
-    for f in [LOGO_PNG, FAVICON, TEXT_LOGO]:
-        if os.path.exists(f):
-            ctx.add_dist(f)
+    ctx.add_dist([f.replace("${TOP_DIR}/", "") \
+            for f in [LOGO_PNG, FAVICON, TEXT_LOGO]])
     ctx.add_dist(ctx.glob("*.[c|h]", os.curdir, "src"))
-    # Debian files
-    ctx.add_dist("builddeb")
-    debfiles = "changelog changelog.in compat control copyright " \
-            "dirs roxterm-common.doc-base " \
-            "roxterm-common.install roxterm-gtk2.install " \
-            "roxterm-gtk2.lintian-overrides roxterm-gtk2.menu " \
-            "roxterm-gtk2.postinst roxterm-gtk2.prerm roxterm-gtk3.install " \
-            "roxterm-gtk3.lintian-overrides roxterm-gtk3.menu " \
-            "roxterm-gtk3.postinst roxterm-gtk3.prerm roxterm.xpm rules " \
-            "source/format watch"
-    ctx.add_dist(["debian/" + f for f in debfiles.split()])
     # maitch-specific
     ctx.add_dist("version maitch.py mscript.py")
     # ROX bits
     ctx.add_dist("AppInfo.xml.in AppRun .DirIcon " \
-            "Help/Changes Help/COPYING Help/NEWS Help/README")
+            "Help/Changes Help/COPYING Help/COPYING-LGPL Help/NEWS Help/README")
     if os.path.exists("AppInfo.xml"):
         ctx.add_dist("AppInfo.xml")
     # Translations
-    ctx.add_dist("po/LINGUAS")
+    ctx.add_dist("po/LINGUAS po4a/LINGUAS")
     files = ctx.glob("*.po", os.curdir, "po4a") + \
             ctx.glob("*.pot", os.curdir, "po4a")
     if files:
@@ -533,26 +560,6 @@ elif ctx.mode == 'dist':
     files = ctx.glob("*.po", os.curdir, "po", False)
     if files:
         ctx.add_dist(files)
-    # Only needed for autotools
-    files = "ABOUT-NLS po4a/LINGUAS po4a/Makefile.in po4a/Makefile.am".split()
-    files += ["po/%s" % f for f in "insert-header.sin " \
-                    "Makefile.in.in Rules-quot boldquot.sed en@quot.header " \
-                    "en@boldquot.header Makevars remove-potcdate.sin " \
-                    "stamp-po quot.sed".split()]
-    # Other stuff to be removed when we no longer support autotools
-    files += "acinclude.m4 bootstrap.sh configure.ac.in " \
-            "Makefile.am src/Makefile.am update-locales".split()
-    files += "m4 aclocal.m4 " \
-                "compile config.h.in " \
-                "config.rpath configure configure.ac " \
-                "depcomp install-sh intl ltmain.sh " \
-                "Makefile.in src/Makefile.in missing".split()
-    for f in files:
-        if os.path.exists(f):
-            ctx.add_dist(f)
-    for f in ["config.sub", "config.guess"]:
-        if os.path.exists(f):
-            ctx.add_dist(os.path.realpath(f), arcname = f)
             
 
 ctx.run()

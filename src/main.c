@@ -34,6 +34,7 @@
 #if ENABLE_SM
 #include "session.h"
 #endif
+#include "x11support.h"
 
 #define ROXTERM_DBUS_NAME RTDBUS_NAME ".term"
 #define ROXTERM_DBUS_OBJECT_PATH RTDBUS_OBJECT_PATH "/term"
@@ -60,8 +61,34 @@ static DBusMessage *create_dbus_message(int argc, char **argv,
     
     for (n = 0; message && n < argc; ++n)
     {
+        char *arg;
+        char tmp[16];
+        
+        if (g_str_has_prefix(argv[n], "--tab"))
+        {
+            if (global_options_workspace == -1)
+            {
+                guint32 ws;
+                
+                if (x11support_get_current_desktop(
+                        gdk_get_default_root_window(), &ws))
+                {
+                    global_options_workspace = (int) ws;
+                }
+                else
+                {
+                    g_warning(_("Unable to read current workspace"));
+                }
+            }
+            sprintf(tmp, "--tab=%d", global_options_workspace);
+            arg = tmp;
+        }
+        else
+        {
+            arg = argv[n];
+        }
         message = rtdbus_append_args(message,
-                DBUS_TYPE_STRING, RTDBUS_ARG(argv[n]),
+                DBUS_TYPE_STRING, RTDBUS_ARG(arg),
                 DBUS_TYPE_INVALID);
     }
     if (display)
@@ -345,6 +372,7 @@ int main(int argc, char **argv)
     g_free(display);
     
     global_options_init(&argc, &argv, TRUE);
+    global_options_apply_dark_theme();
 
     if (dbus_ok)
     {

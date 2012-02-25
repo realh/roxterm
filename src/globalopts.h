@@ -50,6 +50,7 @@ extern gboolean global_options_maximise;
 
 /* Whether to try to open new terminal in an existing window */
 extern gboolean global_options_tab;
+extern int global_options_workspace;
 
 /* Fork first instance */
 extern gboolean global_options_fork;
@@ -121,6 +122,8 @@ char **global_options_copy_strv(char **ps);
 #define GET_CURRENT_DIR g_get_current_dir
 #define FREE_CURRENT_DIR g_free
 #endif
+
+void global_options_apply_dark_theme(void);
 
 #endif /* GLOBALOPTS_H */
 

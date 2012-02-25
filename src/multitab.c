@@ -155,6 +155,8 @@ static void multi_win_destructor(MultiWin *win, gboolean destroy_widgets);
 
 static void multi_win_set_icon_title(MultiWin *win, const char *title);
 
+static void multi_win_close_tab_clicked(GtkWidget *widget, MultiTab *tab);
+
 static void multi_win_restore_size(MultiWin *win)
 {
     MultiTab *tab = win->current_tab;
@@ -1069,7 +1071,7 @@ static gboolean tab_clicked_handler(GtkWidget *widget,
             switch (tab->middle_click_action)
             {
                 case 1:
-                    multi_tab_delete(tab);
+                    multi_win_close_tab_clicked(NULL, tab);
                     break;
                 case 2:
                     gtk_clipboard_request_text(
@@ -1196,7 +1198,12 @@ MultiWin *multi_win_new_for_tab(const char *display_name, int x, int y,
 
 static void multi_win_close_tab_clicked(GtkWidget *widget, MultiTab *tab)
 {
-    multi_tab_delete(tab);
+    if (!multi_win_delete_handler ||
+            !multi_win_delete_handler(tab->parent->gtkwin, NULL,
+                    tab->user_data))
+    {
+        multi_tab_delete(tab);
+    }
 }
 
 MultiWin *multi_win_clone(MultiWin *old,
@@ -1241,7 +1248,7 @@ static void multi_win_detach_tab_action(MultiWin * win)
 
 static void multi_win_close_tab_action(MultiWin * win)
 {
-    multi_tab_delete(win->current_tab);
+    multi_win_close_tab_clicked(NULL, win->current_tab);
 }
 
 static void multi_win_close_other_tabs_action(MultiWin * win)

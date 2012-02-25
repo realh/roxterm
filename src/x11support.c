@@ -90,7 +90,8 @@ gboolean x11support_window_is_minimized(GdkWindow *window)
     return minimized;
 }
 
-gboolean x11support_get_wm_desktop(GdkWindow *window, guint32 *desktop)
+gboolean x11support_get_desktop_prop(GdkWindow *window,
+        const char *prop_name, guint32 *desktop)
 {
     GdkDisplay *display = get_display(window);
     Atom type;
@@ -101,7 +102,7 @@ gboolean x11support_get_wm_desktop(GdkWindow *window, guint32 *desktop)
     
     if (XGetWindowProperty(GDK_DISPLAY_XDISPLAY(display),
             GDK_WINDOW_XID (window),
-            gdk_x11_get_xatom_by_name_for_display(display, "_NET_WM_DESKTOP"),
+            gdk_x11_get_xatom_by_name_for_display(display, prop_name),
             0, G_MAXLONG, False, AnyPropertyType,
             &type, &format, &n_items, &bytes_after, &data) == Success &&
         type != None)

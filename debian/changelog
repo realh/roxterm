@@ -1,4 +1,23 @@
-roxterm (2.4.2-1ppa1lucid1) lucid; urgency=low
+roxterm (2.5.1-1ppa1maverick1) maverick; urgency=low
+
+  * New upstream version:
+    + maitch.py: Reorder args in compiler checks: libs must come after source
+      on some systems.
+    + More flexible close window/tab warnings.
+    + Added global option to use dark theme.
+    + Revamped "configlet" (Configuration Manager).
+    + --tab only reuses windows on current workspace unless overridden
+      by --title.
+    + SVG-derived pixmaps are included in release tarballs for convenience.
+    + Option to use dark GTK theme variant.
+  * debian/control: Removed imagemagick and librsvg2-bin from Build-Depends
+    (see above).
+  * Debian packaging now maintained with git-buildpackage.
+  * debian/control: Bump Standards-Version: 3.9.3.
+
+ -- Tony Houghton <h@realh.co.uk>  Sat, 25 Feb 2012 18:05:26 +0000
+
+roxterm (2.4.2-1) experimental; urgency=low
 
   * New upstream version:
     + Replaced autotools buildsystem with maitch.
