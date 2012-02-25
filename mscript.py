@@ -61,7 +61,7 @@ if ctx.mode == 'configure':
                 "--match", "[0-9]*"])[0].strip()
         version = version.replace('-', '.', 1).replace('-', '~', 1)
         ctx.save_if_different(vfile, version + '\n')
-        gitlog = ctx.prog_output([os.path.abspath(
+        gitlog = ctx.prog_output(["/bin/sh", os.path.abspath(
                 ctx.subst("${TOP_DIR}/genlog"))])[0].lstrip()
         # Can't use ctx.save_if_different because it tries to subst
         # content and fails
