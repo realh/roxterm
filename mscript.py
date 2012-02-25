@@ -501,13 +501,15 @@ elif ctx.mode == 'pristine' or ctx.mode == 'clean':
         clean += [VFILE, "${TOP_DIR}/ChangeLog"] + \
             ["${TOP_DIR}/Help/" + f for f in \
                 "AUTHORS COPYING COPYING-LGPL Changes NEWS README".split()] + \
-            ["${TOP_DIR}/Help/" + f for f in "es fr gl".split()] + \
             ["${TOP_DIR}/Help/lib/" + f for f in \
                 "favicon.ico logo_text.png roxterm_logo.png".split()] + \
             ctx.glob("*.pot", "${TOP_DIR}", "po") + \
             ctx.glob("*.pot", "${TOP_DIR}", "po4a") + \
             ctx.glob("*.po~", "${TOP_DIR}", "po") + \
             ctx.glob("*.po~", "${TOP_DIR}", "po4a")
+        for d in \
+                [ctx.subst("${TOP_DIR}/Help/" + d) for d in "es fr gl".split()]:
+            recursively_remove(d, False, [])
     for f in clean:
         ctx.delete(f)
 
