@@ -25,7 +25,6 @@ override_dh_auto_configure:
 		 --disable-gtk3 $(DIRS_GTK2)
 
 override_dh_auto_build:
-	cp debian/*.png debian/favicon.ico Help/lib/
 	python mscript.py build $(MSCRIPT_OPTS) $(DIRS_GTK2)
 
 override_dh_auto_install:
