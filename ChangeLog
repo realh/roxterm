@@ -1,11 +1,17 @@
+Version 2.5.2
+Author: Tony Houghton <h@realh.co.uk>
+Date:   Sun, 26 Feb 2012 16:50:06 +0000
+ * Dark theme setting doesn't apply to GTK2
+ * New GtkBox needed converting to GtkVBox for GTK2
+
 Version 2.5.1
 Author: Tony Houghton <h@realh.co.uk>
 Date:   Sat, 25 Feb 2012 17:20:54 +0000
  * Debian packaging now managed by git-buildpackage
  * Removed autoconf support
  * Improved close window/tab warning options
- * Implemented dark theme option.
- * --tab only reuses windows on current workspace.
+ * Implemented dark theme option
+ * --tab only reuses windows on current workspace
  * Generated graphics are included in tarballs
  * maitch: check_compile: libs before source
 
@@ -16,343 +22,343 @@ Date:   Wed, 4 Jan 2012 17:21:41 +0000
 Version 2.4.1
 Author: Tony Houghton <h@realh.co.uk>
 Date:   Wed, 4 Jan 2012 14:56:33 +0000
- * Added --fork option.
+ * Added --fork option
  * Optionally show tab number in label
- * Avoid unnecessary rebuilding of po(t) files.
+ * Avoid unnecessary rebuilding of po(t) files
  * Only present a window if it's visible
 
 Version 2.3.4
 Author: Tony Houghton <h@realh.co.uk>
 Date:   Tue, 13 Dec 2011 22:41:23 +0000
- * New win for tab gets old win's menubar setting.
+ * New win for tab gets old win's menubar setting
 
 Version 2.3.3
 Author: Tony Houghton <h@realh.co.uk>
 Date:   Tue, 13 Dec 2011 16:06:30 +0000
- * Set win title template for dragged out tab.
+ * Set win title template for dragged out tab
 
 Version 2.3.2
 Author: Tony Houghton <h@realh.co.uk>
 Date:   Sun, 11 Dec 2011 14:39:35 +0000
- * Corrected contents of dist tarballs.
- * Fixed dragging tab to other window.
- * Tab dragged to brand new window has correct width.
+ * Corrected contents of dist tarballs
+ * Fixed dragging tab to other window
+ * Tab dragged to brand new window has correct width
  * Prevent crash when dragging lone tab
- * Queue label resize on parent size-allocate.
- * Include INSTALL.ReadFirst in tarball.
- * Updated roxterm.spec.in and supported in maitch.
+ * Queue label resize on parent size-allocate
+ * Include INSTALL.ReadFirst in tarball
+ * Updated roxterm.spec.in and supported in maitch
 
 Version 2.3.1
 Author: Tony Houghton <h@realh.co.uk>
 Date:   Thu, 24 Nov 2011 18:57:35 +0000
- * Fixed upload script.
+ * Fixed upload script
  * Release 2.3.1
- * Release 2.3.1.
- * Added option for middle-click on tab action.
- * More compact ChangeLog format.
+ * Release 2.3.1
+ * Added option for middle-click on tab action
+ * More compact ChangeLog format
  * Add configure --enable-autoconf option
- * Always try to include po files in dist.
- * Cosmetic changes to man pages.
- * Disable translations in deb.
- * .gitignore.
- * Aesthetic space.
- * Support translations in mscript.py dist...
- * Install translations.
+ * Always try to include po files in dist
+ * Cosmetic changes to man pages
+ * Disable translations in deb
+ * .gitignore
+ * Aesthetic space
+ * Support translations in mscript.py dist..
+ * Install translations
  * Merge branch 'master' of ssh://roxterm.git.sourceforge.net/gitroot/roxterm/roxterm
- * Documented new --tab behaviour.
+ * Documented new --tab behaviour
  * Changed behaviout of --tab
- * Translate html docs.
- * Added po4a man rules.
- * Added .mo rule to .po rule generator.
- * sys.exit(1) on cancellation.
- * Latest attempt to prevent thread hangs.
- * Only use xsltproc for man pages.
- * Force use of xmltoman.
+ * Translate html docs
+ * Added po4a man rules
+ * Added .mo rule to .po rule generator
+ * sys.exit(1) on cancellation
+ * Latest attempt to prevent thread hangs
+ * Only use xsltproc for man pages
+ * Force use of xmltoman
  * Unsuccessful new attempt to stop xml->man hanging
- * Update .po files during build.
- * List debian files for dist individually.
+ * Update .po files during build
+ * List debian files for dist individually
  * Lock while converting XML to man
- * Added more debugging stuff to maitch.
- * Use gmodule-export CFLAGS/LIBS.
- * Added NO_LOCK and LOCK_TOP options.
- * Fixed checking/building of icons.
- * Added xgettext options.
- * Fixes and partial implementation of translation.
- * Started adding gettext support.
- * .gitignore.
- * Added configure deprecation warning.
- * Refer to maitch in installation doc.
- * Support MAITCHFLAGS.
- * Use maitch in AppRun.
- * Remove obsolete version.h.
- * More robust use of thread lock.
- * Fix for the fix (debian/rules --src-dir).
- * maitch and debian/rules tweaks/fixes.
- * dch.
+ * Added more debugging stuff to maitch
+ * Use gmodule-export CFLAGS/LIBS
+ * Added NO_LOCK and LOCK_TOP options
+ * Fixed checking/building of icons
+ * Added xgettext options
+ * Fixes and partial implementation of translation
+ * Started adding gettext support
+ * .gitignore
+ * Added configure deprecation warning
+ * Refer to maitch in installation doc
+ * Support MAITCHFLAGS
+ * Use maitch in AppRun
+ * Remove obsolete version.h
+ * More robust use of thread lock
+ * Fix for the fix (debian/rules --src-dir)
+ * maitch and debian/rules tweaks/fixes
+ * dch
  * Merge branch 'maitch'
- * Documented migration to maitch.
- * Replaced COPYING with correct version.
- * Added LGPL copyright stuff.
- * dch.
- * deb builds cleanly.
- * deb now builds but with warnings.
- * Many fixes to enable deb building.
- * Improved mscript/maitch dist.
- * Corrections to builddeb.
- * Use maitch for debian package.
- * Added uninstall.
- * Better support for legacy autotools in m dist.
- * Support xmltoman.
- * Generate ChangeLog from git.
- * maitch/mscript fixes.
- * Support mscript.py dist.
- * Generate debian/changelog.
- * Reimplement .ui file processing with maitch.
- * Remove certain files in distclean.
- * Added reconfigure and distclean.
- * Removed handler for obsolete cursor blinks option.
- * Fixed search tree model access.
- * Fixed Close other tabs.
- * Added option to disable resize grip.
- * Changed how F10 menu shortcut is disabled.
- * maitch successful as far as install.
- * FIXME/TODO idea.
- * More maitch stuff.
+ * Documented migration to maitch
+ * Replaced COPYING with correct version
+ * Added LGPL copyright stuff
+ * dch
+ * deb builds cleanly
+ * deb now builds but with warnings
+ * Many fixes to enable deb building
+ * Improved mscript/maitch dist
+ * Corrections to builddeb
+ * Use maitch for debian package
+ * Added uninstall
+ * Better support for legacy autotools in m dist
+ * Support xmltoman
+ * Generate ChangeLog from git
+ * maitch/mscript fixes
+ * Support mscript.py dist
+ * Generate debian/changelog
+ * Reimplement .ui file processing with maitch
+ * Remove certain files in distclean
+ * Added reconfigure and distclean
+ * Removed handler for obsolete cursor blinks option
+ * Fixed search tree model access
+ * Fixed Close other tabs
+ * Added option to disable resize grip
+ * Changed how F10 menu shortcut is disabled
+ * maitch successful as far as install
+ * FIXME/TODO idea
+ * More maitch stuff
  * maitch build step works!
- * Prevented false alarm warning.
- * More maitch stuff.
- * Always run rules with no deps.
- * Lots of useful progress with maitch.
- * Started adding maitch support.
+ * Prevented false alarm warning
+ * More maitch stuff
+ * Always run rules with no deps
+ * Lots of useful progress with maitch
+ * Started adding maitch support
 
 Version 2.2.2
 Author: Tony Houghton <h@realh.co.uk>
 Date:   Wed, 5 Oct 2011 18:46:47 +0100
- * Release 2.2.2.
- * Fixed corrupted roxterm-config.ui.
+ * Release 2.2.2
+ * Fixed corrupted roxterm-config.ui
 
 Version 2.2.1
 Author: Tony Houghton <h@realh.co.uk>
 Date:   Tue, 27 Sep 2011 18:03:14 +0100
  * Use correct path for .ui file!
- * Use absolute path for .ui hack.
- * Release 2.2.1.
- * No shortcuts for new scrolling items.
- * Added extra scrolling menu items.
- * gitignore .ui.stamp file.
- * Use per-window target tab size.
- * Kludge to prevent width increasing on unmaximize.
- * Fixed .ui processing.
- * Added rule to ensure .ui is GTK2-compatible.
+ * Use absolute path for .ui hack
+ * Release 2.2.1
+ * No shortcuts for new scrolling items
+ * Added extra scrolling menu items
+ * gitignore .ui.stamp file
+ * Use per-window target tab size
+ * Kludge to prevent width increasing on unmaximize
+ * Fixed .ui processing
+ * Added rule to ensure .ui is GTK2-compatible
  * Support replacing of GtkBox with Gtk[HV]Box in .ui
  * Merge branch 'master' of ssh://roxterm.git.sourceforge.net/gitroot/roxterm/roxterm
- * Manually changed GtkBox to Gtk[VH]Box in .ui.
+ * Manually changed GtkBox to Gtk[VH]Box in .ui
 
 Version 2.1.3
 Author: Tony Houghton <h@realh.co.uk>
-Date:   Thu, 15 Sep 2011 13:54:51 +0100 * Release 2.1.3: debian/copyright in DEP-5.
+Date:   Thu, 15 Sep 2011 13:54:51 +0100 * Release 2.1.3: debian/copyright in DEP-5
 
 Version 2.1.2
 Author: Tony Houghton <h@realh.co.uk>
 Date:   Wed, 14 Sep 2011 12:22:16 +0100
- * dch (release 2.1.2).
- * Updated gtk2 build-dep.
+ * dch (release 2.1.2)
+ * Updated gtk2 build-dep
 
 Version 2.1.1
 Author: Tony Houghton <h@realh.co.uk>
 Date:   Mon, 5 Sep 2011 18:06:45 +0100
- * Added --no-geometry option for gtk3 version.
+ * Added --no-geometry option for gtk3 version
  * Fixed gtk_widget_get_realized/mapped for gtk<2.20
- * configure.ac depends on configure.ac.in.
- * dch.
- * dch.
- * Matching files without file:// prefix is optional.
- * Allow ) at the end of URLs.
- * Changed acknowledgement of VTE authors.
- * Check for error reading cwd.
+ * configure.ac depends on configure.ac.in
+ * dch
+ * dch
+ * Matching files without file:// prefix is optional
+ * Allow ) at the end of URLs
+ * Changed acknowledgement of VTE authors
+ * Check for error reading cwd
 
 Version 2.0.1
 Author: Tony Houghton <h@realh.co.uk>
 Date:   Sun, 21 Aug 2011 17:00:51 +0100
- * Updated news.
- * Release 2.0.1.
- * Added Detach Tab menu item.
- * Replaced roxterm pkg with dummy and roxterm-gtk3.
- * Fixed dh_install stage.
- * Install gtk2 binaries "manually".
+ * Updated news
+ * Release 2.0.1
+ * Added Detach Tab menu item
+ * Replaced roxterm pkg with dummy and roxterm-gtk3
+ * Fixed dh_install stage
+ * Install gtk2 binaries "manually"
  * roxterm-common Breaks/Replaces roxterm (< 2)
- * Fixed menu file and install permissions.
- * Install .desktop file in both binary packages.
- * Completed package rename, and...
- * Changed package descriptions.
- * Package rename: roxterm-legacy => roxterm-gtk2.
- * Documented dropping of es trans.
- * Multi-package nearly OK (trivial lintian Ws).
- * Build multiple Debian packages (GTK2/3/common).
- * Filter out key events for shortcuts.
- * Enabled signal handler for new_tabs_adjacent.
- * dch.
- * Fixed tab label packing esp for left and right.
- * Connect signal handler for profilegui combos.
- * Single tab width now 40% of notebook width.
- * Found a way to make a single tab look better.
- * Fixed GTK2 tab label style.
- * Improved file URI regexes.
- * Improved file/directory handling (xdg-open).
+ * Fixed menu file and install permissions
+ * Install .desktop file in both binary packages
+ * Completed package rename, and..
+ * Changed package descriptions
+ * Package rename: roxterm-legacy => roxterm-gtk2
+ * Documented dropping of es trans
+ * Multi-package nearly OK (trivial lintian Ws)
+ * Build multiple Debian packages (GTK2/3/common)
+ * Filter out key events for shortcuts
+ * Enabled signal handler for new_tabs_adjacent
+ * dch
+ * Fixed tab label packing esp for left and right
+ * Connect signal handler for profilegui combos
+ * Single tab width now 40% of notebook width
+ * Found a way to make a single tab look better
+ * Fixed GTK2 tab label style
+ * Improved file URI regexes
+ * Improved file/directory handling (xdg-open)
  * Merge branch 'master' into gtk3
- * Fixed MultitabLabel for GTK2.
- * Fixed tab label attention colour for GTK3.
+ * Fixed MultitabLabel for GTK2
+ * Fixed tab label attention colour for GTK3
  * Merge branch 'master' into gtk3
  * Failed attempt to fix "amber" tab labels
- * Merged multitab-label from gtk3 branch.
- * Apply RGBA visual when using GTK3.
- * New object for tab labels.
+ * Merged multitab-label from gtk3 branch
+ * Apply RGBA visual when using GTK3
+ * New object for tab labels
  * Merge branch 'master' into gtk3
  * Added roxterm-config.glade symlink
  * Modified tab close button
- * Updated tab label bg colour stuff to GTK3...
- * dch.
- * Updated news.
- * Added GTK3 resizing fix from gtk3 branch.
- * Fixed sizing with GTK3.
+ * Updated tab label bg colour stuff to GTK3..
+ * dch
+ * Updated news
+ * Added GTK3 resizing fix from gtk3 branch
+ * Fixed sizing with GTK3
  * Merge branch 'master' into gtk3
- * Change comments etc from "GTK+ 2.0" to "VTE/GTK".
+ * Change comments etc from "GTK+ 2.0" to "VTE/GTK"
  * Merge branch 'master' into gtk3
- * tab close buttons set themselves small again.
- * Create size_groups with/after dialogs.
- * Don't modify tab close buttons' GtkRcStyle.
- * Use new object for tab close buttons.
- * Updated years in copyright boilerplate.
+ * tab close buttons set themselves small again
+ * Create size_groups with/after dialogs
+ * Don't modify tab close buttons' GtkRcStyle
+ * Use new object for tab close buttons
+ * Updated years in copyright boilerplate
  * Merge branch 'master' into gtk3
- * Updated copyright to 2011.
- * Enable GTK3 by default.
+ * Updated copyright to 2011
+ * Enable GTK3 by default
  * Improved menus
- * Select clicked tab when popping up menu.
- * Got rid of tabs' menu_label field.
- * Use full Tabs submenu as tabb bar popup.
- * Swapped white and grey over in GTK colours.
- * Don't match * in filenames.
- * Match files without file://.
- * Don't build translations.
- * Fixed Open in Filer menu item.
- * Added new_tabs_adjacent option.
- * Implement separation of file and dir URIs.
- * UI tweaks.
- * Reorganised ui with URIs on two pages.
+ * Select clicked tab when popping up menu
+ * Got rid of tabs' menu_label field
+ * Use full Tabs submenu as tabb bar popup
+ * Swapped white and grey over in GTK colours
+ * Don't match * in filenames
+ * Match files without file://
+ * Don't build translations
+ * Fixed Open in Filer menu item
+ * Added new_tabs_adjacent option
+ * Implement separation of file and dir URIs
+ * UI tweaks
+ * Reorganised ui with URIs on two pages
  * New fix for sliders
- * Allow ' characters in URL pathnames.
- * Fixed opening of file URIs' parent directories.
- * Allow arguments in fallback URI handlers.
- * Updated list of fallback browsers.
- * Fixed file:// URI handling.
- * Added OptionsChanged D-BUS message.
- * Added filer options for handling file:// URIs.
+ * Allow ' characters in URL pathnames
+ * Fixed opening of file URIs' parent directories
+ * Allow arguments in fallback URI handlers
+ * Updated list of fallback browsers
+ * Fixed file:// URI handling
+ * Added OptionsChanged D-BUS message
+ * Added filer options for handling file:// URIs
  * Fixed saturation slider
- * Removed true_translucence option.
- * Only present if adding a second or higher tab.
- * "Present" window when adding a new tab.
- * Added shortcuts for searching.
- * Added completion for search entry.
- * Fixed About dialog.
- * dch.
- * Improved search string tooltip.
- * Search dialog remembers term's previous settings.
- * Added search.c to POTFILES.in.
- * .glade->.ui in POTFILES.in.
- * Removed missing.c from POTFILES.in.
- * Don't use stock for Find... menu item.
- * Set default button in search dialog.
- * Fixed search menu items and impoved dialog.
- * Debugged search code.
- * Superfluous backslash.
- * No need to replace g_file_set_contents.
- * Fixed AC_CHECK_FUNCS/AM_CONDITIONAL interaction.
- * Search functions in new source files.
- * Fixed vte function check.
- * Fixed .glade->.ui in Makefile and more GDK3 stuff.
- * Silly macro errors.
- * GDK3 compatibility tweaks.
- * Fixed some more GSEAL issues.
- * Fixed missing bracket.
- * Completed search dialog (not debugged).
- * Started adding support for searching.
- * Fixed GTK dependency versions.
- * Disable GTK3 by default.
- * Renamed glade file to .ui.
+ * Removed true_translucence option
+ * Only present if adding a second or higher tab
+ * "Present" window when adding a new tab
+ * Added shortcuts for searching
+ * Added completion for search entry
+ * Fixed About dialog
+ * dch
+ * Improved search string tooltip
+ * Search dialog remembers term's previous settings
+ * Added search.c to POTFILES.in
+ * .glade->.ui in POTFILES.in
+ * Removed missing.c from POTFILES.in
+ * Don't use stock for Find... menu item
+ * Set default button in search dialog
+ * Fixed search menu items and impoved dialog
+ * Debugged search code
+ * Superfluous backslash
+ * No need to replace g_file_set_contents
+ * Fixed AC_CHECK_FUNCS/AM_CONDITIONAL interaction
+ * Search functions in new source files
+ * Fixed vte function check
+ * Fixed .glade->.ui in Makefile and more GDK3 stuff
+ * Silly macro errors
+ * GDK3 compatibility tweaks
+ * Fixed some more GSEAL issues
+ * Fixed missing bracket
+ * Completed search dialog (not debugged)
+ * Started adding support for searching
+ * Fixed GTK dependency versions
+ * Disable GTK3 by default
+ * Renamed glade file to .ui
  * Merge branch 'master' into gtk3
  * Merge branch 'master' of ssh://roxterm.git.sourceforge.net/gitroot/roxterm/roxterm
- * Fixed gtk3 support check.
- * Fixed GTK2 support.
- * Removed some obsolete stuff from AppRun.
- * Got configlet working in GTK3.
- * Fixed duplicate ids in glade file.
- * Fixed configlet (top-level dialog only).
- * init error.
- * Compiles cleanly against GTK3.
- * More glade->GtkBuilder migration.
- * Lots more GTK3 compatibility work.
- * Converted from glade to GtkBuilder.
- * po modified by build.
- * Various GTK3 compatibility changes.
+ * Fixed gtk3 support check
+ * Fixed GTK2 support
+ * Removed some obsolete stuff from AppRun
+ * Got configlet working in GTK3
+ * Fixed duplicate ids in glade file
+ * Fixed configlet (top-level dialog only)
+ * init error
+ * Compiles cleanly against GTK3
+ * More glade->GtkBuilder migration
+ * Lots more GTK3 compatibility work
+ * Converted from glade to GtkBuilder
+ * po modified by build
+ * Various GTK3 compatibility changes
  * about dialog now compatible with GTK3
- * Started supporting GTK+3.
+ * Started supporting GTK+3
 
 Version 1.22.2
 Author: Tony Houghton <h@realh.co.uk>
 Date:   Tue, 21 Jun 2011 21:47:31 +0100
- * Release 1.22.2.
- * Added a (guessed at) es translation string.
- * Improved compsoiting/colormap support.
+ * Release 1.22.2
+ * Added a (guessed at) es translation string
+ * Improved compsoiting/colormap support
 
 Version 1.22.1
 Author: Tony Houghton <h@realh.co.uk>
 Date:   Thu, 2 Jun 2011 13:33:22 +0100
- * Release 1.22.1.
- * Fixed bindir initialisation prior to sm.
- * Updated news re session management.
- * Avoid saving session state when not wanted.
- * Don't try to init sm twice.
- * Include args in session restore commands.
- * Removed --xclass and --xname options.
- * gitignore *.mo.
- * Fixed consistency of xclass/xname.
- * Had a stab at updating Spanish translations.
- * Updated news.html (provisional).
- * dch.
- * Typo in error message.
- * Fixed warnings.
- * Respond to composited-changed signal.
+ * Release 1.22.1
+ * Fixed bindir initialisation prior to sm
+ * Updated news re session management
+ * Avoid saving session state when not wanted
+ * Don't try to init sm twice
+ * Include args in session restore commands
+ * Removed --xclass and --xname options
+ * gitignore *.mo
+ * Fixed consistency of xclass/xname
+ * Had a stab at updating Spanish translations
+ * Updated news.html (provisional)
+ * dch
+ * Typo in error message
+ * Fixed warnings
+ * Respond to composited-changed signal
  * Merge branch 'master' of ssh://roxterm.git.sourceforge.net/gitroot/roxterm/roxterm
- * Added --role option.
- * xclass and xname options apply to all windows.
- * Set wmclass earlier when restoring session.
- * bootstrap.sh skips tx by default.
- * Attempt at minor updates for es.po.
- * Updated po files.
+ * Added --role option
+ * xclass and xname options apply to all windows
+ * Set wmclass earlier when restoring session
+ * bootstrap.sh skips tx by default
+ * Attempt at minor updates for es.po
+ * Updated po files
  * Shortcuttable New Tab/Window With Profile submenus
- * New tabs are inserted immediately after currrent.
- * Corrected function description comment.
- * Select newly created profiles etc in configlet.
- * Correct index when changing an encoding.
- * Keep configlet lists explicitly sorted...
- * Sort profiles etc in "Select ..." etc submenus.
- * Correct off-by-one error in deleting encodings.
- * Sorting of profiles etc is case-insensitive.
+ * New tabs are inserted immediately after currrent
+ * Corrected function description comment
+ * Select newly created profiles etc in configlet
+ * Correct index when changing an encoding
+ * Keep configlet lists explicitly sorted..
+ * Sort profiles etc in "Select ..." etc submenus
+ * Correct off-by-one error in deleting encodings
+ * Sorting of profiles etc is case-insensitive
  * Use single dynamic_options_strcmp
- * Configlet lists are sorted (not tested yet).
- * Encodings are sortable.
- * Fix wrapping of Move Tab Left.
- * Checked .po files back into git.
- * Sort profiles etc in configlet.
- * Sort profiles etc in configlet.
- * Sort profiles in "New tab/window with profile".
- * Don't show underlines on popup menus.
- * Fixed signal handling for profile entry widgets.
+ * Configlet lists are sorted (not tested yet)
+ * Encodings are sortable
+ * Fix wrapping of Move Tab Left
+ * Checked .po files back into git
+ * Sort profiles etc in configlet
+ * Sort profiles etc in configlet
+ * Sort profiles in "New tab/window with profile"
+ * Don't show underlines on popup menus
+ * Fixed signal handling for profile entry widgets
 
 Version 1.21.4
 Author: Tony Houghton <h@realh.co.uk>
 Date:   Mon, 14 Mar 2011 17:22:22 +0000
- * Release 1.21.4.
+ * Release 1.21.4
  * Fix locking of window title template
  * Allow all fixed Tabs shortcuts to be changed
  * Removed erroneous 'T' options from xname/xclass:o
@@ -360,57 +366,57 @@ Date:   Mon, 14 Mar 2011 17:22:22 +0000
 Version 1.21.3
 Author: Tony Houghton <h@realh.co.uk>
 Date:   Sat, 12 Mar 2011 17:38:06 +0000
- * Release 1.21.3.
- * Release 1.21.3.
+ * Release 1.21.3
+ * Release 1.21.3
  * Merge branch 'master' of ssh://roxterm.git.sourceforge.net/gitroot/roxterm/roxterm
- * Fixed possible NULL dereference.
- * Fixed memory leaks in multitab/win strings.
- * Removed \n characters from some error messages.
+ * Fixed possible NULL dereference
+ * Fixed memory leaks in multitab/win strings
+ * Removed \n characters from some error messages
 
 Version 1.21.2
 Author: Tony Houghton <h@realh.co.uk>
 Date:   Fri, 4 Mar 2011 17:58:30 +0000
- * Release 1.21.2.
+ * Release 1.21.2
  * Some text entries had wrong signal details
- * Fix capitalisation of default wm class and name.
- * Use $(MKDIR_P) instead of mkdir || true.
- * Always set TERM in env.
- * Force default value if TERM not set.
- * Use on_editable_changed throughout profile.
- * Corrected upload script when $1 = filename.
+ * Fix capitalisation of default wm class and name
+ * Use $(MKDIR_P) instead of mkdir || true
+ * Always set TERM in env
+ * Force default value if TERM not set
+ * Use on_editable_changed throughout profile
+ * Corrected upload script when $1 = filename
 
 Version 1.21.1
 Author: Tony Houghton <h@realh.co.uk>
 Date:   Sat, 12 Feb 2011 14:34:37 +0000
- * Release 1.21.1.
- * Don't set {COLOR}TERM if not configured.
- * Support xclass and xname in sessions.
- * Also need librsvg2-bin.
- * Amended deps for building from git.
- * Non-existant error variable when vte < 0.26.
- * Use alternative SVG icon.
- * dch.
- * Added README.translations...
- * po4a/Makefile.am depends on genmake.sh.
- * Make .pos depend on their respective .pots.
- * Allow TERM to be set with vte >= 0.26.
- * Updated INSTALL.Debian wrt transifex.
- * Corrected order of name, class window hints.
+ * Release 1.21.1
+ * Don't set {COLOR}TERM if not configured
+ * Support xclass and xname in sessions
+ * Also need librsvg2-bin
+ * Amended deps for building from git
+ * Non-existant error variable when vte < 0.26
+ * Use alternative SVG icon
+ * dch
+ * Added README.translations..
+ * po4a/Makefile.am depends on genmake.sh
+ * Make .pos depend on their respective .pots
+ * Allow TERM to be set with vte >= 0.26
+ * Updated INSTALL.Debian wrt transifex
+ * Corrected order of name, class window hints
  * Editable shortcuts
- * Added --class and --name options.
- * Can set window title from profile.
- * --tab-name is "one-shot" and causes locking.
- * Window title template locking and session handling.
- * Support tab title template locking in sessions.
- * Prevent profile from overriding custom tab name.
- * win_title support in profilegui.
- * Added window title option to glade.
- * Set vte emulation from TERM profile option.
+ * Added --class and --name options
+ * Can set window title from profile
+ * --tab-name is "one-shot" and causes locking
+ * Window title template locking and session handling
+ * Support tab title template locking in sessions
+ * Prevent profile from overriding custom tab name
+ * win_title support in profilegui
+ * Added window title option to glade
+ * Set vte emulation from TERM profile option
  * Comprehensive escaping for saved session XML
- * lastlog variable was replaced by "login".
- * Merge changelog.
+ * lastlog variable was replaced by "login"
+ * Merge changelog
  * Merge branch 'master' of ssh://roxterm.git.sourceforge.net/gitroot/roxterm/roxterm
- * dch: Added debian-specific details.
+ * dch: Added debian-specific details
 
 Version 1.20.7
 Author: Tony Houghton <h@realh.co.uk>
@@ -422,18 +428,18 @@ Version 1.20.6
 Author: Tony Houghton <h@realh.co.uk>
 Date:   Fri, 14 Jan 2011 15:38:14 +0000
  * Merge branch 'master' into no_french
- * dch: Added debian-specific details.
+ * dch: Added debian-specific details
  * Merge branch 'master' into no_french
  * Release 1.20.6
  * Merge branch 'master' into no_french
- * Tidied debian/changelog(.in).
+ * Tidied debian/changelog(.in)
 
 Version 1.20.5
 Author: Tony Houghton <h@realh.co.uk>
 Date:   Sun, 2 Jan 2011 13:59:57 +0000
  * Merge branch 'no_french' of ssh://roxterm.git.sourceforge.net/gitroot/roxterm/roxterm into no_french
  * Merge branch 'master' into no_french
- * (Release 1.20.5): Quote roxterm_CFLAGS correctly.
+ * (Release 1.20.5): Quote roxterm_CFLAGS correctly
  * Merge branch 'master' of ssh://roxterm.git.sourceforge.net/gitroot/roxterm/roxterm
 
 Version 1.20.4
@@ -441,27 +447,27 @@ Author: Tony Houghton <h@realh.co.uk>
 Date:   Thu, 30 Dec 2010 19:17:06 +0000
  * Merge branch 'master' into no_french
  * (Release 1.20.4): Use subdirs for translated mans
- * Use AS_IF instead of shell if.
+ * Use AS_IF instead of shell if
  * Merge branch 'master' into no_french
- * Version 1.20.3.1: Use AS_IF instead of shell if.
- * Replaced AC_HELP_STRING with AS_HELP_STRING.
- * Use pkg-config for SM (and ICE).
- * Allow tx to be skipped in bootstrap.sh.
+ * Version 1.20.3.1: Use AS_IF instead of shell if
+ * Replaced AC_HELP_STRING with AS_HELP_STRING
+ * Use pkg-config for SM (and ICE)
+ * Allow tx to be skipped in bootstrap.sh
 
 Version 1.20.3
 Author: Tony Houghton <h@realh.co.uk>
 Date:   Wed, 22 Dec 2010 21:36:07 +0000
  * Merge branch 'master' into no_french
- * Release 1.20.3 (when merged into no_french).
- * Don't distclean translated docs.
- * Fix handling of .pot files in make dist.
+ * Release 1.20.3 (when merged into no_french)
+ * Don't distclean translated docs
+ * Fix handling of .pot files in make dist
  * Reduce dependency on po4a
  * Merge branch 'master' of ssh://roxterm.git.sourceforge.net/gitroot/roxterm/roxterm
- * PNG auto-updated.
- * Mention transifex in INSTALL.Debian.
- * Allow make dist to work without git.
+ * PNG auto-updated
+ * Mention transifex in INSTALL.Debian
+ * Allow make dist to work without git
  * Merge branch 'no_french' of ssh://roxterm.git.sourceforge.net/gitroot/roxterm/roxterm into no_french
- * Merged gtk_widget_get_realized check.
+ * Merged gtk_widget_get_realized check
  * Merge branch 'master' into no_french
  * Support gtk < 2.20.0
 
@@ -469,26 +475,26 @@ Version 1.20.2
 Author: Tony Houghton <h@realh.co.uk>
 Date:   Mon, 20 Dec 2010 18:31:14 +0000
  * Release 1.20.2
- * Release 1.20.2 (when merged to no_french branch).
+ * Release 1.20.2 (when merged to no_french branch)
  * Merge branch 'master' into no_french
- * Quoted string containing <>.
+ * Quoted string containing <>
  * Merge branch 'master' into no_french
- * Fix login option with Nicola Fontana's patch.
- * po files now managed by transifex instead of git.
+ * Fix login option with Nicola Fontana's patch
+ * po files now managed by transifex instead of git
 
 Version 1.20.1
 Author: Tony Houghton <h@realh.co.uk>
 Date:   Mon, 13 Dec 2010 22:40:36 +0000
- * Release 1.20.1: updated news.
- * Release 1.20.1: Debian experimental.
+ * Release 1.20.1: updated news
+ * Release 1.20.1: Debian experimental
  * Release 1.20.1
- * po auto update.
- * Added transifex client support.
- * Debian CFLAGS include -Wall.
- * New windows don't inherit size from parent.
+ * po auto update
+ * Added transifex client support
+ * Debian CFLAGS include -Wall
+ * New windows don't inherit size from parent
  * Tabs are always homogeneous and scrollable
- * Don't use -L with po4a-update.
- * Use fixed size for single tab label.
+ * Don't use -L with po4a-update
+ * Use fixed size for single tab label
  * Use ellipsizing in tab labels (again)
  * l10n: Updated French (fr) translation to 100%
  * l10n: Updated French (fr) translation to 93%
@@ -496,63 +502,63 @@ Date:   Mon, 13 Dec 2010 22:40:36 +0000
  * l10n: Updated French (fr) translation to 75%
  * l10n: Updated French (fr) translation to 19%
  * l10n: Updated French (fr) translation to 27%
- * New transifex token.
- * Fixed headers in *fr.po files.
- * Transifex verification.
+ * New transifex token
+ * Fixed headers in *fr.po files
+ * Transifex verification
  * Merge branch 'master' of ssh://roxterm.git.sourceforge.net/gitroot/roxterm/roxterm
- * Added partial French translations.
- * Updated Spanish news.html.
- * Customised pot/po headers.
- * Updated news.
- * Updated Spanish translations.
- * Check in new po files and ignore other new files.
- * Added Debian dependency on librsvg2-common.
+ * Added partial French translations
+ * Updated Spanish news.html
+ * Customised pot/po headers
+ * Updated news
+ * Updated Spanish translations
+ * Check in new po files and ignore other new files
+ * Added Debian dependency on librsvg2-common
  * Support French translation
- * po merge.
- * Updated po file as much as I could.
- * Typo in "title" label.
- * Use CFLAGS=-Wl,--as-needed.
- * Handle resize-window signal.
- * Fuller description of title CLI options in man.
- * Rationalised tab/window title handling...
- * Renamed some frames etc to make glade easier.
- * Use --as-needed in debian/rules.
- * Check handler tag before disconnecting it.
- * Removed a debug message.
- * New terminals inherit environ from where launched.
- * Shortened URLs for bug descriptions.
- * No reply to NewTerminal D-BUS message.
- * roxterm holds a reference to launcher message.
- * Changed check for fullscreen.
- * Removed some superfluous old debugging.
- * Removed debugging.
- * More debugging.
- * Added some debugging.
+ * po merge
+ * Updated po file as much as I could
+ * Typo in "title" label
+ * Use CFLAGS=-Wl,--as-needed
+ * Handle resize-window signal
+ * Fuller description of title CLI options in man
+ * Rationalised tab/window title handling..
+ * Renamed some frames etc to make glade easier
+ * Use --as-needed in debian/rules
+ * Check handler tag before disconnecting it
+ * Removed a debug message
+ * New terminals inherit environ from where launched
+ * Shortened URLs for bug descriptions
+ * No reply to NewTerminal D-BUS message
+ * roxterm holds a reference to launcher message
+ * Changed check for fullscreen
+ * Removed some superfluous old debugging
+ * Removed debugging
+ * More debugging
+ * Added some debugging
  * Munge version from git-describe
- * Restore window size after changing furniture.
- * Set geometry when tab moved to new window.
- * Run child command when idle, not when realized.
- * Removed legacy tab dragging code.
- * Revert to multitab.c from 1.19.4.
- * po4a not needed by Build-Depends, but...
+ * Restore window size after changing furniture
+ * Set geometry when tab moved to new window
+ * Run child command when idle, not when realized
+ * Removed legacy tab dragging code
+ * Revert to multitab.c from 1.19.4
+ * po4a not needed by Build-Depends, but..
  * Better avoidance of unwanted resizing
- * Reverted idle on closing tabs.
- * dch.
+ * Reverted idle on closing tabs
+ * dch
  * Defer close_tab_action to idle
- * Use htmldir instead of pkgdocdir in man pages.
+ * Use htmldir instead of pkgdocdir in man pages
 
 Version 1.19.4
 Author: Tony Houghton <h@realh.co.uk>
 Date:   Sun, 17 Oct 2010 15:24:51 +0100
- * dch (1.19.4-1).
- * Hopefully fixed CSS issues now.
+ * dch (1.19.4-1)
+ * Hopefully fixed CSS issues now
 
 Version 1.19.3
 Author: Tony Houghton <h@realh.co.uk>
 Date:   Tue, 12 Oct 2010 19:21:48 +0100
- * dch.
- * Use vte_terminal_fork_command_full if supported.
- * Use (...,"%s", msg) instead of just (..., msg).
+ * dch
+ * Use vte_terminal_fork_command_full if supported
+ * Use (...,"%s", msg) instead of just (..., msg)
 
 Version 1.19.2
 Author: Tony Houghton <h@realh.co.uk>
@@ -562,11 +568,11 @@ Date:   Tue, 12 Oct 2010 17:00:19 +0100
  * Release 1.19.2
  * CSS changes
  * Init env vars correctly
- * Credited translator at bottom of each es web page.
- * Updated .gitignore.
- * Reenabled language selection menu.
+ * Credited translator at bottom of each es web page
+ * Updated .gitignore
+ * Reenabled language selection menu
  * Spanish translation updates
- * Use vte accessor functions instead of members.
+ * Use vte accessor functions instead of members
 
 ------------------------------------------------------------------------
 r823 | realh | 2010-08-15 21:15:43 +0100 (Sun, 15 Aug 2010) | 2 lines
