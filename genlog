@@ -19,9 +19,9 @@ for i in $first $rest; do
                 | head -n 2
         if [ $use_grep = 1 ] ; then
             git log '--pretty=format:%s' --grep='^\*' \
-                    $i..$prev | sed 's/^\*/ */; s/:$//'
+                    $i..$prev | sed 's/^\*/ */; s/[:.]$//'
         else
-            git log '--pretty=format:%s' $i..$prev | sed 's/^/ * /; s/:$//'
+            git log '--pretty=format:%s' $i..$prev | sed 's/^/ * /; s/[:.]$//'
         fi
         echo
         echo
