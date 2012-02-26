@@ -493,9 +493,14 @@ void global_options_apply_dark_theme(void)
     GtkSettings *gtk_settings;
 	
     gtk_settings = gtk_settings_get_default();
-    g_object_set(G_OBJECT(gtk_settings), "gtk-application-prefer-dark-theme",
-            global_options_lookup_int_with_default("prefer_dark_theme", FALSE),
-            NULL);
+    if (g_object_class_find_property(G_OBJECT_GET_CLASS(gtk_settings),
+            "gtk-application-prefer-dark-theme"))
+    {
+        g_object_set(gtk_settings, "gtk-application-prefer-dark-theme",
+                global_options_lookup_int_with_default("prefer_dark_theme",
+                        FALSE),
+                NULL);
+    }
 }
 
 /* vi:set sw=4 ts=4 noet cindent cino= */
