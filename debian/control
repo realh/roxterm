@@ -18,7 +18,7 @@ Depends: ${misc:Depends}
 Replaces: roxterm (<< 2.0.0-1)
 Breaks: roxterm (<< 2.0.0-1)
 Recommends: roxterm-gtk3 | roxterm-gtk2, openssh-client
-Description: Multi-tabbed GTK+/VTE terminal emulator
+Description: Multi-tabbed GTK+/VTE terminal emulator - common files
  ROXTerm is a terminal emulator based on the VTE library. It was originally
  intended to be a lightweight alternative to gnome-terminal, but its role has
  shifted to providing a richer range of features for power users.
@@ -32,7 +32,7 @@ Depends: ${shlibs:Depends}, ${misc:Depends}, librsvg2-common,
     roxterm-common (= ${source:Version})
 Conflicts: roxterm-gtk2
 Provides: x-terminal-emulator
-Description: Multi-tabbed GTK+/VTE terminal emulator
+Description: Multi-tabbed GTK+/VTE terminal emulator - GTK3 version
  ROXTerm is a terminal emulator based on the VTE library. It was originally
  intended to be a lightweight alternative to gnome-terminal, but its role has
  shifted to providing a richer range of features for power users.
@@ -46,7 +46,7 @@ Depends: ${shlibs:Depends}, ${misc:Depends}, librsvg2-common,
     roxterm-common (= ${source:Version})
 Conflicts: roxterm-gtk3
 Provides: x-terminal-emulator
-Description: Multi-tabbed GTK+/VTE terminal emulator
+Description: Multi-tabbed GTK+/VTE terminal emulator - GTK3 version
  ROXTerm is a terminal emulator based on the VTE library. It was originally
  intended to be a lightweight alternative to gnome-terminal, but its role has
  shifted to providing a richer range of features for power users.
@@ -57,7 +57,7 @@ Description: Multi-tabbed GTK+/VTE terminal emulator
 Package: roxterm
 Architecture: all
 Depends: ${misc:Depends}, roxterm-gtk3 (>= ${source:Version})
-Description: Multi-tabbed GTK+/VTE terminal emulator
+Description: Multi-tabbed GTK+/VTE terminal emulator - transitional package 
  ROXTerm is a terminal emulator based on the VTE library. It was originally
  intended to be a lightweight alternative to gnome-terminal, but its role has
  shifted to providing a richer range of features for power users.
