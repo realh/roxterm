@@ -1178,6 +1178,7 @@ MultiWin *multi_win_new_for_tab(const char *display_name, int x, int y,
     const char *title_template = win->title_template;
     gboolean show_menubar = win->show_menu_bar;
 
+    g_debug("Creating new window for tab with tab_pos %d", win->tab_pos);
     gtk_window_get_size(gwin, &w, &h);
     multi_win_get_disable_menu_shortcuts(tab->user_data,
             &disable_menu_shortcuts, &disable_tab_shortcuts);
@@ -1901,6 +1902,15 @@ MultiWin *multi_win_new_blank(const char *display_name, Options *shortcuts,
         g_object_set(notebook, "tab-vborder", 0, NULL);
     }
 #endif
+    if (tab_pos == -1)
+    {
+        gtk_notebook_set_show_tabs(notebook, always_show_tabs);
+        gtk_notebook_set_show_border(notebook, always_show_tabs);
+    }
+    else
+    {
+        gtk_notebook_set_tab_pos(notebook, tab_pos);
+    }
     gtk_notebook_popup_disable(notebook);
     if (always_show_tabs)
     {
@@ -1960,17 +1970,6 @@ MultiWin *multi_win_new_full(const char *display_name, Options *shortcuts,
     for (n = 0; n < numtabs; ++n)
         multi_tab_new(win, user_data_template);
 
-    if (tab_pos == -1)
-    {
-        gtk_notebook_set_show_tabs(GTK_NOTEBOOK(win->notebook),
-                always_show_tabs);
-        gtk_notebook_set_show_border(GTK_NOTEBOOK(win->notebook),
-                always_show_tabs);
-    }
-    else
-    {
-        gtk_notebook_set_tab_pos(GTK_NOTEBOOK(win->notebook), tab_pos);
-    }
     multi_win_shade_menus_for_tabs(win);
 
     if (geom)
