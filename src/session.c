@@ -37,6 +37,27 @@
 #include "roxterm.h"
 #include "session.h"
 
+
+#include <stdarg.h>
+static void
+roxterm_sm_log(const char *format, ...)
+{
+    static FILE *fp = NULL;
+    va_list ap;
+    
+    if (!fp)
+    {
+        char *n = g_build_filename(g_get_home_dir(), ".roxterm-sm-log", NULL);
+        fp = fopen(n, "w");
+        g_return_if_fail(fp != NULL);
+    }
+    va_start(ap, format);
+    vfprintf(fp, format, ap);
+    va_end(ap);
+}
+
+#define SLOG roxterm_sm_log
+
 typedef struct {
     SmcConn smc_conn;
     IceConn ice_conn;
@@ -98,6 +119,7 @@ static void ice_watch_callback(IceConn conn, IcePointer handle,
     {
         int fd = IceConnectionNumber(conn);
         
+        SLOG("Opening ice watch callback on fd %d", fd);
         sd->ice_conn = conn;
         fcntl(fd, F_SETFD, FD_CLOEXEC);
         sd->ioc = g_io_channel_unix_new(fd);
@@ -105,6 +127,7 @@ static void ice_watch_callback(IceConn conn, IcePointer handle,
     }
     else
     {
+        SLOG("Closing ice watch callback");
         if (sd->tag)
         {
             g_source_remove(sd->tag);
@@ -134,11 +157,12 @@ static void save_tab_to_fp(MultiTab *tab, gpointer handle)
             "        encoding='%s'",
             roxterm_get_profile_name(roxterm),
             roxterm_get_colour_scheme_name(roxterm),
-            cwd ? cwd = g_strdup(cwd) : (cwd = g_get_current_dir()),
+            cwd ? cwd : (cwd = g_get_current_dir()),
             name ? name : "", title ? title : "", icon_title ? icon_title : "",
             multi_tab_get_title_template_locked(tab),
             vte_terminal_get_encoding(roxterm_get_vte_terminal(roxterm)));
             
+    SLOG("Saving tab with icon_title '%s', cwd %s", icon_title);
     fprintf(fp, "    %s current='%d'%s>\n", s,
             tab == multi_win_get_current_tab(multi_tab_get_parent(tab)),
             commandv ? "" : " /");
