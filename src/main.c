@@ -241,6 +241,10 @@ static int roxterm_exit(int pipe_w, char exit_code)
         }
         close(pipe_w);
     }
+    else
+    {
+        SLOG("Not forking, roxterm_exit doing nothing");
+    }
     return exit_code;
 }
 
@@ -292,7 +296,7 @@ int main(int argc, char **argv)
     if (!global_options_disable_sm)
     {
         session_argc = argc;
-        session_argv = g_new(char *, argc);
+        session_argv = g_new(char *, argc + 1);
         if (global_options_appdir)
         {
             session_argv[0] = g_build_filename(global_options_appdir,
@@ -311,6 +315,10 @@ int main(int argc, char **argv)
         {
             session_argv[n] = g_strdup(argv[n]);
         }
+        /* FIXME: NULL terminator (and argc + 1 above) only necessary if
+         * debugging
+         */
+        session_argv[n] = NULL;
     }
 #endif
     g_set_application_name(PACKAGE);
@@ -432,7 +440,10 @@ int main(int argc, char **argv)
 
     g_idle_add(roxterm_idle_ok, &fork_pipe[1]);
 
+    SLOG("Entering main loop with %d windows", g_list_length(multi_win_all));
     gtk_main();
+    
+    SLOG("Exiting normally");
     
     return 0;
 }

@@ -47,6 +47,9 @@
 #ifdef HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX
 #include "search.h"
 #endif
+#if ENABLE_SM
+#include "session.h"
+#endif
 #include "shortcuts.h"
 #include "uri.h"
 #include "x11support.h"
@@ -515,7 +518,7 @@ static char **roxterm_modify_environment(char const * const *env,
 
 static char **roxterm_get_environment(ROXTermData *roxterm, const char *term)
 {
-    /* We stil set TERM even though vte is supposed to override it because
+    /* We still set TERM even though vte is supposed to override it because
      * earlier versions added an additional TERM instead of replacing it, and
      * the one we add should take priority.
      */
@@ -539,6 +542,11 @@ static char **roxterm_get_environment(ROXTermData *roxterm, const char *term)
     int n;
     const char *cterm;
 
+    /* Despite called when idle after showing, widget's GdkWindow can still
+     * be NULL at this point (for hidden tabs?) so need to check it's realized.
+     */
+    if (!gtk_widget_get_realized(roxterm->widget))
+        gtk_widget_realize(roxterm->widget);
     new_env[EnvWindowId * 2 + 1] = g_strdup_printf("%ld",
             GDK_WINDOW_XID(gtk_widget_get_window(roxterm->widget)));
     new_env[EnvRoxtermId * 2 + 1] = g_strdup_printf("%p", roxterm);
@@ -4668,6 +4676,7 @@ static void parse_open_win(_ROXTermParseContext *rctx,
             return;
         }
     }
+    SLOG("Opening window with title %s", title);
     
     shortcuts = shortcuts_open(shortcuts_name);
     rctx->win = win = multi_win_new_blank(disp, shortcuts,
@@ -4821,6 +4830,7 @@ static void parse_open_tab(_ROXTermParseContext *rctx,
             return;
         }
     }
+    SLOG("Loading tab with icon_title %s, cwd %s", rctx->icon_title, cwd);
     
     profile = dynamic_options_lookup_and_ref(roxterm_get_profiles(),
             profile_name, "roxterm profile");
@@ -5168,6 +5178,7 @@ gboolean roxterm_load_session(const char *xml, gssize len,
         g_error_free(error);
         error = NULL;
     }
+    SLOG("Session loaded, result %d", result);
     return result;
 }
 #endif /* ENABLE_SM */

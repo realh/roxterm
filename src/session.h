@@ -33,6 +33,12 @@ void session_init(const char *client_id);
 
 gboolean session_load(const char *client_id);
 
+void
+roxterm_sm_log(const char *format, ...);
+
+//#define SLOG roxterm_sm_log
+#define SLOG(f, ...)
+
 #endif /* SESSION_H */
 
 /* vi:set sw=4 ts=4 et cindent cino= */

@@ -12,7 +12,9 @@ done
 [ -f "$APP_DIR/Help/Changes" ] || ln -nfs ../ChangeLog "$APP_DIR/Help/Changes"
 
 MAINTAIN="--enable-maintainer-mode"
-if [ -f "$APP_DIR/tony" ]; then
+#if [ -f "$APP_DIR/tony" ]; then
+if true ; then
+    cd $APP_DIR
     DEV_LDFLAGS="-L/usr/lib/debug $LDFLAGS"
     ulimit -c unlimited
 else
