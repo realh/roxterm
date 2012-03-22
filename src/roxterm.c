@@ -973,9 +973,19 @@ static void roxterm_data_delete(ROXTermData *roxterm)
     /* This doesn't delete widgets because they're deleted when removed from
      * the parent */
     GtkWindow *gwin;
+    VtePty *pty = NULL;
     
     g_return_if_fail(roxterm);
     
+    /* Apparently pty doesn't get closed automatically */
+    if (roxterm->widget &&
+            (pty = vte_terminal_get_pty_object(VTE_TERMINAL(roxterm->widget)))
+            != NULL)
+    {
+        vte_pty_close(pty);
+        g_object_unref(pty);
+        vte_terminal_set_pty_object(VTE_TERMINAL(roxterm->widget), NULL);
+    }
     gwin = roxterm_get_toplevel(roxterm);
     if (gwin && roxterm->win_state_changed_tag)
     {
