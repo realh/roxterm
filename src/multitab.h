@@ -95,7 +95,8 @@ typedef void (*MultiWinInitialTabs)(gpointer user_data,
 
 /* Called when a window or tab is about to be closed. If it's a tab, event is
  * NULL and data is the tab's user_data. If event is non-NULL data is a
- * MultiWin *.
+ * MultiWin *. event is not necessarily a valid event, don't dereference it
+ * even if non-NULL.
  * Return FALSE to close, TRUE to keep open. */
 typedef gboolean (*MultiWinDeleteHandler)(GtkWidget *, GdkEvent *,
         gpointer data);
