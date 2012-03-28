@@ -15,8 +15,9 @@ for i in $first $rest; do
         else
             echo $prev
         fi
-        git log '--pretty=format:Author: %an <%ae>%nDate:   %aD' $i..$prev \
-                | head -n 2
+        # Need echo because if there's only one commit head strips trailing \n
+        (git log '--pretty=format:Author: %an <%ae>%nDate:   %aD' $i..$prev ; \
+        echo ) | head -n 2
         if [ $use_grep = 1 ] ; then
             git log '--pretty=format:%s' --grep='^\*' \
                     $i..$prev | sed 's/^\*/ */; s/[:.]$//'
