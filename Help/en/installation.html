@@ -131,9 +131,6 @@
 				<p><code>git fetch origin lucid:lucid<br/>
 				git checkout lucid</code></p>
 				
-				<p>At this point you might want to move your repository into an empty working directory because
-				files will be created in the repository's parent directory.</p>
-				
 				<p>You can use <code>sudo apt-get build-dep</code> at this point, but depending on the version
 				already in your distro the set of packages may be out-of-date, so be prepared for dependency
 				errors later and install the necessary packages at that point. You should install imagemagick
@@ -148,14 +145,14 @@
 				./mscript.py build<br/>
 				./mscript.py dist<br/>
 				mv build/roxterm-</code><i>version</i><code>.tar.bz2
-				    ../roxterm_</code><i>version</i><code>.orig.tar.bz2<br/>
-			    cd ..</code></p>
+				    </code><i>convenient_directory</i><code>/roxterm_</code><i>version</i><code>.orig.tar.bz2<br/>
+			    cd </code><i>convenient_directory</i></p>
 			    
 			    <p>(Alternatively you can download a tarball and rename it appropriately)</p>
                     
 			    <p><code>tar xf roxterm_</code><i>version</i><code>.orig.tar.bz2<br/>
 			    cd roxterm-</code><i>version</i><br/>
-			    <code>cp -a ../roxterm/debian .</code></p>
+			    <code>cp -a </code><i>path_to_your_repository</i><code>/roxterm/debian .</code></p>
 			    
 			    <p>At this point use <code>dch</code> to ensure the newest version number in
 			    <code>debian/changelog</code> matches the tarball's version number.</p>
