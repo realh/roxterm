@@ -1,11 +1,12 @@
-roxterm (2.5.3.8~gfe078fe-1) unstable; urgency=low
+roxterm (2.5.4-1) unstable; urgency=low
 
+  * Debian packaging now maintained in master branch again.
   * Changed close warning dialog buttons to Yes/No.
   * Warnings apply to closing windows via menu (Closes: #664887).
   * Explicitly close pty when deleting a terminal.
   * Ensure vte widgets realized before reading xid (Closes: #663736).
 
- -- Tony Houghton <h@realh.co.uk>  Wed, 28 Mar 2012 16:32:02 +0100
+ -- Tony Houghton <h@realh.co.uk>  Wed, 28 Mar 2012 17:58:04 +0100
 
 roxterm (2.5.3-1) unstable; urgency=low
 
