@@ -4394,7 +4394,7 @@ static gboolean roxterm_delete_handler(GtkWindow *gtkwin, GdkEvent *event,
     }
     dialog = gtk_message_dialog_new(gtkwin,
             GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-            GTK_MESSAGE_WARNING, GTK_BUTTONS_OK_CANCEL,
+            GTK_MESSAGE_WARNING, GTK_BUTTONS_YES_NO,
             msg);
     gtk_window_set_title(GTK_WINDOW(dialog), _("ROXTerm: Confirm close"));
     
@@ -4416,7 +4416,7 @@ static gboolean roxterm_delete_handler(GtkWindow *gtkwin, GdkEvent *event,
     gtk_box_pack_start(ca_box, only_running, FALSE, FALSE, 0);
     gtk_widget_show(only_running);
     
-    response = gtk_dialog_run(GTK_DIALOG(dialog)) != GTK_RESPONSE_OK;
+    response = gtk_dialog_run(GTK_DIALOG(dialog)) != GTK_RESPONSE_YES;
     gtk_widget_destroy(dialog);
     return response;
 }
