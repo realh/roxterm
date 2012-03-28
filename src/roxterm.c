@@ -124,6 +124,7 @@ struct ROXTermData {
     guint search_flags;
 #endif
     int file_match_tag[2];
+    gboolean from_session;
 };
 
 #define PROFILE_NAME_KEY "roxterm_profile_name"
@@ -756,8 +757,9 @@ static void roxterm_run_command(ROXTermData *roxterm, VteTerminal *vte)
     }
     else if (roxterm->commandv)
     {
-        /* Use -e commandv */
-        special = TRUE;
+        /* Either restoring a session or -e was given */
+        if (!roxterm->from_session)
+            special = TRUE;
     }
     else
     {
@@ -818,11 +820,11 @@ static void roxterm_run_command(ROXTermData *roxterm, VteTerminal *vte)
             commandv[0] = g_strdup(get_default_command(roxterm));
             commandv[1] = NULL;
         }
-        if (!special && options_lookup_int_with_default(roxterm->profile,
-                "login_shell", 0))
-        {
-            login = TRUE;
-        }
+    }
+    if (!special && options_lookup_int_with_default(roxterm->profile,
+            "login_shell", 0))
+    {
+        login = TRUE;
     }
 
     if (commandv && commandv[0])
@@ -4848,6 +4850,7 @@ static void parse_open_tab(_ROXTermParseContext *rctx,
             rctx->zoom_factor, cwd, g_strdup(profile_name), profile,
             rctx->maximised, colours_name, g_strdup(encoding),
             &rctx->geom, NULL, environ);
+    roxterm->from_session = TRUE;
     roxterm->dont_lookup_dimensions = TRUE;
     if (rctx->fdesc)
         roxterm->pango_desc = pango_font_description_copy(rctx->fdesc);
