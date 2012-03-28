@@ -93,7 +93,10 @@ if ctx.mode == 'configure':
         try:
             ctx.find_prog_env("convert")
             ctx.find_prog_env("composite")
-            ctx.find_prog_env("rsvg")
+            try:
+                ctx.find_prog_env("rsvg-convert")
+            except:
+                ctx.find_prog_env("rsvg")
         except:
             mprint("WARNING: ImageMagick and/or rsvg binaries appear " \
                     "not to be installed.\n" \
