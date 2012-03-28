@@ -106,32 +106,61 @@
 				</p>
 				for details.</p>
 
-				<p>Autoconf builds are still supported, but deprecated. If you
-				are using a version fetched by git instead of a release tarball
-				run the bootstrap.sh script first to create the configure script
-				and various other files needed for building.</p>
+				<p>Autoconf builds are no longer supported.</p>
 
 				<h3>Debian &amp; Ubuntu</h3>
 
 				<p>Up-to-date official Debian packages are now available. See <a
-				href="http://packages.debian.org/roxterm">http://packages.debian.org/roxterm</a>. For those that
-				want to build their own debian packages, the debian packaging files are now maintained in
-				separate branches of the git repository, managed by git-buildpackage (gbp). gbp has its own documentation
-				but some points you need to know when using it to build roxterm:</p>
+				href="http://packages.debian.org/roxterm">http://packages.debian.org/roxterm</a>.</p>
 				
-				<ul><li>gbp's master branch is "debian" or "lucid".</li>
-				<li>The lucid branch is for distros lacking support for the GTK3 version (eg Debian Squeeze,
-				Ubuntu Maverick and earlier).</li>
-				<li>For building snapshots between releases you may additionally
-				need imagemagick and librsvg2-bin, but these don't work together
-				properly in Lucid.</li></ul>
-
 				<p>Ubuntu also has official roxterm packages, but due to
 				Ubuntu's release cycle these may lag behind the latest upstream
 				releases. Therefore I have set up a
 				<a href="https://launchpad.net/~h-realh/+archive/roxterm">PPA</a>
                 to provide the most recent releases of ROXTerm for Ubuntu's
                 current release when appropriate.</p>
+				
+				<p>For those that want to build their own debian packages, the debian packaging files are no
+				longer included in release tarballs, but they are included in git's master branch.
+				<a href="Download">See above</a> for details of how to fetch roxterm from git.</p>
+				
+				<p>If you want to build a particular version:</p>
+				<p><code>git checkout</code> <i>version</i></p>
+				
+				<p>For older distros which do not include packages of GTK3 etc:</p>
+				<p><code>git fetch origin lucid:lucid<br/>
+				git checkout lucid</code></p>
+				
+				<p>At this point you might want to move your repository into an empty working directory because
+				files will be created in the repository's parent directory.</p>
+				
+				<p>You can use <code>sudo apt-get build-dep</code> at this point, but depending on the version
+				already in your distro the set of packages may be out-of-date, so be prepared for dependency
+				errors later and install the necessary packages at that point. You should install imagemagick
+				and librsvg2-bin at this point, but these are bugged in Ubuntu Lucid (and earlier?), so you will
+				have to copy these files from <code>Help/lib</code> in a tarball before running
+				<code>./mscript.py build</code>: <code>roxterm_logo.png favicon.ico logo_text.png</code>.</p>
+				
+			    <p>A typical workflow to create debian packages is:</p>
+				
+				<p><code>./mscript.py pristine<br/>
+				./mscript.py configure<br/>
+				./mscript.py build<br/>
+				./mscript.py dist<br/>
+				mv build/roxterm-</code><i>version</i><code>.tar.bz2
+				    ../roxterm_</code><i>version</i><code>.orig.tar.bz2<br/>
+			    cd ..</code></p>
+			    
+			    <p>(Alternatively you can download a tarball and rename it appropriately)</p>
+                    
+			    <p><code>tar xf roxterm_</code><i>version</i><code>.orig.tar.bz2<br/>
+			    cd roxterm-</code><i>version</i><br/>
+			    <code>cp -a ../roxterm/debian .</code></p>
+			    
+			    <p>(At this point you might want to use <code>dch</code> to ensure
+			    <code>debian/changelog</code> is up-to-date.</p>
+			    
+			    <p><code>debuild -uc -us</code></p>
 
             </div>
         </div>

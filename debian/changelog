@@ -1,0 +1,345 @@
+roxterm (2.5.3.8~gfe078fe-1) unstable; urgency=low
+
+  * Changed close warning dialog buttons to Yes/No.
+  * Warnings apply to closing windows via menu (Closes: #664887).
+  * Explicitly close pty when deleting a terminal.
+  * Ensure vte widgets realized before reading xid (Closes: #663736).
+
+ -- Tony Houghton <h@realh.co.uk>  Wed, 28 Mar 2012 16:32:02 +0100
+
+roxterm (2.5.3-1) unstable; urgency=low
+
+  * New upstream version:
+    + New windows created for dragged-out tabs use configured tab
+      position setting.
+
+ -- Tony Houghton <h@realh.co.uk>  Sun, 11 Mar 2012 17:32:47 +0000
+
+roxterm (2.5.2-1) unstable; urgency=low
+
+  * New upstream version:
+    + maitch.py: Reorder args in compiler checks: libs must come after source
+      on some systems.
+    + More flexible close window/tab warnings.
+    + Added global option to use dark theme.
+    + Revamped "configlet" (Configuration Manager).
+    + --tab only reuses windows on current workspace unless overridden
+      by --title.
+    + SVG-derived pixmaps are included in release tarballs for convenience.
+    + Option to use dark GTK theme variant.
+  * debian/control: Removed imagemagick and librsvg2-bin from Build-Depends
+    (see above).
+  * Debian packaging now maintained with git-buildpackage.
+  * debian/control:
+    + Bump Standards-Version: 3.9.3.
+    + Each binary package has a unique short description.
+  * debian/copyright: New URL for Format.
+  * Changed target back to unstable instead of experimental.
+
+ -- Tony Houghton <h@realh.co.uk>  Sun, 26 Feb 2012 19:52:56 +0000
+
+roxterm (2.4.2-1) experimental; urgency=low
+
+  * New upstream version:
+    + Replaced autotools buildsystem with maitch.
+    + Modified action of "Disable menu access key".
+    + Added option to disable window resize grip.
+    + Fixed search dialog bug.
+    + --tab may be used with -T to specify which window to reuse.
+    + Action on middle-clicking a tab label is configurable.
+    + Force label resize on parent size-allocate in gtk2.
+    + Fixed some bugs related to dragging tabs.
+    + debian/watch: Supports bz2.
+    + Set title template in windows created for dragged out tabs.
+    + New window for dragged out tab gets old window's show menubar setting.
+    + Optionally show tab number in label.
+    + Avoid unnecessary rebuilding of po(t) files.
+    + Only present a window if it's visible - was causing profiles with
+      multiple tabs to open windows too small.
+    + Added --fork option.
+  * debian/copyright: Overdue attribution of Tango colour scheme file to
+    Trustin Lee.
+
+ -- Tony Houghton <h@realh.co.uk>  Wed, 04 Jan 2012 17:21:26 +0000
+
+roxterm (2.2.2-1) experimental; urgency=low
+
+  * New upstream version:
+    + Matching filenames without file:// prefix is optional.
+    + Handle failure to read cwd gracefully (Closes: #639687).
+    + Include trailing ')' character in URLs.
+    + Use deprecated versions of get_mapped/realized functions for gtk < 2.20.
+    + --no-geometry option to workaround #632403.
+    + debian/control: Fix build-dep's gtk2 version.
+    + debian/copyright: comply to DEP-5, clarify GPL-2+.
+    + Replace abstracts in roxterm-config.ui for backwards compatibility.
+    + Restrict tab label size to prevent incorrect unmaximizing in GTK3.
+    + Added extra scrolling menu items.
+
+ -- Tony Houghton <h@realh.co.uk>  Wed, 05 Oct 2011 18:46:13 +0100
+
+roxterm (2.0.1-1) experimental; urgency=low
+
+  * New upstream version:
+    + Use GtkBuilder instead of libglade, support GTK+3.
+    + Added search feature.
+    + Support file URIs.
+    + New tab placement is configurable (Closes: #637021).
+    + Improved Tabs popup menu.
+    + Improved tab label appearance and packing.
+    + Dropped Spanish translation due to lack of maintenance.
+  * Build multiple packages to support GTK+2 and GTK+3.
+
+ -- Tony Houghton <h@realh.co.uk>  Sun, 21 Aug 2011 17:00:43 +0100
+
+roxterm (1.22.2-1) unstable; urgency=low
+
+  * New upstream version:
+    + Fixes a bug with compositing/colormap (SF bug: 3314176)
+
+ -- Tony Houghton <h@realh.co.uk>  Tue, 21 Jun 2011 21:42:44 +0100
+
+roxterm (1.22.1-1) unstable; urgency=low
+
+  * New upstream version:
+    + Regression fix: profile editor was failing to respond to changes in
+      text entry widgets.
+    + New Window/Tab With Profile submenu can be popped up with shortcut.
+    + New tabs are inserted immediately after currrent.
+    + Lists of profiles etc are sorted.
+    + Move Tab Left wraps correctly.
+    + New --role option.
+    + --xclass and --xname options removed.
+    + No underlines in popup menus (mnemonics don't work in popups).
+    + Try to avoid creating redundant session state files.
+    + Respond when compositing is enabled/disabled.
+   * Updated Standards-Version: 3.9.2.
+
+ -- Tony Houghton <h@realh.co.uk>  Thu, 02 Jun 2011 13:27:47 +0100
+
+roxterm (1.21.4-1) unstable; urgency=low
+
+  * New upstream version:
+    + Allow shortcuts to be set on all fixed Tabs menu items.
+    + Fix minor memory leaks and potential NULL dereference.
+    + Support TERM setting with vte >= 0.26.
+    + Command line options to set window class hints.
+    + Window title can be configured in profiles.
+
+ -- Tony Houghton <h@realh.co.uk>  Mon, 14 Mar 2011 17:20:51 +0000
+
+roxterm (1.20.7-1) unstable; urgency=low
+
+  * New upstream version:
+    + Correct path to HTML docs shown in man pages.
+    + Improved terminal size management.
+    + Rationalised handling of tab and window titles.
+    + Use ellipsizing in tab labels again (Closes: #601828).
+    + Support tab popup menus.
+    + New windows take on profile's default size instead of inheriting
+      previous window's size.
+    + Added Nicola Fontana's patch to fix login shell option.
+    + New sizing code to fix sf.net bug 3041926.
+    + Default to using GtkNotebook's implementation of draggable tabs.
+    + New HTML documentation.
+    + Spanish translation.
+  * Use -Wall in CFLAGS.
+  * debian/control:
+    + Updated Vcs-* fields to git repository.
+    + Added binary dependency on librsvg2-common.
+  * Removed debian/patches:- all merged upstream.
+
+ -- Tony Houghton <h@realh.co.uk>  Wed, 19 Jan 2011 18:16:18 +0000
+
+roxterm (1.18.5-3) unstable; urgency=low
+
+   * Fix setting of env variables (Closes: #598971) (LP: #651578)
+
+ -- Tony Houghton <h@realh.co.uk>  Sun, 03 Oct 2010 16:57:51 +0100
+
+roxterm (1.18.5-2) unstable; urgency=low
+
+   * Backported fixes from forthcoming upstream release to fix problems with
+     initialising and resizing multiple tabs (Closes: #592984).
+   * Standards-Version: 3.9.1.
+
+ -- Tony Houghton <h@realh.co.uk>  Sun, 15 Aug 2010 21:47:40 +0100
+
+roxterm (1.18.5-1) unstable; urgency=low
+
+  * New upstream release (Closes: #589871):
+    + Avoid NULL colour for background tint.
+    + Correct setting of rtdbus_ok flag.
+    + Added --disable-sm runtime option.
+
+ -- Tony Houghton <h@realh.co.uk>  Fri, 23 Jul 2010 13:45:19 +0100
+
+roxterm (1.18.4-1) unstable; urgency=low
+
+  * New upstream release:
+    + Configurable TERM and COLORTERM env variables.
+    + Less "noise" when D-BUS fails.
+  * Use dh 7.
+
+ -- Tony Houghton <h@realh.co.uk>  Sat, 19 Jun 2010 20:53:42 +0100
+
+roxterm (1.18.3-1) unstable; urgency=low
+
+  * New upstream release:
+    + Call gtk_window_present when --tab is used.
+      (upstream SourceForge tracker (SF) 2997661, 2997666).
+    + Update window title even if vte hasn't set it yet (SF 2999166).
+    + Reduces build-deps chain.
+
+ -- Tony Houghton <h@realh.co.uk>  Sun, 23 May 2010 13:22:30 +0100
+
+roxterm (1.18.2-1) unstable; urgency=low
+
+  * New upstream release:
+    + Fix crash when using --tab with no pre-existing windows 
+      (upstream SourceForge tracker (SF) #2996294).
+    + Hide/show menu bar setting is inherited from other windows (SF 2996296).
+
+ -- Tony Houghton <h@realh.co.uk>  Wed, 05 May 2010 20:25:43 +0100
+
+roxterm (1.18.1-1) unstable; urgency=low
+
+  * New upstream release:
+    + Support X session management (SF #2779052).
+    + Added "Restart Command" menu action (SF #2810001).
+    + Ensure no associated menus/dialogs are left open when a terminal exits.
+    + Profile editor redesign with new fullscreen/maximise options
+      (SF #2942755).
+    + Option to reflect terminal status in tab close icon (LP: #509544).
+    + Fix --hide-/--show-menubar (SF #2942481).
+    + Rudimentary ssh support (SF #2810009).
+    + New Window/Tab With Profile menu items (SF #2928415).
+    + Moved Always show tabs option to Appearance and made it on by default;
+      single tabs no longer fill available space.
+  * Upgraded to debian source format 3.0 (quilt).
+  * debian/control:
+    + Updated long description.
+    + Updated Standards-Version.
+  * debian/rules: Parse DEB_BUILD_OPTIONS to support parallel build etc
+    (based on <http://lists.debian.org/debian-policy/2007/06/msg00022.html>).
+
+ -- Tony Houghton <h@realh.co.uk>  Tue, 23 Mar 2010 18:21:03 +0000
+
+roxterm (1.17.1-1) unstable; urgency=low
+
+  * New upstream release:
+    + Added always show tab bar option (SF #2921009).
+
+ -- Tony Houghton <h@realh.co.uk>  Sat, 02 Jan 2010 18:26:28 +0000
+
+roxterm (1.16.3-1) unstable; urgency=low
+
+  * New upstream release:
+    + Use PATH when spawning browser/mailer (Closes: #559126).
+    + Improved handling of situation when command fails (SF #2809991).
+
+ -- Tony Houghton <h@realh.co.uk>  Sat, 05 Dec 2009 15:28:49 +0000
+
+roxterm (1.16.2-1) unstable; urgency=low
+
+  * New upstream release:
+    + Support GNOME default applications (Closes: #557049) (LP: #485206).
+    + Close buttons on tabs are optional (SF #2863351).
+    + Handle multiple displays/screens correctly (SF #2854625).
+    + Added ROXTERM_PID and ROXTERM_NUM environment variables
+      (SF #2846976).
+    + Fixed minor issues with man pages.
+  * debian/postinst:
+    + Only run update-alternatives if $1 = "configure".
+  * debian/control:
+    + Added build deps: gettext, xmlto (SF #2854333), gnome-control-center-dev.
+    + Added Vcs-* fields.
+    + Update Standards-Version to 3.8.3
+
+ -- Tony Houghton <h@realh.co.uk>  Sat, 28 Nov 2009 14:02:07 +0000
+
+roxterm (1.15.2-1) unstable; urgency=low
+
+  * New maintainer (Closes: #535246).
+  * New upstream release (Closes: #511114, #485824).
+  * Use upstream manpages.
+  * debian/control:
+    + Update Standards-Version to 3.8.2
+  * debian/rules:
+    + Delete config.log in clean
+  * debian/copyright:
+    + Refer to absolute licence file (GPL-3)
+
+ -- Tony Houghton <h@realh.co.uk>  Mon, 06 Jul 2009 14:25:13 +0100
+
+roxterm (1.12.2-1) unstable; urgency=low
+
+  * New upstream release
+  * Ack NMU, thanks Chris Lamb. (Closes: #484434)
+  * Update Standards-Version to 3.8.0
+
+ -- Thierry Randrianiriana <randrianiriana@gmail.com>  Sun, 27 Jul 2008 12:17:49 +0300
+
+roxterm (1.11.1-1.1) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * debian/rules:
+    + Fix bashism (Closes: #484434). Thanks to Chris Lamb.
+
+ -- Marco Rodrigues <gothicx@sapo.pt>  Wed, 25 Jun 2008 20:43:10 +0100
+
+roxterm (1.11.1-1) unstable; urgency=low
+
+  * New upstream release. (Closes: #471791)
+  * Updated doc-base Section to Terminal Emulators
+
+ -- Thierry Randrianiriana <randrianiriana@gmail.com>  Fri, 28 Mar 2008 09:27:13 +0300
+
+roxterm (1.10.0-1) unstable; urgency=low
+
+  * New upstream release. (Closes: #461799, #460803)
+  * debian/control:
+    + Update Standards-Version to 3.7.3
+    + Use Homepage field
+    + Update debhelper to >= 6
+    + Add debian/roxterm.xpm and removed imagemagick in Build-Depends
+  * debian/compat:
+    + Update debhelper compat level to 6.
+  * debian/rules:
+    + Add '-as-needed' in LDFLAGS
+    + Use debian/roxterm.xpm
+
+ -- Thierry Randrianiriana <randrianiriana@gmail.com>  Fri, 04 Jan 2008 22:19:23 +0300
+
+roxterm (1.8.0-1) unstable; urgency=low
+
+  * New upstream release. (Closes: #445151)
+
+ -- Thierry Randrianiriana <randrianiriana@gmail.com>  Tue, 06 Nov 2007 08:20:40 +0300
+
+roxterm (1.7.4-1) unstable; urgency=low
+
+  * New upstream release
+  * Don't report trivial cases of failure to load bgimg in profilegui. (Closes: #441964)
+
+ -- Thierry Randrianiriana <randrianiriana@gmail.com>  Tue, 11 Sep 2007 23:43:03 +0300
+
+roxterm (1.6.0-1) unstable; urgency=low
+
+  * New upstream release
+  * Configuration manager can't copy Keyboard Shortcuts profile. (Closes: #435989)
+  * Can't modify keyboard shortcuts. (Closes: #436158, #435984)
+
+ -- Thierry Randrianiriana <randrianiriana@gmail.com>  Mon, 03 Sep 2007 22:35:33 +0300
+
+roxterm (1.5.2-2) unstable; urgency=low
+
+  * Renamed roxterm.postint to roxterm.postinst (Closes: #435475).
+
+ -- Thierry Randrianiriana <randrianiriana@gmail.com>  Wed, 01 Aug 2007 09:20:15 +0300
+
+roxterm (1.5.2-1) unstable; urgency=low
+
+  * Initial release (Closes: #416089)
+
+ -- Thierry Randrianiriana <randrianiriana@gmail.com>  Mon, 16 Jul 2007 13:42:17 +0300
