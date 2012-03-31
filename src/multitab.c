@@ -1750,6 +1750,7 @@ static void multi_win_composited_changed(GtkWidget *widget, MultiWin *win)
             
             gtk_window_move(GTK_WINDOW(win->gtkwin), x, y);
             gtk_widget_realize(win->gtkwin);
+            dwin = gtk_widget_get_window(win->gtkwin);
             gdk_x11_window_set_user_time(dwin, user_time);
             if (was_minimized)
                 gtk_window_iconify(GTK_WINDOW(win->gtkwin));
