@@ -205,8 +205,8 @@ if ctx.mode == 'configure':
             "gtk_widget_get_realized gtk_widget_get_mapped " \
             "gtk_combo_box_text_new gtk_rc_style_unref".split():
         ctx.check_func(f, "${CFLAGS} ${GTK_CFLAGS}", "${LIBS} ${GTK_LIBS}")
-    ctx.check_func("vte_terminal_search_set_gregex",
-            "${CFLAGS} ${VTE_CFLAGS}", "${LIBS} ${VTE_LIBS}")
+    for f in ["vte_terminal_search_set_gregex", "vte_terminal_get_pty_object"]:
+        ctx.check_func(f, "${CFLAGS} ${VTE_CFLAGS}", "${LIBS} ${VTE_LIBS}")
     
     ctx.setenv('CORE_CFLAGS',
             "${CFLAGS} ${GTK_CFLAGS} ${DBUS_CFLAGS}")
