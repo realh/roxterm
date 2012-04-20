@@ -1,4 +1,4 @@
-roxterm (2.6.1-1) unstable; urgency=low
+roxterm (2.6.2-1) unstable; urgency=low
 
   * Ensure vte widgets realized before reading xid (Closes: #663736).
   * Explicitly close pty when deleting a terminal.
@@ -9,7 +9,7 @@ roxterm (2.6.1-1) unstable; urgency=low
   * Reread GdkWindow when re-mapping windows when compositing changes.
   * debian/watch: Corrected pcre syntax for uncaptured bz2/gz suffix. 
 
- -- Tony Houghton <h@realh.co.uk>  Wed, 18 Apr 2012 20:20:41 +0100
+ -- Tony Houghton <h@realh.co.uk>  Fri, 20 Apr 2012 19:37:52 +0100
 
 roxterm (2.5.3-1) unstable; urgency=low
 
