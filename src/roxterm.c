@@ -54,11 +54,6 @@
 #include "uri.h"
 #include "x11support.h"
 
-#if VTE_CHECK_VERSION(0, 26, 0)
-#define VTE_HAS_PTY_OBJECT 1
-#else
-#define VTE_HAS_PTY_OBJECT 0
-#endif
 
 typedef enum {
     ROXTerm_Match_Invalid,
@@ -646,11 +641,12 @@ static gboolean roxterm_command_failed(ROXTermData *roxterm)
     return FALSE;
 }
 
-static char *roxterm_fork_command(VteTerminal *vte, const char *term,
-        char **argv, char **envv, const char *working_directory,
+static char *roxterm_fork_command(VteTerminal *vte,
+        const char *term, char **argv, char **envv,
+        const char *working_directory,
         gboolean login, gboolean utmp, gboolean wtmp, pid_t *pid)
 {
-#if VTE_HAS_PTY_OBJECT
+#ifdef HAVE_VTE_TERMINAL_GET_PTY_OBJECT
     GPid *ppid = (GPid *) pid;
     GError *error = NULL;
     VtePty *pty;
@@ -681,7 +677,7 @@ static char *roxterm_fork_command(VteTerminal *vte, const char *term,
         argv = new_argv;
     }
 
-#if VTE_HAS_PTY_OBJECT
+#ifdef HAVE_VTE_TERMINAL_GET_PTY_OBJECT
     pty = vte_terminal_pty_new(vte,
             (login ? 0 : VTE_PTY_NO_LASTLOG) |
             (utmp ? 0 : VTE_PTY_NO_UTMP) |
@@ -706,6 +702,10 @@ static char *roxterm_fork_command(VteTerminal *vte, const char *term,
                     _("The new terminal's command failed to run: %s"),
                     error->message);
         }
+        /* The VteTerminal and we both own a reference, so drop our ref to
+         * ensure pty is destroyed with terminal.
+         */
+        g_object_unref(pty);
     }
     else
     {
@@ -975,32 +975,9 @@ static void roxterm_data_delete(ROXTermData *roxterm)
     /* This doesn't delete widgets because they're deleted when removed from
      * the parent */
     GtkWindow *gwin;
-#ifdef HAVE_VTE_TERMINAL_GET_PTY_OBJECT
-    VtePty *pty = NULL;
-#else
-    int pty = -1;
-#endif
     
     g_return_if_fail(roxterm);
     
-    /* Apparently pty doesn't get closed automatically */
-#ifdef HAVE_VTE_TERMINAL_GET_PTY_OBJECT
-    if (roxterm->widget &&
-            (pty = vte_terminal_get_pty_object(VTE_TERMINAL(roxterm->widget)))
-            != NULL)
-    {
-        vte_pty_close(pty);
-        g_object_unref(pty);
-        vte_terminal_set_pty_object(VTE_TERMINAL(roxterm->widget), NULL);
-    }
-#else
-    if (roxterm->widget &&
-            (pty = vte_terminal_get_pty(VTE_TERMINAL(roxterm->widget))) != -1)
-    {
-        close(pty);
-        vte_terminal_set_pty(VTE_TERMINAL(roxterm->widget), -1);
-    }
-#endif
     gwin = roxterm_get_toplevel(roxterm);
     if (gwin && roxterm->win_state_changed_tag)
     {
