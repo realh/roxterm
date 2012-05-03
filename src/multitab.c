@@ -571,43 +571,6 @@ int multi_tab_get_page_num(MultiTab *tab)
             tab->widget);
 }
 
-MultiTab *multi_tab_get_tab_under_pointer(int x, int y)
-{
-    MultiWin *win = multi_win_get_win_under_pointer();
-    GList *tab_node;
-    GtkPositionType tab_pos;
-    gboolean vert_tabs;
-    GtkAllocation allocation;
-
-    if (!win)
-        return NULL;
-    if (win->ntabs == 1)
-        return win->tabs->data;
-    tab_pos = win->tab_pos;
-    vert_tabs = (tab_pos == GTK_POS_LEFT || tab_pos == GTK_POS_RIGHT);
-    for (tab_node = win->tabs; tab_node; tab_node = g_list_next(tab_node))
-    {
-        int x0, y0, x1, y1;
-        MultiTab *tab = tab_node->data;
-        GtkWidget *label = gtk_notebook_get_tab_label(
-                GTK_NOTEBOOK(win->notebook), tab->widget);
-
-        if (!gtk_widget_get_mapped(label))
-            continue;
-        gdk_window_get_origin(gtk_widget_get_window(label), &x0, &y0);
-        gtk_widget_get_allocation(label, &allocation);
-        x0 += allocation.x;
-        y0 += allocation.y;
-        x1 = x0 + allocation.width;
-        y1 = y0 + allocation.height;
-        if (vert_tabs && y >= y0 && y < y1)
-            return tab;
-        else if (!vert_tabs && x >= x0 && x < x1)
-            return tab;
-    }
-    return NULL;
-}
-
 MultiWin *multi_tab_get_parent(MultiTab *tab)
 {
     return tab->parent;
@@ -2443,17 +2406,6 @@ MultiWinScrollBar_Position multi_win_set_scroll_bar_position(MultiWin * win,
     if (win->scroll_bar_pos == MultiWinScrollBar_Query)
         win->scroll_bar_pos = new_pos;
     return win->scroll_bar_pos;
-}
-
-MultiWin *multi_win_get_win_under_pointer(void)
-{
-    int win_x, win_y;
-    GdkWindow *gdkwin = gdk_window_at_pointer(&win_x, &win_y);
-
-    if (!gdkwin)
-        return NULL;
-    return g_object_get_data(G_OBJECT(gdk_window_get_toplevel(gdkwin)),
-            "ROXTermWin");
 }
 
 GtkNotebook *multi_win_get_notebook(MultiWin *win)

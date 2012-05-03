@@ -192,12 +192,6 @@ void multi_tab_move_to_position(MultiTab *tab, int position, gboolean reorder);
 /* Move tab to a different window */
 void multi_tab_move_to_new_window(MultiWin *win, MultiTab *tab, int position);
 
-/* Returns NULL if pointer not over one of our tabs. x and y are absolute
- * coordinates from mouse event. Note that when there are multiple tabs this
- * returns tab whose label spans pointer position, not necessarily the one
- * whose main page widget is under the pointer */
-MultiTab *multi_tab_get_tab_under_pointer(int x, int y);
-
 /* widget is the top-level child of the notebook, as would be passed in a drag
  * received event for a GtkNotebook dragged tab.
  */
@@ -378,10 +372,6 @@ typedef enum {
  * current value in case the new value had to be ignored */
 MultiWinScrollBar_Position multi_win_set_scroll_bar_position(MultiWin * win,
     MultiWinScrollBar_Position new_pos);
-
-/* Returns the window under the pointer or NULL if the window isn't a terminal
- * window owned by this app */
-MultiWin *multi_win_get_win_under_pointer(void);
 
 /* Make sure this win's current tab claims focus for this win */
 void multi_win_restore_focus(MultiWin *win);
