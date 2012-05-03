@@ -33,6 +33,7 @@
 #endif
 
 #include "about.h"
+#include "boxcompat.h"
 #include "colourscheme.h"
 #include "dlg.h"
 #include "dragrcv.h"
@@ -3201,6 +3202,27 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
             "scrollbar_pos", MultiWinScrollBar_Right));
     if (scrollbar_pos)
     {
+#if GTK_CHECK_VERSION(3, 0, 0)
+        GtkGrid *grid = GTK_GRID(roxterm->hbox = gtk_grid_new());
+        
+        roxterm->scrollbar =
+                gtk_scrollbar_new(GTK_ORIENTATION_VERTICAL,
+                        vte_terminal_get_adjustment(vte));
+        if (scrollbar_pos == MultiWinScrollBar_Left)
+        {
+            gtk_grid_attach(grid, roxterm->scrollbar, 0, 0, 1, 1);
+            gtk_grid_attach(grid, roxterm->widget, 1, 0, 1, 1);
+        }
+        else
+        {
+            gtk_grid_attach(grid, roxterm->widget, 0, 0, 1, 1);
+            gtk_grid_attach(grid, roxterm->scrollbar, 1, 0, 1, 1);
+        }
+        g_object_set(roxterm->widget, "hexpand", TRUE,
+                "vexpand", TRUE, NULL);
+        g_object_set(roxterm->scrollbar, "hexpand", FALSE,
+                "vexpand", TRUE, NULL);
+#else
         roxterm->hbox = gtk_hbox_new(FALSE, 0);
         roxterm->scrollbar =
                 gtk_vscrollbar_new(vte_terminal_get_adjustment(vte));
@@ -3218,6 +3240,7 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
             gtk_box_pack_start(GTK_BOX(roxterm->hbox), roxterm->scrollbar,
                     FALSE, FALSE, 0);
         }
+#endif
         gtk_widget_show_all(roxterm->hbox);
     }
     else
@@ -4344,7 +4367,7 @@ static gboolean roxterm_delete_handler(GtkWindow *gtkwin, GdkEvent *event,
     const char *msg;
     MultiWin *win = event ? data : NULL;
     ROXTermData *roxterm = event ? NULL : data;
-    GtkBox *ca_box;
+    GtkWidget *ca_box;
     
     d.warn = global_options_lookup_int_with_default("warn_close", 3);
     d.only_running = global_options_lookup_int_with_default("only_warn_running",
@@ -4390,13 +4413,13 @@ static gboolean roxterm_delete_handler(GtkWindow *gtkwin, GdkEvent *event,
             msg);
     gtk_window_set_title(GTK_WINDOW(dialog), _("ROXTerm: Confirm close"));
     
-    ca_box = GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog)));
+    ca_box = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
     
     noshow = gtk_check_button_new_with_mnemonic(_("_Don't show this again"));
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(noshow), FALSE);
     g_signal_connect(noshow, "toggled",
             G_CALLBACK(dont_show_again_toggled), &d);
-    gtk_box_pack_start(ca_box, noshow, FALSE, FALSE, 0);
+    box_compat_packv(ca_box, noshow, FALSE, 0);
     gtk_widget_show(noshow);
     
     only_running = gtk_check_button_new_with_mnemonic(
@@ -4405,7 +4428,7 @@ static gboolean roxterm_delete_handler(GtkWindow *gtkwin, GdkEvent *event,
             d.only_running);
     g_signal_connect(only_running, "toggled",
             G_CALLBACK(only_running_toggled), &d);
-    gtk_box_pack_start(ca_box, only_running, FALSE, FALSE, 0);
+    box_compat_packv(ca_box, only_running, FALSE, 0);
     gtk_widget_show(only_running);
     
     response = gtk_dialog_run(GTK_DIALOG(dialog)) != GTK_RESPONSE_YES;

@@ -17,6 +17,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+#include "boxcompat.h"
 #include "dlg.h"
 #include "display.h"
 #include "globalopts.h"
@@ -807,6 +808,9 @@ static void multi_tab_pack_for_single(MultiTab *tab, GtkContainer *nb)
             "tab-expand", FALSE, "tab-fill", TRUE, NULL);
     multitab_label_set_single(MULTITAB_LABEL(tab->label), TRUE);
     multitab_label_set_fixed_width(MULTITAB_LABEL(tab->label), -1);
+#if !GTK_CHECK_VERSION(3, 0, 0)
+    g_object_set(tab->label, "hexpand", FALSE);
+#endif
 }
 
 static void multi_win_pack_for_single_tab(MultiWin *win)
@@ -825,6 +829,9 @@ static void multi_tab_pack_for_multiple(MultiTab *tab, GtkContainer *nb)
             "tab-expand", TRUE, "tab-fill", TRUE, NULL);
     multitab_label_set_single(MULTITAB_LABEL(tab->label), FALSE);
     multitab_label_set_fixed_width(MULTITAB_LABEL(tab->label), -1);
+#if !GTK_CHECK_VERSION(3, 0, 0)
+    g_object_set(tab->label, "hexpand", TRUE);
+#endif
 }
 
 static void multi_win_pack_for_multiple_tabs(MultiWin *win)
@@ -837,7 +844,9 @@ static void multi_win_pack_for_multiple_tabs(MultiWin *win)
 #endif
     for (link = win->tabs; link; link = g_list_next(link))
     {
-        multi_tab_pack_for_multiple(link->data, nb);
+        MultiTab *tab = link->data;
+        
+        multi_tab_pack_for_multiple(tab, nb);
     }
 }
 
@@ -920,8 +929,12 @@ static void add_menu_bar(MultiWin *win)
     if (win->show_menu_bar)
         return;
     menu_bar = menutree_get_top_level_widget(win->menu_bar);
+#if GTK_CHECK_VERSION(3, 0, 0)
+    gtk_grid_attach(GTK_GRID(win->vbox), menu_bar, 0, -1, 1, 1);
+#else
     gtk_box_pack_start(GTK_BOX(win->vbox), menu_bar, FALSE, FALSE, 0);
     gtk_box_reorder_child(GTK_BOX(win->vbox), menu_bar, 0);
+#endif
     gtk_widget_show(menu_bar);
     win->show_menu_bar = TRUE;
 }
@@ -1285,8 +1298,7 @@ static void multi_win_name_tab_action(MultiWin * win)
 
     tab->rename_dialog = dialog_w;
     gtk_dialog_set_default_response(dialog, GTK_RESPONSE_APPLY);
-    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(dialog)),
-            name_w, TRUE, TRUE, 8);
+    box_compat_packv(gtk_dialog_get_content_area(dialog), name_w, TRUE, 8);
     gtk_entry_set_activates_default(name_e, TRUE);
     gtk_entry_set_text(name_e, name ? name : "");
     gtk_widget_show_all(dialog_w);
@@ -1327,7 +1339,6 @@ static void multi_win_set_window_title_action(MultiWin * win)
     GtkDialog *dialog = GTK_DIALOG(dialog_w);
     GtkWidget *title_w = gtk_entry_new();
     GtkEntry *title_e = GTK_ENTRY(title_w);
-    GtkWidget *hbox = gtk_hbox_new(FALSE, 8);
     GtkWidget *img = gtk_image_new_from_stock(GTK_STOCK_DIALOG_INFO,
             GTK_ICON_SIZE_DIALOG);
     GtkWidget *tip_label = gtk_label_new(_("The title string may include '%s' "
@@ -1338,14 +1349,19 @@ static void multi_win_set_window_title_action(MultiWin * win)
             "profile's title string."));
     int response;
     const char *title;
-    GtkBox *content_area = GTK_BOX(gtk_dialog_get_content_area(dialog));
+    GtkWidget *content_area = gtk_dialog_get_content_area(dialog);
+#if GTK_CHECK_VERSION(3, 0, 0)
+    GtkWidget *hbox = gtk_grid_new();
+#else
+    GtkWidget *hbox = gtk_hbox_new(FALSE, 8);
+#endif
 
     gtk_dialog_set_default_response(dialog, GTK_RESPONSE_APPLY);
-    gtk_box_pack_start(content_area, title_w, FALSE, TRUE, 8);
-    gtk_box_pack_start(GTK_BOX(hbox), img, FALSE, TRUE, 0);
+    box_compat_packv(content_area, title_w, FALSE, 8);
+    box_compat_packh(hbox, img, FALSE, 8);
     gtk_label_set_line_wrap(GTK_LABEL(tip_label), TRUE);
-    gtk_box_pack_start(GTK_BOX(hbox), tip_label, TRUE, TRUE, 0);
-    gtk_box_pack_start(content_area, hbox, TRUE, TRUE, 8);
+    box_compat_packh(hbox, tip_label, TRUE, 8);
+    box_compat_packv(content_area, hbox, TRUE, 8);
     gtk_entry_set_activates_default(title_e, TRUE);
     gtk_entry_set_text(title_e, win->title_template ? win->title_template : "");
     gtk_widget_show_all(dialog_w);
@@ -1857,7 +1873,13 @@ MultiWin *multi_win_new_blank(const char *display_name, Options *shortcuts,
             G_CALLBACK(multi_win_map_event_handler), win);
 #endif
 
+#if GTK_CHECK_VERSION(3, 0, 0)
+    win->vbox = gtk_grid_new();
+    gtk_orientable_set_orientation(GTK_ORIENTABLE(win->vbox),
+            GTK_ORIENTATION_VERTICAL);
+#else
     win->vbox = gtk_vbox_new(FALSE, 0);
+#endif
     gtk_container_add(GTK_CONTAINER(win->gtkwin), win->vbox);
 
     options_ref(shortcuts);
@@ -1932,7 +1954,7 @@ MultiWin *multi_win_new_blank(const char *display_name, Options *shortcuts,
         multi_win_set_show_tabs_menu_items(win, FALSE);
         multi_win_hide_tabs(win);
     }
-    gtk_box_pack_start(GTK_BOX(win->vbox), win->notebook, TRUE, TRUE, 0);
+    box_compat_packv(win->vbox, win->notebook, TRUE, 0);
     g_signal_connect(win->notebook, "switch-page",
         G_CALLBACK(multi_win_page_switched), win);
     g_signal_connect(win->gtkwin, "focus-in-event",
@@ -2112,8 +2134,7 @@ void multi_tab_add_close_button(MultiTab *tab)
     
     win = tab->parent;
     tab->close_button = multitab_close_button_new(tab->status_stock);
-    gtk_box_pack_start(GTK_BOX(tab->label_box), tab->close_button,
-            FALSE, FALSE, 0);
+    box_compat_packh(tab->label_box, tab->close_button, FALSE, 0);
     g_signal_connect(tab->close_button, "clicked",
             G_CALLBACK(multi_win_close_tab_clicked), tab);
     gtk_widget_show(tab->close_button);
@@ -2167,8 +2188,14 @@ static GtkWidget *make_tab_label(MultiTab *tab, GtkPositionType tab_pos)
             &tab->parent->best_tab_width);
     multi_tab_set_full_window_title(tab, tab->window_title_template,
             tab->window_title);
+#if GTK_CHECK_VERSION(3, 0, 0)
+    tab->label_box = gtk_grid_new();
+    gtk_orientable_set_orientation(GTK_ORIENTABLE(tab->label_box),
+            GTK_ORIENTATION_HORIZONTAL);
+#else
     tab->label_box = gtk_hbox_new(FALSE, 4);
-    gtk_box_pack_start(GTK_BOX(tab->label_box), tab->label, TRUE, TRUE, 0);
+#endif
+    box_compat_packh(tab->label_box, tab->label, FALSE, 0);
     g_signal_connect(tab->label, "button-press-event",
             G_CALLBACK(tab_clicked_handler), tab);
     if (multi_tab_get_show_close_button(tab->user_data))

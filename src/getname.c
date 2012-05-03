@@ -24,6 +24,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "boxcompat.h"
 #include "getname.h"
 
 static gboolean name_clashes(const char *new_name, char const **existing)
@@ -77,8 +78,8 @@ char *getname_run_dialog(GtkWindow *parent, const char *old_name,
 			NULL);
 	gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_OK);
 	name_field = gtk_entry_new();
-	gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),
-	        name_field, FALSE, FALSE, 16);
+	box_compat_packv(gtk_dialog_get_content_area(GTK_DIALOG(dialog)),
+	        name_field, FALSE, 16);
 	gtk_entry_set_activates_default(GTK_ENTRY(name_field), TRUE);
 	gtk_widget_show(name_field);
 

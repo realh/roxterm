@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <requires lib="gtk+" version="2.16"/>
+  <!-- interface-requires gtk+ 3.0 -->
   <object class="GtkDialog" id="Configlet">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -1180,6 +1180,9 @@
                             <child>
                               <placeholder/>
                             </child>
+                            <child>
+                              <placeholder/>
+                            </child>
                           </object>
                           <packing>
                             <property name="expand">True</property>
@@ -1232,7 +1235,6 @@
                       <object class="GtkVBox" id="warnings_vbox">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="orientation">vertical</property>
                         <child>
                           <object class="GtkRadioButton" id="warn_close0">
                             <property name="label" translatable="yes">No warnings when closing windows/tabs</property>

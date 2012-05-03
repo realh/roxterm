@@ -21,6 +21,7 @@
 
 #include <errno.h>
 
+#include "boxcompat.h"
 #include "dlg.h"
 #include "search.h"
 
@@ -298,8 +299,8 @@ void search_open_dialog(ROXTermData *roxterm)
     
     if (!search_dialog)
     {
-        GtkBox *vbox;
-        GtkWidget *hbox = gtk_hbox_new(FALSE, 0);
+        GtkWidget *vbox;
+        GtkWidget *hbox;
         GtkWidget *w = gtk_label_new_with_mnemonic(_("_Search for:"));
         GtkWidget *entry = gtk_entry_new();
         
@@ -312,8 +313,7 @@ void search_open_dialog(ROXTermData *roxterm)
         gtk_dialog_set_default_response(GTK_DIALOG(search_dialog),
                 GTK_RESPONSE_ACCEPT);
                  
-        vbox = GTK_BOX(gtk_dialog_get_content_area(
-                GTK_DIALOG(search_dialog)));
+        vbox = gtk_dialog_get_content_area(GTK_DIALOG(search_dialog));
 
         search_data.entry = GTK_ENTRY(entry);
         search_setup_completion();
@@ -323,42 +323,49 @@ void search_open_dialog(ROXTermData *roxterm)
                 "perl-compatible regular expression. An empty string "
                 "clears any previous search."));
         gtk_label_set_mnemonic_widget(GTK_LABEL(w), entry);
-        gtk_box_pack_start(GTK_BOX(hbox), w, FALSE, FALSE, DLG_SPACING);
-        gtk_box_pack_start(GTK_BOX(hbox), entry, TRUE, TRUE, DLG_SPACING);
-        gtk_box_pack_start(vbox, hbox, FALSE, FALSE, DLG_SPACING);
+#if GTK_CHECK_VERSION(3, 0, 0)
+        hbox = gtk_grid_new();
+        gtk_orientable_set_orientation(GTK_ORIENTABLE(hbox),
+                GTK_ORIENTATION_HORIZONTAL);
+#else
+        hbox = gtk_hbox_new(FALSE, 0);
+#endif
+        box_compat_packh(hbox, w, FALSE, DLG_SPACING);
+        box_compat_packh(hbox, entry, TRUE, DLG_SPACING);
+        box_compat_packv(vbox, hbox, FALSE, DLG_SPACING);
         
         w = gtk_check_button_new_with_mnemonic(_("Match _Case"));
         gtk_widget_set_tooltip_text(w,
                 _("Whether the search is case sensitive"));
         search_data.match_case = GTK_TOGGLE_BUTTON(w);
-        gtk_box_pack_start(vbox, w, FALSE, FALSE, DLG_SPACING);
+        box_compat_packv(vbox, w, FALSE, DLG_SPACING);
         
         w = gtk_check_button_new_with_mnemonic(_("Match _Entire Word"));
         gtk_widget_set_tooltip_text(w, _("If set the pattern will only match "
                 "when it forms a word on its own."));
         search_data.entire_word = GTK_TOGGLE_BUTTON(w);
-        gtk_box_pack_start(vbox, w, FALSE, FALSE, DLG_SPACING);
+        box_compat_packv(vbox, w, FALSE, DLG_SPACING);
         
         w = gtk_check_button_new_with_mnemonic(
                 _("Match As _Regular Expression"));
         gtk_widget_set_tooltip_text(w, _("If set the pattern is a "
                 "perl-compatible regular expression."));
         search_data.as_regex = GTK_TOGGLE_BUTTON(w);
-        gtk_box_pack_start(vbox, w, FALSE, FALSE, DLG_SPACING);
+        box_compat_packv(vbox, w, FALSE, DLG_SPACING);
         
         w = gtk_check_button_new_with_mnemonic(_("Search _Backwards"));
         gtk_widget_set_tooltip_text(w, _("Whether to search backwards when "
                 "the Find button is clicked. This does not affect the "
                 "Find Next and Find Previous menu items."));
         search_data.backwards = GTK_TOGGLE_BUTTON(w);
-        gtk_box_pack_start(vbox, w, FALSE, FALSE, DLG_SPACING);
+        box_compat_packv(vbox, w, FALSE, DLG_SPACING);
         
         w = gtk_check_button_new_with_mnemonic(_("_Wrap Around"));
         gtk_widget_set_tooltip_text(w, _("Whether to wrap the search to the "
                 "opposite end of the buffer when the beginning or end is "
                 "reached."));
         search_data.wrap = GTK_TOGGLE_BUTTON(w);
-        gtk_box_pack_start(vbox, w, FALSE, FALSE, DLG_SPACING);
+        box_compat_packv(vbox, w, FALSE, DLG_SPACING);
         
         g_signal_connect(search_dialog, "response",
                 G_CALLBACK(search_response_cb), NULL);
