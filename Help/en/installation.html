@@ -139,9 +139,11 @@
 				<code>roxterm_logo.png favicon.ico logo_text.png</code>.</p>
 				
 			    <p>If not using a release snapshot it's a good idead to use <code>dch</code> to ensure the
-			    newest version number in <code>debian/changelog</code> matches the tarball's version number.
-			    Now you can build the packages eg with <p><code>debuild -b -uc -us</code>. Note the
-			    <code>-b</code>:- only binary packages can be built in the absence of an orig tarball.</p>
+			    newest version number in <code>debian/changelog</code> has an appropriate version number eg
+			    what <code>./mscript.py configure</code> generates in the file <code>version</code>, based on
+			    the output of <code>git describe</code>. Now you can build the packages eg with
+			    <p><code>debuild -b -uc -us</code>. Note the <code>-b</code>:- only binary packages can be
+			    built in the absence of an orig tarball.</p>
 
             </div>
         </div>
