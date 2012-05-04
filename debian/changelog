@@ -1,3 +1,11 @@
+roxterm (2.7.0-1) unstable; urgency=low
+
+  * Removed disused ..._get_*_under_pointer funcs.
+  * Replaced Gtk*Box with GtkGrid.
+  * Fixed VtePty life cycle (Closes: #671160).
+
+ -- Tony Houghton <h@realh.co.uk>  Fri, 04 May 2012 16:32:30 +0100
+
 roxterm (2.6.2-1) unstable; urgency=low
 
   * Ensure vte widgets realized before reading xid (Closes: #663736).
