@@ -135,29 +135,13 @@
 				already in your distro the set of packages may be out-of-date, so be prepared for dependency
 				errors later and install the necessary packages at that point. You should install imagemagick
 				and librsvg2-bin at this point, but these are bugged in Ubuntu Lucid (and earlier?), so before
-				running <code>./mscript.py build</code> you will have to copy these files from
-				<code>Help/lib</code> in a tarball: <code>roxterm_logo.png favicon.ico logo_text.png</code>.</p>
+				building you will have to copy these files from <code>Help/lib</code> in a tarball:
+				<code>roxterm_logo.png favicon.ico logo_text.png</code>.</p>
 				
-			    <p>A typical workflow to create debian packages is:</p>
-				
-				<p><code>./mscript.py pristine<br/>
-				./mscript.py configure<br/>
-				./mscript.py build<br/>
-				./mscript.py dist<br/>
-				mv build/roxterm-</code><i>version</i><code>.tar.bz2
-				    </code><i>convenient_directory</i><code>/roxterm_</code><i>version</i><code>.orig.tar.bz2<br/>
-			    cd </code><i>convenient_directory</i></p>
-			    
-			    <p>(Alternatively you can download a tarball and rename it appropriately)</p>
-                    
-			    <p><code>tar xf roxterm_</code><i>version</i><code>.orig.tar.bz2<br/>
-			    cd roxterm-</code><i>version</i><br/>
-			    <code>cp -a </code><i>path_to_your_repository</i><code>/roxterm/debian .</code></p>
-			    
-			    <p>At this point use <code>dch</code> to ensure the newest version number in
-			    <code>debian/changelog</code> matches the tarball's version number.</p>
-			    
-			    <p><code>debuild -uc -us</code></p>
+			    <p>If not using a release snapshot it's a good idead to use <code>dch</code> to ensure the
+			    newest version number in <code>debian/changelog</code> matches the tarball's version number.
+			    Now you can build the packages eg with <p><code>debuild -b -uc -us</code>. Note the
+			    <code>-b</code>:- only binary packages can be built in the absence of an orig tarball.</p>
 
             </div>
         </div>
