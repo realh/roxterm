@@ -420,6 +420,12 @@ multitab_label_set_single (MultitabLabel *self, gboolean single)
     if (single != self->single)
     {
         self->single = single;
+/*
+#if GTK_CHECK_VERSION(3, 0, 0)
+        if (self->label)
+            g_object_set(self->label, "hexpand", !single, NULL);
+#endif
+*/
         gtk_widget_queue_resize (GTK_WIDGET (self));
     }
 }

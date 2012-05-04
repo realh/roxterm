@@ -771,9 +771,6 @@ static void multi_tab_pack_for_single(MultiTab *tab, GtkContainer *nb)
             "tab-expand", FALSE, "tab-fill", TRUE, NULL);
     multitab_label_set_single(MULTITAB_LABEL(tab->label), TRUE);
     multitab_label_set_fixed_width(MULTITAB_LABEL(tab->label), -1);
-#if !GTK_CHECK_VERSION(3, 0, 0)
-    g_object_set(tab->label, "hexpand", FALSE);
-#endif
 }
 
 static void multi_win_pack_for_single_tab(MultiWin *win)
@@ -792,9 +789,6 @@ static void multi_tab_pack_for_multiple(MultiTab *tab, GtkContainer *nb)
             "tab-expand", TRUE, "tab-fill", TRUE, NULL);
     multitab_label_set_single(MULTITAB_LABEL(tab->label), FALSE);
     multitab_label_set_fixed_width(MULTITAB_LABEL(tab->label), -1);
-#if !GTK_CHECK_VERSION(3, 0, 0)
-    g_object_set(tab->label, "hexpand", TRUE);
-#endif
 }
 
 static void multi_win_pack_for_multiple_tabs(MultiWin *win)
@@ -2097,7 +2091,8 @@ void multi_tab_add_close_button(MultiTab *tab)
     
     win = tab->parent;
     tab->close_button = multitab_close_button_new(tab->status_stock);
-    box_compat_packh(tab->label_box, tab->close_button, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(tab->label_box), tab->close_button,
+            FALSE, FALSE, 0);
     g_signal_connect(tab->close_button, "clicked",
             G_CALLBACK(multi_win_close_tab_clicked), tab);
     gtk_widget_show(tab->close_button);
@@ -2152,13 +2147,21 @@ static GtkWidget *make_tab_label(MultiTab *tab, GtkPositionType tab_pos)
     multi_tab_set_full_window_title(tab, tab->window_title_template,
             tab->window_title);
 #if GTK_CHECK_VERSION(3, 0, 0)
+    /* GtkBox will be replaced by GtkGrid one day, but at the moment it
+     * doesn't work properly because GtkNotebook has no homogeneous option
+     * and GtkGrid doesn't have pack_end to right-align close button.
+     */
+     /*
     tab->label_box = gtk_grid_new();
     gtk_orientable_set_orientation(GTK_ORIENTABLE(tab->label_box),
             GTK_ORIENTATION_HORIZONTAL);
+    */
+    tab->label_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
+    gtk_box_set_homogeneous(GTK_BOX(tab->label_box), FALSE);
 #else
     tab->label_box = gtk_hbox_new(FALSE, 4);
 #endif
-    box_compat_packh(tab->label_box, tab->label, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(tab->label_box), tab->label, TRUE, TRUE, 0);
     g_signal_connect(tab->label, "button-press-event",
             G_CALLBACK(tab_clicked_handler), tab);
     if (multi_tab_get_show_close_button(tab->user_data))
