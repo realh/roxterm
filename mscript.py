@@ -479,7 +479,7 @@ elif ctx.mode == "install" or ctx.mode == "uninstall":
     ctx.install_data("roxterm.desktop", "${DATADIR}/applications")
     if ctx.env['XMLTOMAN']:
         ctx.install_man("roxterm.1 roxterm-config.1")
-    ctx.install_doc("AUTHORS ChangeLog COPYING COPYING-LGPL README")
+    ctx.install_doc("AUTHORS ChangeLog README")
     ctx.install_doc(ctx.glob("*.html",
             subdir = ctx.subst("${TOP_DIR}/Help/en")),
             "${HTMLDIR}/en")
