@@ -5,7 +5,7 @@ import errno, os, re, sys, time
 from maitch import *
 
 ctx = Context(PACKAGE = "roxterm", SRC_DIR = "${TOP_DIR}/src",
-        CFLAGS = "-O2 -g -Wall -I. -I${SRC_DIR} -D_GNU_SOURCE -DHAVE_CONFIG_H")
+        MCFLAGS = "-I. -I${SRC_DIR} -D_GNU_SOURCE -DHAVE_CONFIG_H")
 
 
 MINILIB_SOURCES = "colourscheme.c dlg.c display.c dragrcv.c dynopts.c " \
@@ -204,21 +204,23 @@ if ctx.mode == 'configure':
             "gdk_window_get_display gdk_window_get_screen " \
             "gtk_widget_get_realized gtk_widget_get_mapped " \
             "gtk_combo_box_text_new gtk_rc_style_unref".split():
-        ctx.check_func(f, "${CFLAGS} ${GTK_CFLAGS}", "${LIBS} ${GTK_LIBS}")
+        ctx.check_func(f, "${CFLAGS} ${MCFLAGS} ${GTK_CFLAGS}",
+                "${LIBS} ${GTK_LIBS}")
     for f in ["vte_terminal_search_set_gregex", "vte_terminal_get_pty_object"]:
-        ctx.check_func(f, "${CFLAGS} ${VTE_CFLAGS}", "${LIBS} ${VTE_LIBS}")
+        ctx.check_func(f, "${CFLAGS} ${MCFLAGS} ${VTE_CFLAGS}",
+                "${LIBS} ${VTE_LIBS}")
     
     ctx.setenv('CORE_CFLAGS',
-            "${CFLAGS} ${GTK_CFLAGS} ${DBUS_CFLAGS}")
+            "${CFLAGS} ${MCFLAGS} ${GTK_CFLAGS} ${DBUS_CFLAGS}")
     ctx.setenv('CORE_LIBS',
             "${LIBS} ${GTK_LIBS} ${DBUS_LIBS}")
     ctx.setenv('ROXTERM_CFLAGS',
-            "${CFLAGS} ${VTE_CFLAGS} ${SM_CFLAGS} ${DBUS_CFLAGS}")
+            "${CFLAGS} ${MCFLAGS} ${VTE_CFLAGS} ${SM_CFLAGS} ${DBUS_CFLAGS}")
     ctx.setenv('ROXTERM_LIBS',
             "${LIBS} ${VTE_LIBS} ${SM_LIBS} ${DBUS_LIBS}")
     ctx.setenv('ROXTERM_CONFIG_CFLAGS',
-            "${CFLAGS} ${GTK_CFLAGS} ${DBUS_CFLAGS} ${GMODULE_CFLAGS} "
-            "-DROXTERM_CAPPLET")
+            "${CFLAGS} ${MCFLAGS} ${GTK_CFLAGS} ${DBUS_CFLAGS} " \
+            "${GMODULE_CFLAGS} -DROXTERM_CAPPLET")
     ctx.setenv('ROXTERM_CONFIG_LIBS',
             "${LIBS} ${GTK_LIBS} ${DBUS_LIBS} ${GMODULE_LIBS}")
     

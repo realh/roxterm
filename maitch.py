@@ -190,7 +190,17 @@ class Context(object):
             mprint("""
 Further variables may be set after the mode argument in the form VAR=value, or
 VAR on its own for True. "--foo-bar" is equivalent to "FOO_BAR". Variables may
-refer to each other eg FOO='${BAR}.baz'.
+refer to each other eg FOO='${BAR}.baz'. Note that maitch does not read
+variables directly from the environment. If you want to use, for example,
+CFLAGS from the environment, add CFLAGS="$CFLAGS" to the configure command.
+
+Variables can be set from the environment indirectly using MAITCHFLAGS. For
+example:
+
+export MAITCHFLAGS="CFLAGS=$CFLAGS;LDFLAGS=$LDFLAGS"
+
+Note that multiple variables are separated by semicolons and you should not use
+quoting within the MAITCHFLAGS string.
 
 The most pivotal variable is BUILD_DIR which is the working directory and where
 built files are saved. It will be created if necessary. If not specified it
@@ -230,7 +240,7 @@ Other predefined variables [default values shown in squarer brackets]:
         # subsequent processing will overwrite it
         mf = os.environ.get('MAITCHFLAGS')
         if mf:
-            self.__process_args(mf.split())
+            self.__process_args(mf.split(';'))
         
         # Get more env vars from kwargs
         for k, v in kwargs.items():
@@ -2531,7 +2541,7 @@ add_var('GCC', find_prog_by_var, "GNU C compiler")
 add_var('CPP', find_prog_by_var, "C preprocessor")
 add_var('LIBTOOL', find_prog_by_var, "libtool compiler frontend for libraries")
 add_var('CDEP', '${CPP} -M', "C preprocessor with option to print deps")
-add_var('CFLAGS', '-O2 -g -Wall -I${SRC_DIR}', "C compiler flags")
+add_var('CFLAGS', '', "C compiler flags")
 add_var('LIBS', '', "libraries and linker options")
 add_var('LDFLAGS', '', "Extra linker options")
 add_var('CXXFLAGS', '${CFLAGS}', "C++ compiler flags")
