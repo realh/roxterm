@@ -1619,7 +1619,7 @@ class LibtoolCRule(CRule):
         set_default(kwargs, 'targets', ".lo")
         set_default(kwargs, 'rule',
                 "${LIBTOOL} --mode=compile --tag=CC ${LIBTOOL_FLAGS_} "
-                "gcc ${LIBTOOL_MODE_ARG_} ${CFLAGS_} -c -o ${TGT} ${SRC}")
+                "${CC} ${LIBTOOL_MODE_ARG_} ${CFLAGS_} -c -o ${TGT} ${SRC}")
         CRule.__init__(self, **kwargs)
 
 
@@ -1661,7 +1661,7 @@ class LibtoolProgramRule(ProgramRule):
         self.init_var(kwargs, 'libtool_mode_arg')
         set_default(kwargs, 'rule',
                 "${LIBTOOL} --mode=link ${LIBTOOL_FLAGS_} "
-                "gcc ${LIBTOOL_MODE_ARG_} "
+                "${CC} ${LIBTOOL_MODE_ARG_} "
                 "${CFLAGS_} ${LIBS_} ${LDFLAGS_} -o ${TGT} ${SRC}")
         ProgramRule.__init__(self, **kwargs)
 
