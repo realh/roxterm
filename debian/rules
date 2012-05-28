@@ -14,7 +14,7 @@ DIRS_GTK2 = --build-dir=debian/build-gtk2 $(COMMON_DIRS)
 DIRS_GTK3 = --build-dir=debian/build-gtk3 $(COMMON_DIRS)
 CFLAGS = $(shell dpkg-buildflags | grep '^CFLAGS=')
 CPPFLAGS = $(shell dpkg-buildflags | grep '^CPPFLAGS=')
-LDFLAGS = $(shell dpkg-buildflags | grep '^LDFLAGS=')
+LDFLAGS = $(shell dpkg-buildflags | grep '^LDFLAGS=') -Wl,--as-needed
 
 ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 NUMJOBS = $(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
