@@ -4426,7 +4426,7 @@ static gboolean roxterm_delete_handler(GtkWindow *gtkwin, GdkEvent *event,
     dialog = gtk_message_dialog_new(gtkwin,
             GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
             GTK_MESSAGE_WARNING, GTK_BUTTONS_YES_NO,
-            msg);
+            "%s", msg);
     gtk_window_set_title(GTK_WINDOW(dialog), _("ROXTerm: Confirm close"));
     
     ca_box = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
