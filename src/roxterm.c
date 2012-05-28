@@ -642,6 +642,21 @@ static gboolean roxterm_command_failed(ROXTermData *roxterm)
     return FALSE;
 }
 
+/* Returns NULL if cwd is apparently inaccessible */
+static const char *check_cwd(const char *cwd)
+{
+    return (cwd && g_file_test(cwd, G_FILE_TEST_IS_DIR) &&
+            g_file_test(cwd, G_FILE_TEST_IS_EXECUTABLE)) ?
+            cwd : NULL;
+}
+
+/* Returns home dir if cwd is inaccessible. If home is also inaccessible
+ * returns NULL. */
+static const char *roxterm_check_cwd(const char *cwd)
+{
+    return check_cwd(cwd) ? cwd : check_cwd(g_get_home_dir());
+}
+
 static char *roxterm_fork_command(VteTerminal *vte,
         const char *term, char **argv, char **envv,
         const char *working_directory,
@@ -656,6 +671,7 @@ static char *roxterm_fork_command(VteTerminal *vte,
     char **new_argv = NULL;
     char *reply = NULL;
 
+    working_directory = roxterm_check_cwd(working_directory);
     if (login)
     {
         /* If login_shell, make sure argv[0] is the
@@ -4474,27 +4490,29 @@ void roxterm_init(void)
 gboolean roxterm_spawn_command_line(const gchar *command_line,
         const char *display_name, const char *cwd, char **env, GError **error)
 {
-    char **env2;
-    char const *disp[3];
+    char **env2 = NULL;
     int argc;
     char **argv = NULL;
     gboolean result;
     
-    if (!display_name)
+    cwd = roxterm_check_cwd(cwd);
+    if (display_name)
     {
-        return g_spawn_command_line_async(command_line, error);
+        char const *disp[3];
+        disp[0] = "DISPLAY";
+        disp[1] = display_name;
+        disp[2] = NULL;
+        env2 = roxterm_modify_environment((char const * const *) env, disp);
+        env = env2;
     }
-    disp[0] = "DISPLAY";
-    disp[1] = display_name;
-    disp[2] = NULL;
-    env2 = roxterm_modify_environment((char const * const *) env, disp);
     result = g_shell_parse_argv(command_line, &argc, &argv, error);
     if (result)
     {
-        result = g_spawn_async(cwd, argv, env2, G_SPAWN_SEARCH_PATH,
+        result = g_spawn_async(cwd, argv, env, G_SPAWN_SEARCH_PATH,
                 NULL, NULL, NULL, error);
     }
-    g_strfreev(env2);
+    if (env2)
+        g_strfreev(env2);
     if (argv)
         g_strfreev(argv);
     return result;
