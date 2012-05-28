@@ -264,11 +264,13 @@ if ctx.mode == 'configure':
 elif ctx.mode == 'build':
 
     # Private library
-    ctx.add_rule(StaticLibCRule(
-            cflags = "${CORE_CFLAGS}",
-            prefix = "libroxterm-",
-            quiet = True))
-    ctx.add_rule(StaticLibRule(
+    for c in MINILIB_SOURCES.split():
+        ctx.add_rule(StaticLibCRule(
+                sources = c,
+                cflags = "${CORE_CFLAGS}",
+                prefix = "libroxterm-",
+                quiet = True))
+    ctx.add_rule(CStaticLibRule(
             sources = change_suffix_with_prefix(MINILIB_SOURCES,
                     ".c", ".lo", "libroxterm-"),
             targets = "libroxterm.la",
@@ -281,13 +283,15 @@ elif ctx.mode == 'build':
         ROXTERM_SOURCES += " session.c"
     if bool(ctx.env['HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX']):
         ROXTERM_SOURCES += " search.c"
-    ctx.add_rule(CRule(
-            cflags = "${ROXTERM_CFLAGS}",
-            prefix = "roxterm-",
-            wdeps = "version.h"))
-    ctx.add_rule(LibtoolProgramRule(
+    for c in ROXTERM_SOURCES.split():
+        ctx.add_rule(LibtoolCRule(
+                sources = c,
+                cflags = "${ROXTERM_CFLAGS}",
+                prefix = "roxterm-",
+                wdeps = "version.h"))
+    ctx.add_rule(LibtoolCProgramRule(
             sources = change_suffix_with_prefix(ROXTERM_SOURCES,
-                    ".c", ".o", "roxterm-"),
+                    ".c", ".lo", "roxterm-"),
             targets = "roxterm",
             cflags = "${ROXTERM_CFLAGS}",
             libs = "${ROXTERM_LIBS} -lroxterm",
@@ -295,12 +299,14 @@ elif ctx.mode == 'build':
             quiet = True))
 
     # roxterm-config
-    ctx.add_rule(CRule(
-            cflags = "${ROXTERM_CONFIG_CFLAGS}",
-            prefix = "roxterm-config-"))
-    ctx.add_rule(LibtoolProgramRule(
+    for c in ROXTERM_CONFIG_SOURCES.split():
+        ctx.add_rule(LibtoolCRule(
+                sources = c,
+                cflags = "${ROXTERM_CONFIG_CFLAGS}",
+                prefix = "roxterm-config-"))
+    ctx.add_rule(LibtoolCProgramRule(
             sources = change_suffix_with_prefix(ROXTERM_CONFIG_SOURCES,
-                    ".c", ".o", "roxterm-config-"),
+                    ".c", ".lo", "roxterm-config-"),
             targets = "roxterm-config",
             cflags = "${ROXTERM_CONFIG_CFLAGS}",
             libs = "${ROXTERM_CONFIG_LIBS} -lroxterm",

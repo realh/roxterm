@@ -201,7 +201,7 @@ export MAITCHFLAGS="CFLAGS=$CFLAGS;LDFLAGS=$LDFLAGS"
 
 Note that multiple variables are separated by semicolons and you should not use
 quoting within the MAITCHFLAGS string.
-
+ 
 The most pivotal variable is BUILD_DIR which is the working directory and where
 built files are saved. It will be created if necessary. If not specified it
 defaults to a directory "build" in the same directory as %s
@@ -247,7 +247,6 @@ Other predefined variables [default values shown in squarer brackets]:
             self.env[k] = v
         
         self.explicit_rules = {}
-        self.implicit_rules = {}
         
         self.cli_targets = []
         
@@ -548,33 +547,12 @@ Other predefined variables [default values shown in squarer brackets]:
         
     
     def add_rule(self, rule):
-        " Adds a rule. "
-        if isinstance(rule, SuffixRule):
-            self.add_implicit_rule(rule)
-        else:
-            self.add_explicit_rule(rule)
-        rule.ctx = self
-    
-    
-    def add_explicit_rule(self, rule):
         " Adds an explicit rule. "
         for t in rule.targets:
             self.explicit_rules[self.subst(t)] = rule
+        rule.ctx = self
         
 
-    def add_implicit_rule(self, rule):
-        " Adds an implicit rule. "
-        # There may be more than one implicit rule with the same target
-        # suffix.
-        for t in rule.targets:
-            t = self.subst(t)
-            rules = self.implicit_rules.get(t)
-            if not rules:
-                rules = []
-                self.implicit_rules[t] = rules
-            rules.append(rule)
-    
-    
     def glob(self, pattern, dir = None, subdir = None, expand = None):
         """ Returns a list of matching filenames relative to dir (default
         ${BUILD_DIR}). subdir, if given, is preserved at the start of each
@@ -821,17 +799,17 @@ Other predefined variables [default values shown in squarer brackets]:
         return subst(self.env, s, novar, recurse, at)
     
     
-    def deps_from_cpp(self, sources, cflags = None):
+    def deps_from_cpp(self, sources, cppflags = None):
         """ Runs "${CDEP} sources" and returns its dependencies
         (one file per line). filename should be absolute. If cflags is
         None, self.env['CFLAGS'] is used. """
-        if not cflags:
-            cflags = self.env.get('CFLAGS', "")
+        if not cppflags:
+            cppflags = self.env.get('CPPFLAGS', "")
         sources = process_nodes(sources)
         sources = [self.find_source(s) for s in sources]
         if not sources:
             sources = []
-        prog = (self.subst("${CDEP} %s" % cflags)).split() + sources
+        prog = (self.subst("${CDEP} %s" % cppflags)).split() + sources
         deps = self.prog_output(prog)[0]
         deps = deps.split(':', 1)[1].replace('\\', '').split()
         return deps
@@ -1187,7 +1165,8 @@ class Rule(object):
                 ${TGT} is not.
                 rule may be a heterogeneous list of functions or strings.
         sources: See process_nodes() func for what's valid.
-        targets: As above.
+        targets: As above, or a function which takes source(s) as input and
+                returns target(s).
         deps: Dependencies other than sources; deps are satisfied before
                 sources.
         wdeps: "Weak dependencies":- the targets will not be built until after
@@ -1225,12 +1204,14 @@ class Rule(object):
             self.rules = [rule]
         else:
             self.rules = rule
-        self.targets = kwargs['targets']
-        if isinstance(self.targets, basestring):
-            self.targets = process_nodes(self.targets)
         self.sources = kwargs.get('sources')
         if self.sources and isinstance(self.sources, basestring):
             self.sources = process_nodes(self.sources)
+        self.targets = kwargs['targets']
+        if callable(self.targets):
+            self.targets = self.targets(self.sources)
+        elif isinstance(self.targets, basestring):
+            self.targets = process_nodes(self.targets)
         self.deps = kwargs.get('deps')
         if self.deps and isinstance(self.deps, basestring):
             self.deps = process_nodes(self.deps)
@@ -1480,102 +1461,47 @@ class Rule(object):
         
 
 class SuffixRule(Rule):
-    """ A rule which will be applied automatically if a source of an
-    explicit rule has a suffix matching this rule's target and this rule's
-    source exists.
-    To simplify maitch's algorithm for working out whether a SuffixRule
-    can build a particular explicit target, you must ensure that it processes
-    any rules to build its explicit sources first. Do this with deps.
-    
-    A SuffixRule creates a number of plain Rules, one for each unique target,
-    at build time. """
+    """ A rule where targets is a function that transforms sources by changing
+    their suffix, and optionally prefix. """
     def __init__(self, **kwargs):
-        """ args are similar to those for a standard Rule but sources and
-        targets are specified as suffixes only. deps are complete filenames as
-        with explicit Rules.
-        targets and rule are compulsory.
+        """ args are similar to those for a standard Rule but targets should
+        not be specified. deps are complete filenames as with explicit Rules.
+        sources and rule are compulsory.
         
-        There is also an optional 'prefix' argument. If the targets have
-        directory components the prefix is applied to the leafname.
-        
-        {prefix}{node}{tsuffix1} ... {prefix}{node}{tsuffixn}
-        are built with sources:
-        {node}{ssuffix1} ... {node}{ssuffixm}
-        
-        where any one of the targets on the first line is requested from this
-        rule and sources and deps exist.
-        
-        Suffixes usually start with '.' and prefixes end with '-'. """
-        # Preserve kwargs for easy construction of an explicit rule
-        if not 'where' in kwargs:
-            kwargs['where'] = SRC
-        self.kwargs = kwargs
-        Rule.__init__(self, **kwargs)
+        suffix (compulsory): Suffix to be applied to targets. Source suffixes to
+                be stripped are inferred by looking for last period. Do not
+                include period, it's implied.
+        prefix (optional): Added to the start of the targets' leafname(s) -
+                after any directory components. Any separator between the prefix
+                and leafname (eg '-') should be included at the end of the
+                prefix. """
+        self.suffix = kwargs['suffix']
         self.prefix = kwargs.get('prefix', '')
+        set_default(kwargs, 'targets', self.transform)
+        Rule.__init__(self, **kwargs)
     
     
-    def get_sources_from_target(self, target):
-        """ Returns names of sources which would build target with this rule.
-        All are relative to BUILD_DIR/SRC_DIR but may contain additional
-        directory components. Returns None if suffix deosn't match. This means
-        rule can't build target and should be distinguished from an empty list
-        which means it can build target without sources (rare). """
-        if len(self.prefix):
-            p, t = os.path.split(target)
-            if t.startswith(self.prefix):
-                t = t[len(self.prefix):]
-            else:
-                return None
-            if p:
-                pat = os.path.join(p, t)
-            else:
-                pat = t
-        else:
-            pat = target
-        for tgt in self.targets:
-            if target.endswith(tgt):
-                pat0 = pat[:-len(tgt)]
-                sources = []
-                for src in self.sources:
-                    sources.append(pat0 + src)
-                return sources
-        return None
-        
+    def transform(self, sources):
+        targets = []
+        for s in sources:
+            s = s.rsplit('.', 1)[0]
+            if len(self.prefix):
+                p, l = os.path.split(s)
+                l = self.prefix + l
+                if p:
+                    s = os.path.join(p, l)
+                else:
+                    s = l
+            targets.append(s + '.' + self.suffix)
+        return targets
     
-    def get_rule_for_target(self, target, known_sources = None):
-        """ Returns an explicit rule to build target or None if suffix doesn't
-        match. Prerequisite sources must already exist or be listed in
-        known_sources, but deps need not exist yet. """
-        sources = self.get_sources_from_target(target)
-        if sources == None:
-            return None
-        if len(sources):
-            for src in sources:
-                if not (known_sources and src in known_sources):
-                    try:
-                        self.ctx.find_source(src, self.where)
-                    except MaitchNotFoundError:
-                        return None
-        kwargs = dict(self.kwargs)
-        tgts = []
-        for t in self.targets:
-            if target.endswith(t):
-                pat = target[:-len(t)]
-                break
-        kwargs['targets'] = [pat + t for t in self.targets]
-        kwargs['sources'] = sources
-        rule = Rule(**kwargs)
-        rule.ctx = self.ctx
-        return rule
-
 
 
 class TouchRule(Rule):
     """ Use this as a dummy rule rather than use a Rule with no rule parameter.
     The target(s) will be "touched" to update their timestamp. """
     def __init__(self, **kwargs):
-        if not kwargs.get('rule'):
-            kwargs['rule'] = self.touch
+        set_default(kwargs, 'rule', self.touch)
         Rule.__init__(self, **kwargs)
     
     
@@ -1586,29 +1512,48 @@ class TouchRule(Rule):
                 
 
 
-class CRule(SuffixRule):
+class CRuleBase(SuffixRule):
     " Standard rule for compiling C to an object file. "
     def __init__(self, **kwargs):
-        self.init_cflags(kwargs)
-        set_default(kwargs, 'rule', "${CC} ${CFLAGS_} -c -o ${TGT} ${SRC}")
-        set_default(kwargs, 'targets', ".o")
-        set_default(kwargs, 'sources', ".c")
+        self.flagsname = kwargs['flagsname']
+        set_default(kwargs, 'rule', "${%s} ${%s_} -c -o ${TGT} ${SRC}" %
+                (kwargs['compiler'], self.flagsname))
+        set_default(kwargs, 'suffix', "o")
         set_default(kwargs, 'dep_func', self.get_implicit_deps)
         SuffixRule.__init__(self, **kwargs)
-    
+     
     
     def get_implicit_deps(self, ctx, rule):
         # rule will be a static rule generated from self with a single source
         env = self.process_env()
         try:
-            return ctx.deps_from_cpp(rule.sources, env['CFLAGS_'])
+            return ctx.deps_from_cpp(rule.sources, env[self.flagsname + '_'])
         except MaitchNotFoundError:
             return None
 
 
 
-class LibtoolCRule(CRule):
-    " libtool version of CRule. "
+class CRule(CRuleBase):
+    " Standard rule for compiling C to an object file. "
+    def __init__(self, **kwargs):
+        self.init_cflags(kwargs)
+        set_default(kwargs, 'compiler', "CC");
+        set_default(kwargs, 'flagsname', "CFLAGS");
+        CRuleBase.__init__(self, **kwargs)
+
+
+
+class CxxRule(CRuleBase):
+    " Standard rule for compiling C++ to an object file. "
+    def __init__(self, **kwargs):
+        self.init_var(kwargs, 'CXXFLAGS')
+        set_default(kwargs, 'compiler', "CXX");
+        set_default(kwargs, 'flagsname', "CXXFLAGS");
+        CRuleBase.__init__(self, **kwargs)
+
+
+
+class LibtoolCRuleBase(CRuleBase):
     def __init__(self, **kwargs):
         """ Additional kwargs:
             libtool_flags.
@@ -1616,11 +1561,42 @@ class LibtoolCRule(CRule):
         """
         self.init_var(kwargs, 'libtool_flags')
         self.init_var(kwargs, 'libtool_mode_arg')
-        set_default(kwargs, 'targets', ".lo")
+        set_default(kwargs, 'suffix', "lo")
         set_default(kwargs, 'rule',
-                "${LIBTOOL} --mode=compile --tag=CC ${LIBTOOL_FLAGS_} "
-                "${CC} ${LIBTOOL_MODE_ARG_} ${CFLAGS_} -c -o ${TGT} ${SRC}")
-        CRule.__init__(self, **kwargs)
+                "${LIBTOOL} --mode=compile --tag=%s ${LIBTOOL_FLAGS_} "
+                "${%s} ${LIBTOOL_MODE_ARG_} ${%s_} -c -o ${TGT} ${SRC}" %
+                (kwargs['tag'], kwargs['compiler'], kwargs['flagsname']))
+        CRuleBase.__init__(self, **kwargs)
+
+
+
+class LibtoolCRule(LibtoolCRuleBase):
+    " libtool version of CRule. "
+    def __init__(self, **kwargs):
+        """ Additional kwargs:
+            libtool_flags.
+            libtool_mode_arg: -shared, -static etc.
+        """
+        self.init_cflags(kwargs)
+        set_default(kwargs, 'compiler', "CC");
+        set_default(kwargs, 'flagsname', "CFLAGS");
+        set_default(kwargs, 'tag', "CC");
+        LibtoolCRuleBase.__init__(self, **kwargs)
+
+
+
+class LibtoolCxxRule(LibtoolCRuleBase):
+    " libtool version of CxxRule. "
+    def __init__(self, **kwargs):
+        """ Additional kwargs:
+            libtool_flags.
+            libtool_mode_arg: -shared, -static etc.
+        """
+        self.init_var(kwargs, 'cxxflags')
+        set_default(kwargs, 'compiler', "CXX");
+        set_default(kwargs, 'flagsname', "CXXFLAGS");
+        set_default(kwargs, 'tag', "CXX");
+        LibtoolCRuleBase.__init__(self, **kwargs)
 
 
 
@@ -1642,33 +1618,94 @@ class StaticLibCRule(LibtoolCRule):
 
 
 
-class ProgramRule(Rule):
-    " Standard rule for linking several object files and libs into a program. "
+class ShlibCxxRule(LibtoolCxxRule):
+    " Compiles C++ into an object file suitable for a shared library. "
     def __init__(self, **kwargs):
-        self.init_cflags(kwargs)
+        kwargs['libtool_mode_arg'] = "-shared %s" % \
+                kwargs.get('libtool_mode_arg', '')
+        LibtoolCxxRule.__init__(self, **kwargs)
+
+
+
+class StaticLibCxxRule(LibtoolCxxRule):
+    " Compiles C++ into an object file suitable for a static library. "
+    def __init__(self, **kwargs):
+        kwargs['libtool_mode_arg'] = "-static %s" % \
+                kwargs.get('libtool_mode_arg', '')
+        LibtoolCxxRule.__init__(self, **kwargs)
+
+
+
+class ProgramRuleBase(Rule):
+    " Standard rule for linking mutiple object files and libs into a program. "
+    def __init__(self, **kwargs):
         self.init_libs(kwargs)
         self.init_var(kwargs, 'ldflags')
         set_default(kwargs, 'rule',
-                "${CC} ${CFLAGS_} ${LIBS_} ${LDFLAGS_} -o ${TGT} ${SRC}")
+                "${%s} ${%s_} ${LIBS_} ${LDFLAGS_} -o ${TGT} ${SRC}" %
+                (kwargs['linker'], kwargs['flagsname']))
         Rule.__init__(self, **kwargs)
 
 
 
-class LibtoolProgramRule(ProgramRule):
+class CProgramRule(Rule):
+    "Standard rule for linking C object files and libs into a program."
+    def __init__(self, **kwargs):
+        self.init_cflags(kwargs)
+        set_default(kwargs, 'linker', "CC");
+        set_default(kwargs, 'flagsname', "CFLAGS");
+        ProgramRuleBase.__init__(self, **kwargs)
+
+
+
+class CxxProgramRule(Rule):
+    "Standard rule for linking C++ object files and libs into a program."
+    def __init__(self, **kwargs):
+        self.init_cflags(kwargs)
+        set_default(kwargs, 'linker', "CXX");
+        set_default(kwargs, 'flagsname', "CXXFLAGS");
+        ProgramRuleBase.__init__(self, **kwargs)
+
+
+
+class LibtoolProgramRuleBase(ProgramRuleBase):
     " Use libtool during linking. "
     def __init__(self, **kwargs):
         self.init_var(kwargs, 'libtool_flags')
         self.init_var(kwargs, 'libtool_mode_arg')
         set_default(kwargs, 'rule',
-                "${LIBTOOL} --mode=link --tag=CC ${LIBTOOL_FLAGS_} "
-                "${CC} ${LIBTOOL_MODE_ARG_} "
-                "${CFLAGS_} ${LIBS_} ${LDFLAGS_} -o ${TGT} ${SRC}")
-        ProgramRule.__init__(self, **kwargs)
+                "${LIBTOOL} --mode=link --tag=%s ${LIBTOOL_FLAGS_} "
+                "${%s} ${LIBTOOL_MODE_ARG_} "
+                "${%s_} ${LIBS_} ${LDFLAGS_} -o ${TGT} ${SRC}" %
+                (kwargs['tag'], kwargs['linker'], kwargs['flagsname']))
+        ProgramRuleBase.__init__(self, **kwargs)
 
 
 
-class ShlibRule(LibtoolProgramRule):
-    """ Standard rule to create a shared library with libtool. See the
+class LibtoolCProgramRule(LibtoolProgramRuleBase):
+    " Use libtool to link C. "
+    def __init__(self, **kwargs):
+        self.init_cflags(kwargs)
+        set_default(kwargs, 'linker', "CC");
+        set_default(kwargs, 'flagsname', "CFLAGS");
+        set_default(kwargs, 'tag', "CC");
+        LibtoolProgramRuleBase.__init__(self, **kwargs)
+
+
+
+class LibtoolCxxProgramRule(LibtoolProgramRuleBase):
+    " Use libtool to link C. "
+    def __init__(self, **kwargs):
+        self.init_var(kwargs, 'cxxflags')
+        set_default(kwargs, 'linker', "CXX");
+        set_default(kwargs, 'flagsname', "CXXFLAGS");
+        set_default(kwargs, 'tag', "CXX");
+        LibtoolProgramRuleBase.__init__(self, **kwargs)
+
+
+
+class CShlibRule(LibtoolCProgramRule):
+    """ Standard rule to create a shared C library with libtool. See the
     libtool manual for an explanation of its interface version system.
     -release is not supported (yet). """
     def __init__(self, **kwargs):
@@ -1679,12 +1716,28 @@ class ShlibRule(LibtoolProgramRule):
             version = ""
         kwargs['libtool_mode_arg'] = "-shared %s %s" % \
                 (kwargs.get('libtool_mode_arg', ''), version)
-        LibtoolProgramRule.__init__(self, **kwargs)
+        LibtoolCProgramRule.__init__(self, **kwargs)
 
 
 
-class StaticLibRule(LibtoolProgramRule):
-    """ Standard rule to create a static library with libtool. See the
+class CxxShlibRule(LibtoolCxxProgramRule):
+    """ Standard rule to create a shared C++ library with libtool. See the
+    libtool manual for an explanation of its interface version system.
+    -release is not supported (yet). """
+    def __init__(self, **kwargs):
+        version = kwargs.get('libtool_version')
+        if version:
+            version = "-version-info %d:%d:%d" % tuple(version)
+        else:
+            version = ""
+        kwargs['libtool_mode_arg'] = "-shared %s %s" % \
+                (kwargs.get('libtool_mode_arg', ''), version)
+        LibtoolCxxProgramRule.__init__(self, **kwargs)
+
+
+
+class CStaticLibRule(LibtoolCProgramRule):
+    """ Standard rule to create a static C library with libtool. See the
     libtool manual for an explanation of its interface version system.
     -release is not supported (yet). """
     def __init__(self, **kwargs):
@@ -1695,7 +1748,23 @@ class StaticLibRule(LibtoolProgramRule):
             version = ""
         kwargs['libtool_mode_arg'] = "-static %s %s" % \
                 (kwargs.get('libtool_mode_arg', ''), version)
-        LibtoolProgramRule.__init__(self, **kwargs)
+        LibtoolCProgramRule.__init__(self, **kwargs)
+
+
+
+class CxxStaticLibRule(LibtoolCxxProgramRule):
+    """ Standard rule to create a static C++ library with libtool. See the
+    libtool manual for an explanation of its interface version system.
+    -release is not supported (yet). """
+    def __init__(self, **kwargs):
+        version = kwargs.get('libtool_version')
+        if version:
+            version = "-version-info %d:%d:%d" % tuple(version)
+        else:
+            version = ""
+        kwargs['libtool_mode_arg'] = "-static %s %s" % \
+                (kwargs.get('libtool_mode_arg', ''), version)
+        LibtoolCxxProgramRule.__init__(self, **kwargs)
 
 
 
@@ -2385,27 +2454,7 @@ class BuildGroup(object):
                     
                 # Is there an explicit rule for it?
                 rule = self.ctx.explicit_rules.get(dep)
-                # Is there a suffix rule?
-                if not rule:
-                    # Attempt quick lookup if dep has . suffix
-                    r0 = None
-                    if '.' in dep:
-                        suffix = '.' + dep.rsplit('.', 1)[1]
-                        rl = self.ctx.implicit_rules.get(suffix)
-                        if rl:
-                            for r in rl:
-                                rule = r.get_rule_for_target(dep, self.queued)
-                                if rule:
-                                    break
-                if not rule:
-                    # Might be some other eligible suffix rule
-                    for rl in self.ctx.implicit_rules.values():
-                        for r in rl:
-                            rule = r.get_rule_for_target(dep, self.queued)
-                            if rule:
-                                break
-                        if rule:
-                            break
+                
                 if rule:
                     self.mark_blocking(job, rule)
                     self.add_job(rule)
@@ -2540,9 +2589,9 @@ add_var('CXX', '${GCC}', "C++ compiler")
 add_var('GCC', find_prog_by_var, "GNU C compiler")
 add_var('CPP', find_prog_by_var, "C preprocessor")
 add_var('LIBTOOL', find_prog_by_var, "libtool compiler frontend for libraries")
-add_var('CDEP', '${CPP} ${CPPFLAGS} -M',
-        "C preprocessor with option to print deps")
+add_var('CDEP', '${CPP} -M', "C preprocessor with option to print deps")
 add_var('CFLAGS', '', "C compiler flags")
+add_var('CPPFLAGS', '', "C preprocessor flags")
 add_var('LIBS', '', "libraries and linker options")
 add_var('LDFLAGS', '', "Extra linker options")
 add_var('CXXFLAGS', '${CFLAGS}', "C++ compiler flags")
