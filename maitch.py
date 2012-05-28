@@ -1660,7 +1660,7 @@ class LibtoolProgramRule(ProgramRule):
         self.init_var(kwargs, 'libtool_flags')
         self.init_var(kwargs, 'libtool_mode_arg')
         set_default(kwargs, 'rule',
-                "${LIBTOOL} --mode=link ${LIBTOOL_FLAGS_} "
+                "${LIBTOOL} --mode=link --tag=CC ${LIBTOOL_FLAGS_} "
                 "${CC} ${LIBTOOL_MODE_ARG_} "
                 "${CFLAGS_} ${LIBS_} ${LDFLAGS_} -o ${TGT} ${SRC}")
         ProgramRule.__init__(self, **kwargs)
