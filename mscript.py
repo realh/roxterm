@@ -5,7 +5,7 @@ import errno, os, re, sys, time
 from maitch import *
 
 ctx = Context(PACKAGE = "roxterm", SRC_DIR = "${TOP_DIR}/src",
-        MCFLAGS = "-I. -I${SRC_DIR} -D_GNU_SOURCE -DHAVE_CONFIG_H")
+        MCFLAGS = "${CPPFLAGS} -I. -I${SRC_DIR} -D_GNU_SOURCE -DHAVE_CONFIG_H")
 
 
 MINILIB_SOURCES = "colourscheme.c dlg.c display.c dragrcv.c dynopts.c " \
