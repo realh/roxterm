@@ -1,3 +1,13 @@
+roxterm (2.6.4-1) unstable; urgency=low
+
+  * Check for valid cwd before using it to spawn processes (Closes: #647483).
+  * Added "System" to Categories in desktop file.
+  * New version of maitch which supports implicit rules only and makes
+    better use of commonly used flags.
+  * debian/rules: Use appropriate flags from dpkg-buildflags.
+
+ -- Tony Houghton <h@realh.co.uk>  Mon, 28 May 2012 18:26:51 +0100
+
 roxterm (2.6.3-1) unstable; urgency=low
 
   * Removed disused ..._get_*_under_pointer funcs.
