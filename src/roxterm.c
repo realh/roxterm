@@ -4061,8 +4061,7 @@ static ROXTermData *roxterm_data_new(const char *display_name,
         roxterm->zoom_index = multi_win_get_nearest_index_for_zoom(
                 roxterm->target_zoom_factor);
     }
-    if (directory)
-        roxterm->directory = g_strdup(directory);
+    roxterm->directory = directory ? g_strdup(directory) : g_get_current_dir();
     roxterm->profile = profile;
     if (size_on_cli)
         *size_on_cli = FALSE;
