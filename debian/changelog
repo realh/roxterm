@@ -1,3 +1,10 @@
+roxterm (2.6.5-1) unstable; urgency=low
+
+  * Inherit cwd correctly when being launched from a command
+    (fixes regression in 2.6.4).
+
+ -- Tony Houghton <h@realh.co.uk>  Mon, 18 Jun 2012 23:21:05 +0300
+
 roxterm (2.6.4-1) unstable; urgency=low
 
   * Check for valid cwd before using it to spawn processes (Closes: #674843).
