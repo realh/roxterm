@@ -659,14 +659,14 @@ Other predefined variables [default values shown in squarer brackets]:
     
     
     def clean(self, fatal, pristine = False):
-        if not self.check_build_dir():
-            return
         if pristine:
             # Release lock prematurely because we're about to delete it!
             self.lock_file.release()
             keep = []
         else:
             keep = self.created_by_config
+        if not self.check_build_dir():
+            return
         recursively_remove(self.build_dir, fatal, keep)
         recursively_remove(opj(self.build_dir, ".maitch", "deps"), fatal, [])
                 
@@ -1136,6 +1136,11 @@ int main() { %s(); return 0; }
             mprint("Removed '%s'" % f)
     
     
+    def recursively_remove(self, target, fatal = False, excep = []):
+        recursively_remove(self.subst(target), fatal,
+                [self.subst(e) for e in excep])
+    
+    
     def prune_directory(self, root):
         """ Expands variables in root and prefixes ${DESTDIR} before
         calling global version. """
@@ -1379,7 +1384,7 @@ class Rule(object):
     
     
     def __repr__(self):
-        return "JT:%s" % self.targets
+        return "JT:%s" % str(self.targets)
         #return "T:%s S:%s" % (self.targets, self.sources)
     
     
@@ -2096,7 +2101,7 @@ def subst(env, s, novar = NOVAR_FATAL, recurse = True, at = False):
     with var as the key. To prevent substitution put a '-' after the
     opening brace. It will be removed. Most variables are expanded
     recursively immediately before use.
-    If fatal is False, bad matches are left unexpanded.
+    See comment where NOVAR_ constants for description of novar.
     If at is True, substitute @VAR@ instead.
     """
     def ms(match):
