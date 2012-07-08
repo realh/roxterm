@@ -67,7 +67,10 @@ try:
         
         def release(self):
             if self.maitch_locked:
-                FileLock.release(self)
+                try:
+                    FileLock.release(self)
+                except:
+                    mprint("Lock was already released")
                 self.maitch_locked = False
             
 except:
