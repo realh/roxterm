@@ -1105,7 +1105,7 @@ int main() { %s(); return 0; }
     
     def uninstall(self):
         if not self.installed:
-            mprint("Noting to uninstall")
+            mprint("Nothing to uninstall")
             return
         self.installed.reverse()
         for fs, libtool in self.installed:
@@ -1669,7 +1669,7 @@ class CProgramRule(ProgramRuleBase):
 class CxxProgramRule(ProgramRuleBase):
     "Standard rule for linking C++ object files and libs into a program."
     def __init__(self, **kwargs):
-        self.init_cflags(kwargs)
+        self.init_var(kwargs, 'cxxflags')
         set_default(kwargs, 'linker', "CXX");
         set_default(kwargs, 'flagsname', "CXXFLAGS");
         ProgramRuleBase.__init__(self, **kwargs)
@@ -2593,7 +2593,7 @@ add_var('LOCK_TOP', False, "Lock ${TOP_DIR} instead of ${BUILD_DIR}")
 add_var('NO_LOCK', False, "Disable locking (not recommended)")
 add_var('ENABLE_DEBUG', False, "Enable the printing of maitch debug messages")
 add_var('CC', '${GCC}', "C compiler")
-add_var('CXX', '${GCC}', "C++ compiler")
+add_var('CXX', 'g++', "C++ compiler")
 add_var('GCC', find_prog_by_var, "GNU C compiler")
 add_var('CPP', find_prog_by_var, "C preprocessor")
 add_var('LIBTOOL', find_prog_by_var, "libtool compiler frontend for libraries")
