@@ -1656,7 +1656,7 @@ class ProgramRuleBase(Rule):
 
 
 
-class CProgramRule(Rule):
+class CProgramRule(ProgramRuleBase):
     "Standard rule for linking C object files and libs into a program."
     def __init__(self, **kwargs):
         self.init_cflags(kwargs)
@@ -1666,7 +1666,7 @@ class CProgramRule(Rule):
 
 
 
-class CxxProgramRule(Rule):
+class CxxProgramRule(ProgramRuleBase):
     "Standard rule for linking C++ object files and libs into a program."
     def __init__(self, **kwargs):
         self.init_cflags(kwargs)
