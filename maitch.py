@@ -1554,7 +1554,7 @@ class CRule(CRuleBase):
 class CxxRule(CRuleBase):
     " Standard rule for compiling C++ to an object file. "
     def __init__(self, **kwargs):
-        self.init_var(kwargs, 'CXXFLAGS')
+        self.init_var(kwargs, 'cxxflags')
         set_default(kwargs, 'compiler', "CXX");
         set_default(kwargs, 'flagsname', "CXXFLAGS");
         CRuleBase.__init__(self, **kwargs)
