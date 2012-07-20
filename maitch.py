@@ -67,10 +67,7 @@ try:
         
         def release(self):
             if self.maitch_locked:
-                try:
-                    FileLock.release(self)
-                except:
-                    mprint("Lock was already released")
+                FileLock.release(self)
                 self.maitch_locked = False
             
 except:
@@ -662,14 +659,14 @@ Other predefined variables [default values shown in squarer brackets]:
     
     
     def clean(self, fatal, pristine = False):
+        if not self.check_build_dir():
+            return
         if pristine:
             # Release lock prematurely because we're about to delete it!
             self.lock_file.release()
             keep = []
         else:
             keep = self.created_by_config
-        if not self.check_build_dir():
-            return
         recursively_remove(self.build_dir, fatal, keep)
         recursively_remove(opj(self.build_dir, ".maitch", "deps"), fatal, [])
                 
@@ -804,8 +801,8 @@ Other predefined variables [default values shown in squarer brackets]:
     
     def deps_from_cpp(self, sources, cppflags = None):
         """ Runs "${CDEP} sources" and returns its dependencies
-        (one file per line). filename should be absolute. If cppflags is
-        None, self.env['CPPFLAGS'] is used. """
+        (one file per line). filename should be absolute. If cflags is
+        None, self.env['CFLAGS'] is used. """
         if not cppflags:
             cppflags = self.env.get('CPPFLAGS', "")
         sources = process_nodes(sources)
@@ -1105,7 +1102,7 @@ int main() { %s(); return 0; }
     
     def uninstall(self):
         if not self.installed:
-            mprint("Nothing to uninstall")
+            mprint("Noting to uninstall")
             return
         self.installed.reverse()
         for fs, libtool in self.installed:
@@ -1137,11 +1134,6 @@ int main() { %s(); return 0; }
             mprint("Failed to delete '%s'" % f)
         else:
             mprint("Removed '%s'" % f)
-    
-    
-    def recursively_remove(self, target, fatal = False, excep = []):
-        recursively_remove(self.subst(target), fatal,
-                [self.subst(e) for e in excep])
     
     
     def prune_directory(self, root):
@@ -1387,7 +1379,7 @@ class Rule(object):
     
     
     def __repr__(self):
-        return "JT:%s" % str(self.targets)
+        return "JT:%s" % self.targets
         #return "T:%s S:%s" % (self.targets, self.sources)
     
     
@@ -1554,7 +1546,7 @@ class CRule(CRuleBase):
 class CxxRule(CRuleBase):
     " Standard rule for compiling C++ to an object file. "
     def __init__(self, **kwargs):
-        self.init_var(kwargs, 'cxxflags')
+        self.init_var(kwargs, 'CXXFLAGS')
         set_default(kwargs, 'compiler', "CXX");
         set_default(kwargs, 'flagsname', "CXXFLAGS");
         CRuleBase.__init__(self, **kwargs)
@@ -1669,7 +1661,7 @@ class CProgramRule(ProgramRuleBase):
 class CxxProgramRule(ProgramRuleBase):
     "Standard rule for linking C++ object files and libs into a program."
     def __init__(self, **kwargs):
-        self.init_var(kwargs, 'cxxflags')
+        self.init_cflags(kwargs)
         set_default(kwargs, 'linker', "CXX");
         set_default(kwargs, 'flagsname', "CXXFLAGS");
         ProgramRuleBase.__init__(self, **kwargs)
@@ -2104,7 +2096,7 @@ def subst(env, s, novar = NOVAR_FATAL, recurse = True, at = False):
     with var as the key. To prevent substitution put a '-' after the
     opening brace. It will be removed. Most variables are expanded
     recursively immediately before use.
-    See comment where NOVAR_ constants for description of novar.
+    If fatal is False, bad matches are left unexpanded.
     If at is True, substitute @VAR@ instead.
     """
     def ms(match):
@@ -2593,7 +2585,7 @@ add_var('LOCK_TOP', False, "Lock ${TOP_DIR} instead of ${BUILD_DIR}")
 add_var('NO_LOCK', False, "Disable locking (not recommended)")
 add_var('ENABLE_DEBUG', False, "Enable the printing of maitch debug messages")
 add_var('CC', '${GCC}', "C compiler")
-add_var('CXX', 'g++', "C++ compiler")
+add_var('CXX', '${GCC}', "C++ compiler")
 add_var('GCC', find_prog_by_var, "GNU C compiler")
 add_var('CPP', find_prog_by_var, "C preprocessor")
 add_var('LIBTOOL', find_prog_by_var, "libtool compiler frontend for libraries")
