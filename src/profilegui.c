@@ -75,7 +75,7 @@ GtkWidget *profilegui_widget(ProfileGUI *pg, const char *name)
 {
     GtkWidget *widget =
             (GtkWidget *)gtk_builder_get_object(pg->capp.builder, name);
-    
+
     if (!widget)
         g_critical(_("Profile widget '%s' not found"), name);
     return widget;
@@ -178,6 +178,7 @@ void on_editable_changed(GtkEditable * editable, ProfileGUI *pg)
     else PG_IF_CHANGED(term);
     else PG_IF_CHANGED(browser);
     else PG_IF_CHANGED(mailer);
+    else PG_IF_CHANGED(filer);
     else PG_IF_CHANGED(dir_filer);
     else PG_IF_CHANGED(command);
     else PG_IF_CHANGED(title_string);
@@ -201,7 +202,7 @@ void on_ssh_host_changed(GtkWidget * widget, ProfileGUI *pg)
 void on_edit_ssh_clicked(GtkWidget * widget, ProfileGUI *pg)
 {
     capplet_inc_windows();
-    
+
     capplet_set_text_entry(&pg->capp, "ssh_address", "localhost");
     capplet_set_text_entry(&pg->capp, "ssh_user", NULL);
     capplet_set_spin_button(&pg->capp, "ssh_port", 22);
@@ -272,7 +273,7 @@ void on_close_buttons_toggled(GtkToggleButton *button, ProfileGUI *pg)
 void on_cell_size_toggled(GtkToggleButton *button, ProfileGUI *pg)
 {
     gboolean state = gtk_toggle_button_get_active(button);
-    
+
     gtk_widget_set_sensitive(profilegui_widget(pg, "width"), state);
     gtk_widget_set_sensitive(profilegui_widget(pg, "height"), state);
 }
@@ -313,7 +314,7 @@ pg_load_preview(GtkFileChooser *chooser, GtkWidget *preview,
                 PREVIEW_SIZE, PREVIEW_SIZE, TRUE, &error);
     }
     gtk_image_set_from_pixbuf(GTK_IMAGE(preview), pixbuf);
-    
+
     /* Let's not report file not found any more */
 #if 0
     if (!pixbuf && filename && filename[0] &&
@@ -346,7 +347,7 @@ static void on_update_preview(GtkFileChooser *chooser, ProfileGUI *pg)
     GtkWidget *preview = gtk_file_chooser_get_preview_widget(chooser);
     char *filename = gtk_file_chooser_get_preview_filename(chooser);
     GdkPixbuf *old_pixbuf = NULL;
-    
+
     if (gtk_image_get_storage_type(GTK_IMAGE(preview)) == GTK_IMAGE_PIXBUF)
         old_pixbuf = gtk_image_get_pixbuf(GTK_IMAGE(preview));
     if (old_pixbuf)
@@ -363,7 +364,7 @@ static void profilegui_setup_file_chooser(ProfileGUI *pg)
     GtkFileChooser *chooser =
             GTK_FILE_CHOOSER(gtk_builder_get_object(pg->capp.builder,
                     "background_img"));
-                    
+
     GtkFileFilter *img_filter = gtk_file_filter_new();
     GtkFileFilter *all_filter = gtk_file_filter_new();
 #ifdef MANAGE_PREVIEW
@@ -391,7 +392,7 @@ static void profilegui_fill_in_file_chooser(ProfileGUI *pg,
     GtkFileChooser *chooser =
             GTK_FILE_CHOOSER(gtk_builder_get_object(pg->capp.builder,
                     "background_img"));
-                    
+
 #ifdef MANAGE_PREVIEW
     GtkWidget *preview = gtk_file_chooser_get_preview_widget(chooser);
 #endif
@@ -458,7 +459,7 @@ static gboolean bgimg_drag_data_received(GtkWidget *widget,
         GtkFileChooser *chooser =
                 GTK_FILE_CHOOSER(gtk_builder_get_object(pg->capp.builder,
                         "background_img"));
-                    
+
         gtk_file_chooser_set_filename(chooser, filename);
         /* Don't need to call capplet_set_string because we'll get a signal */
         gtk_toggle_button_set_active(
@@ -589,7 +590,7 @@ static gboolean page_selected(GtkTreeSelection *selection,
 {
     GtkTreeIter iter;
     int page;
-    
+
     if (!gtk_tree_model_get_iter(model, &iter, path))
         return FALSE;
     gtk_tree_model_get(model, &iter, 1, &page, -1);
@@ -611,7 +612,7 @@ static void profilegui_setup_list_store(ProfileGUI *pg)
     GtkWidget *tvw;
     GtkTreeView *tv;
     GtkTreeSelection *sel;
-    
+
     pg->list_store = gtk_list_store_new(2, G_TYPE_STRING, G_TYPE_INT);
     for (n = 0; n < G_N_ELEMENTS(labels); ++n)
     {
@@ -647,7 +648,7 @@ static void profilegui_add_combo_items(GtkWidget *combo, ...)
 #else
     GtkComboBox *cast_combo = GTK_COMBO_BOX(combo);
 #endif
-    
+
     va_start(ap, combo);
     while ((item = va_arg(ap, const char *)) != NULL)
     {
@@ -699,7 +700,7 @@ static void profilegui_make_a_combo(ProfileGUI *pg, const char *name)
     char *box_name = g_strdup_printf("%s_hbox", name);
     GObject *box = gtk_builder_get_object(pg->capp.builder, box_name);
     GtkWidget *combo;
-    
+
 #ifdef HAVE_GTK_COMBO_BOX_TEXT_NEW
     combo = gtk_combo_box_text_new();
 #else
@@ -734,7 +735,7 @@ ProfileGUI *profilegui_open(const char *profile_name, GdkScreen *scrn)
             NULL };
     static const char *obj_names[] = {
             "Profile_Editor", "ssh_dialog",
-            "general_entries_size_group", "general_entry_labels_size_group", 
+            "general_entries_size_group", "general_entry_labels_size_group",
             NULL };
     GError *error = NULL;
 
@@ -751,7 +752,7 @@ ProfileGUI *profilegui_open(const char *profile_name, GdkScreen *scrn)
         gtk_window_present(GTK_WINDOW(pg->dialog));
         return pg;
     }
-    
+
     if (!profiles)
         profiles = dynamic_options_get("Profiles");
 
@@ -761,25 +762,25 @@ ProfileGUI *profilegui_open(const char *profile_name, GdkScreen *scrn)
         "roxterm profile");
 
     pg->capp.builder = gtk_builder_new();
-    if (!gtk_builder_add_objects_from_file(pg->capp.builder, 
+    if (!gtk_builder_add_objects_from_file(pg->capp.builder,
             capplet_get_ui_filename(), (char **) adj_names, &error) ||
-            !gtk_builder_add_objects_from_file(pg->capp.builder, 
+            !gtk_builder_add_objects_from_file(pg->capp.builder,
             capplet_get_ui_filename(), (char **) obj_names, &error))
     {
         g_error(_("Unable to load GTK UI definitions: %s"), error->message);
     }
     pg->dialog = profilegui_widget(pg, "Profile_Editor");
     pg->ssh_dialog = profilegui_widget(pg, "ssh_dialog");
-    
+
     if (scrn)
         gtk_window_set_screen(GTK_WINDOW(pg->dialog), scrn);
 
     title = g_strdup_printf(_("ROXTerm Profile \"%s\""), profile_name);
     gtk_window_set_title(GTK_WINDOW(pg->dialog), title);
     g_free(title);
-    
+
     profilegui_make_combos(pg);
-    
+
     profilegui_setup_list_store(pg);
 
     g_hash_table_insert(profilegui_being_edited, g_strdup(profile_name), pg);
