@@ -785,7 +785,7 @@ Other predefined variables [default values shown in squarer brackets]:
                                 "%s needs at least %s" %
                                 (pkgs, pvs, self.package_name, version))
             if not prefix:
-                prefix = make_var_name(pkg, True)
+                prefix = make_var_name(pkgs, True)
             pkgs = pkgs.split()
             self.prog_to_var([pkg_config, '--cflags'] + pkgs,
                     prefix + '_CFLAGS')
@@ -793,6 +793,7 @@ Other predefined variables [default values shown in squarer brackets]:
                     prefix + '_LIBS')
         except:
             mprint("error")
+            raise
         else:
             mprint("ok")
     
