@@ -20,7 +20,7 @@
 */
 
 
-/* Colours are represented by strings as understood by gdk_color_parse */
+/* Colours are represented by strings as understood by gdk_color/rgba_parse */
 
 #include "options.h"
 
@@ -32,16 +32,16 @@ int colour_scheme_get_palette_size(Options * opts);
 
 /* A palette always has 24 valid entries even if logical palette size is
  * smaller */
-GdkColor *colour_scheme_get_palette(Options * opts);
+COLOUR_T *colour_scheme_get_palette(Options * opts);
 
 /* If allow_null is FALSE a default colour is used */
-GdkColor *colour_scheme_get_cursor_colour(Options * opts,
+COLOUR_T *colour_scheme_get_cursor_colour(Options * opts,
         gboolean allow_null);
 
-GdkColor *colour_scheme_get_foreground_colour(Options * opts,
+COLOUR_T *colour_scheme_get_foreground_colour(Options * opts,
         gboolean allow_null);
 
-GdkColor *colour_scheme_get_background_colour(Options * opts,
+COLOUR_T *colour_scheme_get_background_colour(Options * opts,
         gboolean allow_null);
 
 void colour_scheme_set_palette_size(Options * opts, int size);

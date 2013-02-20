@@ -28,6 +28,7 @@
 
 #include <string.h>
 
+#include "colour-compat.h"
 #include "optsfile.h"
 
 typedef struct {
@@ -89,7 +90,7 @@ void options_set_int(Options * options, const char *key, int value);
 void options_set_double(Options * options, const char *key, double value);
 
 /* Associates some data with a set of options; useful eg for storing a set of
- * GdkColors along with palette options */
+ * COLOUR_Ts along with palette options */
 inline static void options_associate_data(Options * options, gpointer user_data)
 {
 	options->user_data = user_data;

@@ -50,7 +50,7 @@ typedef struct _MultitabLabelClass   MultitabLabelClass;
 #if GTK_CHECK_VERSION(3, 0, 0)
 typedef GdkRGBA MultitabColor;
 #else
-typedef GdkColor MultitabColor;
+typedef COLOUR_T MultitabColor;
 #endif
 
 struct _MultitabLabel

@@ -31,8 +31,8 @@
 #endif
 
 typedef struct {
-    GdkColor *foreground, *background, *cursor;
-    GdkColor *palette;
+    COLOUR_T *foreground, *background, *cursor;
+    COLOUR_T *palette;
     int palette_size;
 #if HAVE_COLORMAP
     GdkColormap *colourmap;
@@ -107,10 +107,10 @@ static const char *colour_scheme_choose_default(int palette_entry)
 }
 
 static gboolean
-colour_scheme_parse(ColourScheme * scheme, GdkColor *colour,
+colour_scheme_parse(ColourScheme * scheme, COLOUR_T *colour,
         const char *colour_name)
 {
-    if (gdk_color_parse(colour_name, colour))
+    if (COLOUR_PARSE(colour, colour_name))
     {
 #if HAVE_COLORMAP
         return gdk_colormap_alloc_color(scheme->colourmap, colour, TRUE, TRUE);
@@ -122,7 +122,7 @@ colour_scheme_parse(ColourScheme * scheme, GdkColor *colour,
 }
 
 static gboolean colour_scheme_lookup_and_parse(Options * opts,
-        ColourScheme * scheme, GdkColor * colour, const char *key,
+        ColourScheme * scheme, COLOUR_T * colour, const char *key,
         const char *default_colour, gboolean warn)
 {
     char *name = options_lookup_string(opts, key);
@@ -165,7 +165,7 @@ colour_scheme_parse_palette_range(Options * opts, ColourScheme * scheme,
 static void colour_scheme_parse_palette(Options * opts, ColourScheme * scheme)
 {
     if (!scheme->palette)
-        scheme->palette = g_new0(GdkColor, 24);
+        scheme->palette = g_new0(COLOUR_T, 24);
     scheme->palette_size = options_lookup_int(opts, "palette_size");
     switch (scheme->palette_size)
     {
@@ -190,7 +190,7 @@ static void colour_scheme_parse_palette(Options * opts, ColourScheme * scheme)
     colour_scheme_parse_palette_range(opts, scheme, 0, scheme->palette_size);
 }
 
-GdkColor *colour_scheme_get_palette(Options * opts)
+COLOUR_T *colour_scheme_get_palette(Options * opts)
 {
     ColourScheme *scheme;
 
@@ -214,7 +214,7 @@ int colour_scheme_get_palette_size(Options * opts)
     return scheme->palette_size;
 }
 
-GdkColor *colour_scheme_get_cursor_colour(Options *opts,
+COLOUR_T *colour_scheme_get_cursor_colour(Options *opts,
         gboolean allow_null)
 {
     ColourScheme *scheme;
@@ -225,7 +225,7 @@ GdkColor *colour_scheme_get_cursor_colour(Options *opts,
 
     if (!scheme->cursor)
     {
-        scheme->cursor = g_new0(GdkColor, 1);
+        scheme->cursor = g_new0(COLOUR_T, 1);
         if (!colour_scheme_lookup_and_parse(opts, scheme, scheme->cursor,
                     "cursor", allow_null ? NULL : "#c0c0c0", TRUE))
         {
@@ -236,7 +236,7 @@ GdkColor *colour_scheme_get_cursor_colour(Options *opts,
     return scheme->cursor;
 }
 
-GdkColor *colour_scheme_get_foreground_colour(Options * opts,
+COLOUR_T *colour_scheme_get_foreground_colour(Options * opts,
             gboolean allow_null)
 {
     ColourScheme *scheme;
@@ -247,7 +247,7 @@ GdkColor *colour_scheme_get_foreground_colour(Options * opts,
 
     if (!scheme->foreground)
     {
-        scheme->foreground = g_new0(GdkColor, 1);
+        scheme->foreground = g_new0(COLOUR_T, 1);
         if (!colour_scheme_lookup_and_parse(opts, scheme, scheme->foreground,
                 "foreground", allow_null ? NULL : "#c0c0c0", FALSE))
         {
@@ -258,7 +258,7 @@ GdkColor *colour_scheme_get_foreground_colour(Options * opts,
     return scheme->foreground;
 }
 
-GdkColor *colour_scheme_get_background_colour(Options * opts,
+COLOUR_T *colour_scheme_get_background_colour(Options * opts,
         gboolean allow_null)
 {
     ColourScheme *scheme;
@@ -269,7 +269,7 @@ GdkColor *colour_scheme_get_background_colour(Options * opts,
 
     if (!scheme->background)
     {
-        scheme->background = g_new0(GdkColor, 1);
+        scheme->background = g_new0(COLOUR_T, 1);
         if (!colour_scheme_lookup_and_parse(opts, scheme, scheme->background,
                 "background", allow_null ? NULL : "#000", FALSE))
         {
@@ -291,10 +291,10 @@ void colour_scheme_set_palette_size(Options * opts, int size)
 }
 
 static void colour_scheme_set_colour(Options *opts, ColourScheme *scheme,
-        GdkColor **colour, const char *key, const char *colour_name)
+        COLOUR_T **colour, const char *key, const char *colour_name)
 {
     if (!*colour)
-        *colour = g_new(GdkColor, 1);
+        *colour = g_new(COLOUR_T, 1);
     if (!colour_name || colour_scheme_parse(scheme, *colour, colour_name))
         options_set_string(opts, key, colour_name);
     if (!colour_name)
@@ -309,7 +309,7 @@ void colour_scheme_set_palette_entry(Options * opts, int index,
 {
     ColourScheme *scheme;
     char key[8];
-    GdkColor *colour;
+    COLOUR_T *colour;
 
     g_return_if_fail(opts);
     g_return_if_fail(colour_name);

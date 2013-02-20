@@ -166,7 +166,7 @@ static void multi_win_restore_size(MultiWin *win)
 #if !GTK_CHECK_VERSION(3, 0, 0)
     GtkRequisition win_rq, term_rq;
 #endif
-    
+
     if (!tab || !tab->active_widget ||
             !gtk_widget_get_realized(tab->active_widget))
     {
@@ -205,7 +205,7 @@ void multi_tab_popup_menu(MultiTab * tab, guint button, guint32 event_time)
     GtkMenu *menu = GTK_MENU(menutree_get_top_level_widget
             (tab->parent->show_menu_bar ? tab->parent->short_popup :
             tab->parent->popup_menu));
-    
+
     gtk_menu_set_screen(menu, gtk_widget_get_screen(tab->widget));
     gtk_menu_popup(menu, NULL, NULL, NULL, NULL, button, event_time);
 }
@@ -366,7 +366,7 @@ static void multi_win_set_geometry_hints_for_tab(MultiWin * win, MultiTab * tab)
 static char *make_title(const char *template, const char *title)
 {
     char *title0 = NULL;
-    
+
     if (template)
     {
         if (strstr(template, "%s"))
@@ -398,7 +398,7 @@ static gboolean check_title_template(const char *tt)
     const char *c;
     gboolean lwpc = FALSE;
     gboolean got_pcs = FALSE;
-    
+
     c = tt;
     do
     {
@@ -437,7 +437,7 @@ static gboolean validate_title_template(GtkWindow *parent, const char *tt)
     if (tt && !check_title_template(tt))
     {
         static char *bad_template = NULL;
-    
+
         if (!bad_template || strcmp(bad_template, tt))
         {
             dlg_warning(parent,
@@ -501,7 +501,7 @@ void multi_tab_set_window_title(MultiTab * tab, const char *title)
 void multi_tab_set_window_title_template(MultiTab * tab, const char *template)
 {
     GtkWidget *gwin = tab->parent ? tab->parent->gtkwin : NULL;
-    
+
     if (!validate_title_template(gwin ? GTK_WINDOW(gwin) : NULL,
             template))
     {
@@ -607,7 +607,7 @@ static void multi_win_shade_for_previous_tab(MultiWin *win)
 {
     gboolean shade = multi_win_override_shade_next_prev_tab(win) &&
             multi_win_at_first_tab(win);
-            
+
     multi_win_shade_item_in_both_menus(win, MENUTREE_TABS_PREVIOUS_TAB,
             shade);
     multi_win_shade_item_in_both_menus(win, MENUTREE_TABS_MOVE_TAB_LEFT,
@@ -618,7 +618,7 @@ static void multi_win_shade_for_next_tab(MultiWin * win)
 {
     gboolean shade = multi_win_override_shade_next_prev_tab(win) &&
             multi_win_at_last_tab(win);
-            
+
     multi_win_shade_item_in_both_menus(win, MENUTREE_TABS_NEXT_TAB,
             shade);
     multi_win_shade_item_in_both_menus(win, MENUTREE_TABS_MOVE_TAB_RIGHT,
@@ -663,11 +663,11 @@ static void renumber_tabs(MultiWin *win)
 {
     GList *link;
     int n = 0;
-    
+
     for (link = win->tabs; link; link = g_list_next(link))
     {
         MultiTab *tab = link->data;
-        
+
         multi_tab_set_full_window_title(tab, tab->window_title_template,
                 tab->window_title);
         ++n;
@@ -722,7 +722,7 @@ void multi_tab_move_to_new_window(MultiWin *win, MultiTab *tab, int position)
 {
     MultiWin *old_win = tab->parent;
     gboolean old_win_destroyed;
-    
+
     multi_win_set_always_show_tabs(win, old_win->always_show_tabs);
     multi_win_set_show_menu_bar(win, old_win->show_menu_bar);
     if (multi_win_is_fullscreen(old_win))
@@ -776,7 +776,7 @@ static void multi_tab_pack_for_single(MultiTab *tab, GtkContainer *nb)
 static void multi_win_pack_for_single_tab(MultiWin *win)
 {
     MultiTab *tab = win->tabs->data;
-    
+
 #if !GTK_CHECK_VERSION(3, 0, 0)
     g_object_set(G_OBJECT(win->notebook), "homogeneous", FALSE, NULL);
 #endif
@@ -795,14 +795,14 @@ static void multi_win_pack_for_multiple_tabs(MultiWin *win)
 {
     GList *link;
     GtkContainer *nb = GTK_CONTAINER(win->notebook);
-    
+
 #if !GTK_CHECK_VERSION(3, 0, 0)
     g_object_set(G_OBJECT(win->notebook), "homogeneous", TRUE, NULL);
 #endif
     for (link = win->tabs; link; link = g_list_next(link))
     {
         MultiTab *tab = link->data;
-        
+
         multi_tab_pack_for_multiple(tab, nb);
     }
 }
@@ -813,7 +813,7 @@ static void multi_win_set_full_title(MultiWin *win,
     if (win->gtkwin)
     {
         char *title0 = make_title(template, title);
-        
+
         gtk_window_set_title(GTK_WINDOW(win->gtkwin), title0);
         g_free(title0);
     }
@@ -851,7 +851,7 @@ void multi_win_select_tab(MultiWin * win, MultiTab * tab)
     if (tab)
     {
         char *title = multi_tab_get_full_window_title(tab);
-        
+
         if (tab->label)
             multitab_label_cancel_attention(MULTITAB_LABEL(tab->label));
         multi_tab_set_status_stock(tab, NULL);
@@ -1003,7 +1003,7 @@ static void tab_set_name_from_clipboard_callback(GtkClipboard *clp,
         const gchar *text, gpointer data)
 {
     MultiTab *tab = (MultiTab *) data;
-    
+
     if (text == NULL || tab == NULL)
         return;
     multi_tab_set_window_title_template(tab, text);
@@ -1021,7 +1021,7 @@ static gboolean multi_win_focus_in(GtkWidget *widget, GdkEventFocus *event,
 static void popup_tabs_menu(MultiWin *win, GdkEventButton *event)
 {
     GtkMenuItem *mparent;
-    
+
     g_return_if_fail(win->popup_menu != NULL);
     mparent = GTK_MENU_ITEM(
             menutree_get_widget_for_id(win->popup_menu, MENUTREE_TABS));
@@ -1034,7 +1034,7 @@ static gboolean tab_clicked_handler(GtkWidget *widget,
 {
     if (event->type != GDK_BUTTON_PRESS)
         return FALSE;
-    
+
     switch (event->button)
     {
         case 2:
@@ -1211,7 +1211,7 @@ static void multi_win_new_tab_action(MultiWin * win)
 static void multi_win_detach_tab_action(MultiWin * win)
 {
     MultiTab *tab = win->current_tab;
-    
+
     win = multi_win_new_for_tab(win->display_name, -1, -1, tab);
     multi_tab_move_to_new_window(win, tab, -1);
     gtk_widget_show_all(win->gtkwin);
@@ -1225,7 +1225,7 @@ static void multi_win_close_tab_action(MultiWin * win)
 static void multi_win_close_other_tabs_action(MultiWin * win)
 {
     GList *link;
-    
+
     while ((link = win->tabs) != NULL)
     {
         if (link->data == win->current_tab)
@@ -1455,7 +1455,7 @@ static void multi_win_vscroll_by(MultiWin *win, double multiplier,
     GtkAdjustment *adj;
     double newval;
     double bottom;
-    
+
     adj = win->current_tab->adjustment;
     if (!adj)
         return;
@@ -1470,7 +1470,7 @@ static void multi_win_vscroll_by(MultiWin *win, double multiplier,
     else
     {
         double step;
-        
+
         if (step_type == MULTI_TAB_SCROLL_STEP_PAGE)
             step = gtk_adjustment_get_page_increment(adj);
         else
@@ -1521,7 +1521,7 @@ static void multi_win_move_tab_by_one(MultiWin *win, int dir)
 {
     MultiTab *tab = win->current_tab;
     int pos;
-    
+
     g_return_if_fail(win->current_tab);
     pos = multi_tab_get_page_num(tab) + dir;
     if (win->wrap_switch_tab)
@@ -1694,7 +1694,7 @@ static void multi_win_composited_changed(GtkWidget *widget, MultiWin *win)
 {
     gboolean composited =
             gdk_screen_is_composited(gtk_widget_get_screen(widget));
-    
+
     if (composited != win->composite)
     {
         if (gtk_widget_get_realized(win->gtkwin))
@@ -1706,21 +1706,21 @@ static void multi_win_composited_changed(GtkWidget *widget, MultiWin *win)
             gboolean was_minimized;
             int x, y;
             GdkWindow *dwin = gtk_widget_get_window(win->gtkwin);
-            
+
             user_time = gdk_x11_display_get_user_time(
                     gtk_widget_get_display (widget));
-            
+
             /* If compositing changed, re-realize the window. Bug #563561 */
-            
+
             gtk_window_get_position(GTK_WINDOW(win->gtkwin), &x, &y);
             was_minimized = x11support_window_is_minimized(dwin);
             have_desktop = x11support_get_wm_desktop(dwin,
                     &desktop);
             gtk_widget_hide (widget);
             gtk_widget_unrealize (widget);
-            
+
             multi_win_set_colormap(win);
-            
+
             gtk_window_move(GTK_WINDOW(win->gtkwin), x, y);
             gtk_widget_realize(win->gtkwin);
             dwin = gtk_widget_get_window(win->gtkwin);
@@ -1787,11 +1787,11 @@ MultiWin *multi_win_new_blank(const char *display_name, Options *shortcuts,
         win->zoom_index = zoom_index;
 
     win->gtkwin = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    
+
     if (display_name)
     {
         GdkScreen *scr;
-        
+
         win->display_name = g_strdup(display_name);
         scr = display_get_screen_for_name(display_name);
         if (scr)
@@ -1821,7 +1821,7 @@ MultiWin *multi_win_new_blank(const char *display_name, Options *shortcuts,
         g_signal_connect(win->gtkwin, "delete-event",
                 G_CALLBACK(multi_win_delete_handler), win);
     }
-    
+
 #if HAVE_COMPOSITE
     multi_win_set_colormap(win);
     g_signal_connect(win->gtkwin, "composited-changed",
@@ -1862,7 +1862,7 @@ MultiWin *multi_win_new_blank(const char *display_name, Options *shortcuts,
     menutree_connect_destroyed(win->menu_bar,
         G_CALLBACK(multi_win_menutree_deleted_handler), win);
     win->show_menu_bar = FALSE;
-    
+
     if (win->tab_pos == GTK_POS_LEFT || win->tab_pos == GTK_POS_RIGHT)
     {
         menutree_change_move_tab_labels(win->popup_menu);
@@ -1944,11 +1944,11 @@ MultiWin *multi_win_new_full(const char *display_name, Options *shortcuts,
         MultiWinSizing sizing, int numtabs, GtkPositionType tab_pos,
         gboolean always_show_tabs)
 {
-    gboolean disable_menu_shortcuts, disable_tab_shortcuts; 
+    gboolean disable_menu_shortcuts, disable_tab_shortcuts;
     MultiWin *win;
     MultiTab *tab;
     int n;
-    
+
     multi_win_get_disable_menu_shortcuts(user_data_template,
             &disable_menu_shortcuts, &disable_tab_shortcuts);
     win = multi_win_new_blank(display_name, shortcuts, zoom_index,
@@ -2088,7 +2088,7 @@ void multi_tab_add_close_button(MultiTab *tab)
 
     if (tab->close_button)
         return;
-    
+
     win = tab->parent;
     tab->close_button = multitab_close_button_new(tab->status_stock);
     gtk_box_pack_start(GTK_BOX(tab->label_box), tab->close_button,
@@ -2107,7 +2107,7 @@ void multi_tab_remove_close_button(MultiTab *tab)
     if (tab->close_button)
     {
         MultiWin *win;
-    
+
         win = tab->parent;
         gtk_widget_destroy(tab->close_button);
         tab->close_button = NULL;
@@ -2181,7 +2181,7 @@ static void multi_tab_add_menutree_items(MultiWin * win, MultiTab * tab,
     char *title = multi_tab_get_full_window_title(tab);
     char *n_and_title = g_strdup_printf("%d. %s",
             multi_tab_get_page_num(tab), title);
-    
+
     tab->popup_menu_item = menutree_add_tab_at_position(win->popup_menu,
             n_and_title, position);
     tab->menu_bar_item = menutree_add_tab_at_position(win->menu_bar,
@@ -2235,7 +2235,7 @@ static void multi_win_add_tab_to_notebook(MultiWin * win, MultiTab * tab,
 }
 
 /* Keep track of a tab after it's been created; if notify_only is set, it's
- * assumed the tab has already been added by GTK and this is being called 
+ * assumed the tab has already been added by GTK and this is being called
  * just for notification */
 static void multi_win_add_tab(MultiWin * win, MultiTab * tab, int position,
         gboolean notify_only)
@@ -2286,7 +2286,7 @@ gboolean multi_win_is_fullscreen(MultiWin *win)
 gboolean multi_win_is_maximised(MultiWin *win)
 {
     GdkWindow *w = gtk_widget_get_window(win->gtkwin);
-    
+
     return (w && (gdk_window_get_state(w) & GDK_WINDOW_STATE_MAXIMIZED) != 0);
 }
 
@@ -2462,13 +2462,13 @@ gboolean multi_win_get_always_show_tabs(MultiWin *win)
 void multi_win_set_always_show_tabs(MultiWin *win, gboolean show)
 {
     gboolean old_show = win->always_show_tabs;
-    
+
     win->always_show_tabs = show;
     multi_win_set_show_tabs_menu_items(win, show);
     if (win->ntabs == 1 && old_show != show)
     {
         MultiTab *tab = win->current_tab;
-        
+
         g_return_if_fail(tab != NULL);
         if (show)
             multi_win_show_tabs(win);
@@ -2526,7 +2526,7 @@ const char *multi_win_get_display_name(MultiWin *win)
 const char *multi_win_get_shortcuts_scheme_name(MultiWin *win)
 {
     char *slash = strrchr(win->shortcuts->name, G_DIR_SEPARATOR);
-    
+
     return slash ? slash + 1 : win->shortcuts->name;
 }
 

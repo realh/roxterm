@@ -166,7 +166,7 @@ void roxterm_encoding_toggled(GtkCheckMenuItem *item, gpointer win)
     }
 }
 
-static void roxterm_encodings_changed(MenuTree *mtree, 
+static void roxterm_encodings_changed(MenuTree *mtree,
         const char *what_happened,
         const char *current_name, const char *new_name)
 {
@@ -213,7 +213,7 @@ static void roxterm_match_remove(ROXTermData *roxterm, VteTerminal *vte,
         int tag)
 {
     int n;
-    
+
     vte_terminal_match_remove(vte, tag);
     for (n = 0; n < roxterm->match_map->len; ++n)
     {
@@ -298,7 +298,7 @@ static void roxterm_add_matches(ROXTermData *roxterm, VteTerminal *vte)
 static void roxterm_add_file_matches(ROXTermData *roxterm, VteTerminal *vte)
 {
     int n;
-    
+
     for (n = 0; n < 2; ++n)
     {
         roxterm->file_match_tag[n] =
@@ -309,7 +309,7 @@ static void roxterm_add_file_matches(ROXTermData *roxterm, VteTerminal *vte)
 static void roxterm_remove_file_matches(ROXTermData *roxterm, VteTerminal *vte)
 {
     int n;
-    
+
     for (n = 0; n < 2; ++n)
     {
         roxterm_match_remove(roxterm, vte, roxterm->file_match_tag[n]);
@@ -353,10 +353,10 @@ char *roxterm_get_cwd(ROXTermData *roxterm)
     char *pidfile = NULL;
     char *target = NULL;
     GError *error = NULL;
-    
+
     if (roxterm->pid < 0)
         return NULL;
-    
+
     pidfile = g_strdup_printf("/proc/%d/cwd", roxterm->pid);
     target = g_file_read_link(pidfile, &error);
     /* According to a comment in gnome-terminal readlink()
@@ -384,7 +384,7 @@ static char **roxterm_strv_copy(char **src)
 {
     int n;
     char **dest;
-    
+
     for (n = 0; src[n]; ++n);
     dest = g_new(char *, n + 1);
     for (n = 0; src[n]; ++n)
@@ -446,7 +446,7 @@ static ROXTermData *roxterm_data_clone(ROXTermData *old_gt)
 
     new_gt->match_map = g_array_new(FALSE, FALSE, sizeof(ROXTerm_MatchMap));
     new_gt->matched_url = NULL;
-    
+
     if (old_gt->pango_desc)
     {
         new_gt->pango_desc = pango_font_description_copy(old_gt->pango_desc);
@@ -454,7 +454,7 @@ static ROXTermData *roxterm_data_clone(ROXTermData *old_gt)
     if (old_gt->widget && gtk_widget_get_realized(old_gt->widget))
     {
         VteTerminal *vte = VTE_TERMINAL(old_gt->widget);
-        
+
         new_gt->columns = vte_terminal_get_column_count(vte);
         new_gt->rows = vte_terminal_get_row_count(vte);
     }
@@ -474,7 +474,7 @@ static char **roxterm_modify_environment(char const * const *env,
     int i, j, k;
     char **equals;
     char **result;
-    
+
     for (env_len = 0; env[env_len]; ++env_len);
     for (replace_len = 0; replace[replace_len]; ++replace_len);
     replace_len /= 2;
@@ -489,7 +489,7 @@ static char **roxterm_modify_environment(char const * const *env,
     for (j = 0; j < env_len; ++j)
     {
         gboolean skip = FALSE;
-        
+
         for (i = 0; i < replace_len; ++i)
         {
             if (g_str_has_prefix(env[j], equals[i]))
@@ -584,7 +584,7 @@ static char **roxterm_get_environment(ROXTermData *roxterm, const char *term)
 static GtkWindow *roxterm_get_toplevel(ROXTermData *roxterm)
 {
     MultiWin *w;
-    
+
     if (roxterm && (w = roxterm_get_win(roxterm)) != NULL)
     {
         GtkWidget *tl = multi_win_get_widget(w);
@@ -619,7 +619,7 @@ static void roxterm_show_status_stock(ROXTermData *roxterm, const char *stock)
             roxterm->status_stock &&
             (!strcmp(roxterm->status_stock, GTK_STOCK_DIALOG_WARNING) ||
             !strcmp(roxterm->status_stock, GTK_STOCK_DIALOG_ERROR)))
-            
+
     {
         return;
     }
@@ -635,7 +635,7 @@ static gboolean roxterm_command_failed(ROXTermData *roxterm)
 {
     MultiWin *win = roxterm_get_win(roxterm);
     GtkWidget *w = win ? multi_win_get_widget(win) : NULL;
-    
+
     dlg_critical(w ? GTK_WINDOW(w) : NULL, "%s", roxterm->reply);
     g_free(roxterm->reply);
     multi_tab_delete(roxterm->tab);
@@ -745,7 +745,7 @@ static char *roxterm_fork_command(VteTerminal *vte,
         g_free(new_argv[1]);
         g_free(new_argv);
     }
-    
+
     if (reply)
         *pid = -1;
     return reply;
@@ -793,7 +793,7 @@ static void roxterm_run_command(ROXTermData *roxterm, VteTerminal *vte)
                     "ssh_options");
             int port = options_lookup_int_with_default(roxterm->profile,
                     "ssh_port", 22);
-                    
+
             command = g_strdup_printf("ssh%s%s %s -p %d %s",
                     (user && user[0]) ? " -l " : "",
                     (user && user[0]) ? user : "",
@@ -931,7 +931,7 @@ static void roxterm_launch_filer(ROXTermData *roxterm, const char *uri)
     char *expu = NULL;
     char *filer_o;
     char *filer;
-    
+
     if (g_str_has_prefix(uri, "file://"))
         uri += 7;
     if (uri[0] == '~')
@@ -992,9 +992,9 @@ static void roxterm_data_delete(ROXTermData *roxterm)
     /* This doesn't delete widgets because they're deleted when removed from
      * the parent */
     GtkWindow *gwin;
-    
+
     g_return_if_fail(roxterm);
-    
+
     gwin = roxterm_get_toplevel(roxterm);
     if (gwin && roxterm->win_state_changed_tag)
     {
@@ -1073,7 +1073,7 @@ roxterm_set_show_uri_menu_items(ROXTermData * roxterm,
     ROXTerm_URIMenuItemsShowType show_type)
 {
     MultiWin *win = roxterm_get_win(roxterm);
-    
+
     set_show_uri_menu_items(multi_win_get_popup_menu(win), show_type);
     set_show_uri_menu_items(multi_win_get_short_popup_menu(win), show_type);
 }
@@ -1093,8 +1093,19 @@ static void roxterm_update_background(ROXTermData * roxterm, VteTerminal * vte)
         g_warning(_("Saturation option %f out of range"), saturation);
         saturation = CLAMP(saturation, 0, 1);
     }
-    vte_terminal_set_background_tint_color(vte,
+#if GTK_CHECK_VERSION(3, 0, 0) && \
+        !defined HAVE_VTE_TERMINAL_SET_BACKGROUND_TINT_RGBA
+    GdkRGBA *r = colour_scheme_get_background_colour(
+            roxterm->colour_scheme, FALSE);
+    GdkColor c;
+    c.red = (guint16) (r->red * 65535);
+    c.green = (guint16) (r->green * 65535);
+    c.blue = (guint16) (r->blue * 65535);
+    vte_terminal_set_background_tint_color(vte, &c);
+#else
+    COLOUR_SET_VTE_TINT(vte,
         colour_scheme_get_background_colour(roxterm->colour_scheme, FALSE));
+#endif
 
     switch (options_lookup_int(roxterm->profile, "background_type"))
     {
@@ -1139,16 +1150,16 @@ static void roxterm_update_background(ROXTermData * roxterm, VteTerminal * vte)
 static void
 roxterm_update_cursor_colour(ROXTermData * roxterm, VteTerminal * vte)
 {
-    const GdkColor *cursor_colour =
+    const COLOUR_T *cursor_colour =
             colour_scheme_get_cursor_colour(roxterm->colour_scheme, TRUE);
 
     if (cursor_colour)
     {
-        vte_terminal_set_color_cursor(vte, cursor_colour);
+        COLOUR_SET_VTE(_cursor)(vte, cursor_colour);
     }
     else
     {
-        vte_terminal_set_color_cursor(vte, NULL);
+        COLOUR_SET_VTE(_cursor)(vte, NULL);
     }
 }
 
@@ -1160,10 +1171,10 @@ guint16 extrapolate_chroma(guint16 bg, guint16 fg, double factor)
     return (guint16) CLAMP(ext, 0, 0xffff);
 }
 
-static const GdkColor *extrapolate_colours(const GdkColor *bg,
-        const GdkColor *fg, double factor)
+static const COLOUR_T *extrapolate_colours(const COLOUR_T *bg,
+        const COLOUR_T *fg, double factor)
 {
-    static GdkColor ext;
+    static COLOUR_T ext;
 
 #define EXTRAPOLATE(c) ext. c = \
     extrapolate_chroma(bg ? bg->  c : 0, fg ? fg->  c : 0xffff, factor)
@@ -1177,22 +1188,22 @@ static void
 roxterm_apply_colour_scheme(ROXTermData * roxterm, VteTerminal * vte)
 {
     int ncolours = 0;
-    const GdkColor *palette = NULL;
-    const GdkColor *foreground =
+    const COLOUR_T *palette = NULL;
+    const COLOUR_T *foreground =
             colour_scheme_get_foreground_colour(roxterm->colour_scheme, TRUE);
-    const GdkColor *background =
+    const COLOUR_T *background =
             colour_scheme_get_background_colour(roxterm->colour_scheme, TRUE);
 
     vte_terminal_set_default_colors(vte);
     ncolours = colour_scheme_get_palette_size(roxterm->colour_scheme);
     if (ncolours)
         palette = colour_scheme_get_palette(roxterm->colour_scheme);
-    vte_terminal_set_colors(vte, foreground, background, palette, ncolours);
+    COLOUR_SET_VTE(s)(vte, foreground, background, palette, ncolours);
     if (!ncolours && foreground && background)
     {
-        vte_terminal_set_color_bold(vte,
+        COLOUR_SET_VTE(_bold)(vte,
                 extrapolate_colours(background, foreground, 1.2));
-        vte_terminal_set_color_dim(vte,
+        COLOUR_SET_VTE(_dim)(vte,
                 extrapolate_colours(background, foreground, 0.7));
     }
     roxterm_update_cursor_colour(roxterm, vte);
@@ -1203,7 +1214,7 @@ roxterm_apply_colour_scheme(ROXTermData * roxterm, VteTerminal * vte)
 static void roxterm_get_vte_padding(VteTerminal *vte, int *w, int *h)
 {
     GtkBorder *border = NULL;
-    
+
     gtk_widget_style_get(GTK_WIDGET(vte), "inner-border", &border, NULL);
     if (border == NULL)
     {
@@ -1232,7 +1243,7 @@ roxterm_set_vte_size(ROXTermData *roxterm, VteTerminal *vte,
     MultiWin *win = roxterm_get_win(roxterm);
     GtkWidget *pw = win ? multi_win_get_widget(win) : NULL;
     GdkWindow *pd = pw ? gtk_widget_get_window(pw) : NULL;
-    
+
     if (drbl && pd)
     {
 #if GTK_CHECK_VERSION(2, 24, 0)
@@ -1251,7 +1262,7 @@ roxterm_set_vte_size(ROXTermData *roxterm, VteTerminal *vte,
     {
         int px, py;
         int req_w, req_h;
-        
+
         roxterm_get_vte_padding(vte, &px, &py);
         req_w = vte_terminal_get_char_width(vte) * columns + px;
         req_h = vte_terminal_get_char_height(vte) * rows + py;
@@ -1281,7 +1292,7 @@ static void roxterm_size_func(ROXTermData *roxterm, gboolean pixels,
         int *pwidth, int *pheight)
 {
     VteTerminal *vte = VTE_TERMINAL(roxterm->widget);
-    
+
     if (!pixels || *pwidth == -1)
         *pwidth = vte_terminal_get_column_count(vte);
     if (!pixels || *pheight == -1)
@@ -1289,7 +1300,7 @@ static void roxterm_size_func(ROXTermData *roxterm, gboolean pixels,
     if (pixels)
     {
         int px, py;
-        
+
         roxterm_get_vte_padding(vte, &px, &py);
         *pwidth = *pwidth * vte_terminal_get_char_width(vte) + px;
         *pheight = *pheight * vte_terminal_get_char_height(vte) + py;
@@ -1308,7 +1319,7 @@ static void roxterm_update_size(ROXTermData * roxterm, VteTerminal * vte)
     if (multi_win_get_current_tab(roxterm_get_win(roxterm)) == roxterm->tab)
     {
         int w, h;
-        
+
         roxterm_default_size_func(roxterm, &w, &h);
         roxterm_set_vte_size(roxterm, vte, w, h);
     }
@@ -1452,7 +1463,7 @@ static void roxterm_match_text_size(ROXTermData *roxterm, ROXTermData *other)
     VteTerminal *other_vte;
     const PangoFontDescription *fd;
     int width, height;
-    
+
     if (roxterm == other)
         return;
     vte = VTE_TERMINAL(roxterm->widget);
@@ -1640,7 +1651,7 @@ static gboolean roxterm_motion_handler(GtkWidget *widget, GdkEventButton *event,
     target_list = roxterm_get_uri_drag_target_list();
     gtk_drag_begin(roxterm->widget, target_list, GDK_ACTION_COPY, 1,
             (GdkEvent *) event);
-    
+
     return TRUE;
 }
 
@@ -1710,7 +1721,7 @@ static void roxterm_window_title_handler(VteTerminal *vte,
         ROXTermData * roxterm)
 {
     const char *t = vte_terminal_get_window_title(vte);
-    
+
     multi_tab_set_window_title(roxterm->tab, t ? t : _("ROXTerm"));
 }
 
@@ -1828,7 +1839,7 @@ static void roxterm_shade_search_menu_items(ROXTermData *roxterm)
     MultiWin *win = roxterm_get_win(roxterm);
     gboolean shade = vte_terminal_search_get_gregex(
             VTE_TERMINAL(roxterm->widget)) == NULL;
-    
+
     roxterm_shade_mtree_search_items(multi_win_get_menu_bar(win), shade);
     roxterm_shade_mtree_search_items(multi_win_get_popup_menu(win), shade);
 }
@@ -1855,7 +1866,7 @@ static void roxterm_tab_selection_handler(ROXTermData * roxterm, MultiTab * tab)
 #ifdef HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX
     roxterm_shade_search_menu_items(roxterm);
 #endif
-    
+
     /* Creation of im submenus deferred to this point because vte
      * widget must be realized first */
     create_im_submenus(roxterm, vte);
@@ -1978,7 +1989,7 @@ static void roxterm_respawn_action(MultiWin * win)
     ROXTermData *roxterm = multi_win_get_user_data_for_current_tab(win);
     int response;
     GtkWidget *w = NULL;
-    
+
     if (roxterm->post_exit_tag)
     {
         g_source_remove(roxterm->post_exit_tag);
@@ -2083,7 +2094,7 @@ static void roxterm_show_about(MultiWin * win)
 static char *roxterm_get_help_filename(const char *base_dir, const char *lang)
 {
     char *filename = g_build_filename(base_dir, lang, "guide.html", NULL);
-    
+
     if (!g_file_test(filename, G_FILE_TEST_EXISTS))
     {
         g_free(filename);
@@ -2098,7 +2109,7 @@ static char *roxterm_get_help_uri(const char *base_dir, const char *lang)
     char *sep;
     char *filename;
     char *uri;
-    
+
     filename = roxterm_get_help_filename(base_dir, lang);
     if (!filename)
     {
@@ -2131,7 +2142,7 @@ static void roxterm_show_manual(MultiWin * win)
     char *uri;
     char *dir = NULL;
     const char *lang;
-    
+
     g_return_if_fail(roxterm);
 
     if (global_options_appdir)
@@ -2142,12 +2153,12 @@ static void roxterm_show_manual(MultiWin * win)
     {
         dir = g_build_filename(HTML_DIR, NULL);
     }
-    
+
     lang = g_getenv("LANG");
     if (!lang || !lang[0])
         lang = "en";
     uri = roxterm_get_help_uri(dir, lang);
-    
+
     roxterm_launch_browser(roxterm, uri);
     g_free(uri);
     g_free(dir);
@@ -2156,7 +2167,7 @@ static void roxterm_show_manual(MultiWin * win)
 static void roxterm_open_config_manager(MultiWin * win)
 {
     ROXTermData *roxterm = multi_win_get_user_data_for_current_tab(win);
-    
+
     optsdbus_send_edit_opts_message("Configlet", NULL, roxterm->display_name);
 }
 
@@ -2184,7 +2195,7 @@ typedef enum {
 static void roxterm_hide_menutree(GtkMenuItem *item, gpointer handle)
 {
     GtkWidget *submenu = gtk_menu_item_get_submenu(item);
-    
+
     if (submenu)
     {
         gtk_widget_hide(submenu);
@@ -2209,7 +2220,7 @@ static gboolean roxterm_post_child_exit(ROXTermData *roxterm)
                 _("The command in this terminal has terminated. "
                 "What do you want to do with the terminal now?"));
         GtkWidget *respawn;
-        
+
         gtk_dialog_add_button(GTK_DIALOG(dialog),
                 GTK_STOCK_CLOSE, roxterm_ChildExitClose);
         gtk_dialog_add_button(GTK_DIALOG(dialog),
@@ -2251,7 +2262,7 @@ static gboolean roxterm_post_child_exit(ROXTermData *roxterm)
 static void roxterm_child_exited(VteTerminal *vte, ROXTermData *roxterm)
 {
     double delay = 0;
-    
+
     roxterm->running = FALSE;
     roxterm_show_status_stock(roxterm, GTK_STOCK_DIALOG_ERROR);
     if ((options_lookup_int(roxterm->profile, "exit_action") !=
@@ -2309,11 +2320,11 @@ static void roxterm_change_colour_scheme(ROXTermData *roxterm,
         roxterm_apply_colour_scheme(roxterm, VTE_TERMINAL(roxterm->widget));
     }
 }
-            
+
 static void match_text_size_foreach_tab(MultiTab *tab, void *data)
 {
     ROXTermData *roxterm = multi_tab_get_user_data(tab);
-    
+
     if (roxterm != data)
         roxterm_match_text_size(roxterm, data);
 }
@@ -2353,7 +2364,7 @@ static void roxterm_new_term_with_profile(GtkMenuItem *mitem,
     }
     else
     {
-        multi_win_clone(win, roxterm, 
+        multi_win_clone(win, roxterm,
                 options_lookup_int_with_default(new_profile,
                         "always_show_tabs", TRUE));
     }
@@ -2499,7 +2510,7 @@ static void roxterm_text_changed_handler(VteTerminal *vte, ROXTermData *roxterm)
 static void roxterm_beep_handler(VteTerminal *vte, ROXTermData *roxterm)
 {
     MultiWin *win = roxterm_get_win(roxterm);
-    
+
     if (roxterm->tab != multi_win_get_current_tab(win))
     {
         roxterm_show_status_stock(roxterm, GTK_STOCK_DIALOG_WARNING);
@@ -2508,7 +2519,7 @@ static void roxterm_beep_handler(VteTerminal *vte, ROXTermData *roxterm)
             "bell_highlights_tab", TRUE))
     {
         GtkWindow *gwin = GTK_WINDOW(multi_win_get_widget(win));
-        
+
         if (roxterm->tab != multi_win_get_current_tab(win))
             multi_tab_draw_attention(roxterm->tab);
         if (!gtk_window_is_active(gwin))
@@ -2524,7 +2535,7 @@ static gboolean roxterm_key_press_handler(GtkWidget *widget,
 {
     Options *shortcuts = multi_win_get_shortcut_scheme(
             roxterm_get_win(roxterm));
-    
+
     if (!event->is_modifier &&
             shortcuts_key_is_shortcut(shortcuts, event->keyval,
                     event->state & GDK_MODIFIER_MASK))
@@ -2541,7 +2552,7 @@ static void roxterm_resize_window_handler(VteTerminal *vte,
     int pad_w, pad_h;
     GtkAllocation alloc;
     int columns, rows;
-    
+
     /* Can't compute size if not realized */
     if (!gtk_widget_get_realized(roxterm->widget))
         return;
@@ -2641,11 +2652,11 @@ static void build_new_term_with_profile_submenu(MenuTree *mtree,
         GCallback callback, GtkMenuShell *mshell, char **items)
 {
     int n;
-    
+
     for (n = 0; items[n]; ++n)
     {
         GtkWidget *mitem = gtk_menu_item_new_with_label(items[n]);
-        
+
         gtk_widget_show(mitem);
         if (callback)
         {
@@ -2845,7 +2856,7 @@ static void
 roxterm_update_cursor_blink_mode(ROXTermData * roxterm, VteTerminal * vte)
 {
     int o = options_lookup_int(roxterm->profile, "cursor_blink_mode");
-    
+
     if (o == -1)
     {
         o = options_lookup_int(roxterm->profile, "cursor_blinks") + 1;
@@ -2933,7 +2944,7 @@ static void roxterm_apply_disable_menu_access(ROXTermData *roxterm)
 #else
 #define F10_KEY GDK_F10
 #endif
-    
+
     if (disable == disabled)
         return;
     settings = gtk_settings_get_default();
@@ -2963,7 +2974,7 @@ static void roxterm_apply_title_template(ROXTermData *roxterm)
     char *win_title = global_options_lookup_string("title");
     gboolean custom_win_title;
     MultiWin *win = roxterm_get_win(roxterm);
-    
+
     if (win_title)
     {
         custom_win_title = TRUE;
@@ -2982,13 +2993,13 @@ static void roxterm_apply_title_template(ROXTermData *roxterm)
     }
     g_free(win_title);
 }
-    
+
 static void roxterm_apply_show_tab_status(ROXTermData *roxterm)
 {
     if (roxterm->tab)
     {
         const char *stock;
-        
+
         if (options_lookup_int_with_default(roxterm->profile,
                 "show_tab_status", FALSE))
         {
@@ -3022,14 +3033,14 @@ static void roxterm_apply_match_files(ROXTermData *roxterm, VteTerminal *vte)
         if (roxterm->file_match_tag[0] != -1)
             roxterm_remove_file_matches(roxterm, vte);
     }
-    
+
 }
 
 #if GTK_CHECK_VERSION(3, 0, 0)
 static void roxterm_apply_show_resize_grip(ROXTermData *roxterm)
 {
     GtkWindow *w = roxterm_get_toplevel(roxterm);
-    
+
     if (w)
     {
         gtk_window_set_has_resize_grip(w,
@@ -3074,7 +3085,7 @@ static void roxterm_apply_profile(ROXTermData *roxterm, VteTerminal *vte,
     roxterm_apply_wrap_switch_tab(roxterm);
 
     roxterm_apply_disable_menu_access(roxterm);
-    
+
     roxterm_apply_title_template(roxterm);
     roxterm_apply_show_tab_number(roxterm);
     roxterm_apply_show_tab_status(roxterm);
@@ -3096,7 +3107,6 @@ roxterm_drag_data_received(GtkWidget *widget,
     {
         char **uris = g_strsplit(text, "\r\n", 0);
         int n;
-        char *rejoined = NULL;
         char *tmp;
 
         for (n = 0; uris[n]; ++n)
@@ -3149,7 +3159,7 @@ static gboolean roxterm_window_state_changed(GtkWidget *win,
 inline static void
 roxterm_attach_state_changed_handler(ROXTermData *roxterm)
 {
-    roxterm->win_state_changed_tag = 
+    roxterm->win_state_changed_tag =
             g_signal_connect(roxterm_get_toplevel(roxterm),
             "window-state-event",
             G_CALLBACK(roxterm_window_state_changed), roxterm);
@@ -3159,12 +3169,12 @@ static void
 roxterm_tab_received(GtkWidget *rcvd_widget, ROXTermData *roxterm)
 {
     MultiTab *tab = multi_tab_get_from_widget(rcvd_widget);
-    
+
     if (tab != roxterm->tab)
     {
         MultiWin *win = roxterm_get_win(roxterm);
         int page_num = multi_tab_get_page_num(roxterm->tab);
-        
+
         if (multi_tab_get_parent(tab) == win)
             multi_tab_move_to_position(tab, page_num, TRUE);
         else
@@ -3220,7 +3230,7 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
     {
 #if GTK_CHECK_VERSION(3, 0, 0)
         GtkGrid *grid = GTK_GRID(roxterm->hbox = gtk_grid_new());
-        
+
         roxterm->scrollbar =
                 gtk_scrollbar_new(GTK_ORIENTATION_VERTICAL,
                         vte_terminal_get_adjustment(vte));
@@ -3297,9 +3307,9 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
             roxterm_drag_data_received,
             (DragReceiveTabHandler) roxterm_tab_received,
             roxterm);
-    
+
     roxterm_attach_state_changed_handler(roxterm);
-    
+
     g_idle_add((GSourceFunc) run_child_when_idle, roxterm);
 
     return scrollbar_pos ? roxterm->hbox : roxterm->widget;
@@ -3551,13 +3561,13 @@ static gboolean roxterm_update_colour_option(Options *scheme, const char *key,
         const char *value)
 {
     void (*setter)(Options *, const char *) = NULL;
-    GdkColor *old_colour;
-    GdkColor *pnew_colour = NULL;
-    GdkColor  new_colour;
+    COLOUR_T *old_colour;
+    COLOUR_T *pnew_colour = NULL;
+    COLOUR_T  new_colour;
 
     if (value)
     {
-        g_return_val_if_fail(gdk_color_parse(value, &new_colour), FALSE);
+        g_return_val_if_fail(COLOUR_PARSE(&new_colour, value), FALSE);
         pnew_colour = &new_colour;
     }
     if (!strcmp(key, "foreground"))
@@ -3581,7 +3591,7 @@ static gboolean roxterm_update_colour_option(Options *scheme, const char *key,
     }
     if (!old_colour && !pnew_colour)
         return FALSE;
-    if (old_colour && pnew_colour && gdk_color_equal(old_colour, pnew_colour))
+    if (old_colour && pnew_colour && COLOUR_EQUAL(old_colour, pnew_colour))
         return FALSE;
     if (setter)
         setter(scheme, value);
@@ -3805,14 +3815,14 @@ static void roxterm_stuff_changed_handler(const char *what_happened,
     GList *link;
     DynamicOptions *dynopts = NULL;
     Options *options = NULL;
-    
+
     if (!strcmp(what_happened, OPTSDBUS_CHANGED) &&
             strcmp(family_name, "Shortcuts"))
     {
         for (link = roxterm_terms; link; link = g_list_next(link))
         {
             ROXTermData *roxterm = link->data;
-            
+
             if (!strcmp(family_name, "Profiles"))
             {
                 if (!strcmp(options_get_leafname(roxterm->profile),
@@ -3861,11 +3871,11 @@ static void roxterm_stuff_changed_handler(const char *what_happened,
     for (link = multi_win_all; link; link = g_list_next(link))
     {
         MultiWin *win = (MultiWin *) link->data;
-        
+
         if (strcmp(what_happened, OPTSDBUS_CHANGED))
         {
             MenuTree *mtree = multi_win_get_menu_bar(win);
-    
+
             multi_win_set_ignore_toggles(win, TRUE);
             if (mtree)
             {
@@ -3883,7 +3893,7 @@ static void roxterm_stuff_changed_handler(const char *what_happened,
         else
         {
             Options *shortcuts = multi_win_get_shortcut_scheme(win);
-            
+
             if (!strcmp(options_get_leafname(shortcuts), current_name))
             {
                 multi_win_set_shortcut_scheme(win, shortcuts, TRUE);
@@ -3895,7 +3905,7 @@ static void roxterm_stuff_changed_handler(const char *what_happened,
 static gboolean roxterm_verify_id(ROXTermData *roxterm)
 {
     GList *link;
-    
+
     for (link = roxterm_terms; link; link = g_list_next(link))
     {
         if (link->data == roxterm)
@@ -3911,10 +3921,10 @@ static void roxterm_set_profile_handler(ROXTermData *roxterm, const char *name)
 {
     if (!roxterm_verify_id(roxterm))
         return;
-        
+
     Options *profile = dynamic_options_lookup_and_ref(roxterm_profiles, name,
             "roxterm profile");
-    
+
     if (profile)
     {
         roxterm_change_profile(roxterm, profile);
@@ -3934,9 +3944,9 @@ static void roxterm_set_colour_scheme_handler(ROXTermData *roxterm,
 {
     if (!roxterm_verify_id(roxterm))
         return;
-        
+
     Options *scheme = colour_scheme_lookup_and_ref(name);
-    
+
     if (scheme)
     {
         roxterm_change_colour_scheme(roxterm, scheme);
@@ -3954,7 +3964,7 @@ static void roxterm_set_shortcut_scheme_handler(ROXTermData *roxterm,
 {
     if (!roxterm_verify_id(roxterm))
         return;
-        
+
     Options *shortcuts = shortcuts_open(name);
     multi_win_set_shortcut_scheme(roxterm_get_win(roxterm), shortcuts, FALSE);
     shortcuts_unref(shortcuts);
@@ -4158,7 +4168,7 @@ void roxterm_launch(const char *display_name, char **env)
             colour_scheme_name,
             global_options_lookup_string("encoding"),
             &geom, &size_on_cli, env);
-    
+
     if (!size_on_cli)
     {
         roxterm_default_size_func(roxterm, &roxterm->columns, &roxterm->rows);
@@ -4178,13 +4188,13 @@ void roxterm_launch(const char *display_name, char **env)
         char *wtitle = global_options_lookup_string("title");
         MultiWin *focused = NULL;
         GList *link;
-        
+
         win = NULL;
         for (link = multi_win_all; link; link = g_list_next(link))
         {
             GtkWidget *w;
             guint32 workspace;
-            
+
             win = link->data;
             if (wtitle && !g_strcmp0(multi_win_get_title_template(win), wtitle))
                 break;
@@ -4211,7 +4221,7 @@ void roxterm_launch(const char *display_name, char **env)
         if (partner)
         {
             GtkWidget *gwin = multi_win_get_widget(win);
-            
+
             roxterm->dont_lookup_dimensions = TRUE;
             roxterm->target_zoom_factor = partner->target_zoom_factor;
             roxterm->zoom_index = partner->zoom_index;
@@ -4336,7 +4346,7 @@ typedef struct {
 static void dont_show_again_toggled(GtkToggleButton *button, DontShowData *d)
 {
     int val = 0;
-    
+
     if (gtk_toggle_button_get_active(button))
     {
         if (!d->ntabs)
@@ -4356,7 +4366,7 @@ static void dont_show_again_toggled(GtkToggleButton *button, DontShowData *d)
 
 static void only_running_toggled(GtkToggleButton *button, DontShowData *d)
 {
-    options_set_int(global_options, "only_warn_running", 
+    options_set_int(global_options, "only_warn_running",
             gtk_toggle_button_get_active(button));
     options_file_save(global_options->kf, "Global");
 }
@@ -4366,7 +4376,7 @@ static void check_each_tab_running(MultiTab *tab, void *data)
     if (((ROXTermData *) multi_tab_get_user_data(tab))->running)
     {
         gboolean *prunning = data;
-        
+
         *prunning = TRUE;
     }
 }
@@ -4383,7 +4393,7 @@ static gboolean roxterm_delete_handler(GtkWindow *gtkwin, GdkEvent *event,
     MultiWin *win = event ? data : NULL;
     ROXTermData *roxterm = event ? NULL : data;
     GtkWidget *ca_box;
-    
+
     d.warn = global_options_lookup_int_with_default("warn_close", 3);
     d.only_running = global_options_lookup_int_with_default("only_warn_running",
             FALSE);
@@ -4395,7 +4405,7 @@ static gboolean roxterm_delete_handler(GtkWindow *gtkwin, GdkEvent *event,
         if (win)
         {
             gboolean running = FALSE;
-            
+
             multi_win_foreach_tab(win, check_each_tab_running, &running);
             if (!running)
                 return FALSE;
@@ -4405,7 +4415,7 @@ static gboolean roxterm_delete_handler(GtkWindow *gtkwin, GdkEvent *event,
             return FALSE;
         }
     }
-        
+
     switch (d.ntabs)
     {
         case 0:
@@ -4427,16 +4437,16 @@ static gboolean roxterm_delete_handler(GtkWindow *gtkwin, GdkEvent *event,
             GTK_MESSAGE_WARNING, GTK_BUTTONS_YES_NO,
             "%s", msg);
     gtk_window_set_title(GTK_WINDOW(dialog), _("ROXTerm: Confirm close"));
-    
+
     ca_box = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
-    
+
     noshow = gtk_check_button_new_with_mnemonic(_("_Don't show this again"));
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(noshow), FALSE);
     g_signal_connect(noshow, "toggled",
             G_CALLBACK(dont_show_again_toggled), &d);
     box_compat_packv(ca_box, noshow, FALSE, 0);
     gtk_widget_show(noshow);
-    
+
     only_running = gtk_check_button_new_with_mnemonic(
             _("Only warn if tasks are still _running"));
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(only_running),
@@ -4445,7 +4455,7 @@ static gboolean roxterm_delete_handler(GtkWindow *gtkwin, GdkEvent *event,
             G_CALLBACK(only_running_toggled), &d);
     box_compat_packv(ca_box, only_running, FALSE, 0);
     gtk_widget_show(only_running);
-    
+
     response = gtk_dialog_run(GTK_DIALOG(dialog)) != GTK_RESPONSE_YES;
     gtk_widget_destroy(dialog);
     return response;
@@ -4454,12 +4464,12 @@ static gboolean roxterm_delete_handler(GtkWindow *gtkwin, GdkEvent *event,
 void roxterm_init(void)
 {
     char *logo_filename = logo_find();
-    
+
     gtk_window_set_default_icon_from_file(logo_filename, NULL);
     g_free(logo_filename);
 
     roxterm_encodings = encodings_load();
-    
+
     optsdbus_listen_for_opt_signals(roxterm_opt_signal_handler);
     optsdbus_listen_for_stuff_changed_signals(roxterm_stuff_changed_handler);
     optsdbus_listen_for_set_profile_signals(
@@ -4493,7 +4503,7 @@ gboolean roxterm_spawn_command_line(const gchar *command_line,
     int argc;
     char **argv = NULL;
     gboolean result;
-    
+
     cwd = roxterm_check_cwd(cwd);
     if (display_name)
     {
@@ -4566,7 +4576,7 @@ VteTerminal *roxterm_get_vte_terminal(ROXTermData *roxterm)
 static const char *get_options_leafname(Options *opts)
 {
     char *slash = strrchr(opts->name, G_DIR_SEPARATOR);
-    
+
     return slash ? slash + 1 : opts->name;
 }
 
@@ -4592,7 +4602,7 @@ void roxterm_get_nonfs_dimensions(ROXTermData *roxterm, int *cols, int *rows)
      * remember size anyway.
      */
     VteTerminal *vte = VTE_TERMINAL(roxterm->widget);
-    
+
     *cols = vte_terminal_get_column_count(vte);
     *rows = vte_terminal_get_row_count(vte);
 }
@@ -4659,7 +4669,7 @@ static void parse_open_win(_ROXTermParseContext *rctx,
     MultiWin *win;
     GtkWindow *gwin;
     Options *shortcuts;
-    
+
     rctx->fullscreen = FALSE;
     rctx->maximised = FALSE;
     rctx->zoom_factor = 1.0;
@@ -4669,7 +4679,7 @@ static void parse_open_win(_ROXTermParseContext *rctx,
     {
         const char *a = attribute_names[n];
         const char *v = attribute_values[n];
-        
+
         if (!strcmp(a, "disp"))
             rctx->disp = g_strdup(v);
         else if (!strcmp(a, "geometry"))
@@ -4719,7 +4729,7 @@ static void parse_open_win(_ROXTermParseContext *rctx,
         }
     }
     SLOG("Opening window with title %s", title);
-    
+
     shortcuts = shortcuts_open(shortcuts_name);
     rctx->win = win = multi_win_new_blank(disp, shortcuts,
             multi_win_get_nearest_index_for_zoom(rctx->zoom_factor),
@@ -4770,7 +4780,7 @@ static void close_win_tag(_ROXTermParseContext *rctx)
     else
     {
         GtkWindow *gwin = GTK_WINDOW(multi_win_get_widget(rctx->win));
-        
+
         if (rctx->fullscreen)
         {
             multi_win_set_fullscreen(rctx->win, TRUE);
@@ -4838,14 +4848,14 @@ static void parse_open_tab(_ROXTermParseContext *rctx,
     int n;
     ROXTermData *roxterm;
     Options *profile;
-    
+
     rctx->current = FALSE;
     rctx->tab_title_template_locked = FALSE;
     for (n = 0; attribute_names[n]; ++n)
     {
         const char *a = attribute_names[n];
         const char *v = attribute_values[n];
-        
+
         if (!strcmp(a, "profile"))
             profile_name = v;
         else if (!strcmp(a, "colour_scheme"))
@@ -4873,7 +4883,7 @@ static void parse_open_tab(_ROXTermParseContext *rctx,
         }
     }
     SLOG("Loading tab with icon_title %s, cwd %s", rctx->icon_title, cwd);
-    
+
     profile = dynamic_options_lookup_and_ref(roxterm_get_profiles(),
             profile_name, "roxterm profile");
     roxterm = roxterm_data_new(rctx->disp,
@@ -4892,7 +4902,7 @@ static void parse_open_tab(_ROXTermParseContext *rctx,
 static void close_tab_tag(_ROXTermParseContext *rctx)
 {
     ROXTermData *roxterm = rctx->roxterm;
-    
+
     if (rctx->commandv)
     {
         if (rctx->commandv[0])
@@ -4938,13 +4948,13 @@ static void parse_open_command(_ROXTermParseContext *rctx,
         GError **error)
 {
     int n;
-    
+
     rctx->argn = 0;
     for (n = 0; attribute_names[n]; ++n)
     {
         const char *a = attribute_names[n];
         const char *v = attribute_values[n];
-        
+
         if (!strcmp(a, "argc"))
             rctx->argc = atoi(v);
         else
@@ -4973,7 +4983,7 @@ static void parse_open_arg(_ROXTermParseContext *rctx,
 {
     int n;
     const char *arg = NULL;
-    
+
     if (rctx->argn >= rctx->argc)
     {
         *error = g_error_new(G_MARKUP_ERROR, G_MARKUP_ERROR_INVALID_CONTENT,
@@ -4985,7 +4995,7 @@ static void parse_open_arg(_ROXTermParseContext *rctx,
     {
         const char *a = attribute_names[n];
         const char *v = attribute_values[n];
-        
+
         if (!strcmp(a, "s"))
         {
             arg = v;
@@ -5015,12 +5025,12 @@ static void parse_roxterm_session_tag(_ROXTermParseContext *rctx,
         GError **error)
 {
     int n;
-    
-    
+
+
     for (n = 0; attribute_names[n]; ++n)
     {
         const char *a = attribute_names[n];
-        
+
         if (strcmp(a, "id"))
         {
             *error = g_error_new(G_MARKUP_ERROR,
@@ -5037,7 +5047,7 @@ static void parse_start_element(GMarkupParseContext *context,
         gpointer handle, GError **error)
 {
     _ROXTermParseContext *rctx = handle;
-    
+
     if (!strcmp(element_name, "roxterm_session"))
     {
         if (rctx->win)
@@ -5127,7 +5137,7 @@ static void parse_end_element(GMarkupParseContext *context,
         gpointer handle, GError **error)
 {
     _ROXTermParseContext *rctx = handle;
-    
+
     if (!strcmp(element_name, "roxterm_session"))
     {
         if (!rctx->session_tag_open)
@@ -5196,7 +5206,7 @@ static void parse_error(GMarkupParseContext *context, GError *error,
         gpointer handle)
 {
     _ROXTermParseContext *rctx = handle;
-    
+
     g_warning(_("Unable to parse data for session '%s': %s"),
             rctx->client_id, error->message);
 }
@@ -5211,7 +5221,7 @@ gboolean roxterm_load_session(const char *xml, gssize len,
             G_MARKUP_PREFIX_ERROR_POSITION, rctx, NULL);
     gboolean result;
     GError *error = NULL;
-    
+
     rctx->client_id = client_id;
     result = g_markup_parse_context_parse(pctx, xml, len, &error);
     if (!error)
@@ -5243,15 +5253,15 @@ gboolean roxterm_set_search(ROXTermData *roxterm,
 {
     GRegex *regex = NULL;
     char *cooked_pattern = NULL;
-    
+
     roxterm->search_flags = flags;
-    
+
     if (roxterm->search_pattern)
     {
         g_free(roxterm->search_pattern);
         roxterm->search_pattern = NULL;
     }
-    
+
     if (pattern && pattern[0])
     {
         roxterm->search_pattern = g_strdup(pattern);
@@ -5263,12 +5273,12 @@ gboolean roxterm_set_search(ROXTermData *roxterm,
         if (flags & ROXTERM_SEARCH_ENTIRE_WORD)
         {
             char *tmp = cooked_pattern;
-            
+
             cooked_pattern = g_strdup_printf("\\<%s\\>", pattern);
             pattern = cooked_pattern;
             g_free(tmp);
         }
-        
+
         regex = g_regex_new(pattern,
                 ((flags & ROXTERM_SEARCH_MATCH_CASE) ? 0 : G_REGEX_CASELESS) |
                         G_REGEX_OPTIMIZE,
@@ -5278,7 +5288,7 @@ gboolean roxterm_set_search(ROXTermData *roxterm,
         if (!regex)
             return FALSE;
     }
-    
+
     vte_terminal_search_set_gregex(VTE_TERMINAL(roxterm->widget), regex);
     vte_terminal_search_set_wrap_around(VTE_TERMINAL(roxterm->widget),
             flags & ROXTERM_SEARCH_WRAP);

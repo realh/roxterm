@@ -17,6 +17,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+#include "colour-compat.h"
 #include "multitab-label.h"
 
 G_DEFINE_TYPE (MultitabLabel, multitab_label, GTK_TYPE_EVENT_BOX);
@@ -30,7 +31,7 @@ multitab_label_set_property (GObject *object, guint prop,
 {
     const MultitabColor *color;
     MultitabLabel *self = MULTITAB_LABEL (object);
-    
+
     switch (prop)
     {
         case PROP_TEXT:
@@ -51,7 +52,7 @@ multitab_label_get_property (GObject *object, guint prop,
         GValue *value, GParamSpec *pspec)
 {
     MultitabLabel *self = MULTITAB_LABEL (object);
-    
+
     switch (prop)
     {
         case PROP_TEXT:
@@ -70,7 +71,7 @@ static gboolean
 multitab_label_toggle_attention (gpointer data)
 {
     MultitabLabel *self = MULTITAB_LABEL (data);
-    
+
     gtk_event_box_set_visible_window (GTK_EVENT_BOX(self),
             self->attention = !self->attention);
     return TRUE;
@@ -120,7 +121,7 @@ multitab_modify_width (MultitabLabel *self,
     if (self->single && minimum_width)
     {
         int parent_width = 0;
-        
+
         multitab_label_single_width (self, minimum_width, &parent_width);
 #if MULTITAB_LABEL_GTK3_SIZE_KLUDGE
         if (self->best_width)
@@ -148,7 +149,7 @@ multitab_label_get_preferred_width (GtkWidget *widget,
         gint *minimum_width, gint *natural_width)
 {
     MultitabLabel *self = MULTITAB_LABEL (widget);
-    
+
     GTK_WIDGET_CLASS (multitab_label_parent_class)->get_preferred_width
                     (widget, minimum_width, natural_width);
     multitab_modify_width (self, minimum_width, natural_width);
@@ -159,7 +160,7 @@ multitab_label_get_preferred_width_for_height (GtkWidget *widget,
         gint height, gint *minimum_width, gint *natural_width)
 {
     MultitabLabel *self = MULTITAB_LABEL (widget);
-    
+
     GTK_WIDGET_CLASS
             (multitab_label_parent_class)->get_preferred_width_for_height
                     (widget, height, minimum_width, natural_width);
@@ -179,7 +180,7 @@ static void
 multitab_label_size_request (GtkWidget *widget, GtkRequisition *requisition)
 {
     MultitabLabel *self = MULTITAB_LABEL (widget);
-    
+
     GTK_WIDGET_CLASS (multitab_label_parent_class)->size_request
                     (widget, requisition);
     if (self->fixed_width)
@@ -189,7 +190,7 @@ multitab_label_size_request (GtkWidget *widget, GtkRequisition *requisition)
     if (self->single && requisition)
     {
         int w;
-        
+
         multitab_label_single_width (self, &requisition->width, &w);
     }
 }
@@ -207,7 +208,7 @@ static void
 multitab_label_dispose (GObject *gobject)
 {
     MultitabLabel *self = MULTITAB_LABEL (gobject);
-    
+
     if (self->parent)
     {
         multitab_label_disconnect_parent_salloc (self, self->parent);
@@ -221,7 +222,7 @@ multitab_label_parent_size_alloc_cb (GtkWidget *parent,
         GdkRectangle *allocation, MultitabLabel *self)
 {
     int width = -1;
-    
+
     if (self->single)
         multitab_label_single_width (self, &width, NULL);
     gtk_widget_set_size_request (GTK_WIDGET (self), width, -1);
@@ -234,14 +235,14 @@ multitab_label_class_init(MultitabLabelClass *klass)
     GObjectClass *oclass = G_OBJECT_CLASS (klass);
     GtkWidgetClass *wclass = GTK_WIDGET_CLASS (klass);
     GParamSpec *pspec;
-    
+
     /* Make sure theme doesn't override our colour with a gradient or image */
 #if GTK_CHECK_VERSION(3, 0, 0)
     static const char *style =
             "* {\n"
               "background-image : none;\n"
             "}";
-    
+
     klass->style_provider = gtk_css_provider_new ();
     gtk_css_provider_load_from_data (klass->style_provider,
             style, -1, NULL);
@@ -256,18 +257,18 @@ multitab_label_class_init(MultitabLabelClass *klass)
            "style \"multitab-label-style\"");
     GTK_OBJECT_CLASS (klass)->destroy = multitab_label_destroy;
 #endif
-    
+
 #if MULTITAB_LABEL_USE_PARENT_SALLOC
     oclass->dispose = multitab_label_dispose;
 #endif
     oclass->set_property = multitab_label_set_property;
     oclass->get_property = multitab_label_get_property;
-    
+
     pspec = g_param_spec_pointer ("attention-color",
             "Attention Color", "Color to flash to draw attention",
             G_PARAM_READWRITE);
     g_object_class_install_property (oclass, PROP_ATTENTION_COLOR, pspec);
-    
+
 #if GTK_CHECK_VERSION(3, 0, 0)
     wclass->get_preferred_width = multitab_label_get_preferred_width;
     wclass->get_preferred_width_for_height =
@@ -284,7 +285,7 @@ multitab_label_init(MultitabLabel *self)
     GtkWidget *w = GTK_WIDGET(self);
     static MultitabColor amber;
     static gboolean parsed_amber = FALSE;
-    
+
     self->single = FALSE;
     self->parent = NULL;
 #if MULTITAB_LABEL_USE_PARENT_SALLOC
@@ -302,11 +303,7 @@ multitab_label_init(MultitabLabel *self)
     gtk_widget_set_name (w, "multitab-label");
     if (!parsed_amber)
     {
-#if GTK_CHECK_VERSION(3, 0, 0)
-        gdk_rgba_parse (&amber, "#ffc450");
-#else
-        gdk_color_parse ("#ffc450", &amber);
-#endif
+        COLOUR_PARSE(&amber, "#ffc450");
         parsed_amber = TRUE;
     }
     gtk_event_box_set_visible_window (GTK_EVENT_BOX (self), FALSE);
@@ -332,7 +329,7 @@ multitab_label_new (GtkWidget *parent, const char *text, int *best_width)
 {
     MultitabLabel *self = (MultitabLabel *)
             g_object_new (MULTITAB_TYPE_LABEL, NULL);
-    
+
     self->parent = parent;
 #if MULTITAB_LABEL_USE_PARENT_SALLOC
     multitab_label_connect_parent_salloc (self, parent);
@@ -397,7 +394,7 @@ multitab_label_set_attention_color (MultitabLabel *self,
         const MultitabColor *color)
 {
     GtkWidget *w = GTK_WIDGET (self);
-    
+
     self->attention_color = *color;
 #if GTK_CHECK_VERSION(3, 0, 0)
     gtk_widget_override_background_color(w, GTK_STATE_FLAG_NORMAL, color);
