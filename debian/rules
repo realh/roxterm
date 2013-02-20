@@ -5,7 +5,7 @@ CONFIGURE_GDA_PATH = /usr/share/gnome-control-center/default-apps
 CONFIGURE_GDA = --with-gnome-default-applications=$(CONFIGURE_GDA_PATH)
 CONFIGURE_LDFLAGS = LDFLAGS=-Wl,--as-needed
 CONFIGURE_DIRS = PREFIX=/usr
-CONFIGURE_TRANS = --disable-translations
+CONFIGURE_TRANS = --enable-translations
 CONFIGURE_MISC = $(CONFIGURE_DIRS) $(CONFIGURE_TRANS) --disable-git
 CONFIGURE_COMMON = $(CONFIGURE_GDA) $(CONFIGURE_LDFLAGS) $(CONFIGURE_MISC)
 MSCRIPT_OPTS = --lock-top
