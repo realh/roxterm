@@ -56,7 +56,7 @@ static gboolean optsdbus_read_args(DBusMessage *message,
     gboolean result = arg ? dbus_message_get_args(message, perror,
                 DBUS_TYPE_STRING, arg,
                 DBUS_TYPE_STRING, display,
-                DBUS_TYPE_INVALID) : 
+                DBUS_TYPE_INVALID) :
                 dbus_message_get_args(message, perror,
                 DBUS_TYPE_STRING, display,
                 DBUS_TYPE_INVALID);
@@ -88,6 +88,8 @@ static DBusHandlerResult optsdbus_method_handler(DBusConnection *connection,
     RTDBUS_ARG_CONST char *display_name = NULL;
     char RTDBUS_ARG_CONST **parg = NULL;
     GdkScreen *scrn = NULL;
+    (void) connection;
+    (void) user_data;
 
     dbus_error_init(&derror);
 
@@ -152,8 +154,8 @@ static DBusHandlerResult optsdbus_method_handler(DBusConnection *connection,
 
     if (reply)
         rtdbus_send_message(reply);
-    
-    return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;    
+
+    return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 }
 
 static DBusMessage *optsdbus_signal_new(const char *signal_name,
@@ -274,7 +276,7 @@ gboolean optsdbus_send_edit_opts_message(const char *method, const char *arg,
         const char *display_name)
 {
     DBusMessage * message;
-    
+
     if (!display_name)
         display_name = "";
     message = rtdbus_method_new(OPTSDBUS_NAME,
@@ -290,7 +292,7 @@ gboolean optsdbus_send_edit_opts_message(const char *method, const char *arg,
 
 gboolean optsdbus_init(void)
 {
-    return rtdbus_start_service(OPTSDBUS_NAME, OPTSDBUS_OBJECT_PATH, 
+    return rtdbus_start_service(OPTSDBUS_NAME, OPTSDBUS_OBJECT_PATH,
             optsdbus_method_handler, FALSE);
 }
 
@@ -307,7 +309,7 @@ static gboolean optsdbus_set_profile_callback(OptsDBusSetProfileHandler handler,
 {
     RTDBUS_ARG_CONST char *id_str = NULL;
     RTDBUS_ARG_CONST char *profile_name = NULL;
-    
+
     gboolean result = dbus_message_get_args(message, pderror,
             DBUS_TYPE_STRING, &id_str,
             DBUS_TYPE_STRING, &profile_name,
@@ -315,7 +317,7 @@ static gboolean optsdbus_set_profile_callback(OptsDBusSetProfileHandler handler,
     if (result)
     {
         void *id = NULL;
-        
+
         if (sscanf(id_str, "%p", &id) == 1)
         {
             handler(id, profile_name);
@@ -351,6 +353,9 @@ optsdbus_message_filter(DBusConnection * connection, DBusMessage * message,
     RTDBUS_ARG_CONST char *family_name = NULL;
     RTDBUS_ARG_CONST char *current_name = NULL;
     RTDBUS_ARG_CONST char *new_name = NULL;
+
+    (void) connection;
+    (void) user_data;
 
     if (dbus_message_get_type(message) != DBUS_MESSAGE_TYPE_SIGNAL ||
         strcmp(dbus_message_get_path(message), OPTSDBUS_OBJECT_PATH))

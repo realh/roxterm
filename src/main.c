@@ -58,18 +58,18 @@ static DBusMessage *create_dbus_message(int argc, char **argv,
             DBUS_TYPE_INVALID);
     if (!message)
         return NULL;
-    
+
     for (n = 0; message && n < argc; ++n)
     {
         char *arg;
         char tmp[16];
-        
+
         if (g_str_has_prefix(argv[n], "--tab"))
         {
             if (global_options_workspace == -1)
             {
                 guint32 ws;
-                
+
                 if (x11support_get_current_desktop(
                         gdk_get_default_root_window(), &ws))
                 {
@@ -104,10 +104,10 @@ static DBusMessage *create_dbus_message(int argc, char **argv,
 static int run_via_dbus(DBusMessage *message)
 {
     int result = 0;
-    
+
     if (!message)
         return -1;
-    
+
     /* New roxterm command may have been run in a different directory
      * from original instance */
     if (!result && !global_options_directory)
@@ -116,7 +116,7 @@ static int run_via_dbus(DBusMessage *message)
         const char *d = "-d";
 
         message = rtdbus_append_args(message,
-                DBUS_TYPE_STRING, RTDBUS_ARG(d), 
+                DBUS_TYPE_STRING, RTDBUS_ARG(d),
                 DBUS_TYPE_STRING, RTDBUS_ARG(cwd),
                 DBUS_TYPE_INVALID);
         if (!message)
@@ -168,12 +168,15 @@ static DBusHandlerResult new_term_listener(DBusConnection *connection,
     const char *display = NULL;
     DBusMessageIter iter;
 
+    (void) connection;
+    (void) user_data;
+
     dbus_error_init(&derror);
 
     if (!dbus_message_is_method_call(message, ROXTERM_DBUS_INTERFACE,
                 ROXTERM_DBUS_METHOD_NAME))
     {
-        return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;    
+        return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
     }
     dbus_message_iter_init(message, &iter);
     env = rtdbus_get_message_arg_string_array(&iter);
@@ -194,8 +197,8 @@ static DBusHandlerResult new_term_listener(DBusConnection *connection,
 
     g_strfreev(argv);
     g_strfreev(env);
-    
-    return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;    
+
+    return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 }
 
 gboolean listen_for_new_term(void)
@@ -217,7 +220,7 @@ static char *abs_bin(const char *filename)
 static int wait_for_child(int pipe_r)
 {
     char result;
-    
+
     if (read(pipe_r, &result, 1) != 1)
     {
         g_error(_("Parent failed to read signal from child for --fork: %s"),
@@ -323,7 +326,7 @@ int main(int argc, char **argv)
 #endif
     g_set_application_name(PACKAGE);
     preparse_ok = global_options_preparse_argv_for_execute(&argc, argv, FALSE);
-    
+
 #if ENABLE_NLS
     setlocale(LC_ALL, "");
     bindtextdomain(PACKAGE, global_options_appdir ?
@@ -336,18 +339,18 @@ int main(int argc, char **argv)
     {
         if (strlen(argv[n]) > 10 && g_str_has_prefix(argv[n], "--display="))
         {
-            display = g_strdup(argv[n]); 
+            display = g_strdup(argv[n]);
             dpy_name = display + 10;
             break;
         }
         else if (n < argc - 1 && !strcmp(argv[n], "--display"))
         {
-            display = g_strdup_printf("--display=%s", argv[n + 1]); 
+            display = g_strdup_printf("--display=%s", argv[n + 1]);
             dpy_name = display + 10;
             break;
         }
     }
-    
+
     gtk_init(&argc, &argv);
     if (!preparse_ok)
     {
@@ -355,13 +358,13 @@ int main(int argc, char **argv)
         dlg_critical(NULL, _("Missing command after -e/--execute option"));
         return 1;
     }
-    
+
     if (!display)
     {
         dpy_name = gdk_display_get_name(gdk_display_get_default());
         display = g_strdup_printf("--display=%s", dpy_name);
     }
-    
+
     /* Have to create message with args from argv before parsing them */
     dbus_ok = rtdbus_ok = rtdbus_init();
     if (dbus_ok)
@@ -378,7 +381,7 @@ int main(int argc, char **argv)
 #endif
     }
     g_free(display);
-    
+
     global_options_init(&argc, &argv, TRUE);
     global_options_apply_dark_theme();
 
@@ -387,7 +390,7 @@ int main(int argc, char **argv)
         dbus_ok = listen_for_new_term();
         /* Only TRUE if another roxterm is providing the service */
     }
-    
+
     dbus_ok = global_options_lookup_int("separate") <= 0 && dbus_ok
 #if ENABLE_SM
             && (global_options_disable_sm ||
@@ -442,9 +445,9 @@ int main(int argc, char **argv)
 
     SLOG("Entering main loop with %d windows", g_list_length(multi_win_all));
     gtk_main();
-    
+
     SLOG("Exiting normally");
-    
+
     return 0;
 }
 

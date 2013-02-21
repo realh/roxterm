@@ -190,6 +190,7 @@ void on_editable_changed(GtkEditable * editable, ProfileGUI *pg)
 
 void on_ssh_entry_activate(GtkEntry * entry, ProfileGUI * pg)
 {
+    (void) entry;
     profilegui_check_ssh_entries_for_changes(pg);
 }
 
@@ -201,6 +202,7 @@ void on_ssh_host_changed(GtkWidget * widget, ProfileGUI *pg)
 
 void on_edit_ssh_clicked(GtkWidget * widget, ProfileGUI *pg)
 {
+    (void) widget;
     capplet_inc_windows();
 
     capplet_set_text_entry(&pg->capp, "ssh_address", "localhost");
@@ -215,6 +217,7 @@ void on_edit_ssh_clicked(GtkWidget * widget, ProfileGUI *pg)
 
 void on_Profile_Editor_destroy(GtkWidget * widget, ProfileGUI * pg)
 {
+    (void) widget;
     if (pg->ignore_destroy)
     {
         return;
@@ -228,11 +231,14 @@ void on_Profile_Editor_destroy(GtkWidget * widget, ProfileGUI * pg)
 
 void on_Profile_Editor_response(GtkWidget *widget, int response, ProfileGUI *pg)
 {
+    (void) widget;
+    (void) response;
     profilegui_delete(pg);
 }
 
 void on_Profile_Editor_close(GtkWidget * widget, ProfileGUI * pg)
 {
+    (void) widget;
     profilegui_delete(pg);
 }
 
@@ -244,12 +250,16 @@ void on_font_set(GtkFontButton * fontbutton, ProfileGUI * pg)
 
 void on_entry_activate(GtkEntry * entry, ProfileGUI * pg)
 {
+    (void) entry;
     profilegui_check_entries_for_changes(pg);
 }
 
 void on_profile_notebook_switch_page(GtkNotebook * notebook, GtkWidget *page,
         guint page_num, ProfileGUI * pg)
 {
+    (void) notebook;
+    (void) page;
+    (void) page_num;
     profilegui_check_entries_for_changes(pg);
 }
 
@@ -262,11 +272,13 @@ void on_bgtype_toggled(GtkToggleButton *button, ProfileGUI *pg)
 
 void on_command_toggled(GtkToggleButton *button, ProfileGUI *pg)
 {
+    (void) button;
     profilegui_set_command_shading(pg);
 }
 
 void on_close_buttons_toggled(GtkToggleButton *button, ProfileGUI *pg)
 {
+    (void) button;
     profilegui_set_close_buttons_shading(pg);
 }
 
@@ -294,6 +306,7 @@ pg_load_preview(GtkFileChooser *chooser, GtkWidget *preview,
     int width, height;
     GdkPixbuf *pixbuf = NULL;
     GError *error = NULL;
+    (void) pg;
 
     if (filename && gdk_pixbuf_get_file_info(filename, &width, &height))
     {
@@ -426,6 +439,7 @@ void on_bgimg_chosen(GtkFileChooser *chooser, ProfileGUI *pg)
 
 void on_reset_compat_clicked(GtkButton *button, ProfileGUI *pg)
 {
+    (void) button;
     capplet_set_int(pg->capp.options, "backspace_binding",
             DEFAULT_BACKSPACE_BINDING);
     capplet_set_combo(&pg->capp, "backspace_binding",
@@ -438,6 +452,7 @@ void on_reset_compat_clicked(GtkButton *button, ProfileGUI *pg)
 
 void on_edit_colour_scheme_clicked(GtkButton *button, ProfileGUI *pg)
 {
+    (void) button;
     GtkWidget *combo = capplet_lookup_combo(pg->capp.builder, "colour_scheme");
     char *name;
 #ifdef HAVE_GTK_COMBO_BOX_TEXT_NEW
@@ -465,6 +480,7 @@ static gboolean bgimg_drag_data_received(GtkWidget *widget,
     ProfileGUI *pg = data;
     gboolean result = FALSE;
     char *filename = pg_get_dragged_in_filename(text, length);
+    (void) widget;
 
     if (gdk_pixbuf_get_file_info(filename, NULL, NULL))
     {
@@ -789,6 +805,8 @@ static gboolean page_selected(GtkTreeSelection *selection,
 {
     GtkTreeIter iter;
     int page;
+    (void) path_currently_selected;
+    (void) selection;
 
     if (!gtk_tree_model_get_iter(model, &iter, path))
         return FALSE;
@@ -806,7 +824,7 @@ static void profilegui_setup_list_store(ProfileGUI *pg)
             N_("Keyboard"), N_("Tabs")
     };
     GtkTreeIter iter;
-    int n;
+    guint n;
     GtkTreeViewColumn *column;
     GtkWidget *tvw;
     GtkTreeView *tv;

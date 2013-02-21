@@ -80,6 +80,10 @@ static const char *process_option_name(const char *name);
 static gboolean global_options_show_usage(const gchar *option_name,
         const gchar *value, gpointer data, GError **error)
 {
+    (void) error;
+    (void) data;
+    (void) value;
+    (void) option_name;
     puts("roxterm [-?|--help] [--usage] [--geometry=GEOMETRY] [--appdir=DIR]\n"
       "    [--profile=PROFILE|-p PROFILE] \n"
       "    [--colour-scheme=SCHEME|--color-scheme=SCHEME|-c SCHEME]\n"
@@ -100,12 +104,18 @@ static gboolean global_options_show_usage(const gchar *option_name,
 static gboolean global_options_swallow_execute(const gchar *option_name,
         const gchar *value, gpointer data, GError **error)
 {
+    (void) option_name;
+    (void) error;
+    (void) data;
+    (void) value;
     return TRUE;
 }
 
 static gboolean global_options_set_string(const gchar *option_name,
         const gchar *value, gpointer data, GError **error)
 {
+    (void) error;
+    (void) data;
     option_name = process_option_name(option_name);
     if (!strcmp(option_name, "colour-scheme")
         || !strcmp(option_name, "color-scheme")
@@ -124,6 +134,8 @@ static gboolean global_options_set_string(const gchar *option_name,
 static gboolean global_options_set_directory(const gchar *option_name,
         const gchar *value, gpointer data, GError **error)
 {
+    (void) data;
+    (void) option_name;
     if (g_path_is_absolute(value))
     {
         global_options_directory = g_strdup(value);
@@ -149,8 +161,11 @@ static gboolean global_options_set_directory(const gchar *option_name,
 static gboolean global_options_set_bool(const gchar *option_name,
         const gchar *value, gpointer data, GError **error)
 {
+    (void) error;
+    (void) data;
+    (void) value;
     gboolean val = TRUE;
-    
+
     option_name = process_option_name(option_name);
     if (!strcmp(option_name, "show-menubar"))
     {
@@ -168,6 +183,8 @@ static gboolean global_options_set_bool(const gchar *option_name,
 static gboolean global_options_set_double(const gchar *option_name,
         const gchar *value, gpointer data, GError **error)
 {
+    (void) error;
+    (void) data;
     option_name = process_option_name(option_name);
     options_set_double(global_options, option_name, atof(value));
     return TRUE;
@@ -176,6 +193,9 @@ static gboolean global_options_set_double(const gchar *option_name,
 static gboolean global_options_set_tab(const gchar *option_name,
         const gchar *value, gpointer data, GError **error)
 {
+    (void) error;
+    (void) data;
+    (void) option_name;
     global_options_tab = TRUE;
     if (value)
         global_options_workspace = atoi(value);
@@ -314,7 +334,7 @@ gboolean global_options_preparse_argv_for_execute(int *argc, char **argv,
 
             if (shallow_copy)
                 g_free(argv[n]);
-            
+
             global_options_commandv = g_new(char *, *argc - n);
 
             *argc = n;
@@ -357,7 +377,7 @@ static void global_options_parse_argv(int *argc, char ***argv, gboolean report)
 #if ENABLE_NLS
     int n;
     GOptionEntry *o;
-    
+
     for (n = 0; o = &global_g_options[n], o->long_name; ++n)
     {
         if (o->description)
@@ -390,7 +410,7 @@ static const char *process_option_name(const char *name)
     {
         int n;
         GOptionEntry *e;
-    
+
         for (n = 0; e = &global_g_options[n], e->long_name; ++n)
         {
             if (*name == e->short_name)
@@ -420,14 +440,14 @@ void global_options_init_bindir(const char *argv0)
         {
             /* Paranoia in case g_free() != free() */
             char *bindir = GET_CURRENT_DIR();
-            
+
             global_options_bindir = g_strdup(bindir);
             FREE_CURRENT_DIR(bindir);
         }
         else
         {
             char *full = g_find_program_in_path("roxterm-config");
-            
+
             if (full)
             {
                 global_options_bindir = g_path_get_dirname(full);
@@ -491,7 +511,7 @@ char **global_options_copy_strv(char **ps)
 void global_options_apply_dark_theme(void)
 {
     GtkSettings *gtk_settings;
-	
+
     gtk_settings = gtk_settings_get_default();
     if (g_object_class_find_property(G_OBJECT_GET_CLASS(gtk_settings),
             "gtk-application-prefer-dark-theme"))

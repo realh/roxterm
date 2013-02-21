@@ -309,6 +309,7 @@ static void colourgui_revert(ColourGUI *cg)
 
 void on_Colour_Editor_destroy(GtkWidget *widget, ColourGUI * cg)
 {
+    (void) widget;
     if (cg->ignore_destroy)
     {
         return;
@@ -322,6 +323,7 @@ void on_Colour_Editor_destroy(GtkWidget *widget, ColourGUI * cg)
 
 void on_Colour_Editor_response(GtkWidget *widget, gint response, ColourGUI * cg)
 {
+    (void) widget;
     if (response == 1)
         colourgui_revert(cg);
     else
@@ -330,6 +332,7 @@ void on_Colour_Editor_response(GtkWidget *widget, gint response, ColourGUI * cg)
 
 void on_Colour_Editor_close(GtkWidget *widget, ColourGUI * cg)
 {
+    (void) widget;
     colourgui_delete(cg);
 }
 
@@ -504,6 +507,7 @@ void on_fgbg_track_palette_toggled(GtkToggleButton *button, ColourGUI * cg)
 
 void on_use_custom_colours_toggled(GtkToggleButton *button, ColourGUI *cg)
 {
+    (void) button;
     gboolean state;
     int old_size;
     int palette_size;

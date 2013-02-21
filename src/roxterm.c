@@ -212,7 +212,7 @@ static int roxterm_match_add(ROXTermData *roxterm, VteTerminal *vte,
 static void roxterm_match_remove(ROXTermData *roxterm, VteTerminal *vte,
         int tag)
 {
-    int n;
+    guint n;
 
     vte_terminal_match_remove(vte, tag);
     for (n = 0; n < roxterm->match_map->len; ++n)
@@ -281,7 +281,7 @@ static const char *file_urls[] = {
 
 static void roxterm_add_matches(ROXTermData *roxterm, VteTerminal *vte)
 {
-    int n;
+    guint n;
 
     for (n = 0; n < G_N_ELEMENTS(full_urls); ++n)
         roxterm_match_add(roxterm, vte, full_urls[n], ROXTerm_Match_Complete);
@@ -319,7 +319,7 @@ static void roxterm_remove_file_matches(ROXTermData *roxterm, VteTerminal *vte)
 
 static ROXTerm_MatchType roxterm_get_match_type(ROXTermData *roxterm, int tag)
 {
-    int n;
+    guint n;
 
     for (n = 0; n < roxterm->match_map->len; ++n)
     {
@@ -1327,6 +1327,7 @@ static void roxterm_update_size(ROXTermData * roxterm, VteTerminal * vte)
 
 static void roxterm_update_geometry(ROXTermData * roxterm, VteTerminal * vte)
 {
+    (void) vte;
     if (multi_win_get_current_tab(roxterm_get_win(roxterm)) == roxterm->tab)
     {
         GdkGeometry geom;
@@ -1492,6 +1493,7 @@ static void roxterm_match_text_size(ROXTermData *roxterm, ROXTermData *other)
 static gboolean roxterm_about_uri_hook(GtkAboutDialog *about,
         gchar *link, gpointer data)
 {
+    (void) about;
     if (g_str_has_prefix(link, "mailto:"))
     {
         roxterm_launch_email(data, link + 7);
@@ -1569,6 +1571,8 @@ static GtkTargetList *roxterm_get_uri_drag_target_list(void)
 static void roxterm_uri_drag_ended(GtkWidget *widget,
         GdkDragContext *drag_context, ROXTermData *roxterm)
 {
+    (void) widget;
+    (void) drag_context;
     roxterm_clear_drag_url(roxterm);
 }
 
@@ -1579,6 +1583,9 @@ static void roxterm_uri_drag_data_get(GtkWidget *widget,
     const char *encoding;
     char *uri_list[2];
     char *utf8 = NULL;
+    (void) widget;
+    (void) drag_context;
+    (void) time;
 
     g_return_if_fail(roxterm->matched_url);
 
@@ -1706,6 +1713,7 @@ static gboolean roxterm_release_handler(GtkWidget *widget,
         GdkEventButton *event, ROXTermData *roxterm)
 {
     gboolean result = FALSE;
+    (void) widget;
 
     if ((event->state & GDK_CONTROL_MASK) && event->button == 1
             && roxterm->hold_over_uri && roxterm->matched_url)
@@ -1852,6 +1860,7 @@ static void roxterm_tab_selection_handler(ROXTermData * roxterm, MultiTab * tab)
     MenuTree *menu_bar = multi_win_get_menu_bar(win);
     MenuTree *popup_menu = multi_win_get_popup_menu(win);
     MenuTree *short_popup = multi_win_get_short_popup_menu(win);
+    (void) tab;
 
     roxterm->status_stock = NULL;
     check_preferences_submenu_pair(roxterm,
@@ -2175,6 +2184,8 @@ static void
 roxterm_style_change_handler(GtkWidget * widget, GtkStyle * previous_style,
     ROXTermData * roxterm)
 {
+    (void) widget;
+    (void) previous_style;
     roxterm_update_geometry(roxterm, VTE_TERMINAL(roxterm->widget));
 }
 
@@ -2182,6 +2193,9 @@ static void
 roxterm_char_size_changed(GtkSettings * settings, guint arg1, guint arg2,
     ROXTermData * roxterm)
 {
+    (void) settings;
+    (void) arg1;
+    (void) arg2;
     roxterm_update_geometry(roxterm, VTE_TERMINAL(roxterm->widget));
 }
 
@@ -2195,6 +2209,7 @@ typedef enum {
 static void roxterm_hide_menutree(GtkMenuItem *item, gpointer handle)
 {
     GtkWidget *submenu = gtk_menu_item_get_submenu(item);
+    (void) handle;
 
     if (submenu)
     {
@@ -2517,6 +2532,7 @@ static void roxterm_shortcuts_selected(GtkCheckMenuItem *mitem,
 
 static void roxterm_text_changed_handler(VteTerminal *vte, ROXTermData *roxterm)
 {
+    (void) vte;
     if (roxterm->tab != multi_win_get_current_tab(roxterm_get_win(roxterm)))
     {
         roxterm_show_status_stock(roxterm, GTK_STOCK_DIALOG_INFO);
@@ -2526,6 +2542,7 @@ static void roxterm_text_changed_handler(VteTerminal *vte, ROXTermData *roxterm)
 static void roxterm_beep_handler(VteTerminal *vte, ROXTermData *roxterm)
 {
     MultiWin *win = roxterm_get_win(roxterm);
+    (void) vte;
 
     if (roxterm->tab != multi_win_get_current_tab(win))
     {
@@ -2551,6 +2568,7 @@ static gboolean roxterm_key_press_handler(GtkWidget *widget,
 {
     Options *shortcuts = multi_win_get_shortcut_scheme(
             roxterm_get_win(roxterm));
+    (void) widget;
 
     if (!event->is_modifier &&
             shortcuts_key_is_shortcut(shortcuts, event->keyval,
@@ -2577,7 +2595,7 @@ static void roxterm_resize_window_handler(VteTerminal *vte,
         return;
     /* May already be desired size */
     gtk_widget_get_allocation(roxterm->widget, &alloc);
-    if (alloc.width == width && alloc.height == height)
+    if (alloc.width == (int) width && alloc.height == (int) height)
         return;
     /* Compute nearest grid size */
     roxterm_get_vte_padding(vte, &pad_w, &pad_h);
@@ -2783,7 +2801,7 @@ static void roxterm_connect_menu_signals(MultiWin * win)
 static void roxterm_composited_changed_handler(VteTerminal *vte,
         ROXTermData *roxterm)
 {
-    roxterm_update_background(roxterm, VTE_TERMINAL(roxterm->widget));
+    roxterm_update_background(roxterm, vte);
 }
 #endif
 
@@ -3130,6 +3148,7 @@ roxterm_drag_data_received(GtkWidget *widget,
 {
     char *sep = strstr(text, "\r\n");
     char *rejoined = NULL;
+    (void) data;
 
     if (sep)
     {
@@ -3179,6 +3198,7 @@ roxterm_drag_data_received(GtkWidget *widget,
 static gboolean roxterm_window_state_changed(GtkWidget *win,
         GdkEventWindowState *event, ROXTermData *roxterm)
 {
+    (void) win;
     roxterm->maximise =
             (event->new_window_state & GDK_WINDOW_STATE_MAXIMIZED) != 0;
     return FALSE;
@@ -4075,6 +4095,7 @@ static ROXTermData *roxterm_data_new(const char *display_name,
         char **geom, gboolean *size_on_cli, char **env)
 {
     ROXTermData *roxterm = g_new0(ROXTermData, 1);
+    (void) profile_name;
 
     roxterm->status_stock = NULL;
     roxterm->target_zoom_factor = zoom_factor;
@@ -4332,7 +4353,7 @@ static void roxterm_tab_to_new_window(MultiWin *win, MultiTab *tab,
         g_signal_handler_disconnect(old_gwin, roxterm->win_state_changed_tag);
     }
     roxterm_attach_state_changed_handler(roxterm);
-    if (!match_tab);
+    if (!match_tab)
         return;
     match_roxterm = multi_tab_get_user_data(match_tab);
     if (roxterm == match_roxterm)
@@ -4386,6 +4407,7 @@ static void dont_show_again_toggled(GtkToggleButton *button, DontShowData *d)
 
 static void only_running_toggled(GtkToggleButton *button, DontShowData *d)
 {
+    (void) d;
     options_set_int(global_options, "only_warn_running",
             gtk_toggle_button_get_active(button));
     options_file_save(global_options->kf, "Global");
@@ -5045,7 +5067,8 @@ static void parse_roxterm_session_tag(_ROXTermParseContext *rctx,
         GError **error)
 {
     int n;
-
+    (void) rctx;
+    (void) attribute_values;
 
     for (n = 0; attribute_names[n]; ++n)
     {
@@ -5067,6 +5090,7 @@ static void parse_start_element(GMarkupParseContext *context,
         gpointer handle, GError **error)
 {
     _ROXTermParseContext *rctx = handle;
+    (void) context;
 
     if (!strcmp(element_name, "roxterm_session"))
     {
@@ -5157,6 +5181,7 @@ static void parse_end_element(GMarkupParseContext *context,
         gpointer handle, GError **error)
 {
     _ROXTermParseContext *rctx = handle;
+    (void) context;
 
     if (!strcmp(element_name, "roxterm_session"))
     {
@@ -5226,6 +5251,7 @@ static void parse_error(GMarkupParseContext *context, GError *error,
         gpointer handle)
 {
     _ROXTermParseContext *rctx = handle;
+    (void) context;
 
     g_warning(_("Unable to parse data for session '%s': %s"),
             rctx->client_id, error->message);

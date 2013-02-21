@@ -70,7 +70,8 @@ char *getname_run_dialog(GtkWindow *parent, const char *old_name,
 	GtkWidget *dialog;
 	GtkWidget *name_field;
 	char *new_name = NULL;
-	
+    (void) icon;
+
 	dialog = gtk_dialog_new_with_buttons(title, parent,
 			GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
 			GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
@@ -115,7 +116,7 @@ char *getname_run_dialog(GtkWindow *parent, const char *old_name,
 						GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
 						GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE,
 						_("An item with that name already exists"));
-					
+
 				gtk_dialog_run(GTK_DIALOG(error_box));
 				gtk_widget_destroy(error_box);
 				new_name = NULL;

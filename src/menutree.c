@@ -34,7 +34,7 @@ static GtkWidget *menutree_append_new_item_with_mnemonic(
         const char *label, const char *stock, gboolean separate_label)
 {
     GtkWidget *item;
-        
+
     if (stock)
     {
         item = gtk_image_menu_item_new_from_stock(stock, NULL);
@@ -203,7 +203,7 @@ static void menutree_build_shell(MenuTree *menu_tree, GtkMenuShell * shell, ...)
         _("_Open file/directory in filer"), MENUTREE_OPEN_IN_FILER, \
         _("_Copy address to clipboard"), MENUTREE_COPY_URI, \
         _("_"), MENUTREE_URI_SEPARATOR
-        
+
 #ifdef HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX
 #define MENUTREE_SEARCH_ITEM _("_Search"), MENUTREE_SEARCH,
 #else
@@ -227,14 +227,14 @@ static void menutree_build_shell(MenuTree *menu_tree, GtkMenuShell * shell, ...)
 #define RESET_MENU_ITEMS \
         _("_Reset"), MENUTREE_EDIT_RESET, \
         _("Reset And C_lear"), MENUTREE_EDIT_RESET_AND_CLEAR
-        
+
 #define SHOW_MENU_BAR_ITEM \
         _("Show Menu_bar"), MENUTREE_VIEW_SHOW_MENUBAR
-        
+
 #define ENC_INPUT_ITEMS \
         _("C_haracter Encoding"), MENUTREE_PREFERENCES_CHARACTER_ENCODING, \
         _("_Input Methods"), MENUTREE_PREFERENCES_INPUT_METHODS
-        
+
 GtkMenu *menutree_submenu_from_id(MenuTree *mtree, MenuTreeID id)
 {
     GtkWidget *item = menutree_get_widget_for_id(mtree, id);
@@ -255,7 +255,7 @@ menutree_set_accel_path_for_submenu(MenuTree *mtree, MenuTreeID id,
 {
     GtkMenu *menu = menutree_submenu_from_id(mtree, id);
     char *accel_path;
-    
+
     if (!menu)
         return;
     accel_path = get_accel_path(mtree->shortcuts, menu_branch);
@@ -270,7 +270,7 @@ menutree_set_accel_path_for_item(MenuTree * tree, MenuTreeID id,
 {
     GtkWidget *item = tree->item_widgets[id];
     char *full_path;
-    
+
     if (!item)
         return;
     full_path = get_accel_path(tree->shortcuts, path_leaf);
@@ -312,7 +312,7 @@ void menutree_apply_shortcuts(MenuTree *tree, Options *shortcuts)
 {
     GtkMenu *submenu;
     char *accel_path;
-    
+
     tree->shortcuts = shortcuts;
     shortcuts_enable_signal_handler(FALSE);
     menutree_set_accel_path_for_submenu(tree, MENUTREE_FILE, "File");
@@ -324,7 +324,7 @@ void menutree_apply_shortcuts(MenuTree *tree, Options *shortcuts)
     menutree_set_accel_path_for_submenu(tree, MENUTREE_PREFERENCES,
             "Preferences");
     menutree_set_accel_path_for_submenu(tree, MENUTREE_HELP, "Help");
-    
+
     submenu = GTK_MENU(tree->new_win_profiles_menu);
     if (submenu)
     {
@@ -343,7 +343,7 @@ void menutree_apply_shortcuts(MenuTree *tree, Options *shortcuts)
         g_free(accel_path);
         gtk_menu_set_accel_group(submenu, tree->accel_group);
     }
-    
+
     /* Tabs have shortcuts set dynamically so set paths
      * for fixed items individually */
     submenu = menutree_submenu_from_id(tree, MENUTREE_TABS);
@@ -580,7 +580,7 @@ static void menutree_build(MenuTree *menu_tree, Options *shortcuts,
         _("_Close Window"), MENUTREE_FILE_CLOSE_WINDOW, NULL);
     gtk_menu_item_set_submenu(GTK_MENU_ITEM(menu_tree->item_widgets
             [MENUTREE_FILE]), submenu);
-    
+
     menu_tree->new_win_profiles_menu = gtk_menu_new();
     menutree_build_shell(menu_tree,
             GTK_MENU_SHELL(menu_tree->new_win_profiles_menu),
@@ -687,6 +687,7 @@ static void menutree_build(MenuTree *menu_tree, Options *shortcuts,
 static void menutree_build_short_popup(MenuTree *menu_tree, Options *shortcuts,
         GType menu_type)
 {
+    (void) menu_type;
     menu_tree->top_level = gtk_menu_new();
     menutree_build_shell(menu_tree, GTK_MENU_SHELL(menu_tree->top_level),
         URI_MENU_ITEMS,
@@ -743,7 +744,7 @@ MenuTree *menutree_new(Options *shortcuts, GtkAccelGroup *accel_group,
     gboolean disable_tab_shortcuts, gpointer user_data)
 {
     MenuTree *tree = NULL;
-    
+
     if (!filled_labels)
     {
         int n;
@@ -764,7 +765,7 @@ MenuTree *menutree_new_short_popup(Options *shortcuts,
     return menutree_new_common(shortcuts, accel_group, GTK_TYPE_MENU,
         menutree_build_short_popup, disable_shortcuts, FALSE, user_data);
 }
-    
+
 void menutree_delete(MenuTree * tree)
 {
     g_return_if_fail(tree != NULL);
@@ -834,7 +835,7 @@ static GtkWidget *menutree_tab_menu_item_new(GtkMenuShell *menu,
 GtkWidget *menutree_add_tab_at_position(MenuTree * tree, const char *title,
         int position)
 {
-    GtkMenuShell *submenu = menutree_get_submenu_at_id(tree, MENUTREE_TABS); 
+    GtkMenuShell *submenu = menutree_get_submenu_at_id(tree, MENUTREE_TABS);
     GtkWidget *menu_item = menutree_tab_menu_item_new(submenu, title);
 
     if (position == -1)
@@ -857,7 +858,7 @@ GtkWidget *menutree_add_tab_at_position(MenuTree * tree, const char *title,
 static void menu_item_change_label(GtkMenuItem *item, const char *label)
 {
     GtkWidget *inner_item = gtk_bin_get_child(GTK_BIN(item));
-    
+
     if (GTK_IS_LABEL(inner_item))
     {
         gtk_label_set_text_with_mnemonic(GTK_LABEL(inner_item), label);
@@ -865,12 +866,12 @@ static void menu_item_change_label(GtkMenuItem *item, const char *label)
     else if (GTK_IS_CONTAINER(inner_item))
     {
         GList *link;
-        
+
         for (link = gtk_container_get_children(GTK_CONTAINER(inner_item));
                 link; link = g_list_next(link))
         {
             GtkWidget *child = link->data;
-            
+
             if (GTK_IS_LABEL(child))
             {
                 gtk_label_set_text_with_mnemonic(GTK_LABEL(child), label);
@@ -890,6 +891,7 @@ inline static void menutree_change_label(MenuTree *tree, MenuTreeID id,
 GtkWidget *menutree_change_tab_title(MenuTree * tree,
     GtkWidget * menu_item, const char *title)
 {
+    (void) tree;
     menu_item_change_label(GTK_MENU_ITEM(menu_item), title);
     return menu_item;
 }
@@ -960,7 +962,7 @@ void menutree_attach_im_submenu(MenuTree *tree, GtkWidget *submenu)
             [MENUTREE_PREFERENCES_INPUT_METHODS]);
     GtkWidget *oldsub = gtk_menu_item_get_submenu(item);
     GtkMenu *smm = GTK_MENU(submenu);
-    
+
     if (oldsub == submenu)
         return;
     if (oldsub)
@@ -1010,5 +1012,5 @@ void menutree_disable_tab_shortcuts(MenuTree *tree, gboolean disable)
     tree->disable_tab_shortcuts = disable;
     menutree_apply_tab_shortcuts(tree);
 }
-    
+
 /* vi:set sw=4 ts=4 et cindent cino= */

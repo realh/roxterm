@@ -33,10 +33,14 @@ struct DragReceiveData {
     gpointer data;
 };
 
-static void drag_data_received(GtkWidget *widget, GdkDragContext *context, 
+static void drag_data_received(GtkWidget *widget, GdkDragContext *context,
         gint x, gint y, GtkSelectionData *selection_data, guint info,
         guint time, gpointer data)
 {
+    (void) context;
+    (void) y;
+    (void) time;
+    (void) x;
     DragReceiveData *drd = data;
     char *str;
     GString *gstr;
@@ -199,13 +203,13 @@ DragReceiveData *drag_receive_setup_dest_widget(GtkWidget *widget,
         /*{ (char *) "text/unicode", 0, ROXTERM_DRAG_TARGET_TEXT_UNICODE }*/
     };
     DragReceiveData *drd = g_new(DragReceiveData, 1);
-    
+
     drd->handler = handler;
     drd->tab_handler = tab_handler;
     drd->data = data;
     g_signal_connect(widget, "drag_data_received",
             G_CALLBACK(drag_data_received), drd);
-    
+
     gtk_drag_dest_set(widget,
                        GTK_DEST_DEFAULT_MOTION |
                        GTK_DEST_DEFAULT_HIGHLIGHT |

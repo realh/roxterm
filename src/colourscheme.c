@@ -110,6 +110,7 @@ static gboolean
 colour_scheme_parse(ColourScheme * scheme, COLOUR_T *colour,
         const char *colour_name)
 {
+    (void) scheme;
     if (COLOUR_PARSE(colour, colour_name))
     {
 #if HAVE_COLORMAP

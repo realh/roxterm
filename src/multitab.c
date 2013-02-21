@@ -242,7 +242,7 @@ void multi_tab_init(MultiTabFiller filler, MultiTabDestructor destructor,
 MultiTab *multi_tab_new(MultiWin * parent, gpointer user_data_template)
 {
     MultiTab *tab = g_new0(MultiTab, 1);
-    int pos;
+    guint pos;
 
     tab->parent = parent;
     tab->status_stock = NULL;
@@ -946,6 +946,7 @@ void multi_win_set_fullscreen(MultiWin *win, gboolean fullscreen)
 static gboolean multi_win_state_event_handler(GtkWidget *widget,
         GdkEventWindowState *event, MultiWin *win)
 {
+    (void) widget;
     if (event->changed_mask & GDK_WINDOW_STATE_FULLSCREEN)
     {
         win->fullscreen =
@@ -993,6 +994,8 @@ multi_win_page_switched(GtkNotebook * notebook, GtkWidget *page,
 {
     MultiTab *tab = multi_tab_get_from_widget(
             gtk_notebook_get_nth_page(GTK_NOTEBOOK(win->notebook), page_num));
+    (void) notebook;
+    (void) page;
 
     if (win->current_tab == tab)
         return;
@@ -1003,6 +1006,7 @@ static void tab_set_name_from_clipboard_callback(GtkClipboard *clp,
         const gchar *text, gpointer data)
 {
     MultiTab *tab = (MultiTab *) data;
+    (void) clp;
 
     if (text == NULL || tab == NULL)
         return;
@@ -1012,6 +1016,8 @@ static void tab_set_name_from_clipboard_callback(GtkClipboard *clp,
 static gboolean multi_win_focus_in(GtkWidget *widget, GdkEventFocus *event,
         MultiWin *win)
 {
+    (void) widget;
+    (void) event;
     multi_win_all = g_list_remove(multi_win_all, win);
     multi_win_all = g_list_prepend(multi_win_all, win);
     gtk_window_set_urgency_hint(GTK_WINDOW(win->gtkwin), FALSE);
@@ -1032,6 +1038,7 @@ static void popup_tabs_menu(MultiWin *win, GdkEventButton *event)
 static gboolean tab_clicked_handler(GtkWidget *widget,
         GdkEventButton *event, MultiTab *tab)
 {
+    (void) widget;
     if (event->type != GDK_BUTTON_PRESS)
         return FALSE;
 
@@ -1066,6 +1073,8 @@ static void page_reordered_callback(GtkNotebook *notebook, GtkWidget *child,
         guint page_num, MultiWin *win)
 {
     MultiTab *tab = multi_tab_get_from_widget(child);
+    (void) notebook;
+    (void) win;
 
     g_return_if_fail(tab);
     multi_tab_move_to_position(tab, page_num, FALSE);
@@ -1126,6 +1135,8 @@ static void page_added_callback(GtkNotebook *notebook, GtkWidget *child,
 static GtkNotebook *multi_win_notebook_creation_hook(GtkNotebook *source,
         GtkWidget *page, gint x, gint y, gpointer data)
 {
+    (void) source;
+    (void) data;
     MultiTab *tab = multi_tab_get_from_widget(page);
     MultiWin *win;
 
@@ -1169,6 +1180,7 @@ MultiWin *multi_win_new_for_tab(const char *display_name, int x, int y,
 
 static void multi_win_close_tab_clicked(GtkWidget *widget, MultiTab *tab)
 {
+    (void) widget;
     if (!multi_win_delete_handler ||
             !multi_win_delete_handler(tab->parent->gtkwin, NULL,
                     tab->user_data))
@@ -1528,10 +1540,10 @@ static void multi_win_move_tab_by_one(MultiWin *win, int dir)
     {
         if (pos < 0)
             pos = win->ntabs - 1;
-        else if (pos >= win->ntabs)
+        else if (pos >= (int) win->ntabs)
             pos = 0;
     }
-    g_return_if_fail(pos >= 0 && pos < win->ntabs);
+    g_return_if_fail(pos >= 0 && pos < (int) win->ntabs);
     multi_tab_move_to_position(tab, pos, TRUE);
 }
 
@@ -1629,7 +1641,7 @@ static void multi_win_set_show_tabs_menu_items(MultiWin *win, gboolean active)
 
 static void multi_win_show_tabs(MultiWin * win)
 {
-    if (win->tab_pos != -1)
+    if ((int) win->tab_pos != -1)
     {
         gtk_notebook_set_show_tabs(GTK_NOTEBOOK(win->notebook), TRUE);
         gtk_notebook_set_show_border(GTK_NOTEBOOK(win->notebook), TRUE);
@@ -1744,6 +1756,7 @@ static void multi_win_composited_changed(GtkWidget *widget, MultiWin *win)
 static gboolean multi_win_map_event_handler(GtkWidget *widget,
         GdkEvent *event, MultiWin *win)
 {
+    (void) event;
     if (win->clear_demands_attention)
     {
         x11support_clear_demands_attention(gtk_widget_get_window(widget));
@@ -1891,7 +1904,7 @@ MultiWin *multi_win_new_blank(const char *display_name, Options *shortcuts,
         g_object_set(notebook, "tab-vborder", 0, NULL);
     }
 #endif
-    if (tab_pos == -1)
+    if ((int) tab_pos == -1)
     {
         gtk_notebook_set_show_tabs(notebook, always_show_tabs);
         gtk_notebook_set_show_border(notebook, always_show_tabs);
@@ -2142,6 +2155,7 @@ void multi_tab_set_middle_click_tab_action(MultiTab *tab, int action)
  * the text; the return value is the top-level container. */
 static GtkWidget *make_tab_label(MultiTab *tab, GtkPositionType tab_pos)
 {
+    (void) tab_pos;
     tab->label = multitab_label_new(tab->parent->notebook, NULL,
             &tab->parent->best_tab_width);
     multi_tab_set_full_window_title(tab, tab->window_title_template,

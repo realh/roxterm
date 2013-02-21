@@ -275,6 +275,7 @@ static gboolean foreach_find_name(GtkTreeModel *model, GtkTreePath *path,
 {
     char *name = NULL;
     ConfigletList *cl = data;
+    (void) path;
 
     gtk_tree_model_get(model, iter, cfColumn_Name, &name, -1);
     if (name && cl->foreach_data && !strcmp(name, cl->foreach_data))
@@ -315,6 +316,7 @@ gboolean update_radios(GtkTreeModel *model,
         GtkTreePath *path, GtkTreeIter *iter, gpointer data)
 {
     char *name = NULL;
+    (void) path;
 
     gtk_tree_model_get(model, iter, cfColumn_Name, &name, -1);
     gtk_list_store_set(GTK_LIST_STORE(model), iter, cfColumn_Radio,
@@ -330,6 +332,7 @@ static void configlet_cell_toggled(GtkCellRendererToggle *cell,
     GtkTreeIter iter;
     char *name;
     gboolean active;
+    (void) cell;
 
     g_return_if_fail(
             gtk_tree_model_get_iter_from_string(GTK_TREE_MODEL(cl->list),
@@ -398,6 +401,7 @@ static void configlet_list_init(ConfigletList *cl, GtkWidget *widget,
 
 void on_Configlet_destroy(GtkWidget * widget, ConfigletData * cg)
 {
+    (void) widget;
     if (cg->ignore_destroy)
     {
         return;
@@ -411,11 +415,14 @@ void on_Configlet_destroy(GtkWidget * widget, ConfigletData * cg)
 
 void on_Configlet_response(GtkWidget * widget, int response, ConfigletData * cg)
 {
+    (void) response;
+    (void) widget;
     configlet_delete(cg);
 }
 
 void on_Configlet_close(GtkWidget * widget, ConfigletData * cg)
 {
+    (void) widget;
     configlet_delete(cg);
 }
 
@@ -483,14 +490,14 @@ static gboolean find_list_insert_point(ConfigletList *cl, const char *new_name,
         GtkTreeIter *iter)
 {
     GtkTreeModel *tm = GTK_TREE_MODEL(cl->list);
-    
+
     if (gtk_tree_model_get_iter_first(tm, iter))
     {
         do
         {
             char *n;
             int cmp;
-            
+
             gtk_tree_model_get(tm, iter, cfColumn_Name, &n, -1);
             cmp = dynamic_options_strcmp(new_name, n);
             g_free(n);
@@ -687,7 +694,7 @@ static void configlet_rename(ConfigletList *cl,
 static void edit_thing_by_name(ConfigletList *cl, const char *name)
 {
     GdkScreen *scrn = gtk_widget_get_screen(cl->cg->widget);
-    
+
     if (!strcmp(cl->family, "Profiles"))
     {
         profilegui_open(name, scrn);
@@ -742,11 +749,13 @@ static gboolean edit_selected_thing(ConfigletList *cl)
 
 void on_profile_edit_clicked(GtkButton *button, ConfigletData *cg)
 {
+    (void) button;
     edit_selected_thing(&cg->profile);
 }
 
 void on_colours_edit_clicked(GtkButton *button, ConfigletData *cg)
 {
+    (void) button;
     edit_selected_thing(&cg->colours);
 }
 
@@ -756,6 +765,8 @@ void on_row_activated(GtkTreeView *tvwidget, GtkTreePath *path,
     GtkTreeIter iter;
     ConfigletList *cl = g_object_get_data(G_OBJECT(tvwidget),
             "ROXTermConfigletList");
+    (void) column;
+    (void) cg;
 
     if (gtk_tree_model_get_iter(GTK_TREE_MODEL(cl->list), &iter, path))
         edit_thing_by_iter(cl, &iter);
@@ -767,6 +778,7 @@ static void on_tree_selection_changed(GtkTreeSelection *selection,
         ConfigletList *cl)
 {
     char *name = get_selected_name(cl);
+    (void) selection;
 
     if (name)
     {
@@ -824,21 +836,25 @@ static void on_copy_clicked(ConfigletList *cl)
 
 void on_profile_copy_clicked(GtkButton *button, ConfigletData *cg)
 {
+    (void) button;
     on_copy_clicked(&cg->profile);
 }
 
 void on_colours_copy_clicked(GtkButton *button, ConfigletData *cg)
 {
+    (void) button;
     on_copy_clicked(&cg->colours);
 }
 
 void on_shortcuts_copy_clicked(GtkButton *button, ConfigletData *cg)
 {
+    (void) button;
     on_copy_clicked(&cg->shortcuts);
 }
 
 void on_encodings_copy_clicked(GtkButton *button, ConfigletData *cg)
 {
+    (void) button;
     on_copy_clicked(&cg->encodings);
 }
 
@@ -904,21 +920,25 @@ static void on_delete_clicked(ConfigletList *cl)
 
 void on_profile_delete_clicked(GtkButton *button, ConfigletData *cg)
 {
+    (void) button;
     on_delete_clicked(&cg->profile);
 }
 
 void on_colours_delete_clicked(GtkButton *button, ConfigletData *cg)
 {
+    (void) button;
     on_delete_clicked(&cg->colours);
 }
 
 void on_shortcuts_delete_clicked(GtkButton *button, ConfigletData *cg)
 {
+    (void) button;
     on_delete_clicked(&cg->shortcuts);
 }
 
 void on_encodings_delete_clicked(GtkButton *button, ConfigletData *cg)
 {
+    (void) button;
     on_delete_clicked(&cg->encodings);
 }
 
@@ -968,21 +988,25 @@ void on_rename_clicked(ConfigletList *cl)
 
 void on_profile_rename_clicked(GtkButton *button, ConfigletData *cg)
 {
+    (void) button;
     on_rename_clicked(&cg->profile);
 }
 
 void on_colours_rename_clicked(GtkButton *button, ConfigletData *cg)
 {
+    (void) button;
     on_rename_clicked(&cg->colours);
 }
 
 void on_shortcuts_rename_clicked(GtkButton *button, ConfigletData *cg)
 {
+    (void) button;
     on_rename_clicked(&cg->shortcuts);
 }
 
 void on_encodings_rename_clicked(GtkButton *button, ConfigletData *cg)
 {
+    (void) button;
     on_rename_clicked(&cg->encodings);
 }
 
@@ -1009,7 +1033,7 @@ static void configlet_setup_family(ConfigletData *cg, ConfigletList *cl,
 
 gboolean configlet_open(GdkScreen *scrn)
 {
-    
+
     if (configlet_data)
     {
         if (scrn)
@@ -1047,14 +1071,14 @@ gboolean configlet_open(GdkScreen *scrn)
         cg->capp.options = options_open("Global", "roxterm options");
 
         cg->encodings.encodings = encodings_load();
-        
+
         gtk_builder_connect_signals(cg->capp.builder, cg);
 
         configlet_setup_family(cg, &cg->profile, "Profiles");
         configlet_setup_family(cg, &cg->colours, "Colours");
         configlet_setup_family(cg, &cg->shortcuts, "Shortcuts");
         configlet_setup_family(cg, &cg->encodings, "encodings");
-        
+
         capplet_set_boolean_toggle(&cg->capp, "edit_shortcuts", FALSE);
         capplet_set_radio(&cg->capp, "warn_close", 3);
         capplet_set_boolean_toggle(&cg->capp, "only_warn_running", FALSE);

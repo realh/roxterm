@@ -278,6 +278,7 @@ void menutree_remove_tab(MenuTree * tree, GtkWidget * menu_item);
 
 inline static void menutree_select_tab(MenuTree * tree, GtkWidget * menu_item)
 {
+    (void) tree;
     gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menu_item), TRUE);
 }
 

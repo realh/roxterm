@@ -48,7 +48,7 @@ static int encodings_compare(const char const **penc1,
         const char const **penc2)
 {
     return dynamic_options_strcmp(*penc1, *penc2);
-    
+
 }
 
 Encodings *encodings_load(void)
@@ -67,7 +67,7 @@ Encodings *encodings_load(void)
         {
             char *v = options_file_lookup_string_with_default(kf,
                     encodings_group_name, encodings_get_key(n), NULL);
-            
+
             g_ptr_array_add(enc, v);
         }
         g_free(filename);
@@ -84,8 +84,8 @@ Encodings *encodings_load(void)
 void encodings_save(Encodings *enc)
 {
     GKeyFile *kf = g_key_file_new();
-    int n;
-    
+    guint n;
+
     g_key_file_set_integer(kf, encodings_group_name, "n", enc->len);
     for (n = 0; n < enc->len; ++n)
     {

@@ -46,7 +46,7 @@ static char *search_get_filename(gboolean create_dir)
     char *dir = g_build_filename(g_get_user_config_dir(), ROXTERM_LEAF_DIR,
             NULL);
     char *pathname;
-    
+
     if (create_dir && !g_file_test(dir, G_FILE_TEST_IS_DIR))
     {
         if (g_mkdir_with_parents(dir, 0755))
@@ -69,12 +69,12 @@ static GtkTreeModel *search_create_model(void)
 {
     GtkListStore *store = gtk_list_store_new(1, G_TYPE_STRING);
     char *filename = search_get_filename(FALSE);
-    
+
     if (g_file_test(filename, G_FILE_TEST_IS_REGULAR))
     {
         GError *error = NULL;
         GIOChannel *ioc = g_io_channel_new_file(filename, "r", &error);
-        
+
         if (!ioc)
         {
             g_warning(_("Unable to read search history file '%s': %s"),
@@ -86,7 +86,7 @@ static GtkTreeModel *search_create_model(void)
             char *line = NULL;
             GtkTreeIter iter;
             gsize len = 0;
-            
+
             switch (g_io_channel_read_line(ioc, &line, &len, NULL, &error))
             {
                 case G_IO_STATUS_NORMAL:
@@ -129,7 +129,7 @@ static void search_save_completion(void)
     GIOChannel *ioc = g_io_channel_new_file(filename, "w", &error);
     GtkTreeIter iter;
     gboolean iterable;
-    
+
     if (!ioc)
     {
         g_warning(_("Unable to write search history file '%s': %s"),
@@ -139,12 +139,12 @@ static void search_save_completion(void)
         return;
     }
     iterable = gtk_tree_model_get_iter_first(search_data.model, &iter);
-    
+
     while (iterable)
     {
         char *pattern;
         char *line;
-        
+
         gtk_tree_model_get(search_data.model, &iter, 0, &pattern);
         line = g_strdup_printf("%s\n", pattern);
         switch (g_io_channel_write_chars(ioc, line, -1, NULL, &error))
@@ -188,16 +188,16 @@ static void search_update_completion(const char *pattern)
     GtkTreeIter iter, last;
     gboolean iterable = gtk_tree_model_get_iter_first(search_data.model, &iter);
     int index = 0;
-    
+
     while (iterable)
     {
         char *line;
-        
+
         gtk_tree_model_get(search_data.model, &iter, 0, &line, -1);
         if (!strcmp(line, pattern))
         {
             GtkTreeIter top;
-            
+
             g_free(line);
             if (!index)
             {
@@ -227,12 +227,15 @@ static void search_update_completion(const char *pattern)
 
 static void search_destroy_cb(GtkWidget *widget, void *handle)
 {
+    (void) handle;
+    (void) widget;
     search_data.vte = NULL;
     search_dialog = NULL;
 }
 
 static void search_vte_destroyed_cb(VteTerminal *widget, void *handle)
 {
+    (void) handle;
     if (search_data.vte == widget)
     {
         search_data.vte = NULL;
@@ -244,7 +247,9 @@ static void search_vte_destroyed_cb(VteTerminal *widget, void *handle)
 static void search_response_cb(GtkWidget *widget,
         guint response, void *handle)
 {
-    if (response == GTK_RESPONSE_ACCEPT)
+    (void) handle;
+    (void) widget;
+    if (response == (guint) GTK_RESPONSE_ACCEPT)
     {
         GError *error = NULL;
         const char *pattern = gtk_entry_get_text(search_data.entry);
@@ -257,11 +262,11 @@ static void search_response_cb(GtkWidget *widget,
                         ROXTERM_SEARCH_AS_REGEX : 0) |
                 (gtk_toggle_button_get_active(search_data.entire_word) ?
                         ROXTERM_SEARCH_ENTIRE_WORD : 0) |
-                (backwards ? 
+                (backwards ?
                         ROXTERM_SEARCH_BACKWARDS : 0) |
                 (gtk_toggle_button_get_active(search_data.wrap) ?
                         ROXTERM_SEARCH_WRAP : 0);
-        
+
         if (pattern && pattern[0])
             search_update_completion(pattern);
         if (roxterm_set_search(search_data.roxterm, pattern, flags, &error))
@@ -290,20 +295,20 @@ void search_open_dialog(ROXTermData *roxterm)
 {
     const char *pattern = roxterm_get_search_pattern(roxterm);
     guint flags = roxterm_get_search_flags(roxterm);
-    
+
     search_data.roxterm = roxterm;
     search_data.win = roxterm_get_multi_win(roxterm);
     search_data.vte = roxterm_get_vte(roxterm);
     g_signal_connect(search_data.vte, "destroy",
             G_CALLBACK(search_vte_destroyed_cb), NULL);
-    
+
     if (!search_dialog)
     {
         GtkWidget *vbox;
         GtkWidget *hbox;
         GtkWidget *w = gtk_label_new_with_mnemonic(_("_Search for:"));
         GtkWidget *entry = gtk_entry_new();
-        
+
         search_dialog = gtk_dialog_new_with_buttons(_("Find"),
                 GTK_WINDOW(multi_win_get_widget(search_data.win)),
                 GTK_DIALOG_DESTROY_WITH_PARENT,
@@ -312,7 +317,7 @@ void search_open_dialog(ROXTermData *roxterm)
                 NULL);
         gtk_dialog_set_default_response(GTK_DIALOG(search_dialog),
                 GTK_RESPONSE_ACCEPT);
-                 
+
         vbox = gtk_dialog_get_content_area(GTK_DIALOG(search_dialog));
 
         search_data.entry = GTK_ENTRY(entry);
@@ -333,47 +338,47 @@ void search_open_dialog(ROXTermData *roxterm)
         box_compat_packh(hbox, w, FALSE, DLG_SPACING);
         box_compat_packh(hbox, entry, TRUE, DLG_SPACING);
         box_compat_packv(vbox, hbox, FALSE, DLG_SPACING);
-        
+
         w = gtk_check_button_new_with_mnemonic(_("Match _Case"));
         gtk_widget_set_tooltip_text(w,
                 _("Whether the search is case sensitive"));
         search_data.match_case = GTK_TOGGLE_BUTTON(w);
         box_compat_packv(vbox, w, FALSE, DLG_SPACING);
-        
+
         w = gtk_check_button_new_with_mnemonic(_("Match _Entire Word"));
         gtk_widget_set_tooltip_text(w, _("If set the pattern will only match "
                 "when it forms a word on its own."));
         search_data.entire_word = GTK_TOGGLE_BUTTON(w);
         box_compat_packv(vbox, w, FALSE, DLG_SPACING);
-        
+
         w = gtk_check_button_new_with_mnemonic(
                 _("Match As _Regular Expression"));
         gtk_widget_set_tooltip_text(w, _("If set the pattern is a "
                 "perl-compatible regular expression."));
         search_data.as_regex = GTK_TOGGLE_BUTTON(w);
         box_compat_packv(vbox, w, FALSE, DLG_SPACING);
-        
+
         w = gtk_check_button_new_with_mnemonic(_("Search _Backwards"));
         gtk_widget_set_tooltip_text(w, _("Whether to search backwards when "
                 "the Find button is clicked. This does not affect the "
                 "Find Next and Find Previous menu items."));
         search_data.backwards = GTK_TOGGLE_BUTTON(w);
         box_compat_packv(vbox, w, FALSE, DLG_SPACING);
-        
+
         w = gtk_check_button_new_with_mnemonic(_("_Wrap Around"));
         gtk_widget_set_tooltip_text(w, _("Whether to wrap the search to the "
                 "opposite end of the buffer when the beginning or end is "
                 "reached."));
         search_data.wrap = GTK_TOGGLE_BUTTON(w);
         box_compat_packv(vbox, w, FALSE, DLG_SPACING);
-        
+
         g_signal_connect(search_dialog, "response",
                 G_CALLBACK(search_response_cb), NULL);
         g_signal_connect(search_dialog, "destroy",
                 G_CALLBACK(search_destroy_cb), NULL);
-        
+
     }
-    
+
     if (pattern)
     {
         gtk_entry_set_text(search_data.entry, pattern);
@@ -395,7 +400,7 @@ void search_open_dialog(ROXTermData *roxterm)
             flags & ROXTERM_SEARCH_BACKWARDS);
     gtk_toggle_button_set_active(search_data.wrap,
             flags & ROXTERM_SEARCH_WRAP);
-    
+
     if (gtk_widget_get_visible(search_dialog))
     {
         gtk_window_present(GTK_WINDOW(search_dialog));
