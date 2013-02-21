@@ -1086,48 +1086,49 @@ static void page_added_callback(GtkNotebook *notebook, GtkWidget *child,
     MultiTab *tab = multi_tab_get_from_widget(child);
     gboolean old_win_destroyed;
     MultiWin *old_win = tab->parent;
+    gboolean vert_tabs;
 
     g_return_if_fail(tab);
-    if (!win->ignore_tabs_moving)
+    if (win->ignore_tabs_moving)
+        return;
+    if (tab->parent == win)
     {
-        if (tab->parent == win)
+        /* Dragged in from same window so do nothing */
+        return;
+    }
+    vert_tabs = win->tab_pos == GTK_POS_LEFT || win->tab_pos == GTK_POS_RIGHT;
+    if (tab->parent)
+    {
+        old_win_destroyed = multi_tab_remove_from_parent(tab, TRUE);
+    }
+    else
+    {
+        old_win_destroyed = TRUE;
+        g_warning("Page added had no previous parent");
+    }
+    multi_win_add_tab(win, tab, page_num, TRUE);
+    multi_tab_to_new_window_handler(win, tab,
+            old_win_destroyed ? NULL : old_win);
+    if (vert_tabs)
+    {
+        multi_tab_pack_for_horizontal(tab, GTK_CONTAINER(notebook));
+    }
+    else
+    {
+        if (win->ntabs == 1)
         {
-            /* Dragged in from same window so do nothing */
-            return;
+            multi_win_pack_for_single_tab(win);
+            gtk_widget_queue_resize(win->notebook);
+            /* multi_tab_set_single_size(tab); */
+            multi_win_show(win);
         }
-        if (tab->parent)
+        else if (win->ntabs == 2)
         {
-            old_win_destroyed = multi_tab_remove_from_parent(tab, TRUE);
+            multi_win_pack_for_multiple_tabs(win);
         }
         else
         {
-            old_win_destroyed = TRUE;
-            g_warning("Page added had no previous parent");
-        }
-        multi_win_add_tab(win, tab, page_num, TRUE);
-        multi_tab_to_new_window_handler(win, tab,
-                old_win_destroyed ? NULL : old_win);
-        if (win->tab_pos == GTK_POS_LEFT || win->tab_pos == GTK_POS_RIGHT)
-        {
-            multi_tab_pack_for_horizontal(tab, GTK_CONTAINER(notebook));
-        }
-        else
-        {
-            if (win->ntabs == 1)
-            {
-                multi_win_pack_for_single_tab(win);
-                gtk_widget_queue_resize(win->notebook);
-                /* multi_tab_set_single_size(tab); */
-                multi_win_show(win);
-            }
-            else if (win->ntabs == 2)
-            {
-                multi_win_pack_for_multiple_tabs(win);
-            }
-            else
-            {
-                multi_tab_pack_for_multiple(tab, GTK_CONTAINER(notebook));
-            }
+            multi_tab_pack_for_multiple(tab, GTK_CONTAINER(notebook));
         }
     }
 }

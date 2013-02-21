@@ -222,6 +222,8 @@ multitab_label_parent_size_alloc_cb (GtkWidget *parent,
         GdkRectangle *allocation, MultitabLabel *self)
 {
     int width = -1;
+    (void) parent;
+    (void) allocation;
 
     if (self->single)
         multitab_label_single_width (self, &width, NULL);

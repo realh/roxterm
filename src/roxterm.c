@@ -1508,12 +1508,14 @@ static gboolean roxterm_about_uri_hook(GtkAboutDialog *about,
 static void roxterm_about_www_hook(GtkAboutDialog *about,
         const gchar *link, gpointer data)
 {
+    (void) about;
     roxterm_launch_browser(data, link);
 }
 
 static void roxterm_about_email_hook(GtkAboutDialog *about,
         const gchar *link, gpointer data)
 {
+    (void) about;
     roxterm_launch_email(data, link);
 }
 #endif
