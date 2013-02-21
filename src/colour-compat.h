@@ -44,13 +44,13 @@
 
 #define COLOUR_T GdkColor
 #define COLOUR_EQUAL gdk_color_equal
-#define COLOUR_PARSE gdk_color_parse
+#define COLOUR_PARSE(c, s) gdk_color_parse(s, c)
 #define COLOUR_BUTTON_SET(w, c) \
         gtk_color_button_set_color(GTK_COLOR_BUTTON(w), c)
 #define COLOUR_BUTTON_GET(w, p) \
         gtk_color_button_get_color(GTK_COLOR_BUTTON(w), p)
 #define COLOUR_SET_VTE(f) vte_terminal_set_color##f
-#define COLOUR_SPRINTF(s, c) sprintf(c, "#%04hx%04hx%04hx", \
+#define COLOUR_SPRINTF(s, c) sprintf(s, "#%04hx%04hx%04hx", \
         c->red, c->green, c->blue)
 
 #endif /* GTK_CHECK_VERSION */

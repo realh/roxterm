@@ -11,7 +11,7 @@
     <signal name="close" handler="on_Configlet_close" swapped="no"/>
     <signal name="response" handler="on_Configlet_response" swapped="no"/>
     <child internal-child="vbox">
-      <object class="GtkBox" id="dialog-vbox3">
+      <object class="GtkVBox" id="dialog-vbox3">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <child>
@@ -1427,7 +1427,7 @@
     <signal name="close" handler="on_Colour_Editor_close" swapped="no"/>
     <signal name="response" handler="on_Colour_Editor_response" swapped="no"/>
     <child internal-child="vbox">
-      <object class="GtkBox" id="dialog-vbox5">
+      <object class="GtkVBox" id="dialog-vbox5">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <child internal-child="action_area">
@@ -2139,7 +2139,7 @@
     <signal name="close" handler="on_Profile_Editor_close" swapped="no"/>
     <signal name="response" handler="on_Profile_Editor_response" swapped="no"/>
     <child internal-child="vbox">
-      <object class="GtkBox" id="dialog-vbox2">
+      <object class="GtkVBox" id="dialog-vbox2">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <child internal-child="action_area">
@@ -5385,7 +5385,7 @@
     <property name="type_hint">dialog</property>
     <property name="transient_for">Profile_Editor</property>
     <child internal-child="vbox">
-      <object class="GtkBox" id="dialog-vbox4">
+      <object class="GtkVBox" id="dialog-vbox4">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="spacing">2</property>
