@@ -24,6 +24,7 @@
 #include <string.h>
 
 #include "capplet.h"
+#include "colourgui.h"
 #include "configlet.h"
 #include "dlg.h"
 #include "dragrcv.h"
@@ -435,6 +436,18 @@ void on_reset_compat_clicked(GtkButton *button, ProfileGUI *pg)
             DEFAULT_DELETE_BINDING);
 }
 
+void on_edit_colour_scheme_clicked(GtkButton *button, ProfileGUI *pg)
+{
+    GtkWidget *combo = capplet_lookup_combo(pg->capp.builder, "colour_scheme");
+    char *name;
+#ifdef HAVE_GTK_COMBO_BOX_TEXT_NEW
+    name = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(combo));
+#else
+    name = gtk_combo_box_get_active_text(GTK_COMBO_BOX(combo));
+#endif
+    colourgui_open(name, gtk_widget_get_screen(combo));
+}
+
 static char *pg_get_dragged_in_filename(const char *text, gulong length)
 {
     char *first_file = first_file = strstr(text, "\r\n");
@@ -556,7 +569,12 @@ static void on_colour_scheme_combo_changed(GtkComboBox *combo,
 
     if (capplet_ignore_changes)
         return;
-    if (gtk_combo_box_get_active(combo) == 0)
+
+    gboolean unset = gtk_combo_box_get_active(combo) == 0;
+    gtk_widget_set_sensitive(
+            GTK_WIDGET(gtk_builder_get_object(capp->builder,
+                    "edit_colour_scheme")), !unset);
+    if (unset)
     {
         value = NULL;
     }
@@ -654,6 +672,9 @@ static void profilegui_set_colour_scheme_combo(CappletData *capp)
             profilegui_add_combo_item(combo, value);
     }
     gtk_combo_box_set_active(GTK_COMBO_BOX(combo), active);
+    gtk_widget_set_sensitive(
+            GTK_WIDGET(gtk_builder_get_object(capp->builder,
+                    "edit_colour_scheme")), active != 0);
     g_free(value);
 }
 
