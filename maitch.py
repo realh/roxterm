@@ -55,16 +55,16 @@ def dprint(*args, **kwargs):
 
 try:
     from lockfile import FileLock
-    
+
     class FLock(FileLock):
         def __init__(self, *args, **kwargs):
             self.maitch_locked = False
             FileLock.__init__(self, *args, **kwargs)
-        
+
         def acquire(self, timeout = None):
             FileLock.acquire(self, timeout)
             self.maitch_locked = True
-        
+
         def release(self):
             if self.maitch_locked:
                 try:
@@ -72,7 +72,7 @@ try:
                 except:
                     mprint("Lock was already released")
                 self.maitch_locked = False
-            
+
 except:
     _nolock = True
 else:
@@ -126,11 +126,11 @@ NOVAR_SKIP = 2      # Leave ${} construct untouched
 
 class Context(object):
     " The fundamental build context. "
-    
+
     def __init__(self, **kwargs):
         """
         All kwargs are added to context's env. They may include:
-        
+
         PACKAGE = package name (compulsory).
         BUILD_DIR = where to output all generated files, defaults to
                 "${MSCRIPT_REAL_DIR}/build". ${BUILD_DIR} is used as the cwd for
@@ -140,17 +140,17 @@ class Context(object):
         SRC_DIR = top level of source directory, defaults to ${TOP_DIR}.
                 Otherwise it should be specified relative to TOP_DIR to make
                 sure dist stage works correctly.
-        
+
         Special env variables. These are expanded in all modes, not just
         configure. They are not saved in the env file.
-        
+
         MSCRIPT_DIR: The directory containing the executable script running
                 the build (sys.argv[0]). Symlinks are not followed.
         MSCRIPT_REAL_DIR: MSCRIPT_DIR with symlinks followed.
-        
-        
+
+
         Useful attributes:
-        
+
         env: context's variables
         mode: mode of build, one of "configure", "build", "install" or "dist";
                 taken from sys.argv[1]
@@ -158,22 +158,22 @@ class Context(object):
                 in mind that these are expanded before you have a chance to add
                 any vars to env after constructing the ctx:- they may refer to
                 each other (non-recursively) but to no other variables.
-        
+
         Notes:
-        
+
         All "nodes" (sources, targets etc) are expressed as strings.
         See process_nodes() for how they are accepted as arguments.
         """
         self.lock = threading.RLock()
         self.tmpfile_index = 0
-        
+
         # Make sure a package name was specified
         self.package_name = kwargs['PACKAGE']
-        
+
         self.created_by_config = {}
         self.installed = []
         self.tar_contents = []
-        
+
         # Check mode
         if len(sys.argv) < 2:
             self.mode = 'help'
@@ -204,7 +204,7 @@ export MAITCHFLAGS="CFLAGS=$CFLAGS;LDFLAGS=$LDFLAGS"
 
 Note that multiple variables are separated by semicolons and you should not use
 quoting within the MAITCHFLAGS string.
- 
+
 The most pivotal variable is BUILD_DIR which is the working directory and where
 built files are saved. It will be created if necessary. If not specified it
 defaults to a directory "build" in the same directory as %s
@@ -232,33 +232,33 @@ Other predefined variables [default values shown in squarer brackets]:
                         80, 8, 0)
             self.showed_var_header = False
             return
-        
+
         self.env = {}
-        
+
         # From now on reconfigure is the same as configure
         if self.mode == 'reconfigure':
             self.mode = 'configure'
-        
+
         # Process MAITCHFLAGS first because it's lowest priority and
         # subsequent processing will overwrite it
         mf = os.environ.get('MAITCHFLAGS')
         if mf:
             self.__process_args(mf.split(';'))
-        
+
         # Get more env vars from kwargs
         for k, v in kwargs.items():
             self.env[k] = v
-        
+
         self.explicit_rules = {}
-        
+
         self.cli_targets = []
-        
+
         # Process command-line args
         if len(sys.argv) > 2:
             cli_env = self.__process_args(sys.argv[2:])
         else:
             cli_env = {}
-        
+
         # Everything hinges on BUILD_DIR
         self.get_build_dir()
         self.build_dir = os.path.abspath(self.subst(self.env['BUILD_DIR']))
@@ -273,7 +273,7 @@ Other predefined variables [default values shown in squarer brackets]:
             mprint('make[0]: Entering directory "%s"' % \
                     self.build_dir)
         os.chdir(self.build_dir)
-        
+
         # Get lock on BUILD_DIR
         if not self.env.get('NO_LOCK'):
             global _nolock
@@ -291,8 +291,8 @@ Other predefined variables [default values shown in squarer brackets]:
             atexit.register(lambda x: x.release(), self.lock_file)
         else:
             mprint("Warning: Locking disabled. This is not recommended.")
-        
-        # If not in configure mode load a previous saved env. 
+
+        # If not in configure mode load a previous saved env.
         if self.mode != 'configure':
             n = self.env_file_name()
             if os.path.exists(n):
@@ -313,7 +313,7 @@ Other predefined variables [default values shown in squarer brackets]:
                             v = int(v)
                         self.env[k] = v
                 fp.close()
-        
+
         # Set defaults
         for v in _var_repository:
             if not self.env.get(v[0]):
@@ -322,16 +322,16 @@ Other predefined variables [default values shown in squarer brackets]:
                 else:
                     d = v[1]
                 self.env[v[0]] = d
-        
+
         self.top_dir = self.subst(self.env['TOP_DIR'])
         self.src_dir = self.subst(self.env['SRC_DIR'])
         self.check_build_dir()
         self.dest_dir = self.subst(self.env['DESTDIR'])
-        
+
         self.definitions = {}
-        
+
         self.created_by_config[opj(self.build_dir, ".maitch")] = True
-        
+
         # In dist mode everything is relative to TOP_DIR
         if self.mode == "dist":
             self.env['TOP_DIR'] = os.curdir
@@ -340,11 +340,11 @@ Other predefined variables [default values shown in squarer brackets]:
             td = os.path.abspath(self.top_dir)
             mprint('make[0]: Entering directory "%s"' % td)
             os.chdir(td)
-        
+
         if self.env.get('ENABLE_DEBUG'):
             global _debug
             _debug = True
-    
+
 
     def __process_args(self, args):
         cli_env = {}
@@ -363,8 +363,8 @@ Other predefined variables [default values shown in squarer brackets]:
             self.env[k] = v
             cli_env[k] = v
         return cli_env
-    
-    
+
+
     def define(self, key, value):
         """ Define a variable to be used in the build. At the moment the only
         supported method is to output a C header ${BUILD_DIR}/config.h at the
@@ -376,13 +376,13 @@ Other predefined variables [default values shown in squarer brackets]:
         #undef key
         being written instead. """
         self.definitions[key] = value
-    
-    
+
+
     def define_from_var(self, key, default = None):
         """ Calls self.define() with env variable's value. """
         self.define(key, self.env.get(key, default))
-    
-    
+
+
     def __arg(self, help_name, help_body, var, antivar, default):
         if self.mode == 'help':
             if not self.showed_var_header:
@@ -397,8 +397,8 @@ Other predefined variables [default values shown in squarer brackets]:
                 if callable(default):
                     default = default(self, var)
                 self.setenv(var, default)
-    
-    
+
+
     def arg_enable(self, name, help, var = None, default = False):
         """ Similar to autoconf's AC_ARG_ENABLE. Adds a variable which may
         be enabled/disabled on the configure command line with --enable-name
@@ -425,21 +425,21 @@ Other predefined variables [default values shown in squarer brackets]:
             var = 'ENABLE_' + s_to_var(name)
         self.__arg("--disable-%s" % name, help, var,
                 'DISABLE' + var[6:], default)
-    
-    
+
+
     def arg_with(self, name, help, var = None, default = False):
         """ Like arg_enable but uses --with-name=... and --without-name=... """
         if not var:
             var = 'WITH_' + s_to_var(name)
         self.__arg("--with-%s=VALUE" % name, help, var,
                 'WITHOUT' + var[4:], default)
-    
-    
+
+
     def save_if_different(self, filename, content):
         " Like global version but runs self.subst() on filename and content. "
         save_if_different(self.subst(filename), self.subst(content))
-    
-    
+
+
     def output_config_h(self):
         sentinel = "%s__CONFIG_H" % self.package_name.upper()
         keys = self.definitions.keys()
@@ -466,13 +466,13 @@ Other predefined variables [default values shown in squarer brackets]:
         filename = opj(self.build_dir, "config.h")
         self.save_if_different(filename, s)
         self.created_by_config[filename] = True
-        
-    
+
+
     @staticmethod
     def var_is_special(k):
         return k == "MSCRIPT_DIR" or k == "MSCRIPT_REAL_DIR"
-        
-    
+
+
     def check_build_dir(self):
         clash = None
         if self.top_dir == self.build_dir or self.top_dir == ".":
@@ -484,8 +484,8 @@ Other predefined variables [default values shown in squarer brackets]:
                     file = sys.stderr)
             return False
         return True
-    
-    
+
+
     def tmpname(self):
         """ Returns the name of a temporary file in ${BUILD_DIR}/.maitch
         which is unique for this context. """
@@ -493,8 +493,8 @@ Other predefined variables [default values shown in squarer brackets]:
             self.tmpfile_index += 1
             i = self.tmpfile_index
         return opj(self.build_dir, ".maitch", "tmp%03d" % i)
-        
-    
+
+
     def get_build_dir(self, kwargs = None):
         """ Sets env's TOP_DIR and SRC_DIR, looking in kwargs or self.env,
         setting defaults if necessary. """
@@ -517,24 +517,24 @@ Other predefined variables [default values shown in squarer brackets]:
         if not sd:
             sd = "${TOP_DIR}"
         self.env['SRC_DIR'] = sd
-    
+
 
     def env_file_name(self):
-        """ Returns the filename of where env is saved, ensuring its 
+        """ Returns the filename of where env is saved, ensuring its
         directory exists. """
         n = self.make_out_path(".maitch", "env")
         self.ensure_out_dir_for_file(n)
         return n
-        
-    
+
+
     def get_lock_file_name(self):
         if self.env.get("LOCK_TOP"):
             return os.path.abspath(opj(self.subst("${TOP_DIR}"), ".maitchlock"))
         else:
             return os.path.abspath(opj(self.subst("${BUILD_DIR}"),
                     ".maitch", "lock"))
-    
-    
+
+
     def release_lock(self, lock, lockname):
         try:
             lock.release()
@@ -547,14 +547,14 @@ Other predefined variables [default values shown in squarer brackets]:
                 recursively_remove(lockname, False, [])
         except:
             pass
-        
-    
+
+
     def add_rule(self, rule):
         " Adds an explicit rule. "
         for t in rule.targets:
             self.explicit_rules[self.subst(t)] = rule
         rule.ctx = self
-        
+
 
     def glob(self, pattern, dir = None, subdir = None, expand = None):
         """ Returns a list of matching filenames relative to dir (default
@@ -579,13 +579,13 @@ Other predefined variables [default values shown in squarer brackets]:
             for i in range(len(matches)):
                 matches[i] = opj(dir, matches[i])
         return matches
-    
-    
+
+
     def glob_src(self, pattern, subdir = None, expand = None):
         " Performs glob on src_dir. "
         return self.glob(pattern, self.src_dir, subdir, expand)
-    
-    
+
+
     def glob_all(self, pattern, subdir = None, expand = None):
         """ Performs glob on both build_dir/src_dir. No pathname component
         is added other than subdir. """
@@ -594,8 +594,8 @@ Other predefined variables [default values shown in squarer brackets]:
             if not n in matches:
                 matches.append(n)
         return matches
-        
-    
+
+
     def run(self):
         " Run whichever stage of the build was specified on CLI. "
         if self.mode == 'configure':
@@ -632,8 +632,8 @@ Other predefined variables [default values shown in squarer brackets]:
             self.make_tarball()
         elif self.mode == 'uninstall':
             self.uninstall()
-    
-    
+
+
     def make_tarball(self):
         import tarfile
         basedir = self.subst("${PACKAGE}-${VERSION}")
@@ -652,15 +652,15 @@ Other predefined variables [default values shown in squarer brackets]:
             mprint("Adding '%s' to tarball" % dest)
             tar.add(self.subst(f), **kwargs)
         tar.close()
-    
-    
+
+
     def add_dist(self, objects, **kwargs):
         if isinstance(objects, basestring):
             objects = objects.split()
         for o in objects:
             self.tar_contents.append([o, kwargs])
-    
-    
+
+
     def clean(self, fatal, pristine = False):
         if pristine:
             # Release lock prematurely because we're about to delete it!
@@ -672,8 +672,8 @@ Other predefined variables [default values shown in squarer brackets]:
             return
         recursively_remove(self.build_dir, fatal, keep)
         recursively_remove(opj(self.build_dir, ".maitch", "deps"), fatal, [])
-                
-    
+
+
     def ensure_out_dir(self, *args):
         """ Esnures the named directory exists. args is a single string or list
         of strings. Single string may be absolute in which case it isn't
@@ -691,8 +691,8 @@ Other predefined variables [default values shown in squarer brackets]:
         """ As above but uses a single string only and acts on its
         parent directory. """
         self.ensure_out_dir(os.path.dirname(path))
-    
-    
+
+
     def make_out_path(self, *args):
         """ Creates an absolute filename from BUILD_DIR and args (single
         string or list). """
@@ -700,8 +700,8 @@ Other predefined variables [default values shown in squarer brackets]:
             args = (args)
         args = (self.build_dir,) + args
         return self.subst(opj(*args))
-    
-    
+
+
     def find_prog(self, prog, expand = False):
         " Finds a binary in context's PATH. prog not expanded by default. "
         mprint("Searching for program %s... " % prog, end = '')
@@ -714,8 +714,8 @@ Other predefined variables [default values shown in squarer brackets]:
             mprint("not found")
             raise
         return p
-    
-    
+
+
     def find_prog_env(self, prog, var = None, expand = False):
         """ Finds a program and sets an env var to its full path. If the var
         is not specified a capitalised (etc) transform of the program name
@@ -723,8 +723,8 @@ Other predefined variables [default values shown in squarer brackets]:
         if not var:
             var = s_to_var(prog)
         self.env[var] = self.find_prog(prog, expand)
-    
-    
+
+
     def prog_output(self, prog, use_shell = False):
         """ Runs a program and returns its [stdout, stderr]. prog should be a
         list or single string (former will not be split at spaces). Each
@@ -743,16 +743,16 @@ Other predefined variables [default values shown in squarer brackets]:
             raise MaitchChildError("%s failed:\n%d:\n%s" % \
                     (' '.join(prog), proc.returncode, result[1].strip()))
         return result
-    
-    
+
+
     def prog_to_var(self, prog, var, use_shell = False):
         " As prog_output(), storing stripped result into self.env[var]. "
         output = self.prog_output(prog, use_shell)[0].strip()
         dprint("prog_to_var: input: %s" % ' '.join(prog))
         dprint("prog_to_var: output: %s" % output)
         self.env[var] = output
-    
-    
+
+
     def pkg_config(self, pkgs, prefix = None, version = None,
             pkg_config = "${PKG_CONFIG}"):
         """ Runs pkg-config (or optionally a similar tool) and sets
@@ -796,13 +796,13 @@ Other predefined variables [default values shown in squarer brackets]:
             raise
         else:
             mprint("ok")
-    
-    
+
+
     def subst(self, s, novar = NOVAR_FATAL, recurse = True, at = False):
         " Runs global subst() using self.env. "
         return subst(self.env, s, novar, recurse, at)
-    
-    
+
+
     def deps_from_cpp(self, sources, cppflags = None):
         """ Runs "${CDEP} sources" and returns its dependencies
         (one file per line). filename should be absolute. If cppflags is
@@ -817,8 +817,8 @@ Other predefined variables [default values shown in squarer brackets]:
         deps = self.prog_output(prog)[0]
         deps = deps.split(':', 1)[1].replace('\\', '').split()
         return deps
-    
-    
+
+
     def find_sys_header(self, header, cflags = None):
         """ Uses deps_from_cpp() to find the full path of a header in the
         include path. Returns None if not found. """
@@ -835,8 +835,8 @@ Other predefined variables [default values shown in squarer brackets]:
                 return d
         mprint("not found")
         return None
-    
-    
+
+
     def check_compile(self, code, msg = None, cflags = None, libs = None):
         """ Checks whether the program code can be compiled as C, returns
         True or False. If msg is given prints "Checking msg... ". """
@@ -908,8 +908,8 @@ int main() { %s(); return 0; }
         self.define(nm, present)
         self.setenv(nm, present == 1)
         return present == 1
-    
-    
+
+
     def find_source(self, name, where = SRC, fatal = True):
         """ Finds a source file relative to BUILD_DIR (higher priority) or
         SRC_DIR, returning full path or raising exception if not found. Returns
@@ -938,23 +938,23 @@ int main() { %s(); return 0; }
             self.not_found(name)
         else:
             return name
-    
-    
+
+
     @staticmethod
     def not_found(name):
         raise MaitchNotFoundError("Resource '%s' cannot be found" % name)
-        
-    
+
+
     def setenv(self, k, v):
         " Sets an env var. "
         self.env[k] = v
-    
-    
+
+
     def getenv(self, k, default = None):
         " Returns an env var. "
         return self.env.get(k)
-    
-    
+
+
     def get_stamp(self, name, where = NOWHERE):
         """ Returns the mtime for named file. Uses find_source() and subst and
         therefore may raise MaitchNotFoundError or KeyError. """
@@ -974,26 +974,26 @@ int main() { %s(); return 0; }
             except MaitchNotFoundError:
                 pass
         return get_extreme_stamp(pnodes, comparator)
-    
-    
+
+
     def get_oldest(self, nodes, where = NOWHERE):
         """ Like global version, but runs subst() and find_source() on each
         item, so may raise MaitchNotFoundError or KeyError. """
         return self.get_extreme_stamp(nodes, lambda a, b: a < b, where)
-    
-    
+
+
     def get_newest(self, nodes, where = NOWHERE):
         """ Like global version, but runs subst() and find_source() on each
         item, so may raise MaitchNotFoundError or KeyError. """
         return self.get_extreme_stamp(nodes, lambda a, b: a > b, where)
-    
-    
+
+
     def subst_file(self, source, target, at = False):
         """ As global version, using self.env. """
         subst_file(self.env, source, target, at)
         self.created_by_config[self.subst(target)] = True
-        
-    
+
+
     def install(self, directory, sources = None,
             mode = None, libtool = False, other_options = None):
         """ Uses the install program to install files. Default mode is install's
@@ -1061,28 +1061,28 @@ int main() { %s(); return 0; }
         mprint("%s" % ' '.join(cmd))
         if subprocess.call(cmd, cwd = self.build_dir) != 0:
             raise MaitchChildError("install failed")
-    
-    
+
+
     def install_bin(self, sources, directory = "${BINDIR}", mode = None,
             libtool = True, other_options = None):
         self.install(directory, sources, mode, libtool, other_options)
-    
+
 
     def install_lib(self, sources, directory = "${LIBDIR}", mode = '0644',
             libtool = True, other_options = None):
         self.install(directory, sources, mode, libtool, other_options)
-    
+
 
     def install_data(self, sources, directory = "${PKGDATADIR}", mode = '0644',
             libtool = False, other_options = None):
         self.install(directory, sources, mode, libtool, other_options)
-    
+
 
     def install_doc(self, sources, directory = "${DOCDIR}", mode = '0644',
             libtool = False, other_options = None):
         self.install(directory, sources, mode, libtool, other_options)
-    
-    
+
+
     def install_man(self, sources, directory = None, mode = '0644',
             other_options = None):
         if not directory:
@@ -1102,8 +1102,8 @@ int main() { %s(); return 0; }
             d.append(s)
         for d, s in dirs.items():
             self.install(opj(directory, "man%d" % int(d)), s, '0644')
-            
-    
+
+
     def uninstall(self):
         if not self.installed:
             mprint("Nothing to uninstall")
@@ -1125,7 +1125,7 @@ int main() { %s(); return 0; }
                 for f in fs:
                     self.delete(f, rm)
 
-    
+
     def delete(self, f, rm = None):
         """ Delete a file, which is processed with self.subst(). The default
         for rm is os.unlink, use os.rmdir for directories. """
@@ -1138,13 +1138,13 @@ int main() { %s(); return 0; }
             mprint("Failed to delete '%s'" % f)
         else:
             mprint("Removed '%s'" % f)
-    
-    
+
+
     def recursively_remove(self, target, fatal = False, excep = []):
         recursively_remove(self.subst(target), fatal,
                 [self.subst(e) for e in excep])
-    
-    
+
+
     def prune_directory(self, root):
         """ Expands variables in root and prefixes ${DESTDIR} before
         calling global version. """
@@ -1152,7 +1152,7 @@ int main() { %s(); return 0; }
         root = os.path.normpath(self.subst("${DESTDIR}" + os.sep + root))
         mprint("Removing empty directories from '%s'" % root)
         return prune_directory(root)
-    
+
 
 
 class Rule(object):
@@ -1205,6 +1205,7 @@ class Rule(object):
                 replaced by T.old and touched.
                 This is to prevent VCS conflicts when a build changes a
                 POT-Creation-Date but not the content.
+        verbose: Show dependency info if debug is enabled.
         """
         if not 'where' in kwargs:
             kwargs['where'] = SRC
@@ -1247,8 +1248,9 @@ class Rule(object):
             self.diffpat = [re.compile(d) for d in diffpat]
         else:
             self.diffpat = None
-    
-    
+        self.verbose = kwargs.get('verbose', False)
+
+
     @staticmethod
     def init_var(kwargs, var):
         """ Call this from subclass' constructor if it uses var (specified in
@@ -1276,8 +1278,8 @@ class Rule(object):
     def init_libs(self, kwargs):
         " For rules which use libs. "
         self.init_var(kwargs, 'libs')
-    
-    
+
+
     def process_env(self):
         " Merges env with ctx's, with caching. Does not set TGT or SRC. "
         if self.cached_env == None:
@@ -1287,8 +1289,8 @@ class Rule(object):
                     env[k] = v
             self.cached_env = env
         return self.cached_env
-        
-        
+
+
     def process_env_tgt_src(self):
         """ As process_env, but also returns expanded targets and sources
         [env, targets sources] and adds them to env. """
@@ -1319,13 +1321,15 @@ class Rule(object):
             self.cached_targets = targets
             self.cached_sources = sources
         return [self.cached_env, self.cached_targets, self.cached_sources]
-    
-    
+
+
     def run(self):
         " Run a job. "
         if self.is_uptodate():
+            if self.verbose:
+                dprint("%s is up-to-date" % self)
             return
-        env, targets, sources = self.process_env_tgt_src()        
+        env, targets, sources = self.process_env_tgt_src()
         if self.lock:
             self.lock.acquire()
         if self.diffpat:
@@ -1335,9 +1339,12 @@ class Rule(object):
         try:
             for rule in self.rules:
                 if callable(rule):
-                    if not self.quiet:
-                        mprint("Internal function: %s(%s, %s)" %
-                                (rule.__name__, str(targets), str(sources)))
+                    if self.quiet:
+                        p = dprint
+                    else:
+                        p = mprint
+                    p("Internal function: %s(%s, %s)" %
+                            (rule.__name__, str(targets), str(sources)))
                     rule(self.ctx, env, targets, sources)
                 else:
                     r = subst(env, rule)
@@ -1385,13 +1392,13 @@ class Rule(object):
         finally:
             if self.lock:
                 self.lock.release()
-    
-    
+
+
     def __repr__(self):
         return "JT:%s" % str(self.targets)
         #return "T:%s S:%s" % (self.targets, self.sources)
-    
-    
+
+
     def list_static_deps(self):
         """ Works out a rule's static dependencies ie deps + sources, but not
         dep_func. Caches them and returns list. """
@@ -1403,13 +1410,18 @@ class Rule(object):
             deps += self.sources
         self.cached_deps = deps
         return deps
-        
-    
+
+
     def is_uptodate(self):
         """ Returns False if any target is older than any source, dep, or result
         of dep_func (implicit/dynamic deps). """
         # If there are no dependencies target(s) must be rebuilt every time
+        if self.verbose:
+            dprint("Checking whether %s is up-to-date, cached_deps %s" % \
+                    (self, self.cached_deps))
         if not self.cached_deps:
+            if self.verbose:
+                dprint("%s has no deps, assuming not up-to-date" % self)
             return False
         # First find whether uptodate wrt static deps.
         # If result is True extra variable newest_dep is available
@@ -1428,7 +1440,7 @@ class Rule(object):
                 uptodate = False
         else:
             newest_dep = None
-        
+
         if self.dep_func:
             # Work out whether cached dynamic deps need updating
             dyn_deps = None
@@ -1464,10 +1476,10 @@ class Rule(object):
             # are older than them
             if get_newest(dyn_deps) > oldest_target:
                 uptodate = False
-        
+
         return uptodate
-                
-        
+
+
 
 class SuffixRule(Rule):
     """ A rule where targets is a function that transforms sources by changing
@@ -1476,7 +1488,7 @@ class SuffixRule(Rule):
         """ args are similar to those for a standard Rule but targets should
         not be specified. deps are complete filenames as with explicit Rules.
         sources and rule are compulsory.
-        
+
         suffix (compulsory): Suffix to be applied to targets. Source suffixes to
                 be stripped are inferred by looking for last period. Do not
                 include period, it's implied.
@@ -1488,8 +1500,8 @@ class SuffixRule(Rule):
         self.prefix = kwargs.get('prefix', '')
         set_default(kwargs, 'targets', self.transform)
         Rule.__init__(self, **kwargs)
-    
-    
+
+
     def transform(self, sources):
         targets = []
         for s in sources:
@@ -1503,7 +1515,7 @@ class SuffixRule(Rule):
                     s = l
             targets.append(s + '.' + self.suffix)
         return targets
-    
+
 
 
 class TouchRule(Rule):
@@ -1512,13 +1524,13 @@ class TouchRule(Rule):
     def __init__(self, **kwargs):
         set_default(kwargs, 'rule', self.touch)
         Rule.__init__(self, **kwargs)
-    
-    
+
+
     def touch(self, ctx, env, tgts, srcs):
         for t in tgts:
             fp = open(t, 'w')
             fp.close()
-                
+
 
 
 class CRuleBase(SuffixRule):
@@ -1530,8 +1542,8 @@ class CRuleBase(SuffixRule):
         set_default(kwargs, 'suffix', "o")
         set_default(kwargs, 'dep_func', self.get_implicit_deps)
         SuffixRule.__init__(self, **kwargs)
-     
-    
+
+
     def get_implicit_deps(self, ctx, rule):
         # rule will be a static rule generated from self with a single source
         env = self.process_env()
@@ -1792,14 +1804,14 @@ def PotRules(ctx, **kwargs):
     rule defaults to ${XGETTEXT}, may be overridden - note that source for this
     rule is generated POTFILES, not POTFILES.in.
     XGETTEXT is not set by default. *_XGETTEXT_OPTS is generated on the fly.
-    
+
     Special args:
     copyright_holder
     package
     version
     bugs_addr
     opts_prefix: Goes on front of _XGETTEXT_OPTS added to env.
-    
+
     '^"POT-Creation-Date:' is added to a new or existing diffpat.
     """
     def generate_potfiles(ctx, env, targets, sources):
@@ -1817,7 +1829,7 @@ def PotRules(ctx, **kwargs):
         for f in potfiles:
             fp.write("%s\n" % f)
         fp.close()
-    
+
     def pot_deps(ctx, rule):
         deps = []
         for s in process_nodes(rule.sources):
@@ -1825,7 +1837,7 @@ def PotRules(ctx, **kwargs):
             for f in fp.readlines():
                 deps.append(f.strip())
         return deps
-    
+
     opts_prefix = kwargs.get('opts_prefix', "")
     varname = "%s_XGETTEXT_OPTS" % opts_prefix
     if not 'where' in kwargs:
@@ -1838,7 +1850,7 @@ def PotRules(ctx, **kwargs):
             sources = src1,
             targets = ["${BUILD_DIR}/po/POTFILES"],
             where = kwargs['where'])
-    
+
     kwargs['sources'] = ["${BUILD_DIR}/po/POTFILES"]
     if not 'targets' in kwargs:
         kwargs['targets'] = ["${TOP_DIR}/po/${PACKAGE}.pot"]
@@ -1882,7 +1894,7 @@ def PotRules(ctx, **kwargs):
     if not '^"POT-Creation-Date:' in diffpat:
         diffpat.append('^"POT-Creation-Date:')
     rule2 = Rule(**kwargs)
-    
+
     return [rule1, rule2]
 
 
@@ -1958,7 +1970,7 @@ def StandardTranslationRules(ctx, *args, **kwargs):
     for PotRules + PoRulesForLinguas """
     return PotRules(ctx, *args, **kwargs) + \
             PoRulesFromLinguas(ctx, *args, **kwargs)
- 
+
 
 
 def call_subprocess(*args, **kwargs):
@@ -1971,10 +1983,10 @@ def call_subprocess(*args, **kwargs):
     [out, err] = sp.communicate()
     dprint("pid %d finished, output follows" % sp.pid)
     out = out.strip()
-    if out: 
+    if out:
         mprint(out)
     err = err.strip()
-    if err: 
+    if err:
         mprint(err, file = sys.stderr)
     return sp.returncode
 
@@ -1982,8 +1994,8 @@ def call_subprocess(*args, **kwargs):
 def report_exception():
     """ Reports the last raised exception. """
     mprint(traceback.format_exc(), file = sys.stderr)
-    
-    
+
+
 
 def print_formatted(body, columns = 80, heading = None, h_columns = 20):
     """ Prints body, wrapped at the specified number of columns. If heading is
@@ -2034,8 +2046,8 @@ def subst_file(env, source, target, at = False):
     s = fp.read()
     fp.close()
     save_if_different(subst(env, target), subst(env, s, at = at))
-    
-    
+
+
 def save_if_different(filename, content):
     """ Saves content to filename, only if file doesn't already contain
     identical content. """
@@ -2055,7 +2067,7 @@ def save_if_different(filename, content):
         fp.close()
     else:
         mprint("'%s' is unchanged" % filename)
-            
+
 
 
 def set_default(d, k, v):
@@ -2068,9 +2080,9 @@ def set_default(d, k, v):
 def opj(*args):
     """ Like os.path.join and also calls os.path.normpath """
     return os.path.normpath(os.path.join(*args))
-    
-    
-    
+
+
+
 def prune_directory(root):
     """ Recursively moves all empty directories at root. Returns False if
     remaining files meant one or more directories could not be deleted. """
@@ -2094,7 +2106,7 @@ def prune_directory(root):
             success = False
     return success
 
-    
+
 
 _subst_re = re.compile(r"(\$\{-?([a-zA-Z0-9_]+)\})")
 _subst_re_at = re.compile(r"(@-?([a-zA-Z0-9_]+)@)")
@@ -2183,7 +2195,7 @@ def recursively_remove(path, fatal, excep):
             except OSError:
                 removable = False
     return removable
-        
+
 
 def find_prog(name, env = os.environ):
     if os.path.isabs(name):
@@ -2254,8 +2266,8 @@ def make_var_name(template, upper = False):
     if upper:
         s = s.upper()
     return s
-    
-    
+
+
 
 def change_suffix(files, old, new):
     """ Returns a new list of files with old suffix replaced with new
@@ -2339,28 +2351,30 @@ class BuildGroup(object):
         """ ctx is the context containing info for the build. targets is a
         list of targets. """
         self.ctx = ctx
-        
+
         # cond is used to allow builders to wait until a new task is ready
         # and to access the queue in a thread-safe way
         self.cond = threading.Condition(ctx.lock)
-        
+
         # ready_queue isn't really ordered, jobs are just appended as they
         # become unblocked. This is nice and simple.
         # Additionally all jobs are added to ready_queue before checking
         # up-to-dateness; this is checked just before they would run and
         # up-to-date jobs are skipped and handled as if they were just run.
         self.ready_queue = []
-        
+
         # quick way to find whether a target is due to be, or has been, built
         self.queued = {}
-        
+
         # Jobs are added here until unblocked, then moved to ready_queue
         self.pending_jobs = []
-        
+
+        self.verbose = 0
+
         # Add jobs
         for tgt in targets:
             self.add_target(tgt)
-        
+
         # Start builders
         self.cancelled = False
         self.threads = []
@@ -2372,32 +2386,38 @@ class BuildGroup(object):
             t = Builder(self)
             self.threads.append(t)
             t.start()
-        
+
         # Wait for threads; doesn't matter what order they finish in
         for t in self.threads:
-            dprint("Main loop waiting for %s to finish" % t.describe())
+            #dprint("Main loop waiting for %s to finish" % t.describe())
             t.join()
-        
-    
+
+
     def add_target(self, target):
         if not target in self.queued:
             self.add_job(self.ctx.explicit_rules[target])
-    
-    
+
+
     def add_job(self, job):
         if job in self.pending_jobs:
             return
         job.calculating = True
+        if job.verbose:
+            self.verbose += 1
         with self.cond:
             self.pending_jobs.append(job)
         for t in job.targets:
             self.queued[self.ctx.subst(t)] = job
         self.satisfy_deps(job)
+        if job.verbose:
+            dprint("  " * self.verbose + \
+                    "%s is blocked by %s" % (job, job.blocked_by))
+            self.verbose -= 1
         job.calculating = False
         if not len(job.blocked_by):
             self.do_while_locked(self.make_job_ready, job)
-    
-    
+
+
     def do_while_locked(self, func, *args, **kwargs):
         """ Lock cond and run func(*args, **kwargs), handling errors in a
         thread-safe way. Returns result of func. """
@@ -2410,8 +2430,8 @@ class BuildGroup(object):
             raise
         self.cond.release()
         return result
-    
-    
+
+
     def cancel_all_jobs(self):
         dprint("Cancelling all jobs")
         # Cond.notify_all() sometimes freezes all threads instead of
@@ -2423,8 +2443,8 @@ class BuildGroup(object):
                 self.pending_jobs = []
                 self.cond.notify_all()
         dprint("Leaving cancel_all_jobs")
-        
-    
+
+
     def make_job_ready(self, job):
         " Moves a job from pending_jobs to ready_queue. "
         with self.cond:
@@ -2437,8 +2457,8 @@ class BuildGroup(object):
             else:
                 self.ready_queue.append(job)
             self.cond.notify()
-    
-    
+
+
     def satisfy_deps(self, job):
         if job.wdeps:
             deps = job.wdeps
@@ -2447,6 +2467,9 @@ class BuildGroup(object):
         sdeps = job.list_static_deps()
         if sdeps:
             deps += sdeps
+        if self.verbose:
+            vdp = "  " * (self.verbose - 1)
+            dprint(vdp + "%s depends on %s" % (job, deps))
         if not len(deps):
             return
         for dep in deps:
@@ -2459,40 +2482,53 @@ class BuildGroup(object):
                         raise MaitchRecursionError("%s and %s have circular "
                                 "dependencies" % (rule, dep))
                     self.mark_blocking(job, rule)
+                    if self.verbose:
+                        dprint(vdp + "  Making already queued %s block %s" % \
+                                (rule, job))
                     continue
-                    
+
                 # Is there an explicit rule for it?
                 rule = self.ctx.explicit_rules.get(dep)
-                
+
                 if rule:
                     self.mark_blocking(job, rule)
+                    if self.verbose:
+                        dprint(vdp + \
+                                "  Making unqueued %s block %s and adding" % \
+                                (rule, job))
                     self.add_job(rule)
                     continue
-                
+
                 # Does file already exist?
                 self.ctx.find_source(dep, job.where)
+                if self.verbose:
+                    dprint(vdp +  "  %s already exists" % dep)
             except:
                 mprint("Error trying to satisfy dep '%s' of '%s'" % (dep, job),
                         file = sys.stderr)
                 raise
-            
-    
+
+
     def mark_blocking(self, blocked, blocker):
         with self.cond:
+            if blocked.verbose:
+                blocker.verbose = True
             if not blocked in blocker.blocking:
                 blocker.blocking.append(blocked)
             if not blocker in blocked.blocked_by:
                 blocked.blocked_by.append(blocker)
-    
-    
+
+
     def job_done(self, job):
+        if job.verbose:
+            dprint("%s complete, unblocking %s" % (job, job.blocking))
         for j in job.blocking:
             self.do_while_locked(self.unblock_job, j, job)
         if not len(self.ready_queue) and not len(self.pending_jobs):
             with self.cond:
                 self.cond.notify_all()
-    
-    
+
+
     def unblock_job(self, blocked, blocker):
         """ 'blocked' is no longer blocked by 'blocker'. Call while locked.
         blocker is not altered, but if blocked has no remaining blockers it's
@@ -2513,7 +2549,7 @@ _thread_index = 0
 class Builder(threading.Thread):
     """ A Builder starts a new thread which waits for jobs to be added to
     BuildGroup's ready_queue, pops one at a time and runs it. """
-    
+
     def __init__(self, build_group):
         global builder_index
         with build_group.cond:
@@ -2522,19 +2558,19 @@ class Builder(threading.Thread):
             _thread_index += 1
         self.bg = build_group
         threading.Thread.__init__(self)
-    
-    
+
+
     def describe(self):
         return "Builder Thread %d" % self.index
-    
-    
+
+
     def run(self):
         finished = False
         dprint("Starting %s" % self.describe())
         try:
             while not finished:
                 job = None
-                dprint("%s acquiring cond" % self.describe())
+                #dprint("%s acquiring cond" % self.describe())
                 with self.bg.cond:
                     if not len(self.bg.ready_queue):
                         if len(self.bg.pending_jobs):
@@ -2550,7 +2586,7 @@ class Builder(threading.Thread):
                         finished = True
                     elif len(self.bg.ready_queue):
                         job = self.bg.ready_queue.pop()
-                dprint("%s released cond" % self.describe())
+                #dprint("%s released cond" % self.describe())
                 if job:
                     dprint("%s running job %s" % (self.describe(), str(job)))
                     job.run()
@@ -2563,7 +2599,7 @@ class Builder(threading.Thread):
             report_exception()
             self.bg.cancel_all_jobs()
         dprint("%s finished" % self.describe())
-            
+
 
 
 # Commonly used variables

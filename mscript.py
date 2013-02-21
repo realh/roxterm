@@ -88,7 +88,7 @@ if ctx.mode == 'configure':
                 "http://docbook.sourceforge.net/release/xsl/" \
                 "current/manpages/docbook.xsl")
         ctx.setenv("XMLTOMAN_OUTPUT", "")
-    
+
     if ctx.env['ENABLE_GIT'] != False:
         try:
             ctx.find_prog_env("convert")
@@ -109,9 +109,9 @@ if ctx.mode == 'configure':
     else:
         ctx.setenv("CONVERT", "")
         ctx.setenv("COMPOSITE", "")
-    
+
     ctx.setenv('BUG_TRACKER', "http://sourceforge.net/tracker/?group_id=124080")
-    
+
     gt = ctx.env['ENABLE_GETTEXT']
     po4a = ctx.env['ENABLE_PO4A']
     trans = ctx.env['ENABLE_TRANSLATIONS']
@@ -131,7 +131,7 @@ if ctx.mode == 'configure':
             ctx.setenv('HAVE_GETTEXT', True)
     else:
         ctx.setenv('HAVE_GETTEXT', False)
-    
+
     if trans != False and po4a != False:
         try:
             ctx.find_prog_env("po4a-gettextize")
@@ -154,7 +154,7 @@ if ctx.mode == 'configure':
             ctx.setenv('PO4ADIR', "${TOP_DIR}/po4a")
     else:
         ctx.setenv('HAVE_PO4A', False)
-    
+
     gda = ctx.env.get("WITH_GNOME_DEFAULT_APPLICATIONS")
     if gda == None or gda == True:
         try:
@@ -168,7 +168,7 @@ if ctx.mode == 'configure':
     elif gda == False:
         gda = ""
     ctx.setenv("WITH_GNOME_DEFAULT_APPLICATIONS", gda)
-        
+
     gtk3 = ctx.env['ENABLE_GTK3']
     if gtk3 != False:
         try:
@@ -183,7 +183,7 @@ if ctx.mode == 'configure':
     if not gtk3:
         ctx.pkg_config('gtk+-2.0', 'GTK', '2.18')
         ctx.pkg_config('vte', 'VTE', '0.20')
-    
+
     sm = ctx.env['ENABLE_SM']
     if sm != False:
         try:
@@ -195,11 +195,11 @@ if ctx.mode == 'configure':
         else:
             sm = True
     ctx.define('ENABLE_SM', sm)
-    
+
     ctx.pkg_config('dbus-1', 'DBUS', '1.0')
     ctx.pkg_config('dbus-glib-1', 'DBUS', '0.22')
     ctx.pkg_config('gmodule-export-2.0', 'GMODULE')
-    
+
     for f in "get_current_dir_name g_mkdir_with_parents " \
             "gdk_window_get_display gdk_window_get_screen " \
             "gtk_widget_get_realized gtk_widget_get_mapped " \
@@ -209,7 +209,7 @@ if ctx.mode == 'configure':
     for f in ["vte_terminal_search_set_gregex", "vte_terminal_get_pty_object"]:
         ctx.check_func(f, "${CFLAGS} ${MCFLAGS} ${VTE_CFLAGS}",
                 "${LIBS} ${VTE_LIBS}")
-    
+
     ctx.setenv('CORE_CFLAGS',
             "${CFLAGS} ${MCFLAGS} ${GTK_CFLAGS} ${DBUS_CFLAGS}")
     ctx.setenv('CORE_LIBS',
@@ -223,7 +223,7 @@ if ctx.mode == 'configure':
             "${GMODULE_CFLAGS} -DROXTERM_CAPPLET")
     ctx.setenv('ROXTERM_CONFIG_LIBS',
             "${LIBS} ${GTK_LIBS} ${DBUS_LIBS} ${GMODULE_LIBS}")
-    
+
     ctx.define_from_var('PACKAGE')
     ctx.define('DO_OWN_TAB_DRAGGING',
             ctx.env.get('ENABLE_GTK_NATIVE_TAB_DRAGGING', True))
@@ -236,7 +236,7 @@ if ctx.mode == 'configure':
     ctx.define('HTML_DIR', ctx.env['HTMLDIR'])
     ctx.setenv('htmldir', "${HTMLDIR}")
     ctx.define('BIN_DIR', ctx.env['BINDIR'])
-    
+
     ctx.subst_file("${TOP_DIR}/roxterm.1.xml.in", "roxterm.1.xml", True)
     ctx.subst_file("${TOP_DIR}/roxterm-config.1.xml.in", "roxterm-config.1.xml",
             True)
@@ -250,7 +250,7 @@ if ctx.mode == 'configure':
             '#define VERSION_H\n' \
             '#define VERSION "${VERSION}"\n' \
             '#endif\n')
-    
+
     # Make symlinks expected by ROX
     for f in "AUTHORS ChangeLog COPYING COPYING-LGPL NEWS README".split():
         if f == "ChangeLog":
@@ -260,7 +260,7 @@ if ctx.mode == 'configure':
         src = "../" + f
         if subprocess.call(["ln", "-nfs", src, ctx.subst(dest)]):
             raise MaitchChildError("Failed to link '%s' Help file" % f)
-    
+
 elif ctx.mode == 'build':
 
     # Private library
@@ -277,7 +277,7 @@ elif ctx.mode == 'build':
             cflags = "${CORE_CFLAGS}",
             libs = "${CORE_LIBS}",
             quiet = True))
-    
+
     # roxterm
     if bool(ctx.env['ENABLE_SM']):
         ROXTERM_SOURCES += " session.c"
@@ -312,9 +312,9 @@ elif ctx.mode == 'build':
             libs = "${ROXTERM_CONFIG_LIBS} -lroxterm",
             deps = "libroxterm.la",
             quiet = True))
-    
+
     # Stuff other than the program
-    
+
     # Graphics
     if ctx.env['CONVERT']:
         ctx.add_rule(Rule(rule = "${CONVERT} -background #0000 " \
@@ -322,20 +322,20 @@ elif ctx.mode == 'build':
                 targets = LOGO_PNG,
                 sources = "roxterm.svg",
                 where = TOP))
-                
+
         # Note 'where' is NOWHERE for following two rules because sources
         # already start with ${TOP_DIR}.
         ctx.add_rule(Rule(rule = "${CONVERT} ${SRC} -geometry 16x16 ${TGT}",
                 targets = FAVICON,
                 sources = LOGO_PNG,
                 where = NOWHERE))
-        
+
         ctx.add_rule(Rule( \
                 rule = "${COMPOSITE} -gravity SouthWest ${SRC} ${TGT}",
                 targets = TEXT_LOGO,
                 sources = [LOGO_PNG, "${TOP_DIR}/Help/lib/logo_text_only.png"],
                 where = NOWHERE))
-    
+
     # man pages
     if ctx.env['XMLTOMAN']:
         xmltomanrule = "${XMLTOMAN} ${XMLTOMAN_OPTS} ${SRC} ${XMLTOMAN_OUTPUT}"
@@ -362,7 +362,7 @@ elif ctx.mode == 'build':
         #ctx.add_rule(TouchRule(
         #        targets = "manpages",
         #        sources = "roxterm.1 roxterm-config.1"))
-    
+
     # Make sure .ui file is GTK2-compatible
     def process_ui(ctx, env, targets, sources):
         fp = open(sources[0], 'r')
@@ -378,7 +378,7 @@ elif ctx.mode == 'build':
     ctx.add_rule(Rule(rule = process_ui,
             sources = "${SRC_DIR}/roxterm-config.ui",
             targets = "roxterm-config.ui-stamp"))
-    
+
     # Translations (gettext)
     if ctx.env['HAVE_GETTEXT']:
         trans_rules = StandardTranslationRules(ctx,
@@ -389,13 +389,14 @@ elif ctx.mode == 'build':
                 use_shell = True)
         for r in trans_rules:
             ctx.add_rule(r)
-    
+
     # Translations (po4a)
     linguas = parse_linguas(ctx)
     charset_rule = "${SED} -i s/charset=CHARSET/charset=UTF-8/ ${TGT}"
     if ctx.env['HAVE_PO4A']:
         ctx.ensure_out_dir("po4a")
         if ctx.env['XMLTOMAN']:
+            # Workaround for deadlock (?)
             lastmtarget = None
             for m in ["roxterm", "roxterm-config"]:
                 ctx.add_rule(Rule(rule = ["${PO4A_GETTEXTIZE} ${PO4AOPTS} " \
@@ -408,12 +409,13 @@ elif ctx.mode == 'build':
                                 '^"POT-Creation-Date:'],
                         use_shell = True))
                 for l in linguas:
+                    po = "${PO4ADIR}/%s.1.%s.po" % (m, l)
                     ctx.add_rule(Rule(rule = ["${PO4A_UPDATEPO} ${PO4AOPTS} " \
                             "-f docbook -m ${SRC} -p ${TGT}",
                             charset_rule],
                             sources = ["${TOP_DIR}/%s.1.xml.in" % m,
                                     "${PO4ADIR}/%s.1.pot" % m],
-                            targets = "${PO4ADIR}/%s.1.%s.po" % (m, l),
+                            targets = po,
                             diffpat = '^"POT-Creation-Date:',
                             where = NOWHERE,
                             use_shell = True))
@@ -421,7 +423,7 @@ elif ctx.mode == 'build':
                             "${PO4ACHARSET} " \
                             "-k 0 -f docbook -m ${TOP_DIR}/%s.1.xml.in " \
                             "-p ${SRC} -l ${TGT}" % m,
-                            sources = "${PO4ADIR}/%s.1.%s.po" % (m, l),
+                            sources = po,
                             targets = "po4a/%s.1.%s.xml.in" % (m, l),
                             where = NOWHERE,
                             use_shell = True))
@@ -430,6 +432,8 @@ elif ctx.mode == 'build':
                             "s#@htmldir@#${HTMLDIR}#' <${SRC} >${TGT}",
                             sources = "po4a/%s.1.%s.xml.in" % (m, l),
                             targets = "po4a/%s.1.%s.xml" % (m, l),
+                            deps = po,
+                            verbose = (l == 'pt_BR'),
                             where = NOWHERE,
                             use_shell = True))
                     mtarget = "po4a/%s/%s.1" % (l, m)
@@ -438,8 +442,9 @@ elif ctx.mode == 'build':
                             sources = "po4a/%s.1.%s.xml" % (m, l),
                             targets = mtarget,
                             wdeps = lastmtarget,
+                            verbose = (l == 'pt_BR'),
                             where = NOWHERE))
-                    lastmtarget = mtarget
+                    #lastmtarget = mtarget
         for h in ROXTERM_HTML_BASENAMES:
             master = "${TOP_DIR}/Help/en/%s.html" % h
             pot = "${PO4ADIR}/%s.html.pot" % h
@@ -476,7 +481,7 @@ elif ctx.mode == 'build':
                         targets = "%s/%s.html" % (ldir, h),
                         where = NOWHERE,
                         use_shell = True))
-            
+
 
 elif ctx.mode == "install" or ctx.mode == "uninstall":
 
@@ -500,7 +505,7 @@ elif ctx.mode == "install" or ctx.mode == "uninstall":
     gda = ctx.env['WITH_GNOME_DEFAULT_APPLICATIONS']
     if gda:
         ctx.install_data("roxterm.xml", gda)
-    
+
     linguas = parse_linguas(ctx)
     if ctx.env['HAVE_GETTEXT']:
         for l in linguas:
@@ -516,7 +521,7 @@ elif ctx.mode == "install" or ctx.mode == "uninstall":
                     "${HTMLDIR}/%s" % l)
 
 elif ctx.mode == 'pristine' or ctx.mode == 'clean':
-    
+
     clean = ["${TOP_DIR}/maitch.pyc"]
     if ctx.mode == 'pristine':
         clean += [APPINFO, VFILE, "${TOP_DIR}/ChangeLog"] + \
@@ -535,7 +540,7 @@ elif ctx.mode == 'pristine' or ctx.mode == 'clean':
         ctx.delete(f)
 
 elif ctx.mode == 'dist':
-    
+
     ctx.add_dist("AUTHORS Help/AUTHORS " \
             "genlog ChangeLog ChangeLog.old Config " \
             "COPYING COPYING-LGPL Help/en Help/lib/header.png " \
@@ -571,7 +576,7 @@ elif ctx.mode == 'dist':
     files = ctx.glob("*.po", os.curdir, "po", False)
     if files:
         ctx.add_dist(files)
-            
+
 
 ctx.run()
 
