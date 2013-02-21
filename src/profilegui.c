@@ -697,7 +697,9 @@ static void profilegui_add_combo_items_by_name(GtkWidget *combo,
 static void profilegui_make_a_combo(ProfileGUI *pg, const char *name)
 {
     char *box_name = g_strdup_printf("%s_hbox", name);
+    char *label_name = g_strdup_printf("%s_label", name);
     GObject *box = gtk_builder_get_object(pg->capp.builder, box_name);
+    GObject *label = gtk_builder_get_object(pg->capp.builder, label_name);
     GtkWidget *combo;
 
 #ifdef HAVE_GTK_COMBO_BOX_TEXT_NEW
@@ -705,6 +707,7 @@ static void profilegui_make_a_combo(ProfileGUI *pg, const char *name)
 #else
     combo = gtk_combo_box_new_text();
 #endif
+    gtk_label_set_mnemonic_widget(GTK_LABEL(label), combo);
     profilegui_add_combo_items_by_name(combo, name);
     gtk_buildable_set_name(GTK_BUILDABLE(combo), name);
     gtk_buildable_add_child(GTK_BUILDABLE(box), pg->capp.builder,
