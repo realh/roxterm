@@ -478,6 +478,184 @@ static void exit_action_changed(GtkComboBox *combo, ProfileGUI *pg)
 
 /***********************************************************/
 
+/* Hopefully all this combo support stuff can go away when everything
+ * supports GtkComboBoxText.
+ */
+
+inline static void profilegui_add_combo_item(GtkWidget *combo, const char *item)
+{
+#ifdef HAVE_GTK_COMBO_BOX_TEXT_NEW
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(combo), item);
+#else
+    gtk_combo_box_append_text(GTK_COMBO_BOX(combo), item);
+#endif
+}
+
+static void profilegui_add_combo_items(GtkWidget *combo, ...)
+{
+    const char *item;
+    va_list ap;
+
+    va_start(ap, combo);
+    while ((item = va_arg(ap, const char *)) != NULL)
+    {
+        profilegui_add_combo_item(combo, item);
+    }
+    va_end(ap);
+}
+
+static void profilegui_add_combo_items_by_name(GtkWidget *combo,
+        const char *name)
+{
+    if (!strcmp(name, "exit_action"))
+    {
+        profilegui_add_combo_items(combo,
+            _("Exit terminal"),
+            _("Hold terminal open"),
+            _("Restart command"),
+            _("Ask user"),
+            NULL);
+    }
+    else if (!strcmp(name, "delete_binding") ||
+            !strcmp(name, "backspace_binding"))
+    {
+        profilegui_add_combo_items(combo,
+            _("Automatic choice"),
+            _("Control-H"),
+            _("ASCII DEL"),
+            _("Escape sequence"),
+            NULL);
+    }
+    else if (!strcmp(name, "tab_pos"))
+    {
+        profilegui_add_combo_items(combo,
+            _("Top"),
+            _("Bottom"),
+            _("Left"),
+            _("Right"),
+            _("Hidden"),
+            NULL);
+    }
+    else if (!strcmp(name, "colour_scheme"))
+    {
+        char **schemes = dynamic_options_list_sorted(
+                dynamic_options_get("Colours"));
+        int n;
+        profilegui_add_combo_item(combo, _("(Don't set)"));
+        if (!schemes[0] || strcmp(schemes[0], _("Default")))
+            profilegui_add_combo_item(combo, _("Default"));
+        for (n = 0; schemes[n]; ++n)
+            profilegui_add_combo_item(combo, schemes[n]);
+    }
+}
+
+static void on_colour_scheme_combo_changed(GtkComboBox *combo,
+        CappletData *capp)
+{
+    char *value;
+
+    if (capplet_ignore_changes)
+        return;
+    if (gtk_combo_box_get_active(combo) == 0)
+    {
+        value = NULL;
+    }
+    else
+    {
+#ifdef HAVE_GTK_COMBO_BOX_TEXT_NEW
+        value = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(combo));
+#else
+        value = gtk_combo_box_get_active_text(combo);
+#endif
+    }
+    capplet_set_string(capp->options, "colour_scheme", value);
+    g_free(value);
+}
+
+static void profilegui_make_a_combo(ProfileGUI *pg, const char *name)
+{
+    char *box_name = g_strdup_printf("%s_hbox", name);
+    char *label_name = g_strdup_printf("%s_label", name);
+    GObject *box = gtk_builder_get_object(pg->capp.builder, box_name);
+    GObject *label = gtk_builder_get_object(pg->capp.builder, label_name);
+    GtkWidget *combo;
+
+    if (strcmp(name, "colour_scheme"))
+    {
+#ifdef HAVE_GTK_COMBO_BOX_TEXT_NEW
+        combo = gtk_combo_box_text_new();
+#else
+        combo = gtk_combo_box_new_text();
+#endif
+    }
+    else
+    {
+#ifdef HAVE_GTK_COMBO_BOX_TEXT_NEW
+        combo = gtk_combo_box_text_new_with_entry();
+#else
+        combo = gtk_combo_box_entry_new();
+#endif
+    }
+    gtk_label_set_mnemonic_widget(GTK_LABEL(label), combo);
+    profilegui_add_combo_items_by_name(combo, name);
+    gtk_buildable_set_name(GTK_BUILDABLE(combo), name);
+    gtk_buildable_add_child(GTK_BUILDABLE(box), pg->capp.builder,
+            G_OBJECT(combo), NULL);
+    if (strcmp(name, "colour_scheme"))
+    {
+        g_signal_connect(combo, "changed", G_CALLBACK(on_combo_changed), pg);
+    }
+    else
+    {
+        g_signal_connect(combo, "changed",
+                G_CALLBACK(on_colour_scheme_combo_changed), pg);
+    }
+    gtk_widget_show(combo);
+    g_free(label_name);
+    g_free(box_name);
+}
+
+static void profilegui_make_combos(ProfileGUI *pg)
+{
+    profilegui_make_a_combo(pg, "exit_action");
+    profilegui_make_a_combo(pg, "backspace_binding");
+    profilegui_make_a_combo(pg, "delete_binding");
+    profilegui_make_a_combo(pg, "tab_pos");
+    profilegui_make_a_combo(pg, "colour_scheme");
+}
+
+static void profilegui_set_colour_scheme_combo(CappletData *capp)
+{
+    GtkWidget *combo = capplet_lookup_combo(capp->builder, "colour_scheme");
+    char *value = options_lookup_string(capp->options, "colour_scheme");
+    int active = 0;
+    if (value && value[0])
+    {
+        GtkTreeModel *model = gtk_combo_box_get_model(GTK_COMBO_BOX(combo));
+        GtkTreeIter iter;
+        gboolean valid;
+        /* We skip the initial "(Don't set)" item */
+        active = 1;
+        for (valid = (gtk_tree_model_get_iter_first(model, &iter) &&
+                gtk_tree_model_iter_next(model, &iter));
+                valid;
+                valid = gtk_tree_model_iter_next(model, &iter), ++active)
+        {
+            char *item;
+            gtk_tree_model_get(model, &iter, 0, &item, -1);
+            if (!strcmp(item, value))
+            {
+                g_free(item);
+                break;
+            }
+            g_free(item);
+        }
+        if (!valid)
+            profilegui_add_combo_item(combo, value);
+    }
+    gtk_combo_box_set_active(GTK_COMBO_BOX(combo), active);
+    g_free(value);
+}
 
 static void profilegui_connect_handlers(ProfileGUI * pg)
 {
@@ -574,6 +752,7 @@ static void profilegui_fill_in_dialog(ProfileGUI * pg)
     capplet_set_boolean_toggle(&pg->capp, "use_custom_command", FALSE);
     capplet_set_text_entry(&pg->capp, "command", NULL);
     capplet_set_combo(&pg->capp, "exit_action", 0);
+    profilegui_set_colour_scheme_combo(&pg->capp);
     capplet_set_spin_button_float(&pg->capp, "exit_pause");
     capplet_set_text_entry(&pg->capp, "title_string", "%s");
     capplet_set_text_entry(&pg->capp, "win_title", "%s");
@@ -632,99 +811,6 @@ static void profilegui_setup_list_store(ProfileGUI *pg)
     gtk_container_add(GTK_CONTAINER(
             profilegui_widget(pg, "page_selector_container")), tvw);
     gtk_widget_show(tvw);
-}
-
-/* Hopefully all this combo support stuff can go away when everything
- * supports GtkComboBoxText.
- */
-
-static void profilegui_add_combo_items(GtkWidget *combo, ...)
-{
-    const char *item;
-    va_list ap;
-#ifdef HAVE_GTK_COMBO_BOX_TEXT_NEW
-    GtkComboBoxText *cast_combo = GTK_COMBO_BOX_TEXT(combo);
-#else
-    GtkComboBox *cast_combo = GTK_COMBO_BOX(combo);
-#endif
-
-    va_start(ap, combo);
-    while ((item = va_arg(ap, const char *)) != NULL)
-    {
-#ifdef HAVE_GTK_COMBO_BOX_TEXT_NEW
-        gtk_combo_box_text_append_text(cast_combo, item);
-#else
-        gtk_combo_box_append_text(cast_combo, item);
-#endif
-    }
-    va_end(ap);
-}
-
-static void profilegui_add_combo_items_by_name(GtkWidget *combo,
-        const char *name)
-{
-    if (!strcmp(name, "exit_action"))
-    {
-        profilegui_add_combo_items(combo,
-            _("Exit terminal"),
-            _("Hold terminal open"),
-            _("Restart command"),
-            _("Ask user"),
-            NULL);
-    }
-    else if (!strcmp(name, "delete_binding") ||
-            !strcmp(name, "backspace_binding"))
-    {
-        profilegui_add_combo_items(combo,
-            _("Automatic choice"),
-            _("Control-H"),
-            _("ASCII DEL"),
-            _("Escape sequence"),
-            NULL);
-    }
-    else if (!strcmp(name, "tab_pos"))
-    {
-        profilegui_add_combo_items(combo,
-            _("Top"),
-            _("Bottom"),
-            _("Left"),
-            _("Right"),
-            _("Hidden"),
-            NULL);
-    }
-}
-
-static void profilegui_make_a_combo(ProfileGUI *pg, const char *name)
-{
-    char *box_name = g_strdup_printf("%s_hbox", name);
-    char *label_name = g_strdup_printf("%s_label", name);
-    GObject *box = gtk_builder_get_object(pg->capp.builder, box_name);
-    GObject *label = gtk_builder_get_object(pg->capp.builder, label_name);
-    GtkWidget *combo;
-
-#ifdef HAVE_GTK_COMBO_BOX_TEXT_NEW
-    combo = gtk_combo_box_text_new();
-#else
-    combo = gtk_combo_box_new_text();
-#endif
-    gtk_label_set_mnemonic_widget(GTK_LABEL(label), combo);
-    profilegui_add_combo_items_by_name(combo, name);
-    gtk_buildable_set_name(GTK_BUILDABLE(combo), name);
-    gtk_buildable_add_child(GTK_BUILDABLE(box), pg->capp.builder,
-            G_OBJECT(combo), NULL);
-    g_signal_connect(combo, "changed", G_CALLBACK(on_combo_changed), pg);
-    gtk_widget_show(combo);
-    g_free(label_name);
-    g_free(box_name);
-}
-
-static void profilegui_make_combos(ProfileGUI *pg)
-{
-    profilegui_make_a_combo(pg, "exit_action");
-    profilegui_make_a_combo(pg, "backspace_binding");
-    profilegui_make_a_combo(pg, "delete_binding");
-    profilegui_make_a_combo(pg, "tab_pos");
-    profilegui_make_a_combo(pg, "colour_scheme");
 }
 
 /* Loads a Profile and creates a working dialog box for it */

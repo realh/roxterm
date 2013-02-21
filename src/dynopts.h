@@ -63,7 +63,7 @@ inline static char **dynamic_options_list(DynamicOptions *dynopts)
     return dynamic_options_list_full(dynopts, FALSE);
 }
 
-/* As above but the list is sorted (except for Default) */
+/* As above but the list is sorted (but Default comes first) */
 inline static char **dynamic_options_list_sorted(DynamicOptions *dynopts)
 {
     return dynamic_options_list_full(dynopts, TRUE);

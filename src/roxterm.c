@@ -2321,6 +2321,22 @@ static void roxterm_change_colour_scheme(ROXTermData *roxterm,
     }
 }
 
+static void roxterm_change_colour_scheme_by_name(ROXTermData *roxterm,
+        const char *name)
+{
+    Options *scheme = colour_scheme_lookup_and_ref(name);
+    if (scheme)
+    {
+        roxterm_change_colour_scheme(roxterm, scheme);
+        colour_scheme_unref(scheme);
+    }
+    else
+    {
+        dlg_warning(roxterm_get_toplevel(roxterm),
+                _("Unknown colour scheme '%s'"), name);
+    }
+}
+
 static void match_text_size_foreach_tab(MultiTab *tab, void *data)
 {
     ROXTermData *roxterm = multi_tab_get_user_data(tab);
@@ -3057,6 +3073,16 @@ inline static void roxterm_apply_middle_click_tab(ROXTermData *roxterm)
                     "middle_click_tab", 0));
 }
 
+static void roxterm_apply_colour_scheme_from_profile(ROXTermData *roxterm)
+{
+    char *scheme = options_lookup_string(roxterm->profile, "colour_scheme");
+    if (scheme && scheme[0])
+    {
+        roxterm_change_colour_scheme_by_name(roxterm, scheme);
+    }
+    g_free(scheme);
+}
+
 static void roxterm_apply_profile(ROXTermData *roxterm, VteTerminal *vte,
         gboolean update_geometry)
 {
@@ -3094,6 +3120,8 @@ static void roxterm_apply_profile(ROXTermData *roxterm, VteTerminal *vte,
     roxterm_apply_show_resize_grip(roxterm);
 #endif
     roxterm_apply_middle_click_tab(roxterm);
+
+    roxterm_apply_colour_scheme_from_profile(roxterm);
 }
 
 static gboolean
@@ -3550,6 +3578,10 @@ static void roxterm_reflect_profile_change(Options * profile, const char *key)
         {
             roxterm_apply_middle_click_tab(roxterm);
         }
+        else if (!strcmp(key, "colour_scheme"))
+        {
+            roxterm_apply_colour_scheme_from_profile(roxterm);
+        }
         if (apply_to_win)
         {
             multi_win_foreach_tab(win, match_text_size_foreach_tab, roxterm);
@@ -3944,19 +3976,7 @@ static void roxterm_set_colour_scheme_handler(ROXTermData *roxterm,
 {
     if (!roxterm_verify_id(roxterm))
         return;
-
-    Options *scheme = colour_scheme_lookup_and_ref(name);
-
-    if (scheme)
-    {
-        roxterm_change_colour_scheme(roxterm, scheme);
-        colour_scheme_unref(scheme);
-    }
-    else
-    {
-        dlg_warning(roxterm_get_toplevel(roxterm),
-                _("Unknown colour scheme '%s' in D-Bus signal"), name);
-    }
+    roxterm_change_colour_scheme_by_name(roxterm, name);
 }
 
 static void roxterm_set_shortcut_scheme_handler(ROXTermData *roxterm,
