@@ -714,6 +714,8 @@ static void profilegui_make_a_combo(ProfileGUI *pg, const char *name)
             G_OBJECT(combo), NULL);
     g_signal_connect(combo, "changed", G_CALLBACK(on_combo_changed), pg);
     gtk_widget_show(combo);
+    g_free(label_name);
+    g_free(box_name);
 }
 
 static void profilegui_make_combos(ProfileGUI *pg)
