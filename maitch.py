@@ -967,30 +967,36 @@ int main() { %s(); return 0; }
         return os.stat(name).st_mtime
 
 
-    def get_extreme_stamp(self, nodes, comparator, where = NOWHERE):
+    def get_extreme_stamp(self, nodes, comparator, where = NOWHERE,
+            verbose = False):
         """ Like global version, but runs subst() and find_source() on each
         item. Items that don't exist are skipped because some suffix rules
         don't necessarily use all sources or targets (eg gob2 doesn't always
-        output a private header). """
+        output a private header). If verbose isn't False it must be a string
+        prefix """
         pnodes = []
         for n in nodes:
             try:
                 pnodes.append(self.find_source(self.subst(n), where))
             except MaitchNotFoundError:
                 pass
-        return get_extreme_stamp(pnodes, comparator)
+        return get_extreme_stamp(pnodes, comparator, verbose)
 
 
-    def get_oldest(self, nodes, where = NOWHERE):
+    def get_oldest(self, nodes, where = NOWHERE, verbose = False):
         """ Like global version, but runs subst() and find_source() on each
         item, so may raise MaitchNotFoundError or KeyError. """
-        return self.get_extreme_stamp(nodes, lambda a, b: a < b, where)
+        if verbose:
+            verbose += "Oldest"
+        return self.get_extreme_stamp(nodes, lambda a, b: a < b, where, verbose)
 
 
-    def get_newest(self, nodes, where = NOWHERE):
+    def get_newest(self, nodes, where = NOWHERE, verbose = False):
         """ Like global version, but runs subst() and find_source() on each
         item, so may raise MaitchNotFoundError or KeyError. """
-        return self.get_extreme_stamp(nodes, lambda a, b: a > b, where)
+        if verbose:
+            verbose += "Newest"
+        return self.get_extreme_stamp(nodes, lambda a, b: a > b, where, verbose)
 
 
     def subst_file(self, source, target, at = False):
@@ -1425,27 +1431,40 @@ class Rule(object):
                     (self, self.cached_deps))
         if not self.cached_deps:
             if self.verbose:
-                dprint("%s has no deps, assuming not up-to-date" % self)
+                dprint("  %s has no deps, assuming not up-to-date" % self)
             return False
         # First find whether uptodate wrt static deps.
         # If result is True extra variable newest_dep is available
         uptodate = True
+        verbose = self.verbose
+        if verbose:
+            verbose = "  "
         try:
-            oldest_target = self.ctx.get_oldest(self.targets, NOWHERE)
+            oldest_target = self.ctx.get_oldest(self.targets, NOWHERE, verbose)
         except MaitchNotFoundError, KeyError:
             oldest_target = None
         if not oldest_target:
             uptodate = False
+        if self.verbose:
+            dprint("  %s oldest target is %s" % (self, oldest_target))
         if uptodate:
             # All sources and deps should be available at this point so
             # OK to let exception propagate
-            newest_dep = self.ctx.get_newest(self.cached_deps, self.where)
-            if newest_dep and newest_dep > oldest_target:
+            newest_dep = self.ctx.get_newest(self.cached_deps, self.where,
+                    verbose)
+            dprint("  %s newest dep is %s" % (self, newest_dep))
+            if newest_dep and (newest_dep > oldest_target):
+                if verbose:
+                    dprint("  %s: %s > %s" % (self, newest_dep, oldest_target))
                 uptodate = False
         else:
+            if self.verbose:
+                dprint("  %s had no target, not testing deps" % self)
             newest_dep = None
 
-        if self.dep_func:
+        if uptodate and self.dep_func:
+            if verbose:
+                dprint("  %s has dep_func" % self)
             # Work out whether cached dynamic deps need updating
             dyn_deps = None
             deps_name = self.ctx.make_out_path(self.ctx.subst(
@@ -1480,7 +1499,19 @@ class Rule(object):
             # are older than them
             if get_newest(dyn_deps) > oldest_target:
                 uptodate = False
+        else:
+            if verbose:
+                if uptodate:
+                    dprint("  %s has no dep_func" % self)
+                else:
+                    dprint(("  %s: skipping dep_func because out of date " + \
+                            "wrt static deps") % self)
 
+        if verbose:
+            if uptodate:
+                dprint("  %s is up to date" % self)
+            else:
+                dprint("  %s is not up to date" % self)
         return uptodate
 
 
@@ -1532,8 +1563,7 @@ class TouchRule(Rule):
 
     def touch(self, ctx, env, tgts, srcs):
         for t in tgts:
-            fp = open(t, 'a')
-            fp.close()
+            os.utime(t, None)
 
 
 
@@ -2306,21 +2336,26 @@ def change_suffix_with_prefix(files, old, new, prefix):
 
 
 
-def get_extreme_stamp(nodes, comparator):
+def get_extreme_stamp(nodes, comparator, verbose = None):
     """ Gets stamp for each item in nodes and returns the highest
     according to comparator. Returns None for an empty list or raises
     MaitchNotFoundError if any member is not found. """
     stamp = None
+    nodest = None
     for n in nodes:
         if not os.path.exists(n):
             raise MaitchNotFoundError("Can't find '%s' to get timestamp" % n)
         s = os.stat(n).st_mtime
         if stamp == None:
+            nodest = n
             stamp = s
         else:
             r = comparator(s, stamp)
             if r == True or r > 0:
+                nodest = n
                 stamp = s
+    if verbose:
+        dprint("%s of %s is %s: %s" % (verbose, nodes, nodest, str(stamp)))
     return stamp
 
 
