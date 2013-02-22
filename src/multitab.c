@@ -1069,6 +1069,44 @@ static gboolean tab_clicked_handler(GtkWidget *widget,
     return FALSE;
 }
 
+/* Creates the label widget for a tab. tab->label is the GtkLabel containing
+ * the text; the return value is the top-level container. */
+static GtkWidget *make_tab_label(MultiTab *tab, GtkPositionType tab_pos)
+{
+    (void) tab_pos;
+    tab->label = multitab_label_new(tab->parent->notebook, NULL,
+            &tab->parent->best_tab_width);
+    multi_tab_set_full_window_title(tab, tab->window_title_template,
+            tab->window_title);
+#if GTK_CHECK_VERSION(3, 0, 0)
+    /* GtkBox will be replaced by GtkGrid one day, but at the moment it
+     * doesn't work properly because GtkNotebook has no homogeneous option
+     * and GtkGrid doesn't have pack_end to right-align close button.
+     */
+     /*
+    tab->label_box = gtk_grid_new();
+    gtk_orientable_set_orientation(GTK_ORIENTABLE(tab->label_box),
+            GTK_ORIENTATION_HORIZONTAL);
+    */
+    tab->label_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
+    gtk_box_set_homogeneous(GTK_BOX(tab->label_box), FALSE);
+#else
+    tab->label_box = gtk_hbox_new(FALSE, 4);
+#endif
+    gtk_box_pack_start(GTK_BOX(tab->label_box), tab->label, TRUE, TRUE, 0);
+    g_signal_connect(tab->label, "button-press-event",
+            G_CALLBACK(tab_clicked_handler), tab);
+    if (multi_tab_get_show_close_button(tab->user_data))
+    {
+        multi_tab_add_close_button(tab);
+    }
+    gtk_notebook_set_tab_label(GTK_NOTEBOOK(tab->parent->notebook),
+        tab->widget, tab->label_box);
+    gtk_widget_show_all(tab->label_box);
+
+    return tab->label_box;
+}
+
 static void page_reordered_callback(GtkNotebook *notebook, GtkWidget *child,
         guint page_num, MultiWin *win)
 {
@@ -1130,6 +1168,14 @@ static void page_added_callback(GtkNotebook *notebook, GtkWidget *child,
         {
             multi_tab_pack_for_multiple(tab, GTK_CONTAINER(notebook));
         }
+#if GTK_CHECK_VERSION(3, 0, 0)
+        if (old_win_destroyed && !vert_tabs)
+        {
+            /* The dragged tab's label will now be stupidly small,
+             * but there's absolutely nothing we can do about it.
+             */
+        }
+#endif
     }
 }
 
@@ -2150,44 +2196,6 @@ void multi_tab_set_status_stock(MultiTab *tab, const char *stock)
 void multi_tab_set_middle_click_tab_action(MultiTab *tab, int action)
 {
     tab->middle_click_action = action;
-}
-
-/* Creates the label widget for a tab. tab->label is the GtkLabel containing
- * the text; the return value is the top-level container. */
-static GtkWidget *make_tab_label(MultiTab *tab, GtkPositionType tab_pos)
-{
-    (void) tab_pos;
-    tab->label = multitab_label_new(tab->parent->notebook, NULL,
-            &tab->parent->best_tab_width);
-    multi_tab_set_full_window_title(tab, tab->window_title_template,
-            tab->window_title);
-#if GTK_CHECK_VERSION(3, 0, 0)
-    /* GtkBox will be replaced by GtkGrid one day, but at the moment it
-     * doesn't work properly because GtkNotebook has no homogeneous option
-     * and GtkGrid doesn't have pack_end to right-align close button.
-     */
-     /*
-    tab->label_box = gtk_grid_new();
-    gtk_orientable_set_orientation(GTK_ORIENTABLE(tab->label_box),
-            GTK_ORIENTATION_HORIZONTAL);
-    */
-    tab->label_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
-    gtk_box_set_homogeneous(GTK_BOX(tab->label_box), FALSE);
-#else
-    tab->label_box = gtk_hbox_new(FALSE, 4);
-#endif
-    gtk_box_pack_start(GTK_BOX(tab->label_box), tab->label, TRUE, TRUE, 0);
-    g_signal_connect(tab->label, "button-press-event",
-            G_CALLBACK(tab_clicked_handler), tab);
-    if (multi_tab_get_show_close_button(tab->user_data))
-    {
-        multi_tab_add_close_button(tab);
-    }
-    gtk_notebook_set_tab_label(GTK_NOTEBOOK(tab->parent->notebook),
-        tab->widget, tab->label_box);
-    gtk_widget_show_all(tab->label_box);
-
-    return tab->label_box;
 }
 
 static void multi_tab_add_menutree_items(MultiWin * win, MultiTab * tab,

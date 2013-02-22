@@ -444,7 +444,7 @@ elif ctx.mode == 'build':
                             wdeps = lastmtarget,
                             verbose = (l == 'pt_BR'),
                             where = NOWHERE))
-                    #lastmtarget = mtarget
+                    lastmtarget = mtarget
         for h in ROXTERM_HTML_BASENAMES:
             master = "${TOP_DIR}/Help/en/%s.html" % h
             pot = "${PO4ADIR}/%s.html.pot" % h
