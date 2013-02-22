@@ -237,10 +237,11 @@ if ctx.mode == 'configure':
     ctx.setenv('htmldir', "${HTMLDIR}")
     ctx.define('BIN_DIR', ctx.env['BINDIR'])
 
-    ctx.subst_file("${TOP_DIR}/roxterm.1.xml.in", "roxterm.1.xml", True)
-    ctx.subst_file("${TOP_DIR}/roxterm-config.1.xml.in", "roxterm-config.1.xml",
-            True)
-    ctx.subst_file("${TOP_DIR}/roxterm.spec.in", "roxterm.spec")
+    ctx.subst_file("${TOP_DIR}/roxterm.1.xml.in",
+            "${TOP_DIR}/roxterm.1.xml", True)
+    ctx.subst_file("${TOP_DIR}/roxterm-config.1.xml.in",
+            "${TOP_DIR}/roxterm-config.1.xml", True)
+    ctx.subst_file("${TOP_DIR}/roxterm.spec.in", "${TOP_DIR}/roxterm.spec")
     ctx.setenv('APPINFO_STRING', "${VERSION} (%s)" % \
             time.strftime("%Y-%m-%d", time.gmtime(time.time())))
     ctx.subst_file(APPINFO + ".in", APPINFO)
@@ -250,6 +251,7 @@ if ctx.mode == 'configure':
             '#define VERSION_H\n' \
             '#define VERSION "${VERSION}"\n' \
             '#endif\n')
+    ctx.created_by_config['version.h'] = True
 
     # Make symlinks expected by ROX
     for f in "AUTHORS ChangeLog COPYING COPYING-LGPL NEWS README".split():

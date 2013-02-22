@@ -330,7 +330,7 @@ Other predefined variables [default values shown in squarer brackets]:
 
         self.definitions = {}
 
-        self.created_by_config[opj(self.build_dir, ".maitch")] = True
+        self.created_by_config[".maitch"] = True
 
         # In dist mode everything is relative to TOP_DIR
         if self.mode == "dist":
@@ -465,7 +465,7 @@ Other predefined variables [default values shown in squarer brackets]:
         s += "#endif /* %s */\n" % sentinel
         filename = opj(self.build_dir, "config.h")
         self.save_if_different(filename, s)
-        self.created_by_config[filename] = True
+        self.created_by_config["config.h"] = True
 
 
     @staticmethod
@@ -667,7 +667,12 @@ Other predefined variables [default values shown in squarer brackets]:
             self.lock_file.release()
             keep = []
         else:
-            keep = self.created_by_config
+            keep = {}
+            for k in self.created_by_config.keys():
+                k = self.subst(k)
+                if not os.path.isabs(k):
+                    k = opj(self.subst("${BUILD_DIR}"), k)
+                keep[k] = True
         if not self.check_build_dir():
             return
         recursively_remove(self.build_dir, fatal, keep)
@@ -991,7 +996,7 @@ int main() { %s(); return 0; }
     def subst_file(self, source, target, at = False):
         """ As global version, using self.env. """
         subst_file(self.env, source, target, at)
-        self.created_by_config[self.subst(target)] = True
+        self.created_by_config[target] = True
 
 
     def install(self, directory, sources = None,
@@ -1141,8 +1146,7 @@ int main() { %s(); return 0; }
 
 
     def recursively_remove(self, target, fatal = False, excep = []):
-        recursively_remove(self.subst(target), fatal,
-                [self.subst(e) for e in excep])
+        recursively_remove(self.subst(target), fatal, excep)
 
 
     def prune_directory(self, root):
