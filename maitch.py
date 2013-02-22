@@ -1532,7 +1532,7 @@ class TouchRule(Rule):
 
     def touch(self, ctx, env, tgts, srcs):
         for t in tgts:
-            fp = open(t, 'w')
+            fp = open(t, 'a')
             fp.close()
 
 
@@ -1903,14 +1903,14 @@ def PotRules(ctx, **kwargs):
 
 
 
-class PoRule(Rule):
+class PoRule(TouchRule):
     """ Updates a po file from a pot (default src is
     ${TOP_DIR}/po/${PACKAGE}.pot). """
     def __init__(self, *args, **kwargs):
         if not 'sources' in kwargs:
             kwargs['sources'] = "${TOP_DIR}/po/${PACKAGE}.pot"
         if not 'rule' in kwargs:
-            kwargs['rule'] = "${MSGMERGE} -q -U ${TGT} ${SRC}"
+            kwargs['rule'] = ["${MSGMERGE} -q -U ${TGT} ${SRC}", self.touch]
         diffpat = kwargs.get('diffpat')
         if not diffpat:
             diffpat = []

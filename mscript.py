@@ -435,7 +435,6 @@ elif ctx.mode == 'build':
                             sources = "po4a/%s.1.%s.xml.in" % (m, l),
                             targets = "po4a/%s.1.%s.xml" % (m, l),
                             deps = po,
-                            verbose = (l == 'pt_BR'),
                             where = NOWHERE,
                             use_shell = True))
                     mtarget = "po4a/%s/%s.1" % (l, m)
@@ -444,7 +443,6 @@ elif ctx.mode == 'build':
                             sources = "po4a/%s.1.%s.xml" % (m, l),
                             targets = mtarget,
                             wdeps = lastmtarget,
-                            verbose = (l == 'pt_BR'),
                             where = NOWHERE))
                     lastmtarget = mtarget
         for h in ROXTERM_HTML_BASENAMES:
