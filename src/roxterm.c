@@ -894,10 +894,35 @@ static char *roxterm_lookup_uri_handler(ROXTermData *roxterm, const char *tag)
     return filename;
 }
 
+/* Converts quotes to % sequences to fix debian bug #696917 */
+char *preparse_url(const char *url)
+{
+    GString *s = g_string_new("");
+    size_t n;
+    char c;
+    for (n = 0; (c = url[n]) != 0; ++n)
+    {
+        switch (c)
+        {
+            case '"':
+                s = g_string_append(s, "%22");
+                break;
+            case '\'':
+                s = g_string_append(s, "%27");
+                break;
+            default:
+                s = g_string_append_c(s, c);
+                break;
+        }
+    }
+    return g_string_free(s, FALSE);
+}
+
 static void roxterm_launch_browser(ROXTermData *roxterm, const char *url)
 {
+    char *url2 = preparse_url(url);
     char *browser_o = roxterm_lookup_uri_handler(roxterm, "browser");
-    char *browse = uri_get_browser_command(url, browser_o);
+    char *browse = uri_get_browser_command(url2, browser_o);
 
     if (browser_o)
         g_free(browser_o);
@@ -907,6 +932,7 @@ static void roxterm_launch_browser(ROXTermData *roxterm, const char *url)
             (roxterm->profile, "browser_spawn_type", 0));
         g_free(browse);
     }
+    g_free(url2);
 }
 
 static void roxterm_launch_email(ROXTermData *roxterm, const char *uri)
