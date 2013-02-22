@@ -223,27 +223,27 @@ MultiWin *multi_win_new_full(const char *display_name,
         Options *shortcuts, int zoom_index,
         gpointer user_data_template, const char *geom,
         MultiWinSizing sizing, int numtabs, GtkPositionType tab_pos,
-        gboolean always_show_tabs);
+        gboolean always_show_tabs, gboolean add_tab_button);
 
 inline static MultiWin *multi_win_new_with_geom(const char *display_name,
         Options *shortcuts,
         int zoom_index, gpointer user_data_template,
         const char *geom, int numtabs, GtkPositionType tab_pos,
-        gboolean always_show_tabs)
+        gboolean always_show_tabs, gboolean add_tab_button)
 {
     return multi_win_new_full(display_name, shortcuts, zoom_index,
                   user_data_template, geom, MULTI_WIN_DEFAULT_SIZE,
-                  numtabs, tab_pos, always_show_tabs);
+                  numtabs, tab_pos, always_show_tabs, add_tab_button);
 }
 
 inline static MultiWin *multi_win_new(const char *display_name,
         Options *shortcuts, int zoom_index,
         gpointer user_data_template, int numtabs, GtkPositionType tab_pos,
-        gboolean always_show_tabs)
+        gboolean always_show_tabs, gboolean add_tab_button)
 {
     return multi_win_new_full(display_name, shortcuts, zoom_index,
                   user_data_template, NULL, MULTI_WIN_DEFAULT_SIZE,
-                  numtabs, tab_pos, always_show_tabs);
+                  numtabs, tab_pos, always_show_tabs, add_tab_button);
 }
 
 /* Creates a new window that's the same as the old one except with a different
@@ -256,22 +256,22 @@ inline static MultiWin *multi_win_new_fullscreen(const char *display_name,
         Options *shortcuts,
         int zoom_index, gpointer user_data_template,
         int numtabs, GtkPositionType tab_pos,
-        gboolean always_show_tabs)
+        gboolean always_show_tabs, gboolean add_tab_button)
 {
     return multi_win_new_full(display_name, shortcuts, zoom_index,
                   user_data_template, NULL, MULTI_WIN_FULL_SCREEN,
-                  numtabs, tab_pos, always_show_tabs);
+                  numtabs, tab_pos, always_show_tabs, add_tab_button);
 }
 
 inline static MultiWin *multi_win_new_maximised(const char *display_name,
         Options *shortcuts,
         int zoom_index, gpointer user_data_template,
         int numtabs, GtkPositionType tab_pos,
-        gboolean always_show_tabs)
+        gboolean always_show_tabs, gboolean add_tab_button)
 {
     return multi_win_new_full(display_name, shortcuts, zoom_index,
                   user_data_template, NULL, MULTI_WIN_MAXIMISED,
-                  numtabs, tab_pos, always_show_tabs);
+                  numtabs, tab_pos, always_show_tabs, add_tab_button);
 }
 
 /* Create a new window without a new child tab, ready to have an existing
@@ -280,7 +280,8 @@ inline static MultiWin *multi_win_new_maximised(const char *display_name,
 MultiWin *multi_win_new_blank(const char *display_name,
         Options *shortcuts, int zoom_index,
         gboolean disable_menu_shortcuts, gboolean disable_tab_shortcuts,
-        GtkPositionType tab_pos, gboolean always_show_tabs);
+        GtkPositionType tab_pos, gboolean always_show_tabs,
+        gboolean add_tab_button);
 
 /* Creates a new "blank" window ready for a dragged tab at given coords */
 MultiWin *multi_win_new_for_tab(const char *display_name, int x, int y,
@@ -396,6 +397,10 @@ GtkPositionType multi_win_get_tab_pos(MultiWin *win);
 gboolean multi_win_get_always_show_tabs(MultiWin *win);
 
 void multi_win_set_always_show_tabs(MultiWin *win, gboolean show);
+
+gboolean multi_win_get_show_add_tab_button(MultiWin *win);
+
+void multi_win_set_show_add_tab_button(MultiWin *win, gboolean show);
 
 /* List of all known windows - treat as read-only */
 extern GList *multi_win_all;

@@ -3129,6 +3129,17 @@ static void roxterm_apply_colour_scheme_from_profile(ROXTermData *roxterm)
     g_free(scheme);
 }
 
+static void roxterm_apply_show_add_tab_btn(ROXTermData *roxterm)
+{
+    MultiWin *win = roxterm_get_win(roxterm);
+    if (win)
+    {
+        multi_win_set_show_add_tab_button(win,
+                options_lookup_int_with_default(roxterm->profile,
+                        "show_add_tab_btn", 1));
+    }
+}
+
 static void roxterm_apply_profile(ROXTermData *roxterm, VteTerminal *vte,
         gboolean update_geometry)
 {
@@ -3168,6 +3179,8 @@ static void roxterm_apply_profile(ROXTermData *roxterm, VteTerminal *vte,
     roxterm_apply_middle_click_tab(roxterm);
 
     roxterm_apply_colour_scheme_from_profile(roxterm);
+
+    roxterm_apply_show_add_tab_btn(roxterm);
 }
 
 static gboolean
@@ -3562,6 +3575,10 @@ static void roxterm_reflect_profile_change(Options * profile, const char *key)
         else if (!strcmp(key, "always_show_tabs"))
         {
             roxterm_apply_always_show_tabs(roxterm);
+        }
+        else if (!strcmp(key, "show_add_tab_btn"))
+        {
+            roxterm_apply_show_add_tab_btn(roxterm);
         }
         else if (!strcmp(key, "disable_menu_access"))
         {
@@ -4237,6 +4254,7 @@ void roxterm_launch(const char *display_name, char **env)
             colour_scheme_name,
             global_options_lookup_string("encoding"),
             &geom, &size_on_cli, env);
+    int show_add_tab_btn;
 
     if (!size_on_cli)
     {
@@ -4318,6 +4336,8 @@ void roxterm_launch(const char *display_name, char **env)
         }
     }
 
+    show_add_tab_btn = options_lookup_int_with_default(roxterm->profile,
+            "show_add_tab_btn", 1);
     if (global_options_tab)
     {
         global_options_tab = FALSE;
@@ -4328,14 +4348,14 @@ void roxterm_launch(const char *display_name, char **env)
         global_options_fullscreen = FALSE;
         win = multi_win_new_fullscreen(display_name, shortcuts,
                 roxterm->zoom_index, roxterm,
-                num_tabs, tab_pos, always_show_tabs);
+                num_tabs, tab_pos, always_show_tabs, show_add_tab_btn);
     }
     else if (roxterm->maximise)
     {
         global_options_maximise = FALSE;
         win = multi_win_new_maximised(display_name, shortcuts,
                 roxterm->zoom_index, roxterm,
-                num_tabs, tab_pos, always_show_tabs);
+                num_tabs, tab_pos, always_show_tabs, show_add_tab_btn);
     }
     else
     {
@@ -4357,7 +4377,7 @@ void roxterm_launch(const char *display_name, char **env)
         }
         win = multi_win_new_with_geom(display_name, shortcuts,
                 roxterm->zoom_index, roxterm, geom,
-                num_tabs, tab_pos, always_show_tabs);
+                num_tabs, tab_pos, always_show_tabs, show_add_tab_btn);
     }
     g_free(geom);
 
@@ -4615,7 +4635,9 @@ void roxterm_spawn(ROXTermData *roxterm, const char *command,
             multi_win_new(roxterm->display_name,
                     multi_win_get_shortcut_scheme(win),
                     roxterm->zoom_index, roxterm, num_tabs, tab_pos,
-                    multi_win_get_always_show_tabs(win));
+                    multi_win_get_always_show_tabs(win),
+                    options_lookup_int_with_default(roxterm->profile,
+                            "show_add_tab_btn", 1));
             break;
         case ROXTerm_SpawnNewTab:
             roxterm->special_command = g_strdup(command);
@@ -4733,6 +4755,7 @@ static void parse_open_win(_ROXTermParseContext *rctx,
     const char *title = NULL;
     gboolean show_mbar = TRUE;
     gboolean show_tabs = FALSE;
+    gboolean show_add_tab_btn = TRUE;
     gboolean disable_menu_shortcuts = FALSE;
     gboolean disable_tab_shortcuts = FALSE;
     GtkPositionType tab_pos = GTK_POS_TOP;
@@ -4778,6 +4801,8 @@ static void parse_open_win(_ROXTermParseContext *rctx,
             show_tabs = strcmp(v, "0");
         else if (!strcmp(a, "tab_pos"))
             tab_pos = atoi(v);
+        else if (!strcmp(a, "show_add_tab_btn"))
+            show_add_tab_btn = strcmp(v, "0");
         else if (!strcmp(a, "disable_menu_shortcuts"))
             disable_menu_shortcuts = (strcmp(v, "0") != 0);
         else if (!strcmp(a, "disable_tab_shortcuts"))
@@ -4803,7 +4828,8 @@ static void parse_open_win(_ROXTermParseContext *rctx,
     shortcuts = shortcuts_open(shortcuts_name);
     rctx->win = win = multi_win_new_blank(disp, shortcuts,
             multi_win_get_nearest_index_for_zoom(rctx->zoom_factor),
-            disable_menu_shortcuts, disable_tab_shortcuts, tab_pos, show_tabs);
+            disable_menu_shortcuts, disable_tab_shortcuts, tab_pos, show_tabs,
+            show_add_tab_btn);
     shortcuts_unref(shortcuts);
     gwin = GTK_WINDOW(multi_win_get_widget(rctx->win));
     /* Set role and title before and after adding tabs because docs are quite
