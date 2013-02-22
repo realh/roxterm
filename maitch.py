@@ -1324,7 +1324,7 @@ class Rule(object):
                 env['TGT_DIR'] = ''
             self.cached_targets = targets
             self.cached_sources = sources
-        return [self.cached_env, self.cached_targets, self.cached_sources]
+        return [env, self.cached_targets, self.cached_sources]
 
 
     def run(self):
@@ -1361,7 +1361,7 @@ class Rule(object):
                     if call_subprocess(prog,
                             shell = self.use_shell, cwd = self.ctx.build_dir):
                         dprint("%s NZ error code" % r)
-                        raise MaitchChildError("Rule '%s' failed" % rule)
+                        raise MaitchChildError("Rule '%s' failed" % r)
                     else:
                         dprint("%s executed successfully" % r)
         except:
