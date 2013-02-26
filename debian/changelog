@@ -1,6 +1,7 @@
-roxterm (2.7.0.21-1) UNRELEASED; urgency=low
+roxterm (2.7.0.22-1) UNRELEASED; urgency=low
 
   * Enable translations even if incomplete.
+    + debian/control: Build-Depends on po4a and gettext.
   * Use GdkRGBA instead of GdkColor when possible.
   * Added option to bind a colour scheme to a profile (Closes: #684294).
   * Escape quotes in URLs (Closes: #696917).
