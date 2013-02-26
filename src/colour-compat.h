@@ -33,7 +33,7 @@
 #define COLOUR_BUTTON_SET(w, c) \
         gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(w), c)
 #define COLOUR_BUTTON_GET(w, p) \
-        gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(w), p)
+        gtk_color_chooser_get_rgba(GTK_COLOR_CHOOSER(w), p)
 #define COLOUR_SET_VTE(f) vte_terminal_set_color##f##_rgba
 #define COLOUR_SPRINTF(s, c) sprintf(s, "#%04hx%04hx%04hx", \
         (guint16) (c->red * 65535), \

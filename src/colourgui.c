@@ -64,7 +64,7 @@ static void colourgui_set_colour_widget(GtkBuilder *builder,
                 TRUE, TRUE));
 #endif
     widget = GTK_WIDGET(gtk_builder_get_object(builder, widget_name));
-    /* COLOUR_BUTTON_SET doesn't seem to cause a change signal so
+    /* Setting a colour doesn't seem to cause a change signal so
      * explicitly raise one if necessary */
     capplet_ignore_changes = TRUE;
     COLOUR_BUTTON_SET(widget, colour);
