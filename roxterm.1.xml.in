@@ -15,7 +15,7 @@ XP=xsltproc -''-nonet
 
 manpage.1: manpage.dbk
         $(XP) $(DB2MAN) $<
-    
+
 The xsltproc binary is found in the xsltproc package.  The
 XSL files are in docbook-xsl.  Please remember that if you
 create the nroff version in one of the debian/rules file
@@ -306,12 +306,15 @@ and docbook-xsl in your Build-Depends control field.
           <option>--execute</option>
         </term>
         <listitem>
-          <para>Execute remainder of command line inside the terminal. Must
-            be the final option.</para>
+          <para>Execute remainder of the command line inside the terminal. Must
+            be the final option. If there is only one following argument it is
+            parsed in case it is a command with space-separated arguments that
+            was passed to roxterm in quotes. If there is more than one argument
+            they are treated as a command and arguments without parsing.</para>
         </listitem>
       </varlistentry>
     </variablelist>
-      
+
   </refsect1>
   <refsect1>
     <title>SEE ALSO</title>

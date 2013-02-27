@@ -776,7 +776,20 @@ static void roxterm_run_command(ROXTermData *roxterm, VteTerminal *vte)
     {
         /* Either restoring a session or -e was given */
         if (!roxterm->from_session)
+        {
             special = TRUE;
+            /* If commandv is a single string it might be a command + args
+             * separated by spaces, so parse it. See
+             * <http://sourceforge.net/p/roxterm/bugs/87/>.
+             */
+            if (!roxterm->commandv[1])
+            {
+                command = roxterm->commandv[0];
+                roxterm->commandv[0] = NULL;
+                g_strfreev(roxterm->commandv);
+                roxterm->commandv = NULL;
+            }
+        }
     }
     else
     {
@@ -831,10 +844,11 @@ static void roxterm_run_command(ROXTermData *roxterm, VteTerminal *vte)
         {
             reply = g_strdup_printf(_("Unable to parse command %s: %s"),
                     command, error ? error->message : _("unknown reason"));
+            g_error_free(error);
             if (commandv)
                 g_strfreev(commandv);
             commandv = g_new(char *, 2);
-            commandv[0] = g_strdup(get_default_command(roxterm));
+            commandv[0] = get_default_command(roxterm);
             commandv[1] = NULL;
         }
     }
