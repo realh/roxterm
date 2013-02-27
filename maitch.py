@@ -33,7 +33,8 @@ _mprint_fp = None
 def mprint(*args, **kwargs):
     """ Equivalent to python 3's print but also works in python < 2.6 """
     global _mprint_lock
-    with _mprint_lock:
+    _mprint_lock.acquire()
+    try:
         sep = kwargs.get('sep', ' ')
         end = kwargs.get('end', '\n')
         file = kwargs.get('file', sys.stdout)
@@ -42,6 +43,8 @@ def mprint(*args, **kwargs):
         file.flush()
         if _mprint_fp and file != _mprint_fp:
             _mprint_fp.write(s)
+    finally:
+        _mprint_lock.release()
 
 
 _debug = False
@@ -489,10 +492,14 @@ Other predefined variables [default values shown in squarer brackets]:
     def tmpname(self):
         """ Returns the name of a temporary file in ${BUILD_DIR}/.maitch
         which is unique for this context. """
-        with self.lock:
+        self.lock.acquire()
+        try:
             self.tmpfile_index += 1
             i = self.tmpfile_index
-        return opj(self.build_dir, ".maitch", "tmp%03d" % i)
+            result = opj(self.build_dir, ".maitch", "tmp%03d" % i)
+        finally:
+            self.lock.release()
+        return result
 
 
     def get_build_dir(self, kwargs = None):
@@ -687,9 +694,12 @@ Other predefined variables [default values shown in squarer brackets]:
             path = args
         else:
             path = self.make_out_path(*args)
-        with self.lock:
+        self.lock.acquire()
+        try:
             if not os.path.isdir(path):
                 os.makedirs(path)
+        finally:
+            self.lock.release()
 
 
     def ensure_out_dir_for_file(self, path):
@@ -2443,8 +2453,11 @@ class BuildGroup(object):
         job.calculating = True
         if job.verbose:
             self.verbose += 1
-        with self.cond:
+        self.cond.acquire()
+        try:
             self.pending_jobs.append(job)
+        finally:
+            self.cond.release()
         for t in job.targets:
             self.queued[self.ctx.subst(t)] = job
         self.satisfy_deps(job)
@@ -2475,18 +2488,22 @@ class BuildGroup(object):
         dprint("Cancelling all jobs")
         # Cond.notify_all() sometimes freezes all threads instead of
         # awakening them, so only choice is to exit
-        with self.cond:
+        self.cond.acquire()
+        try:
             if not self.cancelled:
                 self.cancelled = True
                 self.ready_queue = []
                 self.pending_jobs = []
                 self.cond.notify_all()
+        finally:
+            self.cond.release()
         dprint("Leaving cancel_all_jobs")
 
 
     def make_job_ready(self, job):
         " Moves a job from pending_jobs to ready_queue. "
-        with self.cond:
+        self.cond.acquire()
+        try:
             # We may still get here after all jobs have been cancelled due
             # to an error
             try:
@@ -2496,6 +2513,8 @@ class BuildGroup(object):
             else:
                 self.ready_queue.append(job)
             self.cond.notify()
+        finally:
+            self.cond.release()
 
 
     def satisfy_deps(self, job):
@@ -2549,13 +2568,16 @@ class BuildGroup(object):
 
 
     def mark_blocking(self, blocked, blocker):
-        with self.cond:
+        self.cond.acquire()
+        try:
             if blocked.verbose:
                 blocker.verbose = True
             if not blocked in blocker.blocking:
                 blocker.blocking.append(blocked)
             if not blocker in blocked.blocked_by:
                 blocked.blocked_by.append(blocker)
+        finally:
+            self.cond.release()
 
 
     def job_done(self, job):
@@ -2564,8 +2586,11 @@ class BuildGroup(object):
         for j in job.blocking:
             self.do_while_locked(self.unblock_job, j, job)
         if not len(self.ready_queue) and not len(self.pending_jobs):
-            with self.cond:
+            self.cond.acquire()
+            try:
                 self.cond.notify_all()
+            finally:
+                self.cond.release()
 
 
     def unblock_job(self, blocked, blocker):
@@ -2591,10 +2616,13 @@ class Builder(threading.Thread):
 
     def __init__(self, build_group):
         global builder_index
-        with build_group.cond:
+        build_group.cond.acquire()
+        try:
             global _thread_index
             self.index = _thread_index
             _thread_index += 1
+        finally:
+            build_group.cond.release()
         self.bg = build_group
         threading.Thread.__init__(self)
 
@@ -2610,7 +2638,8 @@ class Builder(threading.Thread):
             while not finished:
                 job = None
                 #dprint("%s acquiring cond" % self.describe())
-                with self.bg.cond:
+                self.bg.cond.acquire()
+                try:
                     if not len(self.bg.ready_queue):
                         if len(self.bg.pending_jobs):
                             dprint("%s waiting for jobs" % self.describe())
@@ -2625,7 +2654,9 @@ class Builder(threading.Thread):
                         finished = True
                     elif len(self.bg.ready_queue):
                         job = self.bg.ready_queue.pop()
-                #dprint("%s released cond" % self.describe())
+                finally:
+                    self.bg.cond.release()
+                    #dprint("%s released cond" % self.describe())
                 if job:
                     dprint("%s running job %s" % (self.describe(), str(job)))
                     job.run()
