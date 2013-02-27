@@ -180,6 +180,7 @@ void on_editable_changed(GtkEditable * editable, ProfileGUI *pg)
     else PG_IF_CHANGED(browser);
     else PG_IF_CHANGED(mailer);
     else PG_IF_CHANGED(dir_filer);
+    else PG_IF_CHANGED(filer);
     else PG_IF_CHANGED(command);
     else PG_IF_CHANGED(title_string);
     else PG_IF_CHANGED(ssh_address);

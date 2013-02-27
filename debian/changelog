@@ -1,4 +1,4 @@
-roxterm (2.7.0.26-1) UNRELEASED; urgency=low
+roxterm (2.7.0.27-1) UNRELEASED; urgency=low
 
   * Enable translations even if incomplete.
     + debian/control: Build-Depends on po4a and gettext.
@@ -8,6 +8,7 @@ roxterm (2.7.0.26-1) UNRELEASED; urgency=low
   * Added optional new tab button (Closes: #665840).
   * Parse a single argument to -e in case it contains a space-separated
     executable and arguments.
+  * Fixed Files/Filer option by responding to changes of widget content.
 
  -- Tony Houghton <h@realh.co.uk>  Wed, 20 Feb 2013 23:21:11 +0000
 
