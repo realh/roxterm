@@ -1228,13 +1228,16 @@ static void roxterm_apply_window_background(ROXTermData *roxterm,
         const COLOUR_T *background)
 {
     GtkWindow *w = roxterm_get_toplevel(roxterm);
+    static COLOUR_T black = {0, 0, 0};
 
     if (!background)
     {
         background =
             colour_scheme_get_background_colour(roxterm->colour_scheme, TRUE);
+        if (!background)
+            background = &black;
     }
-    if (w && background)
+    if (w)
     {
 #if GTK_CHECK_VERSION(3, 0, 0)
         gtk_widget_override_background_color(GTK_WIDGET(w),
