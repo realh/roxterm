@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: roxterm\n"
 "Report-Msgid-Bugs-To: http://sourceforge.net/tracker/?group_id=124080\n"
-"POT-Creation-Date: 2013-02-26 19:27+0000\n"
+"POT-Creation-Date: 2013-02-27 18:26+0000\n"
 "PO-Revision-Date: 2012-07-12 16:57+0000\n"
 "Last-Translator: Maxim Orlov <uubboo@gmail.com>\n"
 "Language-Team: Russian (http://www.transifex.com/projects/p/roxterm/language/"
@@ -456,17 +456,20 @@ msgstr "<option>-e</option> <option>--execute</option>"
 #. type: Content of: <refentry><refsect1><variablelist><varlistentry><listitem><para>
 #: ../../roxterm.1.xml.in:309
 msgid ""
-"Execute remainder of command line inside the terminal. Must be the final "
-"option."
+"Execute remainder of the command line inside the terminal. Must be the final "
+"option. If there is only one following argument it is parsed in case it is a "
+"command with space-separated arguments that was passed to roxterm in quotes. "
+"If there is more than one argument they are treated as a command and "
+"arguments without parsing."
 msgstr ""
 
 #. type: Content of: <refentry><refsect1><title>
-#: ../../roxterm.1.xml.in:317
+#: ../../roxterm.1.xml.in:320
 msgid "SEE ALSO"
 msgstr "СМОТРИТЕ ТАКЖЕ"
 
 #. type: Content of: <refentry><refsect1><para>
-#: ../../roxterm.1.xml.in:319
+#: ../../roxterm.1.xml.in:322
 msgid ""
 "The program is documented fully by the HTML file <filename>file://@htmldir@/"
 "en/index.html</filename>."
@@ -475,12 +478,12 @@ msgstr ""
 "<filename>file://@htmldir@/ru/index.html</filename>."
 
 #. type: Content of: <refentry><refsect1><title>
-#: ../../roxterm.1.xml.in:323
+#: ../../roxterm.1.xml.in:326
 msgid "AUTHOR"
 msgstr "АВТОРСКОЕ ПРАВО"
 
 #. type: Content of: <refentry><refsect1><para>
-#: ../../roxterm.1.xml.in:325
+#: ../../roxterm.1.xml.in:328
 msgid ""
 "This manual page was written by &dhusername; &dhemail;.  Permission is "
 "granted to copy, distribute and/or modify this document under the terms of "
@@ -489,7 +492,7 @@ msgid ""
 msgstr ""
 
 #. type: Content of: <refentry><refsect1><para>
-#: ../../roxterm.1.xml.in:331
+#: ../../roxterm.1.xml.in:334
 msgid ""
 "On Debian systems, the complete text of the GNU General Public License can "
 "be found in /usr/share/common-licenses/GPL."

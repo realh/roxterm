@@ -1224,8 +1224,29 @@ static const COLOUR_T *extrapolate_colours(const COLOUR_T *bg,
     return &ext;
 }
 
+static void roxterm_apply_window_background(ROXTermData *roxterm,
+        const COLOUR_T *background)
+{
+    GtkWindow *w = roxterm_get_toplevel(roxterm);
+
+    if (!background)
+    {
+        background =
+            colour_scheme_get_background_colour(roxterm->colour_scheme, TRUE);
+    }
+    if (w && background)
+    {
+#if GTK_CHECK_VERSION(3, 0, 0)
+        gtk_widget_override_background_color(GTK_WIDGET(w),
+                GTK_STATE_FLAG_NORMAL, background);
+#else
+        gtk_widget_modify_bg(GTK_WIDGET(w), GTK_STATE_NORMAL, background);
+#endif
+    }
+}
+
 static void
-roxterm_apply_colour_scheme(ROXTermData * roxterm, VteTerminal * vte)
+roxterm_apply_colour_scheme(ROXTermData *roxterm, VteTerminal *vte)
 {
     int ncolours = 0;
     const COLOUR_T *palette = NULL;
@@ -1239,6 +1260,7 @@ roxterm_apply_colour_scheme(ROXTermData * roxterm, VteTerminal * vte)
     if (ncolours)
         palette = colour_scheme_get_palette(roxterm->colour_scheme);
     COLOUR_SET_VTE(s)(vte, foreground, background, palette, ncolours);
+    roxterm_apply_window_background(roxterm, background);
     if (!ncolours && foreground && background)
     {
         COLOUR_SET_VTE(_bold)(vte,
@@ -1944,6 +1966,8 @@ static void roxterm_tab_selection_handler(ROXTermData * roxterm, MultiTab * tab)
     menutree_select_encoding(menu_bar, roxterm->encoding);
     menutree_select_encoding(short_popup, roxterm->encoding);
     multi_win_set_ignore_toggles(win, FALSE);
+
+    roxterm_apply_window_background(roxterm, NULL);
 }
 
 static gboolean run_child_when_idle(ROXTermData *roxterm)

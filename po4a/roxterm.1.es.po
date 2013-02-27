@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: roxterm\n"
 "Report-Msgid-Bugs-To: http://sourceforge.net/tracker/?group_id=124080\n"
-"POT-Creation-Date: 2013-02-26 19:27+0000\n"
+"POT-Creation-Date: 2013-02-27 18:26+0000\n"
 "PO-Revision-Date: 2011-12-28 12:42+0000\n"
 "Last-Translator: xukosky <xukosky@yahoo.es>\n"
 "Language-Team: Spanish (Castilian) (http://www.transifex.net/projects/p/"
@@ -545,19 +545,20 @@ msgstr "<option>-e</option> <option>--execute</option>"
 #. type: Content of: <refentry><refsect1><variablelist><varlistentry><listitem><para>
 #: ../../roxterm.1.xml.in:309
 msgid ""
-"Execute remainder of command line inside the terminal. Must be the final "
-"option."
+"Execute remainder of the command line inside the terminal. Must be the final "
+"option. If there is only one following argument it is parsed in case it is a "
+"command with space-separated arguments that was passed to roxterm in quotes. "
+"If there is more than one argument they are treated as a command and "
+"arguments without parsing."
 msgstr ""
-"Ejecuta el resto de la línea de comandos en la terminal. Debe ser la última "
-"opción."
 
 #. type: Content of: <refentry><refsect1><title>
-#: ../../roxterm.1.xml.in:317
+#: ../../roxterm.1.xml.in:320
 msgid "SEE ALSO"
 msgstr "VÉASE TAMBIÉN"
 
 #. type: Content of: <refentry><refsect1><para>
-#: ../../roxterm.1.xml.in:319
+#: ../../roxterm.1.xml.in:322
 msgid ""
 "The program is documented fully by the HTML file <filename>file://@htmldir@/"
 "en/index.html</filename>."
@@ -566,12 +567,12 @@ msgstr ""
 "<filename>file://@htmldir@/es/index.html</filename>."
 
 #. type: Content of: <refentry><refsect1><title>
-#: ../../roxterm.1.xml.in:323
+#: ../../roxterm.1.xml.in:326
 msgid "AUTHOR"
 msgstr "AUTOR"
 
 #. type: Content of: <refentry><refsect1><para>
-#: ../../roxterm.1.xml.in:325
+#: ../../roxterm.1.xml.in:328
 msgid ""
 "This manual page was written by &dhusername; &dhemail;.  Permission is "
 "granted to copy, distribute and/or modify this document under the terms of "
@@ -585,10 +586,17 @@ msgstr ""
 "Foundation."
 
 #. type: Content of: <refentry><refsect1><para>
-#: ../../roxterm.1.xml.in:331
+#: ../../roxterm.1.xml.in:334
 msgid ""
 "On Debian systems, the complete text of the GNU General Public License can "
 "be found in /usr/share/common-licenses/GPL."
 msgstr ""
 "En los sistemas Debian, el texto completo de la licencia GNU GPL se puede "
 "encontrar en /usr/share/common-licenses/GPL."
+
+#~ msgid ""
+#~ "Execute remainder of command line inside the terminal. Must be the final "
+#~ "option."
+#~ msgstr ""
+#~ "Ejecuta el resto de la línea de comandos en la terminal. Debe ser la "
+#~ "última opción."
