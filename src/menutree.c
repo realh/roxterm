@@ -625,6 +625,8 @@ static void menutree_build(MenuTree *menu_tree, Options *shortcuts,
         _("Scroll _Down One Line"), MENUTREE_VIEW_SCROLL_DOWN,
         _("Scroll Up One _Page"), MENUTREE_VIEW_SCROLL_PAGE_UP,
         _("Scroll Do_wn One Page"), MENUTREE_VIEW_SCROLL_PAGE_DOWN,
+        _("Scroll Up One _Half Page"), MENUTREE_VIEW_SCROLL_HALF_PAGE_UP,
+        _("Scroll Down One Hal_f Page"), MENUTREE_VIEW_SCROLL_HALF_PAGE_DOWN,
         _("Scroll To _Top"), MENUTREE_VIEW_SCROLL_TO_TOP,
         _("Scroll To _Bottom"), MENUTREE_VIEW_SCROLL_TO_BOTTOM,
         NULL);

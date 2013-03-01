@@ -1567,6 +1567,18 @@ static void multi_win_scroll_page_down_action(MultiWin *win)
     multi_win_vscroll_by(win, 1, MULTI_TAB_SCROLL_STEP_PAGE);
 }
 
+static void multi_win_scroll_half_page_up_action(MultiWin *win)
+{
+    g_return_if_fail(win->current_tab != NULL);
+    multi_win_vscroll_by(win, -0.5, MULTI_TAB_SCROLL_STEP_PAGE);
+}
+
+static void multi_win_scroll_half_page_down_action(MultiWin *win)
+{
+    g_return_if_fail(win->current_tab != NULL);
+    multi_win_vscroll_by(win, 0.5, MULTI_TAB_SCROLL_STEP_PAGE);
+}
+
 static void multi_win_scroll_to_top_action(MultiWin *win)
 {
     g_return_if_fail(win->current_tab != NULL);
@@ -1677,6 +1689,10 @@ static void multi_win_connect_actions(MultiWin * win)
         G_CALLBACK(multi_win_scroll_page_up_action), win, NULL, NULL, NULL);
     multi_win_menu_connect_swapped(win, MENUTREE_VIEW_SCROLL_PAGE_DOWN,
         G_CALLBACK(multi_win_scroll_page_down_action), win, NULL, NULL, NULL);
+    multi_win_menu_connect_swapped(win, MENUTREE_VIEW_SCROLL_HALF_PAGE_UP,
+        G_CALLBACK(multi_win_scroll_half_page_up_action), win, NULL, NULL, NULL);
+    multi_win_menu_connect_swapped(win, MENUTREE_VIEW_SCROLL_HALF_PAGE_DOWN,
+        G_CALLBACK(multi_win_scroll_half_page_down_action), win, NULL, NULL, NULL);
     multi_win_menu_connect_swapped(win, MENUTREE_VIEW_SCROLL_TO_TOP,
         G_CALLBACK(multi_win_scroll_to_top_action), win, NULL, NULL, NULL);
     multi_win_menu_connect_swapped(win, MENUTREE_VIEW_SCROLL_TO_BOTTOM,
