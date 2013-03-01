@@ -228,7 +228,7 @@ static void roxterm_match_remove(ROXTermData *roxterm, VteTerminal *vte,
 #define URLSTART "\\b"
 
 #define URLMSGIDSET "[-A-Z\\^_a-z{|}~!\"#$%&'()*+,./0-9;:=?`]"
-#define URLEND "[^].}> \t\r\n,\\\"]"
+#define URLEND "[^].}<> \t\r\n,\\\"]"
 #define URLHOST "[A-Za-z0-9][-A-Za-z0-9.]*"
 #define URLEXTHOST "[A-Za-z0-9][-.:!%$^*&~#A-Za-z0-9@]*"
 #define URLFQDNTAIL "\\.[-A-Za-z0-9.]+"

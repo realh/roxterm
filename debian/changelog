@@ -1,4 +1,4 @@
-roxterm (2.7.0.31-1) UNRELEASED; urgency=low
+roxterm (2.7.0.32-1) UNRELEASED; urgency=low
 
   * Enable translations even if incomplete.
     + debian/control: Build-Depends on po4a and gettext.
@@ -11,6 +11,7 @@ roxterm (2.7.0.31-1) UNRELEASED; urgency=low
   * Fixed Files/Filer option by responding to changes of widget content.
   * Make window and terminal background colours match.
   * Support python 2.4 in build by not using with statement.
+  * Exclude < from end of URL match.
 
  -- Tony Houghton <h@realh.co.uk>  Wed, 20 Feb 2013 23:21:11 +0000
 
