@@ -1,4 +1,4 @@
-roxterm (2.7.0.33-1) UNRELEASED; urgency=low
+roxterm (2.7.0.35-1) UNRELEASED; urgency=low
 
   * Enable translations even if incomplete.
     + debian/control: Build-Depends on po4a and gettext.
@@ -13,6 +13,7 @@ roxterm (2.7.0.33-1) UNRELEASED; urgency=low
   * Support python 2.4 in build by not using with statement.
   * Exclude < from end of URL match.
   * Added half page scrolling actions (patch by Jim Paris).
+  * Added bold and dim colour options.
 
  -- Tony Houghton <h@realh.co.uk>  Wed, 20 Feb 2013 23:21:11 +0000
 

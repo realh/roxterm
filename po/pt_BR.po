@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: roxterm\n"
 "Report-Msgid-Bugs-To: http://sourceforge.net/tracker/?group_id=124080\n"
-"POT-Creation-Date: 2013-03-01 15:32+0000\n"
+"POT-Creation-Date: 2013-03-02 16:55+0000\n"
 "PO-Revision-Date: 2012-09-27 03:09+0000\n"
 "Last-Translator: salmora8 <shorterfire@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/"
@@ -19,11 +19,108 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: ../../src/roxterm-config.glade:7
+#: ../src/roxterm-config.glade:7
+msgid "ROXTerm Colour Scheme"
+msgstr "Esquema de cores ROXTerm"
+
+#: ../src/roxterm-config.glade:26
+msgid "_Revert"
+msgstr "_Reverter"
+
+#: ../src/roxterm-config.glade:50
+msgid "Close this window"
+msgstr "Fechar esta janela"
+
+#: ../src/roxterm-config.glade:76
+msgid "_Set text and background colours"
+msgstr "_Definir texto e cores de fundo"
+
+#: ../src/roxterm-config.glade:82
+msgid ""
+"Whether to set terminals' text and background colours using the fields below"
+msgstr ""
+"Indica os textos do terminal e cores de fundo utilizando os campos abaixo"
+
+#: ../src/roxterm-config.glade:110
+msgid "_Text colour"
+msgstr "_Cor do Texto"
+
+#: ../src/roxterm-config.glade:125 ../src/roxterm-config.glade:126
+#: ../src/roxterm-config.glade:203 ../src/roxterm-config.glade:204
+msgid "Foreground colour of text; click to change"
+msgstr "Cor do primeiro plano de texto, clique para mudar"
+
+#: ../src/roxterm-config.glade:143
+msgid "_Background colour"
+msgstr "_Cor de fundo"
+
+#: ../src/roxterm-config.glade:160 ../src/roxterm-config.glade:161
+#: ../src/roxterm-config.glade:250 ../src/roxterm-config.glade:251
+msgid "Background colour of terminals; click to change"
+msgstr "Cor de fundo do terminal, clique para mudar"
+
+#: ../src/roxterm-config.glade:175
+#, fuzzy
+msgid "Set b_old colour"
+msgstr "Definir _cores do cursor"
+
+#: ../src/roxterm-config.glade:181 ../src/roxterm-config.glade:182
+#: ../src/roxterm-config.glade:226 ../src/roxterm-config.glade:227
+#: ../src/roxterm-config.glade:841 ../src/roxterm-config.glade:842
+msgid "Set the cursor colour from the adjacent field"
+msgstr "Definir a cor do cursor a partir do campo indicado"
+
+#: ../src/roxterm-config.glade:220
+#, fuzzy
+msgid "Set _dim colour"
+msgstr "Definir _cores do cursor"
+
+#: ../src/roxterm-config.glade:267
+msgid "Use custom _palette"
+msgstr "Usar _paleta personalizada"
+
+#: ../src/roxterm-config.glade:273
+#, fuzzy
+msgid "Whether to set the terminal&apos;s colours from the table below"
+msgstr "Indica as cores do terminal a partir tabela abaixo"
+
+#: ../src/roxterm-config.glade:274
+msgid "Whether to set the terminal's colours from the table below"
+msgstr "Indica as cores do terminal a partir tabela abaixo"
+
+#: ../src/roxterm-config.glade:290
+msgid "_Get text and background colours from palette"
+msgstr "_Obter texto e cores de fundo a partir da paleta"
+
+#: ../src/roxterm-config.glade:296 ../src/roxterm-config.glade:297
+msgid ""
+"Whether to use the palette table below to set the background and text "
+"foreground colours"
+msgstr ""
+"Indica o uso a partir da tabela de paleta para definir as cores de primeiro "
+"plano e fundo."
+
+#: ../src/roxterm-config.glade:784 ../src/roxterm-config.glade:785
+msgid "Set 16 palette entries from both rows"
+msgstr "Definir 16 paletas de entrada a partir de ambas as linhas"
+
+#: ../src/roxterm-config.glade:807 ../src/roxterm-config.glade:808
+msgid "Set just the first 8 palette entries from this row"
+msgstr "Definir apenas as primeiras 8 paletas de entrada a partir desta linha"
+
+#: ../src/roxterm-config.glade:835
+msgid "Set _cursor colour"
+msgstr "Definir _cores do cursor"
+
+#: ../src/roxterm-config.glade:863 ../src/roxterm-config.glade:864
+msgid "Click to change the cursor colour"
+msgstr "Clique para mudar a cor do cursor"
+
+#: ../src/roxterm-config.glade:899
 msgid "Configure ROXTerm"
 msgstr "Configurar ROXTerm"
 
-#: ../../src/roxterm-config.glade:51
+#: ../src/roxterm-config.glade:943
 msgid ""
 "Select a row to choose which profile the buttons below apply to. Select a "
 "radio button to set the profile used when roxterm is run without a --profile "
@@ -33,59 +130,59 @@ msgstr ""
 "correspondente. Selecionar uma opção no campo para definir qual perfil usado "
 "quando roxterm é executado sem um --profile option."
 
-#: ../../src/roxterm-config.glade:83
+#: ../src/roxterm-config.glade:976
 msgid "Click to rename the selected profile"
 msgstr "Clique para renomear o perfil selecionado"
 
-#: ../../src/roxterm-config.glade:112 ../../src/roxterm-config.glade:426
-#: ../../src/roxterm-config.glade:860
+#: ../src/roxterm-config.glade:1006 ../src/roxterm-config.glade:1328
+#: ../src/roxterm-config.glade:1774
 #, fuzzy
 msgid "_Rename"
 msgstr "Renomear"
 
-#: ../../src/roxterm-config.glade:142 ../../src/roxterm-config.glade:716
+#: ../src/roxterm-config.glade:1037 ../src/roxterm-config.glade:1625
 msgid "Click to delete the selected profile"
 msgstr "Clique para deletar o perfil selecionado"
 
-#: ../../src/roxterm-config.glade:171 ../../src/roxterm-config.glade:485
-#: ../../src/roxterm-config.glade:745 ../../src/roxterm-config.glade:1148
+#: ../src/roxterm-config.glade:1067 ../src/roxterm-config.glade:1389
+#: ../src/roxterm-config.glade:1655 ../src/roxterm-config.glade:2070
 #, fuzzy
 msgid "_Delete"
 msgstr "Deletar"
 
-#: ../../src/roxterm-config.glade:199
+#: ../src/roxterm-config.glade:1096
 msgid ""
 "Click to create a new profile with settings copied from the current selection"
 msgstr ""
 "Clique para criar um novo perfil com configurações copiadas a partir da "
 "seleção atual"
 
-#: ../../src/roxterm-config.glade:228 ../../src/roxterm-config.glade:542
-#: ../../src/roxterm-config.glade:802
+#: ../src/roxterm-config.glade:1126 ../src/roxterm-config.glade:1448
+#: ../src/roxterm-config.glade:1714
 #, fuzzy
 msgid "_Copy"
 msgstr "Copiar"
 
-#: ../../src/roxterm-config.glade:256
+#: ../src/roxterm-config.glade:1155
 msgid "Click to edit the selected profile"
 msgstr "Clique para editar um perfil selecionado"
 
-#: ../../src/roxterm-config.glade:286 ../../src/roxterm-config.glade:599
-#: ../../src/roxterm-config.glade:1028 ../../src/roxterm-config.glade:2646
+#: ../src/roxterm-config.glade:1186 ../src/roxterm-config.glade:1507
+#: ../src/roxterm-config.glade:1946 ../src/roxterm-config.glade:2904
 #, fuzzy
 msgid "_Edit"
 msgstr "Editar"
 
-#: ../../src/roxterm-config.glade:319
+#: ../src/roxterm-config.glade:1219
 msgid "<b>Profiles</b>"
 msgstr "<b>Perfis</b>"
 
-#: ../../src/roxterm-config.glade:329
+#: ../src/roxterm-config.glade:1229
 #, fuzzy
 msgid "_Profiles"
 msgstr "Perfis"
 
-#: ../../src/roxterm-config.glade:365
+#: ../src/roxterm-config.glade:1265
 msgid ""
 "Select a row to choose which colour scheme the buttons below apply to. "
 "Select a radio button to set the colour scheme used when roxterm is run "
@@ -95,15 +192,15 @@ msgstr ""
 "correspondente. Selecionar um opção no campo para definir qual esquema usado "
 "quando roxterm é executado sem um --colour-scheme option."
 
-#: ../../src/roxterm-config.glade:397
+#: ../src/roxterm-config.glade:1298
 msgid "Click to rename the selected colour scheme"
 msgstr "Clique para renomear o esquema de cores selecionado"
 
-#: ../../src/roxterm-config.glade:456
+#: ../src/roxterm-config.glade:1359
 msgid "Click to delete the selected colour scheme"
 msgstr "Clique para deletar o esquema de cores selecionado"
 
-#: ../../src/roxterm-config.glade:513
+#: ../src/roxterm-config.glade:1418
 msgid ""
 "Click to create a new colour scheme with settings copied from the current "
 "selection"
@@ -111,20 +208,20 @@ msgstr ""
 "Clique para criar um novo esquema de cores com configurações copiadas a "
 "partir da seleção atual"
 
-#: ../../src/roxterm-config.glade:570
+#: ../src/roxterm-config.glade:1477
 msgid "Click to edit the selected colour scheme"
 msgstr "Clique para editar o esquema de cores selecionado"
 
-#: ../../src/roxterm-config.glade:632
+#: ../src/roxterm-config.glade:1540
 msgid "<b>Colour Schemes</b>"
 msgstr "<b>Esquema de Cores</b>"
 
-#: ../../src/roxterm-config.glade:646
+#: ../src/roxterm-config.glade:1554
 #, fuzzy
 msgid "Co_lours"
 msgstr "Cores"
 
-#: ../../src/roxterm-config.glade:685
+#: ../src/roxterm-config.glade:1593
 msgid ""
 "Select a row to choose which keyboard shortcuts scheme the buttons below "
 "apply to. Select a radio button to set the shortcuts scheme used when "
@@ -134,7 +231,7 @@ msgstr ""
 "de teclado correspondente, confira o layout do teclado para utilizar ao "
 "executar roxterm  quando sem a opção --shotcut-scheme option."
 
-#: ../../src/roxterm-config.glade:773
+#: ../src/roxterm-config.glade:1684
 msgid ""
 "Click to create a new keyboard shortcuts scheme with settings copied from "
 "the current selection"
@@ -142,31 +239,31 @@ msgstr ""
 "Clique para criar um novo esquema de atalhos de teclado com definições "
 "copiadas a partir da seleção atual."
 
-#: ../../src/roxterm-config.glade:830
+#: ../src/roxterm-config.glade:1743
 msgid "Click to rename the selected keyboard shortcuts scheme"
 msgstr "Clique para renomear de um selecionado esquema de atalhos do teclado"
 
-#: ../../src/roxterm-config.glade:884
+#: ../src/roxterm-config.glade:1798
 #, fuzzy
 msgid "_Enable editing"
 msgstr "Permitir edição"
 
-#: ../../src/roxterm-config.glade:889 ../../src/roxterm-config.glade:890
+#: ../src/roxterm-config.glade:1804 ../src/roxterm-config.glade:1805
 msgid ""
 "Check to enable shortcuts to be edited by pressing the desired key(s) while "
 "\"hovering\" over a menu item."
 msgstr ""
 
-#: ../../src/roxterm-config.glade:913
+#: ../src/roxterm-config.glade:1829
 msgid "<b>Keyboard Shortcuts</b>"
 msgstr "<b>Atalhos do Teclado</b>"
 
-#: ../../src/roxterm-config.glade:929
+#: ../src/roxterm-config.glade:1845
 #, fuzzy
 msgid "S_hortcuts"
 msgstr "Atalhos"
 
-#: ../../src/roxterm-config.glade:968
+#: ../src/roxterm-config.glade:1884
 msgid ""
 "Select a row to choose which encoding the buttons below apply to. Select a "
 "radio button to set the encoding used by default."
@@ -174,57 +271,57 @@ msgstr ""
 "Seleciona uma linha para escolher qual a codificação dos botões abaixo para "
 "aplicar. Marque a codificação que deseja usar de forma padrão."
 
-#: ../../src/roxterm-config.glade:999
+#: ../src/roxterm-config.glade:1916
 msgid "Click to edit the selected encoding name"
 msgstr "Clique para editar o nome de codificação selecionado"
 
-#: ../../src/roxterm-config.glade:1059
+#: ../src/roxterm-config.glade:1978
 msgid "Click to add a new encoding name"
 msgstr "Clique para adicionar um novo nome de codificação"
 
-#: ../../src/roxterm-config.glade:1091
+#: ../src/roxterm-config.glade:2011
 #, fuzzy
 msgid "_Add"
 msgstr "_Endereço"
 
-#: ../../src/roxterm-config.glade:1119
+#: ../src/roxterm-config.glade:2040
 msgid "Click to remove the selected encoding from the list"
 msgstr "Clique para remover a codificação selecionada a partir da lista"
 
-#: ../../src/roxterm-config.glade:1222
+#: ../src/roxterm-config.glade:2153
 msgid "<b>Character Encodings</b>"
 msgstr "<b>Codificações de Caracteres</b>"
 
-#: ../../src/roxterm-config.glade:1235
+#: ../src/roxterm-config.glade:2166
 #, fuzzy
 msgid "E_ncodings"
 msgstr "Codificaçoes"
 
-#: ../../src/roxterm-config.glade:1262
+#: ../src/roxterm-config.glade:2193
 msgid "No warnings when closing windows/tabs"
 msgstr "Não avisar ao fechar janelas/abas"
 
-#: ../../src/roxterm-config.glade:1278
+#: ../src/roxterm-config.glade:2211
 msgid "Warn when closing a window with multiple tabs"
 msgstr "Avisar ao fechar uma janela com múltiplas abas"
 
-#: ../../src/roxterm-config.glade:1295
+#: ../src/roxterm-config.glade:2230
 msgid "Warn when closing any window"
 msgstr "Avisar ao fechar qualquer janela"
 
-#: ../../src/roxterm-config.glade:1312
+#: ../src/roxterm-config.glade:2249
 msgid "Warn when closing any tab"
 msgstr "Avisar ao fechar qualquer aba"
 
-#: ../../src/roxterm-config.glade:1330
+#: ../src/roxterm-config.glade:2269
 msgid "Only warn if tasks are still running"
 msgstr "Avisar somente houver tarefas em execução"
 
-#: ../../src/roxterm-config.glade:1346
+#: ../src/roxterm-config.glade:2287
 msgid "Use dark theme"
 msgstr "Utilizar tema escuro"
 
-#: ../../src/roxterm-config.glade:1352
+#: ../src/roxterm-config.glade:2294
 msgid ""
 "This option applies to terminal windows' menus and borders etc; terminal "
 "colours are handled separately. It does not apply to the configuration "
@@ -234,155 +331,77 @@ msgstr ""
 "terminal são configurados separadamente. Ele não se aplica para o gestor de "
 "configuração."
 
-#: ../../src/roxterm-config.glade:1372
+#: ../src/roxterm-config.glade:2315
 msgid "<b>Miscellaneous global options</b>"
 msgstr "<b>Diversas opções globais</b>"
 
-#: ../../src/roxterm-config.glade:1386
+#: ../src/roxterm-config.glade:2329
 #, fuzzy
 msgid "_Options"
 msgstr "Opção"
 
-#: ../../src/roxterm-config.glade:1438
-msgid "ROXTerm Colour Scheme"
-msgstr "Esquema de cores ROXTerm"
-
-#: ../../src/roxterm-config.glade:1456
-msgid "_Revert"
-msgstr "_Reverter"
-
-#: ../../src/roxterm-config.glade:1477
-msgid "Close this window"
-msgstr "Fechar esta janela"
-
-#: ../../src/roxterm-config.glade:1502
-msgid "_Set text and background colours"
-msgstr "_Definir texto e cores de fundo"
-
-#: ../../src/roxterm-config.glade:1507
-msgid ""
-"Whether to set terminals' text and background colours using the fields below"
-msgstr ""
-"Indica os textos do terminal e cores de fundo utilizando os campos abaixo"
-
-#: ../../src/roxterm-config.glade:1528
-msgid "_Text colour"
-msgstr "_Cor do Texto"
-
-#: ../../src/roxterm-config.glade:1544
-msgid "Foreground colour of text; click to change"
-msgstr "Cor do primeiro plano de texto, clique para mudar"
-
-#: ../../src/roxterm-config.glade:1558
-msgid "_Background colour"
-msgstr "_Cor de fundo"
-
-#: ../../src/roxterm-config.glade:1574
-msgid "Background colour of terminals; click to change"
-msgstr "Cor de fundo do terminal, clique para mudar"
-
-#: ../../src/roxterm-config.glade:1593
-msgid "Use custom _palette"
-msgstr "Usar _paleta personalizada"
-
-#: ../../src/roxterm-config.glade:1598
-msgid "Whether to set the terminal's colours from the table below"
-msgstr "Indica as cores do terminal a partir tabela abaixo"
-
-#: ../../src/roxterm-config.glade:1612
-msgid "_Get text and background colours from palette"
-msgstr "_Obter texto e cores de fundo a partir da paleta"
-
-#: ../../src/roxterm-config.glade:1617
-msgid ""
-"Whether to use the palette table below to set the background and text "
-"foreground colours"
-msgstr ""
-"Indica o uso a partir da tabela de paleta para definir as cores de primeiro "
-"plano e fundo."
-
-#: ../../src/roxterm-config.glade:2042
-msgid "Set 16 palette entries from both rows"
-msgstr "Definir 16 paletas de entrada a partir de ambas as linhas"
-
-#: ../../src/roxterm-config.glade:2062
-msgid "Set just the first 8 palette entries from this row"
-msgstr "Definir apenas as primeiras 8 paletas de entrada a partir desta linha"
-
-#: ../../src/roxterm-config.glade:2088
-msgid "Set _cursor colour"
-msgstr "Definir _cores do cursor"
-
-#: ../../src/roxterm-config.glade:2093
-msgid "Set the cursor colour from the adjacent field"
-msgstr "Definir a cor do cursor a partir do campo indicado"
-
-#: ../../src/roxterm-config.glade:2111
-msgid "Click to change the cursor colour"
-msgstr "Clique para mudar a cor do cursor"
-
-#: ../../src/roxterm-config.glade:2150
+#: ../src/roxterm-config.glade:2388
 msgid "ROXTerm profile"
 msgstr "Perfil RoxTerm"
 
-#: ../../src/roxterm-config.glade:2245
+#: ../src/roxterm-config.glade:2485
 msgid "_Font:"
 msgstr "_Fonte:"
 
-#: ../../src/roxterm-config.glade:2261
+#: ../src/roxterm-config.glade:2502
 msgid "Click to change the font; monospace fonts are recommended."
 msgstr "Click para mudar a fonte; fonte monospace são recomendadas."
 
-#: ../../src/roxterm-config.glade:2285
+#: ../src/roxterm-config.glade:2527
 msgid "_Size"
 msgstr "_Tamanho"
 
-#: ../../src/roxterm-config.glade:2290
+#: ../src/roxterm-config.glade:2533
 msgid "Set the terminal's size in characters from the adjacent values."
 msgstr ""
 "Defina o tamanho do terminal em caracteres a partir dos valores indicados."
 
-#: ../../src/roxterm-config.glade:2308
+#: ../src/roxterm-config.glade:2552
 msgid "_Width:"
 msgstr "_Largura:"
 
-#: ../../src/roxterm-config.glade:2322 ../../src/roxterm-config.glade:2368
+#: ../src/roxterm-config.glade:2566 ../src/roxterm-config.glade:2612
 msgid "New windows with this profile will open at this size."
 msgstr "Nova janelas com esse perfil serão abertas com esse tamanho."
 
-#: ../../src/roxterm-config.glade:2342
+#: ../src/roxterm-config.glade:2586
 msgid "columns"
 msgstr "colunas"
 
-#: ../../src/roxterm-config.glade:2355
+#: ../src/roxterm-config.glade:2599
 msgid "_Height:"
 msgstr "_Altura:"
 
-#: ../../src/roxterm-config.glade:2387
+#: ../src/roxterm-config.glade:2631
 msgid "rows"
 msgstr "linhas"
 
-#: ../../src/roxterm-config.glade:2412
+#: ../src/roxterm-config.glade:2656
 msgid "_Maximise"
 msgstr "_Maximizar"
 
-#: ../../src/roxterm-config.glade:2418
+#: ../src/roxterm-config.glade:2663
 msgid "Use a maximised window."
 msgstr "Usar uma janela maximizada."
 
-#: ../../src/roxterm-config.glade:2428
+#: ../src/roxterm-config.glade:2674
 msgid "F_ull screen"
 msgstr "T_ela inteira"
 
-#: ../../src/roxterm-config.glade:2434
+#: ../src/roxterm-config.glade:2681
 msgid "Make the terminal take up the whole screen with no window borders."
 msgstr "Faça o terminal ocupar a tela inteira, sem bordas da janela."
 
-#: ../../src/roxterm-config.glade:2448
+#: ../src/roxterm-config.glade:2696
 msgid "Show _menubar by default"
 msgstr "Mostrar _barra de menu por padrão"
 
-#: ../../src/roxterm-config.glade:2454 ../../src/roxterm-config.glade:2495
+#: ../src/roxterm-config.glade:2703 ../src/roxterm-config.glade:2748
 msgid ""
 "Whether new windows with this profile will have a menu bar. You can also "
 "turn the menu bar on and off from terminal menus."
@@ -390,11 +409,11 @@ msgstr ""
 "Faz com que que novas janelas com esse perfil haverá uma barra de menu. Você "
 "também pode mudar a barra de menu ou ocultar menus do terminal."
 
-#: ../../src/roxterm-config.glade:2467
+#: ../src/roxterm-config.glade:2717
 msgid "_Always show tab bar"
 msgstr "_Sempre mostrar a barra de abas"
 
-#: ../../src/roxterm-config.glade:2474
+#: ../src/roxterm-config.glade:2725
 msgid ""
 "If this option is enabled the tabs at the top of each terminal are always "
 "shown, even in windows which only contain one tab"
@@ -402,23 +421,23 @@ msgstr ""
 "Se está opção é ativada, as abas na parte superior de cada terminal serão "
 "mostradas sempre, mesmo em janelas que contenham apenas uma aba"
 
-#: ../../src/roxterm-config.glade:2489
+#: ../src/roxterm-config.glade:2741
 msgid "Show window _resize grip"
 msgstr "Mostrar janela _redimensionar aderência"
 
-#: ../../src/roxterm-config.glade:2508
+#: ../src/roxterm-config.glade:2762
 msgid "Show a_dd tab button"
 msgstr ""
 
-#: ../../src/roxterm-config.glade:2515
+#: ../src/roxterm-config.glade:2770
 msgid "Enables a button in the tab bar which adds a new tab when clicked."
 msgstr ""
 
-#: ../../src/roxterm-config.glade:2549
+#: ../src/roxterm-config.glade:2805
 msgid "Window _title:"
 msgstr "Título da _janela:"
 
-#: ../../src/roxterm-config.glade:2563
+#: ../src/roxterm-config.glade:2819
 msgid ""
 "The title string may include '%s' which is substituted with the contents of "
 "the current tab's label. No other % characters or sequences are permitted "
@@ -428,42 +447,42 @@ msgstr ""
 "de etiqueta atual. Nenhum outro carácter % ou sequencias são permitidas, "
 "exceto '%%' que é exibido como um único %."
 
-#: ../../src/roxterm-config.glade:2582
+#: ../src/roxterm-config.glade:2838
 #, fuzzy
 msgid "C_olour scheme:"
 msgstr "<b>Esquema de Cores</b>"
 
-#: ../../src/roxterm-config.glade:2616
+#: ../src/roxterm-config.glade:2873
 #, fuzzy
 msgid "Click to edit this colour scheme."
 msgstr "Clique para editar o esquema de cores selecionado"
 
-#: ../../src/roxterm-config.glade:2684
+#: ../src/roxterm-config.glade:2942
 msgid "<b>Appearance</b>"
 msgstr "<b>Aparência</b>"
 
-#: ../../src/roxterm-config.glade:2694
+#: ../src/roxterm-config.glade:2952
 msgid "Appearance"
 msgstr "Aparência"
 
-#: ../../src/roxterm-config.glade:2723
+#: ../src/roxterm-config.glade:2981
 msgid "Allow _bold text"
 msgstr "Permitir texto em _negrito"
 
-#: ../../src/roxterm-config.glade:2741
+#: ../src/roxterm-config.glade:3001
 msgid "Audible bel_l"
 msgstr "_Campainha audível"
 
-#: ../../src/roxterm-config.glade:2746
+#: ../src/roxterm-config.glade:3007
 msgid "If selected, \"printing\" an ASCII bell character will cause a beep."
 msgstr ""
 "Se selecionado, \"imprimir\" carácter sino ASCII, causara um beep sonoro."
 
-#: ../../src/roxterm-config.glade:2761
+#: ../src/roxterm-config.glade:3023
 msgid "_Visible bell"
 msgstr "_Sino visível"
 
-#: ../../src/roxterm-config.glade:2766
+#: ../src/roxterm-config.glade:3029
 msgid ""
 "If selected, \"printing\" an ASCII bell character will cause the terminal to "
 "flash."
@@ -471,68 +490,68 @@ msgstr ""
 "Se selecionado, \"imprimir\" carácter sino ASCII, produzira um terminal "
 "flash."
 
-#: ../../src/roxterm-config.glade:2783
+#: ../src/roxterm-config.glade:3047
 msgid "Do_n't blink"
 msgstr "N_ão piscar"
 
-#: ../../src/roxterm-config.glade:2788
+#: ../src/roxterm-config.glade:3053
 msgid "The terminal cursor doesn't blink."
 msgstr "O cursor do terminal não pisca."
 
-#: ../../src/roxterm-config.glade:2805
+#: ../src/roxterm-config.glade:3071
 msgid "Blin_k"
 msgstr "Pisca_r"
 
-#: ../../src/roxterm-config.glade:2810
+#: ../src/roxterm-config.glade:3077
 msgid "The terminal cursor blinks."
 msgstr "O cursor do terminal pisca."
 
-#: ../../src/roxterm-config.glade:2830
+#: ../src/roxterm-config.glade:3098
 msgid "Blinking cursor:"
 msgstr "Cursor piscando:"
 
-#: ../../src/roxterm-config.glade:2840
+#: ../src/roxterm-config.glade:3108
 msgid "S_ystem"
 msgstr "S_istema"
 
-#: ../../src/roxterm-config.glade:2845
+#: ../src/roxterm-config.glade:3114
 msgid "Whether the terminal cursor blinks depends on the GTK system setting."
 msgstr ""
 "Para o cursor do terminal piscar, depende da configuração do sistema GTK."
 
-#: ../../src/roxterm-config.glade:2862
+#: ../src/roxterm-config.glade:3132
 msgid "_Underline"
 msgstr "_Sublinhado"
 
-#: ../../src/roxterm-config.glade:2867
+#: ../src/roxterm-config.glade:3138
 msgid "The cursor is a horizontal line at the bottom of each character."
 msgstr "O cursor é uma linha horizontal na parte inferior de cada carácter."
 
-#: ../../src/roxterm-config.glade:2884
+#: ../src/roxterm-config.glade:3156
 msgid "_I-beam"
 msgstr "_Vertical"
 
-#: ../../src/roxterm-config.glade:2889
+#: ../src/roxterm-config.glade:3162
 msgid "The cursor is a vertical line at the left of each character."
 msgstr "O cursor é uma linha vertical na esquerda de cada carácter."
 
-#: ../../src/roxterm-config.glade:2906
+#: ../src/roxterm-config.glade:3180
 msgid "Bl_ock"
 msgstr "Bl_oco"
 
-#: ../../src/roxterm-config.glade:2911
+#: ../src/roxterm-config.glade:3186
 msgid "The cursor is a rectangle taking up the whole of a character space."
 msgstr "O cursor é um retângulo que ocupa todo o espaço do caractere."
 
-#: ../../src/roxterm-config.glade:2931
+#: ../src/roxterm-config.glade:3207
 msgid "Cursor shape:"
 msgstr "Forma do cursor:"
 
-#: ../../src/roxterm-config.glade:2941
+#: ../src/roxterm-config.glade:3217
 msgid "Bell _highlights tab/window"
 msgstr "Sino _ilumina a aba/janela"
 
-#: ../../src/roxterm-config.glade:2946
+#: ../src/roxterm-config.glade:3223
 msgid ""
 "If the \"bell rings\" in a terminal while it isn't the active tab or window, "
 "its tab label will flash and/or its window will be marked \"urgent\". This "
@@ -542,23 +561,23 @@ msgstr ""
 "ativa, está aba pisca e/ou a sua janela será marcada como \"urgente\". Isto "
 "funciona somente com a versão recente do vte."
 
-#: ../../src/roxterm-config.glade:2963
+#: ../src/roxterm-config.glade:3241
 msgid "Hide mouse _pointer when typing"
 msgstr "Ocultar _ponteiro do mouse quando digitar"
 
-#: ../../src/roxterm-config.glade:2989
+#: ../src/roxterm-config.glade:3269
 msgid "_TERM environment variable:"
 msgstr "Ambiente variável _TERM:"
 
-#: ../../src/roxterm-config.glade:3033
+#: ../src/roxterm-config.glade:3313
 msgid "_COLORTERM environment variable:"
 msgstr "Ambiente variável _COLORTERM:"
 
-#: ../../src/roxterm-config.glade:3077
+#: ../src/roxterm-config.glade:3357
 msgid "_Select-by-word characters:"
 msgstr "_Selecionar os caracteres por palavras:"
 
-#: ../../src/roxterm-config.glade:3092
+#: ../src/roxterm-config.glade:3372
 msgid ""
 "Words can be selected by double-clicking. Characters not in this list count "
 "as the start or end of a word"
@@ -566,79 +585,79 @@ msgstr ""
 "Palavras podem ser selecionadas pelo click-duplo. Caracteres que não estão "
 "na lista, contam como o começo ou fim de uma palavra"
 
-#: ../../src/roxterm-config.glade:3122
+#: ../src/roxterm-config.glade:3402
 msgid "<b>General</b>"
 msgstr "<b>Geral</b>"
 
-#: ../../src/roxterm-config.glade:3135
+#: ../src/roxterm-config.glade:3415
 msgid "General"
 msgstr "Geral"
 
-#: ../../src/roxterm-config.glade:3167
+#: ../src/roxterm-config.glade:3447
 msgid "Command to run in place of a shell"
 msgstr "Comando para executar no lugar de um shell"
 
-#: ../../src/roxterm-config.glade:3189
+#: ../src/roxterm-config.glade:3469
 msgid "_Pause:"
 msgstr "_Pausa:"
 
-#: ../../src/roxterm-config.glade:3205
+#: ../src/roxterm-config.glade:3485
 msgid "When command e_xits:"
 msgstr "Quando o comando t_ermina:"
 
-#: ../../src/roxterm-config.glade:3218
+#: ../src/roxterm-config.glade:3498
 msgid "_Custom command"
 msgstr "_Comando personalizado"
 
-#: ../../src/roxterm-config.glade:3223
+#: ../src/roxterm-config.glade:3504
 msgid "Enable the adjacent custom command for this profile."
 msgstr "Habilitar comando personalizável indicado para este perfil."
 
-#: ../../src/roxterm-config.glade:3239
+#: ../src/roxterm-config.glade:3521
 msgid "_Ssh"
 msgstr "_Ssh"
 
-#: ../../src/roxterm-config.glade:3244
+#: ../src/roxterm-config.glade:3527
 msgid "Connect to a ssh (secure shell) with this profile."
 msgstr "Conectar a ssh (shell seguro) com este perfil."
 
-#: ../../src/roxterm-config.glade:3260
+#: ../src/roxterm-config.glade:3544
 msgid "_Edit..."
 msgstr "_Editar..."
 
-#: ../../src/roxterm-config.glade:3265
+#: ../src/roxterm-config.glade:3550
 msgid "Click here to edit the ssh details."
 msgstr "Clique aqui para editar detalhes ssh."
 
-#: ../../src/roxterm-config.glade:3283
+#: ../src/roxterm-config.glade:3569
 msgid "Ssh server address. Use the Edit... button to change it."
 msgstr "Endereço de servidor ssh. Use o botão editar... para muda-lo."
 
-#: ../../src/roxterm-config.glade:3299
+#: ../src/roxterm-config.glade:3585
 msgid "_Update login records"
 msgstr "_Atualizar registros de login"
 
-#: ../../src/roxterm-config.glade:3304
+#: ../src/roxterm-config.glade:3591
 msgid "Whether to log sessions to login records (utmp/wtmp/utmpx/wtmpx)"
 msgstr "Indica se armazenar seções de login/registro (utmp/wtmp/utmpx/wtmpx)"
 
-#: ../../src/roxterm-config.glade:3319
+#: ../src/roxterm-config.glade:3607
 msgid "_Login shell"
 msgstr "_Login de shell"
 
-#: ../../src/roxterm-config.glade:3324
+#: ../src/roxterm-config.glade:3613
 msgid "Whether shells running in the terminal are login shells"
 msgstr "Indica se os shells rodando no terminal são shells login"
 
-#: ../../src/roxterm-config.glade:3339
+#: ../src/roxterm-config.glade:3629
 msgid "_Default shell"
 msgstr "_Shell padrão"
 
-#: ../../src/roxterm-config.glade:3359
+#: ../src/roxterm-config.glade:3651
 msgid "secs"
 msgstr "segs"
 
-#: ../../src/roxterm-config.glade:3375
+#: ../src/roxterm-config.glade:3667
 msgid ""
 "Pause for this number of seconds after the command exits before performing "
 "the action above."
@@ -646,132 +665,132 @@ msgstr ""
 "Pausa para este número de segundos depois que o comando termina antes de "
 "realizar a ação indicada."
 
-#: ../../src/roxterm-config.glade:3416
+#: ../src/roxterm-config.glade:3708
 msgid "<b>Command</b>"
 msgstr "<b>Comando</b>"
 
-#: ../../src/roxterm-config.glade:3430
+#: ../src/roxterm-config.glade:3722
 msgid "Use the default shell in this profile."
 msgstr "Usar o shell padrão neste perfil."
 
-#: ../../src/roxterm-config.glade:3431
+#: ../src/roxterm-config.glade:3723
 msgid "Command"
 msgstr "Comando"
 
-#: ../../src/roxterm-config.glade:3468
+#: ../src/roxterm-config.glade:3760
 msgid "Browser"
 msgstr "Navegador"
 
-#: ../../src/roxterm-config.glade:3482
+#: ../src/roxterm-config.glade:3774
 msgid "Web browser to use when a link is opened"
 msgstr "Web browser para usar quando um link é aberto"
 
-#: ../../src/roxterm-config.glade:3510 ../../src/roxterm-config.glade:3666
-#: ../../src/roxterm-config.glade:3846 ../../src/roxterm-config.glade:4003
+#: ../src/roxterm-config.glade:3802 ../src/roxterm-config.glade:3964
+#: ../src/roxterm-config.glade:4150 ../src/roxterm-config.glade:4313
 msgid "Independent"
 msgstr "Independente"
 
-#: ../../src/roxterm-config.glade:3516
+#: ../src/roxterm-config.glade:3809
 msgid "Run the browser without a terminal."
 msgstr "Excetuar o navegador sem um terminal."
 
-#: ../../src/roxterm-config.glade:3532 ../../src/roxterm-config.glade:3687
-#: ../../src/roxterm-config.glade:3867 ../../src/roxterm-config.glade:4024
+#: ../src/roxterm-config.glade:3826 ../src/roxterm-config.glade:3987
+#: ../src/roxterm-config.glade:4173 ../src/roxterm-config.glade:4336
 msgid "New terminal window"
 msgstr "Nova janela de terminal"
 
-#: ../../src/roxterm-config.glade:3537
+#: ../src/roxterm-config.glade:3832
 msgid "Run the browser in a new ROXTerm window."
 msgstr "Executar o navegador em uma nova janela ROXTerm."
 
-#: ../../src/roxterm-config.glade:3552 ../../src/roxterm-config.glade:3709
-#: ../../src/roxterm-config.glade:3888 ../../src/roxterm-config.glade:4044
+#: ../src/roxterm-config.glade:3848 ../src/roxterm-config.glade:4011
+#: ../src/roxterm-config.glade:4196 ../src/roxterm-config.glade:4358
 msgid "New terminal tab"
 msgstr "Nova aba de terminal"
 
-#: ../../src/roxterm-config.glade:3557
+#: ../src/roxterm-config.glade:3854
 msgid "Run the browser in a new ROXTerm tab."
 msgstr "Executar o navegador em uma nova aba ROXTerm."
 
-#: ../../src/roxterm-config.glade:3586
+#: ../src/roxterm-config.glade:3884
 msgid "<b>_Web browser</b>"
 msgstr "<b>_Navegador web</b>"
 
-#: ../../src/roxterm-config.glade:3624
+#: ../src/roxterm-config.glade:3922
 msgid "Mailer"
 msgstr "Cliente de e-mail"
 
-#: ../../src/roxterm-config.glade:3638
+#: ../src/roxterm-config.glade:3936
 msgid "EMail program to use when an email address is opened"
 msgstr "Programa de e-mail para usar quando um endereço de e-mail for aberto"
 
-#: ../../src/roxterm-config.glade:3672
+#: ../src/roxterm-config.glade:3971
 msgid "Run the mailer without a terminal."
 msgstr "Executar um cliente de e-mail sem um terminal."
 
-#: ../../src/roxterm-config.glade:3693
+#: ../src/roxterm-config.glade:3994
 msgid "Run the mailer in a new ROXTerm window."
 msgstr "Executar um cliente de e-mail em uma nova janela ROXTerm."
 
-#: ../../src/roxterm-config.glade:3715
+#: ../src/roxterm-config.glade:4018
 msgid "Run the mailer in a new ROXTerm tab."
 msgstr "Executar o cliente de e-mail em uma nova aba ROXTerm."
 
-#: ../../src/roxterm-config.glade:3743
+#: ../src/roxterm-config.glade:4047
 msgid "<b>E_mail</b>"
 msgstr "<b>E_mail</b>"
 
-#: ../../src/roxterm-config.glade:3765
+#: ../src/roxterm-config.glade:4069
 msgid "Net URIs"
 msgstr "URIs de Net"
 
-#: ../../src/roxterm-config.glade:3801 ../../src/roxterm-config.glade:3960
+#: ../src/roxterm-config.glade:4105 ../src/roxterm-config.glade:4270
 msgid "Filer"
 msgstr "Explorador"
 
-#: ../../src/roxterm-config.glade:3817
+#: ../src/roxterm-config.glade:4121
 msgid "File manager to use when a directory URI is opened."
 msgstr ""
 "Gerenciador de arquivos para usar quando uma URI de diretório for aberta."
 
-#: ../../src/roxterm-config.glade:3852 ../../src/roxterm-config.glade:4009
+#: ../src/roxterm-config.glade:4157 ../src/roxterm-config.glade:4320
 msgid "Run the filer without a terminal."
 msgstr "Executar o explorador sem um terminal."
 
-#: ../../src/roxterm-config.glade:3873 ../../src/roxterm-config.glade:4030
+#: ../src/roxterm-config.glade:4180 ../src/roxterm-config.glade:4343
 msgid "Run the filer in a new ROXTerm window."
 msgstr "Executar o explorador em uma nova janela ROXTerm."
 
-#: ../../src/roxterm-config.glade:3894 ../../src/roxterm-config.glade:4050
+#: ../src/roxterm-config.glade:4203 ../src/roxterm-config.glade:4365
 msgid "Run the filer in a new ROXTerm tab."
 msgstr "Executar o explorador em uma nova aba ROXTerm."
 
-#: ../../src/roxterm-config.glade:3922
+#: ../src/roxterm-config.glade:4232
 msgid "<b>_Directories</b>"
 msgstr "<b>_Diretórios</b>"
 
-#: ../../src/roxterm-config.glade:3974
+#: ../src/roxterm-config.glade:4284
 msgid "File manager to use when a file URI is opened."
 msgstr ""
 "Gerenciador de arquivos para usar quando uma URI de arquivo for aberta."
 
-#: ../../src/roxterm-config.glade:4072
+#: ../src/roxterm-config.glade:4388
 msgid "O_pen parent directory instead"
 msgstr "A_brir diretório superior em seu lugar"
 
-#: ../../src/roxterm-config.glade:4077
+#: ../src/roxterm-config.glade:4394
 msgid "If set open the file's parent directory instead of the file."
 msgstr "Se definido, abre o diretório de arquivo superior em vez do arquivo."
 
-#: ../../src/roxterm-config.glade:4098
+#: ../src/roxterm-config.glade:4416
 msgid "<b>_Files</b>"
 msgstr "<b>_Arquivos</b>"
 
-#: ../../src/roxterm-config.glade:4117
+#: ../src/roxterm-config.glade:4435
 msgid "_Match filenames without file:// prefix"
 msgstr "_Localizar nomes de arquivos sem prefixo file://"
 
-#: ../../src/roxterm-config.glade:4121
+#: ../src/roxterm-config.glade:4440
 msgid ""
 "If enabled, patterns which look like filenames will be highlighted even if "
 "they lack a file:// URI prefix."
@@ -779,23 +798,23 @@ msgstr ""
 "Se ativado, padrões que se parecerem com nomes de arquivos serão realçados, "
 "mesmo se não tiverem um prefixo file:// URI."
 
-#: ../../src/roxterm-config.glade:4150
+#: ../src/roxterm-config.glade:4470
 msgid "File URIs"
 msgstr "URIs de arquivo"
 
-#: ../../src/roxterm-config.glade:4177
+#: ../src/roxterm-config.glade:4497
 msgid "_None (use solid colour)"
 msgstr "_Nenhum (usar cor sólida)"
 
-#: ../../src/roxterm-config.glade:4182
+#: ../src/roxterm-config.glade:4503
 msgid "Use the background colour from the configured colour scheme"
 msgstr "Usar a cor de fundo a partir do esquema de cores configurado"
 
-#: ../../src/roxterm-config.glade:4201
+#: ../src/roxterm-config.glade:4523
 msgid "Background _image"
 msgstr "_Imagem de fundo"
 
-#: ../../src/roxterm-config.glade:4206
+#: ../src/roxterm-config.glade:4529
 msgid ""
 "A background image will be blended with the background colour depending on "
 "the transparency setting"
@@ -803,31 +822,31 @@ msgstr ""
 "Uma imagem de fundo será misturado com a cor do fundo dependendo da "
 "configuração de transparência."
 
-#: ../../src/roxterm-config.glade:4233
+#: ../src/roxterm-config.glade:4557
 msgid "    "
 msgstr "    "
 
-#: ../../src/roxterm-config.glade:4245
+#: ../src/roxterm-config.glade:4569
 msgid "Image _file:"
 msgstr "_Arquivo de imagem:"
 
-#: ../../src/roxterm-config.glade:4282 ../../src/roxterm-config.glade:4380
+#: ../src/roxterm-config.glade:4606 ../src/roxterm-config.glade:4708
 msgid "   "
 msgstr "   "
 
-#: ../../src/roxterm-config.glade:4292
+#: ../src/roxterm-config.glade:4616
 msgid "Background image _scrolls"
 msgstr "Imagem de fundo _rolagem"
 
-#: ../../src/roxterm-config.glade:4297
+#: ../src/roxterm-config.glade:4622
 msgid "Whether to move the picture with the scrollbar"
 msgstr "Indica se a barra de rolagem move a imagem"
 
-#: ../../src/roxterm-config.glade:4333
+#: ../src/roxterm-config.glade:4659
 msgid "_Transparent background"
 msgstr "Transparência de fundo"
 
-#: ../../src/roxterm-config.glade:4338
+#: ../src/roxterm-config.glade:4665
 msgid ""
 "The desktop background will show through the terminal background to an "
 "extent determined by the transparency setting"
@@ -835,47 +854,47 @@ msgstr ""
 "O papel de parede mostrará através do fundo do terminal, na medida "
 "determinada pela configuração de transparência"
 
-#: ../../src/roxterm-config.glade:4360
+#: ../src/roxterm-config.glade:4688
 msgid "Trans_parency:"
 msgstr "Trans_parência: "
 
-#: ../../src/roxterm-config.glade:4392
+#: ../src/roxterm-config.glade:4720
 msgid "<i><small>Opaque</small></i>"
 msgstr "<i><small>Opaco</small></i>"
 
-#: ../../src/roxterm-config.glade:4420
+#: ../src/roxterm-config.glade:4748
 msgid "<i><small>Transparent</small></i>"
 msgstr "<i><small>Transparente</small></i>"
 
-#: ../../src/roxterm-config.glade:4452
+#: ../src/roxterm-config.glade:4780
 msgid "<b>Background</b>"
 msgstr "<b>Fundo</b>"
 
-#: ../../src/roxterm-config.glade:4465
+#: ../src/roxterm-config.glade:4793
 msgid "Background"
 msgstr "Fundo"
 
-#: ../../src/roxterm-config.glade:4515
+#: ../src/roxterm-config.glade:4843
 msgid "Changes to the scrollbar position only take effect in new windows."
 msgstr "Mudanças para a posição de rolagem só terão efeito em novas janelas."
 
-#: ../../src/roxterm-config.glade:4534
+#: ../src/roxterm-config.glade:4862
 msgid "_No scrollbar"
 msgstr "_Sem barra"
 
-#: ../../src/roxterm-config.glade:4552
+#: ../src/roxterm-config.glade:4882
 msgid "Scrollbar on _right"
 msgstr "Barra de rolagem na _direita"
 
-#: ../../src/roxterm-config.glade:4570
+#: ../src/roxterm-config.glade:4902
 msgid "Scrollbar on _left"
 msgstr "Barra de rolagem na _esquerda"
 
-#: ../../src/roxterm-config.glade:4595
+#: ../src/roxterm-config.glade:4929
 msgid "Scroll_back:"
 msgstr "Rolar _para trás:"
 
-#: ../../src/roxterm-config.glade:4609
+#: ../src/roxterm-config.glade:4943
 msgid ""
 "Number of lines of output text to retain in the buffer so that they can "
 "still be viewed by scrolling up"
@@ -883,15 +902,15 @@ msgstr ""
 "Número de linhas de texto de saída para reter no buffer de modo que eles "
 "ainda podem ser visualizados rolando para cima"
 
-#: ../../src/roxterm-config.glade:4627
+#: ../src/roxterm-config.glade:4961
 msgid "lines"
 msgstr "linhas"
 
-#: ../../src/roxterm-config.glade:4644
+#: ../src/roxterm-config.glade:4978
 msgid "Scroll on _output"
 msgstr "Deslocar com novo _texto"
 
-#: ../../src/roxterm-config.glade:4649
+#: ../src/roxterm-config.glade:4984
 msgid ""
 "Whether to make the scrollbar jump to the bottom when new text is printed in "
 "the terminal"
@@ -899,11 +918,11 @@ msgstr ""
 "Indica se deve fazer o salto na barra de rolagem ao final do texto quando se "
 "escreve um novo texto no terminal"
 
-#: ../../src/roxterm-config.glade:4663
+#: ../src/roxterm-config.glade:4999
 msgid "Scroll on _keystroke"
 msgstr "Descolar com tecla _pausada"
 
-#: ../../src/roxterm-config.glade:4668
+#: ../src/roxterm-config.glade:5005
 msgid ""
 "Whether to make the scrollbar jump to the bottom when text is typed into a "
 "terminal"
@@ -911,35 +930,35 @@ msgstr ""
 "Indica se deve fazer o salto na barra de rolagem ao final do texto quando se "
 "escreve texto no terminal"
 
-#: ../../src/roxterm-config.glade:4688
+#: ../src/roxterm-config.glade:5026
 msgid "<b>Scrolling</b>"
 msgstr "<b>Rolagem</b>"
 
-#: ../../src/roxterm-config.glade:4701
+#: ../src/roxterm-config.glade:5039
 msgid "Scrolling"
 msgstr "Rolagem"
 
-#: ../../src/roxterm-config.glade:4739
+#: ../src/roxterm-config.glade:5077
 msgid "_Delete key generates:"
 msgstr "Gera tecla _Delete:"
 
-#: ../../src/roxterm-config.glade:4754
+#: ../src/roxterm-config.glade:5092
 msgid "_Backspace key generates:"
 msgstr "Gera tecla _Backspace:"
 
-#: ../../src/roxterm-config.glade:4803
+#: ../src/roxterm-config.glade:5141
 msgid "_Reset to defaults"
 msgstr "_Redefinir para padrão"
 
-#: ../../src/roxterm-config.glade:4808
+#: ../src/roxterm-config.glade:5147
 msgid "Reset the backspace and delete keys to their defaults"
 msgstr "Redefinir a tecla backspace e delete para o seu padrão "
 
-#: ../../src/roxterm-config.glade:4827
+#: ../src/roxterm-config.glade:5167
 msgid "Disable menu _access key (F10 by default)"
 msgstr "Desativar tecla de _acesso ao menu (F10 por padrão)"
 
-#: ../../src/roxterm-config.glade:4833
+#: ../src/roxterm-config.glade:5174
 msgid ""
 "This option disables the keyboard shortcut for opening the first menu. The "
 "default shortcut is F10."
@@ -947,11 +966,11 @@ msgstr ""
 "Está opção desativa os atalhos de teclado para abrir o primeiro menu. O "
 "padrão de atalho é F10."
 
-#: ../../src/roxterm-config.glade:4847
+#: ../src/roxterm-config.glade:5189
 msgid "Disable other menu _shortcut keys (Alt+...)"
 msgstr "Desativar outro _atalho de teclas de menu (Alt+...)"
 
-#: ../../src/roxterm-config.glade:4853
+#: ../src/roxterm-config.glade:5196
 msgid ""
 "This option disables the underlined shortcut keys in the menus (eg Alt+F for "
 "the File menu)."
@@ -959,11 +978,11 @@ msgstr ""
 "Esta opção desativa os atalhos de tecla sublinhada nos menus  (ex Alt+F para "
 "arquivo de menu)."
 
-#: ../../src/roxterm-config.glade:4867
+#: ../src/roxterm-config.glade:5211
 msgid "Disable _tab switching shortcut keys (Alt+number)"
 msgstr "Desativar _abas de teclas de atalhos para mudanças (Alt+numero)"
 
-#: ../../src/roxterm-config.glade:4873
+#: ../src/roxterm-config.glade:5218
 msgid ""
 "This option disables the shortcut keys for switching tabs (Alt+1-9 and Alt+0 "
 "by default)"
@@ -971,19 +990,19 @@ msgstr ""
 "Está opção desativa teclas de atalho para mudar abas (Alt+1-9 e Alt+0 por "
 "padrão)"
 
-#: ../../src/roxterm-config.glade:4894
+#: ../src/roxterm-config.glade:5240
 msgid "<b>Keyboard</b>"
 msgstr "<b>Teclado</b>"
 
-#: ../../src/roxterm-config.glade:4907
+#: ../src/roxterm-config.glade:5253
 msgid "Keyboard"
 msgstr "Teclado"
 
-#: ../../src/roxterm-config.glade:4941
+#: ../src/roxterm-config.glade:5287
 msgid "_Tab title:"
 msgstr "_Título da aba:"
 
-#: ../../src/roxterm-config.glade:4955
+#: ../src/roxterm-config.glade:5301
 msgid ""
 "The title string may include '%s' which is substituted with the title set by "
 "the child command (usually the current directory for shells). No other % "
@@ -994,38 +1013,38 @@ msgstr ""
 "pelo subcomando (normalmente o diretório atual dos shells). Não se permitem "
 "outro carácter ou sequencias % exceto '%%' que é exibido como um único %."
 
-#: ../../src/roxterm-config.glade:4970
+#: ../src/roxterm-config.glade:5316
 msgid "S_how number"
 msgstr "M_ostrar número"
 
-#: ../../src/roxterm-config.glade:4974
+#: ../src/roxterm-config.glade:5321
 msgid ""
 "This option causes the tab number to be shown at the start of the title."
 msgstr ""
 "Esta opção faz com que o número de abas podem ser mostradas no começo do "
 "titulo."
 
-#: ../../src/roxterm-config.glade:5007
+#: ../src/roxterm-config.glade:5355
 msgid "<b>Middle click on label action</b>"
 msgstr "<b>Clique médio na etiqueta de ação</b>"
 
-#: ../../src/roxterm-config.glade:5022
+#: ../src/roxterm-config.glade:5370
 msgid "Do n_othing"
 msgstr "Nada a _fazer"
 
-#: ../../src/roxterm-config.glade:5053
+#: ../src/roxterm-config.glade:5403
 msgid "C_lose tab"
 msgstr "F_echar aba"
 
-#: ../../src/roxterm-config.glade:5084
+#: ../src/roxterm-config.glade:5436
 msgid "_Paste tab name"
 msgstr "_Colar nome da aba"
 
-#: ../../src/roxterm-config.glade:5122
+#: ../src/roxterm-config.glade:5476
 msgid "_Wrap when switching tabs"
 msgstr "_Rodar quando mudar de abas:"
 
-#: ../../src/roxterm-config.glade:5129
+#: ../src/roxterm-config.glade:5484
 msgid ""
 "This option makes the Next and Previous Tab operations respectively wrap "
 "around from the first and last tab to the opposite end of the row; the move "
@@ -1035,21 +1054,21 @@ msgstr ""
 "primeira e ultima para a extremidade oposta da linha, as opçoes do menu "
 "esquerda/direita/cima/baixo que movem as abas são afetados da mesma forma."
 
-#: ../../src/roxterm-config.glade:5143
+#: ../src/roxterm-config.glade:5499
 #, fuzzy
 msgid "Show Close _buttons on tabs"
 msgstr "Mostrar botão _Fechar nas abas"
 
-#: ../../src/roxterm-config.glade:5150
+#: ../src/roxterm-config.glade:5507
 msgid "If this option is enabled close buttons are shown at the top of tabs."
 msgstr ""
 "Se essa opção é ativada, são mostrados os botões de fechar no topo das abas."
 
-#: ../../src/roxterm-config.glade:5165
+#: ../src/roxterm-config.glade:5523
 msgid "Show terminal _status in close buttons"
 msgstr "Mostrar _estado do terminal nos botoes de fechar"
 
-#: ../../src/roxterm-config.glade:5172
+#: ../src/roxterm-config.glade:5531
 msgid ""
 "If this option is enabled the icons in close buttons may be changed in "
 "inactive tabs to reflect the status of their terminals."
@@ -1057,11 +1076,11 @@ msgstr ""
 "Se esta opção é ativada, os ícones nos botoes de fechar podem ser mudados em "
 "abas inativas para refletir o estado de outros terminais."
 
-#: ../../src/roxterm-config.glade:5186
+#: ../src/roxterm-config.glade:5546
 msgid "Open new tabs _adjacent to current tab"
 msgstr "Abrir novas abas _junto a aba atual"
 
-#: ../../src/roxterm-config.glade:5192
+#: ../src/roxterm-config.glade:5553
 msgid ""
 "Whether to open new tabs adjacent to the current tab in a window, otherwise "
 "append them."
@@ -1069,7 +1088,7 @@ msgstr ""
 "Indica novas abas que serão abertas ao lado da aba atual em uma janela. Caso "
 "contrário sera adicando no final."
 
-#: ../../src/roxterm-config.glade:5244
+#: ../src/roxterm-config.glade:5606
 msgid ""
 "The following tab options do not apply to windows that are already open; "
 "they only apply to windows opened subsequently."
@@ -1077,52 +1096,52 @@ msgstr ""
 "As opções da aba a seguir não se aplicam as janelas que estão abertas, pois "
 "eles só se aplicam as janelas abertas posteriormente."
 
-#: ../../src/roxterm-config.glade:5270
+#: ../src/roxterm-config.glade:5632
 msgid "Initial _number of tabs:"
 msgstr "Inicial _número de abas:"
 
-#: ../../src/roxterm-config.glade:5309
+#: ../src/roxterm-config.glade:5671
 #, fuzzy
 msgid "Tab pos_ition:"
 msgstr "_Posição da aba:"
 
-#: ../../src/roxterm-config.glade:5349
+#: ../src/roxterm-config.glade:5711
 msgid "<b>Tabs</b>"
 msgstr "<b>Abas</b>"
 
-#: ../../src/roxterm-config.glade:5363
+#: ../src/roxterm-config.glade:5725
 msgid "Tabs"
 msgstr "Abas"
 
-#: ../../src/roxterm-config.glade:5470
+#: ../src/roxterm-config.glade:5834
 msgid "_Address"
 msgstr "_Endereço"
 
-#: ../../src/roxterm-config.glade:5483
+#: ../src/roxterm-config.glade:5847
 msgid "Ssh server address."
 msgstr "Endereço do servidor ssh."
 
-#: ../../src/roxterm-config.glade:5502
+#: ../src/roxterm-config.glade:5866
 msgid "_User"
 msgstr "_Usuário"
 
-#: ../../src/roxterm-config.glade:5516
+#: ../src/roxterm-config.glade:5880
 msgid "Remote username."
 msgstr "Nome de usuário remoto."
 
-#: ../../src/roxterm-config.glade:5535
+#: ../src/roxterm-config.glade:5899
 msgid "Ssh server port."
 msgstr "Porta do servidor ssh."
 
-#: ../../src/roxterm-config.glade:5557
+#: ../src/roxterm-config.glade:5921
 msgid "_Port"
 msgstr "_Porta"
 
-#: ../../src/roxterm-config.glade:5571
+#: ../src/roxterm-config.glade:5935
 msgid "Miscellaneous options to add to the ssh command line."
 msgstr "Diversas opções para adicionar à linha de comando ssh."
 
-#: ../../src/roxterm-config.glade:5591
+#: ../src/roxterm-config.glade:5955
 msgid "_Other options"
 msgstr "_Outras opções"
 

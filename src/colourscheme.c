@@ -31,7 +31,7 @@
 #endif
 
 typedef struct {
-    COLOUR_T *foreground, *background, *cursor;
+    COLOUR_T *foreground, *background, *cursor, *bold, *dim;
     COLOUR_T *palette;
     int palette_size;
 #if HAVE_COLORMAP
@@ -46,6 +46,8 @@ static void delete_scheme(ColourScheme *scheme)
     g_free(scheme->foreground);
     g_free(scheme->background);
     g_free(scheme->cursor);
+    g_free(scheme->bold);
+    g_free(scheme->dim);
     g_free(scheme->palette);
     g_free(scheme);
 }
@@ -215,70 +217,64 @@ int colour_scheme_get_palette_size(Options * opts)
     return scheme->palette_size;
 }
 
-COLOUR_T *colour_scheme_get_cursor_colour(Options *opts,
-        gboolean allow_null)
+static COLOUR_T *colour_scheme_get_named_colour(Options *opts,
+        const char *name, const char *dflt,
+        size_t member_offset, gboolean allow_null)
 {
     ColourScheme *scheme;
+    COLOUR_T **member;
 
     g_return_val_if_fail(opts, NULL);
     scheme = options_get_data(opts);
     g_return_val_if_fail(scheme, NULL);
 
-    if (!scheme->cursor)
+    member = (COLOUR_T **) (((char *) scheme) + member_offset);
+    if (!*member)
     {
-        scheme->cursor = g_new0(COLOUR_T, 1);
-        if (!colour_scheme_lookup_and_parse(opts, scheme, scheme->cursor,
-                    "cursor", allow_null ? NULL : "#c0c0c0", TRUE))
+        *member = g_new0(COLOUR_T, 1);
+        if (!colour_scheme_lookup_and_parse(opts, scheme, *member,
+                    name, allow_null ? NULL : dflt, TRUE))
         {
-            g_free(scheme->cursor);
-            scheme->cursor = NULL;
+            g_free(*member);
+            *member = NULL;
         }
     }
-    return scheme->cursor;
+    return *member;
+}
+
+COLOUR_T *colour_scheme_get_cursor_colour(Options *opts,
+        gboolean allow_null)
+{
+    return colour_scheme_get_named_colour(opts, "cursor", "#ccc",
+            offsetof(ColourScheme, cursor), allow_null);
 }
 
 COLOUR_T *colour_scheme_get_foreground_colour(Options * opts,
             gboolean allow_null)
 {
-    ColourScheme *scheme;
-
-    g_return_val_if_fail(opts, NULL);
-    scheme = options_get_data(opts);
-    g_return_val_if_fail(scheme, NULL);
-
-    if (!scheme->foreground)
-    {
-        scheme->foreground = g_new0(COLOUR_T, 1);
-        if (!colour_scheme_lookup_and_parse(opts, scheme, scheme->foreground,
-                "foreground", allow_null ? NULL : "#c0c0c0", FALSE))
-        {
-            g_free(scheme->foreground);
-            scheme->foreground = NULL;
-        }
-    }
-    return scheme->foreground;
+    return colour_scheme_get_named_colour(opts, "foreground", "#ccc",
+            offsetof(ColourScheme, foreground), allow_null);
 }
 
 COLOUR_T *colour_scheme_get_background_colour(Options * opts,
         gboolean allow_null)
 {
-    ColourScheme *scheme;
+    return colour_scheme_get_named_colour(opts, "background", "#000",
+            offsetof(ColourScheme, background), allow_null);
+}
 
-    g_return_val_if_fail(opts, NULL);
-    scheme = options_get_data(opts);
-    g_return_val_if_fail(scheme, NULL);
+COLOUR_T *colour_scheme_get_bold_colour(Options * opts,
+        gboolean allow_null)
+{
+    return colour_scheme_get_named_colour(opts, "bold", "#000",
+            offsetof(ColourScheme, bold), allow_null);
+}
 
-    if (!scheme->background)
-    {
-        scheme->background = g_new0(COLOUR_T, 1);
-        if (!colour_scheme_lookup_and_parse(opts, scheme, scheme->background,
-                "background", allow_null ? NULL : "#000", FALSE))
-        {
-            g_free(scheme->background);
-            scheme->background = NULL;
-        }
-    }
-    return scheme->background;
+COLOUR_T *colour_scheme_get_dim_colour(Options * opts,
+        gboolean allow_null)
+{
+    return colour_scheme_get_named_colour(opts, "dim", "#888",
+            offsetof(ColourScheme, dim), allow_null);
 }
 
 void colour_scheme_set_palette_size(Options * opts, int size)
@@ -322,39 +318,53 @@ void colour_scheme_set_palette_entry(Options * opts, int index,
     colour_scheme_set_colour(opts, scheme, &colour, key, colour_name);
 }
 
-void colour_scheme_set_cursor_colour(Options * opts, const char *colour_name)
+static void colour_scheme_set_named_colour(Options *opts,
+        const char *field_name,
+        const char *colour_name, size_t member_offset)
 {
     ColourScheme *scheme;
+    COLOUR_T **member;
 
     g_return_if_fail(opts);
     scheme = options_get_data(opts);
     g_return_if_fail(scheme);
-    colour_scheme_set_colour(opts, scheme, &scheme->cursor,
-            "cursor", colour_name);
+    member = (COLOUR_T **) (((char *) scheme) + member_offset);
+    colour_scheme_set_colour(opts, scheme, member,
+            field_name, colour_name);
+}
+
+void colour_scheme_set_cursor_colour(Options * opts, const char *colour_name)
+{
+    colour_scheme_set_named_colour(opts, "cursor", colour_name,
+            offsetof(ColourScheme, cursor));
 }
 
 void colour_scheme_set_foreground_colour(Options * opts,
         const char *colour_name)
 {
-    ColourScheme *scheme;
-
-    g_return_if_fail(opts);
-    scheme = options_get_data(opts);
-    g_return_if_fail(scheme);
-    colour_scheme_set_colour(opts, scheme, &scheme->foreground,
-            "foreground", colour_name);
+    colour_scheme_set_named_colour(opts, "foreground", colour_name,
+            offsetof(ColourScheme, foreground));
 }
 
 void colour_scheme_set_background_colour(Options * opts,
         const char *colour_name)
 {
-    ColourScheme *scheme;
+    colour_scheme_set_named_colour(opts, "background", colour_name,
+            offsetof(ColourScheme, background));
+}
 
-    g_return_if_fail(opts);
-    scheme = options_get_data(opts);
-    g_return_if_fail(scheme);
-    colour_scheme_set_colour(opts, scheme, &scheme->background,
-            "background", colour_name);
+void colour_scheme_set_bold_colour(Options * opts,
+        const char *colour_name)
+{
+    colour_scheme_set_named_colour(opts, "bold", colour_name,
+            offsetof(ColourScheme, bold));
+}
+
+void colour_scheme_set_dim_colour(Options * opts,
+        const char *colour_name)
+{
+    colour_scheme_set_named_colour(opts, "dim", colour_name,
+            offsetof(ColourScheme, dim));
 }
 
 /* vi:set sw=4 ts=4 noet cindent cino= */

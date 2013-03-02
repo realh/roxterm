@@ -1185,22 +1185,25 @@ static void roxterm_update_background(ROXTermData * roxterm, VteTerminal * vte)
             (guint16) (0xffff * (1 - saturation)) : 0xffff);
 }
 
-/* use_default = pick a default colour if option not given, otherwise
- * don't make the call */
 static void
 roxterm_update_cursor_colour(ROXTermData * roxterm, VteTerminal * vte)
 {
-    const COLOUR_T *cursor_colour =
-            colour_scheme_get_cursor_colour(roxterm->colour_scheme, TRUE);
+    COLOUR_SET_VTE(_cursor)(vte,
+            colour_scheme_get_cursor_colour(roxterm->colour_scheme, TRUE));
+}
 
-    if (cursor_colour)
-    {
-        COLOUR_SET_VTE(_cursor)(vte, cursor_colour);
-    }
-    else
-    {
-        COLOUR_SET_VTE(_cursor)(vte, NULL);
-    }
+static void
+roxterm_update_bold_colour(ROXTermData * roxterm, VteTerminal * vte)
+{
+    COLOUR_SET_VTE(_cursor)(vte,
+            colour_scheme_get_bold_colour(roxterm->colour_scheme, TRUE));
+}
+
+static void
+roxterm_update_dim_colour(ROXTermData * roxterm, VteTerminal * vte)
+{
+    COLOUR_SET_VTE(_cursor)(vte,
+            colour_scheme_get_dim_colour(roxterm->colour_scheme, TRUE));
 }
 
 guint16 extrapolate_chroma(guint16 bg, guint16 fg, double factor)
@@ -1272,6 +1275,8 @@ roxterm_apply_colour_scheme(ROXTermData *roxterm, VteTerminal *vte)
                 extrapolate_colours(background, foreground, 0.7));
     }
     roxterm_update_cursor_colour(roxterm, vte);
+    roxterm_update_bold_colour(roxterm, vte);
+    roxterm_update_dim_colour(roxterm, vte);
     roxterm_force_redraw(roxterm);
 }
 
@@ -3723,6 +3728,16 @@ static gboolean roxterm_update_colour_option(Options *scheme, const char *key,
         old_colour = colour_scheme_get_cursor_colour(scheme, TRUE);
         setter = colour_scheme_set_cursor_colour;
     }
+    else if (!strcmp(key, "bold"))
+    {
+        old_colour = colour_scheme_get_bold_colour(scheme, TRUE);
+        setter = colour_scheme_set_bold_colour;
+    }
+    else if (!strcmp(key, "dim"))
+    {
+        old_colour = colour_scheme_get_dim_colour(scheme, TRUE);
+        setter = colour_scheme_set_dim_colour;
+    }
     else
     {
         old_colour = colour_scheme_get_palette(scheme) + atoi(key);
@@ -3762,6 +3777,10 @@ static void roxterm_reflect_colour_change(Options *scheme, const char *key)
 
         if (!strcmp(key, "cursor"))
             roxterm_update_cursor_colour(roxterm, vte);
+        else if (!strcmp(key, "bold"))
+            roxterm_update_bold_colour(roxterm, vte);
+        else if (!strcmp(key, "dim"))
+            roxterm_update_dim_colour(roxterm, vte);
         else
             roxterm_apply_colour_scheme(roxterm, vte);
     }
