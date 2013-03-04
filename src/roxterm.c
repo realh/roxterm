@@ -2932,7 +2932,7 @@ inline static void
 roxterm_set_select_by_word_chars(ROXTermData * roxterm, VteTerminal * vte)
 {
     char *wchars = options_lookup_string_with_default
-        (roxterm->profile, "sel_by_word", "-A-Za-z0-9,./?%&#_");
+        (roxterm->profile, "sel_by_word", "-A-Za-z0-9,./?%&#:_=+@~");
 
     vte_terminal_set_word_chars(vte, wchars);
     if (wchars)
