@@ -1195,14 +1195,14 @@ roxterm_update_cursor_colour(ROXTermData * roxterm, VteTerminal * vte)
 static void
 roxterm_update_bold_colour(ROXTermData * roxterm, VteTerminal * vte)
 {
-    COLOUR_SET_VTE(_cursor)(vte,
+    COLOUR_SET_VTE(_bold)(vte,
             colour_scheme_get_bold_colour(roxterm->colour_scheme, TRUE));
 }
 
 static void
 roxterm_update_dim_colour(ROXTermData * roxterm, VteTerminal * vte)
 {
-    COLOUR_SET_VTE(_cursor)(vte,
+    COLOUR_SET_VTE(_dim)(vte,
             colour_scheme_get_dim_colour(roxterm->colour_scheme, TRUE));
 }
 
@@ -1254,6 +1254,8 @@ static void roxterm_apply_window_background(ROXTermData *roxterm,
 static void
 roxterm_apply_colour_scheme(ROXTermData *roxterm, VteTerminal *vte)
 {
+    gboolean bold_dim_set = FALSE;
+    const COLOUR_T *bd = NULL;
     int ncolours = 0;
     const COLOUR_T *palette = NULL;
     const COLOUR_T *foreground =
@@ -1273,10 +1275,15 @@ roxterm_apply_colour_scheme(ROXTermData *roxterm, VteTerminal *vte)
                 extrapolate_colours(background, foreground, 1.2));
         COLOUR_SET_VTE(_dim)(vte,
                 extrapolate_colours(background, foreground, 0.7));
+        bold_dim_set = TRUE;
     }
+    bd = colour_scheme_get_bold_colour(roxterm->colour_scheme, TRUE);
+    if (bd || !bold_dim_set)
+        COLOUR_SET_VTE(_bold)(vte, bd);
+    bd = colour_scheme_get_dim_colour(roxterm->colour_scheme, TRUE);
+    if (bd || !bold_dim_set)
+        COLOUR_SET_VTE(_dim)(vte, bd);
     roxterm_update_cursor_colour(roxterm, vte);
-    roxterm_update_bold_colour(roxterm, vte);
-    roxterm_update_dim_colour(roxterm, vte);
     roxterm_force_redraw(roxterm);
 }
 
