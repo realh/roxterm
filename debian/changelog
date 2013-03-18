@@ -1,4 +1,4 @@
-roxterm (2.7.0.42-1) unstable; urgency=low
+roxterm (2.7.0.43-1) unstable; urgency=low
 
   * Enable translations even if incomplete.
     + debian/control: Build-Depends on po4a and gettext.
@@ -16,8 +16,9 @@ roxterm (2.7.0.42-1) unstable; urgency=low
   * Added bold and dim colour options.
   * Changed default select-by-word pattern (ameliorates #688025).
   * Fixed misinterpretation of --tab-name as --tab.
+  * debian/control: git repo has moved.
 
- -- Tony Houghton <h@realh.co.uk>  Mon, 18 Mar 2013 14:31:12 +0000
+ -- Tony Houghton <h@realh.co.uk>  Mon, 18 Mar 2013 14:49:51 +0000
 
 roxterm (2.6.5-1) unstable; urgency=low
 
