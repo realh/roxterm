@@ -64,7 +64,7 @@ static DBusMessage *create_dbus_message(int argc, char **argv,
         char *arg;
         char tmp[16];
 
-        if (g_str_has_prefix(argv[n], "--tab"))
+        if (!strcmp(argv[n], "--tab"))
         {
             if (global_options_workspace == -1)
             {

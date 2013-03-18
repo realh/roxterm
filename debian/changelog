@@ -1,4 +1,4 @@
-roxterm (2.7.0.38-1) UNRELEASED; urgency=low
+roxterm (2.7.0.40-1) unstable; urgency=low
 
   * Enable translations even if incomplete.
     + debian/control: Build-Depends on po4a and gettext.
@@ -15,8 +15,9 @@ roxterm (2.7.0.38-1) UNRELEASED; urgency=low
   * Added half page scrolling actions (patch by Jim Paris).
   * Added bold and dim colour options.
   * Changed default select-by-word pattern (ameliorates #688025).
+  * Fixed misinterpretation of --tab-name as --tab.
 
- -- Tony Houghton <h@realh.co.uk>  Wed, 20 Feb 2013 23:21:11 +0000
+ -- Tony Houghton <h@realh.co.uk>  Mon, 18 Mar 2013 14:15:30 +0000
 
 roxterm (2.6.5-1) unstable; urgency=low
 
