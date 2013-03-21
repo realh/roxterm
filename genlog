@@ -9,6 +9,10 @@ use_grep=1
 all=`git tag | grep '^[0-9]' | sort -r`
 first=`for i in $all; do echo $i; done | head -n 1`
 rest=`for i in $all; do echo $i; done | tail -n +2 | grep -v '\.0$'`
+if echo "$first" | grep -q '\.0$' ; then
+    first=`echo $rest | sed 's/ .*//'`
+    rest=`echo $rest | sed 's/^[^ ]* //'`
+fi
 
 for i in $first $rest; do
     [ "$prev" = "2.3.1" ] && use_grep=0
