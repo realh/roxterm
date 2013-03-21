@@ -1768,7 +1768,7 @@ void multi_win_set_colormap(MultiWin *win)
         win->composite = FALSE;
     }
 }
-#endif
+#endif  /* !GTK3 */
 
 static void multi_win_composited_changed(GtkWidget *widget, MultiWin *win)
 {
@@ -1834,6 +1834,19 @@ static gboolean multi_win_map_event_handler(GtkWidget *widget,
 }
 
 #endif /* HAVE_COMPOSITE */
+
+/* Close window explicitly instead of allowing system to close it by returning
+ * FALSE from delete-event handler. This cures
+ * https://sourceforge.net/p/roxterm/bugs/89/
+ * but I don't really know why.
+ */
+static gboolean multi_win_delete_event_cb(GtkWidget *widget, GdkEvent *event,
+        MultiWin *win)
+{
+    if (!multi_win_delete_handler(widget, event, win))
+        multi_win_destructor(win, TRUE);
+    return TRUE;
+}
 
 MultiWin *multi_win_new_blank(const char *display_name, Options *shortcuts,
         int zoom_index,
@@ -1901,7 +1914,7 @@ MultiWin *multi_win_new_blank(const char *display_name, Options *shortcuts,
     if (multi_win_delete_handler)
     {
         g_signal_connect(win->gtkwin, "delete-event",
-                G_CALLBACK(multi_win_delete_handler), win);
+                G_CALLBACK(multi_win_delete_event_cb), win);
     }
 
 #if HAVE_COMPOSITE
