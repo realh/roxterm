@@ -1,4 +1,4 @@
-roxterm (2.7.0.47-1) unstable; urgency=low
+roxterm (2.7.0.48-1) unstable; urgency=low
 
   * Enable translations even if incomplete.
     + debian/control: Build-Depends on po4a and gettext.
@@ -9,7 +9,6 @@ roxterm (2.7.0.47-1) unstable; urgency=low
   * Parse a single argument to -e in case it contains a space-separated
     executable and arguments.
   * Fixed Files/Filer option by responding to changes of widget content.
-  * Make window and terminal background colours match.
   * Support python 2.4 in build by not using with statement.
   * Exclude < from end of URL match.
   * Added half page scrolling actions (patch by Jim Paris).
@@ -18,7 +17,7 @@ roxterm (2.7.0.47-1) unstable; urgency=low
   * Fixed misinterpretation of --tab-name as --tab.
   * debian/control: git repo has moved.
 
- -- Tony Houghton <h@realh.co.uk>  Mon, 18 Mar 2013 18:28:21 +0000
+ -- Tony Houghton <h@realh.co.uk>  Thu, 21 Mar 2013 16:46:27 +0000
 
 roxterm (2.6.5-1) unstable; urgency=low
 

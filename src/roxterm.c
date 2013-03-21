@@ -1134,6 +1134,10 @@ static double roxterm_get_config_saturation(ROXTermData *roxterm)
     return saturation;
 }
 
+#if 0
+/* Setting window background creates a worse problem than it solves:
+ * https://sourceforge.net/p/roxterm/feature-requests/57/
+ */
 static double roxterm_get_window_saturation(ROXTermData *roxterm)
 {
 
@@ -1174,6 +1178,9 @@ static void roxterm_apply_window_background(ROXTermData *roxterm,
 #endif
     }
 }
+#else
+#define roxterm_apply_window_background(r, b, s)
+#endif
 
 static void roxterm_update_background(ROXTermData * roxterm, VteTerminal * vte)
 {
