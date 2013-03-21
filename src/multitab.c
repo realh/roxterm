@@ -1690,9 +1690,11 @@ static void multi_win_connect_actions(MultiWin * win)
     multi_win_menu_connect_swapped(win, MENUTREE_VIEW_SCROLL_PAGE_DOWN,
         G_CALLBACK(multi_win_scroll_page_down_action), win, NULL, NULL, NULL);
     multi_win_menu_connect_swapped(win, MENUTREE_VIEW_SCROLL_HALF_PAGE_UP,
-        G_CALLBACK(multi_win_scroll_half_page_up_action), win, NULL, NULL, NULL);
+        G_CALLBACK(multi_win_scroll_half_page_up_action), win,
+        NULL, NULL, NULL);
     multi_win_menu_connect_swapped(win, MENUTREE_VIEW_SCROLL_HALF_PAGE_DOWN,
-        G_CALLBACK(multi_win_scroll_half_page_down_action), win, NULL, NULL, NULL);
+        G_CALLBACK(multi_win_scroll_half_page_down_action), win,
+        NULL, NULL, NULL);
     multi_win_menu_connect_swapped(win, MENUTREE_VIEW_SCROLL_TO_TOP,
         G_CALLBACK(multi_win_scroll_to_top_action), win, NULL, NULL, NULL);
     multi_win_menu_connect_swapped(win, MENUTREE_VIEW_SCROLL_TO_BOTTOM,
