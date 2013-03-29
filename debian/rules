@@ -1,12 +1,17 @@
 #!/usr/bin/make -f
 
+ifeq ($(wildcard .git),.git)
+CONFIGURE_GIT =
+else
+CONFIGURE_GIT = --disable-git
+endif
 # Split this up a bit to avoid long lines
 CONFIGURE_GDA_PATH = /usr/share/gnome-control-center/default-apps
 CONFIGURE_GDA = --with-gnome-default-applications=$(CONFIGURE_GDA_PATH)
 CONFIGURE_LDFLAGS = LDFLAGS=-Wl,--as-needed
 CONFIGURE_DIRS = PREFIX=/usr
 CONFIGURE_TRANS = --enable-translations
-CONFIGURE_MISC = $(CONFIGURE_DIRS) $(CONFIGURE_TRANS) --disable-git
+CONFIGURE_MISC = $(CONFIGURE_DIRS) $(CONFIGURE_TRANS) $(CONFIGURE_GIT)
 CONFIGURE_COMMON = $(CONFIGURE_GDA) $(CONFIGURE_LDFLAGS) $(CONFIGURE_MISC)
 MSCRIPT_OPTS = --lock-top
 COMMON_DIRS = --top-dir=../.. --src-dir='$${TOP_DIR}/src'
