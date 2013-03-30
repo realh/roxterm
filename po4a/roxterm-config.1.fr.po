@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE
 # Copyright (C) YEAR Tony Houghton
 # This file is distributed under the same license as the roxterm package.
-# 
+#
 # Translators:
 # Christophe Musseau <christo.2so@gmail.com>, 2011.
 # Stéphane Aulery <lkppo@free.fr>, 2012.
@@ -9,15 +9,16 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: roxterm\n"
-"Report-Msgid-Bugs-To: https://sourceforge.net/tracker/?group_id=124080\n"
-"POT-Creation-Date: 2013-03-18 13:53+0000\n"
+"Report-Msgid-Bugs-To: http://sourceforge.net/tracker/?group_id=124080\n"
+"POT-Creation-Date: 2013-03-30 23:57+0000\n"
 "PO-Revision-Date: 2012-06-05 20:54+0000\n"
 "Last-Translator: Stéphane Aulery <lkppo@free.fr>\n"
-"Language-Team: French (http://www.transifex.com/projects/p/roxterm/language/fr/)\n"
+"Language-Team: French (http://www.transifex.com/projects/p/roxterm/language/"
+"fr/)\n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: fr\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #. type: Content of the dhfirstname entity
@@ -91,15 +92,20 @@ msgstr "fr"
 msgid ""
 "      &dhemail;\n"
 "    "
-msgstr "      &dhemail;\n    "
+msgstr ""
+"      &dhemail;\n"
+"    "
 
 #. type: Content of: <refentry><refentryinfo>
 #: ../roxterm-config.1.xml.in:48
 msgid ""
-"<placeholder type=\"address\" id=\"0\"/> <author> "
-"<contrib>Developer</contrib> &dhfirstname; &dhsurname; </author> <copyright>"
-" <year>2005-2011</year> <holder>&dhusername;</holder> </copyright> &dhdate;"
-msgstr "<placeholder type=\"address\" id=\"0\"/> <author> <contrib>Développeur</contrib> &dhfirstname; &dhsurname; </author> <copyright> <year>2005-2011</year> <holder>&dhusername;</holder> </copyright> &dhdate;"
+"<placeholder type=\"address\" id=\"0\"/> <author> <contrib>Developer</"
+"contrib> &dhfirstname; &dhsurname; </author> <copyright> <year>2005-2011</"
+"year> <holder>&dhusername;</holder> </copyright> &dhdate;"
+msgstr ""
+"<placeholder type=\"address\" id=\"0\"/> <author> <contrib>Développeur</"
+"contrib> &dhfirstname; &dhsurname; </author> <copyright> <year>2005-2011</"
+"year> <holder>&dhusername;</holder> </copyright> &dhdate;"
 
 #. type: Content of: <refentry><refmeta><refmiscinfo>
 #: ../roxterm-config.1.xml.in:64
@@ -129,14 +135,17 @@ msgstr "émulateur de terminal"
 #. type: Content of: <refentry><refsynopsisdiv><cmdsynopsis>
 #: ../roxterm-config.1.xml.in:75
 msgid ""
-"<command>&dhpackage;</command> "
-"<arg><option>--appdir=<replaceable>DIR</replaceable></option></arg> "
-"<arg><option>--EditProfile=<replaceable>PROFILE</replaceable></option></arg>"
-" "
-"<arg><option>--EditColourScheme=<replaceable>SCHEME</replaceable></option></arg>"
-" <arg><option>--Configlet</option></arg> "
-"<arg><option>--listen</option></arg>"
-msgstr "<command>&dhpackage;</command> <arg><option>--appdir=<replaceable>RÉP</replaceable></option></arg> <arg><option>--EditProfile=<replaceable>PROFIL</replaceable></option></arg> <arg><option>--EditColourScheme=<replaceable>JEU DE COULEURS</replaceable></option></arg> <arg><option>--Configlet</option></arg> <arg><option>--listen</option></arg>"
+"<command>&dhpackage;</command> <arg><option>--appdir=<replaceable>DIR</"
+"replaceable></option></arg> <arg><option>--EditProfile=<replaceable>PROFILE</"
+"replaceable></option></arg> <arg><option>--"
+"EditColourScheme=<replaceable>SCHEME</replaceable></option></arg> "
+"<arg><option>--Configlet</option></arg> <arg><option>--listen</option></arg>"
+msgstr ""
+"<command>&dhpackage;</command> <arg><option>--appdir=<replaceable>RÉP</"
+"replaceable></option></arg> <arg><option>--EditProfile=<replaceable>PROFIL</"
+"replaceable></option></arg> <arg><option>--EditColourScheme=<replaceable>JEU "
+"DE COULEURS</replaceable></option></arg> <arg><option>--Configlet</option></"
+"arg> <arg><option>--listen</option></arg>"
 
 #. type: Content of: <refentry><refsect1><title>
 #: ../roxterm-config.1.xml.in:84
@@ -148,14 +157,18 @@ msgstr "DESCRIPTION"
 msgid ""
 "This manual page documents briefly the <command>&dhpackage;</command> "
 "command."
-msgstr "Cette page de manuel documente brièvement la commande <command> &amp;dhpackage; </command>."
+msgstr ""
+"Cette page de manuel documente brièvement la commande <command> &amp;"
+"dhpackage; </command>."
 
 #. type: Content of: <refentry><refsect1><para>
 #: ../roxterm-config.1.xml.in:89
 msgid ""
 "<command>&dhpackage;</command> is for configuring ROXTerm, the terminal "
 "emulator."
-msgstr "<command> &amp;dhpackage; </command> permet de configurer l'émulateur de terminal ROXTerm."
+msgstr ""
+"<command> &amp;dhpackage; </command> permet de configurer l'émulateur de "
+"terminal ROXTerm."
 
 #. type: Content of: <refentry><refsect1><title>
 #: ../roxterm-config.1.xml.in:94
@@ -165,17 +178,19 @@ msgstr "OPTIONS"
 #. type: Content of: <refentry><refsect1><para>
 #: ../roxterm-config.1.xml.in:96
 msgid ""
-"These programs follow the usual &gnu; command line syntax, with long options"
-" starting with two dashes (`-').  A summary of options is included below."
-msgstr "Ces programmes suivent la syntaxe &gnu; habituelle de la ligne de commande, avec des options longues commençant par deux tirets (`-'). Un résumé des options est inclus ci-dessous."
+"These programs follow the usual &gnu; command line syntax, with long options "
+"starting with two dashes (`-').  A summary of options is included below."
+msgstr ""
+"Ces programmes suivent la syntaxe &gnu; habituelle de la ligne de commande, "
+"avec des options longues commençant par deux tirets (`-'). Un résumé des "
+"options est inclus ci-dessous."
 
 #. type: Content of: <refentry><refsect1><variablelist><varlistentry><term>
 #: ../roxterm-config.1.xml.in:102
 msgid "<option>--appdir=DIR</option>"
 msgstr "<option>--appdir=RÉP</option>"
 
-#. type: Content of:
-#. <refentry><refsect1><variablelist><varlistentry><listitem><para>
+#. type: Content of: <refentry><refsect1><variablelist><varlistentry><listitem><para>
 #: ../roxterm-config.1.xml.in:105
 msgid "Application directory when run as a ROX app."
 msgstr "Répertoire d'applications quand il lancé comme une application ROX."
@@ -185,8 +200,7 @@ msgstr "Répertoire d'applications quand il lancé comme une application ROX."
 msgid "<option>--EditProfile=PROFILE</option>"
 msgstr "<option>--EditProfile=PROFIL</option>"
 
-#. type: Content of:
-#. <refentry><refsect1><variablelist><varlistentry><listitem><para>
+#. type: Content of: <refentry><refsect1><variablelist><varlistentry><listitem><para>
 #: ../roxterm-config.1.xml.in:112
 msgid "Edit the named profile."
 msgstr "Editer le profil nommé."
@@ -196,8 +210,7 @@ msgstr "Editer le profil nommé."
 msgid "<option>--EditColourScheme=SCHEME</option>"
 msgstr "<option>--EditColourScheme=JEU DE COULEURS</option>"
 
-#. type: Content of:
-#. <refentry><refsect1><variablelist><varlistentry><listitem><para>
+#. type: Content of: <refentry><refsect1><variablelist><varlistentry><listitem><para>
 #: ../roxterm-config.1.xml.in:119
 msgid "Edit the named colour scheme."
 msgstr "Editer le jeu de couleurs nommé."
@@ -207,11 +220,11 @@ msgstr "Editer le jeu de couleurs nommé."
 msgid "<option>--listen</option>"
 msgstr "<option>--listen</option>"
 
-#. type: Content of:
-#. <refentry><refsect1><variablelist><varlistentry><listitem><para>
+#. type: Content of: <refentry><refsect1><variablelist><varlistentry><listitem><para>
 #: ../roxterm-config.1.xml.in:126
 msgid "Do nothing but wait for ROXTerm to request operations via D-BUS."
-msgstr "Ne rien faire, mais attendre que ROXTerm réclame les opérations via D-BUS."
+msgstr ""
+"Ne rien faire, mais attendre que ROXTerm réclame les opérations via D-BUS."
 
 #. type: Content of: <refentry><refsect1><title>
 #: ../roxterm-config.1.xml.in:133
@@ -221,9 +234,12 @@ msgstr "VOIR AUSSI"
 #. type: Content of: <refentry><refsect1><para>
 #: ../roxterm-config.1.xml.in:135
 msgid ""
-"roxterm-config is usually run by roxterm. The package is documented fully by"
-" the HTML file <filename>file://@htmldir@/en/index.html</filename>."
-msgstr "roxterm-config est généralement exécuté par roxterm. Le paquet est entièrement documenté par le fichier HTML <filename>file://@htmldir@/fr/index.html</filename>."
+"roxterm-config is usually run by roxterm. The package is documented fully by "
+"the HTML file <filename>file://@htmldir@/en/index.html</filename>."
+msgstr ""
+"roxterm-config est généralement exécuté par roxterm. Le paquet est "
+"entièrement documenté par le fichier HTML <filename>file://@htmldir@/fr/"
+"index.html</filename>."
 
 #. type: Content of: <refentry><refsect1><title>
 #: ../roxterm-config.1.xml.in:140
@@ -237,11 +253,17 @@ msgid ""
 "granted to copy, distribute and/or modify this document under the terms of "
 "the &gnu; General Public License, Version 2 or any later version published "
 "by the Free Software Foundation."
-msgstr "Cette page de manuel a été écrite par &dhusername; &dhemail;. Permission vous est donnée de copier, distribuer et / ou modifier ce document selon les termes de la Licence Publique Générale &gnu; Version 2 ou toute version ultérieure publiée par la Free Software Foundation."
+msgstr ""
+"Cette page de manuel a été écrite par &dhusername; &dhemail;. Permission "
+"vous est donnée de copier, distribuer et / ou modifier ce document selon les "
+"termes de la Licence Publique Générale &gnu; Version 2 ou toute version "
+"ultérieure publiée par la Free Software Foundation."
 
 #. type: Content of: <refentry><refsect1><para>
 #: ../roxterm-config.1.xml.in:148
 msgid ""
 "On Debian systems, the complete text of the GNU General Public License can "
 "be found in /usr/share/common-licenses/GPL."
-msgstr "Sur les systèmes Debian, le texte complet de la Licence Publique Générale GNU peut être trouvé dans /usr/share/common-licenses/GPL."
+msgstr ""
+"Sur les systèmes Debian, le texte complet de la Licence Publique Générale "
+"GNU peut être trouvé dans /usr/share/common-licenses/GPL."
