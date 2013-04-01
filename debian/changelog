@@ -2,6 +2,7 @@ roxterm (2.7.1-1) unstable; urgency=low
 
   * Enable translations even if incomplete.
     + debian/control: Build-Depends on po4a and gettext.
+    + debian/roxterm-common.install: Add translation files.
   * Use GdkRGBA instead of GdkColor when possible.
   * Added option to bind a colour scheme to a profile (Closes: #684294).
   * Escape quotes in URLs (Closes: #696917).
@@ -19,7 +20,7 @@ roxterm (2.7.1-1) unstable; urgency=low
   * debian/rules: Use git to generate version info etc if .git is present.
   * debian/changelog: Target experimental due to wheezy pre-release freeze.
 
- -- Tony Houghton <h@realh.co.uk>  Mon, 01 Apr 2013 14:01:29 +0100
+ -- Tony Houghton <h@realh.co.uk>  Mon, 01 Apr 2013 15:15:57 +0100
 
 roxterm (2.6.5-1) unstable; urgency=low
 

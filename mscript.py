@@ -509,7 +509,9 @@ elif ctx.mode == "install" or ctx.mode == "uninstall":
     linguas = parse_linguas(ctx)
     if ctx.env['HAVE_GETTEXT']:
         for l in linguas:
-            ctx.install_data("po/%s.mo" % l, "${LOCALEDIR}/%s/LC_MESSAGES" % l)
+            ctx.install_data("po/%s.mo" % l,
+                    "${LOCALEDIR}/%s/LC_MESSAGES/roxterm.mo" % l,
+                    other_options = "-T")
     if ctx.env['HAVE_PO4A']:
         for l in linguas:
             if ctx.env['XMLTOMAN']:
