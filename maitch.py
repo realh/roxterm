@@ -687,7 +687,7 @@ Other predefined variables [default values shown in squarer brackets]:
 
 
     def ensure_out_dir(self, *args):
-        """ Esnures the named directory exists. args is a single string or list
+        """ Ensures the named directory exists. args is a single string or list
         of strings. Single string may be absolute in which case it isn't
         altered. Otherwise a path is made absolute using BUILD_DIR. """
         if isinstance(args, basestring) and os.path.isabs(args):
@@ -2022,6 +2022,11 @@ def call_subprocess(*args, **kwargs):
     stdout and stderr in kwargs are overridden. """
     kwargs['stdout'] = subprocess.PIPE
     kwargs['stderr'] = subprocess.PIPE
+    if isinstance(args[0], basestring):
+        c = args[0]
+    else:
+        c = ' '.join(args[0])
+    mprint(c)
     sp = subprocess.Popen(*args, **kwargs)
     dprint("%s has pid %d" % (args, sp.pid))
     [out, err] = sp.communicate()
