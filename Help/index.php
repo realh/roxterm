@@ -46,7 +46,11 @@ switch ($page)
 switch ($lang)
 {
     case 'en':
+    case 'pt_BR':
+    case 'fr':
     case 'es':
+    case 'ru':
+    case 'uk':
         break;
     default:
         $lang = 'en';
@@ -82,7 +86,7 @@ while (!feof($file))
         {
             print ' selected="1"';
         }
-        print '>Brasileiro Portuguesa</option>';
+        print '>Portuguesa (Brasileiro)</option>';
         print '<option value="es"';
         if ($lang == 'es')
         {
