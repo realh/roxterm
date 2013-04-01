@@ -512,6 +512,10 @@ elif ctx.mode == "install" or ctx.mode == "uninstall":
             ctx.install_data("po/%s.mo" % l,
                     "${LOCALEDIR}/%s/LC_MESSAGES/roxterm.mo" % l,
                     other_options = "-T")
+        ptdir = ctx.subst("${DESTDIR}/${LOCALEDIR}/pt/LC_MESSAGES")
+        ctx.ensure_out_dir(ptdir)
+        call_subprocess(["ln", "-sfn",
+                "../../pt_BR/LC_MESSAGES/roxterm.mo", ptdir])
     if ctx.env['HAVE_PO4A']:
         for l in linguas:
             if ctx.env['XMLTOMAN']:
@@ -521,6 +525,13 @@ elif ctx.mode == "install" or ctx.mode == "uninstall":
                     ctx.glob("*.html",
                     subdir = ctx.subst("${TOP_DIR}/Help/%s" % l)),
                     "${HTMLDIR}/%s" % l)
+        ptdir = ctx.subst("${DESTDIR}/${MANDIR}/pt/man1")
+        ctx.ensure_out_dir(ptdir)
+        call_subprocess(["ln", "-sfn", "../../pt_BR/man1/roxterm.1", ptdir])
+        call_subprocess(["ln", "-sfn", "../../pt_BR/man1/roxterm-config.1",
+                ptdir])
+        call_subprocess(["ln", "-sfn", "pt_BR",
+                ctx.subst("${DESTDIR}/${HTMLDIR}/pt")])
 
 elif ctx.mode == 'pristine' or ctx.mode == 'clean':
 
