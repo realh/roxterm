@@ -1,4 +1,4 @@
-roxterm (2.7.1-1) unstable; urgency=low
+roxterm (2.7.1-1) experimental; urgency=low
 
   * Enable translations even if incomplete.
     + debian/control: Build-Depends on po4a and gettext.
@@ -20,7 +20,7 @@ roxterm (2.7.1-1) unstable; urgency=low
   * debian/rules: Use git to generate version info etc if .git is present.
   * debian/changelog: Target experimental due to wheezy pre-release freeze.
 
- -- Tony Houghton <h@realh.co.uk>  Mon, 01 Apr 2013 15:15:57 +0100
+ -- Tony Houghton <h@realh.co.uk>  Mon, 01 Apr 2013 20:44:26 +0100
 
 roxterm (2.6.5-1) unstable; urgency=low
 
