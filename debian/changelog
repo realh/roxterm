@@ -19,8 +19,9 @@ roxterm (2.7.1-1) experimental; urgency=low
   * debian/control: git repo has moved.
   * debian/rules: Use git to generate version info etc if .git is present.
   * debian/changelog: Target experimental due to wheezy pre-release freeze.
+  * lintian overrides for xpm files were apparently obsolete; removed.
 
- -- Tony Houghton <h@realh.co.uk>  Mon, 01 Apr 2013 20:44:26 +0100
+ -- Tony Houghton <h@realh.co.uk>  Mon, 01 Apr 2013 21:24:00 +0100
 
 roxterm (2.6.5-1) unstable; urgency=low
 
