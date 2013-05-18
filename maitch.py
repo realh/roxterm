@@ -1839,14 +1839,9 @@ def mkdir_rule(ctx, env, targets, sources):
         ctx.ensure_out_dir_for_file(t)
 
 
+def manipulate_kwargs_for_pot_rule(ctx, kwargs, potfiles = False):
+    """ Helper function. It processes the following args for certain rules:
 
-def PotRules(ctx, **kwargs):
-    """ Returns a pair (list) of rules for generating a .pot file from a list of
-    source files eg POTFILES.in where filenames are relative to TOP_DIR. Default
-    source is "${TOP_DIR}/po/POTFILES.in", default target is
-    ${TOP_DIR}/po/${PACKAGE}.pot.
-    rule defaults to ${XGETTEXT}, may be overridden - note that source for this
-    rule is generated POTFILES, not POTFILES.in.
     XGETTEXT is not set by default. *_XGETTEXT_OPTS is generated on the fly.
 
     Special args:
@@ -1854,25 +1849,11 @@ def PotRules(ctx, **kwargs):
     package
     version
     bugs_addr
-    opts_prefix: Goes on front of _XGETTEXT_OPTS added to env.
+    opts_prefix: Goes on front of _XGETTEXT_OPTS added to env from above args
+    xgettext_opts: Additional xgettext_opts
 
     '^"POT-Creation-Date:' is added to a new or existing diffpat.
     """
-    def generate_potfiles(ctx, env, targets, sources):
-        potfiles = []
-        for s in sources:
-            fp = open(subst(env, s), 'r')
-            for f in fp.readlines():
-                f = f.strip()
-                if len(f) and f[0] != '#':
-                    potfiles.append(opj(env['TOP_DIR'], f.strip()))
-            fp.close()
-        t = subst(env, targets[0])
-        ctx.ensure_out_dir_for_file(t)
-        fp = open(t, 'w')
-        for f in potfiles:
-            fp.write("%s\n" % f)
-        fp.close()
 
     def pot_deps(ctx, rule):
         deps = []
@@ -1886,21 +1867,21 @@ def PotRules(ctx, **kwargs):
     varname = "%s_XGETTEXT_OPTS" % opts_prefix
     if not 'where' in kwargs:
         kwargs['where'] = SRC | TOP
-    try:
-        src1 = kwargs['sources']
-    except KeyError:
-        src1 = ["${TOP_DIR}/po/POTFILES.in"]
-    rule1 = Rule(rule = generate_potfiles,
-            sources = src1,
-            targets = ["${BUILD_DIR}/po/POTFILES"],
-            where = kwargs['where'])
-
-    kwargs['sources'] = ["${BUILD_DIR}/po/POTFILES"]
     if not 'targets' in kwargs:
         kwargs['targets'] = ["${TOP_DIR}/po/${PACKAGE}.pot"]
+    if potfiles:
+        potfiles = " -f"
+    else:
+        potfiles = ""
+    xgto = kwargs.get('xgettext_opts', None)
+    if not xgto:
+        xgto = ""
+    else:
+        xgto = " " + xgto
     if not 'rule' in kwargs:
-        kwargs['rule'] = "${XGETTEXT} ${%s} -f ${SRC} -o ${TGT}" % varname
-    if not 'dep_func' in kwargs:
+        kwargs['rule'] = "${XGETTEXT} ${%s}%s%s ${SRC} -o ${TGT}" % \
+                (varname, xgto, potfiles)
+    if potfiles and not 'dep_func' in kwargs:
         kwargs['dep_func'] = pot_deps
     xgto = []
     copyrt = kwargs.get('copyright_holder')
@@ -1937,10 +1918,56 @@ def PotRules(ctx, **kwargs):
         kwargs['diffpat'] = diffpat
     if not '^"POT-Creation-Date:' in diffpat:
         diffpat.append('^"POT-Creation-Date:')
+
+
+class PotRule(Rule):
+    """ See manipulate_kwargs_for_pot_rule for special args.
+
+    potfiles: If True, the source is a POTFILES, use xgettext's -f option
+    """
+    def __init__(self, ctx, **kwargs):
+        potfiles = kwargs.get('potfiles', False)
+        manipulate_kwargs_for_pot_rule(ctx, kwargs, potfiles)
+        Rule.__init__(self, **kwargs)
+
+
+def PotRules(ctx, **kwargs):
+    """ Returns a pair (list) of rules for generating a .pot file from a list of
+    source files eg POTFILES.in where filenames are relative to TOP_DIR.
+    Default source is "${TOP_DIR}/po/POTFILES.in",
+    default target is ${TOP_DIR}/po/${PACKAGE}.pot.
+
+    See manipulate_kwargs_for_pot_rule for special args.
+
+    """
+    def generate_potfiles(ctx, env, targets, sources):
+        potfiles = []
+        for s in sources:
+            fp = open(subst(env, s), 'r')
+            for f in fp.readlines():
+                f = f.strip()
+                if len(f) and f[0] != '#':
+                    potfiles.append(opj(env['TOP_DIR'], f.strip()))
+            fp.close()
+        t = subst(env, targets[0])
+        ctx.ensure_out_dir_for_file(t)
+        fp = open(t, 'w')
+        for f in potfiles:
+            fp.write("%s\n" % f)
+        fp.close()
+
+    manipulate_kwargs_for_pot_rule(ctx, kwargs, True)
+
+    src1 = kwargs.get('sources', "${TOP_DIR}/po/POTFILES.in")
+    rule1 = Rule(rule = generate_potfiles,
+            sources = src1,
+            targets = ["${BUILD_DIR}/po/POTFILES"],
+            where = kwargs['where'])
+
+    kwargs['sources'] = ["${BUILD_DIR}/po/POTFILES"]
     rule2 = Rule(**kwargs)
 
     return [rule1, rule2]
-
 
 
 class PoRule(TouchRule):
@@ -2006,14 +2033,6 @@ def PoRulesFromLinguas(ctx, *args, **kwargs):
                     targets = opj("po", l + ".mo"),
                     sources = f))
     return rules
-
-
-
-def StandardTranslationRules(ctx, *args, **kwargs):
-    """ Returns all rules necessary to build translation files. kwargs are as
-    for PotRules + PoRulesForLinguas """
-    return PotRules(ctx, *args, **kwargs) + \
-            PoRulesFromLinguas(ctx, *args, **kwargs)
 
 
 

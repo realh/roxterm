@@ -118,6 +118,7 @@ if ctx.mode == 'configure':
     if trans != False and gt != False:
         try:
             ctx.find_prog_env("xgettext")
+            ctx.find_prog_env("msgcat")
             ctx.find_prog_env("msgmerge")
             ctx.find_prog_env("msgfmt")
         except MaitchNotFoundError:
@@ -232,10 +233,14 @@ if ctx.mode == 'configure':
     ctx.define('PKG_DATA_DIR', opj(ctx.env['DATADIR'], "roxterm"))
     ctx.define('ICON_DIR',
             opj(ctx.env['DATADIR'], "icons", "hicolor", "scalable", "apps"))
-    ctx.define('LOCALE_DIR', opj(ctx.env['DATADIR'], "locale"))
     ctx.define('HTML_DIR', ctx.env['HTMLDIR'])
     ctx.setenv('htmldir', "${HTMLDIR}")
     ctx.define('BIN_DIR', ctx.env['BINDIR'])
+    if ctx.env['HAVE_GETTEXT']:
+        ctx.define('ENABLE_NLS', 1)
+    else:
+        ctx.define('ENABLE_NLS', None)
+    ctx.define_from_var('LOCALEDIR')
 
     ctx.subst_file("${TOP_DIR}/roxterm.1.xml.in",
             "${TOP_DIR}/roxterm.1.xml", True)
@@ -383,14 +388,28 @@ elif ctx.mode == 'build':
 
     # Translations (gettext)
     if ctx.env['HAVE_GETTEXT']:
-        trans_rules = StandardTranslationRules(ctx,
-                copyright_holder = "(c) 2011 Tony Houghton",
-                version = "${VERSION}",
-                bugs_addr = "${BUG_TRACKER}",
-                diffpat = '^"Project-Id-Version:',
-                use_shell = True)
+        args = { 'copyright_holder': "(c) 2013 Tony Houghton",
+                'version': "${VERSION}",
+                'bugs_addr': "${BUG_TRACKER}",
+                'diffpat': '^"Project-Id-Version:',
+                'use_shell': True }
+        code_pot = '${BUILD_DIR}/po/code.pot'
+        glade_pot = '${BUILD_DIR}/po/glade.pot'
+        trans_rules = PoRulesFromLinguas(ctx, **args) + \
+                PotRules(ctx,
+                        targets = code_pot,
+                        xgettext_opts = '-C -k_ -kN_',
+                        **args)
         for r in trans_rules:
             ctx.add_rule(r)
+        ctx.add_rule(PotRule(ctx,
+                sources = '${SRC_DIR}/roxterm-config.ui',
+                targets = glade_pot,
+                xgettext_opts = '-L Glade',
+                wdeps = "roxterm-config.ui-stamp"))
+        ctx.add_rule(Rule(sources = [code_pot, glade_pot],
+                targets = '${TOP_DIR}/po/${PACKAGE}.pot',
+                rule = '${MSGCAT} -o ${TGT} ${SRC}'))
 
     # Translations (po4a)
     linguas = parse_linguas(ctx)
@@ -530,8 +549,8 @@ elif ctx.mode == "install" or ctx.mode == "uninstall":
         call_subprocess(["ln", "-sfn", "../../pt_BR/man1/roxterm.1", ptdir])
         call_subprocess(["ln", "-sfn", "../../pt_BR/man1/roxterm-config.1",
                 ptdir])
-        call_subprocess(["ln", "-sfn", "pt_BR",
-                ctx.subst("${DESTDIR}/${HTMLDIR}/pt")])
+        #call_subprocess(["ln", "-sfn", "pt_BR",
+        #        ctx.subst("${DESTDIR}/${HTMLDIR}/pt")])
 
 elif ctx.mode == 'pristine' or ctx.mode == 'clean':
 
