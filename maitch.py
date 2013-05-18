@@ -1029,11 +1029,11 @@ int main() { %s(); return 0; }
         directory = process_nodes(directory)
         if self.dest_dir:
             directory = [self.dest_dir + os.sep + d for d in directory]
-        directory = [os.path.abspath(d) for d in directory]
+        directory = [os.path.abspath(self.subst(d)) for d in directory]
         if not sources:
             sources = []
-        elif isinstance(sources, basestring):
-            sources = sources.split()
+        else:
+            sources = [self.subst(s) for s in process_nodes(sources)]
         if len(directory) > 1 and sources:
             raise MaitchInstallError("Can't install files to multiple " \
                     "directories")
