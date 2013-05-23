@@ -40,6 +40,7 @@ def mprint(*args, **kwargs):
         file = kwargs.get('file', sys.stdout)
         s = sep.join(args) + end
         file.write(s)
+        #file.write("Called from: " + "".join(traceback.format_stack()) + "\n")
         file.flush()
         if _mprint_fp and file != _mprint_fp:
             _mprint_fp.write(s)
@@ -1368,14 +1369,13 @@ class Rule(object):
                     rule(self.ctx, env, targets, sources)
                 else:
                     r = subst(env, rule)
-                    if not self.quiet:
-                        mprint(r)
                     if self.use_shell:
                         prog = r
                     else:
                         prog = r.split()
                     if call_subprocess(prog,
-                            shell = self.use_shell, cwd = self.ctx.build_dir):
+                            shell = self.use_shell, cwd = self.ctx.build_dir,
+                            quiet = self.quiet):
                         dprint("%s NZ error code" % r)
                         raise MaitchChildError("Rule '%s' failed" % r)
                     else:
@@ -2063,14 +2063,15 @@ def call_subprocess(*args, **kwargs):
         c = args[0]
     else:
         c = ' '.join(args[0])
-    mprint(c)
+    if not kwargs.get('quiet'):
+        mprint(c)
+    if 'quiet' in kwargs:
+        del kwargs['quiet']
     sp = subprocess.Popen(*args, **kwargs)
-    dprint("%s has pid %d" % (args, sp.pid))
     [out, err] = sp.communicate()
-    dprint("pid %d finished, output follows" % sp.pid)
     out = out.strip()
     if out:
-        mprint(out)
+        mprint("mprint out:", out)
     err = err.strip()
     if err:
         mprint(err, file = sys.stderr)
