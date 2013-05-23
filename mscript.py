@@ -424,10 +424,10 @@ elif ctx.mode == 'build':
             ctx.add_rule(Rule(rule = mkdir_rule, targets = d))
             ctx.add_rule(Rule(rule = "ln -nfs ../../../po/%s.mo ${TGT}" % l,
                     targets = opj(d, "roxterm.mo"),
-                    wdeps = [d, opj("${BUILD_DIR}", "po", "%s.mo" % l)]))
+                    wdeps = [d, opj("po", "%s.mo" % l)]))
 
         foreach_lingua(ctx, add_rox_locale)
-        ctx.add_rule(Rule(rule = "ln -s pt_BR ${TGT}",
+        ctx.add_rule(Rule(rule = "ln -nfs pt_BR ${TGT}",
                 targets = opj("locale", "pt"),
                 wdeps = opj("locale", "pt_BR", "LC_MESSAGES")))
 
