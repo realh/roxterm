@@ -45,7 +45,7 @@ if ctx.mode == 'configure' or ctx.mode == 'help':
     ctx.arg_disable('translations', "Disable all translations", default = None)
     ctx.arg_disable('git', "Assume this is a release tarball: "
             "don't attempt to generate changelogs, pixmaps etc")
-    ctx.arg_enable("roxterm-locales",
+    ctx.arg_enable("rox-locales",
             "Make symlinks so ROX app can load translations")
 
 if ctx.mode == 'configure':
