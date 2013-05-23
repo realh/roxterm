@@ -388,6 +388,8 @@ elif ctx.mode == 'build':
 
     # Translations (gettext)
     if ctx.env['HAVE_GETTEXT']:
+        podir = '${BUILD_DIR}/po'
+        ctx.add_rule(Rule(rule = mkdir_rule, targets = podir))
         args = { 'copyright_holder': "(c) 2013 Tony Houghton",
                 'version': "${VERSION}",
                 'bugs_addr': "${BUG_TRACKER}",
@@ -398,6 +400,7 @@ elif ctx.mode == 'build':
         trans_rules = PoRulesFromLinguas(ctx, **args) + \
                 PotRules(ctx,
                         targets = code_pot,
+                        deps = podir,
                         xgettext_opts = '-C -k_ -kN_',
                         **args)
         for r in trans_rules:
@@ -405,6 +408,7 @@ elif ctx.mode == 'build':
         ctx.add_rule(PotRule(ctx,
                 sources = '${SRC_DIR}/roxterm-config.ui',
                 targets = glade_pot,
+                deps = podir,
                 xgettext_opts = '-L Glade',
                 wdeps = "roxterm-config.ui-stamp"))
         ctx.add_rule(Rule(sources = [code_pot, glade_pot],
