@@ -86,7 +86,7 @@ while (!feof($file))
         {
             print ' selected="1"';
         }
-        print '>Portuguesa (Brasileiro)</option>';
+        print '>Português (Brasil))</option>';
         print '<option value="es"';
         if ($lang == 'es')
         {
