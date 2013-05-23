@@ -1836,6 +1836,12 @@ class CxxStaticLibRule(LibtoolCxxProgramRule):
 def mkdir_rule(ctx, env, targets, sources):
     """ A rule function to ensure targets' directories exist. """
     for t in targets:
+        ctx.ensure_out_dir(t)
+
+
+def mk_parent_dir_rule(ctx, env, targets, sources):
+    """ A rule function to ensure targets' directories exist. """
+    for t in targets:
         ctx.ensure_out_dir_for_file(t)
 
 
@@ -2008,30 +2014,42 @@ def parse_linguas(ctx, podir = None, linguas = None):
 
 
 
-def PoRulesFromLinguas(ctx, *args, **kwargs):
-    """ Generates a PoRule for each language listed in linguas. Default linguas
-    is podir/LINGUAS. Default podir is ${TOP_DIR}/po. Other args are passed to
-    each PoRule. Also generates .mo rules unless nomo is True. """
-    podir = kwargs.get('podir')
+def foreach_lingua(ctx, fn, podir = None, linguas = None):
+    """ Runs fn(ctx, lang, f) for each lang found in linguas,
+        where f is .po file.
+        Default podir is '${TOP_DIR}/po'
+        Default linguas is ${podir}/LINGUAS.
+    """
     if not podir:
         podir = opj("${TOP_DIR}", "po")
-    linguas = kwargs.get('linguas')
     if not linguas:
         linguas = opj(podir, "LINGUAS")
-    nomo = kwargs.get("nomo")
     langs = parse_linguas(ctx, linguas = linguas)
-    rules = []
     for l in langs:
         f = opj(podir, l + ".po")
         if not os.path.isfile(ctx.subst(f)):
             raise MaitchNotFoundError("Linguas file %s includes %s, "
                     "but no corresponding po file found" % (linguas, l))
+        fn(ctx, l, f)
+
+
+def PoRulesFromLinguas(ctx, *args, **kwargs):
+    """ Generates a PoRule for each language listed in linguas. Default linguas
+    is podir/LINGUAS. Default podir is ${TOP_DIR}/po. Other args are passed to
+    each PoRule. Also generates .mo rules unless nomo is True. """
+    nomo = kwargs.get("nomo")
+    rules = []
+
+    def add_po_rule(ctx, l, f):
         kwargs['targets'] = f
         rules.append(PoRule(*args, **kwargs))
         if not nomo:
             rules.append(Rule(rule = "${MSGFMT} -c -o ${TGT} ${SRC}",
                     targets = opj("po", l + ".mo"),
                     sources = f))
+
+    foreach_lingua(ctx, add_po_rule,
+            kwargs.get('podir'), kwargs.get('linguas'))
     return rules
 
 

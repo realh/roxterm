@@ -50,7 +50,8 @@ case $1 in
         echo "Compiling $APP_DIR... please wait..." >&2
         cd "$APP_DIR"
         python ./mscript.py configure "$PREFIX" \
-            LDFLAGS="$DEV_LDFLAGS" SRC_DIR='${TOP_DIR}/src' "$@" && \
+            LDFLAGS="$DEV_LDFLAGS" SRC_DIR='${TOP_DIR}/src' "$@" \
+            --enable-rox-locales && \
         python ./mscript.py build SRC_DIR='${TOP_DIR}/src' && \
         echo Done >&2 && exit 0
         echo Compile failed >&2

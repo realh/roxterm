@@ -45,6 +45,8 @@ if ctx.mode == 'configure' or ctx.mode == 'help':
     ctx.arg_disable('translations', "Disable all translations", default = None)
     ctx.arg_disable('git', "Assume this is a release tarball: "
             "don't attempt to generate changelogs, pixmaps etc")
+    ctx.arg_enable("roxterm-locales",
+            "Make symlinks so ROX app can load translations")
 
 if ctx.mode == 'configure':
 
@@ -415,6 +417,21 @@ elif ctx.mode == 'build':
                 targets = '${TOP_DIR}/po/${PACKAGE}.pot',
                 rule = '${MSGCAT} -o ${TGT} ${SRC}'))
 
+    # Symlinks so ROX can use translations
+    if ctx.env["ENABLE_ROX_LOCALES"]:
+        def add_rox_locale(ctx, l, f):
+            d = opj("locale", l, "LC_MESSAGES")
+            ctx.add_rule(Rule(rule = mkdir_rule, targets = d))
+            ctx.add_rule(Rule(rule = "ln -nfs ../../../po/%s.mo ${TGT}" % l,
+                    targets = opj(d, "roxterm.mo"),
+                    wdeps = [d, opj("${BUILD_DIR}", "po", "%s.mo" % l)]))
+
+        foreach_lingua(ctx, add_rox_locale)
+        ctx.add_rule(Rule(rule = "ln -s pt_BR ${TGT}",
+                targets = opj("locale", "pt"),
+                wdeps = opj("locale", "pt_BR", "LC_MESSAGES")))
+
+
     # Translations (po4a)
     linguas = parse_linguas(ctx)
     charset_rule = "${SED} -i s/charset=CHARSET/charset=UTF-8/ ${TGT}"
@@ -462,7 +479,7 @@ elif ctx.mode == 'build':
                             use_shell = True))
                     mtarget = "po4a/%s/%s.1" % (l, m)
                     ctx.add_rule(Rule( \
-                            rule = [mkdir_rule, xmltomanrule],
+                            rule = [mk_parent_dir_rule, xmltomanrule],
                             sources = "po4a/%s.1.%s.xml" % (m, l),
                             targets = mtarget,
                             wdeps = lastmtarget,
@@ -495,7 +512,7 @@ elif ctx.mode == 'build':
                         targets = po,
                         where = NOWHERE,
                         use_shell = True))
-                ctx.add_rule(Rule(rule = [mkdir_rule,
+                ctx.add_rule(Rule(rule = [mk_parent_dir_rule,
                         "${PO4A_TRANSLATE} "
                         "${PO4ACHARSET} " \
                         "-k 0 -f xhtml -m %s " \
