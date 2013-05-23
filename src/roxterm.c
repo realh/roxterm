@@ -1253,14 +1253,26 @@ static void
 roxterm_update_bold_colour(ROXTermData * roxterm, VteTerminal * vte)
 {
     COLOUR_SET_VTE(_bold)(vte,
-            colour_scheme_get_bold_colour(roxterm->colour_scheme, TRUE));
+            colour_scheme_get_bold_colour(roxterm->colour_scheme,
+#if GTK_CHECK_VERSION(3, 0, 0)
+            TRUE
+#else
+            FALSE
+#endif
+            ));
 }
 
 static void
 roxterm_update_dim_colour(ROXTermData * roxterm, VteTerminal * vte)
 {
     COLOUR_SET_VTE(_dim)(vte,
-            colour_scheme_get_dim_colour(roxterm->colour_scheme, TRUE));
+            colour_scheme_get_dim_colour(roxterm->colour_scheme,
+#if GTK_CHECK_VERSION(3, 0, 0)
+            TRUE
+#else
+            FALSE
+#endif
+            ));
 }
 
 guint16 extrapolate_chroma(guint16 bg, guint16 fg, double factor)
@@ -1311,10 +1323,22 @@ roxterm_apply_colour_scheme(ROXTermData *roxterm, VteTerminal *vte)
                 extrapolate_colours(background, foreground, 0.7));
         bold_dim_set = TRUE;
     }
-    bd = colour_scheme_get_bold_colour(roxterm->colour_scheme, TRUE);
+    bd = colour_scheme_get_bold_colour(roxterm->colour_scheme,
+#if GTK_CHECK_VERSION(3, 0, 0)
+            TRUE
+#else
+            FALSE
+#endif
+            );
     if (bd || !bold_dim_set)
         COLOUR_SET_VTE(_bold)(vte, bd);
-    bd = colour_scheme_get_dim_colour(roxterm->colour_scheme, TRUE);
+    bd = colour_scheme_get_dim_colour(roxterm->colour_scheme,
+#if GTK_CHECK_VERSION(3, 0, 0)
+            TRUE
+#else
+            FALSE
+#endif
+            );
     if (bd || !bold_dim_set)
         COLOUR_SET_VTE(_dim)(vte, bd);
     roxterm_update_cursor_colour(roxterm, vte);
@@ -3772,12 +3796,24 @@ static gboolean roxterm_update_colour_option(Options *scheme, const char *key,
     }
     else if (!strcmp(key, "bold"))
     {
-        old_colour = colour_scheme_get_bold_colour(scheme, TRUE);
+        old_colour = colour_scheme_get_bold_colour(scheme,
+#if GTK_CHECK_VERSION(3, 0, 0)
+            TRUE
+#else
+            FALSE
+#endif
+            );
         setter = colour_scheme_set_bold_colour;
     }
     else if (!strcmp(key, "dim"))
     {
-        old_colour = colour_scheme_get_dim_colour(scheme, TRUE);
+        old_colour = colour_scheme_get_dim_colour(scheme,
+#if GTK_CHECK_VERSION(3, 0, 0)
+            TRUE
+#else
+            FALSE
+#endif
+            );
         setter = colour_scheme_set_dim_colour;
     }
     else
