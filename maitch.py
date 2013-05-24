@@ -119,6 +119,9 @@ class MaitchJobError(MaitchError):
 class MaitchInstallError(MaitchError):
     pass
 
+class MaitchPkgError(MaitchError):
+    pass
+
 
 
 # subst behaviour if a variable isn't found
@@ -778,22 +781,20 @@ Other predefined variables [default values shown in squarer brackets]:
         If version is given, also check that package's version is at least
         as new (only works on one package at a time). """
         mprint("Checking pkg-config %s..." % pkgs, end = '')
+        pvs = ""
         try:
             if version:
-                try:
-                    pvs = self.prog_output(
-                            [pkg_config, '--modversion', pkgs])[0].strip()
-                except:
-                    mprint("not found")
+                pvs = self.prog_output(
+                        [pkg_config, '--modversion', pkgs])[0].strip()
                 pkg_v = pvs.split('.')
                 v = version.split('.')
                 new_enough = True
                 for n in range(len(v)):
-                    if v[n] > pkg_v[n]:
-                        new_enough = True
-                        break
-                    elif v[n] < pkg_v[n]:
+                    if int(v[n]) > int(pkg_v[n]):
                         new_enough = False
+                        break
+                    elif int(v[n]) < int(pkg_v[n]):
+                        new_enough = True
                         break
                 if not new_enough:
                     mprint("too old")
@@ -811,7 +812,10 @@ Other predefined variables [default values shown in squarer brackets]:
             mprint("error")
             raise
         else:
-            mprint("ok")
+            if version:
+                mprint("ok (%s)" % pvs)
+            else:
+                mprint("ok")
 
 
     def subst(self, s, novar = NOVAR_FATAL, recurse = True, at = False):

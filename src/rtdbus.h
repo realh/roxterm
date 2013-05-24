@@ -58,6 +58,10 @@ gboolean rtdbus_start_service(const char *name, const char *object_path,
 /* Call before any other D-BUS functions. May be called more than once */
 gboolean rtdbus_init(void);
 
+/* Adds a match rule filter */
+gboolean rtdbus_add_match_rule_and_filter(const char *match_rule,
+        DBusHandleMessageFunction filter_fn, void *user_data);
+
 /* Adds a match rule and signal filter */
 gboolean rtdbus_add_signal_rule_and_filter(
 		const char *path, const char *interface,
@@ -76,11 +80,11 @@ DBusMessage *rtdbus_method_new(
 /* Appends args (see above) to message and returns the modified message. On
  * failure (unlikely) the message is freed, an error is printed and NULL is
  * returned */
-DBusMessage *rtdbus_append_args(DBusMessage *message, 
+DBusMessage *rtdbus_append_args(DBusMessage *message,
 		int first_arg_type, ...);
 
 /* See above */
-DBusMessage *rtdbus_append_args_valist(DBusMessage *message, 
+DBusMessage *rtdbus_append_args_valist(DBusMessage *message,
 		int first_arg_type, va_list ap);
 
 /* Returns NULL-terminated array of strings ("strv") corresponding to a

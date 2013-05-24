@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: roxterm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-05-23 19:11+0100\n"
+"POT-Creation-Date: 2013-05-24 20:26+0100\n"
 "PO-Revision-Date: 2013-03-02 17:31+0000\n"
 "Last-Translator: Tony Houghton <h@realh.co.uk>\n"
 "Language-Team: Russian (http://www.transifex.com/projects/p/roxterm/language/"
@@ -425,31 +425,31 @@ msgstr ""
 msgid "Can't find roxterm-config"
 msgstr ""
 
-#: ../src/main.c:80
+#: ../src/main.c:91
 msgid "Unable to read current workspace"
 msgstr ""
 
-#: ../src/main.c:226
+#: ../src/main.c:239
 #, c-format
-msgid "Parent failed to read signal from child for --fork: %s"
+msgid "Parent failed to read signal from child for --fork: %s\n"
 msgstr ""
 
-#: ../src/main.c:241
+#: ../src/main.c:254
 #, c-format
 msgid "Child failed to signal parent for --fork: %s"
 msgstr ""
 
-#: ../src/main.c:278
+#: ../src/main.c:364
 #, c-format
 msgid "Unable to open pipe to implement --fork: %s"
 msgstr ""
 
-#: ../src/main.c:294
+#: ../src/main.c:380
 #, c-format
 msgid "Unable to fork to implement --fork: %s"
 msgstr ""
 
-#: ../src/main.c:360
+#: ../src/main.c:446
 msgid "Missing command after -e/--execute option"
 msgstr ""
 
@@ -1314,39 +1314,39 @@ msgstr ""
 msgid "Error connecting to dbus: %s"
 msgstr ""
 
-#: ../src/rtdbus.c:177
+#: ../src/rtdbus.c:172
 msgid "Unable to add D-BUS signal match rule"
 msgstr ""
 
-#: ../src/rtdbus.c:183
+#: ../src/rtdbus.c:178
 msgid "Unable to install D-BUS message filter"
 msgstr ""
 
-#: ../src/rtdbus.c:210
+#: ../src/rtdbus.c:220
 msgid "Unable to append arguments to D-BUS message"
 msgstr ""
 
-#: ../src/rtdbus.c:236
+#: ../src/rtdbus.c:246
 msgid "Unable to create D-BUS signal message"
 msgstr ""
 
-#: ../src/rtdbus.c:264
+#: ../src/rtdbus.c:274
 msgid "Unable to create D-BUS method call message"
 msgstr ""
 
-#: ../src/rtdbus.c:284
+#: ../src/rtdbus.c:294
 #, c-format
 msgid "Invalid argument type ('%c') in NewTerminal D-BUS method"
 msgstr ""
 
-#: ../src/rtdbus.c:314
+#: ../src/rtdbus.c:324
 #, c-format
 msgid ""
 "Invalid first argument type ('%c') in NewTerminal D-BUS method; expected "
 "array"
 msgstr ""
 
-#: ../src/rtdbus.c:320
+#: ../src/rtdbus.c:330
 #, c-format
 msgid ""
 "Invalid array element type ('%c') in NewTerminal D-BUS method; expected "
