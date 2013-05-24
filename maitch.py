@@ -795,11 +795,11 @@ Other predefined variables [default values shown in squarer brackets]:
                     elif v[n] < pkg_v[n]:
                         new_enough = False
                         break
-                    if not new_enough:
-                        mprint("too old")
-                        raise MaitchPkgError("%s has version %s, "
-                                "%s needs at least %s" %
-                                (pkgs, pvs, self.package_name, version))
+                if not new_enough:
+                    mprint("too old")
+                    raise MaitchPkgError("%s has version %s, "
+                            "%s needs at least %s" %
+                            (pkgs, pvs, self.package_name, version))
             if not prefix:
                 prefix = make_var_name(pkgs, True)
             pkgs = pkgs.split()
