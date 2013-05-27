@@ -266,7 +266,6 @@ COLOUR_T *colour_scheme_get_background_colour(Options * opts,
 COLOUR_T *colour_scheme_get_bold_colour(Options * opts,
         gboolean allow_null)
 {
-    g_debug("Get bold color, allow_null %d", allow_null);
     return colour_scheme_get_named_colour(opts, "bold", "#fff",
             offsetof(ColourScheme, bold), allow_null);
 }
