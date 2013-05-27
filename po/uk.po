@@ -1,24 +1,22 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR (c) 2011 Tony Houghton
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
-# Translator: Rax G <admin@dvizho.ks.ua>, 2012.
+# Translator: Rax G <admin@dvizho.ks.ua>, 2012
 msgid ""
 msgstr ""
 "Project-Id-Version: roxterm\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-05-23 19:11+0100\n"
-"PO-Revision-Date: 2013-03-02 17:31+0000\n"
+"Report-Msgid-Bugs-To: https://sourceforge.net/tracker/?group_id=124080\n"
+"POT-Creation-Date: 2013-05-23 19:28+0100\n"
+"PO-Revision-Date: 2013-05-23 15:18+0000\n"
 "Last-Translator: Tony Houghton <h@realh.co.uk>\n"
-"Language-Team: Ukrainian (http://www.transifex.com/projects/p/roxterm/"
-"language/uk/)\n"
-"Language: uk\n"
+"Language-Team: Ukrainian (http://www.transifex.com/projects/p/roxterm/language/uk/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Language: uk\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: ../src/about.c:55
 #, c-format
@@ -66,9 +64,9 @@ msgid "Unable to load 'Colour_Scheme_Editor' from UI defs: %s"
 msgstr ""
 
 #: ../src/colourgui.c:738
-#, fuzzy, c-format
+#, c-format
 msgid "ROXTerm Colour Scheme \"%s\""
-msgstr "Колірна тема ROXTerm"
+msgstr ""
 
 #: ../src/colourgui.c:745
 msgid "Unable to back up colour scheme to revert"
@@ -90,24 +88,20 @@ msgid "Invalid palette size %d in colour scheme %s"
 msgstr ""
 
 #: ../src/configlet.c:95
-#, fuzzy
 msgid "Profile"
-msgstr "<b>Профілі</b>"
+msgstr ""
 
 #: ../src/configlet.c:99
-#, fuzzy
 msgid "Colour Scheme"
-msgstr "<b>Колірні схеми</b>"
+msgstr ""
 
 #: ../src/configlet.c:103
-#, fuzzy
 msgid "Keyboard Shortcuts Scheme"
-msgstr "<b>«Гарячі клавіші»</b>"
+msgstr ""
 
 #: ../src/configlet.c:107
-#, fuzzy
 msgid "Character Encodings"
-msgstr "<b>Кодування символів</b>"
+msgstr ""
 
 #: ../src/configlet.c:111
 #, c-format
@@ -145,8 +139,8 @@ msgstr ""
 
 #: ../src/configlet.c:709
 msgid ""
-"Shortcuts can currently only be edited by hovering over the menu entries and "
-"pressing keys"
+"Shortcuts can currently only be edited by hovering over the menu entries and"
+" pressing keys"
 msgstr ""
 
 #: ../src/configlet.c:715
@@ -180,9 +174,9 @@ msgid "No selection to copy"
 msgstr ""
 
 #: ../src/configlet.c:868
-#, fuzzy, c-format
+#, c-format
 msgid "You may not delete the selected default %s"
-msgstr "Стерти обраний профіль"
+msgstr ""
 
 #: ../src/configlet.c:875
 msgid "No selection to delete"
@@ -229,9 +223,9 @@ msgid "Trying to decrease encodings_lock below 0"
 msgstr ""
 
 #: ../src/dlg.c:26
-#, fuzzy, c-format
+#, c-format
 msgid "%s from ROXTerm"
-msgstr "Налаштувати ROXTerm"
+msgstr ""
 
 #: ../src/dlg.c:49
 msgid "Message"
@@ -306,18 +300,16 @@ msgid "Hide the menu bar, overriding profile"
 msgstr ""
 
 #: ../src/globalopts.c:233
-#, fuzzy
 msgid "Use the named profile"
-msgstr "Використовувати типову оболонку в цьому профілі."
+msgstr ""
 
 #: ../src/globalopts.c:233
 msgid "PROFILE"
 msgstr ""
 
 #: ../src/globalopts.c:236
-#, fuzzy
 msgid "Use the named colour scheme"
-msgstr "Використовувати колір тла з налаштованої колірної схеми"
+msgstr ""
 
 #: ../src/globalopts.c:237 ../src/globalopts.c:242 ../src/globalopts.c:246
 msgid "SCHEME"
@@ -342,11 +334,10 @@ msgid "Synonym for --maximise"
 msgstr ""
 
 #: ../src/globalopts.c:259
-#, fuzzy
 msgid ""
 "Make the initial terminal take up the whole\n"
 "                                   screen with no window furniture"
-msgstr "Займати весь екран, без рамок вікна."
+msgstr ""
 
 #: ../src/globalopts.c:264
 msgid ""
@@ -369,9 +360,8 @@ msgid ""
 msgstr ""
 
 #: ../src/globalopts.c:277
-#, fuzzy
 msgid "Set window title"
-msgstr "З_аголовок вікна:"
+msgstr ""
 
 #: ../src/globalopts.c:277
 msgid "TITLE"
@@ -405,8 +395,8 @@ msgstr ""
 
 #: ../src/globalopts.c:303
 msgid ""
-"Don't set window geometry hints. This is a workaround for <https://bugzilla."
-"gnome.org/show_bug.cgi?id=649680>"
+"Don't set window geometry hints. This is a workaround for "
+"<https://bugzilla.gnome.org/show_bug.cgi?id=649680>"
 msgstr ""
 
 #: ../src/globalopts.c:308
@@ -461,9 +451,8 @@ msgid "_Send email"
 msgstr ""
 
 #: ../src/menutree.c:203
-#, fuzzy
 msgid "_Open file/directory in filer"
-msgstr "_Відкривати батьківську теку, а не сам файл"
+msgstr ""
 
 #: ../src/menutree.c:204
 msgid "_Copy address to clipboard"
@@ -478,9 +467,8 @@ msgid "_Search"
 msgstr ""
 
 #: ../src/menutree.c:213
-#, fuzzy
 msgid "_File"
-msgstr "Файловий менеджер"
+msgstr ""
 
 #: ../src/menutree.c:214 ../src/roxterm-config.ui:295
 #: ../src/roxterm-config.ui:616 ../src/roxterm-config.ui:1055
@@ -530,9 +518,8 @@ msgid "Show Menu_bar"
 msgstr ""
 
 #: ../src/menutree.c:235
-#, fuzzy
 msgid "C_haracter Encoding"
-msgstr "<b>Кодування символів</b>"
+msgstr ""
 
 #: ../src/menutree.c:236
 msgid "_Input Methods"
@@ -548,9 +535,8 @@ msgid "Encoding '%s' not found in menu"
 msgstr ""
 
 #: ../src/menutree.c:575
-#, fuzzy
 msgid "_New Window"
-msgstr "У новому вікні терміналу"
+msgstr ""
 
 #: ../src/menutree.c:576
 msgid "New _Tab"
@@ -569,33 +555,28 @@ msgid "C_lose Tab"
 msgstr ""
 
 #: ../src/menutree.c:580
-#, fuzzy
 msgid "_Close Window"
-msgstr "Закрити це вікно"
+msgstr ""
 
 #: ../src/menutree.c:587 ../src/menutree.c:596
-#, fuzzy
 msgid "Profiles"
-msgstr "<b>Профілі</b>"
+msgstr ""
 
 #: ../src/menutree.c:606
-#, fuzzy
 msgid "_Set Window Title..."
-msgstr "З_аголовок вікна:"
+msgstr ""
 
 #: ../src/menutree.c:609
 msgid "Res_tart command"
 msgstr ""
 
 #: ../src/menutree.c:617
-#, fuzzy
 msgid "_Always Show Tab Bar"
-msgstr "_Завжди показувати рядок вкладок"
+msgstr ""
 
 #: ../src/menutree.c:618
-#, fuzzy
 msgid "_Full Screen"
-msgstr "_Повноекранний режим"
+msgstr ""
 
 #: ../src/menutree.c:620
 msgid "Zoom _In"
@@ -634,14 +615,12 @@ msgid "Scroll Down One Hal_f Page"
 msgstr ""
 
 #: ../src/menutree.c:630
-#, fuzzy
 msgid "Scroll To _Top"
-msgstr "Прокручувати при в_иводі"
+msgstr ""
 
 #: ../src/menutree.c:631
-#, fuzzy
 msgid "Scroll To _Bottom"
-msgstr "Прокручувати при в_иводі"
+msgstr ""
 
 #: ../src/menutree.c:639
 msgid "_Find..."
@@ -660,9 +639,8 @@ msgid "Select _Profile"
 msgstr ""
 
 #: ../src/menutree.c:650
-#, fuzzy
 msgid "Select _Colour Scheme"
-msgstr "Колірна тема ROXTerm"
+msgstr ""
 
 #: ../src/menutree.c:651
 msgid "Select _Shortcuts Scheme"
@@ -673,9 +651,8 @@ msgid "_Edit Current Profile"
 msgstr ""
 
 #: ../src/menutree.c:654
-#, fuzzy
 msgid "E_dit Current Colour Scheme"
-msgstr "Колірна тема ROXTerm"
+msgstr ""
 
 #: ../src/menutree.c:657
 msgid "Configuration _Manager"
@@ -718,9 +695,8 @@ msgid "Show _Manual"
 msgstr ""
 
 #: ../src/menutree.c:683
-#, fuzzy
 msgid "_About ROXTerm"
-msgstr "Налаштувати ROXTerm"
+msgstr ""
 
 #: ../src/menutree.c:904
 msgid "Move Tab _Up"
@@ -740,14 +716,13 @@ msgid "Name Tab"
 msgstr ""
 
 #: ../src/multitab.c:1352
-#, fuzzy
 msgid "Set Window Title"
-msgstr "З_аголовок вікна:"
+msgstr ""
 
 #: ../src/multitab.c:1363
 msgid ""
-"The title string may include '%s' which is substituted with the title set by "
-"the child command (usually the current directory for shells). No other % "
+"The title string may include '%s' which is substituted with the title set by"
+" the child command (usually the current directory for shells). No other % "
 "characters or sequences are permitted except '%%' which is displayed as a "
 "single %. Apply an empty string here to use the profile's title string."
 msgstr ""
@@ -865,14 +840,12 @@ msgid "Unable to load background image file '%s': %s"
 msgstr ""
 
 #: ../src/profilegui.c:388
-#, fuzzy
 msgid "Image files"
-msgstr "_Файл зображення:"
+msgstr ""
 
 #: ../src/profilegui.c:543
-#, fuzzy
 msgid "Exit terminal"
-msgstr "На новій вкладці терміналу"
+msgstr ""
 
 #: ../src/profilegui.c:544
 msgid "Hold terminal open"
@@ -915,9 +888,8 @@ msgid "Left"
 msgstr ""
 
 #: ../src/profilegui.c:565
-#, fuzzy
 msgid "Right"
-msgstr "_Висота"
+msgstr ""
 
 #: ../src/profilegui.c:566
 msgid "Hidden"
@@ -1051,8 +1023,8 @@ msgstr ""
 
 #: ../src/roxterm.c:2375
 msgid ""
-"The command in this terminal has terminated. What do you want to do with the "
-"terminal now?"
+"The command in this terminal has terminated. What do you want to do with the"
+" terminal now?"
 msgstr ""
 
 #: ../src/roxterm.c:2382
@@ -1060,9 +1032,8 @@ msgid "Leave open"
 msgstr ""
 
 #: ../src/roxterm.c:2384
-#, fuzzy
 msgid "Rerun command"
-msgstr "По _завершенню команнди:"
+msgstr ""
 
 #: ../src/roxterm.c:2427
 msgid ""
@@ -1150,9 +1121,8 @@ msgid ""
 msgstr ""
 
 #: ../src/roxterm.c:4667
-#, fuzzy
 msgid "ROXTerm: Confirm close"
-msgstr "Колірна тема ROXTerm"
+msgstr ""
 
 #: ../src/roxterm.c:4671
 msgid "_Don't show this again"
@@ -1497,8 +1467,8 @@ msgstr "Налаштувати ROXTerm"
 #: ../src/roxterm-config.ui:52
 msgid ""
 "Select a row to choose which profile the buttons below apply to. Select a "
-"radio button to set the profile used when roxterm is run without a --profile "
-"option."
+"radio button to set the profile used when roxterm is run without a --profile"
+" option."
 msgstr ""
 
 #: ../src/roxterm-config.ui:85
@@ -1521,7 +1491,8 @@ msgstr ""
 
 #: ../src/roxterm-config.ui:205
 msgid ""
-"Click to create a new profile with settings copied from the current selection"
+"Click to create a new profile with settings copied from the current "
+"selection"
 msgstr "Створити профіль із налаштуваннями обраного"
 
 #: ../src/roxterm-config.ui:264
@@ -1737,9 +1708,7 @@ msgstr "Показувати рядок _меню"
 msgid ""
 "Whether new windows with this profile will have a menu bar. You can also "
 "turn the menu bar on and off from terminal menus."
-msgstr ""
-"Нові вікна поточного профілю матимуть рядок меню. Стан рядка меню також "
-"можна перемкнути через меню терміналу."
+msgstr "Нові вікна поточного профілю матимуть рядок меню. Стан рядка меню також можна перемкнути через меню терміналу."
 
 #: ../src/roxterm-config.ui:1825
 msgid "_Always show tab bar"
@@ -1804,8 +1773,8 @@ msgstr "_Графічний дзінь"
 
 #: ../src/roxterm-config.ui:2137
 msgid ""
-"If selected, \"printing\" an ASCII bell character will cause the terminal to "
-"flash."
+"If selected, \"printing\" an ASCII bell character will cause the terminal to"
+" flash."
 msgstr "Блимати терміналом при виводі дзінь-символу ASCII."
 
 #: ../src/roxterm-config.ui:2155
@@ -1870,12 +1839,10 @@ msgstr "Дзінь підсвічує вікно чи вкладку"
 
 #: ../src/roxterm-config.ui:2331
 msgid ""
-"If the \"bell rings\" in a terminal while it isn't the active tab or window, "
-"its tab label will flash and/or its window will be marked \"urgent\". This "
+"If the \"bell rings\" in a terminal while it isn't the active tab or window,"
+" its tab label will flash and/or its window will be marked \"urgent\". This "
 "only works with recent versions of vte."
-msgstr ""
-"При виводі дзінь-символу ASCII на неактивній вкладці (чи вікні) блимати її "
-"позначкою (та/чи позначкою вікна). Працює лише з останніми версіями vte."
+msgstr "При виводі дзінь-символу ASCII на неактивній вкладці (чи вікні) блимати її позначкою (та/чи позначкою вікна). Працює лише з останніми версіями vte."
 
 #: ../src/roxterm-config.ui:2349
 msgid "Hide mouse _pointer when typing"
@@ -1897,9 +1864,7 @@ msgstr ""
 msgid ""
 "Words can be selected by double-clicking. Characters not in this list count "
 "as the start or end of a word"
-msgstr ""
-"Не вважати символи в цьому списку початком чи кінцем слова (слова можна "
-"виділяти подвійним кліком)."
+msgstr "Не вважати символи в цьому списку початком чи кінцем слова (слова можна виділяти подвійним кліком)."
 
 #: ../src/roxterm-config.ui:2510
 msgid "<b>General</b>"
@@ -2094,9 +2059,7 @@ msgstr "_Не зважати на наявність префіксу «file://�
 msgid ""
 "If enabled, patterns which look like filenames will be highlighted even if "
 "they lack a file:// URI prefix."
-msgstr ""
-"Відкривати як файли (теки) шляхи, що схожі на імена файлів, навіть якщо URI-"
-"префікс «file://» відсутній."
+msgstr "Відкривати як файли (теки) шляхи, що схожі на імена файлів, навіть якщо URI-префікс «file://» відсутній."
 
 #: ../src/roxterm-config.ui:3605
 msgid "_None (use solid colour)"
@@ -2114,8 +2077,7 @@ msgstr "_Зображення"
 msgid ""
 "A background image will be blended with the background colour depending on "
 "the transparency setting"
-msgstr ""
-"Зображення поєднується з кольором відповідно до налаштувань прозорості."
+msgstr "Зображення поєднується з кольором відповідно до налаштувань прозорості."
 
 #: ../src/roxterm-config.ui:3665
 msgid "    "
@@ -2199,8 +2161,8 @@ msgstr "Прокручувати при в_иводі"
 
 #: ../src/roxterm-config.ui:4092
 msgid ""
-"Whether to make the scrollbar jump to the bottom when new text is printed in "
-"the terminal"
+"Whether to make the scrollbar jump to the bottom when new text is printed in"
+" the terminal"
 msgstr "Прокручувати донизу при виводі нового тексту в термінал."
 
 #: ../src/roxterm-config.ui:4107
@@ -2249,8 +2211,8 @@ msgstr ""
 
 #: ../src/roxterm-config.ui:4304
 msgid ""
-"This option disables the underlined shortcut keys in the menus (eg Alt+F for "
-"the File menu)."
+"This option disables the underlined shortcut keys in the menus (eg Alt+F for"
+" the File menu)."
 msgstr ""
 
 #: ../src/roxterm-config.ui:4319
@@ -2259,8 +2221,8 @@ msgstr ""
 
 #: ../src/roxterm-config.ui:4326
 msgid ""
-"This option disables the shortcut keys for switching tabs (Alt+1-9 and Alt+0 "
-"by default)"
+"This option disables the shortcut keys for switching tabs (Alt+1-9 and Alt+0"
+" by default)"
 msgstr ""
 
 #: ../src/roxterm-config.ui:4348
@@ -2273,8 +2235,8 @@ msgstr ""
 
 #: ../src/roxterm-config.ui:4409
 msgid ""
-"The title string may include '%s' which is substituted with the title set by "
-"the child command (usually the current directory for shells). No other % "
+"The title string may include '%s' which is substituted with the title set by"
+" the child command (usually the current directory for shells). No other % "
 "characters or sequences are permitted except '%%' which is displayed as a "
 "single %."
 msgstr ""
@@ -2483,247 +2445,3 @@ msgstr "Додати власні параметри до команди SSH."
 #: ../src/roxterm-config.ui:5961
 msgid "_Other options"
 msgstr "_Інші параметри"
-
-#, fuzzy
-#~ msgid "show_menubar"
-#~ msgstr "Показувати рядок _меню"
-
-#, fuzzy
-#~ msgid "--EditColourScheme="
-#~ msgstr "<b>Колірні схеми</b>"
-
-#, fuzzy
-#~ msgid "foreground_colour"
-#~ msgstr "_Колір тла"
-
-#, fuzzy
-#~ msgid "background_colour"
-#~ msgstr "_Колір тла"
-
-#, fuzzy
-#~ msgid "cursor_colour"
-#~ msgstr "Колір к_урсору"
-
-#, fuzzy
-#~ msgid "bold_colour"
-#~ msgstr "Колір _тексту"
-
-#, fuzzy
-#~ msgid "dim_colour"
-#~ msgstr "Колір _тексту"
-
-#, fuzzy
-#~ msgid "use_custom_colours"
-#~ msgstr "Колір к_урсору"
-
-#, fuzzy
-#~ msgid "set_cursor_colour"
-#~ msgstr "Колір к_урсору"
-
-#, fuzzy
-#~ msgid "set_bold_colour"
-#~ msgstr "Колір к_урсору"
-
-#, fuzzy
-#~ msgid "set_dim_colour"
-#~ msgstr "Колір _тексту"
-
-#, fuzzy
-#~ msgid "foreground"
-#~ msgstr "Тло"
-
-#, fuzzy
-#~ msgid "background"
-#~ msgstr "Тло"
-
-#, fuzzy
-#~ msgid "_colour"
-#~ msgstr "Колір _тексту"
-
-#, fuzzy
-#~ msgid "revert"
-#~ msgstr "Від_новити"
-
-#, fuzzy
-#~ msgid "roxterm colour scheme"
-#~ msgstr "Колірна тема ROXTerm"
-
-#, fuzzy
-#~ msgid "colours"
-#~ msgstr "Колір _тексту"
-
-#, fuzzy
-#~ msgid "roxterm options"
-#~ msgstr "_Інші параметри"
-
-#, fuzzy
-#~ msgid "prefer_dark_theme"
-#~ msgstr "Інтерфейс у темних кольорах"
-
-#, fuzzy
-#~ msgid "maximise"
-#~ msgstr "Роз_горнути"
-
-#, fuzzy
-#~ msgid "maximize"
-#~ msgstr "Роз_горнути"
-
-#, fuzzy
-#~ msgid "fullscreen"
-#~ msgstr "_Повноекранний режим"
-
-#, fuzzy
-#~ msgid "NewTerminal"
-#~ msgstr "На новій вкладці терміналу"
-
-#, fuzzy
-#~ msgid "File"
-#~ msgstr "Файловий менеджер"
-
-#, fuzzy
-#~ msgid "Edit"
-#~ msgstr "_Редагувати..."
-
-#, fuzzy
-#~ msgid ".Options"
-#~ msgstr "_Інші параметри"
-
-#, fuzzy
-#~ msgid "/Options"
-#~ msgstr "_Інші параметри"
-
-#, fuzzy
-#~ msgid "SetColourScheme"
-#~ msgstr "Колірна тема ROXTerm"
-
-#, fuzzy
-#~ msgid "EditColourScheme"
-#~ msgstr "<b>Колірні схеми</b>"
-
-#, fuzzy
-#~ msgid "scroll_background"
-#~ msgstr "_Зберігати:"
-
-#, fuzzy
-#~ msgid "background_img"
-#~ msgstr "_Зображення"
-
-#, fuzzy
-#~ msgid "background_type1"
-#~ msgstr "Тло"
-
-#, fuzzy
-#~ msgid "background_type0"
-#~ msgstr "Тло"
-
-#, fuzzy
-#~ msgid "command"
-#~ msgstr "Команда"
-
-#, fuzzy
-#~ msgid "ssh_address"
-#~ msgstr "_Адреса"
-
-#, fuzzy
-#~ msgid "ssh_options"
-#~ msgstr "_Інші параметри"
-
-#, fuzzy
-#~ msgid "width"
-#~ msgstr "Ш_ирина:"
-
-#, fuzzy
-#~ msgid "height"
-#~ msgstr "_Висота"
-
-#, fuzzy
-#~ msgid "allow_bold"
-#~ msgstr "Дозволити _жирний текст"
-
-#, fuzzy
-#~ msgid "audible_bell"
-#~ msgstr "_Звуковий дзінь"
-
-#, fuzzy
-#~ msgid "visible_bell"
-#~ msgstr "_Графічний дзінь"
-
-#, fuzzy
-#~ msgid "bell_highlights_tab"
-#~ msgstr "Дзінь підсвічує вікно чи вкладку"
-
-#, fuzzy
-#~ msgid "cursor_blinks"
-#~ msgstr "Блимати курсором терміналу."
-
-#, fuzzy
-#~ msgid "cursor_shape"
-#~ msgstr "Форма курсору:"
-
-#, fuzzy
-#~ msgid "always_show_tabs"
-#~ msgstr "_Завжди показувати рядок вкладок"
-
-#, fuzzy
-#~ msgid "browser"
-#~ msgstr "Переглядач"
-
-#, fuzzy
-#~ msgid "mailer"
-#~ msgstr "Поштар"
-
-#, fuzzy
-#~ msgid "filer"
-#~ msgstr "Файловий менеджер"
-
-#, fuzzy
-#~ msgid "background_type"
-#~ msgstr "Тло"
-
-#, fuzzy
-#~ msgid "scrollbar_pos"
-#~ msgstr "_Без панелі прокручування"
-
-#, fuzzy
-#~ msgid "scrollback_lines"
-#~ msgstr "_Зберігати:"
-
-#, fuzzy
-#~ msgid "scroll_on_output"
-#~ msgstr "Прокручувати при в_иводі"
-
-#, fuzzy
-#~ msgid "scroll_on_keystroke"
-#~ msgstr "Прокручувати при _вводі"
-
-#, fuzzy
-#~ msgid "win_title"
-#~ msgstr "З_аголовок вікна:"
-
-#, fuzzy
-#~ msgid "full_screen"
-#~ msgstr "_Повноекранний режим"
-
-#, fuzzy
-#~ msgid "Profiles/"
-#~ msgstr "<b>Профілі</b>"
-
-#, fuzzy
-#~ msgid "maximised"
-#~ msgstr "Роз_горнути"
-
-#, fuzzy
-#~ msgid "window_title"
-#~ msgstr "З_аголовок вікна:"
-
-#, fuzzy
-#~ msgid "icon_title"
-#~ msgstr "З_аголовок вікна:"
-
-#, fuzzy
-#~ msgid "Saved the window"
-#~ msgstr "Закрити це вікно"
-
-#, fuzzy
-#~ msgid "x-www-browser"
-#~ msgstr "Переглядач"
