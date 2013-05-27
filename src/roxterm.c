@@ -4430,10 +4430,25 @@ void roxterm_launch(const char *display_name, char **env)
                 if (!wtitle)
                     break;
             }
-            if (x11support_get_wm_desktop(gtk_widget_get_window(w), &workspace)
-                    && (int) workspace == global_options_workspace)
+            if (!focused)
             {
-                focused = win;
+                if (x11support_get_wm_desktop(gtk_widget_get_window(w),
+                    &workspace))
+                {
+                    if ((int) workspace == global_options_workspace)
+                        focused = win;
+                }
+                else
+                {
+                    /* There is a window but it hasn't made it onto workspace
+                     * yet. This should only happen in things like start-up
+                     * scripts so we should treat it as a workspace match. See
+       * https://sourceforge.net/p/roxterm/discussion/422639/thread/09ff8e98/
+                     * and
+       * https://sourceforge.net/p/roxterm/discussion/422638/thread/2cc9a9aa/
+                     */
+                    focused = win;
+                }
             }
             win = NULL;
         }
