@@ -118,7 +118,7 @@ gboolean rtdbus_start_service(const char *name, const char *object_path,
         case DBUS_REQUEST_NAME_REPLY_EXISTS:
             return TRUE;
         default:
-            if (!dbus_connection_register_object_path(rtdbus_connection,
+            if (!dbus_connection_register_object_path(rtdbus_connection, 
                     object_path, &vtable, NULL))
             {
                 /* Currently complaining about handler already being registered
@@ -160,12 +160,17 @@ gboolean rtdbus_init(void)
     return status = TRUE;
 }
 
-gboolean rtdbus_add_match_rule_and_filter(const char *match_rule,
-        DBusHandleMessageFunction filter_fn, void *user_data)
+gboolean rtdbus_add_signal_rule_and_filter(
+        const char *path, const char *interface,
+        DBusHandleMessageFunction filter_fn)
 {
     DBusError derror;
+    char *match_rule;
 
     dbus_error_init(&derror);
+    match_rule = g_strdup_printf(
+            "type='signal',path='%s',interface='%s'",
+            path, interface);
     dbus_bus_add_match(rtdbus_connection, match_rule, &derror);
     if (dbus_error_is_set(&derror))
     {
@@ -173,27 +178,12 @@ gboolean rtdbus_add_match_rule_and_filter(const char *match_rule,
         return FALSE;
     }
     if (!dbus_connection_add_filter(rtdbus_connection,
-            filter_fn, user_data, NULL))
+            filter_fn, NULL, NULL))
     {
         rtdbus_whinge(&derror, _("Unable to install D-BUS message filter"));
         return FALSE;
     }
     return TRUE;
-}
-
-gboolean rtdbus_add_signal_rule_and_filter(
-        const char *path, const char *interface,
-        DBusHandleMessageFunction filter_fn)
-{
-    char *match_rule;
-    gboolean result;
-
-    match_rule = g_strdup_printf(
-            "type='signal',path='%s',interface='%s'",
-            path, interface);
-    result = rtdbus_add_match_rule_and_filter(match_rule, filter_fn, NULL);
-    g_free(match_rule);
-    return result;
 }
 
 DBusMessage *rtdbus_append_args(DBusMessage *message, int first_arg_type, ...)
@@ -208,7 +198,7 @@ DBusMessage *rtdbus_append_args(DBusMessage *message, int first_arg_type, ...)
     return message;
 }
 
-DBusMessage *rtdbus_append_args_valist(DBusMessage *message,
+DBusMessage *rtdbus_append_args_valist(DBusMessage *message, 
         int first_arg_type, va_list ap)
 {
     if (first_arg_type == DBUS_TYPE_INVALID)
@@ -283,7 +273,7 @@ char **rtdbus_get_message_args_as_strings(DBusMessageIter *iter)
     int argc = 0;
     int argtype;
 
-    for (; (argtype = dbus_message_iter_get_arg_type(iter))
+    for (; (argtype = dbus_message_iter_get_arg_type(iter)) 
             != DBUS_TYPE_INVALID;
             dbus_message_iter_next(iter))
     {
@@ -318,7 +308,7 @@ char **rtdbus_get_message_arg_string_array(DBusMessageIter *iter)
 {
     int t;
     DBusMessageIter sub_iter;
-
+    
     if ((t = dbus_message_iter_get_arg_type(iter)) != DBUS_TYPE_ARRAY)
     {
         g_critical(_("Invalid first argument type ('%c') in "

@@ -41,17 +41,6 @@
 #define ROXTERM_DBUS_INTERFACE RTDBUS_INTERFACE
 #define ROXTERM_DBUS_METHOD_NAME "NewTerminal"
 
-#define NAME_OWNER_CHANGED_MATCH \
-        "sender='org.freedesktop.DBus',type='signal'," \
-        "path='/org/freedesktop/DBus'," \
-        "interface='org.freedesktop.DBus'"
-        /*
-         * Want NameOwnerChanged and NameAcquired, and these parts of the
-         * filter seem to be ignored anyway
-        "member='NameOwnerChanged'," \
-        "arg0='" RTDBUS_NAME "'"
-        */
-
 extern char **environ;
 
 static DBusMessage *create_dbus_message(int argc, char **argv,
@@ -234,9 +223,7 @@ static int wait_for_child(int pipe_r)
 
     if (read(pipe_r, &result, 1) != 1)
     {
-        /* If this happens after child has exited g_error crashes */
-        fprintf(stderr,
-                _("Parent failed to read signal from child for --fork: %s\n"),
+        g_error(_("Parent failed to read signal from child for --fork: %s"),
                 strerror(errno));
         result = 1;
     }
@@ -270,78 +257,6 @@ static gboolean roxterm_idle_ok(gpointer ppipe)
     return FALSE;
 }
 
-static void clear_name_owner_changed_filter(void *user_data);
-
-static DBusHandlerResult
-name_owner_changed_filter(DBusConnection *connection, DBusMessage *message,
-        void *user_data)
-{
-    const char *path = NULL;
-    const char *iface = NULL;
-    const char *member = NULL;
-    RTDBUS_ARG_CONST char *service_name = NULL;
-    //RTDBUS_ARG_CONST char *owner_name = NULL;
-    DBusError derror;
-    DBusHandlerResult result = DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
-    gboolean ready = FALSE;
-
-    dbus_error_init(&derror);
-    if (dbus_message_get_type(message) != DBUS_MESSAGE_TYPE_SIGNAL
-            || strcmp(path = dbus_message_get_path(message),
-                    "/org/freedesktop/DBus")
-            || strcmp(iface = dbus_message_get_interface(message),
-                    "org.freedesktop.DBus")
-            || (strcmp(member = dbus_message_get_member(message),
-                    "NameAcquired")
-                    && strcmp(member, "NameOwnerChanged")))
-    {
-        /*
-        g_debug("name_owner_changed_filter doesn't handle "
-                "path='%s',interface='%s',member='%s'",
-                path, iface, member);
-        */
-        return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
-    }
-    if (dbus_message_get_args(message, &derror,
-            DBUS_TYPE_STRING, &service_name,
-            //DBUS_TYPE_STRING, &owner_name,
-            DBUS_TYPE_INVALID))
-    {
-        if (g_str_has_prefix(service_name, RTDBUS_NAME))
-        {
-            ready = TRUE;
-            result = DBUS_HANDLER_RESULT_HANDLED;
-        }
-    }
-    else
-    {
-        rtdbus_whinge(&derror,
-                "Error reading DBUS NameAcquired/NameOwnerChanged argument, "
-                "roxterm might not be ready to handle further commands");
-        ready = TRUE;
-    }
-    if (ready)
-    {
-        clear_name_owner_changed_filter(user_data);
-        roxterm_exit(*(int *) user_data, 0);
-    }
-#if ROXTERM_DBUS_OLD_ARGS_SEMANTICS
-    if (service_name)
-        dbus_free(service_name);
-    if (owner_name)
-        dbus_free(service_name);
-#endif
-    return result;
-}
-
-static void clear_name_owner_changed_filter(void *user_data)
-{
-    dbus_connection_remove_filter(rtdbus_connection,
-            name_owner_changed_filter, user_data);
-    dbus_bus_remove_match(rtdbus_connection,
-            NAME_OWNER_CHANGED_MATCH, NULL);
-}
-
 int main(int argc, char **argv)
 {
     gboolean preparse_ok;
@@ -353,7 +268,6 @@ int main(int argc, char **argv)
     gboolean dbus_ok;
     pid_t fork_result = 0;
     static int fork_pipe[2] = { -1, -1};
-    gboolean need_idler = TRUE;
 
     global_options_init_appdir(argc, argv);
     global_options_init_bindir(argv[0]);
@@ -457,12 +371,6 @@ int main(int argc, char **argv)
     dbus_ok = rtdbus_ok = rtdbus_init();
     if (dbus_ok)
     {
-        if (global_options_fork)
-        {
-            need_idler = !rtdbus_add_match_rule_and_filter(
-                    NAME_OWNER_CHANGED_MATCH,
-                    name_owner_changed_filter, &fork_pipe[1]);
-        }
 #if ENABLE_SM
         if (global_options_disable_sm ||
                 (!global_options_restart_session_id &&
@@ -535,11 +443,7 @@ int main(int argc, char **argv)
     }
 #endif
 
-    /* Only if failed to add filter */
-    if (global_options_fork && need_idler)
-    {
-        g_idle_add(roxterm_idle_ok, &fork_pipe[1]);
-    }
+    g_idle_add(roxterm_idle_ok, &fork_pipe[1]);
 
     SLOG("Entering main loop with %d windows", g_list_length(multi_win_all));
     gtk_main();
