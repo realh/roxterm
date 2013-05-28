@@ -570,8 +570,8 @@ elif ctx.mode == "install" or ctx.mode == "uninstall":
         call_subprocess(["ln", "-sfn", "../../pt_BR/man1/roxterm.1", ptdir])
         call_subprocess(["ln", "-sfn", "../../pt_BR/man1/roxterm-config.1",
                 ptdir])
-        #call_subprocess(["ln", "-sfn", "pt_BR",
-        #        ctx.subst("${DESTDIR}/${HTMLDIR}/pt")])
+        call_subprocess(["ln", "-sfn", "pt_BR",
+                ctx.subst("${DESTDIR}/${HTMLDIR}/pt")])
 
 elif ctx.mode == 'pristine' or ctx.mode == 'clean':
 
