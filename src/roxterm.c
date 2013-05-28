@@ -2015,10 +2015,13 @@ static void roxterm_tab_selection_handler(ROXTermData * roxterm, MultiTab * tab)
 
     /* Creation of im submenus deferred to this point because vte
      * widget must be realized first */
-    create_im_submenus(roxterm, vte);
-    menutree_attach_im_submenu(popup_menu, roxterm->im_submenu1);
-    menutree_attach_im_submenu(menu_bar, roxterm->im_submenu2);
-    menutree_attach_im_submenu(short_popup, roxterm->im_submenu3);
+    if (!roxterm->im_submenu1)
+    {
+        create_im_submenus(roxterm, vte);
+        menutree_attach_im_submenu(popup_menu, roxterm->im_submenu1);
+        menutree_attach_im_submenu(menu_bar, roxterm->im_submenu2);
+        menutree_attach_im_submenu(short_popup, roxterm->im_submenu3);
+    }
 
     multi_win_set_ignore_toggles(win, TRUE);
     if (!roxterm->setup_encodings)
