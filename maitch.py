@@ -1357,6 +1357,8 @@ class Rule(object):
         env, targets, sources = self.process_env_tgt_src()
         if self.lock:
             self.lock.acquire()
+        for t in self.targets:
+            self.ctx.ensure_out_dir_for_file(t)
         if self.diffpat:
             for t in self.targets:
                 if os.path.exists(t):
