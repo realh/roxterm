@@ -242,10 +242,6 @@ Other predefined variables [default values shown in squarer brackets]:
 
         self.env = {}
 
-        # From now on reconfigure is the same as configure
-        if self.mode == 'reconfigure':
-            self.mode = 'configure'
-
         # Process MAITCHFLAGS first because it's lowest priority and
         # subsequent processing will overwrite it
         mf = os.environ.get('MAITCHFLAGS')
@@ -320,6 +316,10 @@ Other predefined variables [default values shown in squarer brackets]:
                             v = int(v)
                         self.env[k] = v
                 fp.close()
+
+        # From now on reconfigure is the same as configure
+        if self.mode == 'reconfigure':
+            self.mode = 'configure'
 
         # Set defaults
         for v in _var_repository:
