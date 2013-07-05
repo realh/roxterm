@@ -1357,7 +1357,8 @@ class Rule(object):
         env, targets, sources = self.process_env_tgt_src()
         if self.lock:
             self.lock.acquire()
-        for t in self.targets:
+        for t in targets:
+            dprint("Creating directory for target '%s'" % t)
             self.ctx.ensure_out_dir_for_file(t)
         if self.diffpat:
             for t in self.targets:
@@ -2293,7 +2294,11 @@ def recursively_remove(path, fatal, excep):
 def find_prog(name, env = os.environ):
     if os.path.isabs(name):
         return name
-    path = env.get('PATH', '/bin:/usr/bin:/usr/local/bin')
+    path = env.get('PATH')
+    if not path:
+        path = os.environ['PATH']
+    if not path:
+        path = '/bin:/usr/bin:/usr/local/bin'
     for p in path.split(':'):
         n = opj(p, name)
         if os.path.exists(n):
