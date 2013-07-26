@@ -40,6 +40,7 @@ def mprint(*args, **kwargs):
         file = kwargs.get('file', sys.stdout)
         s = sep.join(args) + end
         file.write(s)
+        #file.write("Called from: " + "".join(traceback.format_stack()) + "\n")
         file.flush()
         if _mprint_fp and file != _mprint_fp:
             _mprint_fp.write(s)
@@ -116,6 +117,9 @@ class MaitchJobError(MaitchError):
     pass
 
 class MaitchInstallError(MaitchError):
+    pass
+
+class MaitchPkgError(MaitchError):
     pass
 
 
@@ -238,10 +242,6 @@ Other predefined variables [default values shown in squarer brackets]:
 
         self.env = {}
 
-        # From now on reconfigure is the same as configure
-        if self.mode == 'reconfigure':
-            self.mode = 'configure'
-
         # Process MAITCHFLAGS first because it's lowest priority and
         # subsequent processing will overwrite it
         mf = os.environ.get('MAITCHFLAGS')
@@ -316,6 +316,10 @@ Other predefined variables [default values shown in squarer brackets]:
                             v = int(v)
                         self.env[k] = v
                 fp.close()
+
+        # From now on reconfigure is the same as configure
+        if self.mode == 'reconfigure':
+            self.mode = 'configure'
 
         # Set defaults
         for v in _var_repository:
@@ -687,7 +691,7 @@ Other predefined variables [default values shown in squarer brackets]:
 
 
     def ensure_out_dir(self, *args):
-        """ Esnures the named directory exists. args is a single string or list
+        """ Ensures the named directory exists. args is a single string or list
         of strings. Single string may be absolute in which case it isn't
         altered. Otherwise a path is made absolute using BUILD_DIR. """
         if isinstance(args, basestring) and os.path.isabs(args):
@@ -777,28 +781,26 @@ Other predefined variables [default values shown in squarer brackets]:
         If version is given, also check that package's version is at least
         as new (only works on one package at a time). """
         mprint("Checking pkg-config %s..." % pkgs, end = '')
+        pvs = ""
         try:
             if version:
-                try:
-                    pvs = self.prog_output(
-                            [pkg_config, '--modversion', pkgs])[0].strip()
-                except:
-                    mprint("not found")
+                pvs = self.prog_output(
+                        [pkg_config, '--modversion', pkgs])[0].strip()
                 pkg_v = pvs.split('.')
                 v = version.split('.')
                 new_enough = True
                 for n in range(len(v)):
-                    if v[n] > pkg_v[n]:
-                        new_enough = True
-                        break
-                    elif v[n] < pkg_v[n]:
+                    if int(v[n]) > int(pkg_v[n]):
                         new_enough = False
                         break
-                    if not new_enough:
-                        mprint("too old")
-                        raise MaitchPkgError("%s has version %s, "
-                                "%s needs at least %s" %
-                                (pkgs, pvs, self.package_name, version))
+                    elif int(v[n]) < int(pkg_v[n]):
+                        new_enough = True
+                        break
+                if not new_enough:
+                    mprint("too old")
+                    raise MaitchPkgError("%s has version %s, "
+                            "%s needs at least %s" %
+                            (pkgs, pvs, self.package_name, version))
             if not prefix:
                 prefix = make_var_name(pkgs, True)
             pkgs = pkgs.split()
@@ -810,7 +812,10 @@ Other predefined variables [default values shown in squarer brackets]:
             mprint("error")
             raise
         else:
-            mprint("ok")
+            if version:
+                mprint("ok (%s)" % pvs)
+            else:
+                mprint("ok")
 
 
     def subst(self, s, novar = NOVAR_FATAL, recurse = True, at = False):
@@ -1029,11 +1034,11 @@ int main() { %s(); return 0; }
         directory = process_nodes(directory)
         if self.dest_dir:
             directory = [self.dest_dir + os.sep + d for d in directory]
-        directory = [os.path.abspath(d) for d in directory]
+        directory = [os.path.abspath(self.subst(d)) for d in directory]
         if not sources:
             sources = []
-        elif isinstance(sources, basestring):
-            sources = sources.split()
+        else:
+            sources = [self.subst(s) for s in process_nodes(sources)]
         if len(directory) > 1 and sources:
             raise MaitchInstallError("Can't install files to multiple " \
                     "directories")
@@ -1179,6 +1184,13 @@ class Rule(object):
     """
     Standard rule.
     """
+
+    # Prevent race conditions when changing directory
+    using_dir = False
+    dir_lock = threading.Condition()
+    cwd = None
+    n_running = 0
+
     def __init__(self, **kwargs):
         """
         Possible arguments (all optional except targets):
@@ -1196,7 +1208,7 @@ class Rule(object):
         sources: See process_nodes() func for what's valid.
         targets: As above, or a function which takes source(s) as input and
                 returns target(s).
-        deps: Dependencies other than sources; deps are satisfied before
+        deps:   Dependencies other than sources; deps are satisfied before
                 sources.
         wdeps: "Weak dependencies":- the targets will not be built until after
                 all wdeps are built, but the targets don't necessarily depend
@@ -1210,12 +1222,14 @@ class Rule(object):
                 target is out of date and needs to be rebuilt; it is not used
                 when working out the dependency chain.
         use_shell: Whether to use shell if rule is a string (default False).
-        env: A dict containing env vars to override those from Context. Each
+        dir:    Working directory for this rule. Use sparingly, it causes
+                threads to block.
+        env:    A dict containing env vars to override those from Context. Each
                 var may refer to its own name in its value to derive values
                 from the Context.
-        quiet: If True don't print the command about to be executed.
-        where: Where to look for sources: SRC, TOP or both (default SRC).
-        lock: Some jobs can't be run simultaneously so you can pass in a Lock
+        quiet:  If True don't print the command about to be executed.
+        where:  Where to look for sources: SRC, TOP or both (default SRC).
+        lock:   Some jobs can't be run simultaneously so you can pass in a Lock
                 object to prevent that.
         diffpat: If this is given (a list or string) it invokes special
                 behaviour. For each target T, if T already exists it's backed
@@ -1250,6 +1264,7 @@ class Rule(object):
             self.wdeps = process_nodes(self.wdeps)
         self.dep_func = kwargs.get('dep_func')
         self.use_shell = kwargs.get('use_shell')
+        self.dir = kwargs.get('dir')
         self.env = kwargs.get('env')
         self.quiet = kwargs.get('quiet')
         self.blocking = []
@@ -1261,6 +1276,8 @@ class Rule(object):
         self.cached_deps = []
         self.where = kwargs['where']
         self.lock = kwargs.get('lock')
+        if self.dir:
+            Rule.using_dir = True
         diffpat = kwargs.get('diffpat')
         if isinstance(diffpat, basestring):
             diffpat = [diffpat]
@@ -1344,7 +1361,54 @@ class Rule(object):
 
 
     def run(self):
-        " Run a job. "
+        " Run a job with thread-safe directory management. "
+        if not Rule.using_dir:
+            self.__inner_run()
+            return
+        Rule.dir_lock.acquire()
+        try:
+            if self.dir:
+                self.dir = self.ctx.subst(self.dir)
+            if self.dir != Rule.cwd:
+                # Wait for current rule to finish before changing cwd
+                #dprint("%s wants to use dir '%s', waiting for '%s'" \
+                #        % (str(self), self.dir, Rule.cwd))
+                while Rule.n_running > 1:
+                    Rule.dir_lock.wait()
+                #dprint("%s woke up to use dir '%s'" % (str(self), self.dir))
+                if Rule.cwd:
+                    mprint('make[0]: Leaving directory "%s"' % self.dir)
+                if self.dir:
+                    dir_ = self.dir
+                    self.ctx.ensure_out_dir(dir_)
+                else:
+                    dir_ = self.ctx.build_dir
+                mprint('make[0]: Entering directory "%s"' % dir_)
+                os.chdir(dir_)
+                Rule.cwd = self.dir
+        except:
+            Rule.dir_lock.release()
+            raise
+        Rule.n_running += 1
+        #dprint("%s increasing n_running to %d and releasing dir lock" \
+        #        % (str(self), Rule.n_running))
+        Rule.dir_lock.release()
+        self.__inner_run()
+        #dprint("%s reacquring dir lock" % str(self))
+        Rule.dir_lock.acquire()
+        try:
+            Rule.n_running -= 1
+            #dprint("%s decreasing n_running to %d" \
+            #        % (str(self), Rule.n_running))
+            Rule.dir_lock.notify()
+        except:
+            Rule.dir_lock.release()
+            raise
+        #dprint("%s done, releasing dir lock" % str(self))
+        Rule.dir_lock.release()
+
+
+    def __inner_run(self):
         if self.is_uptodate():
             if self.verbose:
                 dprint("%s is up-to-date" % self)
@@ -1352,6 +1416,9 @@ class Rule(object):
         env, targets, sources = self.process_env_tgt_src()
         if self.lock:
             self.lock.acquire()
+        for t in targets:
+            dprint("Creating directory for target '%s'" % t)
+            self.ctx.ensure_out_dir_for_file(t)
         if self.diffpat:
             for t in self.targets:
                 if os.path.exists(t):
@@ -1368,14 +1435,17 @@ class Rule(object):
                     rule(self.ctx, env, targets, sources)
                 else:
                     r = subst(env, rule)
-                    if not self.quiet:
-                        mprint(r)
                     if self.use_shell:
                         prog = r
                     else:
                         prog = r.split()
+                    if self.dir:
+                        dir_ = self.dir
+                    else:
+                        dir_ = self.ctx.build_dir
                     if call_subprocess(prog,
-                            shell = self.use_shell, cwd = self.ctx.build_dir):
+                            shell = self.use_shell, cwd = dir_,
+                            quiet = self.quiet):
                         dprint("%s NZ error code" % r)
                         raise MaitchChildError("Rule '%s' failed" % r)
                     else:
@@ -1836,17 +1906,18 @@ class CxxStaticLibRule(LibtoolCxxProgramRule):
 def mkdir_rule(ctx, env, targets, sources):
     """ A rule function to ensure targets' directories exist. """
     for t in targets:
+        ctx.ensure_out_dir(t)
+
+
+def mk_parent_dir_rule(ctx, env, targets, sources):
+    """ A rule function to ensure targets' directories exist. """
+    for t in targets:
         ctx.ensure_out_dir_for_file(t)
 
 
+def manipulate_kwargs_for_pot_rule(ctx, kwargs, potfiles = False):
+    """ Helper function. It processes the following args for certain rules:
 
-def PotRules(ctx, **kwargs):
-    """ Returns a pair (list) of rules for generating a .pot file from a list of
-    source files eg POTFILES.in where filenames are relative to TOP_DIR. Default
-    source is "${TOP_DIR}/po/POTFILES.in", default target is
-    ${TOP_DIR}/po/${PACKAGE}.pot.
-    rule defaults to ${XGETTEXT}, may be overridden - note that source for this
-    rule is generated POTFILES, not POTFILES.in.
     XGETTEXT is not set by default. *_XGETTEXT_OPTS is generated on the fly.
 
     Special args:
@@ -1854,25 +1925,11 @@ def PotRules(ctx, **kwargs):
     package
     version
     bugs_addr
-    opts_prefix: Goes on front of _XGETTEXT_OPTS added to env.
+    opts_prefix: Goes on front of _XGETTEXT_OPTS added to env from above args
+    xgettext_opts: Additional xgettext_opts
 
     '^"POT-Creation-Date:' is added to a new or existing diffpat.
     """
-    def generate_potfiles(ctx, env, targets, sources):
-        potfiles = []
-        for s in sources:
-            fp = open(subst(env, s), 'r')
-            for f in fp.readlines():
-                f = f.strip()
-                if len(f) and f[0] != '#':
-                    potfiles.append(opj(env['TOP_DIR'], f.strip()))
-            fp.close()
-        t = subst(env, targets[0])
-        ctx.ensure_out_dir_for_file(t)
-        fp = open(t, 'w')
-        for f in potfiles:
-            fp.write("%s\n" % f)
-        fp.close()
 
     def pot_deps(ctx, rule):
         deps = []
@@ -1886,21 +1943,21 @@ def PotRules(ctx, **kwargs):
     varname = "%s_XGETTEXT_OPTS" % opts_prefix
     if not 'where' in kwargs:
         kwargs['where'] = SRC | TOP
-    try:
-        src1 = kwargs['sources']
-    except KeyError:
-        src1 = ["${TOP_DIR}/po/POTFILES.in"]
-    rule1 = Rule(rule = generate_potfiles,
-            sources = src1,
-            targets = ["${BUILD_DIR}/po/POTFILES"],
-            where = kwargs['where'])
-
-    kwargs['sources'] = ["${BUILD_DIR}/po/POTFILES"]
     if not 'targets' in kwargs:
         kwargs['targets'] = ["${TOP_DIR}/po/${PACKAGE}.pot"]
+    if potfiles:
+        potfiles = " -f"
+    else:
+        potfiles = ""
+    xgto = kwargs.get('xgettext_opts', None)
+    if not xgto:
+        xgto = ""
+    else:
+        xgto = " " + xgto
     if not 'rule' in kwargs:
-        kwargs['rule'] = "${XGETTEXT} ${%s} -f ${SRC} -o ${TGT}" % varname
-    if not 'dep_func' in kwargs:
+        kwargs['rule'] = "${XGETTEXT} ${%s}%s%s ${SRC} -o ${TGT}" % \
+                (varname, xgto, potfiles)
+    if potfiles and not 'dep_func' in kwargs:
         kwargs['dep_func'] = pot_deps
     xgto = []
     copyrt = kwargs.get('copyright_holder')
@@ -1937,10 +1994,56 @@ def PotRules(ctx, **kwargs):
         kwargs['diffpat'] = diffpat
     if not '^"POT-Creation-Date:' in diffpat:
         diffpat.append('^"POT-Creation-Date:')
+
+
+class PotRule(Rule):
+    """ See manipulate_kwargs_for_pot_rule for special args.
+
+    potfiles: If True, the source is a POTFILES, use xgettext's -f option
+    """
+    def __init__(self, ctx, **kwargs):
+        potfiles = kwargs.get('potfiles', False)
+        manipulate_kwargs_for_pot_rule(ctx, kwargs, potfiles)
+        Rule.__init__(self, **kwargs)
+
+
+def PotRules(ctx, **kwargs):
+    """ Returns a pair (list) of rules for generating a .pot file from a list of
+    source files eg POTFILES.in where filenames are relative to TOP_DIR.
+    Default source is "${TOP_DIR}/po/POTFILES.in",
+    default target is ${TOP_DIR}/po/${PACKAGE}.pot.
+
+    See manipulate_kwargs_for_pot_rule for special args.
+
+    """
+    def generate_potfiles(ctx, env, targets, sources):
+        potfiles = []
+        for s in sources:
+            fp = open(subst(env, s), 'r')
+            for f in fp.readlines():
+                f = f.strip()
+                if len(f) and f[0] != '#':
+                    potfiles.append(opj(env['TOP_DIR'], f.strip()))
+            fp.close()
+        t = subst(env, targets[0])
+        ctx.ensure_out_dir_for_file(t)
+        fp = open(t, 'w')
+        for f in potfiles:
+            fp.write("%s\n" % f)
+        fp.close()
+
+    manipulate_kwargs_for_pot_rule(ctx, kwargs, True)
+
+    src1 = kwargs.get('sources', "${TOP_DIR}/po/POTFILES.in")
+    rule1 = Rule(rule = generate_potfiles,
+            sources = src1,
+            targets = ["${BUILD_DIR}/po/POTFILES"],
+            where = kwargs['where'])
+
+    kwargs['sources'] = ["${BUILD_DIR}/po/POTFILES"]
     rule2 = Rule(**kwargs)
 
     return [rule1, rule2]
-
 
 
 class PoRule(TouchRule):
@@ -1981,39 +2084,43 @@ def parse_linguas(ctx, podir = None, linguas = None):
 
 
 
-def PoRulesFromLinguas(ctx, *args, **kwargs):
-    """ Generates a PoRule for each language listed in linguas. Default linguas
-    is podir/LINGUAS. Default podir is ${TOP_DIR}/po. Other args are passed to
-    each PoRule. Also generates .mo rules unless nomo is True. """
-    podir = kwargs.get('podir')
+def foreach_lingua(ctx, fn, podir = None, linguas = None):
+    """ Runs fn(ctx, lang, f) for each lang found in linguas,
+        where f is .po file.
+        Default podir is '${TOP_DIR}/po'
+        Default linguas is ${podir}/LINGUAS.
+    """
     if not podir:
         podir = opj("${TOP_DIR}", "po")
-    linguas = kwargs.get('linguas')
     if not linguas:
         linguas = opj(podir, "LINGUAS")
-    nomo = kwargs.get("nomo")
     langs = parse_linguas(ctx, linguas = linguas)
-    rules = []
     for l in langs:
         f = opj(podir, l + ".po")
         if not os.path.isfile(ctx.subst(f)):
             raise MaitchNotFoundError("Linguas file %s includes %s, "
                     "but no corresponding po file found" % (linguas, l))
+        fn(ctx, l, f)
+
+
+def PoRulesFromLinguas(ctx, *args, **kwargs):
+    """ Generates a PoRule for each language listed in linguas. Default linguas
+    is podir/LINGUAS. Default podir is ${TOP_DIR}/po. Other args are passed to
+    each PoRule. Also generates .mo rules unless nomo is True. """
+    nomo = kwargs.get("nomo")
+    rules = []
+
+    def add_po_rule(ctx, l, f):
         kwargs['targets'] = f
         rules.append(PoRule(*args, **kwargs))
         if not nomo:
             rules.append(Rule(rule = "${MSGFMT} -c -o ${TGT} ${SRC}",
                     targets = opj("po", l + ".mo"),
                     sources = f))
+
+    foreach_lingua(ctx, add_po_rule,
+            kwargs.get('podir'), kwargs.get('linguas'))
     return rules
-
-
-
-def StandardTranslationRules(ctx, *args, **kwargs):
-    """ Returns all rules necessary to build translation files. kwargs are as
-    for PotRules + PoRulesForLinguas """
-    return PotRules(ctx, *args, **kwargs) + \
-            PoRulesFromLinguas(ctx, *args, **kwargs)
 
 
 
@@ -2022,13 +2129,19 @@ def call_subprocess(*args, **kwargs):
     stdout and stderr in kwargs are overridden. """
     kwargs['stdout'] = subprocess.PIPE
     kwargs['stderr'] = subprocess.PIPE
+    if isinstance(args[0], basestring):
+        c = args[0]
+    else:
+        c = ' '.join(args[0])
+    if not kwargs.get('quiet'):
+        mprint(c)
+    if 'quiet' in kwargs:
+        del kwargs['quiet']
     sp = subprocess.Popen(*args, **kwargs)
-    dprint("%s has pid %d" % (args, sp.pid))
     [out, err] = sp.communicate()
-    dprint("pid %d finished, output follows" % sp.pid)
     out = out.strip()
     if out:
-        mprint(out)
+        mprint("mprint out:", out)
     err = err.strip()
     if err:
         mprint(err, file = sys.stderr)
@@ -2244,7 +2357,11 @@ def recursively_remove(path, fatal, excep):
 def find_prog(name, env = os.environ):
     if os.path.isabs(name):
         return name
-    path = env.get('PATH', '/bin:/usr/bin:/usr/local/bin')
+    path = env.get('PATH')
+    if not path:
+        path = os.environ['PATH']
+    if not path:
+        path = '/bin:/usr/bin:/usr/local/bin'
     for p in path.split(':'):
         n = opj(p, name)
         if os.path.exists(n):
