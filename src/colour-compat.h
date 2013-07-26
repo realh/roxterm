@@ -39,6 +39,7 @@
         (guint16) (c->red * 65535), \
         (guint16) (c->green * 65535), \
         (guint16) (c->blue * 65535))
+#define COLOUR_INIT_BLACK {0, 0, 0, 1}
 
 #else
 
@@ -52,6 +53,7 @@
 #define COLOUR_SET_VTE(f) vte_terminal_set_color##f
 #define COLOUR_SPRINTF(s, c) sprintf(s, "#%04hx%04hx%04hx", \
         c->red, c->green, c->blue)
+#define COLOUR_INIT_BLACK {0, 0, 0}
 
 #endif /* GTK_CHECK_VERSION */
 

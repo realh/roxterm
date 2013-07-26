@@ -46,7 +46,11 @@ switch ($page)
 switch ($lang)
 {
     case 'en':
+    case 'pt_BR':
+    case 'fr':
     case 'es':
+    case 'ru':
+    case 'uk':
         break;
     default:
         $lang = 'en';
@@ -77,12 +81,36 @@ while (!feof($file))
             print ' selected="1"';
         }
         print '>English</option>';
+        print '<option value="pt_BR"';
+        if ($lang == 'pt_BR')
+        {
+            print ' selected="1"';
+        }
+        print '>Português (Brasil)</option>';
         print '<option value="es"';
         if ($lang == 'es')
         {
             print ' selected="1"';
         }
         print '>Español</option>';
+        print '<option value="fr"';
+        if ($lang == 'fr')
+        {
+            print ' selected="1"';
+        }
+        print '>Français</option>';
+        print '<option value="ru"';
+        if ($lang == 'ru')
+        {
+            print ' selected="1"';
+        }
+        print '>Русский</option>';
+        print '<option value="uk"';
+        if ($lang == 'uk')
+        {
+            print ' selected="1"';
+        }
+        print '>Український</option>';
         print '</select>';
         print '<noscript><button id="LangButton">&#187;</button></noscript>';
         print '<input type="hidden" name="page" value="' . $page . '"/>';

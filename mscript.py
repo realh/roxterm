@@ -45,6 +45,8 @@ if ctx.mode == 'configure' or ctx.mode == 'help':
     ctx.arg_disable('translations', "Disable all translations", default = None)
     ctx.arg_disable('git', "Assume this is a release tarball: "
             "don't attempt to generate changelogs, pixmaps etc")
+    ctx.arg_enable("rox-locales",
+            "Make symlinks so ROX app can load translations")
 
 if ctx.mode == 'configure':
 
@@ -118,6 +120,7 @@ if ctx.mode == 'configure':
     if trans != False and gt != False:
         try:
             ctx.find_prog_env("xgettext")
+            ctx.find_prog_env("msgcat")
             ctx.find_prog_env("msgmerge")
             ctx.find_prog_env("msgfmt")
         except MaitchNotFoundError:
@@ -232,10 +235,14 @@ if ctx.mode == 'configure':
     ctx.define('PKG_DATA_DIR', opj(ctx.env['DATADIR'], "roxterm"))
     ctx.define('ICON_DIR',
             opj(ctx.env['DATADIR'], "icons", "hicolor", "scalable", "apps"))
-    ctx.define('LOCALE_DIR', opj(ctx.env['DATADIR'], "locale"))
     ctx.define('HTML_DIR', ctx.env['HTMLDIR'])
     ctx.setenv('htmldir', "${HTMLDIR}")
     ctx.define('BIN_DIR', ctx.env['BINDIR'])
+    if ctx.env['HAVE_GETTEXT']:
+        ctx.define('ENABLE_NLS', 1)
+    else:
+        ctx.define('ENABLE_NLS', None)
+    ctx.define_from_var('LOCALEDIR')
 
     ctx.subst_file("${TOP_DIR}/roxterm.1.xml.in",
             "${TOP_DIR}/roxterm.1.xml", True)
@@ -383,14 +390,47 @@ elif ctx.mode == 'build':
 
     # Translations (gettext)
     if ctx.env['HAVE_GETTEXT']:
-        trans_rules = StandardTranslationRules(ctx,
-                copyright_holder = "(c) 2011 Tony Houghton",
-                version = "${VERSION}",
-                bugs_addr = "${BUG_TRACKER}",
-                diffpat = '^"Project-Id-Version:',
-                use_shell = True)
+        podir = '${BUILD_DIR}/po'
+        ctx.add_rule(Rule(rule = mkdir_rule, targets = podir))
+        args = { 'copyright_holder': "(c) 2013 Tony Houghton",
+                'version': "${VERSION}",
+                'bugs_addr': "${BUG_TRACKER}",
+                'diffpat': '^"Project-Id-Version:',
+                'use_shell': True }
+        code_pot = '${BUILD_DIR}/po/code.pot'
+        glade_pot = '${BUILD_DIR}/po/glade.pot'
+        trans_rules = PoRulesFromLinguas(ctx, **args) + \
+                PotRules(ctx,
+                        targets = code_pot,
+                        deps = podir,
+                        xgettext_opts = '-C -k_ -kN_',
+                        **args)
         for r in trans_rules:
             ctx.add_rule(r)
+        ctx.add_rule(PotRule(ctx,
+                sources = '${SRC_DIR}/roxterm-config.ui',
+                targets = glade_pot,
+                deps = podir,
+                xgettext_opts = '-L Glade',
+                wdeps = "roxterm-config.ui-stamp"))
+        ctx.add_rule(Rule(sources = [code_pot, glade_pot],
+                targets = '${TOP_DIR}/po/${PACKAGE}.pot',
+                rule = '${MSGCAT} -o ${TGT} ${SRC}'))
+
+    # Symlinks so ROX can use translations
+    if ctx.env["ENABLE_ROX_LOCALES"]:
+        def add_rox_locale(ctx, l, f):
+            d = opj("locale", l, "LC_MESSAGES")
+            ctx.add_rule(Rule(rule = mkdir_rule, targets = d))
+            ctx.add_rule(Rule(rule = "ln -nfs ../../../po/%s.mo ${TGT}" % l,
+                    targets = opj(d, "roxterm.mo"),
+                    wdeps = [d, opj("po", "%s.mo" % l)]))
+
+        foreach_lingua(ctx, add_rox_locale)
+        ctx.add_rule(Rule(rule = "ln -nfs pt_BR ${TGT}",
+                targets = opj("locale", "pt"),
+                wdeps = opj("locale", "pt_BR", "LC_MESSAGES")))
+
 
     # Translations (po4a)
     linguas = parse_linguas(ctx)
@@ -439,7 +479,7 @@ elif ctx.mode == 'build':
                             use_shell = True))
                     mtarget = "po4a/%s/%s.1" % (l, m)
                     ctx.add_rule(Rule( \
-                            rule = [mkdir_rule, xmltomanrule],
+                            rule = [mk_parent_dir_rule, xmltomanrule],
                             sources = "po4a/%s.1.%s.xml" % (m, l),
                             targets = mtarget,
                             wdeps = lastmtarget,
@@ -472,7 +512,7 @@ elif ctx.mode == 'build':
                         targets = po,
                         where = NOWHERE,
                         use_shell = True))
-                ctx.add_rule(Rule(rule = [mkdir_rule,
+                ctx.add_rule(Rule(rule = [mk_parent_dir_rule,
                         "${PO4A_TRANSLATE} "
                         "${PO4ACHARSET} " \
                         "-k 0 -f xhtml -m %s " \
@@ -509,7 +549,13 @@ elif ctx.mode == "install" or ctx.mode == "uninstall":
     linguas = parse_linguas(ctx)
     if ctx.env['HAVE_GETTEXT']:
         for l in linguas:
-            ctx.install_data("po/%s.mo" % l, "${LOCALEDIR}/%s/LC_MESSAGES" % l)
+            ctx.install_data("po/%s.mo" % l,
+                    "${LOCALEDIR}/%s/LC_MESSAGES/roxterm.mo" % l,
+                    other_options = "-T")
+        ptdir = ctx.subst("${DESTDIR}/${LOCALEDIR}/pt/LC_MESSAGES")
+        ctx.ensure_out_dir(ptdir)
+        call_subprocess(["ln", "-sfn",
+                "../../pt_BR/LC_MESSAGES/roxterm.mo", ptdir])
     if ctx.env['HAVE_PO4A']:
         for l in linguas:
             if ctx.env['XMLTOMAN']:
@@ -519,6 +565,13 @@ elif ctx.mode == "install" or ctx.mode == "uninstall":
                     ctx.glob("*.html",
                     subdir = ctx.subst("${TOP_DIR}/Help/%s" % l)),
                     "${HTMLDIR}/%s" % l)
+        ptdir = ctx.subst("${DESTDIR}/${MANDIR}/pt/man1")
+        ctx.ensure_out_dir(ptdir)
+        call_subprocess(["ln", "-sfn", "../../pt_BR/man1/roxterm.1", ptdir])
+        call_subprocess(["ln", "-sfn", "../../pt_BR/man1/roxterm-config.1",
+                ptdir])
+        call_subprocess(["ln", "-sfn", "pt_BR",
+                ctx.subst("${DESTDIR}/${HTMLDIR}/pt")])
 
 elif ctx.mode == 'pristine' or ctx.mode == 'clean':
 

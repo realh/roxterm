@@ -30,7 +30,7 @@
 			</div>
 			<!-- PHP PLACEHOLDER -->
 		</div>
-		
+
 		<div id="Middle" class="clear">
 			<ol id="SubNav">
 				<li><a href="#Download">Download</a></li>
@@ -41,7 +41,7 @@
 			<div id="Content" class="partialWidth">
 				<h1>Installation</h1>
 
-				
+
 				<h2>Download <a class="pageAnchor" name="Download">:</a></h2>
 
 				<p>Visit the <a href="http://sourceforge.net/projects/roxterm">SourceForge project page</a> to download release
@@ -50,7 +50,7 @@
 				snapshot is:</p>
 
 				<p class="snippet">
-					<span>git clone git://roxterm.git.sourceforge.net/gitroot/roxterm/roxterm</span>
+					<span>git clone git://git.code.sf.net/p/roxterm/code roxterm</span>
 				</p>
 
 				<h2>Requirements <a class="pageAnchor" name="Requirements">:</a></h2>
@@ -99,8 +99,8 @@
 					<span>python ./mscript.py build</span>
 					<span>python ./mscript.py install</span>
 				</p>
-				
-				<p>Various options are available, run 
+
+				<p>Various options are available, run
 				<p class="snippet">
 					<span>python ./mscript.py help</span>
 				</p>
@@ -112,32 +112,32 @@
 
 				<p>Up-to-date official Debian packages are now available. See <a
 				href="http://packages.debian.org/roxterm">http://packages.debian.org/roxterm</a>.</p>
-				
+
 				<p>Ubuntu also has official roxterm packages, but due to
 				Ubuntu's release cycle these may lag behind the latest upstream
 				releases. Therefore I have set up a
 				<a href="https://launchpad.net/~h-realh/+archive/roxterm">PPA</a>
                 to provide the most recent releases of ROXTerm for Ubuntu's
                 current release when appropriate.</p>
-				
+
 				<p>For those that want to build their own debian packages, the debian packaging files are no
 				longer included in release tarballs, but they are included in git's master branch.
 				<a href="Download">See above</a> for details of how to fetch roxterm from git.</p>
-				
+
 				<p>If you want to build a particular version:</p>
 				<p><code>git checkout</code> <i>version</i></p>
-				
+
 				<p>For older distros which do not include packages of GTK3 etc:</p>
 				<p><code>git fetch origin lucid:lucid<br/>
 				git checkout lucid</code></p>
-				
+
 				<p>You can use <code>sudo apt-get build-dep</code> at this point, but depending on the version
 				already in your distro the set of packages may be out-of-date, so be prepared for dependency
 				errors later and install the necessary packages at that point. You should install imagemagick
 				and librsvg2-bin at this point, but these are bugged in Ubuntu Lucid (and earlier?), so before
 				building you will have to copy these files from <code>Help/lib</code> in a tarball:
 				<code>roxterm_logo.png favicon.ico logo_text.png</code>.</p>
-				
+
 			    <p>If not using a release snapshot it's a good idead to use <code>dch</code> to ensure the
 			    newest version number in <code>debian/changelog</code> has an appropriate version number eg
 			    what <code>./mscript.py configure</code> generates in the file <code>version</code>, based on
@@ -151,12 +151,12 @@
 		<div id="Footer">
 			<div id="FooterButtons">
 				<a id="SourceforgeLink" href="http://sourceforge.net/projects/roxterm" title="RoxTerm Sourceforge">
-					<img src="http://sflogo.sourceforge.net/sflogo.php?group_id=124080&amp;type=8" width="80" height="15" 
+					<img src="http://sflogo.sourceforge.net/sflogo.php?group_id=124080&amp;type=8" width="80" height="15"
 					alt="Get RoxTerm at SourceForge.net. Fast, secure and Free Open Source software downloads" />
 				</a>
-				
+
 				<br />
-				
+
 				<a id="DonationLink" class="spriteLink"  href="http://sourceforge.net/donate/index.php?group_id=124080">Donate</a>
 				<a id="ValidMarkupLink" class="spriteLink" href="http://validator.w3.org/check?uri=referer">Valid XHTML</a>
 			</div>

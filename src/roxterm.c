@@ -1118,11 +1118,9 @@ roxterm_set_show_uri_menu_items(ROXTermData * roxterm,
     set_show_uri_menu_items(multi_win_get_short_popup_menu(win), show_type);
 }
 
-static void roxterm_update_background(ROXTermData * roxterm, VteTerminal * vte)
+static double roxterm_get_config_saturation(ROXTermData *roxterm)
 {
-    char *background_file;
     double saturation = options_lookup_double(roxterm->profile, "saturation");
-    gboolean true_trans = FALSE;
 
     if (saturation == -1)
     {
@@ -1133,18 +1131,74 @@ static void roxterm_update_background(ROXTermData * roxterm, VteTerminal * vte)
         g_warning(_("Saturation option %f out of range"), saturation);
         saturation = CLAMP(saturation, 0, 1);
     }
+    return saturation;
+}
+
+#if 0
+/* Setting window background creates a worse problem than it solves:
+ * https://sourceforge.net/p/roxterm/feature-requests/57/
+ */
+static double roxterm_get_window_saturation(ROXTermData *roxterm)
+{
+
+    switch (options_lookup_int(roxterm->profile, "background_type"))
+    {
+        case 1:
+            return 0;
+        case 2:
+            return roxterm_get_config_saturation(roxterm);
+        default:
+            return 0;
+    }
+    return 0;
+}
+
+static void roxterm_apply_window_background(ROXTermData *roxterm,
+        const COLOUR_T *background, double saturation)
+{
+    GtkWindow *w = roxterm_get_toplevel(roxterm);
+    static COLOUR_T black = COLOUR_INIT_BLACK;
+
+    if (!background)
+    {
+        background =
+            colour_scheme_get_background_colour(roxterm->colour_scheme, TRUE);
+        if (!background)
+            background = &black;
+    }
+    if (w)
+    {
+#if GTK_CHECK_VERSION(3, 0, 0)
+        COLOUR_T bg = *background;
+        bg.alpha = 1.0 - saturation;
+        gtk_widget_override_background_color(GTK_WIDGET(w),
+                GTK_STATE_FLAG_NORMAL, &bg);
+#else
+        gtk_widget_modify_bg(GTK_WIDGET(w), GTK_STATE_NORMAL, background);
+#endif
+    }
+}
+#else
+#define roxterm_apply_window_background(r, b, s)
+#endif
+
+static void roxterm_update_background(ROXTermData * roxterm, VteTerminal * vte)
+{
+    char *background_file;
+    double saturation = roxterm_get_config_saturation(roxterm);
+    gboolean true_trans = FALSE;
+    COLOUR_T *bg = colour_scheme_get_background_colour(
+            roxterm->colour_scheme, FALSE);
+
 #if GTK_CHECK_VERSION(3, 0, 0) && \
         !defined HAVE_VTE_TERMINAL_SET_BACKGROUND_TINT_RGBA
-    GdkRGBA *r = colour_scheme_get_background_colour(
-            roxterm->colour_scheme, FALSE);
     GdkColor c;
-    c.red = (guint16) (r->red * 65535);
-    c.green = (guint16) (r->green * 65535);
-    c.blue = (guint16) (r->blue * 65535);
+    c.red = (guint16) (bg->red * 65535);
+    c.green = (guint16) (bg->green * 65535);
+    c.blue = (guint16) (bg->blue * 65535);
     vte_terminal_set_background_tint_color(vte, &c);
 #else
-    COLOUR_SET_VTE_TINT(vte,
-        colour_scheme_get_background_colour(roxterm->colour_scheme, FALSE));
+    COLOUR_SET_VTE_TINT(vte, bg);
 #endif
 
     switch (options_lookup_int(roxterm->profile, "background_type"))
@@ -1166,6 +1220,7 @@ static void roxterm_update_background(ROXTermData * roxterm, VteTerminal * vte)
                 vte_terminal_set_background_image(vte, NULL);
             }
             vte_terminal_set_background_transparent(vte, FALSE);
+            roxterm_apply_window_background(roxterm, bg, 0);
             if (background_file)
                 g_free(background_file);
             break;
@@ -1174,11 +1229,13 @@ static void roxterm_update_background(ROXTermData * roxterm, VteTerminal * vte)
             true_trans = multi_win_composite(roxterm_get_win(roxterm));
             vte_terminal_set_background_transparent(vte,
                     saturation < 1 && !true_trans);
+            roxterm_apply_window_background(roxterm, bg, saturation);
             break;
         default:
             saturation = 1;
             vte_terminal_set_background_image(vte, NULL);
             vte_terminal_set_background_transparent(vte, FALSE);
+            roxterm_apply_window_background(roxterm, bg, 0);
     }
     vte_terminal_set_background_saturation(vte, saturation);
     vte_terminal_set_opacity(vte, true_trans ?
@@ -1195,15 +1252,27 @@ roxterm_update_cursor_colour(ROXTermData * roxterm, VteTerminal * vte)
 static void
 roxterm_update_bold_colour(ROXTermData * roxterm, VteTerminal * vte)
 {
-    COLOUR_SET_VTE(_cursor)(vte,
-            colour_scheme_get_bold_colour(roxterm->colour_scheme, TRUE));
+    COLOUR_SET_VTE(_bold)(vte,
+            colour_scheme_get_bold_colour(roxterm->colour_scheme,
+#if GTK_CHECK_VERSION(3, 0, 0)
+            TRUE
+#else
+            FALSE
+#endif
+            ));
 }
 
 static void
 roxterm_update_dim_colour(ROXTermData * roxterm, VteTerminal * vte)
 {
-    COLOUR_SET_VTE(_cursor)(vte,
-            colour_scheme_get_dim_colour(roxterm->colour_scheme, TRUE));
+    COLOUR_SET_VTE(_dim)(vte,
+            colour_scheme_get_dim_colour(roxterm->colour_scheme,
+#if GTK_CHECK_VERSION(3, 0, 0)
+            TRUE
+#else
+            FALSE
+#endif
+            ));
 }
 
 guint16 extrapolate_chroma(guint16 bg, guint16 fg, double factor)
@@ -1227,33 +1296,11 @@ static const COLOUR_T *extrapolate_colours(const COLOUR_T *bg,
     return &ext;
 }
 
-static void roxterm_apply_window_background(ROXTermData *roxterm,
-        const COLOUR_T *background)
-{
-    GtkWindow *w = roxterm_get_toplevel(roxterm);
-    static COLOUR_T black = {0, 0, 0};
-
-    if (!background)
-    {
-        background =
-            colour_scheme_get_background_colour(roxterm->colour_scheme, TRUE);
-        if (!background)
-            background = &black;
-    }
-    if (w)
-    {
-#if GTK_CHECK_VERSION(3, 0, 0)
-        gtk_widget_override_background_color(GTK_WIDGET(w),
-                GTK_STATE_FLAG_NORMAL, background);
-#else
-        gtk_widget_modify_bg(GTK_WIDGET(w), GTK_STATE_NORMAL, background);
-#endif
-    }
-}
-
 static void
 roxterm_apply_colour_scheme(ROXTermData *roxterm, VteTerminal *vte)
 {
+    gboolean bold_dim_set = FALSE;
+    const COLOUR_T *bd = NULL;
     int ncolours = 0;
     const COLOUR_T *palette = NULL;
     const COLOUR_T *foreground =
@@ -1266,17 +1313,35 @@ roxterm_apply_colour_scheme(ROXTermData *roxterm, VteTerminal *vte)
     if (ncolours)
         palette = colour_scheme_get_palette(roxterm->colour_scheme);
     COLOUR_SET_VTE(s)(vte, foreground, background, palette, ncolours);
-    roxterm_apply_window_background(roxterm, background);
+    roxterm_apply_window_background(roxterm, background,
+            roxterm_get_window_saturation(roxterm));
     if (!ncolours && foreground && background)
     {
         COLOUR_SET_VTE(_bold)(vte,
                 extrapolate_colours(background, foreground, 1.2));
         COLOUR_SET_VTE(_dim)(vte,
                 extrapolate_colours(background, foreground, 0.7));
+        bold_dim_set = TRUE;
     }
+    bd = colour_scheme_get_bold_colour(roxterm->colour_scheme,
+#if GTK_CHECK_VERSION(3, 0, 0)
+            TRUE
+#else
+            FALSE
+#endif
+            );
+    if (bd || !bold_dim_set)
+        COLOUR_SET_VTE(_bold)(vte, bd);
+    bd = colour_scheme_get_dim_colour(roxterm->colour_scheme,
+#if GTK_CHECK_VERSION(3, 0, 0)
+            TRUE
+#else
+            FALSE
+#endif
+            );
+    if (bd || !bold_dim_set)
+        COLOUR_SET_VTE(_dim)(vte, bd);
     roxterm_update_cursor_colour(roxterm, vte);
-    roxterm_update_bold_colour(roxterm, vte);
-    roxterm_update_dim_colour(roxterm, vte);
     roxterm_force_redraw(roxterm);
 }
 
@@ -1950,10 +2015,13 @@ static void roxterm_tab_selection_handler(ROXTermData * roxterm, MultiTab * tab)
 
     /* Creation of im submenus deferred to this point because vte
      * widget must be realized first */
-    create_im_submenus(roxterm, vte);
-    menutree_attach_im_submenu(popup_menu, roxterm->im_submenu1);
-    menutree_attach_im_submenu(menu_bar, roxterm->im_submenu2);
-    menutree_attach_im_submenu(short_popup, roxterm->im_submenu3);
+    if (!roxterm->im_submenu1)
+    {
+        create_im_submenus(roxterm, vte);
+        menutree_attach_im_submenu(popup_menu, roxterm->im_submenu1);
+        menutree_attach_im_submenu(menu_bar, roxterm->im_submenu2);
+        menutree_attach_im_submenu(short_popup, roxterm->im_submenu3);
+    }
 
     multi_win_set_ignore_toggles(win, TRUE);
     if (!roxterm->setup_encodings)
@@ -1975,7 +2043,8 @@ static void roxterm_tab_selection_handler(ROXTermData * roxterm, MultiTab * tab)
     menutree_select_encoding(short_popup, roxterm->encoding);
     multi_win_set_ignore_toggles(win, FALSE);
 
-    roxterm_apply_window_background(roxterm, NULL);
+    roxterm_apply_window_background(roxterm, NULL,
+            roxterm_get_window_saturation(roxterm));
 }
 
 static gboolean run_child_when_idle(ROXTermData *roxterm)
@@ -3730,12 +3799,24 @@ static gboolean roxterm_update_colour_option(Options *scheme, const char *key,
     }
     else if (!strcmp(key, "bold"))
     {
-        old_colour = colour_scheme_get_bold_colour(scheme, TRUE);
+        old_colour = colour_scheme_get_bold_colour(scheme,
+#if GTK_CHECK_VERSION(3, 0, 0)
+            TRUE
+#else
+            FALSE
+#endif
+            );
         setter = colour_scheme_set_bold_colour;
     }
     else if (!strcmp(key, "dim"))
     {
-        old_colour = colour_scheme_get_dim_colour(scheme, TRUE);
+        old_colour = colour_scheme_get_dim_colour(scheme,
+#if GTK_CHECK_VERSION(3, 0, 0)
+            TRUE
+#else
+            FALSE
+#endif
+            );
         setter = colour_scheme_set_dim_colour;
     }
     else
@@ -4352,10 +4433,25 @@ void roxterm_launch(const char *display_name, char **env)
                 if (!wtitle)
                     break;
             }
-            if (x11support_get_wm_desktop(gtk_widget_get_window(w), &workspace)
-                    && (int) workspace == global_options_workspace)
+            if (!focused)
             {
-                focused = win;
+                if (x11support_get_wm_desktop(gtk_widget_get_window(w),
+                    &workspace))
+                {
+                    if ((int) workspace == global_options_workspace)
+                        focused = win;
+                }
+                else
+                {
+                    /* There is a window but it hasn't made it onto workspace
+                     * yet. This should only happen in things like start-up
+                     * scripts so we should treat it as a workspace match. See
+       * https://sourceforge.net/p/roxterm/discussion/422639/thread/09ff8e98/
+                     * and
+       * https://sourceforge.net/p/roxterm/discussion/422638/thread/2cc9a9aa/
+                     */
+                    focused = win;
+                }
             }
             win = NULL;
         }

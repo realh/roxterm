@@ -330,7 +330,9 @@ int main(int argc, char **argv)
 #if ENABLE_NLS
     setlocale(LC_ALL, "");
     bindtextdomain(PACKAGE, global_options_appdir ?
-            g_strdup_printf("%s/locale", global_options_appdir) : LOCALEDIR);
+            g_strdup_printf("%s/build/locale", global_options_appdir) :
+            LOCALEDIR);
+    bind_textdomain_codeset(PACKAGE, "UTF-8");
     textdomain(PACKAGE);
 #endif
 

@@ -3,13 +3,14 @@
 # This file is distributed under the same license as the roxterm package.
 # 
 # Translators:
-#   <shorterfire@gmail.com>, 2012.
+# salmora8 <shorterfire@gmail.com>, 2013
+# salmora8 <shorterfire@gmail.com>, 2012
 msgid ""
 msgstr ""
 "Project-Id-Version: roxterm\n"
 "Report-Msgid-Bugs-To: https://sourceforge.net/tracker/?group_id=124080\n"
-"POT-Creation-Date: 2013-03-18 14:12+0000\n"
-"PO-Revision-Date: 2012-09-27 01:33+0000\n"
+"POT-Creation-Date: 2013-04-01 21:30+0200\n"
+"PO-Revision-Date: 2013-04-05 06:15+0000\n"
 "Last-Translator: salmora8 <shorterfire@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/roxterm/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
@@ -102,10 +103,8 @@ msgstr "Visite a <a href=\"http://sourceforge.net/projects/roxterm\">página do 
 
 #. type: Content of: <html><body><div><div><div><p>
 #: ../Help/en/installation.html:53
-msgid ""
-"<span>git clone "
-"git://roxterm.git.sourceforge.net/gitroot/roxterm/roxterm</span>"
-msgstr "<span>git clone git://roxterm.git.sourceforge.net/gitroot/roxterm/roxterm</span>"
+msgid "<span>git clone git://git.code.sf.net/p/roxterm/code roxterm</span>"
+msgstr "<span>git clone git://git.code.sf.net/p/roxterm/code roxterm</span>"
 
 #. type: Content of: <html><body><div><div><div><h2>
 #: ../Help/en/installation.html:56
@@ -120,7 +119,7 @@ msgid ""
 "of glib and GTK+ 2.18. You will also need vte/libvte (at least version "
 "0.20), a Gnome component; most distros package separate versions for GTK+2 "
 "and GTK+3.  D-BUS is also required (see below)."
-msgstr "Você precisa das bibliotecas GTK+2 que é praticamente o padrão em todos os derivados Unix livres atuais. e/ou GTK+3. Se necessita pelo menos da versão 2.16 do glib e GTK+ 2.18. Você também vai precisar do vte/libvte (pelo menos na versão 0.20), um componente Gnome, maioria das distribuições empacotam as versões de GTK+2 e GTK+3 de forma separada. D-BUS também é necessário (veja abaixo)."
+msgstr "Você precisa das bibliotecas GTK+2 que é praticamente o padrão em todos os derivados Unix livres atuais, e/ou GTK+3. Se necessita pelo menos da versão 2.16 do glib e GTK+ 2.18. Você também vai precisar do vte/libvte (pelo menos na versão 0.20), um componente Gnome, maioria das distribuições empacotam as versões de GTK+2 e GTK+3 de forma separada. D-BUS também é necessário (veja abaixo)."
 
 #. type: Content of: <html><body><div><div><div><p>
 #: ../Help/en/installation.html:65
@@ -135,7 +134,7 @@ msgstr "Para compilar ROXTerm você precisara dos arquivos de cabeçalho para as
 msgid ""
 "ROXTerm uses a new, bespoke build system called maitch. This requires python"
 " and the python 'lockfile' module."
-msgstr "ROXTerm usa um novo sistema de compilação, sob medida chamo maitch. Isso requer python e o o módulo \"lockfile\" de python."
+msgstr "ROXTerm usa um novo sistema de compilação, sob medida chamada maitch. Isso requer python e o o módulo \"lockfile\" de python."
 
 #. type: Content of: <html><body><div><div><div><h3>
 #: ../Help/en/installation.html:72
@@ -279,7 +278,7 @@ msgid ""
 "this point, but these are bugged in Ubuntu Lucid (and earlier?), so before "
 "building you will have to copy these files from <code>Help/lib</code> in a "
 "tarball: <code>roxterm_logo.png favicon.ico logo_text.png</code>."
-msgstr "Você pode utilizar <code>sudo apt-get build-dep</code> neste ponto, mas dependendo da versão em sua distribuição os pacotes podem estar desatualizados, para estar preparado para erros de dependências posteriores, instale os pacotes necessários a esse ponto. Você deve instalar imagemagick e librsvg2-bin agora, mas esses são bugados no Ubunto Lucid (e anteriores?), então antes de compilar você pode ter uma copia desses arquivos a partir de <code>Help/lib</code> em arquivo tar:<code>roxterm_logo.png favicon.ico logo_text.png</code>."
+msgstr "Você pode utilizar <code>sudo apt-get build-dep</code> neste ponto, mas dependendo da versão em sua distribuição os pacotes podem estar desatualizados, para estar preparado para erros de dependências posteriores, instale os pacotes necessários a esse ponto. Você deve instalar imagemagick e librsvg2-bin agora, mas esses estão bugados no Ubunto Lucid (e anteriores?), então antes de compilar você pode ter uma copia desses arquivos a partir de <code>Help/lib</code> em arquivo tar:<code>roxterm_logo.png favicon.ico logo_text.png</code>."
 
 #. type: Content of: <html><body><div><div><div><p>
 #: ../Help/en/installation.html:141

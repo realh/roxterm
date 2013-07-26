@@ -755,7 +755,7 @@ static void profilegui_fill_in_dialog(ProfileGUI * pg)
     capplet_set_boolean_toggle(&pg->capp, "file_as_dir", TRUE);
     capplet_set_boolean_toggle(&pg->capp, "match_plain_files", FALSE);
     capplet_set_spin_button(&pg->capp, "width", 80);
-    capplet_set_spin_button(&pg->capp, "height", 25);
+    capplet_set_spin_button(&pg->capp, "height", 24);
     capplet_set_radio(&pg->capp, "background_type", 0);
     on_cell_size_toggled(GTK_TOGGLE_BUTTON(profilegui_widget(pg, "cell_size")),
             pg);
