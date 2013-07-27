@@ -1377,7 +1377,7 @@ class Rule(object):
                     Rule.dir_lock.wait()
                 #dprint("%s woke up to use dir '%s'" % (str(self), self.dir))
                 if Rule.cwd:
-                    mprint('make[0]: Leaving directory "%s"' % self.dir)
+                    mprint('make[0]: Leaving directory "%s"' % Rule.cwd)
                 if self.dir:
                     dir_ = self.dir
                     self.ctx.ensure_out_dir(dir_)
