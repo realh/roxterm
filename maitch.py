@@ -2385,16 +2385,18 @@ def add_var(name, default = "", desc = "", as_arg = False):
 
 _prog_var_repository = {}
 
-def add_prog(var, prog):
-    global _prog_var_repository
-    _prog_var_repository[var] = prog
-
 
 def find_prog_by_var(var):
+    global _prog_var_repository
     p = _prog_var_repository.get(var)
     if not p:
         p = var_to_s(var)
-    return find_prog(p)
+        try:
+            p = find_prog(p)
+        except:
+            mprint("Warning: Program '%s' not found" % p, file = sys.stderr)
+        _prog_var_repository[var] = p
+    return p
 
 
 def s_to_var(s):
