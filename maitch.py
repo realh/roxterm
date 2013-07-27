@@ -159,8 +159,8 @@ class Context(object):
         Useful attributes:
 
         env: context's variables
-        mode: mode of build, one of "configure", "build", "install" or "dist";
-                taken from sys.argv[1]
+        mode: mode of build, one of "configure", "build", "install", "dist"
+                or "zip"; taken from sys.argv[1]
         build_dir, src_dir, top_dir: Expanded versions of above variables. Bear
                 in mind that these are expanded before you have a chance to add
                 any vars to env after constructing the ctx:- they may refer to
@@ -188,14 +188,14 @@ class Context(object):
             self.mode = sys.argv[1]
             if not self.mode in \
                     "help configure reconfigure build dist install uninstall " \
-                    "clean pristine".split():
+                    "clean pristine zip".split():
                 self.mode = 'help'
         if self.mode == 'help':
             ms = os.path.basename(sys.argv[0])
             mprint("Help for maitch:\nUSAGE:")
             for m in ["help", "configure", "reconfigure",
                     "build [TARGETS]", "install", "uninstall",
-                    "clean", "pristine", "dist"]:
+                    "clean", "pristine", "dist", "zip"]:
                 mprint("  python %s %s" % (ms, m))
             mprint("""
 Further variables may be set after the mode argument in the form VAR=value, or
@@ -239,6 +239,12 @@ Other predefined variables [default values shown in squarer brackets]:
                         80, 8, 0)
             self.showed_var_header = False
             return
+
+        elif self.mode == 'zip':
+            self.mode = 'dist'
+            self.dist_as_zip = True
+        else:
+            self.dist_as_zip = False
 
         self.env = {}
 
@@ -572,7 +578,7 @@ Other predefined variables [default values shown in squarer brackets]:
         ${BUILD_DIR}). subdir, if given, is preserved at the start of each
         filename. expand is whether to use the substituted/expanded version
         of dir in the output. If not given/None it's True in all modes except
-        dist. """
+        dist and zip. """
         if expand == None:
             expand = self.mode != "dist"
         if dir:
@@ -646,13 +652,24 @@ Other predefined variables [default values shown in squarer brackets]:
 
 
     def make_tarball(self):
-        import tarfile
+        if self.dist_as_zip:
+            import zipfile
+            suffix = "zip"
+            zname = "zip archive"
+        else:
+            import tarfile
+            suffix = "tar.bz2"
+            zname = "tarball"
         basedir = self.subst("${PACKAGE}-${VERSION}")
         filename = os.path.abspath(
-                self.subst("${BUILD_DIR}/%s.tar.bz2" % basedir))
-        mprint("Creating tarball '%s'" % filename)
-        tar = tarfile.open(filename, 'w:bz2')
+                self.subst("${BUILD_DIR}/%s.%s" % (basedir, suffix)))
+        mprint("Creating %s '%s'" % (zname, filename))
+        if self.dist_as_zip:
+            tar = zipfile.ZipFile(filename, 'w', zipfile.ZIP_DEFLATED)
+        else:
+            tar = tarfile.open(filename, 'w:bz2')
         for f, kwargs in self.tar_contents:
+            f = self.subst(f)
             kwargs = dict(kwargs)
             dest = kwargs.get('arcname')
             if dest:
@@ -660,8 +677,11 @@ Other predefined variables [default values shown in squarer brackets]:
             else:
                 dest = os.path.normpath(opj(basedir, f))
             kwargs['arcname'] = dest
-            mprint("Adding '%s' to tarball" % dest)
-            tar.add(self.subst(f), **kwargs)
+            mprint("Adding '%s' to %s" % (dest, zname))
+            if self.dist_as_zip:
+                tar.write(f, **kwargs)
+            else:
+                tar.add(f, **kwargs)
         tar.close()
 
 
