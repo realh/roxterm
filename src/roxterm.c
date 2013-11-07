@@ -110,7 +110,6 @@ struct ROXTermData {
     GtkWidget *replace_task_dialog;
     gboolean postponed_free;
     PangoFontDescription *pango_desc;
-    gboolean setup_encodings;
     gboolean dont_lookup_dimensions;
     char *reply;
     int columns, rows;
@@ -403,7 +402,6 @@ static ROXTermData *roxterm_data_clone(ROXTermData *old_gt)
     new_gt->tab = NULL;
     new_gt->running = FALSE;
     new_gt->postponed_free = FALSE;
-    new_gt->setup_encodings = FALSE;
     new_gt->dont_lookup_dimensions = FALSE;
     new_gt->actual_commandv = NULL;
     new_gt->env = roxterm_strv_copy(old_gt->env);
@@ -2024,7 +2022,7 @@ static void roxterm_tab_selection_handler(ROXTermData * roxterm, MultiTab * tab)
     }
 
     multi_win_set_ignore_toggles(win, TRUE);
-    if (!roxterm->setup_encodings)
+    if (!popup_menu->encodings)
     {
         char const **encodings = roxterm_list_encodings();
 
@@ -2036,7 +2034,6 @@ static void roxterm_tab_selection_handler(ROXTermData * roxterm, MultiTab * tab)
                 encodings, roxterm_encoding_toggled);
         if (encodings)
             g_free(encodings);
-        roxterm->setup_encodings = TRUE;
     }
     menutree_select_encoding(popup_menu, roxterm->encoding);
     menutree_select_encoding(menu_bar, roxterm->encoding);

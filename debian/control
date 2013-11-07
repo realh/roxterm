@@ -18,7 +18,7 @@ Architecture: all
 Depends: ${misc:Depends}
 Replaces: roxterm (<< 2.0.0-1)
 Breaks: roxterm (<< 2.0.0-1)
-Recommends: roxterm-gtk3 | roxterm-gtk2, openssh-client
+Recommends: roxterm-gtk3 | roxterm-gtk2, openssh-client, dbus-x11
 Description: Multi-tabbed GTK+/VTE terminal emulator - common files
  ROXTerm is a terminal emulator based on the VTE library. It was originally
  intended to be a lightweight alternative to gnome-terminal, but its role has
