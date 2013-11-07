@@ -55,6 +55,30 @@ Description: Multi-tabbed GTK+/VTE terminal emulator - GTK2 version
  This package provides the GTK+2 version of the binaries. The roxterm-gtk3
  package provides a GTK+3 version.
 
+Package: roxterm-gtk3-dbg
+Architecture: any
+Depends: roxterm-gtk3 (= ${binary:Version}), ${misc:Depends}
+Section: debug
+Priority: extra
+Description: Debugging symbols for GTK3 version of roxterm
+ ROXTerm is a terminal emulator based on the VTE library. It was originally
+ intended to be a lightweight alternative to gnome-terminal, but its role has
+ shifted to providing a richer range of features for power users.
+ .
+ This package provides debugging symbols for the GTK+3 version of roxterm.
+
+Package: roxterm-gtk2-dbg
+Architecture: any
+Depends: roxterm-gtk2 (= ${binary:Version}), ${misc:Depends}
+Section: debug
+Priority: extra
+Description: Debugging symbols for GTK2 version of roxterm
+ ROXTerm is a terminal emulator based on the VTE library. It was originally
+ intended to be a lightweight alternative to gnome-terminal, but its role has
+ shifted to providing a richer range of features for power users.
+ .
+ This package provides debugging symbols for the GTK+2 version of roxterm.
+
 Package: roxterm
 Architecture: all
 Depends: ${misc:Depends}, roxterm-gtk3 (>= ${source:Version})
