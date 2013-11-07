@@ -89,8 +89,6 @@ struct ROXTermData {
     char *directory;            /* Copied from global_options_directory */
     GArray *match_map;
     gboolean no_respawn;
-    GtkWidget *im_submenu1, *im_submenu2, *im_submenu3;
-            /* Input Methods submenus; one each for popups and menu bar */
     gboolean running;
     DragReceiveData *drd;
 
@@ -439,8 +437,6 @@ static ROXTermData *roxterm_data_clone(ROXTermData *old_gt)
         new_gt->encoding = g_strdup(old_gt->encoding);
     if (old_gt->display_name)
         new_gt->display_name = g_strdup(old_gt->display_name);
-
-    new_gt->im_submenu1 = new_gt->im_submenu2 = new_gt->im_submenu3 = NULL;
 
     new_gt->match_map = g_array_new(FALSE, FALSE, sizeof(ROXTerm_MatchMap));
     new_gt->matched_url = NULL;
@@ -1048,18 +1044,6 @@ static void roxterm_data_delete(ROXTermData *roxterm)
     {
         UNREF_LOG(dynamic_options_unref(roxterm_profiles,
                 options_get_leafname(roxterm->profile)));
-    }
-    if (roxterm->im_submenu1)
-    {
-        UNREF_LOG(g_object_unref(roxterm->im_submenu1));
-    }
-    if (roxterm->im_submenu2)
-    {
-        UNREF_LOG(g_object_unref(roxterm->im_submenu2));
-    }
-    if (roxterm->im_submenu3)
-    {
-        UNREF_LOG(g_object_unref(roxterm->im_submenu3));
     }
     drag_receive_data_delete(roxterm->drd);
     if (roxterm->actual_commandv != roxterm->commandv)
@@ -1939,33 +1923,6 @@ static void check_preferences_submenu_pair(ROXTermData *roxterm, MenuTreeID id,
     multi_win_set_ignore_toggles(win, FALSE);
 }
 
-static void create_im_submenus(ROXTermData *roxterm, VteTerminal *vte)
-{
-    /* Need to create extra refs for IM submenus because they get removed
-     * from parent menus when switching tabs */
-    if (!roxterm->im_submenu1)
-    {
-        roxterm->im_submenu1 = gtk_menu_new();
-        g_object_ref(roxterm->im_submenu1);
-        vte_terminal_im_append_menuitems(vte,
-                GTK_MENU_SHELL(roxterm->im_submenu1));
-    }
-    if (!roxterm->im_submenu2)
-    {
-        roxterm->im_submenu2 = gtk_menu_new();
-        g_object_ref(roxterm->im_submenu2);
-        vte_terminal_im_append_menuitems(vte,
-                GTK_MENU_SHELL(roxterm->im_submenu2));
-    }
-    if (!roxterm->im_submenu3)
-    {
-        roxterm->im_submenu3 = gtk_menu_new();
-        g_object_ref(roxterm->im_submenu3);
-        vte_terminal_im_append_menuitems(vte,
-                GTK_MENU_SHELL(roxterm->im_submenu3));
-    }
-}
-
 #ifdef HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX
 inline static void roxterm_shade_mtree_search_items(MenuTree *mtree,
         gboolean shade)
@@ -2010,16 +1967,6 @@ static void roxterm_tab_selection_handler(ROXTermData * roxterm, MultiTab * tab)
 #ifdef HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX
     roxterm_shade_search_menu_items(roxterm);
 #endif
-
-    /* Creation of im submenus deferred to this point because vte
-     * widget must be realized first */
-    if (!roxterm->im_submenu1)
-    {
-        create_im_submenus(roxterm, vte);
-        menutree_attach_im_submenu(popup_menu, roxterm->im_submenu1);
-        menutree_attach_im_submenu(menu_bar, roxterm->im_submenu2);
-        menutree_attach_im_submenu(short_popup, roxterm->im_submenu3);
-    }
 
     multi_win_set_ignore_toggles(win, TRUE);
     if (!popup_menu->encodings)

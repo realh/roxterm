@@ -232,8 +232,7 @@ static void menutree_build_shell(MenuTree *menu_tree, GtkMenuShell * shell, ...)
         _("Show Menu_bar"), MENUTREE_VIEW_SHOW_MENUBAR
 
 #define ENC_INPUT_ITEMS \
-        _("C_haracter Encoding"), MENUTREE_PREFERENCES_CHARACTER_ENCODING, \
-        _("_Input Methods"), MENUTREE_PREFERENCES_INPUT_METHODS
+        _("C_haracter Encoding"), MENUTREE_PREFERENCES_CHARACTER_ENCODING
 
 GtkMenu *menutree_submenu_from_id(MenuTree *mtree, MenuTreeID id)
 {
@@ -956,23 +955,6 @@ void menutree_set_show_item(MenuTree * tree, MenuTreeID id, gboolean show)
         gtk_widget_show(item);
     else
         gtk_widget_hide(item);
-}
-
-void menutree_attach_im_submenu(MenuTree *tree, GtkWidget *submenu)
-{
-    GtkMenuItem *item = GTK_MENU_ITEM(tree->item_widgets
-            [MENUTREE_PREFERENCES_INPUT_METHODS]);
-    GtkWidget *oldsub = gtk_menu_item_get_submenu(item);
-    GtkMenu *smm = GTK_MENU(submenu);
-
-    if (oldsub == submenu)
-        return;
-    if (oldsub)
-        gtk_menu_item_set_submenu(item, NULL);
-    if (gtk_menu_get_attach_widget(smm))
-        gtk_menu_detach(smm);
-    if (oldsub != submenu)
-        gtk_menu_item_set_submenu(item, submenu);
 }
 
 void menutree_disable_shortcuts(MenuTree *tree, gboolean disable)
