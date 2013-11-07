@@ -1923,8 +1923,8 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="has_tooltip">True</property>
-                                    <property name="tooltip_markup">The title string may include &amp;apos;%s&amp;apos; which is substituted with the contents of the current tab&amp;apos;s label. No other % characters or sequences are permitted except &amp;apos;%%&amp;apos; which is displayed as a single %.</property>
-                                    <property name="tooltip_text" translatable="yes">The title string may include &apos;%s&apos; which is substituted with the contents of the current tab's label. No other % characters or sequences are permitted except '%%' which is displayed as a single %.</property>
+                                    <property name="tooltip_markup">The title string may include &amp;apos;%s&amp;apos; which is substituted with the contents of the current tab&amp;apos;s label. No other % characters or sequences are permitted except &apos;%%&apos; which is displayed as a single %.</property>
+                                    <property name="tooltip_text" translatable="yes">The title string may include &apos;%s&apos; which is substituted with the contents of the current tab&apos;s label. No other % characters or sequences are permitted except &apos;%%&apos; which is displayed as a single %.</property>
                                     <property name="invisible_char">●</property>
                                     <property name="invisible_char_set">True</property>
                                     <property name="primary_icon_activatable">False</property>
@@ -4406,7 +4406,7 @@
                                   <object class="GtkEntry" id="title_string">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
-                                    <property name="tooltip_text" translatable="yes">The title string may include '%s' which is substituted with the title set by the child command (usually the current directory for shells). No other % characters or sequences are permitted except '%%' which is displayed as a single %.</property>
+                                    <property name="tooltip_text" translatable="yes">The title string may include &apos;%s&apos; which is substituted with the title set by the child command (usually the current directory for shells). No other % characters or sequences are permitted except &apos;%%&apos; which is displayed as a single %.</property>
                                     <property name="invisible_char">●</property>
                                     <property name="primary_icon_activatable">False</property>
                                     <property name="secondary_icon_activatable">False</property>
