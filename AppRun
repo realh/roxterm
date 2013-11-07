@@ -37,7 +37,8 @@ case $1 in
         DBGENV='G_SLICE=always-malloc'
         ;;
     --leaks) shift ;
-        DEBUGGER="valgrind --freelist-vol=50000000 --leak-check=yes"
+        DEBUGGER="valgrind --freelist-vol=50000000 "
+        DEBUGGER="$DEBUGGER --leak-check=full --num-callers=80"
         DBGENV='G_SLICE=always-malloc'
         ;;
     --compile)
