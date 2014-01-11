@@ -145,7 +145,7 @@ static void search_save_completion(void)
         char *pattern;
         char *line;
 
-        gtk_tree_model_get(search_data.model, &iter, 0, &pattern);
+        gtk_tree_model_get(search_data.model, &iter, 0, &pattern, -1);
         line = g_strdup_printf("%s\n", pattern);
         switch (g_io_channel_write_chars(ioc, line, -1, NULL, &error))
         {
