@@ -43,6 +43,8 @@ if ctx.mode == 'configure' or ctx.mode == 'help':
     ctx.arg_disable('po4a', "Disable translation of documentation with po4a",
             default = None)
     ctx.arg_disable('translations', "Disable all translations", default = None)
+    ctx.arg_disable('nls', "Disable all translations (same as --disable-nls)",
+            default = None)
     ctx.arg_disable('git', "Assume this is a release tarball: "
             "don't attempt to generate changelogs, pixmaps etc")
     ctx.arg_enable("rox-locales",
@@ -116,7 +118,7 @@ if ctx.mode == 'configure':
 
     gt = ctx.env['ENABLE_GETTEXT']
     po4a = ctx.env['ENABLE_PO4A']
-    trans = ctx.env['ENABLE_TRANSLATIONS']
+    trans = ctx.env['ENABLE_TRANSLATIONS'] and ctx.env['ENABLE_NLS']
     if trans != False and gt != False:
         try:
             ctx.find_prog_env("xgettext")
