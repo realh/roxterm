@@ -1,9 +1,13 @@
-roxterm (2.7.2.1-1) UNRELEASED; urgency=low
+roxterm (2.8.0-1) UNRELEASED; urgency=low
 
   * Added dbg packages.
   * Recommends: dbus-x11.
+  * New upstream version:
+    + Fixed crashes/warnings when searching terminals.
+    + More memory leak fixes in menus.
+    + Don't support terminal background options deprecated by vte.
 
- -- Tony Houghton <h@realh.co.uk>  Tue, 05 Nov 2013 17:08:31 +0000
+ -- Tony Houghton <h@realh.co.uk>  Tue, 14 Jan 2014 17:50:48 +0000
 
 roxterm (2.7.2-1) unstable; urgency=low
 

@@ -179,6 +179,8 @@ if ctx.mode == 'configure':
         try:
             ctx.pkg_config('gtk+-3.0', 'GTK')
             ctx.pkg_config('vte-2.90', 'VTE')
+            vte_version = ctx.prog_output("${PKG_CONFIG} --modversion vte-2.90")
+            ctx.setenv('VTE_BACKGROUND_DEPRECATED', vte_version >= "0.34.8")
         except MaitchChildError:
             if gtk3 == True:
                 raise
@@ -188,6 +190,7 @@ if ctx.mode == 'configure':
     if not gtk3:
         ctx.pkg_config('gtk+-2.0', 'GTK', '2.18')
         ctx.pkg_config('vte', 'VTE', '0.20')
+        ctx.setenv['VTE_BACKGROUND_DEPRECATED', 0]
 
     sm = ctx.env['ENABLE_SM']
     if sm != False:
@@ -245,6 +248,8 @@ if ctx.mode == 'configure':
     else:
         ctx.define('ENABLE_NLS', None)
     ctx.define_from_var('LOCALEDIR')
+
+    ctx.define_from_var('VTE_BACKGROUND_DEPRECATED')
 
     ctx.subst_file("${TOP_DIR}/roxterm.1.xml.in",
             "${TOP_DIR}/roxterm.1.xml", True)

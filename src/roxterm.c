@@ -1100,6 +1100,7 @@ roxterm_set_show_uri_menu_items(ROXTermData * roxterm,
     set_show_uri_menu_items(multi_win_get_short_popup_menu(win), show_type);
 }
 
+#if !VTE_BACKGROUND_DEPRECATED
 static double roxterm_get_config_saturation(ROXTermData *roxterm)
 {
     double saturation = options_lookup_double(roxterm->profile, "saturation");
@@ -1115,6 +1116,7 @@ static double roxterm_get_config_saturation(ROXTermData *roxterm)
     }
     return saturation;
 }
+#endif
 
 #if 0
 /* Setting window background creates a worse problem than it solves:
@@ -1164,6 +1166,7 @@ static void roxterm_apply_window_background(ROXTermData *roxterm,
 #define roxterm_apply_window_background(r, b, s)
 #endif
 
+#if !VTE_BACKGROUND_DEPRECATED
 static void roxterm_update_background(ROXTermData * roxterm, VteTerminal * vte)
 {
     char *background_file;
@@ -1223,6 +1226,7 @@ static void roxterm_update_background(ROXTermData * roxterm, VteTerminal * vte)
     vte_terminal_set_opacity(vte, true_trans ?
             (guint16) (0xffff * (1 - saturation)) : 0xffff);
 }
+#endif
 
 static void
 roxterm_update_cursor_colour(ROXTermData * roxterm, VteTerminal * vte)
@@ -2883,7 +2887,7 @@ static void roxterm_connect_menu_signals(MultiWin * win)
     roxterm_add_all_pref_submenus(win);
 }
 
-#if HAVE_COMPOSITE
+#if HAVE_COMPOSITE && !VTE_BACKGROUND_DEPRECATED
 static void roxterm_composited_changed_handler(VteTerminal *vte,
         ROXTermData *roxterm)
 {
@@ -2932,7 +2936,7 @@ static void roxterm_connect_misc_signals(ROXTermData * roxterm)
             G_CALLBACK(roxterm_text_changed_handler), roxterm);
     g_signal_connect(roxterm->widget, "resize-window",
             G_CALLBACK(roxterm_resize_window_handler), roxterm);
-#if HAVE_COMPOSITE
+#if HAVE_COMPOSITE && !VTE_BACKGROUND_DEPRECATED
     g_signal_connect(roxterm->widget, "composited-changed",
             G_CALLBACK(roxterm_composited_changed_handler), roxterm);
 #endif
@@ -3210,7 +3214,9 @@ static void roxterm_apply_profile(ROXTermData *roxterm, VteTerminal *vte,
     roxterm_update_cursor_shape(roxterm, vte);
 
     roxterm_apply_colour_scheme(roxterm, vte);
+#if !VTE_BACKGROUND_DEPRECATED
     roxterm_update_background(roxterm, vte);
+#endif
 
     roxterm_update_font(roxterm, vte, update_geometry);
 
@@ -3600,6 +3606,7 @@ static void roxterm_reflect_profile_change(Options * profile, const char *key)
                     options_lookup_int(roxterm->profile, "full_screen"));
             apply_to_win = TRUE;
         }
+#if !VTE_BACKGROUND_DEPRECATED
         else if (!strcmp(key, "background_img")
                 || !strcmp(key, "background_type")
                 || !strcmp(key, "scroll_background")
@@ -3607,6 +3614,7 @@ static void roxterm_reflect_profile_change(Options * profile, const char *key)
         {
             roxterm_update_background(roxterm, vte);
         }
+#endif
         else if (!strcmp(key, "scrollback_lines"))
         {
             roxterm_set_scrollback_lines(roxterm, vte);
