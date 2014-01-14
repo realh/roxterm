@@ -1948,7 +1948,6 @@ static void roxterm_shade_search_menu_items(ROXTermData *roxterm)
 static void roxterm_tab_selection_handler(ROXTermData * roxterm, MultiTab * tab)
 {
     MultiWin *win = roxterm_get_win(roxterm);
-    VteTerminal *vte = VTE_TERMINAL(roxterm->widget);
     MenuTree *menu_bar = multi_win_get_menu_bar(win);
     MenuTree *popup_menu = multi_win_get_popup_menu(win);
     MenuTree *short_popup = multi_win_get_short_popup_menu(win);
@@ -3164,9 +3163,10 @@ static void roxterm_apply_show_resize_grip(ROXTermData *roxterm)
 
     if (w)
     {
-        gtk_window_set_has_resize_grip(w,
-                options_lookup_int_with_default(roxterm->profile,
-                        "show_resize_grip", TRUE));
+        int grip =  options_lookup_int_with_default(roxterm->profile,
+                        "show_resize_grip", TRUE);
+        gtk_window_set_has_resize_grip(w, grip);
+        g_debug("Set resize grip: %d", grip);
     }
 }
 #endif
@@ -3330,6 +3330,15 @@ roxterm_tab_received(GtkWidget *rcvd_widget, ROXTermData *roxterm)
     }
 }
 
+inline static GtkAdjustment *roxterm_get_vte_adjustment(VteTerminal *vte)
+{
+#if VTE_CHECK_VERSION(0, 28, 0)
+    return gtk_scrollable_get_vadjustment(GTK_SCROLLABLE(vte));
+#else
+    return vte_terminal_get_adjustment(vte);
+#endif
+}
+
 static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
     ROXTermData * roxterm_template, ROXTermData ** roxterm_out,
     GtkWidget ** vte_widget, GtkAdjustment **adjustment)
@@ -3369,7 +3378,7 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
     if (vte_widget)
         *vte_widget = roxterm->widget;
     if (adjustment)
-        *adjustment = vte_terminal_get_adjustment(vte);
+        *adjustment = roxterm_get_vte_adjustment(vte);
 
     scrollbar_pos = multi_win_set_scroll_bar_position(win,
         options_lookup_int_with_default(roxterm_template->profile,
@@ -3381,7 +3390,7 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
 
         roxterm->scrollbar =
                 gtk_scrollbar_new(GTK_ORIENTATION_VERTICAL,
-                        vte_terminal_get_adjustment(vte));
+                        roxterm_get_vte_adjustment(vte));
         if (scrollbar_pos == MultiWinScrollBar_Left)
         {
             gtk_grid_attach(grid, roxterm->scrollbar, 0, 0, 1, 1);
@@ -3399,7 +3408,7 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
 #else
         roxterm->hbox = gtk_hbox_new(FALSE, 0);
         roxterm->scrollbar =
-                gtk_vscrollbar_new(vte_terminal_get_adjustment(vte));
+                gtk_vscrollbar_new(roxterm_get_vte_adjustment(vte));
         if (scrollbar_pos == MultiWinScrollBar_Left)
         {
             gtk_box_pack_end(GTK_BOX(roxterm->hbox), roxterm->widget,
