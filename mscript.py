@@ -190,7 +190,7 @@ if ctx.mode == 'configure':
     if not gtk3:
         ctx.pkg_config('gtk+-2.0', 'GTK', '2.18')
         ctx.pkg_config('vte', 'VTE', '0.20')
-        ctx.setenv['VTE_BACKGROUND_DEPRECATED', 0]
+        ctx.setenv('VTE_BACKGROUND_DEPRECATED', 0)
 
     sm = ctx.env['ENABLE_SM']
     if sm != False:
