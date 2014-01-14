@@ -3338,7 +3338,7 @@ roxterm_tab_received(GtkWidget *rcvd_widget, ROXTermData *roxterm)
 
 inline static GtkAdjustment *roxterm_get_vte_adjustment(VteTerminal *vte)
 {
-#if VTE_CHECK_VERSION(0, 28, 0)
+#if GTK_CHECK_VERSION(3, 0, 0)
     return gtk_scrollable_get_vadjustment(GTK_SCROLLABLE(vte));
 #else
     return vte_terminal_get_adjustment(vte);
