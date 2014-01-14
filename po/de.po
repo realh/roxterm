@@ -3,13 +3,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# Jonas Kuemmerlin <rgcjonas@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: roxterm\n"
-"Report-Msgid-Bugs-To: https://sourceforge.net/tracker/?group_id=124080\n"
+"Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-05-23 19:28+0100\n"
-"PO-Revision-Date: 2013-05-24 23:41+0000\n"
-"Last-Translator: Tony Houghton <h@realh.co.uk>\n"
+"PO-Revision-Date: 2013-11-20 10:19+0000\n"
+"Last-Translator: Jonas Kuemmerlin <rgcjonas@gmail.com>\n"
 "Language-Team: German (http://www.transifex.com/projects/p/roxterm/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -900,15 +901,15 @@ msgstr ""
 
 #: ../src/profilegui.c:824 ../src/roxterm-config.ui:2060
 msgid "Appearance"
-msgstr ""
+msgstr "Erscheinungsbild"
 
 #: ../src/profilegui.c:824 ../src/roxterm-config.ui:2523
 msgid "General"
-msgstr ""
+msgstr "Allgemein"
 
 #: ../src/profilegui.c:824 ../src/roxterm-config.ui:2831
 msgid "Command"
-msgstr ""
+msgstr "Befehl"
 
 #: ../src/profilegui.c:825 ../src/roxterm-config.ui:3177
 msgid "Net URIs"
@@ -920,19 +921,19 @@ msgstr ""
 
 #: ../src/profilegui.c:825 ../src/roxterm-config.ui:3901
 msgid "Background"
-msgstr ""
+msgstr "Hintergrund"
 
 #: ../src/profilegui.c:825 ../src/roxterm-config.ui:4147
 msgid "Scrolling"
-msgstr ""
+msgstr "Rollbalken"
 
 #: ../src/profilegui.c:826 ../src/roxterm-config.ui:4361
 msgid "Keyboard"
-msgstr ""
+msgstr "Tastatur"
 
 #: ../src/profilegui.c:826 ../src/roxterm-config.ui:4833
 msgid "Tabs"
-msgstr ""
+msgstr "Tabs"
 
 #: ../src/profilegui.c:902
 #, c-format
@@ -1101,154 +1102,154 @@ msgstr ""
 msgid "Invalid geometry specification"
 msgstr ""
 
-#: ../src/roxterm.c:4650
+#: ../src/roxterm.c:4665
 msgid ""
 "Closing this ROXTerm tab may cause loss of data. Are you sure you want to "
 "continue?"
 msgstr ""
 
-#: ../src/roxterm.c:4654
+#: ../src/roxterm.c:4669
 msgid ""
 "You are about to close a ROXTerm window; this may cause loss of data. Are "
 "you sure you want to continue?"
 msgstr ""
 
-#: ../src/roxterm.c:4658
+#: ../src/roxterm.c:4673
 msgid ""
 "You are about to close a window containing multiple ROXTerm tabs; this may "
 "cause loss of data. Are you sure you want to continue?"
 msgstr ""
 
-#: ../src/roxterm.c:4667
+#: ../src/roxterm.c:4682
 msgid "ROXTerm: Confirm close"
 msgstr ""
 
-#: ../src/roxterm.c:4671
+#: ../src/roxterm.c:4686
 msgid "_Don't show this again"
 msgstr ""
 
-#: ../src/roxterm.c:4679
+#: ../src/roxterm.c:4694
 msgid "Only warn if tasks are still _running"
 msgstr ""
 
-#: ../src/roxterm.c:4792
+#: ../src/roxterm.c:4807
 #, c-format
 msgid "Unable to spawn command %s: %s"
 msgstr ""
 
-#: ../src/roxterm.c:4960
+#: ../src/roxterm.c:4975
 #, c-format
 msgid "Unknown <window> attribute '%s'"
 msgstr ""
 
-#: ../src/roxterm.c:5011
+#: ../src/roxterm.c:5026
 msgid "Session contains window with no valid tabs"
 msgstr ""
 
-#: ../src/roxterm.c:5115
+#: ../src/roxterm.c:5130
 #, c-format
 msgid "Unknown <tab> attribute '%s'"
 msgstr ""
 
-#: ../src/roxterm.c:5148
+#: ../src/roxterm.c:5163
 msgid "<command> with no arguments"
 msgstr ""
 
-#: ../src/roxterm.c:5198
+#: ../src/roxterm.c:5213
 #, c-format
 msgid "Unknown <command> attribute '%s'"
 msgstr ""
 
-#: ../src/roxterm.c:5210
+#: ../src/roxterm.c:5225
 msgid "<command> missing argc attribute"
 msgstr ""
 
-#: ../src/roxterm.c:5224
+#: ../src/roxterm.c:5239
 #, c-format
 msgid "Too many <arg> elements for <command argc='%d>"
 msgstr ""
 
-#: ../src/roxterm.c:5241
+#: ../src/roxterm.c:5256
 #, c-format
 msgid "Unknown <arg> attribute '%s'"
 msgstr ""
 
-#: ../src/roxterm.c:5253
+#: ../src/roxterm.c:5268
 msgid "<arg> missing s attribute"
 msgstr ""
 
-#: ../src/roxterm.c:5273
+#: ../src/roxterm.c:5288
 #, c-format
 msgid "Unknown <roxterm_session> attribute '%s'"
 msgstr ""
 
-#: ../src/roxterm.c:5292
+#: ../src/roxterm.c:5307
 msgid "<roxterm_session> tag nested within <window>"
 msgstr ""
 
-#: ../src/roxterm.c:5306
+#: ../src/roxterm.c:5321
 msgid "<window> tag not within <roxterm_session>"
 msgstr ""
 
-#: ../src/roxterm.c:5311
+#: ../src/roxterm.c:5326
 msgid "<window> tag nested within another <window>"
 msgstr ""
 
-#: ../src/roxterm.c:5323
+#: ../src/roxterm.c:5338
 msgid "<tab> tag not within <window>"
 msgstr ""
 
-#: ../src/roxterm.c:5328
+#: ../src/roxterm.c:5343
 msgid "<tab> tag nested within another <tab>"
 msgstr ""
 
-#: ../src/roxterm.c:5340
+#: ../src/roxterm.c:5355
 msgid "<command> tag not within <tab>"
 msgstr ""
 
-#: ../src/roxterm.c:5345
+#: ../src/roxterm.c:5360
 msgid "<command> tag nested within another <command>"
 msgstr ""
 
-#: ../src/roxterm.c:5357
+#: ../src/roxterm.c:5372
 msgid "<arg> tag not within <command>"
 msgstr ""
 
-#: ../src/roxterm.c:5367
+#: ../src/roxterm.c:5382
 #, c-format
 msgid "Unknown element <%s>"
 msgstr ""
 
-#: ../src/roxterm.c:5383
+#: ../src/roxterm.c:5398
 msgid "Unmatched </roxterm_session>"
 msgstr ""
 
-#: ../src/roxterm.c:5388
+#: ../src/roxterm.c:5403
 msgid "Attempt to close <roxterm_session> without closing <window>"
 msgstr ""
 
-#: ../src/roxterm.c:5401
+#: ../src/roxterm.c:5416
 msgid "Unmatched </window>"
 msgstr ""
 
-#: ../src/roxterm.c:5406
+#: ../src/roxterm.c:5421
 msgid "Attempt to close <window> without closing <tab>"
 msgstr ""
 
-#: ../src/roxterm.c:5418
+#: ../src/roxterm.c:5433
 msgid "Unmatched </tab>"
 msgstr ""
 
-#: ../src/roxterm.c:5432
+#: ../src/roxterm.c:5447
 msgid "Unmatched </command>"
 msgstr ""
 
-#: ../src/roxterm.c:5438
+#: ../src/roxterm.c:5453
 #, c-format
 msgid "Unknown closing element </%s>"
 msgstr ""
 
-#: ../src/roxterm.c:5448
+#: ../src/roxterm.c:5463
 #, c-format
 msgid "Unable to parse data for session '%s': %s"
 msgstr ""
@@ -1645,79 +1646,79 @@ msgstr ""
 
 #: ../src/roxterm-config.ui:1495
 msgid "ROXTerm profile"
-msgstr ""
+msgstr "ROXTerm-Profil"
 
 #: ../src/roxterm-config.ui:1593
 msgid "_Font:"
-msgstr ""
+msgstr "Schriftart"
 
 #: ../src/roxterm-config.ui:1610
 msgid "Click to change the font; monospace fonts are recommended."
-msgstr ""
+msgstr "Zum ändern der Schriftart klicken, dicktengleiche Schriften werden empfohlen"
 
 #: ../src/roxterm-config.ui:1635
 msgid "_Size"
-msgstr ""
+msgstr "Größe"
 
 #: ../src/roxterm-config.ui:1641
 msgid "Set the terminal's size in characters from the adjacent values."
-msgstr ""
+msgstr "Setzte die Größe des Terminals in Zeichen von den angrenzenden Werten"
 
 #: ../src/roxterm-config.ui:1660
 msgid "_Width:"
-msgstr ""
+msgstr "Breite:"
 
 #: ../src/roxterm-config.ui:1674 ../src/roxterm-config.ui:1720
 msgid "New windows with this profile will open at this size."
-msgstr ""
+msgstr "Neue Fenster mit diesem Profil werden mit dieser Größe geöffnet"
 
 #: ../src/roxterm-config.ui:1694
 msgid "columns"
-msgstr ""
+msgstr "Spalten"
 
 #: ../src/roxterm-config.ui:1707
 msgid "_Height:"
-msgstr ""
+msgstr "Höhe:"
 
 #: ../src/roxterm-config.ui:1739
 msgid "rows"
-msgstr ""
+msgstr "Zeilen"
 
 #: ../src/roxterm-config.ui:1764
 msgid "_Maximise"
-msgstr ""
+msgstr "_Maximieren"
 
 #: ../src/roxterm-config.ui:1771
 msgid "Use a maximised window."
-msgstr ""
+msgstr "Benutze ein maximiertes Fenster."
 
 #: ../src/roxterm-config.ui:1782
 msgid "F_ull screen"
-msgstr ""
+msgstr "Vollbild"
 
 #: ../src/roxterm-config.ui:1789
 msgid "Make the terminal take up the whole screen with no window borders."
-msgstr ""
+msgstr "Lasse das Terminal den ganzen Bildschirm einnehmen ohne Fensterrahmen"
 
 #: ../src/roxterm-config.ui:1804
 msgid "Show _menubar by default"
-msgstr ""
+msgstr "Zeige Menüleisten standardmäßig"
 
 #: ../src/roxterm-config.ui:1811 ../src/roxterm-config.ui:1856
 msgid ""
 "Whether new windows with this profile will have a menu bar. You can also "
 "turn the menu bar on and off from terminal menus."
-msgstr ""
+msgstr "Ob Fenster mit diesem Profil eine Menüleiste haben werden. Sie können die Menüleiste auf mit den Terminal-Menüs ein- und ausschalten."
 
 #: ../src/roxterm-config.ui:1825
 msgid "_Always show tab bar"
-msgstr ""
+msgstr "Immer Tableiste anzeigen"
 
 #: ../src/roxterm-config.ui:1833
 msgid ""
 "If this option is enabled the tabs at the top of each terminal are always "
 "shown, even in windows which only contain one tab"
-msgstr ""
+msgstr "Wenn diese Option eingeschaltet ist werden die Tabs am oberen Fensterrand immer angezeigt, auch wenn das Fenster nur einen Tab enthält"
 
 #: ../src/roxterm-config.ui:1849
 msgid "Show window _resize grip"
@@ -1752,146 +1753,146 @@ msgstr ""
 
 #: ../src/roxterm-config.ui:2050
 msgid "<b>Appearance</b>"
-msgstr ""
+msgstr "<b>Erscheinungsbild</b>"
 
 #: ../src/roxterm-config.ui:2089
 msgid "Allow _bold text"
-msgstr ""
+msgstr "Erlaube fetten Text"
 
 #: ../src/roxterm-config.ui:2109
 msgid "Audible bel_l"
-msgstr ""
+msgstr "Höhrbare Glocke"
 
 #: ../src/roxterm-config.ui:2115
 msgid "If selected, \"printing\" an ASCII bell character will cause a beep."
-msgstr ""
+msgstr "Wenn selektiert wird das \"drucken\" eines ASCII \"bell\"-Zeichens einen Piepston auslösen"
 
 #: ../src/roxterm-config.ui:2131
 msgid "_Visible bell"
-msgstr ""
+msgstr "Sichtbare Glocke"
 
 #: ../src/roxterm-config.ui:2137
 msgid ""
 "If selected, \"printing\" an ASCII bell character will cause the terminal to"
 " flash."
-msgstr ""
+msgstr "Wenn selektiert wird das \"drucken\" eines ASCII \"bell\"-Zeichens ein Aufblitzen des Terminals auslösen."
 
 #: ../src/roxterm-config.ui:2155
 msgid "Do_n't blink"
-msgstr ""
+msgstr "Nicht blinken"
 
 #: ../src/roxterm-config.ui:2161
 msgid "The terminal cursor doesn't blink."
-msgstr ""
+msgstr "Der Terminal-Cursor blinkt nicht."
 
 #: ../src/roxterm-config.ui:2179
 msgid "Blin_k"
-msgstr ""
+msgstr "Blinken"
 
 #: ../src/roxterm-config.ui:2185
 msgid "The terminal cursor blinks."
-msgstr ""
+msgstr "Der Terminal-Cursor blinkt."
 
 #: ../src/roxterm-config.ui:2206
 msgid "Blinking cursor:"
-msgstr ""
+msgstr "Blinkender Cursor:"
 
 #: ../src/roxterm-config.ui:2216
 msgid "S_ystem"
-msgstr ""
+msgstr "S_ystem"
 
 #: ../src/roxterm-config.ui:2222
 msgid "Whether the terminal cursor blinks depends on the GTK system setting."
-msgstr ""
+msgstr "Ob der Terminal-Cursor blinkt, hängt von der GTK-Systemeinstellung ab."
 
 #: ../src/roxterm-config.ui:2240
 msgid "_Underline"
-msgstr ""
+msgstr "_Unterstrichen"
 
 #: ../src/roxterm-config.ui:2246
 msgid "The cursor is a horizontal line at the bottom of each character."
-msgstr ""
+msgstr "Der Cursor ist eine horizontale Linie unter jedem Zeichen."
 
 #: ../src/roxterm-config.ui:2264
 msgid "_I-beam"
-msgstr ""
+msgstr "_I-beam"
 
 #: ../src/roxterm-config.ui:2270
 msgid "The cursor is a vertical line at the left of each character."
-msgstr ""
+msgstr "Der Cursor ist eine verticale Linie links jedes Zeichens."
 
 #: ../src/roxterm-config.ui:2288
 msgid "Bl_ock"
-msgstr ""
+msgstr "Bl_ock"
 
 #: ../src/roxterm-config.ui:2294
 msgid "The cursor is a rectangle taking up the whole of a character space."
-msgstr ""
+msgstr "Der Cursor ist ein Rechtek, dass den ganzen Zeichenplatz einnimmt."
 
 #: ../src/roxterm-config.ui:2315
 msgid "Cursor shape:"
-msgstr ""
+msgstr "Cursor-Umriss:"
 
 #: ../src/roxterm-config.ui:2325
 msgid "Bell _highlights tab/window"
-msgstr ""
+msgstr "Glocke hebt Tab/Fenster hervor"
 
 #: ../src/roxterm-config.ui:2331
 msgid ""
 "If the \"bell rings\" in a terminal while it isn't the active tab or window,"
 " its tab label will flash and/or its window will be marked \"urgent\". This "
 "only works with recent versions of vte."
-msgstr ""
+msgstr "Wenn die \"Glocke\" in einem Terminal \"läutet\", während es nicht das aktive Fenster oder Tab ist, wird sein Tab aufblitzen und/oder sein Fenster wird als \"dringend\" markiert. Dies funktioniert nur mit modernen Versionen von vte."
 
 #: ../src/roxterm-config.ui:2349
 msgid "Hide mouse _pointer when typing"
-msgstr ""
+msgstr "Mauszeiger beim Tippen verstecken"
 
 #: ../src/roxterm-config.ui:2377
 msgid "_TERM environment variable:"
-msgstr ""
+msgstr "_TERM Umgebungsvariable"
 
 #: ../src/roxterm-config.ui:2421
 msgid "_COLORTERM environment variable:"
-msgstr ""
+msgstr "_COLORTERM Umgebungsvariable:"
 
 #: ../src/roxterm-config.ui:2465
 msgid "_Select-by-word characters:"
-msgstr ""
+msgstr "Auswahl-nach-Wort-Zeichen:"
 
 #: ../src/roxterm-config.ui:2480
 msgid ""
 "Words can be selected by double-clicking. Characters not in this list count "
 "as the start or end of a word"
-msgstr ""
+msgstr "Wörter können durch Doppelklick selektiert werden. Zeichen, die nicht in dieser Liste enthalten sind, zählen als Beginn oder Ende eines Wortes."
 
 #: ../src/roxterm-config.ui:2510
 msgid "<b>General</b>"
-msgstr ""
+msgstr "<b>Allgemein</b>"
 
 #: ../src/roxterm-config.ui:2555
 msgid "Command to run in place of a shell"
-msgstr ""
+msgstr "Befehl, der statt der Shell auszuführen ist"
 
 #: ../src/roxterm-config.ui:2577
 msgid "_Pause:"
-msgstr ""
+msgstr "_Pause:"
 
 #: ../src/roxterm-config.ui:2593
 msgid "When command e_xits:"
-msgstr ""
+msgstr "Wenn der Befehl beendet ist:"
 
 #: ../src/roxterm-config.ui:2606
 msgid "_Custom command"
-msgstr ""
+msgstr "Benutzerdefinierter Befehl"
 
 #: ../src/roxterm-config.ui:2612
 msgid "Enable the adjacent custom command for this profile."
-msgstr ""
+msgstr "Aktiviere den nebenstehenden benutzerdefinierten Befehl für dieses Profil."
 
 #: ../src/roxterm-config.ui:2629
 msgid "_Ssh"
-msgstr ""
+msgstr "_SSH"
 
 #: ../src/roxterm-config.ui:2635
 msgid "Connect to a ssh (secure shell) with this profile."
@@ -1903,15 +1904,15 @@ msgstr ""
 
 #: ../src/roxterm-config.ui:2658
 msgid "Click here to edit the ssh details."
-msgstr ""
+msgstr "Hier klicken, um SSH-Daten zu editieren."
 
 #: ../src/roxterm-config.ui:2677
 msgid "Ssh server address. Use the Edit... button to change it."
-msgstr ""
+msgstr "SSH-Serveradresse. Benutze den Bearbeiten...-Knopf, um sie zu ändern."
 
 #: ../src/roxterm-config.ui:2693
 msgid "_Update login records"
-msgstr ""
+msgstr "Login-Datensätze aktualisieren"
 
 #: ../src/roxterm-config.ui:2699
 msgid "Whether to log sessions to login records (utmp/wtmp/utmpx/wtmpx)"
