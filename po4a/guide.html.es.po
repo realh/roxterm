@@ -1,7 +1,7 @@
 # Translations for roxterm docs
 # Copyright (C) 2010 Tony Houghton
 # This file is distributed under the same license as the roxterm package.
-# 
+#
 # Translators:
 # Tony Houghton <h@realh.co.uk>, 2010-2011
 # xukosky <xukosky@yahoo.es>, 2011
@@ -10,14 +10,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: roxterm\n"
 "Report-Msgid-Bugs-To: http://sourceforge.net/tracker/?group_id=124080\n"
-"POT-Creation-Date: 2013-04-01 21:30+0200\n"
+"POT-Creation-Date: 2014-01-15 15:24+0000\n"
 "PO-Revision-Date: 2013-11-20 12:17+0000\n"
 "Last-Translator: xukosky <xukosky@yahoo.es>\n"
-"Language-Team: Spanish (http://www.transifex.com/projects/p/roxterm/language/es/)\n"
+"Language-Team: Spanish (http://www.transifex.com/projects/p/roxterm/language/"
+"es/)\n"
+"Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: es\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. type: Attribute 'lang' of: <html>
@@ -41,7 +42,7 @@ msgid "<a id=\"Logo\" href=\"index.html\">"
 msgstr "<a id=\"Logo\" href=\"index.html\">"
 
 #. type: Content of: <html><body><div><div><div>
-#: ../Help/en/guide.html:23 ../Help/en/guide.html:231
+#: ../Help/en/guide.html:23
 msgid "</a>"
 msgstr "</a>"
 
@@ -57,20 +58,25 @@ msgstr "<a id=\"MainNav_News\" href=\"news.html\">Noticias</a>"
 
 #. type: Content of: <html><body><div><div><div><ul><li>
 #: ../Help/en/guide.html:28
-msgid "<a id=\"MainNav_Installation\" href=\"installation.html\">Installation</a>"
-msgstr "<a id=\"MainNav_Installation\" href=\"installation.html\">Instalación</a>"
+msgid ""
+"<a id=\"MainNav_Installation\" href=\"installation.html\">Installation</a>"
+msgstr ""
+"<a id=\"MainNav_Installation\" href=\"installation.html\">Instalación</a>"
 
 #. type: Content of: <html><body><div><div><div><ul><li>
 #: ../Help/en/guide.html:29
 msgid "<a id=\"MainNav_UserGuide\" class=\"active\" href=\"#\">User Guide</a>"
-msgstr "<a id=\"MainNav_UserGuide\" class=\"active\" href=\"#\">Guía de usuario</a>"
+msgstr ""
+"<a id=\"MainNav_UserGuide\" class=\"active\" href=\"#\">Guía de usuario</a>"
 
 #. type: Content of: <html><body><div><div><div><ul><li>
 #: ../Help/en/guide.html:30
 msgid ""
-"<a id=\"MainNav_Forums\" "
-"href=\"https://sourceforge.net/projects/roxterm/forums\">Forums</a>"
-msgstr "<a id=\"MainNav_Forums\" href=\"https://sourceforge.net/projects/roxterm/forums\">Foros</a>"
+"<a id=\"MainNav_Forums\" href=\"https://sourceforge.net/projects/roxterm/"
+"forums\">Forums</a>"
+msgstr ""
+"<a id=\"MainNav_Forums\" href=\"https://sourceforge.net/projects/roxterm/"
+"forums\">Foros</a>"
 
 #. type: Content of: <html><body><div><div><ol><li>
 #: ../Help/en/guide.html:38
@@ -130,11 +136,16 @@ msgstr "Pestañas <a class=\"pageAnchor\" name=\"Tabs\">:</a>"
 #. type: Content of: <html><body><div><div><div><p>
 #: ../Help/en/guide.html:54
 msgid ""
-"Each window can contain a number of tabs, each with its own terminal. Unlike"
-" gnome-terminal and earlier versions of ROXTerm, the tab bar is always shown"
-" by default, even if there is only one tab, to avoid resizing "
+"Each window can contain a number of tabs, each with its own terminal. Unlike "
+"gnome-terminal and earlier versions of ROXTerm, the tab bar is always shown "
+"by default, even if there is only one tab, to avoid resizing "
 "inconsistencies, but this is configurable."
-msgstr "Cada ventana puede contener un número de pestañas, cada una con su propia terminal. A diferencia de gnome-terminal y versiones anteriores de ROXTerm, la barra de pestañas se muestra de manera predeterminada, incluso cuando solo hay una pestaña, para evitar inconsistencias al redimensionar, pero esto es configurable."
+msgstr ""
+"Cada ventana puede contener un número de pestañas, cada una con su propia "
+"terminal. A diferencia de gnome-terminal y versiones anteriores de ROXTerm, "
+"la barra de pestañas se muestra de manera predeterminada, incluso cuando "
+"solo hay una pestaña, para evitar inconsistencias al redimensionar, pero "
+"esto es configurable."
 
 #. type: Content of: <html><body><div><div><div><h2>
 #: ../Help/en/guide.html:58
@@ -150,42 +161,69 @@ msgid ""
 "ROXTerm appear more straightforward for first-time users. It can be turned "
 "on and off for a particular window or more permanently by using the "
 "configuration manager."
-msgstr "Cuando la barra de menú está oculta el menú emergente contiene los mismos elementos que la barra de menú; esto le proporciona acceso a todas las funciones con la barra de menú oculta. La barra de menú es efectivamente redundante pero se incluye para hacer el aspecto de ROXTerm más sencillo para los usuarios principiantes. Se puede habilitar y deshabilitar para una ventana particular o de forma permanente a través del gestor de configuración."
+msgstr ""
+"Cuando la barra de menú está oculta el menú emergente contiene los mismos "
+"elementos que la barra de menú; esto le proporciona acceso a todas las "
+"funciones con la barra de menú oculta. La barra de menú es efectivamente "
+"redundante pero se incluye para hacer el aspecto de ROXTerm más sencillo "
+"para los usuarios principiantes. Se puede habilitar y deshabilitar para una "
+"ventana particular o de forma permanente a través del gestor de "
+"configuración."
 
 #. type: Content of: <html><body><div><div><div><p>
 #: ../Help/en/guide.html:65
 msgid ""
 "The popup menu also allows email and web addresses to be opened in external "
 "applications if such an address is highlighted by the pointer being over it."
-msgstr "El menú emergente también permite abrir direcciones web y de correo electrónico en aplicaciones externas si la dirección aparece resaltada cuando se sitúa el puntero sobre ella."
+msgstr ""
+"El menú emergente también permite abrir direcciones web y de correo "
+"electrónico en aplicaciones externas si la dirección aparece resaltada "
+"cuando se sitúa el puntero sobre ella."
 
 #. type: Content of: <html><body><div><div><div><h2>
 #: ../Help/en/guide.html:68
 msgid "URI Highlighting <a class=\"pageAnchor\" name=\"URIHighlighting\">:</a>"
-msgstr "Resaltado de URI <a class=\"pageAnchor\" name=\"URIHighlighting\">:</a>"
+msgstr ""
+"Resaltado de URI <a class=\"pageAnchor\" name=\"URIHighlighting\">:</a>"
 
 #. type: Content of: <html><body><div><div><div><p>
 #: ../Help/en/guide.html:70
 msgid ""
 "When the pointer is over an address that ROXTerm recognises as a URI "
 "(typically a web URL or email address) it is highlighted by underlining and "
-"a change of pointer shape. You can open the address either by right-clicking"
-" on it and choosing Open... in the menu or by holding Ctrl and left-"
-"clicking. The applications used to handle these addresses may be set with "
-"the configuration tool, otherwise it will try to find a suitable default. "
-"Also by holding Ctrl you can drag a URI to pass it to another application "
-"which is willing to accept it as a URI or text; dragging it into the same "
-"window it came from pastes the address back in."
-msgstr "Cuando el puntero está sobre una dirección que ROXTerm reconoce como URI (normalmente una dirección web o de correo electrónico) se resalta mediante subrayado y cambiando la forma del puntero. Puede abrir la dirección pulsando el botón derecho del ratón y seleccionando Abrir... en el menú o manteniendo pulsado la tecla Control mientras pulsa el botón izquierdo. La aplicación utilizada para manejar estas direcciones se puede cambiar mediante la herramienta de configuración, o ROXTerm intentará encontrar una aplicación predeterminada. También al mantener pulsado Control puede arrastrar una URI para soltarla sobre otra aplicación que la acepte como URI o como texto; si se suelta sobre la misma ventana desde la que se arrastró se consigue pegar la dirección como entrada."
+"a change of pointer shape. You can open the address either by right-clicking "
+"on it and choosing Open... in the menu or by holding Ctrl and left-clicking. "
+"The applications used to handle these addresses may be set with the "
+"configuration tool, otherwise it will try to find a suitable default. Also "
+"by holding Ctrl you can drag a URI to pass it to another application which "
+"is willing to accept it as a URI or text; dragging it into the same window "
+"it came from pastes the address back in."
+msgstr ""
+"Cuando el puntero está sobre una dirección que ROXTerm reconoce como URI "
+"(normalmente una dirección web o de correo electrónico) se resalta mediante "
+"subrayado y cambiando la forma del puntero. Puede abrir la dirección "
+"pulsando el botón derecho del ratón y seleccionando Abrir... en el menú o "
+"manteniendo pulsado la tecla Control mientras pulsa el botón izquierdo. La "
+"aplicación utilizada para manejar estas direcciones se puede cambiar "
+"mediante la herramienta de configuración, o ROXTerm intentará encontrar una "
+"aplicación predeterminada. También al mantener pulsado Control puede "
+"arrastrar una URI para soltarla sobre otra aplicación que la acepte como URI "
+"o como texto; si se suelta sobre la misma ventana desde la que se arrastró "
+"se consigue pegar la dirección como entrada."
 
 #. type: Content of: <html><body><div><div><div><p>
 #: ../Help/en/guide.html:77
 msgid ""
-"Note that if the pointer is over the server address portion of a URL it only"
-" highlights the address, omitting the filename; move the pointer over the "
+"Note that if the pointer is over the server address portion of a URL it only "
+"highlights the address, omitting the filename; move the pointer over the "
 "filename to get the whole URL. Similarly you can highlight an email address "
 "with or without a leading mailto:."
-msgstr "Tenga en cuenta que si el puntero está sobre la dirección del servidor en una URL solo se resalta la dirección, omitiendo el nombre del archivo; mueva el puntero sobre el nombre del archivo para obtener la URL completa. De forma similar puede resaltar una dirección de correo precedida o no por la cadena mailto:."
+msgstr ""
+"Tenga en cuenta que si el puntero está sobre la dirección del servidor en "
+"una URL solo se resalta la dirección, omitiendo el nombre del archivo; mueva "
+"el puntero sobre el nombre del archivo para obtener la URL completa. De "
+"forma similar puede resaltar una dirección de correo precedida o no por la "
+"cadena mailto:."
 
 #. type: Content of: <html><body><div><div><div><h2>
 #: ../Help/en/guide.html:81
@@ -201,18 +239,34 @@ msgid ""
 "dragged onto the appropriate area of the configuration manager to set "
 "terminal background images. Holding down Ctrl while dragging a highlighted "
 "URI allows the address to be dragged to another application."
-msgstr "Ahora puede arrastrar elementos en las ventanas de terminal. Los objetos de texto se escriben en la terminal como si se utilizase el teclado. Para los archivos y URIs se obtiene su localización (nombre del archivo o URI) en lugar del contenido del objeto. Los archivos de imagen también se pueden arrastrar sobre el área apropiada del gestor de configuración para ponerlos como imagen de fondo de la terminal. Si mantiene pulsada la tecla Control mientras arrastra una URI resaltada puede pegar la dirección sobre otra aplicación."
+msgstr ""
+"Ahora puede arrastrar elementos en las ventanas de terminal. Los objetos de "
+"texto se escriben en la terminal como si se utilizase el teclado. Para los "
+"archivos y URIs se obtiene su localización (nombre del archivo o URI) en "
+"lugar del contenido del objeto. Los archivos de imagen también se pueden "
+"arrastrar sobre el área apropiada del gestor de configuración para ponerlos "
+"como imagen de fondo de la terminal. Si mantiene pulsada la tecla Control "
+"mientras arrastra una URI resaltada puede pegar la dirección sobre otra "
+"aplicación."
 
 #. type: Content of: <html><body><div><div><div><p>
 #: ../Help/en/guide.html:88
 msgid ""
 "You can now drag tabs by their labels to reorder them within a window or to "
 "move them to another ROXTerm window or, by dropping them outside a ROXTerm "
-"window, move tabs to new windows of their own. Use mouse button 3 (the right"
-" button) to move an unselected tab without selecting it. Note that versions "
+"window, move tabs to new windows of their own. Use mouse button 3 (the right "
+"button) to move an unselected tab without selecting it. Note that versions "
 "prior to 1.9 used button 2 (middle).  Button 2 is now a shortcut to paste "
 "the contents of the clipboard as the tab's name."
-msgstr "Ahora puede arrastrar pestañas por sus etiquetas para reordenarlas dentro de una ventana o moverlas hasta otra ventana de ROXTerm o, al soltarlas fuera de una ventana de ROXterm, mover las pestañas hasta una ventana nueva propia. Utilice el botón 3 del ratón (el derecho) para mover una pestaña no seleccionada sin seleccionarla. Tenga en cuenta que las versiones anteriores a la 1.9 utilizaban el botón 2 del ratón (el del medio). Ahora el botón 2 es un atajo para pegar los contenidos del porta-papeles como el nombre de la pestaña."
+msgstr ""
+"Ahora puede arrastrar pestañas por sus etiquetas para reordenarlas dentro de "
+"una ventana o moverlas hasta otra ventana de ROXTerm o, al soltarlas fuera "
+"de una ventana de ROXterm, mover las pestañas hasta una ventana nueva "
+"propia. Utilice el botón 3 del ratón (el derecho) para mover una pestaña no "
+"seleccionada sin seleccionarla. Tenga en cuenta que las versiones anteriores "
+"a la 1.9 utilizaban el botón 2 del ratón (el del medio). Ahora el botón 2 es "
+"un atajo para pegar los contenidos del porta-papeles como el nombre de la "
+"pestaña."
 
 #. type: Content of: <html><body><div><div><div><h2>
 #: ../Help/en/guide.html:93
@@ -230,16 +284,30 @@ msgid ""
 "potential for confusion from different tabs having different shortcuts for "
 "switching tabs. New windows and tabs inherit settings from the window/tab "
 "they were opened from."
-msgstr "La configuración se basa en perfiles con nombre en los que puede guardar diferentes conjuntos de opciones y cambiar entre ellos de forma rápida. Hay perfiles para opciones generales, esquemas de color y atajos de teclado (también llamados aceleradores). Los esquemas de color y los perfiles se aplican a una pestaña cada vez, pero los atajos de teclado se aplican a todas las pestañas en la misma ventana para evitar la potencial confusión por tener diferentes atajos de teclado en diferentes pestañas al cambiar de pestaña. Las ventanas y pestañas nuevas heredan la configuración de la ventana/pestaña desde la que se abrieron."
+msgstr ""
+"La configuración se basa en perfiles con nombre en los que puede guardar "
+"diferentes conjuntos de opciones y cambiar entre ellos de forma rápida. Hay "
+"perfiles para opciones generales, esquemas de color y atajos de teclado "
+"(también llamados aceleradores). Los esquemas de color y los perfiles se "
+"aplican a una pestaña cada vez, pero los atajos de teclado se aplican a "
+"todas las pestañas en la misma ventana para evitar la potencial confusión "
+"por tener diferentes atajos de teclado en diferentes pestañas al cambiar de "
+"pestaña. Las ventanas y pestañas nuevas heredan la configuración de la "
+"ventana/pestaña desde la que se abrieron."
 
 #. type: Content of: <html><body><div><div><div><p>
 #: ../Help/en/guide.html:101
 msgid ""
-"Prior to version 1.15.1 all tabs had to share the same Profile, but this has"
-" been changed. In consequence a profile's font and other settings which "
+"Prior to version 1.15.1 all tabs had to share the same Profile, but this has "
+"been changed. In consequence a profile's font and other settings which "
 "affect a terminal's size may be overridden to keep geometry consistent "
 "across a number of tabs in one window."
-msgstr "Antes de la versión 1.15.1 todas las pestañas compartían el mismo perfil, pero esto se ha cambiado. Como consecuencia una tipografía de perfil y otras configuraciones que afectan al tamaño de la terminal pueden ser ignoradas para mantener la geometría consistente a través de las pestañas de una ventana."
+msgstr ""
+"Antes de la versión 1.15.1 todas las pestañas compartían el mismo perfil, "
+"pero esto se ha cambiado. Como consecuencia una tipografía de perfil y otras "
+"configuraciones que afectan al tamaño de la terminal pueden ser ignoradas "
+"para mantener la geometría consistente a través de las pestañas de una "
+"ventana."
 
 #. type: Content of: <html><body><div><div><div><p>
 #: ../Help/en/guide.html:105
@@ -252,12 +320,23 @@ msgid ""
 "rename it. Each item also has a radio button. The item with the selected "
 "radio is the default for new terminals. Note that character encodings are "
 "handled slightly differently."
-msgstr "El menú de preferencias le permite seleccionar el perfil actual (esta configuración no será recordada; utilice el gestor de configuración para establecer el perfil predeterminado), abrir el gestor de configuración para editar el perfil actual o el esquema de color o para gestionar todas las configuraciones. En el gestor de configuración puede seleccionar uno de los cuatro tipos de grupos de opciones y editarlo, copiarlo, borrarlo o renombrarlo. Cada elemento tiene un campo de selección. El elemento seleccionado es el predeterminado para las terminales nuevas. Tenga en cuenta que las codificaciones de caracteres se gestionan de forma diferente."
+msgstr ""
+"El menú de preferencias le permite seleccionar el perfil actual (esta "
+"configuración no será recordada; utilice el gestor de configuración para "
+"establecer el perfil predeterminado), abrir el gestor de configuración para "
+"editar el perfil actual o el esquema de color o para gestionar todas las "
+"configuraciones. En el gestor de configuración puede seleccionar uno de los "
+"cuatro tipos de grupos de opciones y editarlo, copiarlo, borrarlo o "
+"renombrarlo. Cada elemento tiene un campo de selección. El elemento "
+"seleccionado es el predeterminado para las terminales nuevas. Tenga en "
+"cuenta que las codificaciones de caracteres se gestionan de forma diferente."
 
 #. type: Content of: <html><body><div><div><div><h2>
 #: ../Help/en/guide.html:111
-msgid "Keyboard Shortcuts <a class=\"pageAnchor\" name=\"KeyboardShortcuts\">:</a>"
-msgstr "Atajos de teclado <a class=\"pageAnchor\" name=\"KeyboardShortcuts\">:</a>"
+msgid ""
+"Keyboard Shortcuts <a class=\"pageAnchor\" name=\"KeyboardShortcuts\">:</a>"
+msgstr ""
+"Atajos de teclado <a class=\"pageAnchor\" name=\"KeyboardShortcuts\">:</a>"
 
 #. type: Content of: <html><body><div><div><div><p>
 #: ../Help/en/guide.html:113
@@ -265,20 +344,32 @@ msgid ""
 "There is no editor for keyboard shortcuts; instead they can be changed by "
 "pressing keys while the mouse is hovering over a menu item in the terminal. "
 "This feature must be enabled with the \"Enable editing\" option under the "
-"\"Keyboard shortcuts\" section of the <a "
-"href=\"#ConfigurationManagement\">Configuration Manager</a>. There is also a"
-" \"hidden\" global GNOME setting to determine whether GTK applications can "
-"have their shortcuts edited in this way. The global option is managed by "
-"gconf, which roxterm is not linked with, so in some circumstances the global"
-" and roxterm options may conflict with each other."
-msgstr "No hay un editor para atajos de teclado; en su lugar se pueden cambiar presionando teclas mientras el ratón está situado sobre un elemento del menú en la terminal. Esta característica se puede habilitar con la opción «Habilitar la edición» bajo la sección de «Atajos de teclado» en el <a href=\"#ConfigurationManagement\">gestor de configuración</a>. También hay una opción global «oculta» en GNOME para determinar si las aplicaciones GTK pueden editar sus atajos de teclado de esta forma. La opción global se gestiona mediante gconf, con el que roxterm no está enlazado, por lo que en algunas circunstancias las opciones global y de roxterm pueden entrar en conflicto."
+"\"Keyboard shortcuts\" section of the <a href=\"#ConfigurationManagement"
+"\">Configuration Manager</a>. There is also a \"hidden\" global GNOME "
+"setting to determine whether GTK applications can have their shortcuts "
+"edited in this way. The global option is managed by gconf, which roxterm is "
+"not linked with, so in some circumstances the global and roxterm options may "
+"conflict with each other."
+msgstr ""
+"No hay un editor para atajos de teclado; en su lugar se pueden cambiar "
+"presionando teclas mientras el ratón está situado sobre un elemento del menú "
+"en la terminal. Esta característica se puede habilitar con la opción "
+"«Habilitar la edición» bajo la sección de «Atajos de teclado» en el <a href="
+"\"#ConfigurationManagement\">gestor de configuración</a>. También hay una "
+"opción global «oculta» en GNOME para determinar si las aplicaciones GTK "
+"pueden editar sus atajos de teclado de esta forma. La opción global se "
+"gestiona mediante gconf, con el que roxterm no está enlazado, por lo que en "
+"algunas circunstancias las opciones global y de roxterm pueden entrar en "
+"conflicto."
 
 #. type: Content of: <html><body><div><div><div><h2>
 #: ../Help/en/guide.html:120
 msgid ""
-"Configuration Management <a class=\"pageAnchor\" "
-"name=\"ConfigurationManagement\">:</a>"
-msgstr "Gestión de la configuración <a class=\"pageAnchor\" name=\"ConfigurationManagement\">:</a>"
+"Configuration Management <a class=\"pageAnchor\" name="
+"\"ConfigurationManagement\">:</a>"
+msgstr ""
+"Gestión de la configuración <a class=\"pageAnchor\" name="
+"\"ConfigurationManagement\">:</a>"
 
 #. type: Content of: <html><body><div><div><div><p>
 #: ../Help/en/guide.html:122
@@ -286,45 +377,61 @@ msgid ""
 "You can also run the configuration manager by selecting \"Configure...\" in "
 "ROX's menu for the ROXTerm application or by running roxterm-config if "
 "ROXTerm has been installed conventionally."
-msgstr "También puede ejecutar el gestor de configuración seleccionando «Configurar...» en el menú de ROX para la aplicación ROXTerm o ejecutando roxterm-config si ROXTerm se ha instalado de forma convencional."
+msgstr ""
+"También puede ejecutar el gestor de configuración seleccionando "
+"«Configurar...» en el menú de ROX para la aplicación ROXTerm o ejecutando "
+"roxterm-config si ROXTerm se ha instalado de forma convencional."
 
 #. type: Content of: <html><body><div><div><div><p>
 #: ../Help/en/guide.html:125
 msgid ""
 "Configuration files can easily be swapped with other users. Each profile, "
-"colour scheme and keyboard shortcut scheme has a single file associated with"
-" it; saving a valid file in the appropriate directory will create a profile "
+"colour scheme and keyboard shortcut scheme has a single file associated with "
+"it; saving a valid file in the appropriate directory will create a profile "
 "etc with the same name as the file."
-msgstr "Los archivos de configuración se pueden intercambiar fácilmente con otros usuarios. Cada perfil, esquema de color y esquema de atajos de teclado tiene un único archivo asociado a él; guardar un archivo válido en el directorio adecuado creará un perfil o esquema con el mismo nombre que el archivo."
+msgstr ""
+"Los archivos de configuración se pueden intercambiar fácilmente con otros "
+"usuarios. Cada perfil, esquema de color y esquema de atajos de teclado tiene "
+"un único archivo asociado a él; guardar un archivo válido en el directorio "
+"adecuado creará un perfil o esquema con el mismo nombre que el archivo."
 
 #. type: Content of: <html><body><div><div><div><p>
 #: ../Help/en/guide.html:129
 msgid ""
 "The directory locations for these configuration files follow the XDG Base "
 "Directory specification. In descending order of priority they are:"
-msgstr "Las rutas donde se almacenan estos archivos de configuración siguen la especificación XDG Base Directory. En orden de prioridad descendente son:"
+msgstr ""
+"Las rutas donde se almacenan estos archivos de configuración siguen la "
+"especificación XDG Base Directory. En orden de prioridad descendente son:"
 
 #. type: Content of: <html><body><div><div><div><ol><li>
 #: ../Help/en/guide.html:133
 msgid ""
-"<span>${XDG_CONFIG_HOME}/roxterm.sourceforge.net defaulting to "
-"~/.config/roxterm.sourceforge.net</span>"
-msgstr "<span>${XDG_CONFIG_HOME}/roxterm.sourceforge.net por defecto ~/.config/roxterm.sourceforge.net</span>"
+"<span>${XDG_CONFIG_HOME}/roxterm.sourceforge.net defaulting to ~/.config/"
+"roxterm.sourceforge.net</span>"
+msgstr ""
+"<span>${XDG_CONFIG_HOME}/roxterm.sourceforge.net por defecto ~/.config/"
+"roxterm.sourceforge.net</span>"
 
 #. type: Content of: <html><body><div><div><div><ol><li>
 #: ../Help/en/guide.html:134
 msgid ""
-"<span>${XDG_CONFIG_DIRS}/roxtem.sourceforge.net defaulting to "
-"/etc/xdg/roxtem.sourceforge.net</span>"
-msgstr "<span>${XDG_CONFIG_DIRS}/roxtem.sourceforge.net por defecto /etc/xdg/roxtem.sourceforge.net</span>"
+"<span>${XDG_CONFIG_DIRS}/roxtem.sourceforge.net defaulting to /etc/xdg/"
+"roxtem.sourceforge.net</span>"
+msgstr ""
+"<span>${XDG_CONFIG_DIRS}/roxtem.sourceforge.net por defecto /etc/xdg/roxtem."
+"sourceforge.net</span>"
 
 #. type: Content of: <html><body><div><div><div><ol><li>
 #: ../Help/en/guide.html:135
 msgid ""
-"<span>ROXTerm/Config for ROX users, or ${datadir}/roxterm/Config for others;"
-" ${datadir} is usually /usr/share for packages or /usr/local/share when "
+"<span>ROXTerm/Config for ROX users, or ${datadir}/roxterm/Config for others; "
+"${datadir} is usually /usr/share for packages or /usr/local/share when "
 "compiled from source</span>"
-msgstr "<span>ROXTerm/Config para los usuarios de ROX, o ${datadir}/roxterm/Config para otros; ${datadir} es normalmente /usr/share cuando se instala desde un paquete o /usr/local/share cuando se instala compilando el código</span>"
+msgstr ""
+"<span>ROXTerm/Config para los usuarios de ROX, o ${datadir}/roxterm/Config "
+"para otros; ${datadir} es normalmente /usr/share cuando se instala desde un "
+"paquete o /usr/local/share cuando se instala compilando el código</span>"
 
 #. type: Content of: <html><body><div><div><div><p>
 #: ../Help/en/guide.html:139
@@ -332,22 +439,34 @@ msgid ""
 "Files will be loaded from any and all the above locations; files in high "
 "priority locations shadow ones with the same name in lower priority "
 "locations. Files are only saved in the first location."
-msgstr "Los archivos se cargarán desde cualquiera de las rutas anteriores; los archivos en rutas con mayor prioridad ocultan a los de mismo nombre en rutas con menor prioridad. Los archivos solo se guardan en la primera ruta."
+msgstr ""
+"Los archivos se cargarán desde cualquiera de las rutas anteriores; los "
+"archivos en rutas con mayor prioridad ocultan a los de mismo nombre en rutas "
+"con menor prioridad. Los archivos solo se guardan en la primera ruta."
 
 #. type: Content of: <html><body><div><div><div><p>
 #: ../Help/en/guide.html:141
 msgid ""
 "Within any or each of those locations, profiles are saved in a \"Profiles\" "
-"subdirectory, colour schemes in \"Colours\" and keyboard shortcut schemes in"
-" \"Shortcuts\". A file called \"Globals\" contains miscellaneous options "
+"subdirectory, colour schemes in \"Colours\" and keyboard shortcut schemes in "
+"\"Shortcuts\". A file called \"Globals\" contains miscellaneous options "
 "which don't fall into the above categories, including the default profile "
 "etc for new terminals."
-msgstr "En cada una de estas rutas, los perfiles se guardan en un subdirectorio «Profiles», los esquemas de color en «Colours» y los esquemas de atajos de teclado en «Shortcuts». Un archivo llamado «Globals» contiene varias opciones que no encajan en las categorías anteriores, incluyendo el perfil predeterminado para terminales nuevas."
+msgstr ""
+"En cada una de estas rutas, los perfiles se guardan en un subdirectorio "
+"«Profiles», los esquemas de color en «Colours» y los esquemas de atajos de "
+"teclado en «Shortcuts». Un archivo llamado «Globals» contiene varias "
+"opciones que no encajan en las categorías anteriores, incluyendo el perfil "
+"predeterminado para terminales nuevas."
 
 #. type: Content of: <html><body><div><div><div><h2>
 #: ../Help/en/guide.html:145
-msgid "Command-line Options <a class=\"pageAnchor\" name=\"CommandlineOptions\">:</a>"
-msgstr "Opciones en línea de comandos <a class=\"pageAnchor\" name=\"CommandlineOptions\">:</a>"
+msgid ""
+"Command-line Options <a class=\"pageAnchor\" name=\"CommandlineOptions\">:</"
+"a>"
+msgstr ""
+"Opciones en línea de comandos <a class=\"pageAnchor\" name="
+"\"CommandlineOptions\">:</a>"
 
 #. type: Content of: <html><body><div><div><div><p>
 #: ../Help/en/guide.html:147
@@ -372,7 +491,13 @@ msgid ""
 "again it sends a D-BUS message to the existing process to signal it to open "
 "a new terminal, and the second process exits. To make a roxterm command run "
 "in its own separate process use the --separate option."
-msgstr "Desde la versión 1.1.0 ROXTerm utiliza solo un proceso para todas las terminales de forma predeterminada de forma que se pueden arrastrar pestañas entre ventanas. Si ejecuta el comando de nuevo se envía un mensaje D-BUS al proceso existente para solicitarle que abra una nueva terminal, y el segundo proceso termina. Para hacer que la terminal se ejecute como un proceso independiente utilice la opción --separate."
+msgstr ""
+"Desde la versión 1.1.0 ROXTerm utiliza solo un proceso para todas las "
+"terminales de forma predeterminada de forma que se pueden arrastrar pestañas "
+"entre ventanas. Si ejecuta el comando de nuevo se envía un mensaje D-BUS al "
+"proceso existente para solicitarle que abra una nueva terminal, y el segundo "
+"proceso termina. Para hacer que la terminal se ejecute como un proceso "
+"independiente utilice la opción --separate."
 
 #. type: Content of: <html><body><div><div><div><p>
 #: ../Help/en/guide.html:158
@@ -381,24 +506,39 @@ msgid ""
 "replaced by --colour-scheme and --shortcut-scheme respectively in 1.7.0 "
 "(underscores changed to hyphens) but the old versions remain usable for "
 "backwards compatibility."
-msgstr "Tenga en cuenta que las opciones --colour_scheme y --shortcut_scheme se han reemplazado por --colour-scheme y --shortcut-scheme respectivamente desde la versión 1.7.0 (guión bajo cambiado por guión) pero las opciones antiguas se mantienen utilizables para mantener la compatibilidad."
+msgstr ""
+"Tenga en cuenta que las opciones --colour_scheme y --shortcut_scheme se han "
+"reemplazado por --colour-scheme y --shortcut-scheme respectivamente desde la "
+"versión 1.7.0 (guión bajo cambiado por guión) pero las opciones antiguas se "
+"mantienen utilizables para mantener la compatibilidad."
 
 #. type: Content of: <html><body><div><div><div><h2>
 #: ../Help/en/guide.html:163
-msgid "Advanced D-Bus Usage <a class=\"pageAnchor\" name=\"AdvancedDbusUsage\">:</a>"
-msgstr "Uso avanzado de D-Bus <a class=\"pageAnchor\" name=\"AdvancedDbusUsage\">:</a>"
+msgid ""
+"Advanced D-Bus Usage <a class=\"pageAnchor\" name=\"AdvancedDbusUsage\">:</a>"
+msgstr ""
+"Uso avanzado de D-Bus <a class=\"pageAnchor\" name=\"AdvancedDbusUsage\">:</"
+"a>"
 
 #. type: Content of: <html><body><div><div><div><p>
 #: ../Help/en/guide.html:165
 msgid ""
-"From version 1.14.0 advanced users can use D-Bus to configure terminals from"
-" other applications and scripts.  There are three D-Bus methods especially "
+"From version 1.14.0 advanced users can use D-Bus to configure terminals from "
+"other applications and scripts.  There are three D-Bus methods especially "
 "for this purpose; they require an id code to target a specific terminal; "
-"each terminal's id code can be read from the environment variable ROXTERM_ID"
-" in the shell/application running in it.  The D-Bus object path and "
-"interface for the methods are \"net.sf.roxterm.Options\" and "
-"\"/net/sf/roxterm/Options\" respectively. The methods are:"
-msgstr "Desde la versión 1.14.0 los usuarios avanzados pueden usar D-Bus para configurar los terminales desde otras aplicaciones y scripts. Hay tres métodos D-Bus específicos para este propósito; requieren un código identificador para seleccionar una terminal específica; cada identificador de terminal se puede leer mediante la variable de entorno ROXTERM_ID desde la consola/aplicación que ejecuta. La ruta de objetos D-Bus y el interfaz para métodos son «net.sf.roxterm.Options» y «/net/sf/roxterm/Options» respectivamente. Los métodos son:"
+"each terminal's id code can be read from the environment variable ROXTERM_ID "
+"in the shell/application running in it.  The D-Bus object path and interface "
+"for the methods are \"net.sf.roxterm.Options\" and \"/net/sf/roxterm/Options"
+"\" respectively. The methods are:"
+msgstr ""
+"Desde la versión 1.14.0 los usuarios avanzados pueden usar D-Bus para "
+"configurar los terminales desde otras aplicaciones y scripts. Hay tres "
+"métodos D-Bus específicos para este propósito; requieren un código "
+"identificador para seleccionar una terminal específica; cada identificador "
+"de terminal se puede leer mediante la variable de entorno ROXTERM_ID desde "
+"la consola/aplicación que ejecuta. La ruta de objetos D-Bus y el interfaz "
+"para métodos son «net.sf.roxterm.Options» y «/net/sf/roxterm/Options» "
+"respectivamente. Los métodos son:"
 
 #. type: Content of: <html><body><div><div><div><p>
 #: ../Help/en/guide.html:171
@@ -412,7 +552,12 @@ msgid ""
 "same window will be updated to the same new profile. All tabs in one window "
 "must have the same profile so that their font size and therefore terminal "
 "size remain consistent."
-msgstr "Pide a la terminal que utilice el perfil indicado. Tenga en cuenta que cualquier otra pestaña en la misma ventana será actualizada con el mismo perfil. Todas las pestañas de una ventana deben tener el mismo perfil para que el tamaño de letra y por lo tanto el tamaño de terminal permanezcan consistentes."
+msgstr ""
+"Pide a la terminal que utilice el perfil indicado. Tenga en cuenta que "
+"cualquier otra pestaña en la misma ventana será actualizada con el mismo "
+"perfil. Todas las pestañas de una ventana deben tener el mismo perfil para "
+"que el tamaño de letra y por lo tanto el tamaño de terminal permanezcan "
+"consistentes."
 
 #. type: Content of: <html><body><div><div><div><p>
 #: ../Help/en/guide.html:176
@@ -424,7 +569,9 @@ msgstr "SetColourScheme(«identificador», «nombre_del_esquema»)"
 msgid ""
 "Ask the terminal to use the named colour scheme. Tabs sharing the same "
 "window may have different colour schemes from each other."
-msgstr "Pide a la terminal que utilice el esquema de color indicado. Las pestañas que comparten la misma ventana pueden tener esquemas de color diferentes."
+msgstr ""
+"Pide a la terminal que utilice el esquema de color indicado. Las pestañas "
+"que comparten la misma ventana pueden tener esquemas de color diferentes."
 
 #. type: Content of: <html><body><div><div><div><p>
 #: ../Help/en/guide.html:180
@@ -434,9 +581,12 @@ msgstr "SetShortcutScheme(«identificador», «nombre_del_esquema»)"
 #. type: Content of: <html><body><div><div><div><p>
 #: ../Help/en/guide.html:181
 msgid ""
-"Ask the terminal to use the named keyboard shortcut scheme. Tabs sharing the"
-" same window must also share the same shortcut scheme."
-msgstr "Pide a la terminal que utilice el esquema de atajos de teclado indicado. Las pestañas que comparten la misma ventana también comparten el esquema de atajos de teclado."
+"Ask the terminal to use the named keyboard shortcut scheme. Tabs sharing the "
+"same window must also share the same shortcut scheme."
+msgstr ""
+"Pide a la terminal que utilice el esquema de atajos de teclado indicado. Las "
+"pestañas que comparten la misma ventana también comparten el esquema de "
+"atajos de teclado."
 
 #. type: Content of: <html><body><div><div><div><p>
 #: ../Help/en/guide.html:184 ../Help/en/guide.html:204
@@ -446,10 +596,11 @@ msgstr "Ejemplo utilizando dbus-send en un script:"
 #. type: Content of: <html><body><div><div><div><p>
 #: ../Help/en/guide.html:187
 msgid ""
-"<span>dbus-send --session /net/sf/roxterm/Options \\</span> "
-"<span>net.sf.roxterm.Options.SetColourScheme string:$ROXTERM_ID "
-"string:GTK</span>"
-msgstr "<span>dbus-send --session /net/sf/roxterm/Options \\</span> <span>net.sf.roxterm.Options.SetColourScheme string:$ROXTERM_ID string:GTK</span>"
+"<span>dbus-send --session /net/sf/roxterm/Options \\</span> <span>net.sf."
+"roxterm.Options.SetColourScheme string:$ROXTERM_ID string:GTK</span>"
+msgstr ""
+"<span>dbus-send --session /net/sf/roxterm/Options \\</span> <span>net.sf."
+"roxterm.Options.SetColourScheme string:$ROXTERM_ID string:GTK</span>"
 
 #. type: Content of: <html><body><div><div><div><p>
 #: ../Help/en/guide.html:191
@@ -457,16 +608,24 @@ msgid ""
 "You may also send D-Bus signals to change individual options within a named "
 "profile or colour scheme using the methods StringOption, IntOption (also "
 "used for boolean options) and FloatOption. All terminals using the named "
-"profile or colour scheme are affected, but only temporarily. The options are"
-" not saved for new terminals. The methods all take 3 arguments:"
-msgstr "También puede enviar señales D-Bus para cambiar opciones individuales en un perfil o esquema de color determinado con los métodos StringOption, IntOption (también utilizada para opciones booleanas) y FloatOption. Todas las terminales que usan el mismo perfil o esquema de color se ven afectadas, pero solo temporalmente. Las opciones no se guardan pera terminales nuevas. Todos los métodos toman 3 argumentos: "
+"profile or colour scheme are affected, but only temporarily. The options are "
+"not saved for new terminals. The methods all take 3 arguments:"
+msgstr ""
+"También puede enviar señales D-Bus para cambiar opciones individuales en un "
+"perfil o esquema de color determinado con los métodos StringOption, "
+"IntOption (también utilizada para opciones booleanas) y FloatOption. Todas "
+"las terminales que usan el mismo perfil o esquema de color se ven afectadas, "
+"pero solo temporalmente. Las opciones no se guardan pera terminales nuevas. "
+"Todos los métodos toman 3 argumentos: "
 
 #. type: Content of: <html><body><div><div><div><ul><li>
 #: ../Help/en/guide.html:197
 msgid ""
-"<span>Full profile name, including a prefix of \"Profiles/\" or "
-"\"Colours/\"</span>"
-msgstr "<span>Nombre completo del perfil, incluyendo un prefijo «Profiles/» o «Colours/»</span>"
+"<span>Full profile name, including a prefix of \"Profiles/\" or \"Colours/"
+"\"</span>"
+msgstr ""
+"<span>Nombre completo del perfil, incluyendo un prefijo «Profiles/» o "
+"«Colours/»</span>"
 
 #. type: Content of: <html><body><div><div><div><ul><li>
 #: ../Help/en/guide.html:198
@@ -483,15 +642,20 @@ msgstr "<span>Valor</span>"
 msgid ""
 "To see which option names you can use, check the config files, from which "
 "the types can be deduced."
-msgstr "Para ver los nombres de opción disponibles, consulte los archivos de configuración, desde los cuales se pueden deducir los tipos"
+msgstr ""
+"Para ver los nombres de opción disponibles, consulte los archivos de "
+"configuración, desde los cuales se pueden deducir los tipos"
 
 #. type: Content of: <html><body><div><div><div><p>
 #: ../Help/en/guide.html:207
 msgid ""
-"<span>dbus-send --session /net/sf/roxterm/Options \\</span> "
-"<span>net.sf.roxterm.Options.StringOption \\</span> <span>string:Colours/GTK"
-" string:background 'string:#ffffff'</span>"
-msgstr "<span>dbus-send --session /net/sf/roxterm/Options \\</span> <span>net.sf.roxterm.Options.StringOption \\</span> <span>string:Colours/GTK string:background 'string:#ffffff'</span>"
+"<span>dbus-send --session /net/sf/roxterm/Options \\</span> <span>net.sf."
+"roxterm.Options.StringOption \\</span> <span>string:Colours/GTK string:"
+"background 'string:#ffffff'</span>"
+msgstr ""
+"<span>dbus-send --session /net/sf/roxterm/Options \\</span> <span>net.sf."
+"roxterm.Options.StringOption \\</span> <span>string:Colours/GTK string:"
+"background 'string:#ffffff'</span>"
 
 #. type: Content of: <html><body><div><div><div><p>
 #: ../Help/en/guide.html:212
@@ -499,7 +663,10 @@ msgid ""
 "A third possible use is to notify roxterm that a profile, colour scheme or "
 "shortcuts scheme has been changed by an external program and all terminals "
 "using that profile etc need to reload it:"
-msgstr "Un posible tercer uso es notificar a roxterm que un perfil, esquema de color o esquema de atajos ha sido modificado por otro programa y todos los terminales utilizando ese perfil, etc. necesitan recargarlo:"
+msgstr ""
+"Un posible tercer uso es notificar a roxterm que un perfil, esquema de color "
+"o esquema de atajos ha sido modificado por otro programa y todos los "
+"terminales utilizando ese perfil, etc. necesitan recargarlo:"
 
 #. type: Content of: <html><body><div><div><div><p>
 #: ../Help/en/guide.html:215
@@ -511,43 +678,60 @@ msgstr "OptionsChanged(«nombre_de_familia», «nombre_del_perfil»)"
 msgid ""
 "where family_name is one of \"Profiles\", \"Colours\" or \"Shortcuts\". For "
 "example:"
-msgstr "donde nombre_de_familia es uno de «Profiles», «Colours» o «Shortcuts». Por ejemplo:"
+msgstr ""
+"donde nombre_de_familia es uno de «Profiles», «Colours» o «Shortcuts». Por "
+"ejemplo:"
 
 #. type: Content of: <html><body><div><div><div><p>
 #: ../Help/en/guide.html:219
 msgid ""
-"<span>dbus-send --session /net/sf/roxterm/Options \\</span> "
-"<span>net.sf.roxterm.Options.OptionsChanged \\</span> <span>string:Profiles "
-"string:Default</span>"
-msgstr "<span>dbus-send --session /net/sf/roxterm/Options \\</span> <span>net.sf.roxterm.Options.OptionsChanged \\</span> <span>string:Profiles string:Default</span>"
-
-#. type: Content of: <html><body><div><div><div><a>
-#: ../Help/en/guide.html:228
-msgid ""
-"<a id=\"SourceforgeLink\" href=\"http://sourceforge.net/projects/roxterm\" "
-"title=\"RoxTerm Sourceforge\">"
-msgstr "<a id=\"SourceforgeLink\" href=\"http://sourceforge.net/projects/roxterm\" title=\"RoxTerm Sourceforge\">"
-
-#. type: Attribute 'alt' of: <html><body><div><div><div><a><img>
-#: ../Help/en/guide.html:230
-msgid ""
-"Get RoxTerm at SourceForge.net. Fast, secure and Free Open Source software "
-"downloads"
-msgstr "Descargue RoxTerm desde SourceForge.net. Descargas de software libre rápidas, seguras y gratis"
+"<span>dbus-send --session /net/sf/roxterm/Options \\</span> <span>net.sf."
+"roxterm.Options.OptionsChanged \\</span> <span>string:Profiles string:"
+"Default</span>"
+msgstr ""
+"<span>dbus-send --session /net/sf/roxterm/Options \\</span> <span>net.sf."
+"roxterm.Options.OptionsChanged \\</span> <span>string:Profiles string:"
+"Default</span>"
 
 #. type: Content of: <html><body><div><div><div>
-#: ../Help/en/guide.html:235
+#: ../Help/en/guide.html:228
+#, fuzzy
+#| msgid ""
+#| "<a id=\"SourceforgeLink\" href=\"http://sourceforge.net/projects/roxterm"
+#| "\" title=\"RoxTerm Sourceforge\">"
 msgid ""
-"<a id=\"DonationLink\" class=\"spriteLink\" "
-"href=\"http://sourceforge.net/donate/index.php?group_id=124080\">Donate</a> "
-"<a id=\"ValidMarkupLink\" class=\"spriteLink\" "
-"href=\"http://validator.w3.org/check?uri=referer\">Valid XHTML</a>"
-msgstr "<a id=\"DonationLink\" class=\"spriteLink\" href=\"http://sourceforge.net/donate/index.php?group_id=124080\">Donar</a> <a id=\"ValidMarkupLink\" class=\"spriteLink\" href=\"http://validator.w3.org/check?uri=referer\">XHTML Válido</a>"
+"<a id=\"SourceforgeLink\" href=\"http://sourceforge.net/projects/roxterm\" "
+"title=\"RoxTerm Sourceforge\"> roxterm @ sourceforge </a>"
+msgstr ""
+"<a id=\"SourceforgeLink\" href=\"http://sourceforge.net/projects/roxterm\" "
+"title=\"RoxTerm Sourceforge\">"
+
+#. type: Content of: <html><body><div><div><div>
+#: ../Help/en/guide.html:234
+msgid ""
+"<a id=\"DonationLink\" class=\"spriteLink\" href=\"http://sourceforge.net/"
+"donate/index.php?group_id=124080\">Donate</a> <a id=\"ValidMarkupLink\" "
+"class=\"spriteLink\" href=\"http://validator.w3.org/check?uri=referer"
+"\">Valid XHTML</a>"
+msgstr ""
+"<a id=\"DonationLink\" class=\"spriteLink\" href=\"http://sourceforge.net/"
+"donate/index.php?group_id=124080\">Donar</a> <a id=\"ValidMarkupLink\" class="
+"\"spriteLink\" href=\"http://validator.w3.org/check?uri=referer\">XHTML "
+"Válido</a>"
 
 #. type: Content of: <html><body><div><div><p>
-#: ../Help/en/guide.html:239
+#: ../Help/en/guide.html:238
 msgid ""
-"ROXTerm is licensed under the <a "
-"href=\"http://www.gnu.org/licenses/gpl-3.0-standalone.html\">GPL</a> | Site "
-"design by Adrian Sampson"
-msgstr "ROXTerm se publica bajo la licencia <a href=\"http://www.gnu.org/licenses/gpl-3.0-standalone.html\">GPL</a> | Diseño de la página web por Adrian Sampson | Traducción al español por F&eacute;lix Medrano"
+"ROXTerm is licensed under the <a href=\"http://www.gnu.org/licenses/gpl-3.0-"
+"standalone.html\">GPL</a> | Site design by Adrian Sampson"
+msgstr ""
+"ROXTerm se publica bajo la licencia <a href=\"http://www.gnu.org/licenses/"
+"gpl-3.0-standalone.html\">GPL</a> | Diseño de la página web por Adrian "
+"Sampson | Traducción al español por F&eacute;lix Medrano"
+
+#~ msgid ""
+#~ "Get RoxTerm at SourceForge.net. Fast, secure and Free Open Source "
+#~ "software downloads"
+#~ msgstr ""
+#~ "Descargue RoxTerm desde SourceForge.net. Descargas de software libre "
+#~ "rápidas, seguras y gratis"
