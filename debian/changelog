@@ -3,8 +3,9 @@ roxterm (2.8.1-1) unstable; urgency=low
   * Added dbg packages.
   * Recommends: dbus-x11.
   * Updated Standards-Version.
-  * Use text instead of online SourceForge logo in HTML docs (privacy issue).
+  * Support signature check in debian/watch.
   * New upstream version:
+    + Use text instead of online SourceForge logo in HTML docs (privacy issue).
     + Fixed crashes/warnings when searching terminals.
     + More memory leak fixes in menus.
     + Don't support terminal background options deprecated by vte.
