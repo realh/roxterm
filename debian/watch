@@ -1,3 +1,2 @@
 version=3
-http://sf.net/roxterm/roxterm-(.*)\.tar\.(?:gz|bz2)
-opts=pgpsigurlmangle=s/$/.sign/
+opts="pgpsigurlmangle=s/$/.sign/" http://sf.net/roxterm/roxterm-(.*)\.tar\.(?:gz|bz2)
