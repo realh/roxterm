@@ -209,6 +209,8 @@ class Context(object):
         self.add_var('LIBTOOL_FLAGS', '', "Additional libtool flags")
         self.add_var('PKG_CONFIG', self.find_prog_by_var, "pkg-config")
         self.add_var('INSTALL', self.find_prog_by_var, "install program")
+        self.add_var('SIGN_DIST', False,
+                "If True, dist archives will be signed (requires ${GPG}")
 
 
     def __init__(self, **kwargs):
@@ -762,6 +764,19 @@ Other predefined variables [default values shown in squarer brackets]:
             else:
                 tar.add(f, **kwargs)
         tar.close()
+        if self.env.get("SIGN_DIST"):
+            gpg = self.env.get("GPG")
+            try:
+                if gpg:
+                        mprint("Signing " + filename)
+                        result = call_subprocess([gpg, "--detach-sign",
+                                "--armor", "-o", filename + ".sign", filename])
+                        if result:
+                            raise Exception()
+                else:
+                    raise Exception()
+            except:
+                mprint("Unable to sign " + filename, file = sys.stderr)
 
 
     def add_dist(self, objects, **kwargs):

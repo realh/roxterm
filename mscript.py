@@ -53,6 +53,13 @@ if ctx.mode == 'configure' or ctx.mode == 'help':
 if ctx.mode == 'configure':
 
     ctx.find_prog_env("sed")
+    try:
+        ctx.find_prog_env("gpg")
+    except MaitchNotFoundError:
+        mprint("gpg not found, not signing tarball")
+        ctx.setenv('SIGN_DIST', False)
+    else:
+        ctx.setenv('SIGN_DIST', True)
 
     vfile = ctx.subst(VFILE)
     if ctx.env['ENABLE_GIT'] != False:
@@ -645,3 +652,8 @@ if ctx.mode == 'uninstall':
     ctx.prune_directory("${PKGDATADIR}")
     ctx.prune_directory("${DOCDIR}")
     ctx.prune_directory("${HTMLDIR}")
+elif ctx.mode == 'uninstall':
+        basedir = self.subst("${PACKAGE}-${VERSION}")
+        filename = os.path.abspath(
+                self.subst("${BUILD_DIR}/%s.%s" % (basedir, suffix)))
+        mprint("Creating %s '%s'" % (zname, filename))
