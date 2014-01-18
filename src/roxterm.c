@@ -89,8 +89,6 @@ struct ROXTermData {
     char *directory;            /* Copied from global_options_directory */
     GArray *match_map;
     gboolean no_respawn;
-    GtkWidget *im_submenu1, *im_submenu2, *im_submenu3;
-            /* Input Methods submenus; one each for popups and menu bar */
     gboolean running;
     DragReceiveData *drd;
 
@@ -110,7 +108,6 @@ struct ROXTermData {
     GtkWidget *replace_task_dialog;
     gboolean postponed_free;
     PangoFontDescription *pango_desc;
-    gboolean setup_encodings;
     gboolean dont_lookup_dimensions;
     char *reply;
     int columns, rows;
@@ -403,7 +400,6 @@ static ROXTermData *roxterm_data_clone(ROXTermData *old_gt)
     new_gt->tab = NULL;
     new_gt->running = FALSE;
     new_gt->postponed_free = FALSE;
-    new_gt->setup_encodings = FALSE;
     new_gt->dont_lookup_dimensions = FALSE;
     new_gt->actual_commandv = NULL;
     new_gt->env = roxterm_strv_copy(old_gt->env);
@@ -441,8 +437,6 @@ static ROXTermData *roxterm_data_clone(ROXTermData *old_gt)
         new_gt->encoding = g_strdup(old_gt->encoding);
     if (old_gt->display_name)
         new_gt->display_name = g_strdup(old_gt->display_name);
-
-    new_gt->im_submenu1 = new_gt->im_submenu2 = new_gt->im_submenu3 = NULL;
 
     new_gt->match_map = g_array_new(FALSE, FALSE, sizeof(ROXTerm_MatchMap));
     new_gt->matched_url = NULL;
@@ -1051,18 +1045,6 @@ static void roxterm_data_delete(ROXTermData *roxterm)
         UNREF_LOG(dynamic_options_unref(roxterm_profiles,
                 options_get_leafname(roxterm->profile)));
     }
-    if (roxterm->im_submenu1)
-    {
-        UNREF_LOG(g_object_unref(roxterm->im_submenu1));
-    }
-    if (roxterm->im_submenu2)
-    {
-        UNREF_LOG(g_object_unref(roxterm->im_submenu2));
-    }
-    if (roxterm->im_submenu3)
-    {
-        UNREF_LOG(g_object_unref(roxterm->im_submenu3));
-    }
     drag_receive_data_delete(roxterm->drd);
     if (roxterm->actual_commandv != roxterm->commandv)
         g_strfreev(roxterm->actual_commandv);
@@ -1118,6 +1100,7 @@ roxterm_set_show_uri_menu_items(ROXTermData * roxterm,
     set_show_uri_menu_items(multi_win_get_short_popup_menu(win), show_type);
 }
 
+#if !VTE_BACKGROUND_DEPRECATED
 static double roxterm_get_config_saturation(ROXTermData *roxterm)
 {
     double saturation = options_lookup_double(roxterm->profile, "saturation");
@@ -1133,6 +1116,7 @@ static double roxterm_get_config_saturation(ROXTermData *roxterm)
     }
     return saturation;
 }
+#endif
 
 #if 0
 /* Setting window background creates a worse problem than it solves:
@@ -1182,6 +1166,7 @@ static void roxterm_apply_window_background(ROXTermData *roxterm,
 #define roxterm_apply_window_background(r, b, s)
 #endif
 
+#if !VTE_BACKGROUND_DEPRECATED
 static void roxterm_update_background(ROXTermData * roxterm, VteTerminal * vte)
 {
     char *background_file;
@@ -1241,6 +1226,7 @@ static void roxterm_update_background(ROXTermData * roxterm, VteTerminal * vte)
     vte_terminal_set_opacity(vte, true_trans ?
             (guint16) (0xffff * (1 - saturation)) : 0xffff);
 }
+#endif
 
 static void
 roxterm_update_cursor_colour(ROXTermData * roxterm, VteTerminal * vte)
@@ -1941,33 +1927,6 @@ static void check_preferences_submenu_pair(ROXTermData *roxterm, MenuTreeID id,
     multi_win_set_ignore_toggles(win, FALSE);
 }
 
-static void create_im_submenus(ROXTermData *roxterm, VteTerminal *vte)
-{
-    /* Need to create extra refs for IM submenus because they get removed
-     * from parent menus when switching tabs */
-    if (!roxterm->im_submenu1)
-    {
-        roxterm->im_submenu1 = gtk_menu_new();
-        g_object_ref(roxterm->im_submenu1);
-        vte_terminal_im_append_menuitems(vte,
-                GTK_MENU_SHELL(roxterm->im_submenu1));
-    }
-    if (!roxterm->im_submenu2)
-    {
-        roxterm->im_submenu2 = gtk_menu_new();
-        g_object_ref(roxterm->im_submenu2);
-        vte_terminal_im_append_menuitems(vte,
-                GTK_MENU_SHELL(roxterm->im_submenu2));
-    }
-    if (!roxterm->im_submenu3)
-    {
-        roxterm->im_submenu3 = gtk_menu_new();
-        g_object_ref(roxterm->im_submenu3);
-        vte_terminal_im_append_menuitems(vte,
-                GTK_MENU_SHELL(roxterm->im_submenu3));
-    }
-}
-
 #ifdef HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX
 inline static void roxterm_shade_mtree_search_items(MenuTree *mtree,
         gboolean shade)
@@ -1993,7 +1952,6 @@ static void roxterm_shade_search_menu_items(ROXTermData *roxterm)
 static void roxterm_tab_selection_handler(ROXTermData * roxterm, MultiTab * tab)
 {
     MultiWin *win = roxterm_get_win(roxterm);
-    VteTerminal *vte = VTE_TERMINAL(roxterm->widget);
     MenuTree *menu_bar = multi_win_get_menu_bar(win);
     MenuTree *popup_menu = multi_win_get_popup_menu(win);
     MenuTree *short_popup = multi_win_get_short_popup_menu(win);
@@ -2013,18 +1971,8 @@ static void roxterm_tab_selection_handler(ROXTermData * roxterm, MultiTab * tab)
     roxterm_shade_search_menu_items(roxterm);
 #endif
 
-    /* Creation of im submenus deferred to this point because vte
-     * widget must be realized first */
-    if (!roxterm->im_submenu1)
-    {
-        create_im_submenus(roxterm, vte);
-        menutree_attach_im_submenu(popup_menu, roxterm->im_submenu1);
-        menutree_attach_im_submenu(menu_bar, roxterm->im_submenu2);
-        menutree_attach_im_submenu(short_popup, roxterm->im_submenu3);
-    }
-
     multi_win_set_ignore_toggles(win, TRUE);
-    if (!roxterm->setup_encodings)
+    if (!popup_menu->encodings)
     {
         char const **encodings = roxterm_list_encodings();
 
@@ -2036,7 +1984,6 @@ static void roxterm_tab_selection_handler(ROXTermData * roxterm, MultiTab * tab)
                 encodings, roxterm_encoding_toggled);
         if (encodings)
             g_free(encodings);
-        roxterm->setup_encodings = TRUE;
     }
     menutree_select_encoding(popup_menu, roxterm->encoding);
     menutree_select_encoding(menu_bar, roxterm->encoding);
@@ -2940,7 +2887,7 @@ static void roxterm_connect_menu_signals(MultiWin * win)
     roxterm_add_all_pref_submenus(win);
 }
 
-#if HAVE_COMPOSITE
+#if HAVE_COMPOSITE && !VTE_BACKGROUND_DEPRECATED
 static void roxterm_composited_changed_handler(VteTerminal *vte,
         ROXTermData *roxterm)
 {
@@ -2989,7 +2936,7 @@ static void roxterm_connect_misc_signals(ROXTermData * roxterm)
             G_CALLBACK(roxterm_text_changed_handler), roxterm);
     g_signal_connect(roxterm->widget, "resize-window",
             G_CALLBACK(roxterm_resize_window_handler), roxterm);
-#if HAVE_COMPOSITE
+#if HAVE_COMPOSITE && !VTE_BACKGROUND_DEPRECATED
     g_signal_connect(roxterm->widget, "composited-changed",
             G_CALLBACK(roxterm_composited_changed_handler), roxterm);
 #endif
@@ -3220,9 +3167,10 @@ static void roxterm_apply_show_resize_grip(ROXTermData *roxterm)
 
     if (w)
     {
-        gtk_window_set_has_resize_grip(w,
-                options_lookup_int_with_default(roxterm->profile,
-                        "show_resize_grip", TRUE));
+        int grip =  options_lookup_int_with_default(roxterm->profile,
+                        "show_resize_grip", TRUE);
+        gtk_window_set_has_resize_grip(w, grip);
+        g_debug("Set resize grip: %d", grip);
     }
 }
 #endif
@@ -3266,7 +3214,9 @@ static void roxterm_apply_profile(ROXTermData *roxterm, VteTerminal *vte,
     roxterm_update_cursor_shape(roxterm, vte);
 
     roxterm_apply_colour_scheme(roxterm, vte);
+#if !VTE_BACKGROUND_DEPRECATED
     roxterm_update_background(roxterm, vte);
+#endif
 
     roxterm_update_font(roxterm, vte, update_geometry);
 
@@ -3386,6 +3336,15 @@ roxterm_tab_received(GtkWidget *rcvd_widget, ROXTermData *roxterm)
     }
 }
 
+inline static GtkAdjustment *roxterm_get_vte_adjustment(VteTerminal *vte)
+{
+#if GTK_CHECK_VERSION(3, 0, 0)
+    return gtk_scrollable_get_vadjustment(GTK_SCROLLABLE(vte));
+#else
+    return vte_terminal_get_adjustment(vte);
+#endif
+}
+
 static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
     ROXTermData * roxterm_template, ROXTermData ** roxterm_out,
     GtkWidget ** vte_widget, GtkAdjustment **adjustment)
@@ -3425,7 +3384,7 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
     if (vte_widget)
         *vte_widget = roxterm->widget;
     if (adjustment)
-        *adjustment = vte_terminal_get_adjustment(vte);
+        *adjustment = roxterm_get_vte_adjustment(vte);
 
     scrollbar_pos = multi_win_set_scroll_bar_position(win,
         options_lookup_int_with_default(roxterm_template->profile,
@@ -3437,7 +3396,7 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
 
         roxterm->scrollbar =
                 gtk_scrollbar_new(GTK_ORIENTATION_VERTICAL,
-                        vte_terminal_get_adjustment(vte));
+                        roxterm_get_vte_adjustment(vte));
         if (scrollbar_pos == MultiWinScrollBar_Left)
         {
             gtk_grid_attach(grid, roxterm->scrollbar, 0, 0, 1, 1);
@@ -3455,7 +3414,7 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
 #else
         roxterm->hbox = gtk_hbox_new(FALSE, 0);
         roxterm->scrollbar =
-                gtk_vscrollbar_new(vte_terminal_get_adjustment(vte));
+                gtk_vscrollbar_new(roxterm_get_vte_adjustment(vte));
         if (scrollbar_pos == MultiWinScrollBar_Left)
         {
             gtk_box_pack_end(GTK_BOX(roxterm->hbox), roxterm->widget,
@@ -3647,6 +3606,7 @@ static void roxterm_reflect_profile_change(Options * profile, const char *key)
                     options_lookup_int(roxterm->profile, "full_screen"));
             apply_to_win = TRUE;
         }
+#if !VTE_BACKGROUND_DEPRECATED
         else if (!strcmp(key, "background_img")
                 || !strcmp(key, "background_type")
                 || !strcmp(key, "scroll_background")
@@ -3654,6 +3614,7 @@ static void roxterm_reflect_profile_change(Options * profile, const char *key)
         {
             roxterm_update_background(roxterm, vte);
         }
+#endif
         else if (!strcmp(key, "scrollback_lines"))
         {
             roxterm_set_scrollback_lines(roxterm, vte);

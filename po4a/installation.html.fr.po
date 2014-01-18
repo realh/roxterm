@@ -3,15 +3,16 @@
 # This file is distributed under the same license as the roxterm package.
 #
 # Translators:
-# Stéphane Aulery <lkppo@free.fr>, 2012
+# Philippe Etienne <petienne@laposte.net>, 2013
+# Stéphane Aulery, 2012
 # Tony Houghton <h@realh.co.uk>, 2010
 msgid ""
 msgstr ""
 "Project-Id-Version: roxterm\n"
 "Report-Msgid-Bugs-To: http://sourceforge.net/tracker/?group_id=124080\n"
-"POT-Creation-Date: 2013-07-27 19:14+0200\n"
-"PO-Revision-Date: 2013-03-18 14:58+0000\n"
-"Last-Translator: Tony Houghton <h@realh.co.uk>\n"
+"POT-Creation-Date: 2014-01-15 15:24+0000\n"
+"PO-Revision-Date: 2013-12-07 16:53+0000\n"
+"Last-Translator: Philippe Etienne <petienne@laposte.net>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/roxterm/language/"
 "fr/)\n"
 "Language: fr\n"
@@ -36,7 +37,7 @@ msgid "<a id=\"Logo\" href=\"index.html\">"
 msgstr "<a id=\"Logo\" href=\"index.html\">"
 
 #. type: Content of: <html><body><div><div><div>
-#: ../Help/en/installation.html:21 ../Help/en/installation.html:156
+#: ../Help/en/installation.html:21
 msgid "</a>"
 msgstr "</a>"
 
@@ -115,7 +116,7 @@ msgstr ""
 #. type: Content of: <html><body><div><div><div><p>
 #: ../Help/en/installation.html:53
 msgid "<span>git clone git://git.code.sf.net/p/roxterm/code roxterm</span>"
-msgstr ""
+msgstr "<span>git clone git://git.code.sf.net/p/roxterm/code roxterm</span>"
 
 #. type: Content of: <html><body><div><div><div><h2>
 #: ../Help/en/installation.html:56
@@ -339,6 +340,14 @@ msgid ""
 "building you will have to copy these files from <code>Help/lib</code> in a "
 "tarball: <code>roxterm_logo.png favicon.ico logo_text.png</code>."
 msgstr ""
+"A ce stade, vous pouvez utiliser <code>sudo apt-get build-dep</ code> mais, "
+"en fonction de la version déjà dans votre distribution, les paquets peuvent "
+"ne pas être à jour, alors attendez-vous à des erreurs de dépendance et à "
+"devoir installer les paquets nécessaires à ce moment. Vous devez installer "
+"imagemagick et librsvg2-bin à ce point, mais ceux-ci sont bogués dans Ubuntu "
+"Lucid (et avant ?) donc, avant de faire le build, vous devrez copier ces "
+"fichiers à partir <code>Help/lib</ code> dans une archive : "
+"<code>roxterm_logo.png favicon.ico logo_text.png</ code>."
 
 #. type: Content of: <html><body><div><div><div><p>
 #: ../Help/en/installation.html:141
@@ -351,27 +360,30 @@ msgid ""
 "-us</code>. Note the <code>-b</code>:- only binary packages can be built in "
 "the absence of an orig tarball."
 msgstr ""
-
-#. type: Content of: <html><body><div><div><div><a>
-#: ../Help/en/installation.html:153
-msgid ""
-"<a id=\"SourceforgeLink\" href=\"http://sourceforge.net/projects/roxterm\" "
-"title=\"RoxTerm Sourceforge\">"
-msgstr ""
-"<a id=\"SourceforgeLink\" href=\"http://sourceforge.net/projects/roxterm\" "
-"title=\"RoxTerm Sourceforge\">"
-
-#. type: Attribute 'alt' of: <html><body><div><div><div><a><img>
-#: ../Help/en/installation.html:155
-msgid ""
-"Get RoxTerm at SourceForge.net. Fast, secure and Free Open Source software "
-"downloads"
-msgstr ""
-"Obtenez RoxTerm sur SourceForge.net. Téléchargements rapides, sécurisés et "
-"libre de logiciels libres"
+"Si vous n'utilisez pas une release snapshot, c'est une bonne idée d'utiliser "
+"<code>dch</code> pour s'assurer que le numéro de version le plus récent dans "
+"<code>debian/changelog</code> a un numéro de version approprié, par exemple "
+"ce que <code>./mscript.py configure</code> génère dans le fichier "
+"<code>version</code>, basé sur la sortie de <code>git describe</ code>. "
+"Maintenant, vous pouvez construire les paquets par exemple avec "
+"<code>debuild -b -uc -us</ code>. Remarque <code>-b</code> : - seuls les "
+"paquets binaires peuvent être construits en l'absence d'une archive orig."
 
 #. type: Content of: <html><body><div><div><div>
-#: ../Help/en/installation.html:160
+#: ../Help/en/installation.html:153
+#, fuzzy
+#| msgid ""
+#| "<a id=\"SourceforgeLink\" href=\"http://sourceforge.net/projects/roxterm"
+#| "\" title=\"RoxTerm Sourceforge\">"
+msgid ""
+"<a id=\"SourceforgeLink\" href=\"http://sourceforge.net/projects/roxterm\" "
+"title=\"RoxTerm Sourceforge\"> roxterm @ sourceforge </a>"
+msgstr ""
+"<a id=\"SourceforgeLink\" href=\"http://sourceforge.net/projects/roxterm\" "
+"title=\"RoxTerm Sourceforge\">"
+
+#. type: Content of: <html><body><div><div><div>
+#: ../Help/en/installation.html:159
 msgid ""
 "<a id=\"DonationLink\" class=\"spriteLink\" href=\"http://sourceforge.net/"
 "donate/index.php?group_id=124080\">Donate</a> <a id=\"ValidMarkupLink\" "
@@ -384,10 +396,17 @@ msgstr ""
 "\">XHTML valide</a>"
 
 #. type: Content of: <html><body><div><div><p>
-#: ../Help/en/installation.html:164
+#: ../Help/en/installation.html:163
 msgid ""
 "ROXTerm is licensed under the <a href=\"http://www.gnu.org/licenses/gpl-3.0-"
 "standalone.html\">GPL</a> | Site design by Adrian Sampson"
 msgstr ""
 "ROXTerm est publié sous licence <a href=\"http://www.gnu.org/licenses/"
 "gpl-3.0-standalone.html\">GPL</a> | Site conçu par Adrian Sampson"
+
+#~ msgid ""
+#~ "Get RoxTerm at SourceForge.net. Fast, secure and Free Open Source "
+#~ "software downloads"
+#~ msgstr ""
+#~ "Obtenez RoxTerm sur SourceForge.net. Téléchargements rapides, sécurisés "
+#~ "et libre de logiciels libres"

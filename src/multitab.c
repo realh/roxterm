@@ -1941,6 +1941,7 @@ MultiWin *multi_win_new_blank(const char *display_name, Options *shortcuts,
 
     win->popup_menu = menutree_new(shortcuts, win->accel_group,
         GTK_TYPE_MENU, TRUE, disable_tab_shortcuts, win);
+    //g_debug("Created popup menu %p", win->popup_menu);
     menutree_connect_destroyed(win->popup_menu,
         G_CALLBACK(multi_win_menutree_deleted_handler), win);
 
@@ -1948,10 +1949,12 @@ MultiWin *multi_win_new_blank(const char *display_name, Options *shortcuts,
         TRUE, win);
     menutree_connect_destroyed(win->short_popup,
         G_CALLBACK(multi_win_menutree_deleted_handler), win);
+    //g_debug("Created short popup menu %p", win->short_popup);
 
     win->menu_bar = menutree_new(shortcuts, win->accel_group,
         GTK_TYPE_MENU_BAR, disable_menu_shortcuts, disable_tab_shortcuts,
         win);
+    //g_debug("Created menu bar %p", win->menu_bar);
     /* Make sure menu widgets aren't destroyed when removed from window */
     g_object_ref(menutree_get_top_level_widget(win->menu_bar));
     menutree_connect_destroyed(win->menu_bar,
@@ -2117,9 +2120,22 @@ static void multi_win_destructor(MultiWin *win, gboolean destroy_widgets)
     }
     if (win->menu_bar)
     {
-        /* Remember we added an extra reference to this when we created window
+        /* Remember we added an extra reference to this when we created window,
+         * so it will now be removed from window but not destroyed. Have to
+         * destroy it explicitly.
          */
-        UNREF_LOG(g_object_ref(menutree_get_top_level_widget(win->menu_bar)));
+        UNREF_LOG(menutree_delete(win->menu_bar));
+        win->menu_bar = NULL;
+    }
+    if (win->popup_menu)
+    {
+        UNREF_LOG(menutree_delete(win->popup_menu));
+        win->popup_menu = NULL;
+    }
+    if (win->short_popup)
+    {
+        UNREF_LOG(menutree_delete(win->short_popup));
+        win->short_popup = NULL;
     }
     if (destroy_widgets && win->gtkwin)
     {

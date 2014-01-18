@@ -232,8 +232,7 @@ static void menutree_build_shell(MenuTree *menu_tree, GtkMenuShell * shell, ...)
         _("Show Menu_bar"), MENUTREE_VIEW_SHOW_MENUBAR
 
 #define ENC_INPUT_ITEMS \
-        _("C_haracter Encoding"), MENUTREE_PREFERENCES_CHARACTER_ENCODING, \
-        _("_Input Methods"), MENUTREE_PREFERENCES_INPUT_METHODS
+        _("C_haracter Encoding"), MENUTREE_PREFERENCES_CHARACTER_ENCODING
 
 GtkMenu *menutree_submenu_from_id(MenuTree *mtree, MenuTreeID id)
 {
@@ -551,6 +550,13 @@ void menutree_select_encoding(MenuTree *mtree, const char *encoding)
     }
 }
 
+/*
+static void submenu_destroy_handler(GtkWidget *menu, gpointer handle)
+{
+    g_debug("Destroying submenu %p", menu);
+}
+*/
+
 /* Creates top-level menubar or popup menu with submenus */
 static void menutree_build(MenuTree *menu_tree, Options *shortcuts,
         GType menu_type)
@@ -571,6 +577,11 @@ static void menutree_build(MenuTree *menu_tree, Options *shortcuts,
     }
 
     submenu = gtk_menu_new();
+    /*
+    g_debug("Creating File submenu %p", submenu);
+    g_signal_connect(submenu, "destroy",
+            G_CALLBACK(submenu_destroy_handler), NULL);
+    */
     menutree_build_shell(menu_tree, GTK_MENU_SHELL(submenu),
         _("_New Window"), MENUTREE_FILE_NEW_WINDOW,
         _("New _Tab"), MENUTREE_FILE_NEW_TAB,
@@ -703,8 +714,11 @@ static void menutree_build_short_popup(MenuTree *menu_tree, Options *shortcuts,
 
 static void menutree_destroy(MenuTree * tree)
 {
+    //g_debug("Destroying menu tree %p", tree);
     if (tree->deleted_handler)
         tree->deleted_handler(tree, tree->deleted_data);
+    if (tree->tabs)
+        g_list_free(tree->tabs);
     g_free(tree);
 }
 
@@ -712,6 +726,7 @@ static void menutree_destroy_widget_handler(GObject * obj, MenuTree * tree)
 {
     (void) obj;
 
+    //g_debug("Menu %p being destroyed", obj);
     tree->top_level = NULL;
     /* tree is no good any more so destroy it */
     menutree_destroy(tree);
@@ -756,6 +771,10 @@ MenuTree *menutree_new(Options *shortcuts, GtkAccelGroup *accel_group,
     }
     tree = menutree_new_common(shortcuts, accel_group, menu_type,
         menutree_build, disable_shortcuts, disable_tab_shortcuts, user_data);
+    /*
+    g_debug("Created menu %p of type %s", tree->top_level,
+            menu_type == GTK_TYPE_MENU_BAR ? "bar" : "popup");
+    */
     filled_labels = TRUE;
     return tree;
 }
@@ -764,8 +783,10 @@ MenuTree *menutree_new_short_popup(Options *shortcuts,
         GtkAccelGroup *accel_group, gboolean disable_shortcuts,
         gpointer user_data)
 {
-    return menutree_new_common(shortcuts, accel_group, GTK_TYPE_MENU,
+    MenuTree *tree = menutree_new_common(shortcuts, accel_group, GTK_TYPE_MENU,
         menutree_build_short_popup, disable_shortcuts, FALSE, user_data);
+    //g_debug("Created short popup menu %p", tree->top_level);
+    return tree;
 }
 
 void menutree_delete(MenuTree * tree)
@@ -956,23 +977,6 @@ void menutree_set_show_item(MenuTree * tree, MenuTreeID id, gboolean show)
         gtk_widget_show(item);
     else
         gtk_widget_hide(item);
-}
-
-void menutree_attach_im_submenu(MenuTree *tree, GtkWidget *submenu)
-{
-    GtkMenuItem *item = GTK_MENU_ITEM(tree->item_widgets
-            [MENUTREE_PREFERENCES_INPUT_METHODS]);
-    GtkWidget *oldsub = gtk_menu_item_get_submenu(item);
-    GtkMenu *smm = GTK_MENU(submenu);
-
-    if (oldsub == submenu)
-        return;
-    if (oldsub)
-        gtk_menu_item_set_submenu(item, NULL);
-    if (gtk_menu_get_attach_widget(smm))
-        gtk_menu_detach(smm);
-    if (oldsub != submenu)
-        gtk_menu_item_set_submenu(item, submenu);
 }
 
 void menutree_disable_shortcuts(MenuTree *tree, gboolean disable)

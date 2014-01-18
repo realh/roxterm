@@ -92,7 +92,6 @@ typedef enum {
     MENUTREE_PREFERENCES_EDIT_CURRENT_COLOUR_SCHEME,
     MENUTREE_PREFERENCES_CONFIG_MANAGER,
     MENUTREE_PREFERENCES_CHARACTER_ENCODING,
-    MENUTREE_PREFERENCES_INPUT_METHODS,
 
     MENUTREE_TABS_DETACH_TAB,
     MENUTREE_TABS_CLOSE_TAB,
@@ -264,9 +263,6 @@ menutree_signal_connect_swapped(MenuTree * tree, MenuTreeID id,
 }
 
 void menutree_set_show_item(MenuTree * tree, MenuTreeID id, gboolean show);
-
-/* Attach an Input Methods submenu for the current tab */
-void menutree_attach_im_submenu(MenuTree *tree, GtkWidget *submenu);
 
 void menutree_apply_shortcuts(MenuTree *tree, Options *shortcuts);
 

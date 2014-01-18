@@ -43,6 +43,8 @@ if ctx.mode == 'configure' or ctx.mode == 'help':
     ctx.arg_disable('po4a', "Disable translation of documentation with po4a",
             default = None)
     ctx.arg_disable('translations', "Disable all translations", default = None)
+    ctx.arg_disable('nls', "Disable all translations (same as --disable-nls)",
+            default = None)
     ctx.arg_disable('git', "Assume this is a release tarball: "
             "don't attempt to generate changelogs, pixmaps etc")
     ctx.arg_enable("rox-locales",
@@ -51,6 +53,13 @@ if ctx.mode == 'configure' or ctx.mode == 'help':
 if ctx.mode == 'configure':
 
     ctx.find_prog_env("sed")
+    try:
+        ctx.find_prog_env("gpg")
+    except MaitchNotFoundError:
+        mprint("gpg not found, not signing tarball")
+        ctx.setenv('SIGN_DIST', False)
+    else:
+        ctx.setenv('SIGN_DIST', True)
 
     vfile = ctx.subst(VFILE)
     if ctx.env['ENABLE_GIT'] != False:
@@ -116,7 +125,7 @@ if ctx.mode == 'configure':
 
     gt = ctx.env['ENABLE_GETTEXT']
     po4a = ctx.env['ENABLE_PO4A']
-    trans = ctx.env['ENABLE_TRANSLATIONS']
+    trans = ctx.env['ENABLE_TRANSLATIONS'] and ctx.env['ENABLE_NLS']
     if trans != False and gt != False:
         try:
             ctx.find_prog_env("xgettext")
@@ -177,6 +186,8 @@ if ctx.mode == 'configure':
         try:
             ctx.pkg_config('gtk+-3.0', 'GTK')
             ctx.pkg_config('vte-2.90', 'VTE')
+            vte_version = ctx.prog_output("${PKG_CONFIG} --modversion vte-2.90")
+            ctx.setenv('VTE_BACKGROUND_DEPRECATED', vte_version >= "0.34.8")
         except MaitchChildError:
             if gtk3 == True:
                 raise
@@ -186,6 +197,7 @@ if ctx.mode == 'configure':
     if not gtk3:
         ctx.pkg_config('gtk+-2.0', 'GTK', '2.18')
         ctx.pkg_config('vte', 'VTE', '0.20')
+        ctx.setenv('VTE_BACKGROUND_DEPRECATED', 0)
 
     sm = ctx.env['ENABLE_SM']
     if sm != False:
@@ -243,6 +255,8 @@ if ctx.mode == 'configure':
     else:
         ctx.define('ENABLE_NLS', None)
     ctx.define_from_var('LOCALEDIR')
+
+    ctx.define_from_var('VTE_BACKGROUND_DEPRECATED')
 
     ctx.subst_file("${TOP_DIR}/roxterm.1.xml.in",
             "${TOP_DIR}/roxterm.1.xml", True)
@@ -638,3 +652,8 @@ if ctx.mode == 'uninstall':
     ctx.prune_directory("${PKGDATADIR}")
     ctx.prune_directory("${DOCDIR}")
     ctx.prune_directory("${HTMLDIR}")
+elif ctx.mode == 'uninstall':
+        basedir = self.subst("${PACKAGE}-${VERSION}")
+        filename = os.path.abspath(
+                self.subst("${BUILD_DIR}/%s.%s" % (basedir, suffix)))
+        mprint("Creating %s '%s'" % (zname, filename))
