@@ -24,7 +24,27 @@ import subprocess
 import sys
 import threading
 import traceback
-from curses import ascii
+
+mswin = sys.platform.startswith("win")
+
+# curses is broken on Windows
+if mswin:
+    class ascii:
+        @staticmethod
+        def isdigit(c):
+            return c >= '0' and c <= '9'
+
+        @staticmethod
+        def isspace(c):
+            return c == ' ' or c == '\t' or c == '\n' or c == '\r' or c == '\l'
+
+        @staticmethod
+        def isalnum(c):
+            return ascii.isdigit(c) or (c >= 'a' and c <= 'z') \
+                   or (c >= 'A' and c <= 'Z')
+
+else:
+    from curses import ascii
 
 
 _mprint_lock = threading.Lock()
@@ -134,6 +154,63 @@ NOVAR_SKIP = 2      # Leave ${} construct untouched
 class Context(object):
     " The fundamental build context. "
 
+    # Commonly used variables
+    def add_vars(self):
+        self.var_repository = []
+        self.prog_var_repository = {}
+
+        self.add_var('PARALLEL', '0',
+            "Number of build operations to run at once", True)
+        self.add_var('PREFIX', '/usr/local',
+            "Base directory for installation", True)
+        self.add_var('BINDIR', '${PREFIX}/bin',
+            "Installation directory for binaries", True)
+        self.add_var('LIBDIR', '${PREFIX}/lib',
+            "Installation directory for shared libraries "
+            "(you should use multiarch where possible)", True)
+        self.add_var('SYSCONFDIR', '/etc',
+            "Installation directory for system config files", True)
+        self.add_var('MANDIR', '${DATADIR}/man',
+            "Installation directory for man pages", True)
+        self.add_var('DATADIR', '${PREFIX}/share',
+            "Installation directory for data files", True)
+        self.add_var('LOCALEDIR', '${DATADIR}/locale',
+            "Installation directory for locale data", True)
+        self.add_var('PKGDATADIR', '${PREFIX}/share/${PACKAGE}',
+            "Installation directory for this package's data files", True)
+        self.add_var('DOCDIR', '${PREFIX}/share/doc/${PACKAGE}',
+            "Installation directory for this package's documentation", True)
+        self.add_var('HTMLDIR', '${DOCDIR}',
+            "Installation directory for this package's HTML documentation",
+            True)
+        self.add_var('DESTDIR', '',
+            "Prepended to prefix at installation (for packaging)", True)
+        if mswin:
+            self.add_var('MINGW_PATH', "C:\MinGW", "Where MinGW is installed")
+        self.add_var('LOCK_TOP', False,
+            "Lock ${TOP_DIR} instead of ${BUILD_DIR}")
+        self.add_var('NO_LOCK', False, "Disable locking (not recommended)")
+        self.add_var('ENABLE_DEBUG', False,
+            "Enable the printing of maitch debug messages")
+        self.add_var('CC', '${GCC}', "C compiler")
+        self.add_var('CXX', self.find_cxx, "C++ compiler")
+        self.add_var('GCC', self.find_prog_by_var, "GNU C compiler")
+        self.add_var('CPP', self.find_prog_by_var, "C preprocessor")
+        self.add_var('LIBTOOL', self.find_prog_by_var,
+            "libtool compiler frontend for libraries")
+        self.add_var('CDEP', '${CPP} -M',
+                "C preprocessor with option to print deps")
+        self.add_var('CFLAGS', '', "C compiler flags")
+        self.add_var('CPPFLAGS', '', "C preprocessor flags")
+        self.add_var('LIBS', '', "libraries and linker options")
+        self.add_var('LDFLAGS', '', "Extra linker options")
+        self.add_var('CXXFLAGS', '${CFLAGS}', "C++ compiler flags")
+        self.add_var('LIBTOOL_MODE_ARG', '', "Default libtool mode argument(s)")
+        self.add_var('LIBTOOL_FLAGS', '', "Additional libtool flags")
+        self.add_var('PKG_CONFIG', self.find_prog_by_var, "pkg-config")
+        self.add_var('INSTALL', self.find_prog_by_var, "install program")
+
+
     def __init__(self, **kwargs):
         """
         All kwargs are added to context's env. They may include:
@@ -181,6 +258,8 @@ class Context(object):
         self.installed = []
         self.tar_contents = []
 
+        self.add_vars()
+
         # Check mode
         if len(sys.argv) < 2:
             self.mode = 'help'
@@ -225,7 +304,7 @@ the default BUILD_DIR is used, TOP_DIR='..'
 
 Other predefined variables [default values shown in squarer brackets]:
 """ % ms)
-            for v in _var_repository:
+            for v in self.var_repository:
                 if v[3]:
                     alt = "/%s" % var_to_arg(v[0])
                 else:
@@ -328,7 +407,7 @@ Other predefined variables [default values shown in squarer brackets]:
             self.mode = 'configure'
 
         # Set defaults
-        for v in _var_repository:
+        for v in self.var_repository:
             if not self.env.get(v[0]):
                 if callable(v[1]):
                     d = v[1](v[0])
@@ -747,9 +826,9 @@ Other predefined variables [default values shown in squarer brackets]:
         if expand:
             prog = self.subst(prog)
         try:
-            p = find_prog(prog, self.env)
+            p = self.__find_prog(prog, self.env)
             mprint("%s" % p)
-        except:
+        except MaitchNotFoundError:
             mprint("not found")
             raise
         return p
@@ -854,8 +933,8 @@ Other predefined variables [default values shown in squarer brackets]:
         if not sources:
             sources = []
         prog = (self.subst("${CDEP} %s" % cppflags)).split() + sources
-        deps = self.prog_output(prog)[0]
-        deps = deps.split(':', 1)[1].replace('\\', '').split()
+        deps = self.prog_output(prog)[0].replace(' \\', '')
+        deps = deps.split(':', 1)[1].split()
         return deps
 
 
@@ -1197,6 +1276,59 @@ int main() { %s(); return 0; }
         root = os.path.normpath(self.subst("${DESTDIR}" + os.sep + root))
         mprint("Removing empty directories from '%s'" % root)
         return prune_directory(root)
+
+
+    def __find_prog(self, name, env = os.environ):
+        if os.path.isabs(name):
+            return name
+        path = env.get('PATH')
+        if not path:
+            path = os.environ['PATH']
+        if not path:
+            if mswin:
+                path = 'C:\Windows'
+            else:
+                path = '/bin:/usr/bin:/usr/local/bin'
+        if mswin:
+            if not "mingw" in path.lower():
+                path = ctx.env['MINGW_PATH'] + os.pathsep + path
+            if not name.lower().endswith('exe'):
+                name += '.exe'
+        for p in path.split(os.pathsep):
+            n = opj(p, name)
+            if os.path.exists(n):
+                return n
+        raise MaitchNotFoundError("%s program not found in PATH" % name)
+
+
+    def add_var(self, name, default = "", desc = "", as_arg = False):
+        """
+        Registers a variable name with a default value which will be used if the
+        variable isn't specified on the command-line. If as_arg is True it can
+        be specified as a -- option ie --foo-bar=baz is equivalent to the usual
+        form FOO_BAR=baz. default may be a function, called as function(name)
+        to calculate the default value dynamically.
+        """
+        self.var_repository.append([name, default, desc, as_arg])
+
+
+    def find_prog_by_var(self, var, prog = None):
+        p = self.prog_var_repository.get(var)
+        if not p:
+            if prog:
+                p = prog
+            else:
+                p = var_to_s(var)
+            try:
+                p = self.find_prog(p)
+            except MaitchNotFoundError:
+                mprint("Warning: Program '%s' not found" % p, file = sys.stderr)
+            self.prog_var_repository[var] = p
+        return p
+
+
+    def find_cxx(self, var):
+        return self.find_prog_by_var(var, "g++")
 
 
 
@@ -1796,8 +1928,14 @@ class ProgramRuleBase(Rule):
     def __init__(self, **kwargs):
         self.init_libs(kwargs)
         self.init_var(kwargs, 'ldflags')
+        if mswin:
+            targs = process_nodes(kwargs['targets'])
+            for n in range(len(targs)):
+                if not targs[n].lower().endswith('.exe'):
+                    targs[n] += '.exe'
+            kwargs['targets'] = targs
         set_default(kwargs, 'rule',
-                "${%s} ${%s_} ${LIBS_} ${LDFLAGS_} -o ${TGT} ${SRC}" %
+                "${%s} ${%s_} ${LDFLAGS_} -o ${TGT} ${SRC} ${LIBS_}" %
                 (kwargs['linker'], kwargs['flagsname']))
         Rule.__init__(self, **kwargs)
 
@@ -2374,50 +2512,6 @@ def recursively_remove(path, fatal, excep):
     return removable
 
 
-def find_prog(name, env = os.environ):
-    if os.path.isabs(name):
-        return name
-    path = env.get('PATH')
-    if not path:
-        path = os.environ['PATH']
-    if not path:
-        path = '/bin:/usr/bin:/usr/local/bin'
-    for p in path.split(':'):
-        n = opj(p, name)
-        if os.path.exists(n):
-            return n
-    raise MaitchNotFoundError("%s program not found in PATH" % name)
-
-
-_var_repository = []
-
-def add_var(name, default = "", desc = "", as_arg = False):
-    """
-    Registers a variable name with a default value which will be used if the
-    variable isn't specified on the command-line. If as_arg is True it can
-    be specified as a -- option ie --foo-bar=baz is equivalent to the usual
-    form FOO_BAR=baz. default may be a function, called as function(name)
-    to calculate the default value dynamically.
-    """
-    global _var_repository
-    _var_repository.append([name, default, desc, as_arg])
-
-
-_prog_var_repository = {}
-
-
-def find_prog_by_var(var):
-    global _prog_var_repository
-    p = _prog_var_repository.get(var)
-    if not p:
-        p = var_to_s(var)
-        try:
-            p = find_prog(p)
-        except:
-            mprint("Warning: Program '%s' not found" % p, file = sys.stderr)
-        _prog_var_repository[var] = p
-    return p
-
 
 def s_to_var(s):
     return s.upper().replace('-', '_').replace('.', '_').replace(' ', '_')
@@ -2810,47 +2904,4 @@ class Builder(threading.Thread):
         dprint("%s finished" % self.describe())
 
 
-
-# Commonly used variables
-
-add_var('PARALLEL', '0', "Number of build operations to run at once", True)
-add_var('PREFIX', '/usr/local', "Base directory for installation", True)
-add_var('BINDIR', '${PREFIX}/bin', "Installation directory for binaries", True)
-add_var('LIBDIR', '${PREFIX}/lib',
-        "Installation directory for shared libraries "
-        "(you should use multiarch where possible)", True)
-add_var('SYSCONFDIR', '/etc',
-        "Installation directory for system config files", True)
-add_var('MANDIR', '${DATADIR}/man',
-        "Installation directory for man pages", True)
-add_var('DATADIR', '${PREFIX}/share',
-        "Installation directory for data files", True)
-add_var('LOCALEDIR', '${DATADIR}/locale',
-        "Installation directory for locale data", True)
-add_var('PKGDATADIR', '${PREFIX}/share/${PACKAGE}',
-        "Installation directory for this package's data files", True)
-add_var('DOCDIR', '${PREFIX}/share/doc/${PACKAGE}',
-        "Installation directory for this package's documentation", True)
-add_var('HTMLDIR', '${DOCDIR}',
-        "Installation directory for this package's HTML documentation", True)
-add_var('DESTDIR', '',
-        "Prepended to prefix at installation (for packaging)", True)
-add_var('LOCK_TOP', False, "Lock ${TOP_DIR} instead of ${BUILD_DIR}")
-add_var('NO_LOCK', False, "Disable locking (not recommended)")
-add_var('ENABLE_DEBUG', False, "Enable the printing of maitch debug messages")
-add_var('CC', '${GCC}', "C compiler")
-add_var('CXX', 'g++', "C++ compiler")
-add_var('GCC', find_prog_by_var, "GNU C compiler")
-add_var('CPP', find_prog_by_var, "C preprocessor")
-add_var('LIBTOOL', find_prog_by_var, "libtool compiler frontend for libraries")
-add_var('CDEP', '${CPP} -M', "C preprocessor with option to print deps")
-add_var('CFLAGS', '', "C compiler flags")
-add_var('CPPFLAGS', '', "C preprocessor flags")
-add_var('LIBS', '', "libraries and linker options")
-add_var('LDFLAGS', '', "Extra linker options")
-add_var('CXXFLAGS', '${CFLAGS}', "C++ compiler flags")
-add_var('LIBTOOL_MODE_ARG', '', "Default libtool mode argument(s)")
-add_var('LIBTOOL_FLAGS', '', "Additional libtool flags")
-add_var('PKG_CONFIG', find_prog_by_var, "pkg-config")
-add_var('INSTALL', find_prog_by_var, "install program")
 
