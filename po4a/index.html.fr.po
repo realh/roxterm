@@ -1,24 +1,23 @@
 # Translations for roxterm docs
 # Copyright (C) 2010 Tony Houghton
 # This file is distributed under the same license as the roxterm package.
-#
+# 
 # Translators:
-# Stéphane Aulery <lkppo@free.fr>, 2012
-# Tetsumaki <yossmaki@gmail.com>, 2011
+# Stéphane Aulery, 2012
+# Tetsumaki <yd@tetsumaki.net>, 2011
 # Tony Houghton <h@realh.co.uk>, 2010-2011
 msgid ""
 msgstr ""
 "Project-Id-Version: roxterm\n"
 "Report-Msgid-Bugs-To: http://sourceforge.net/tracker/?group_id=124080\n"
 "POT-Creation-Date: 2014-01-15 15:24+0000\n"
-"PO-Revision-Date: 2012-06-05 21:07+0000\n"
-"Last-Translator: Stéphane Aulery <lkppo@free.fr>\n"
-"Language-Team: French (http://www.transifex.com/projects/p/roxterm/language/"
-"fr/)\n"
-"Language: fr\n"
+"PO-Revision-Date: 2014-01-15 15:33+0000\n"
+"Last-Translator: Tony Houghton <h@realh.co.uk>\n"
+"Language-Team: French (http://www.transifex.com/projects/p/roxterm/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #. type: Attribute 'lang' of: <html>
@@ -53,10 +52,8 @@ msgstr "<a id=\"MainNav_News\" href=\"news.html\">Nouveautés</a>"
 
 #. type: Content of: <html><body><div><div><div><ul><li>
 #: ../Help/en/index.html:26
-msgid ""
-"<a id=\"MainNav_Installation\" href=\"installation.html\">Installation</a>"
-msgstr ""
-"<a id=\"MainNav_Installation\" href=\"installation.html\">Installation</a>"
+msgid "<a id=\"MainNav_Installation\" href=\"installation.html\">Installation</a>"
+msgstr "<a id=\"MainNav_Installation\" href=\"installation.html\">Installation</a>"
 
 #. type: Content of: <html><body><div><div><div><ul><li>
 #: ../Help/en/index.html:27
@@ -66,11 +63,9 @@ msgstr "<a id=\"MainNav_UserGuide\" href=\"guide.html\">Guide utilisateur</a>"
 #. type: Content of: <html><body><div><div><div><ul><li>
 #: ../Help/en/index.html:28
 msgid ""
-"<a id=\"MainNav_Forums\" href=\"https://sourceforge.net/projects/roxterm/"
-"forums\">Forums</a>"
-msgstr ""
-"<a id=\"MainNav_Forums\" href=\"https://sourceforge.net/projects/roxterm/"
-"forums\">Forums</a>"
+"<a id=\"MainNav_Forums\" "
+"href=\"https://sourceforge.net/projects/roxterm/forums\">Forums</a>"
+msgstr "<a id=\"MainNav_Forums\" href=\"https://sourceforge.net/projects/roxterm/forums\">Forums</a>"
 
 #. type: Content of: <html><body><div><div><div><h1>
 #: ../Help/en/index.html:36
@@ -80,72 +75,43 @@ msgstr "Bienvenue"
 #. type: Content of: <html><body><div><div><div><p>
 #: ../Help/en/index.html:38
 msgid ""
-"ROXTerm is a terminal emulator intended to provide similar features to gnome-"
-"terminal, based on the same VTE library. It was originally designed to have "
-"a smaller footprint and quicker start-up time by not using the Gnome "
+"ROXTerm is a terminal emulator intended to provide similar features to "
+"gnome-terminal, based on the same VTE library. It was originally designed to"
+" have a smaller footprint and quicker start-up time by not using the Gnome "
 "libraries and by using a separate applet to provide the configuration GUI, "
 "but thanks to all the features it's acquired over the years ROXTerm can "
 "probably now be accused of bloat. However, it is more configurable than "
 "gnome-terminal and aimed more at \"power\" users who make heavy use of "
 "terminals."
-msgstr ""
-"ROXTerm est un émulateur de terminal destiné à fournir des fonctionnalités "
-"similaires à gnome-terminal, basé sur la même bibliothèque VTE. Il a été "
-"initialement conçu pour avoir une plus petite empreinte et des temps de "
-"démarrage plus rapide en n'utilisant pas les bibliothèques Gnome et en "
-"utilisant un applet séparé pour fournir l'interface de configuration, mais "
-"grâce à toutes les fonctions qu'il a acquis au fil des années ROXTerm peut "
-"sans doute être maintenant taxé d'embonpoint. Cependant, il est plus "
-"configurable que gnome-terminal et vise les utilisateurs plus expérimentés "
-"qui font un usage intensif des terminaux."
+msgstr "ROXTerm est un émulateur de terminal destiné à fournir des fonctionnalités similaires à gnome-terminal, basé sur la même bibliothèque VTE. Il a été initialement conçu pour avoir une plus petite empreinte et des temps de démarrage plus rapide en n'utilisant pas les bibliothèques Gnome et en utilisant un applet séparé pour fournir l'interface de configuration, mais grâce à toutes les fonctions qu'il a acquis au fil des années ROXTerm peut sans doute être maintenant taxé d'embonpoint. Cependant, il est plus configurable que gnome-terminal et vise les utilisateurs plus expérimentés qui font un usage intensif des terminaux."
 
 #. type: Content of: <html><body><div><div><div><p>
 #: ../Help/en/index.html:44
 msgid ""
 "It can be used as a ROX application, as the name implies, or in any other X "
 "environment."
-msgstr ""
-"Il peut être utilisé comme une application ROX, comme son nom l'indique, ou "
-"dans tout autre environnement X."
+msgstr "Il peut être utilisé comme une application ROX, comme son nom l'indique, ou dans tout autre environnement X."
 
 #. type: Content of: <html><body><div><div><div><div>
 #: ../Help/en/index.html:49
-#, fuzzy
-#| msgid ""
-#| "<a id=\"SourceforgeLink\" href=\"http://sourceforge.net/projects/roxterm"
-#| "\" title=\"RoxTerm Sourceforge\">"
 msgid ""
 "<a id=\"SourceforgeLink\" href=\"http://sourceforge.net/projects/roxterm\" "
 "title=\"RoxTerm Sourceforge\"> roxterm @ sourceforge </a>"
 msgstr ""
-"<a id=\"SourceforgeLink\" href=\"http://sourceforge.net/projects/roxterm\" "
-"title=\"RoxTerm Sourceforge\">"
 
 #. type: Content of: <html><body><div><div><div><div>
 #: ../Help/en/index.html:55
 msgid ""
-"<a id=\"DonationLink\" class=\"spriteLink\" href=\"http://sourceforge.net/"
-"donate/index.php?group_id=124080\">Donate</a> <a id=\"ValidMarkupLink\" "
-"class=\"spriteLink\" href=\"http://validator.w3.org/check?uri=referer"
-"\">Valid XHTML</a>"
-msgstr ""
-"<a id=\"DonationLink\" class=\"spriteLink\" href=\"http://sourceforge.net/"
-"donate/index.php?group_id=124080\">Faire un don</a> <a id=\"ValidMarkupLink"
-"\" class=\"spriteLink\" href=\"http://validator.w3.org/check?uri=referer"
-"\">XHTML valide</a>"
+"<a id=\"DonationLink\" class=\"spriteLink\" "
+"href=\"http://sourceforge.net/donate/index.php?group_id=124080\">Donate</a> "
+"<a id=\"ValidMarkupLink\" class=\"spriteLink\" "
+"href=\"http://validator.w3.org/check?uri=referer\">Valid XHTML</a>"
+msgstr "<a id=\"DonationLink\" class=\"spriteLink\" href=\"http://sourceforge.net/donate/index.php?group_id=124080\">Faire un don</a> <a id=\"ValidMarkupLink\" class=\"spriteLink\" href=\"http://validator.w3.org/check?uri=referer\">XHTML valide</a>"
 
 #. type: Content of: <html><body><div><div><div><p>
 #: ../Help/en/index.html:59
 msgid ""
-"ROXTerm is licensed under the <a href=\"http://www.gnu.org/licenses/gpl-3.0-"
-"standalone.html\">GPL</a> | Site design by Adrian Sampson"
-msgstr ""
-"ROXTerm est sous licence <a href=\"http://www.gnu.org/licenses/gpl-3.0-"
-"standalone.html\">GPL</a> | Site conçu par Adrian Sampson"
-
-#~ msgid ""
-#~ "Get RoxTerm at SourceForge.net. Fast, secure and Free Open Source "
-#~ "software downloads"
-#~ msgstr ""
-#~ "Obtenez RoxTerm sur SourceForge.net. Rapide, sécurisé et téléchargements "
-#~ "de logiciels Libres Open-Source"
+"ROXTerm is licensed under the <a "
+"href=\"http://www.gnu.org/licenses/gpl-3.0-standalone.html\">GPL</a> | Site "
+"design by Adrian Sampson"
+msgstr "ROXTerm est sous licence <a href=\"http://www.gnu.org/licenses/gpl-3.0-standalone.html\">GPL</a> | Site conçu par Adrian Sampson"
