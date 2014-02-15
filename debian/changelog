@@ -1,6 +1,6 @@
 roxterm (2.8.2-1) unstable; urgency=medium
 
-  * Reenabled deprecated background options for now.
+  * Re-enabled deprecated background options for now.
 
  -- Tony Houghton <h@realh.co.uk>  Sat, 15 Feb 2014 14:30:06 +0000
 
@@ -88,7 +88,7 @@ roxterm (2.6.2-1) unstable; urgency=low
   * Changed close warning dialog buttons to Yes/No.
   * Honour login option when restoring a session (Closes: #663739).
   * Reread GdkWindow when re-mapping windows when compositing changes.
-  * debian/watch: Corrected pcre syntax for uncaptured bz2/gz suffix. 
+  * debian/watch: Corrected pcre syntax for uncaptured bz2/gz suffix.
 
  -- Tony Houghton <h@realh.co.uk>  Fri, 20 Apr 2012 19:37:52 +0100
 
@@ -281,7 +281,7 @@ roxterm (1.18.3-1) unstable; urgency=low
 roxterm (1.18.2-1) unstable; urgency=low
 
   * New upstream release:
-    + Fix crash when using --tab with no pre-existing windows 
+    + Fix crash when using --tab with no pre-existing windows
       (upstream SourceForge tracker (SF) #2996294).
     + Hide/show menu bar setting is inherited from other windows (SF 2996296).
 
