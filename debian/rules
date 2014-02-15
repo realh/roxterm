@@ -34,7 +34,7 @@ override_dh_auto_configure:
 		 --disable-gtk3 $(DIRS_GTK2) \
 		 "$(CFLAGS)" "$(CPPFLAGS)" "$(LDFLAGS)"
 	python mscript.py configure $(MSCRIPT_OPTS) $(CONFIGURE_COMMON) \
-		--enable-gtk3 $(DIRS_GTK3) \
+		--enable-gtk3 --enable-deprecated-bg-opts $(DIRS_GTK3) \
 		 "$(CFLAGS)" "$(CPPFLAGS)" "$(LDFLAGS)"
 
 override_dh_auto_build:

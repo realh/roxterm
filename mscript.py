@@ -49,6 +49,9 @@ if ctx.mode == 'configure' or ctx.mode == 'help':
             "don't attempt to generate changelogs, pixmaps etc")
     ctx.arg_enable("rox-locales",
             "Make symlinks so ROX app can load translations")
+    ctx.arg_enable("deprecated-bg-opts", "Enables background options such as " \
+            "transparency even if deprecated by VTE. May cause compiler " \
+            "warnings and, in the future, compiler or link errors.")
 
 if ctx.mode == 'configure':
 
@@ -187,7 +190,9 @@ if ctx.mode == 'configure':
             ctx.pkg_config('gtk+-3.0', 'GTK')
             ctx.pkg_config('vte-2.90', 'VTE')
             vte_version = ctx.prog_output("${PKG_CONFIG} --modversion vte-2.90")
-            ctx.setenv('VTE_BACKGROUND_DEPRECATED', vte_version >= "0.34.8")
+            ctx.setenv('VTE_BACKGROUND_DEPRECATED',
+                    vte_version >= "0.34.8" and not \
+                    ctx.env['ENABLE_DEPRECATED_BG_OPTS'])
         except MaitchChildError:
             if gtk3 == True:
                 raise
