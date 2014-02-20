@@ -836,7 +836,13 @@ static void profilegui_setup_list_store(ProfileGUI *pg)
     {
         gtk_list_store_append(pg->list_store, &iter);
         gtk_list_store_set(pg->list_store, &iter,
-                0, gettext(labels[n]), 1, n, -1);
+                0, gettext(labels[n]), 1,
+#if VTE_BACKGROUND_DEPRECATED
+                (n < 5) ? n : (n + 1),
+#else
+                n,
+#endif
+                -1);
     }
     tvw = gtk_tree_view_new_with_model(GTK_TREE_MODEL(pg->list_store));
     tv = GTK_TREE_VIEW(tvw);
