@@ -312,8 +312,8 @@ void search_open_dialog(ROXTermData *roxterm)
         search_dialog = gtk_dialog_new_with_buttons(_("Find"),
                 GTK_WINDOW(multi_win_get_widget(search_data.win)),
                 GTK_DIALOG_DESTROY_WITH_PARENT,
-                GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE,
-                GTK_STOCK_FIND, GTK_RESPONSE_ACCEPT,
+                _("_Close"), GTK_RESPONSE_CLOSE,
+                _("_Find"), GTK_RESPONSE_ACCEPT,
                 NULL);
         gtk_dialog_set_default_response(GTK_DIALOG(search_dialog),
                 GTK_RESPONSE_ACCEPT);
@@ -339,7 +339,7 @@ void search_open_dialog(ROXTermData *roxterm)
         box_compat_packh(hbox, entry, TRUE, DLG_SPACING);
         box_compat_packv(vbox, hbox, FALSE, DLG_SPACING);
 
-        w = gtk_check_button_new_with_mnemonic(_("Match _Case"));
+        w = gtk_check_button_new_with_mnemonic(_("Match C_ase"));
         gtk_widget_set_tooltip_text(w,
                 _("Whether the search is case sensitive"));
         search_data.match_case = GTK_TOGGLE_BUTTON(w);

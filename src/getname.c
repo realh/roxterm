@@ -74,7 +74,7 @@ char *getname_run_dialog(GtkWindow *parent, const char *old_name,
 
 	dialog = gtk_dialog_new_with_buttons(title, parent,
 			GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-			GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+			_("_Cancel"), GTK_RESPONSE_CANCEL,
 			button_label, GTK_RESPONSE_OK,
 			NULL);
 	gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_OK);

@@ -203,7 +203,7 @@ void multi_tab_cancel_attention(MultiTab *tab);
 
 void multi_tab_add_close_button(MultiTab *tab);
 void multi_tab_remove_close_button(MultiTab *tab);
-void multi_tab_set_status_stock(MultiTab *tab, const char *stock);
+void multi_tab_set_status_icon_name(MultiTab *tab, const char *name);
 
 void multi_tab_set_middle_click_tab_action(MultiTab *tab, int action);
 

@@ -798,7 +798,7 @@ static void on_copy_clicked(ConfigletList *cl)
     if (cl->encodings)
     {
         title = g_strdup_printf(_("Add Encoding"));
-        button_label = GTK_STOCK_ADD;
+        button_label = _("_Add");
         existing = encodings_list(cl->encodings);
     }
     else
@@ -807,7 +807,7 @@ static void on_copy_clicked(ConfigletList *cl)
 
         title = g_strdup_printf(_("Copy %s"),
             full_name_from_family(cl->family));
-        button_label = GTK_STOCK_COPY;
+        button_label = _("_Copy");
         existing = (char const **) dynamic_options_list(dynopts);
     }
     if (old_name || cl->encodings)
@@ -965,7 +965,7 @@ void on_rename_clicked(ConfigletList *cl)
     if (old_name || cl->encodings)
     {
         char *new_name = getname_run_dialog(GTK_WINDOW(cl->cg->widget),
-                old_name, existing, title, GTK_STOCK_APPLY, NULL,
+                old_name, existing, title, _("Apply"), NULL,
                 cl->encodings == NULL);
 
         if (new_name)

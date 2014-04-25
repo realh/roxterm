@@ -30,24 +30,9 @@ static char const *menutree_labels[MENUTREE_NUM_IDS];
 static gboolean filled_labels = FALSE;
 
 static GtkWidget *menutree_append_new_item_with_mnemonic(
-        GtkMenuShell *shell,
-        const char *label, const char *stock, gboolean separate_label)
+        GtkMenuShell *shell, const char *label)
 {
-    GtkWidget *item;
-
-    if (stock)
-    {
-        item = gtk_image_menu_item_new_from_stock(stock, NULL);
-        if (separate_label)
-        {
-            gtk_menu_item_set_label(GTK_MENU_ITEM(item), label);
-            gtk_menu_item_set_use_underline(GTK_MENU_ITEM(item), TRUE);
-        }
-    }
-    else
-    {
-        item = gtk_menu_item_new_with_mnemonic(label);
-    }
+    GtkWidget *item = gtk_menu_item_new_with_mnemonic(label);
 
     gtk_menu_shell_append(shell, item);
     return item;
@@ -88,9 +73,6 @@ static void menutree_build_shell_ap(MenuTree *menu_tree, GtkMenuShell *shell,
         }
         else
         {
-            gboolean separate_label = FALSE;
-            const char *stock = NULL;
-
             if (!filled_labels &&
                     id < MENUTREE_NUM_IDS && id != MENUTREE_NULL_ID)
             {
@@ -98,73 +80,6 @@ static void menutree_build_shell_ap(MenuTree *menu_tree, GtkMenuShell *shell,
             }
             if (menu_tree->disable_shortcuts)
                 label = strip_underscore(label);
-            switch (id)
-            {
-                case MENUTREE_FILE_NEW_WINDOW:
-                case MENUTREE_FILE_NEW_TAB:
-                    stock = GTK_STOCK_NEW;
-                    separate_label = TRUE;
-                    break;
-                case MENUTREE_FILE_CLOSE_WINDOW:
-                case MENUTREE_FILE_CLOSE_TAB:
-                case MENUTREE_TABS_CLOSE_TAB:
-                    stock = GTK_STOCK_CLOSE;
-                    separate_label = TRUE;
-                    break;
-                case MENUTREE_EDIT_COPY:
-                    stock = GTK_STOCK_COPY;
-                    break;
-                case MENUTREE_EDIT_PASTE:
-                    stock = GTK_STOCK_PASTE;
-                    break;
-                case MENUTREE_EDIT_SET_WINDOW_TITLE:
-                case MENUTREE_TABS_NAME_TAB:
-                    stock = GTK_STOCK_EDIT;
-                    separate_label = TRUE;
-                    break;
-                case MENUTREE_EDIT_RESET:
-                case MENUTREE_EDIT_RESET_AND_CLEAR:
-                    stock = GTK_STOCK_CLEAR;
-                    separate_label = TRUE;
-                    break;
-                case MENUTREE_EDIT_RESPAWN:
-                    stock = GTK_STOCK_REFRESH;
-                    separate_label = TRUE;
-                    break;
-                case MENUTREE_VIEW_ZOOM_IN:
-                    stock = GTK_STOCK_ZOOM_IN;
-                    break;
-                case MENUTREE_VIEW_ZOOM_OUT:
-                    stock = GTK_STOCK_ZOOM_OUT;
-                    break;
-                case MENUTREE_VIEW_ZOOM_NORM:
-                    stock = GTK_STOCK_ZOOM_100;
-                    break;
-#ifdef HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX
-                case MENUTREE_SEARCH_FIND:
-                case MENUTREE_SEARCH_FIND_NEXT:
-                case MENUTREE_SEARCH_FIND_PREVIOUS:
-                    stock = GTK_STOCK_FIND;
-                    separate_label = TRUE;
-                    break;
-#endif
-                case MENUTREE_PREFERENCES_EDIT_CURRENT_PROFILE:
-                    stock = GTK_STOCK_PREFERENCES;
-                    separate_label = TRUE;
-                    break;
-                case MENUTREE_PREFERENCES_EDIT_CURRENT_COLOUR_SCHEME:
-                    stock = GTK_STOCK_SELECT_COLOR;
-                    separate_label = TRUE;
-                    break;
-                case MENUTREE_HELP_SHOW_MANUAL:
-                    stock = GTK_STOCK_HELP;
-                    break;
-                case MENUTREE_HELP_ABOUT:
-                    stock = GTK_STOCK_ABOUT;
-                    break;
-                default:
-                    break;
-            }
             item = NULL;
             switch (id)
             {
@@ -175,8 +90,7 @@ static void menutree_build_shell_ap(MenuTree *menu_tree, GtkMenuShell *shell,
                     gtk_menu_shell_append(shell, item);
                     break;
                 default:
-                    item = menutree_append_new_item_with_mnemonic(shell,
-                            label, stock, separate_label);
+                    item = menutree_append_new_item_with_mnemonic(shell, label);
                     break;
             }
             if (menu_tree->disable_shortcuts)

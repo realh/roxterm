@@ -102,7 +102,7 @@ struct ROXTermData {
     int zoom_index;
     gboolean post_exit_tag;
     char *display_name;
-    const char *status_stock;
+    const char *status_icon_name;
     gboolean maximise;
     gulong win_state_changed_tag;
     GtkWidget *replace_task_dialog;
@@ -395,7 +395,7 @@ static ROXTermData *roxterm_data_clone(ROXTermData *old_gt)
     ROXTermData *new_gt = g_new(ROXTermData, 1);
 
     *new_gt = *old_gt;
-    new_gt->status_stock = NULL;
+    new_gt->status_icon_name = NULL;
     new_gt->widget = NULL;
     new_gt->tab = NULL;
     new_gt->running = FALSE;
@@ -607,21 +607,21 @@ static char *get_default_command(ROXTermData *roxterm)
     return command;
 }
 
-static void roxterm_show_status_stock(ROXTermData *roxterm, const char *stock)
+static void roxterm_show_status(ROXTermData *roxterm, const char *name)
 {
-    if (stock && !strcmp(stock, GTK_STOCK_DIALOG_INFO) &&
-            roxterm->status_stock &&
-            (!strcmp(roxterm->status_stock, GTK_STOCK_DIALOG_WARNING) ||
-            !strcmp(roxterm->status_stock, GTK_STOCK_DIALOG_ERROR)))
+    if (name && !strcmp(name, "dialog-information") &&
+            roxterm->status_icon_name &&
+            (!strcmp(roxterm->status_icon_name, "dialog-warning") ||
+            !strcmp(roxterm->status_icon_name, "dialog_error")))
 
     {
         return;
     }
-    roxterm->status_stock = stock;
+    roxterm->status_icon_name = name;
     if (roxterm->tab && options_lookup_int_with_default(roxterm->profile,
             "show_tab_status", FALSE))
     {
-        multi_tab_set_status_stock(roxterm->tab, stock);
+        multi_tab_set_status_icon_name(roxterm->tab, name);
     }
 }
 
@@ -759,7 +759,7 @@ static void roxterm_run_command(ROXTermData *roxterm, VteTerminal *vte)
         term = vte_terminal_get_default_emulation(vte);
     env = roxterm_get_environment(roxterm, term);
     roxterm->running = TRUE;
-    roxterm_show_status_stock(roxterm, GTK_STOCK_CLOSE);
+    roxterm_show_status(roxterm, "window-close");
     if (roxterm->special_command)
     {
         /* Use special_command, currently single string */
@@ -1957,7 +1957,7 @@ static void roxterm_tab_selection_handler(ROXTermData * roxterm, MultiTab * tab)
     MenuTree *short_popup = multi_win_get_short_popup_menu(win);
     (void) tab;
 
-    roxterm->status_stock = NULL;
+    roxterm->status_icon_name = NULL;
     check_preferences_submenu_pair(roxterm,
             MENUTREE_PREFERENCES_SELECT_PROFILE,
             options_get_leafname(roxterm->profile));
@@ -2327,7 +2327,7 @@ static gboolean roxterm_post_child_exit(ROXTermData *roxterm)
         GtkWidget *respawn;
 
         gtk_dialog_add_button(GTK_DIALOG(dialog),
-                GTK_STOCK_CLOSE, roxterm_ChildExitClose);
+                _("Close"), roxterm_ChildExitClose);
         gtk_dialog_add_button(GTK_DIALOG(dialog),
                 _("Leave open"), roxterm_ChildExitHold);
         respawn = gtk_dialog_add_button(GTK_DIALOG(dialog),
@@ -2353,7 +2353,7 @@ static gboolean roxterm_post_child_exit(ROXTermData *roxterm)
             multi_tab_delete(roxterm->tab);
             break;
         case roxterm_ChildExitHold:
-            roxterm_show_status_stock(roxterm, GTK_STOCK_DIALOG_ERROR);
+            roxterm_show_status(roxterm, "dialog-error");
             break;
         case roxterm_ChildExitRespawn:
             roxterm_run_command(roxterm, VTE_TERMINAL(roxterm->widget));
@@ -2369,7 +2369,7 @@ static void roxterm_child_exited(VteTerminal *vte, ROXTermData *roxterm)
     double delay = 0;
 
     roxterm->running = FALSE;
-    roxterm_show_status_stock(roxterm, GTK_STOCK_DIALOG_ERROR);
+    roxterm_show_status(roxterm, "dialog-error");
     if ((options_lookup_int(roxterm->profile, "exit_action") !=
             roxterm_ChildExitAsk) &&
         ((delay = options_lookup_double(roxterm->profile, "exit_pause")) != 0))
@@ -2625,7 +2625,7 @@ static void roxterm_text_changed_handler(VteTerminal *vte, ROXTermData *roxterm)
     (void) vte;
     if (roxterm->tab != multi_win_get_current_tab(roxterm_get_win(roxterm)))
     {
-        roxterm_show_status_stock(roxterm, GTK_STOCK_DIALOG_INFO);
+        roxterm_show_status(roxterm, "dialog-information");
     }
 }
 
@@ -2636,7 +2636,7 @@ static void roxterm_beep_handler(VteTerminal *vte, ROXTermData *roxterm)
 
     if (roxterm->tab != multi_win_get_current_tab(win))
     {
-        roxterm_show_status_stock(roxterm, GTK_STOCK_DIALOG_WARNING);
+        roxterm_show_status(roxterm, "dialog-warning");
     }
     if (options_lookup_int_with_default(roxterm->profile,
             "bell_highlights_tab", TRUE))
@@ -3122,18 +3122,18 @@ static void roxterm_apply_show_tab_status(ROXTermData *roxterm)
 {
     if (roxterm->tab)
     {
-        const char *stock;
+        const char *name;
 
         if (options_lookup_int_with_default(roxterm->profile,
                 "show_tab_status", FALSE))
         {
-            stock = roxterm->status_stock;
+            name = roxterm->status_icon_name;
         }
         else
         {
-            stock = NULL;
+            name = NULL;
         }
-        multi_tab_set_status_stock(roxterm->tab, stock);
+        multi_tab_set_status_icon_name(roxterm->tab, name);
     }
 }
 
@@ -3831,7 +3831,6 @@ static void roxterm_reflect_colour_change(Options *scheme, const char *key)
 static void roxterm_apply_can_edit_shortcuts(void)
 {
     g_type_class_unref(g_type_class_ref(GTK_TYPE_MENU_ITEM));
-    g_type_class_unref(g_type_class_ref(GTK_TYPE_IMAGE_MENU_ITEM));
     g_type_class_unref(g_type_class_ref(GTK_TYPE_CHECK_MENU_ITEM));
     g_type_class_unref(g_type_class_ref(GTK_TYPE_RADIO_MENU_ITEM));
     gtk_settings_set_long_property(gtk_settings_get_default(),
@@ -4244,7 +4243,7 @@ static ROXTermData *roxterm_data_new(const char *display_name,
     ROXTermData *roxterm = g_new0(ROXTermData, 1);
     (void) profile_name;
 
-    roxterm->status_stock = NULL;
+    roxterm->status_icon_name = NULL;
     roxterm->target_zoom_factor = zoom_factor;
     roxterm->current_zoom_factor = 1.0;
     if (display_name)

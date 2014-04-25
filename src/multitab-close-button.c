@@ -27,8 +27,7 @@ multitab_close_button_set_size (MultitabCloseButton *self)
     int x, y;
     GtkWidget *w = GTK_WIDGET (self);
 
-    gtk_icon_size_lookup_for_settings (gtk_widget_get_settings (w),
-                       GTK_ICON_SIZE_MENU, &x, &y);
+    gtk_icon_size_lookup (GTK_ICON_SIZE_MENU, &x, &y);
     gtk_widget_set_size_request (w, x + 2, y + 2);
 }
 
@@ -62,7 +61,7 @@ multitab_close_button_class_init(MultitabCloseButtonClass *klass)
               "-GtkWidget-focus-padding : 0;\n"
               "padding: 0;\n"
             "}";
-    
+
     klass->style_provider = gtk_css_provider_new ();
     gtk_css_provider_load_from_data (klass->style_provider,
             button_style, -1, NULL);
@@ -88,7 +87,7 @@ multitab_close_button_init(MultitabCloseButton *self)
     GtkButton *parent = GTK_BUTTON(self);
     GtkWidget *image = gtk_image_new ();
     GtkWidget *w = GTK_WIDGET(self);
-    
+
     gtk_button_set_relief(parent, GTK_RELIEF_NONE);
     gtk_button_set_focus_on_click(parent, FALSE);
 #if GTK_CHECK_VERSION (3, 0, 0)
@@ -108,7 +107,7 @@ multitab_close_button_new(const char *image_name)
 {
     MultitabCloseButton *self = (MultitabCloseButton *)
             g_object_new (MULTITAB_TYPE_CLOSE_BUTTON, NULL);
-    
+
     multitab_close_button_set_image (self, image_name);
     return GTK_WIDGET (self);
 }
@@ -117,8 +116,8 @@ void
 multitab_close_button_set_image(MultitabCloseButton *self,
         const char *image_name)
 {
-    gtk_image_set_from_stock (self->image,
-            image_name ? image_name : GTK_STOCK_CLOSE,
+    gtk_image_set_from_icon_name (self->image,
+            image_name ? image_name : "window-close",
             GTK_ICON_SIZE_MENU);
     multitab_close_button_set_size (self);
 }

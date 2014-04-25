@@ -54,7 +54,7 @@ struct MultiTab {
     double scroll_step;
     GtkWidget *close_button;
     GtkWidget *label_box;
-    const char *status_stock;
+    const char *status_icon_name;
     GtkWidget *rename_dialog;
     gboolean postponed_free;
     gboolean old_win_destroyed;
@@ -247,7 +247,7 @@ MultiTab *multi_tab_new(MultiWin * parent, gpointer user_data_template)
     guint pos;
 
     tab->parent = parent;
-    tab->status_stock = NULL;
+    tab->status_icon_name = NULL;
     tab->show_number = TRUE;
     tab->widget = multi_tab_filler(parent, tab, user_data_template,
         &tab->user_data, &tab->active_widget, &tab->adjustment);
@@ -856,7 +856,7 @@ void multi_win_select_tab(MultiWin * win, MultiTab * tab)
 
         if (tab->label)
             multitab_label_cancel_attention(MULTITAB_LABEL(tab->label));
-        multi_tab_set_status_stock(tab, NULL);
+        multi_tab_set_status_icon_name(tab, NULL);
         win->user_data_template = tab->user_data;
         gtk_notebook_set_current_page(GTK_NOTEBOOK(win->notebook),
             multi_tab_get_page_num(tab));
@@ -1306,8 +1306,8 @@ static void multi_win_name_tab_action(MultiWin * win)
     GtkWidget *dialog_w = gtk_dialog_new_with_buttons(_("Name Tab"),
             GTK_WINDOW(win->gtkwin),
             GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-            GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-            GTK_STOCK_APPLY, GTK_RESPONSE_APPLY,
+            _("_Cancel"), GTK_RESPONSE_CANCEL,
+            _("_Apply"), GTK_RESPONSE_APPLY,
             NULL);
     GtkDialog *dialog = GTK_DIALOG(dialog_w);
     GtkWidget *name_w = gtk_entry_new();
@@ -1352,13 +1352,13 @@ static void multi_win_set_window_title_action(MultiWin * win)
     GtkWidget *dialog_w = gtk_dialog_new_with_buttons(_("Set Window Title"),
             GTK_WINDOW(win->gtkwin),
             GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-            GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-            GTK_STOCK_APPLY, GTK_RESPONSE_APPLY,
+            _("_Cancel"), GTK_RESPONSE_CANCEL,
+            _("_Apply"), GTK_RESPONSE_APPLY,
             NULL);
     GtkDialog *dialog = GTK_DIALOG(dialog_w);
     GtkWidget *title_w = gtk_entry_new();
     GtkEntry *title_e = GTK_ENTRY(title_w);
-    GtkWidget *img = gtk_image_new_from_stock(GTK_STOCK_DIALOG_INFO,
+    GtkWidget *img = gtk_image_new_from_icon_name("dialog-information",
             GTK_ICON_SIZE_DIALOG);
     GtkWidget *tip_label = gtk_label_new(_("The title string may include '%s' "
             "which is substituted with the title set by the child command "
@@ -1379,8 +1379,10 @@ static void multi_win_set_window_title_action(MultiWin * win)
     box_compat_packv(content_area, title_w, FALSE, 8);
     box_compat_packh(hbox, img, FALSE, 8);
     gtk_label_set_line_wrap(GTK_LABEL(tip_label), TRUE);
-    box_compat_packh(hbox, tip_label, TRUE, 8);
-    box_compat_packv(content_area, hbox, TRUE, 8);
+    gtk_label_set_width_chars(GTK_LABEL(tip_label), 30);
+    gtk_label_set_max_width_chars(GTK_LABEL(tip_label), 50);
+    box_compat_packh(hbox, tip_label, FALSE, 8);
+    box_compat_packv(content_area, hbox, FALSE, 8);
     gtk_entry_set_activates_default(title_e, TRUE);
     gtk_entry_set_text(title_e, win->title_template ? win->title_template : "");
     gtk_widget_show_all(dialog_w);
@@ -2009,7 +2011,7 @@ MultiWin *multi_win_new_blank(const char *display_name, Options *shortcuts,
         multi_win_set_show_tabs_menu_items(win, FALSE);
         multi_win_hide_tabs(win);
     }
-    win->add_tab_button = multitab_close_button_new(GTK_STOCK_ADD);
+    win->add_tab_button = multitab_close_button_new("list-add");
     g_signal_connect_swapped(win->add_tab_button, "clicked",
             G_CALLBACK(multi_win_new_tab_action), win);
     gtk_notebook_set_action_widget(notebook, win->add_tab_button, GTK_PACK_END);
@@ -2208,7 +2210,7 @@ void multi_tab_add_close_button(MultiTab *tab)
         return;
 
     win = tab->parent;
-    tab->close_button = multitab_close_button_new(tab->status_stock);
+    tab->close_button = multitab_close_button_new(tab->status_icon_name);
     gtk_box_pack_start(GTK_BOX(tab->label_box), tab->close_button,
             FALSE, FALSE, 0);
     g_signal_connect(tab->close_button, "clicked",
@@ -2236,18 +2238,18 @@ void multi_tab_remove_close_button(MultiTab *tab)
     }
 }
 
-void multi_tab_set_status_stock(MultiTab *tab, const char *stock)
+void multi_tab_set_status_icon_name(MultiTab *tab, const char *name)
 {
-    if (!strcmp(tab->status_stock ? tab->status_stock : GTK_STOCK_CLOSE,
-            stock ? stock : GTK_STOCK_CLOSE))
+    if (!strcmp(tab->status_icon_name ? tab->status_icon_name : "window-close",
+            name ? name : "window-close"))
     {
         return;
     }
-    tab->status_stock = stock;
+    tab->status_icon_name = name;
     if (tab->close_button)
     {
         multitab_close_button_set_image(
-                MULTITAB_CLOSE_BUTTON(tab->close_button), stock);
+                MULTITAB_CLOSE_BUTTON(tab->close_button), name);
     }
 }
 
