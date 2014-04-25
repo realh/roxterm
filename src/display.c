@@ -25,7 +25,7 @@
 static char *get_screen_dot(const char *display_name)
 {
     char *n, *dot;
-    
+
     dot = strrchr(display_name, '.');
     if (dot && *(dot + 1))
     {
@@ -50,11 +50,11 @@ static GdkScreen *get_matching_screen(const char *display_name,
 {
     GdkScreen *screen = NULL;
     char *scrn_name = NULL;
-    
+
     if (!name_includes_screen)
     {
         char *dot;
-        
+
         screen = gdk_display_get_default_screen(dpy);
         scrn_name = gdk_screen_make_display_name(screen);
         dot = get_screen_dot(scrn_name);
@@ -65,8 +65,12 @@ static GdkScreen *get_matching_screen(const char *display_name,
     }
     else
     {
+#if GTK_CHECK_VERSION(3, 10, 0)
+        int n = 1;
+#else
         int n = gdk_display_get_n_screens(dpy);
-        
+#endif
+
         while (--n >= 0)
         {
             screen = gdk_display_get_screen(dpy, n);
@@ -88,7 +92,7 @@ GdkScreen *display_get_screen_for_name(const char *display_name)
     gboolean name_inc_scrn;
     GdkDisplay *dpy = NULL;
     GdkScreen *screen = NULL;
-    
+
     if (!display_name)
         return gdk_screen_get_default();
     name_inc_scrn = get_screen_dot(display_name) != NULL;;
