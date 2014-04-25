@@ -1079,7 +1079,15 @@ gboolean configlet_open(GdkScreen *scrn)
         configlet_setup_family(cg, &cg->shortcuts, "Shortcuts");
         configlet_setup_family(cg, &cg->encodings, "encodings");
 
-        capplet_set_boolean_toggle(&cg->capp, "edit_shortcuts", FALSE);
+        if (GTK_CHECK_VERSION(3, 10, 0) || gtk_is_newer_than(3, 10))
+        {
+            gtk_widget_hide(GTK_WIDGET(gtk_builder_get_object(
+                    cg->capp.builder, "edit_shortcuts")));
+        }
+        else
+        {
+            capplet_set_boolean_toggle(&cg->capp, "edit_shortcuts", FALSE);
+        }
         capplet_set_radio(&cg->capp, "warn_close", 3);
         capplet_set_boolean_toggle(&cg->capp, "only_warn_running", FALSE);
         if (g_object_class_find_property(

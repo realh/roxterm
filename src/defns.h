@@ -79,6 +79,12 @@ enum {
  */
 #define MULTITAB_LABEL_GTK3_SIZE_KLUDGE GTK_CHECK_VERSION(3, 0, 0)
 
+inline static gboolean gtk_is_newer_than(int major, int minor)
+{
+    int j = gtk_get_major_version();
+    return (j > major) || (j == major && gtk_get_minor_version() >= minor);
+}
+
 #endif /* DEFNS_H */
 
 /* vi:set sw=4 ts=4 et cindent cino= */

@@ -3833,8 +3833,11 @@ static void roxterm_reflect_colour_change(Options *scheme, const char *key)
     }
 }
 
+#if !GTK_CHECK_VERSION(3, 10, 0)
 static void roxterm_apply_can_edit_shortcuts(void)
 {
+    if (gtk_is_newer_than(3, 10))
+        return;
     g_type_class_unref(g_type_class_ref(GTK_TYPE_MENU_ITEM));
     g_type_class_unref(g_type_class_ref(GTK_TYPE_CHECK_MENU_ITEM));
     g_type_class_unref(g_type_class_ref(GTK_TYPE_RADIO_MENU_ITEM));
@@ -3843,6 +3846,7 @@ static void roxterm_apply_can_edit_shortcuts(void)
             global_options_lookup_int_with_default("edit_shortcuts", FALSE),
             "roxterm");
 }
+#endif
 
 static void
 roxterm_opt_signal_handler(const char *profile_name, const char *key,
@@ -3875,14 +3879,18 @@ roxterm_opt_signal_handler(const char *profile_name, const char *key,
     else if (!strcmp(profile_name, "Global") &&
             (!strcmp(key, "warn_close") ||
             !strcmp(key, "only_warn_running") ||
+#if !GTK_CHECK_VERSION(3, 10, 0)
             !strcmp(key, "edit_shortcuts") ||
+#endif
             !strcmp(key, "prefer_dark_theme")))
     {
         options_set_int(global_options, key, val.i);
-        if (!strcmp(key, "edit_shortcuts"))
-            roxterm_apply_can_edit_shortcuts();
-        else if (!strcmp(key, "prefer_dark_theme"))
+        if (!strcmp(key, "prefer_dark_theme"))
             global_options_apply_dark_theme();
+#if !GTK_CHECK_VERSION(3, 10, 0)
+        else if (!strcmp(key, "edit_shortcuts"))
+            roxterm_apply_can_edit_shortcuts();
+#endif
     }
     else
     {
@@ -4704,7 +4712,9 @@ void roxterm_init(void)
         (MultiTabGetShowCloseButton) roxterm_get_show_tab_close_button,
         (MultiTabGetNewTabAdjacent) roxterm_get_new_tab_adjacent
         );
+#if !GTK_CHECK_VERSION(3, 10, 0)
     roxterm_apply_can_edit_shortcuts();
+#endif
 }
 
 gboolean roxterm_spawn_command_line(const gchar *command_line,
