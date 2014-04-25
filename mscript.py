@@ -223,7 +223,8 @@ if ctx.mode == 'configure':
     for f in "get_current_dir_name g_mkdir_with_parents " \
             "gdk_window_get_display gdk_window_get_screen " \
             "gtk_widget_get_realized gtk_widget_get_mapped " \
-            "gtk_combo_box_text_new gtk_rc_style_unref".split():
+            "gtk_combo_box_text_new gtk_rc_style_unref " \
+            "gtk_drag_begin_with_coordinates".split():
         ctx.check_func(f, "${CFLAGS} ${MCFLAGS} ${GTK_CFLAGS}",
                 "${LIBS} ${GTK_LIBS}")
     for f in ["vte_terminal_search_set_gregex", "vte_terminal_get_pty_object"]:

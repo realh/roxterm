@@ -95,7 +95,7 @@ struct ROXTermData {
     gboolean hold_over_uri;    /* Whether we've just received a button press
                                over a URI which may turn into a drag or click
                                 */
-    int hold_x, hold_y;        /* Position of event above */
+    double hold_x, hold_y;     /* Position of event above */
     gulong hold_handler_id;    /* Signal handler id for the above event */
     char *encoding;
     double target_zoom_factor, current_zoom_factor;
@@ -1779,8 +1779,13 @@ static gboolean roxterm_motion_handler(GtkWidget *widget, GdkEventButton *event,
 
 
     target_list = roxterm_get_uri_drag_target_list();
-    gtk_drag_begin(roxterm->widget, target_list, GDK_ACTION_COPY, 1,
-            (GdkEvent *) event);
+#ifdef HAVE_GTK_DRAG_BEGIN_WITH_COORDINATES
+    gtk_drag_begin_with_coordinates(roxterm->widget, target_list,
+            GDK_ACTION_COPY, 1, (GdkEvent *) event, event->x, event->y);
+#else
+    gtk_drag_begin(roxterm->widget, target_list,
+            GDK_ACTION_COPY, 1, (GdkEvent *) event);
+#endif
 
     return TRUE;
 }

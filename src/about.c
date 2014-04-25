@@ -47,7 +47,7 @@ static GdkPixbuf *about_load_logo(void)
         {
             filename = g_build_filename(ICON_DIR, "roxterm.svg", NULL);
         }
-        
+
         result = gdk_pixbuf_new_from_file_at_size(filename,
                 LOGO_SIZE, LOGO_SIZE, &error);
         if (error)
