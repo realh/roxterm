@@ -91,6 +91,7 @@ inline static gboolean gtk_is_newer_than(int major, int minor)
     (void) major;
     (void) minor;
     return FALSE;
+#endif
 }
 
 #endif /* DEFNS_H */
