@@ -81,8 +81,16 @@ enum {
 
 inline static gboolean gtk_is_newer_than(int major, int minor)
 {
+#if GTK_CHECK_VERSION(3, 0, 0)
     int j = gtk_get_major_version();
     return (j > major) || (j == major && gtk_get_minor_version() >= minor);
+#else
+    /* Run-time version info only available in GTK+3; this function is only
+     * used to check for versions > 3, so return FALSE in GTK+2.
+     */
+    (void) major;
+    (void) minor;
+    return FALSE;
 }
 
 #endif /* DEFNS_H */
