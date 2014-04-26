@@ -285,6 +285,7 @@ void shortcuts_unref(Options *shortcuts)
     }
 }
 
+#if !GTK_CHECK_VERSION(3, 10, 0)
 void
 shortcuts_changed_handler(GtkAccelMap * map, const char *accel_path,
     guint accel_key, GdkModifierType accel_mods, gpointer user_data)
@@ -330,6 +331,7 @@ shortcuts_changed_handler(GtkAccelMap * map, const char *accel_path,
     (void) map;
     (void) user_data;
 }
+#endif
 
 void shortcuts_init(void)
 {
@@ -340,9 +342,13 @@ void shortcuts_init(void)
     }
 }
 
+#if !GTK_CHECK_VERSION(3, 10, 0)
 void shortcuts_enable_signal_handler(gboolean enable)
 {
     static gulong handler_id = 0;
+
+    if (gtk_is_newer_than(3, 10))
+        return;
 
     if (enable)
     {
@@ -369,6 +375,7 @@ void shortcuts_enable_signal_handler(gboolean enable)
         }
     }
 }
+#endif
 
 const char *shortcuts_get_index_str(Options *shortcuts)
 {

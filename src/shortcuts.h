@@ -35,7 +35,14 @@ Options *shortcuts_open(const char *scheme_name, gboolean reload);
 
 void shortcuts_unref(Options *scheme);
 
+#if GTK_CHECK_VERSION(3, 10, 0)
+inline static void shortcuts_enable_signal_handler(gboolean enable)
+{
+    (void) enable;
+}
+#else
 void shortcuts_enable_signal_handler(gboolean enable);
+#endif
 
 gboolean shortcuts_key_is_shortcut(Options *shortcuts,
         guint key, GdkModifierType modifiers);
