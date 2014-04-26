@@ -27,8 +27,11 @@
 void shortcuts_init(void);
 
 /* Loads named keyboard shortcuts scheme, adding accelerators to the global
- * GtkAccelMap. If file not found or NULL, tries to load Default */
-Options *shortcuts_open(const char *scheme_name);
+ * GtkAccelMap. If file not found or NULL, tries to load Default. If reload
+ * is TRUE it forces the shortcuts to be reloaded from the file even if a
+ * scheme of the same name is already loaded.
+ */
+Options *shortcuts_open(const char *scheme_name, gboolean reload);
 
 void shortcuts_unref(Options *scheme);
 

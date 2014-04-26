@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: roxterm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-04-25 17:22+0100\n"
+"POT-Creation-Date: 2014-04-26 16:07+0100\n"
 "PO-Revision-Date: 2013-05-26 04:27+0000\n"
 "Last-Translator: salmora8 <shorterfire@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/"
@@ -133,7 +133,7 @@ msgid "Unable to copy profile/scheme: %s"
 msgstr "Não foi possível copiar perfil/esquema: %s"
 
 #: ../src/configlet.c:631 ../src/roxterm.c:840 ../src/session.c:503
-#: ../src/shortcuts.c:177
+#: ../src/shortcuts.c:196
 msgid "unknown reason"
 msgstr "Razão desconhecida"
 
@@ -225,19 +225,19 @@ msgstr ""
 msgid "Unable to create 'Configlet' from UI definition: %s"
 msgstr "Não foi possível criar 'Configlet' de uma definição UI: %s"
 
-#: ../src/configlet.c:1129
+#: ../src/configlet.c:1127
 msgid "Trying to decrease profile_lock below 0"
 msgstr "Tentando diminuir abaixo de 0 profile_lock"
 
-#: ../src/configlet.c:1147
+#: ../src/configlet.c:1145
 msgid "Trying to decrease colours_lock below 0"
 msgstr "Tentando diminuir abaixo de 0 colours_lock"
 
-#: ../src/configlet.c:1165
+#: ../src/configlet.c:1163
 msgid "Trying to decrease shortcuts_lock below 0"
 msgstr "Tentando diminuir abaixo de 0 shortcuts_lock"
 
-#: ../src/configlet.c:1183
+#: ../src/configlet.c:1181
 msgid "Trying to decrease encodings_lock below 0"
 msgstr "Tentando diminuir abaixo de 0 encodings_lock"
 
@@ -1045,7 +1045,7 @@ msgstr "Não foi possível criar uma fonte de '%s'"
 msgid "Unable to convert dragged URI to UTF-8: %s"
 msgstr "Não foi possível converter URI arrastada para UTF-8: %s"
 
-#: ../src/roxterm.c:1861 ../src/roxterm.c:3467
+#: ../src/roxterm.c:1861 ../src/roxterm.c:3466
 msgid "ROXTerm"
 msgstr "ROXTerm"
 
@@ -1118,31 +1118,31 @@ msgstr "Perfil '%s' não encontrado"
 msgid "Colour scheme '%s' not found"
 msgstr "Esquema de cores '%s' não encontrado"
 
-#: ../src/roxterm.c:3522
+#: ../src/roxterm.c:3521
 #, c-format
 msgid "Unknown option type (%d)"
 msgstr "Tipo de opção desconhecida (%d)"
 
-#: ../src/roxterm.c:3889
+#: ../src/roxterm.c:3896
 #, c-format
 msgid "Profile/key '%s/%s' not understood"
 msgstr "Perfil/tecla '%s/%s' não entendida"
 
-#: ../src/roxterm.c:3971
+#: ../src/roxterm.c:3978
 #, c-format
 msgid "Changed options family '%s' not known"
 msgstr "Família de opções modificada '%s' não conhecida"
 
-#: ../src/roxterm.c:3986
+#: ../src/roxterm.c:3993
 msgid "[Deleted]"
 msgstr "[Removido]"
 
-#: ../src/roxterm.c:4009
+#: ../src/roxterm.c:4016
 #, c-format
 msgid "Options family change action '%s' not known"
 msgstr "Família de opções modificou ação '%s' não conhecida"
 
-#: ../src/roxterm.c:4117
+#: ../src/roxterm.c:4124
 #, c-format
 msgid ""
 "Invalid ROXTERM_ID %p in D-Bus message (this is expected if you used "
@@ -1151,16 +1151,16 @@ msgstr ""
 "Inválido ROXTERM_ID %p na mensagem D-Bus (isto é esperado se você usou "
 "opções do roxterm --separate)"
 
-#: ../src/roxterm.c:4141
+#: ../src/roxterm.c:4148
 #, c-format
 msgid "Unknown profile '%s' in D-Bus signal"
 msgstr "Perfil desconhecido '%s' no sinal D-Bus"
 
-#: ../src/roxterm.c:4316
+#: ../src/roxterm.c:4323
 msgid "Invalid geometry specification"
 msgstr "Especificação geométrica inválida"
 
-#: ../src/roxterm.c:4633
+#: ../src/roxterm.c:4640
 msgid ""
 "Closing this ROXTerm tab may cause loss of data. Are you sure you want to "
 "continue?"
@@ -1168,7 +1168,7 @@ msgstr ""
 "Fechando essa aba ROXTerm, pode causar a perda de dados. Tem que certeza que "
 "deseja continuar?"
 
-#: ../src/roxterm.c:4637
+#: ../src/roxterm.c:4644
 msgid ""
 "You are about to close a ROXTerm window; this may cause loss of data. Are "
 "you sure you want to continue?"
@@ -1176,7 +1176,7 @@ msgstr ""
 "Você está prestes a fechar uma janela ROXTerm, o que pode causar perda de "
 "dados. Tem certeza de que deseja continuar?"
 
-#: ../src/roxterm.c:4641
+#: ../src/roxterm.c:4648
 msgid ""
 "You are about to close a window containing multiple ROXTerm tabs; this may "
 "cause loss of data. Are you sure you want to continue?"
@@ -1184,136 +1184,136 @@ msgstr ""
 "Você esta prestes a fechar uma janela contendo múltiplas abas ROXTerm, o que "
 "pode causar perda de dados. Tem certeza que deseja continuar?"
 
-#: ../src/roxterm.c:4650
+#: ../src/roxterm.c:4657
 msgid "ROXTerm: Confirm close"
 msgstr "ROXTerm: Confirme ao fechar"
 
-#: ../src/roxterm.c:4654
+#: ../src/roxterm.c:4661
 msgid "_Don't show this again"
 msgstr "_Não exibir isto novamente"
 
-#: ../src/roxterm.c:4662
+#: ../src/roxterm.c:4669
 msgid "Only warn if tasks are still _running"
 msgstr "Somente avisar se tarefas estiverem em _execução"
 
-#: ../src/roxterm.c:4775
+#: ../src/roxterm.c:4784
 #, c-format
 msgid "Unable to spawn command %s: %s"
 msgstr "Não foi possível criar comando %s: %s"
 
-#: ../src/roxterm.c:4943
+#: ../src/roxterm.c:4952
 #, c-format
 msgid "Unknown <window> attribute '%s'"
 msgstr "Desconhecido <janela> atributo '%s'"
 
-#: ../src/roxterm.c:4994
+#: ../src/roxterm.c:5003
 msgid "Session contains window with no valid tabs"
 msgstr "Sessão contém janelas com nenhuma abas válidas"
 
-#: ../src/roxterm.c:5098
+#: ../src/roxterm.c:5107
 #, c-format
 msgid "Unknown <tab> attribute '%s'"
 msgstr "Desconhecido <aba> atributo '%s'"
 
-#: ../src/roxterm.c:5131
+#: ../src/roxterm.c:5140
 msgid "<command> with no arguments"
 msgstr "<comando> com nenhum argumento"
 
-#: ../src/roxterm.c:5181
+#: ../src/roxterm.c:5190
 #, c-format
 msgid "Unknown <command> attribute '%s'"
 msgstr "Desconhecido <comando> atributo '%s'"
 
-#: ../src/roxterm.c:5193
+#: ../src/roxterm.c:5202
 msgid "<command> missing argc attribute"
 msgstr "<comando> faltando atributo argc"
 
-#: ../src/roxterm.c:5207
+#: ../src/roxterm.c:5216
 #, c-format
 msgid "Too many <arg> elements for <command argc='%d>"
 msgstr "Muitos <argumentos> elementos para <comando argc=%d>"
 
-#: ../src/roxterm.c:5224
+#: ../src/roxterm.c:5233
 #, c-format
 msgid "Unknown <arg> attribute '%s'"
 msgstr "Desconhecido <argumento> atributo '%s'"
 
-#: ../src/roxterm.c:5236
+#: ../src/roxterm.c:5245
 msgid "<arg> missing s attribute"
 msgstr "<argumento> faltando atributo"
 
-#: ../src/roxterm.c:5256
+#: ../src/roxterm.c:5265
 #, c-format
 msgid "Unknown <roxterm_session> attribute '%s'"
 msgstr "Desconhecido <roxterm _sessão> atributo '%s'"
 
-#: ../src/roxterm.c:5275
+#: ../src/roxterm.c:5284
 msgid "<roxterm_session> tag nested within <window>"
 msgstr "<roxterm _sessão> tag aninhada dentro <janela>"
 
-#: ../src/roxterm.c:5289
+#: ../src/roxterm.c:5298
 msgid "<window> tag not within <roxterm_session>"
 msgstr "<janela> tag não dentro <roxterm _sessão>"
 
-#: ../src/roxterm.c:5294
+#: ../src/roxterm.c:5303
 msgid "<window> tag nested within another <window>"
 msgstr "<janela> tag aninhada dentro de outro <janela> "
 
-#: ../src/roxterm.c:5306
+#: ../src/roxterm.c:5315
 msgid "<tab> tag not within <window>"
 msgstr "<aba> tag não dentro <janela>"
 
-#: ../src/roxterm.c:5311
+#: ../src/roxterm.c:5320
 msgid "<tab> tag nested within another <tab>"
 msgstr "<aba> tag aninhada dentro de outro <aba>"
 
-#: ../src/roxterm.c:5323
+#: ../src/roxterm.c:5332
 msgid "<command> tag not within <tab>"
 msgstr "<comando> tag não dentro <aba>"
 
-#: ../src/roxterm.c:5328
+#: ../src/roxterm.c:5337
 msgid "<command> tag nested within another <command>"
 msgstr "<comando> tag aninhada dentro de outro <comando>"
 
-#: ../src/roxterm.c:5340
+#: ../src/roxterm.c:5349
 msgid "<arg> tag not within <command>"
 msgstr "<argumento> tag não dentro <comando>"
 
-#: ../src/roxterm.c:5350
+#: ../src/roxterm.c:5359
 #, c-format
 msgid "Unknown element <%s>"
 msgstr "Elemento desconhecido <%s>"
 
-#: ../src/roxterm.c:5366
+#: ../src/roxterm.c:5375
 msgid "Unmatched </roxterm_session>"
 msgstr "Incomparável </roxterm_sessão>"
 
-#: ../src/roxterm.c:5371
+#: ../src/roxterm.c:5380
 msgid "Attempt to close <roxterm_session> without closing <window>"
 msgstr "A tentar fechar <roxterm _sessão> sem fechar <janela>"
 
-#: ../src/roxterm.c:5384
+#: ../src/roxterm.c:5393
 msgid "Unmatched </window>"
 msgstr "Incomparável </janela>"
 
-#: ../src/roxterm.c:5389
+#: ../src/roxterm.c:5398
 msgid "Attempt to close <window> without closing <tab>"
 msgstr "A tentar fechar <janela> sem fechar <aba>"
 
-#: ../src/roxterm.c:5401
+#: ../src/roxterm.c:5410
 msgid "Unmatched </tab>"
 msgstr "Incomparável </aba>"
 
-#: ../src/roxterm.c:5415
+#: ../src/roxterm.c:5424
 msgid "Unmatched </command>"
 msgstr "Incomparável </comando>"
 
-#: ../src/roxterm.c:5421
+#: ../src/roxterm.c:5430
 #, c-format
 msgid "Unknown closing element </%s>"
 msgstr "Fechando elemento desconhecido </%s>"
 
-#: ../src/roxterm.c:5431
+#: ../src/roxterm.c:5440
 #, c-format
 msgid "Unable to parse data for session '%s': %s"
 msgstr "Não foi possível analisar dados para sessão '%s: %s"
@@ -1533,12 +1533,12 @@ msgstr "Falha ao conectar gerenciamento de sessão: %s"
 msgid "Unable to load session '%s': %s"
 msgstr "Não foi possível ler sessão '%s': %s"
 
-#: ../src/shortcuts.c:174
+#: ../src/shortcuts.c:193
 #, c-format
 msgid "Unable to read keys from shortcuts file %s: %s"
 msgstr "Não foi possível ler as teclas de atalhos de arquivo %s: %s"
 
-#: ../src/shortcuts.c:219
+#: ../src/shortcuts.c:238
 #, c-format
 msgid "Shortcut '%s' in '%s' has invalid value"
 msgstr "Atalho '%s' em '%s' tem um valor inválido"

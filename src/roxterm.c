@@ -2619,10 +2619,9 @@ static void roxterm_shortcuts_selected(GtkCheckMenuItem *mitem,
         check_preferences_submenu_pair(roxterm,
                 MENUTREE_PREFERENCES_SELECT_SHORTCUTS, scheme_name);
     }
-    shortcuts = shortcuts_open(scheme_name);
-    multi_win_set_shortcut_scheme(win, shortcuts, FALSE);
+    shortcuts = shortcuts_open(scheme_name, TRUE);
+    multi_win_set_shortcut_scheme(win, shortcuts);
     shortcuts_unref(shortcuts);
-    g_free(scheme_name);
 }
 
 static void roxterm_text_changed_handler(VteTerminal *vte, ROXTermData *roxterm)
@@ -4107,7 +4106,7 @@ static void roxterm_stuff_changed_handler(const char *what_happened,
 
             if (!strcmp(options_get_leafname(shortcuts), current_name))
             {
-                multi_win_set_shortcut_scheme(win, shortcuts, TRUE);
+                multi_win_set_shortcut_scheme(win, shortcuts);
             }
         }
     }
@@ -4164,8 +4163,8 @@ static void roxterm_set_shortcut_scheme_handler(ROXTermData *roxterm,
     if (!roxterm_verify_id(roxterm))
         return;
 
-    Options *shortcuts = shortcuts_open(name);
-    multi_win_set_shortcut_scheme(roxterm_get_win(roxterm), shortcuts, FALSE);
+    Options *shortcuts = shortcuts_open(name, TRUE);
+    multi_win_set_shortcut_scheme(roxterm_get_win(roxterm), shortcuts);
     shortcuts_unref(shortcuts);
 }
 
@@ -4382,7 +4381,7 @@ void roxterm_launch(const char *display_name, char **env)
     always_show_tabs = roxterm_get_always_show_tabs(roxterm);
     shortcut_scheme = global_options_lookup_string_with_default
         ("shortcut_scheme", "Default");
-    shortcuts = shortcuts_open(shortcut_scheme);
+    shortcuts = shortcuts_open(shortcut_scheme, FALSE);
     if (global_options_tab)
     {
         ROXTermData *partner;
@@ -4956,7 +4955,7 @@ static void parse_open_win(_ROXTermParseContext *rctx,
     }
     SLOG("Opening window with title %s", title);
 
-    shortcuts = shortcuts_open(shortcuts_name);
+    shortcuts = shortcuts_open(shortcuts_name, FALSE);
     rctx->win = win = multi_win_new_blank(disp, shortcuts,
             multi_win_get_nearest_index_for_zoom(rctx->zoom_factor),
             disable_menu_shortcuts, disable_tab_shortcuts, tab_pos, show_tabs,

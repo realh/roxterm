@@ -76,7 +76,7 @@ static void shortcuts_check_change_tabs(Options *shortcuts,
     {
         char *path = full_path_for_tab(index_str, n);
         char *s = options_lookup_string(shortcuts, path);
-        
+
         if (!s)
         {
             guint a_key;
@@ -96,11 +96,11 @@ static void shortcuts_change_item(GArray *array, const char *path,
         guint key, GdkModifierType modifiers)
 {
     guint n;
-    
+
     for (n = 0; n < array->len; ++n)
     {
         ShortcutsItem *item = &g_array_index(array, ShortcutsItem, n);
-        
+
         if (!strcmp(item->path, path))
         {
             item->key = key;
@@ -115,52 +115,71 @@ gboolean shortcuts_key_is_shortcut(Options *shortcuts,
 {
     ShortcutsData *data = options_get_data(shortcuts);
     guint n;
-    
+
     for (n = 0; n < data->items->len; ++n)
     {
         ShortcutsItem *item = &g_array_index(data->items, ShortcutsItem, n);
-        
+
         if (item->key == key && item->modifiers == modifiers)
             return TRUE;
     }
     return FALSE;
 }
 
-Options *shortcuts_open(const char *scheme)
+Options *shortcuts_open(const char *scheme, gboolean reload)
 {
     Options *shortcuts;
     ShortcutsData *data;
 
     shortcuts_init();
 
-    /* Don't bother reloading if it's already been loaded */
+    /* Check if it's already been loaded */
     shortcuts = dynamic_options_lookup(shortcuts_dynopts, scheme);
     if (shortcuts)
     {
         options_ref(shortcuts);
-        return shortcuts;
+        if (reload)
+        {
+            options_reload_keyfile(shortcuts);
+        }
+        else
+        {
+            return shortcuts;
+        }
+    }
+    else
+    {
+        shortcuts = dynamic_options_lookup_and_ref(shortcuts_dynopts, scheme,
+                SHORTCUTS_GROUP);
+        reload = FALSE;
     }
 
     shortcuts_enable_signal_handler(FALSE);
-    shortcuts = dynamic_options_lookup_and_ref(shortcuts_dynopts, scheme,
-        SHORTCUTS_GROUP);
 
-    if (!shortcuts_index_size)
+    if (reload)
     {
-        shortcuts_indexed_names = g_new(Options *, shortcuts_index_size = 4);
+        data = options_get_data(shortcuts);
     }
-    else if (shortcuts_counter + 1 >= shortcuts_index_size)
+    else
     {
-        shortcuts_indexed_names = g_renew(Options *, shortcuts_indexed_names,
-                shortcuts_index_size *= 2);
+        if (!shortcuts_index_size)
+        {
+            shortcuts_indexed_names = g_new(Options *,
+                    shortcuts_index_size = 4);
+        }
+        else if (shortcuts_counter + 1 >= shortcuts_index_size)
+        {
+            shortcuts_indexed_names = g_renew(Options *,
+                    shortcuts_indexed_names, shortcuts_index_size *= 2);
+        }
+        data = g_new(ShortcutsData, 1);
+        data->index_str = g_strdup_printf("%08x", shortcuts_counter);
+        data->items = g_array_new(FALSE, FALSE, sizeof(ShortcutsItem));
+        options_associate_data(shortcuts, data);
+        shortcuts_indexed_names[shortcuts_counter] = shortcuts;
+        ++shortcuts_counter;
     }
-    data = g_new(ShortcutsData, 1);
-    data->index_str = g_strdup_printf("%08x", shortcuts_counter);
-    data->items = g_array_new(FALSE, FALSE, sizeof(ShortcutsItem));
-    options_associate_data(shortcuts, data);
-    shortcuts_indexed_names[shortcuts_counter] = shortcuts;
-    ++shortcuts_counter;
-    
+
     if (shortcuts->kf)
     {
         GError *err = NULL;
@@ -253,7 +272,7 @@ void shortcuts_unref(Options *shortcuts)
     if (ref0)
     {
         guint n;
-        
+
         for (n = 0; n < data->items->len; ++n)
         {
             g_free(g_array_index(data->items, ShortcutsItem, n).path);
@@ -299,7 +318,7 @@ shortcuts_changed_handler(GtkAccelMap * map, const char *accel_path,
     else if (!shortcuts->deleted)
     {
         ShortcutsData *data = options_get_data(shortcuts);
-        
+
         options_set_string(shortcuts, path_leaf, accel_key_name);
         shortcuts_change_item(data->items, path_leaf, accel_key, accel_mods);
         options_file_save(shortcuts->kf, shortcuts->name);
@@ -354,7 +373,7 @@ void shortcuts_enable_signal_handler(gboolean enable)
 const char *shortcuts_get_index_str(Options *shortcuts)
 {
     ShortcutsData *data = options_get_data(shortcuts);
-    
+
     return data ? data->index_str : NULL;
 }
 
