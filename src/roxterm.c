@@ -4100,14 +4100,11 @@ static void roxterm_stuff_changed_handler(const char *what_happened,
             }
             multi_win_set_ignore_toggles(win, FALSE);
         }
-        else
+        else if (!strcmp(family_name, "Shortcuts"))
         {
-            Options *shortcuts = multi_win_get_shortcut_scheme(win);
-
-            if (!strcmp(options_get_leafname(shortcuts), current_name))
-            {
-                multi_win_set_shortcut_scheme(win, shortcuts);
-            }
+            Options *shortcuts = shortcuts_open(current_name, TRUE);
+            multi_win_set_shortcut_scheme(win, shortcuts);
+            shortcuts_unref(shortcuts);
         }
     }
 }

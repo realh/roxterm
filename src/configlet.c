@@ -745,19 +745,44 @@ static char *configlet_make_profile_editable(ConfigletData *cg,
     return path;
 }
 
+typedef struct {
+    GFileMonitor *monitor;
+    GFile *file;
+    char *name;
+} ShortcutsMonitorDetails_;
+
+static gboolean remove_shortcuts_monitor(ShortcutsMonitorDetails_ *md)
+{
+    g_object_unref(md->monitor);
+    /* Trying to unref file gives an error, is it destroyed with monitor? */
+    //g_object_unref(md->file);
+    g_free(md->name);
+    g_free(md);
+    return FALSE;
+}
+
 static void shortcuts_file_modified(GFileMonitor *monitor,
         GFile *file, GFile *other_file, GFileMonitorEvent event_type,
         char *name)
 {
     (void) monitor;
     (void) other_file;
-    (void) event_type;
 
     /* FIXME: Send dbus signal */
-    g_print("Shortcuts '%s' were modified\n", name);
-    g_object_unref(monitor);
-    g_object_unref(file);
-    g_free(name);
+    g_debug("Shortcuts '%s' were modified, event %x", name, event_type);
+    if (event_type == G_FILE_MONITOR_EVENT_CHANGES_DONE_HINT)
+    {
+        optsdbus_send_stuff_changed_signal(OPTSDBUS_CHANGED,
+                "Shortcuts", name, NULL);
+        g_file_monitor_cancel(monitor);
+        g_signal_handlers_disconnect_by_func(monitor, shortcuts_file_modified,
+                name);
+        ShortcutsMonitorDetails_ *md = g_new(ShortcutsMonitorDetails_, 1);
+        md->monitor = monitor;
+        md->file = file;
+        md->name = name;
+        g_idle_add((GSourceFunc) remove_shortcuts_monitor, md);
+    }
 }
 
 static void edit_shortcuts(ConfigletData *cg, const char *name)
