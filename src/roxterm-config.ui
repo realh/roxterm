@@ -1,14 +1,867 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.18.2 -->
 <interface>
-  <!-- interface-requires gtk+ 3.0 -->
+  <requires lib="gtk+" version="3.0"/>
+  <object class="GtkDialog" id="Colour_Scheme_Editor">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="title" translatable="yes">ROXTerm Colour Scheme</property>
+    <property name="resizable">False</property>
+    <property name="type_hint">dialog</property>
+    <signal name="close" handler="on_Colour_Editor_close" swapped="no"/>
+    <signal name="destroy" handler="on_Colour_Editor_destroy" swapped="no"/>
+    <signal name="response" handler="on_Colour_Editor_response" swapped="no"/>
+    <child internal-child="vbox">
+      <object class="GtkVBox" id="dialog-vbox5">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox" id="dialog-action_area5">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="homogeneous">True</property>
+            <property name="layout_style">end</property>
+            <child>
+              <object class="GtkButton" id="revert">
+                <property name="label" translatable="yes">_Revert</property>
+                <property name="use_action_appearance">False</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                <property name="use_underline">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="closebutton1">
+                <property name="label">gtk-close</property>
+                <property name="use_action_appearance">False</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="can_default">True</property>
+                <property name="receives_default">True</property>
+                <property name="has_tooltip">True</property>
+                <property name="tooltip_text" translatable="yes">Close this window</property>
+                <property name="use_stock">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="pack_type">end</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkVBox" id="vbox2">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="border_width">8</property>
+            <property name="spacing">8</property>
+            <child>
+              <object class="GtkCheckButton" id="set_fgbg">
+                <property name="label" translatable="yes">_Set text and background colours</property>
+                <property name="use_action_appearance">False</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">False</property>
+                <property name="has_tooltip">True</property>
+                <property name="tooltip_text" translatable="yes">Whether to set terminals' text and background colours using the fields below</property>
+                <property name="halign">start</property>
+                <property name="use_underline">True</property>
+                <property name="xalign">0.5</property>
+                <property name="draw_indicator">True</property>
+                <signal name="toggled" handler="on_set_fgbg_toggled" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkTable" id="table1">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">start</property>
+                <property name="n_rows">3</property>
+                <property name="n_columns">4</property>
+                <property name="column_spacing">8</property>
+                <property name="row_spacing">4</property>
+                <child>
+                  <object class="GtkLabel" id="text_colour_label">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="halign">start</property>
+                    <property name="label" translatable="yes">_Text colour</property>
+                    <property name="use_underline">True</property>
+                    <property name="mnemonic_widget">foreground_colour</property>
+                  </object>
+                  <packing>
+                    <property name="x_options">GTK_FILL</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkColorButton" id="foreground_colour">
+                    <property name="use_action_appearance">False</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="has_tooltip">True</property>
+                    <property name="tooltip_markup" translatable="yes">Foreground colour of text; click to change</property>
+                    <property name="tooltip_text" translatable="yes">Foreground colour of text; click to change</property>
+                    <property name="halign">start</property>
+                    <property name="color">#000000000000</property>
+                    <signal name="color-set" handler="on_color_set" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="right_attach">2</property>
+                    <property name="x_options">GTK_FILL</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="background_colour_label">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="halign">start</property>
+                    <property name="label" translatable="yes">_Background colour</property>
+                    <property name="use_underline">True</property>
+                    <property name="mnemonic_widget">background_colour</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">2</property>
+                    <property name="right_attach">3</property>
+                    <property name="x_options">GTK_FILL</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkColorButton" id="background_colour">
+                    <property name="use_action_appearance">False</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="has_tooltip">True</property>
+                    <property name="tooltip_markup" translatable="yes">Background colour of terminals; click to change</property>
+                    <property name="tooltip_text" translatable="yes">Background colour of terminals; click to change</property>
+                    <property name="halign">start</property>
+                    <property name="color">#000000000000</property>
+                    <signal name="color-set" handler="on_color_set" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left_attach">3</property>
+                    <property name="right_attach">4</property>
+                    <property name="x_options">GTK_FILL</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkCheckButton" id="set_bold_colour">
+                    <property name="label" translatable="yes">Set b_old colour</property>
+                    <property name="use_action_appearance">False</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="has_tooltip">True</property>
+                    <property name="tooltip_markup" translatable="yes">Set the cursor colour from the adjacent field</property>
+                    <property name="tooltip_text" translatable="yes">Set the cursor colour from the adjacent field</property>
+                    <property name="halign">start</property>
+                    <property name="use_underline">True</property>
+                    <property name="xalign">0</property>
+                    <property name="draw_indicator">True</property>
+                    <signal name="toggled" handler="on_set_bold_colour_toggled" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="top_attach">1</property>
+                    <property name="bottom_attach">2</property>
+                    <property name="x_options">GTK_FILL</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkColorButton" id="bold_colour">
+                    <property name="use_action_appearance">False</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="has_tooltip">True</property>
+                    <property name="tooltip_markup" translatable="yes">Foreground colour of text; click to change</property>
+                    <property name="tooltip_text" translatable="yes">Foreground colour of text; click to change</property>
+                    <property name="halign">start</property>
+                    <property name="color">#000000000000</property>
+                    <signal name="color-set" handler="on_color_set" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="right_attach">2</property>
+                    <property name="top_attach">1</property>
+                    <property name="bottom_attach">2</property>
+                    <property name="x_options">GTK_FILL</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkCheckButton" id="set_dim_colour">
+                    <property name="label" translatable="yes">Set _dim colour</property>
+                    <property name="use_action_appearance">False</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="has_tooltip">True</property>
+                    <property name="tooltip_markup" translatable="yes">Set the cursor colour from the adjacent field</property>
+                    <property name="tooltip_text" translatable="yes">Set the cursor colour from the adjacent field</property>
+                    <property name="halign">start</property>
+                    <property name="use_underline">True</property>
+                    <property name="xalign">0</property>
+                    <property name="draw_indicator">True</property>
+                    <signal name="toggled" handler="on_set_dim_colour_toggled" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left_attach">2</property>
+                    <property name="right_attach">3</property>
+                    <property name="top_attach">1</property>
+                    <property name="bottom_attach">2</property>
+                    <property name="x_options">GTK_FILL</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkColorButton" id="dim_colour">
+                    <property name="use_action_appearance">False</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="has_tooltip">True</property>
+                    <property name="tooltip_markup" translatable="yes">Background colour of terminals; click to change</property>
+                    <property name="tooltip_text" translatable="yes">Background colour of terminals; click to change</property>
+                    <property name="halign">start</property>
+                    <property name="color">#000000000000</property>
+                    <signal name="color-set" handler="on_color_set" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left_attach">3</property>
+                    <property name="right_attach">4</property>
+                    <property name="top_attach">1</property>
+                    <property name="bottom_attach">2</property>
+                    <property name="x_options">GTK_FILL</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkCheckButton" id="use_custom_colours">
+                    <property name="label" translatable="yes">Use custom _palette</property>
+                    <property name="use_action_appearance">False</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="has_tooltip">True</property>
+                    <property name="tooltip_markup" translatable="yes">Whether to set the terminal&amp;apos;s colours from the table below</property>
+                    <property name="tooltip_text" translatable="yes">Whether to set the terminal's colours from the table below</property>
+                    <property name="halign">start</property>
+                    <property name="use_underline">True</property>
+                    <property name="xalign">0</property>
+                    <property name="draw_indicator">True</property>
+                    <signal name="toggled" handler="on_use_custom_colours_toggled" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="right_attach">2</property>
+                    <property name="top_attach">2</property>
+                    <property name="bottom_attach">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkCheckButton" id="fgbg_track_palette">
+                    <property name="label" translatable="yes">_Get text and background colours from palette</property>
+                    <property name="use_action_appearance">False</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="has_tooltip">True</property>
+                    <property name="tooltip_markup" translatable="yes">Whether to use the palette table below to set the background and text foreground colours</property>
+                    <property name="tooltip_text" translatable="yes">Whether to use the palette table below to set the background and text foreground colours</property>
+                    <property name="halign">start</property>
+                    <property name="use_underline">True</property>
+                    <property name="xalign">0</property>
+                    <property name="draw_indicator">True</property>
+                    <signal name="toggled" handler="on_fgbg_track_palette_toggled" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left_attach">2</property>
+                    <property name="right_attach">4</property>
+                    <property name="top_attach">2</property>
+                    <property name="bottom_attach">3</property>
+                    <property name="x_options">GTK_FILL</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkTable" id="table4">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="n_rows">3</property>
+                <property name="n_columns">9</property>
+                <child>
+                  <object class="GtkColorButton" id="palette2_7">
+                    <property name="use_action_appearance">False</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="color">#000000000000</property>
+                    <signal name="color-set" handler="on_color_set" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left_attach">8</property>
+                    <property name="right_attach">9</property>
+                    <property name="top_attach">2</property>
+                    <property name="bottom_attach">3</property>
+                    <property name="x_options">GTK_FILL</property>
+                    <property name="y_options"/>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkColorButton" id="palette2_6">
+                    <property name="use_action_appearance">False</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="color">#000000000000</property>
+                    <signal name="color-set" handler="on_color_set" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left_attach">7</property>
+                    <property name="right_attach">8</property>
+                    <property name="top_attach">2</property>
+                    <property name="bottom_attach">3</property>
+                    <property name="x_options">GTK_FILL</property>
+                    <property name="y_options"/>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkColorButton" id="palette2_5">
+                    <property name="use_action_appearance">False</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="color">#000000000000</property>
+                    <signal name="color-set" handler="on_color_set" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left_attach">6</property>
+                    <property name="right_attach">7</property>
+                    <property name="top_attach">2</property>
+                    <property name="bottom_attach">3</property>
+                    <property name="x_options">GTK_FILL</property>
+                    <property name="y_options"/>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkColorButton" id="palette2_4">
+                    <property name="use_action_appearance">False</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="color">#000000000000</property>
+                    <signal name="color-set" handler="on_color_set" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left_attach">5</property>
+                    <property name="right_attach">6</property>
+                    <property name="top_attach">2</property>
+                    <property name="bottom_attach">3</property>
+                    <property name="x_options">GTK_FILL</property>
+                    <property name="y_options"/>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkColorButton" id="palette2_3">
+                    <property name="use_action_appearance">False</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="color">#000000000000</property>
+                    <signal name="color-set" handler="on_color_set" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left_attach">4</property>
+                    <property name="right_attach">5</property>
+                    <property name="top_attach">2</property>
+                    <property name="bottom_attach">3</property>
+                    <property name="x_options">GTK_FILL</property>
+                    <property name="y_options"/>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkColorButton" id="palette2_2">
+                    <property name="use_action_appearance">False</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="color">#000000000000</property>
+                    <signal name="color-set" handler="on_color_set" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left_attach">3</property>
+                    <property name="right_attach">4</property>
+                    <property name="top_attach">2</property>
+                    <property name="bottom_attach">3</property>
+                    <property name="x_options">GTK_FILL</property>
+                    <property name="y_options"/>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkColorButton" id="palette2_1">
+                    <property name="use_action_appearance">False</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="color">#000000000000</property>
+                    <signal name="color-set" handler="on_color_set" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left_attach">2</property>
+                    <property name="right_attach">3</property>
+                    <property name="top_attach">2</property>
+                    <property name="bottom_attach">3</property>
+                    <property name="x_options">GTK_FILL</property>
+                    <property name="y_options"/>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkColorButton" id="palette2_0">
+                    <property name="use_action_appearance">False</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="color">#000000000000</property>
+                    <signal name="color-set" handler="on_color_set" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="right_attach">2</property>
+                    <property name="top_attach">2</property>
+                    <property name="bottom_attach">3</property>
+                    <property name="x_options">GTK_FILL</property>
+                    <property name="y_options"/>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkColorButton" id="palette1_7">
+                    <property name="use_action_appearance">False</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="color">#000000000000</property>
+                    <signal name="color-set" handler="on_color_set" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left_attach">8</property>
+                    <property name="right_attach">9</property>
+                    <property name="top_attach">1</property>
+                    <property name="bottom_attach">2</property>
+                    <property name="x_options">GTK_FILL</property>
+                    <property name="y_options"/>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkColorButton" id="palette1_6">
+                    <property name="use_action_appearance">False</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="color">#000000000000</property>
+                    <signal name="color-set" handler="on_color_set" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left_attach">7</property>
+                    <property name="right_attach">8</property>
+                    <property name="top_attach">1</property>
+                    <property name="bottom_attach">2</property>
+                    <property name="x_options">GTK_FILL</property>
+                    <property name="y_options"/>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkColorButton" id="palette1_5">
+                    <property name="use_action_appearance">False</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="color">#000000000000</property>
+                    <signal name="color-set" handler="on_color_set" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left_attach">6</property>
+                    <property name="right_attach">7</property>
+                    <property name="top_attach">1</property>
+                    <property name="bottom_attach">2</property>
+                    <property name="x_options">GTK_FILL</property>
+                    <property name="y_options"/>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkColorButton" id="palette1_4">
+                    <property name="use_action_appearance">False</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="color">#000000000000</property>
+                    <signal name="color-set" handler="on_color_set" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left_attach">5</property>
+                    <property name="right_attach">6</property>
+                    <property name="top_attach">1</property>
+                    <property name="bottom_attach">2</property>
+                    <property name="x_options">GTK_FILL</property>
+                    <property name="y_options"/>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkColorButton" id="palette1_3">
+                    <property name="use_action_appearance">False</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="color">#000000000000</property>
+                    <signal name="color-set" handler="on_color_set" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left_attach">4</property>
+                    <property name="right_attach">5</property>
+                    <property name="top_attach">1</property>
+                    <property name="bottom_attach">2</property>
+                    <property name="x_options">GTK_FILL</property>
+                    <property name="y_options"/>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkColorButton" id="palette1_2">
+                    <property name="use_action_appearance">False</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="color">#000000000000</property>
+                    <signal name="color-set" handler="on_color_set" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left_attach">3</property>
+                    <property name="right_attach">4</property>
+                    <property name="top_attach">1</property>
+                    <property name="bottom_attach">2</property>
+                    <property name="x_options">GTK_FILL</property>
+                    <property name="y_options"/>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkColorButton" id="palette1_1">
+                    <property name="use_action_appearance">False</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="color">#000000000000</property>
+                    <signal name="color-set" handler="on_color_set" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left_attach">2</property>
+                    <property name="right_attach">3</property>
+                    <property name="top_attach">1</property>
+                    <property name="bottom_attach">2</property>
+                    <property name="x_options">GTK_FILL</property>
+                    <property name="y_options"/>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkColorButton" id="palette1_0">
+                    <property name="use_action_appearance">False</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="color">#000000000000</property>
+                    <signal name="color-set" handler="on_color_set" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="right_attach">2</property>
+                    <property name="top_attach">1</property>
+                    <property name="bottom_attach">2</property>
+                    <property name="x_options">GTK_FILL</property>
+                    <property name="y_options"/>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkColorButton" id="palette0_7">
+                    <property name="use_action_appearance">False</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="color">#000000000000</property>
+                    <signal name="color-set" handler="on_color_set" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left_attach">8</property>
+                    <property name="right_attach">9</property>
+                    <property name="x_options">GTK_FILL</property>
+                    <property name="y_options"/>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkColorButton" id="palette0_6">
+                    <property name="use_action_appearance">False</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="color">#000000000000</property>
+                    <signal name="color-set" handler="on_color_set" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left_attach">7</property>
+                    <property name="right_attach">8</property>
+                    <property name="x_options">GTK_FILL</property>
+                    <property name="y_options"/>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkColorButton" id="palette0_5">
+                    <property name="use_action_appearance">False</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="color">#000000000000</property>
+                    <signal name="color-set" handler="on_color_set" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left_attach">6</property>
+                    <property name="right_attach">7</property>
+                    <property name="x_options">GTK_FILL</property>
+                    <property name="y_options"/>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkColorButton" id="palette0_4">
+                    <property name="use_action_appearance">False</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="color">#000000000000</property>
+                    <signal name="color-set" handler="on_color_set" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left_attach">5</property>
+                    <property name="right_attach">6</property>
+                    <property name="x_options">GTK_FILL</property>
+                    <property name="y_options"/>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkColorButton" id="palette0_3">
+                    <property name="use_action_appearance">False</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="color">#000000000000</property>
+                    <signal name="color-set" handler="on_color_set" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left_attach">4</property>
+                    <property name="right_attach">5</property>
+                    <property name="x_options">GTK_FILL</property>
+                    <property name="y_options"/>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkColorButton" id="palette0_2">
+                    <property name="use_action_appearance">False</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="color">#000000000000</property>
+                    <signal name="color-set" handler="on_color_set" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left_attach">3</property>
+                    <property name="right_attach">4</property>
+                    <property name="x_options">GTK_FILL</property>
+                    <property name="y_options"/>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkColorButton" id="palette0_1">
+                    <property name="use_action_appearance">False</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="color">#000000000000</property>
+                    <signal name="color-set" handler="on_color_set" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left_attach">2</property>
+                    <property name="right_attach">3</property>
+                    <property name="x_options">GTK_FILL</property>
+                    <property name="y_options"/>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkColorButton" id="palette0_0">
+                    <property name="use_action_appearance">False</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="color">#000000000000</property>
+                    <signal name="color-set" handler="on_color_set" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="right_attach">2</property>
+                    <property name="x_options">GTK_FILL</property>
+                    <property name="y_options"/>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkRadioButton" id="palette_size2">
+                    <property name="use_action_appearance">False</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="use_underline">True</property>
+                    <property name="xalign">0</property>
+                    <property name="draw_indicator">True</property>
+                    <property name="group">palette_size0</property>
+                    <signal name="toggled" handler="on_palette_size_toggled" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="top_attach">2</property>
+                    <property name="bottom_attach">3</property>
+                    <property name="x_options">GTK_FILL</property>
+                    <property name="y_options"/>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkRadioButton" id="palette_size1">
+                    <property name="use_action_appearance">False</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="has_tooltip">True</property>
+                    <property name="tooltip_markup" translatable="yes">Set 16 palette entries from both rows</property>
+                    <property name="tooltip_text" translatable="yes">Set 16 palette entries from both rows</property>
+                    <property name="use_underline">True</property>
+                    <property name="xalign">0</property>
+                    <property name="draw_indicator">True</property>
+                    <property name="group">palette_size0</property>
+                    <signal name="toggled" handler="on_palette_size_toggled" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="top_attach">1</property>
+                    <property name="bottom_attach">2</property>
+                    <property name="x_options">GTK_FILL</property>
+                    <property name="y_options"/>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkRadioButton" id="palette_size0">
+                    <property name="use_action_appearance">False</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="has_tooltip">True</property>
+                    <property name="tooltip_markup" translatable="yes">Set just the first 8 palette entries from this row</property>
+                    <property name="tooltip_text" translatable="yes">Set just the first 8 palette entries from this row</property>
+                    <property name="use_underline">True</property>
+                    <property name="xalign">0</property>
+                    <property name="active">True</property>
+                    <property name="draw_indicator">True</property>
+                    <signal name="toggled" handler="on_palette_size_toggled" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="x_options">GTK_FILL</property>
+                    <property name="y_options"/>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkHBox" id="cursor_colour_hbox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="spacing">10</property>
+                <child>
+                  <object class="GtkCheckButton" id="set_cursor_colour">
+                    <property name="label" translatable="yes">Set _cursor colour</property>
+                    <property name="use_action_appearance">False</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="has_tooltip">True</property>
+                    <property name="tooltip_markup" translatable="yes">Set the cursor colour from the adjacent field</property>
+                    <property name="tooltip_text" translatable="yes">Set the cursor colour from the adjacent field</property>
+                    <property name="halign">start</property>
+                    <property name="use_underline">True</property>
+                    <property name="xalign">0</property>
+                    <property name="draw_indicator">True</property>
+                    <signal name="toggled" handler="on_set_cursor_colour_toggled" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkColorButton" id="cursor_colour">
+                    <property name="use_action_appearance">False</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="has_tooltip">True</property>
+                    <property name="tooltip_markup" translatable="yes">Click to change the cursor colour</property>
+                    <property name="tooltip_text" translatable="yes">Click to change the cursor colour</property>
+                    <property name="color">#000000000000</property>
+                    <signal name="color-set" handler="on_color_set" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">3</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+    <action-widgets>
+      <action-widget response="1">revert</action-widget>
+      <action-widget response="-7">closebutton1</action-widget>
+    </action-widgets>
+  </object>
   <object class="GtkDialog" id="Configlet">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Configure ROXTerm</property>
     <property name="resizable">False</property>
     <property name="type_hint">dialog</property>
-    <signal name="destroy" handler="on_Configlet_destroy" swapped="no"/>
     <signal name="close" handler="on_Configlet_close" swapped="no"/>
+    <signal name="destroy" handler="on_Configlet_destroy" swapped="no"/>
     <signal name="response" handler="on_Configlet_response" swapped="no"/>
     <child internal-child="vbox">
       <object class="GtkVBox" id="dialog-vbox3">
@@ -83,7 +936,6 @@
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_markup">Click to rename the selected profile</property>
                                 <property name="tooltip_text" translatable="yes">Click to rename the selected profile</property>
-                                <property name="use_action_appearance">False</property>
                                 <signal name="clicked" handler="on_profile_rename_clicked" swapped="no"/>
                                 <child>
                                   <object class="GtkAlignment" id="alignment17">
@@ -144,7 +996,6 @@
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_markup">Click to delete the selected profile</property>
                                 <property name="tooltip_text" translatable="yes">Click to delete the selected profile</property>
-                                <property name="use_action_appearance">False</property>
                                 <signal name="clicked" handler="on_profile_delete_clicked" swapped="no"/>
                                 <child>
                                   <object class="GtkAlignment" id="alignment16">
@@ -203,7 +1054,6 @@
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_markup">Click to create a new profile with settings copied from the current selection</property>
                                 <property name="tooltip_text" translatable="yes">Click to create a new profile with settings copied from the current selection</property>
-                                <property name="use_action_appearance">False</property>
                                 <signal name="clicked" handler="on_profile_copy_clicked" swapped="no"/>
                                 <child>
                                   <object class="GtkAlignment" id="alignment15">
@@ -262,7 +1112,6 @@
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_markup">Click to edit the selected profile</property>
                                 <property name="tooltip_text" translatable="yes">Click to edit the selected profile</property>
-                                <property name="use_action_appearance">False</property>
                                 <signal name="clicked" handler="on_profile_edit_clicked" swapped="no"/>
                                 <child>
                                   <object class="GtkAlignment" id="alignment33">
@@ -405,7 +1254,6 @@
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_markup">Click to rename the selected colour scheme</property>
                                 <property name="tooltip_text" translatable="yes">Click to rename the selected colour scheme</property>
-                                <property name="use_action_appearance">False</property>
                                 <signal name="clicked" handler="on_colours_rename_clicked" swapped="no"/>
                                 <child>
                                   <object class="GtkAlignment" id="alignment12">
@@ -466,7 +1314,6 @@
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_markup">Click to delete the selected colour scheme</property>
                                 <property name="tooltip_text" translatable="yes">Click to delete the selected colour scheme</property>
-                                <property name="use_action_appearance">False</property>
                                 <signal name="clicked" handler="on_colours_delete_clicked" swapped="no"/>
                                 <child>
                                   <object class="GtkAlignment" id="alignment20">
@@ -525,7 +1372,6 @@
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_markup">Click to create a new colour scheme with settings copied from the current selection</property>
                                 <property name="tooltip_text" translatable="yes">Click to create a new colour scheme with settings copied from the current selection</property>
-                                <property name="use_action_appearance">False</property>
                                 <signal name="clicked" handler="on_colours_copy_clicked" swapped="no"/>
                                 <child>
                                   <object class="GtkAlignment" id="alignment19">
@@ -584,7 +1430,6 @@
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_markup">Click to edit the selected colour scheme</property>
                                 <property name="tooltip_text" translatable="yes">Click to edit the selected colour scheme</property>
-                                <property name="use_action_appearance">False</property>
                                 <signal name="clicked" handler="on_colours_edit_clicked" swapped="no"/>
                                 <child>
                                   <object class="GtkAlignment" id="alignment34">
@@ -732,7 +1577,6 @@
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_markup">Click to delete the selected profile</property>
                                 <property name="tooltip_text" translatable="yes">Click to delete the selected profile</property>
-                                <property name="use_action_appearance">False</property>
                                 <signal name="clicked" handler="on_shortcuts_delete_clicked" swapped="no"/>
                                 <child>
                                   <object class="GtkAlignment" id="alignment31">
@@ -791,7 +1635,6 @@
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_markup">Click to create a new keyboard shortcuts scheme with settings copied from the current selection</property>
                                 <property name="tooltip_text" translatable="yes">Click to create a new keyboard shortcuts scheme with settings copied from the current selection</property>
-                                <property name="use_action_appearance">False</property>
                                 <signal name="clicked" handler="on_shortcuts_copy_clicked" swapped="no"/>
                                 <child>
                                   <object class="GtkAlignment" id="alignment22">
@@ -850,7 +1693,6 @@
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_markup">Click to rename the selected keyboard shortcuts scheme</property>
                                 <property name="tooltip_text" translatable="yes">Click to rename the selected keyboard shortcuts scheme</property>
-                                <property name="use_action_appearance">False</property>
                                 <signal name="clicked" handler="on_shortcuts_rename_clicked" swapped="no"/>
                                 <child>
                                   <object class="GtkAlignment" id="alignment13">
@@ -903,21 +1745,85 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkCheckButton" id="edit_shortcuts">
-                                <property name="label" translatable="yes">_Enable editing</property>
-                                <property name="use_action_appearance">False</property>
+                              <object class="GtkVBox" id="edit_shortcuts_vbox">
                                 <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">False</property>
-                                <property name="has_tooltip">True</property>
-                                <property name="tooltip_markup" translatable="yes">Check to enable shortcuts to be edited by pressing the desired key(s) while "hovering" over a menu item.</property>
-                                <property name="tooltip_text" translatable="yes">Check to enable shortcuts to be edited by pressing the desired key(s) while "hovering" over a menu item.</property>
-                                <property name="margin_right">1</property>
-                                <property name="use_action_appearance">False</property>
-                                <property name="use_underline">True</property>
-                                <property name="xalign">0</property>
-                                <property name="draw_indicator">True</property>
-                                <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
+                                <property name="can_focus">False</property>
+                                <child>
+                                  <object class="GtkCheckButton" id="edit_shortcuts">
+                                    <property name="label" translatable="yes">_Enable editing</property>
+                                    <property name="use_action_appearance">False</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="receives_default">False</property>
+                                    <property name="has_tooltip">True</property>
+                                    <property name="tooltip_markup" translatable="yes">Check to enable shortcuts to be edited by pressing the desired key(s) while "hovering" over a menu item.</property>
+                                    <property name="tooltip_text" translatable="yes">Check to enable shortcuts to be edited by pressing the desired key(s) while "hovering" over a menu item.</property>
+                                    <property name="use_underline">True</property>
+                                    <property name="xalign">0</property>
+                                    <property name="draw_indicator">True</property>
+                                    <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkButton" id="shortcuts_edit">
+                                    <property name="use_action_appearance">False</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="can_default">True</property>
+                                    <property name="receives_default">True</property>
+                                    <property name="tooltip_text" translatable="yes">Click to edit the selected Shortcuts scheme in a text editor.</property>
+                                    <signal name="clicked" handler="on_shortcuts_edit_clicked" swapped="no"/>
+                                    <child>
+                                      <object class="GtkAlignment" id="alignment21">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
+                                        <property name="xscale">0</property>
+                                        <property name="yscale">0</property>
+                                        <child>
+                                          <object class="GtkHBox" id="hbox23">
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
+                                            <property name="spacing">2</property>
+                                            <child>
+                                              <object class="GtkImage" id="image11">
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
+                                                <property name="stock">gtk-properties</property>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">False</property>
+                                                <property name="position">0</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkLabel" id="label31">
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
+                                                <property name="label" translatable="yes">_Edit</property>
+                                                <property name="use_underline">True</property>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">False</property>
+                                                <property name="position">1</property>
+                                              </packing>
+                                            </child>
+                                          </object>
+                                        </child>
+                                      </object>
+                                    </child>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
                               </object>
                             </child>
                           </object>
@@ -1023,7 +1929,6 @@
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_markup">Click to edit the selected encoding name</property>
                                 <property name="tooltip_text" translatable="yes">Click to edit the selected encoding name</property>
-                                <property name="use_action_appearance">False</property>
                                 <signal name="clicked" handler="on_encodings_rename_clicked" swapped="no"/>
                                 <child>
                                   <object class="GtkAlignment" id="alignment28">
@@ -1085,7 +1990,6 @@
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_markup">Click to add a new encoding name</property>
                                 <property name="tooltip_text" translatable="yes">Click to add a new encoding name</property>
-                                <property name="use_action_appearance">False</property>
                                 <signal name="clicked" handler="on_encodings_copy_clicked" swapped="no"/>
                                 <child>
                                   <object class="GtkAlignment" id="alignment29">
@@ -1147,7 +2051,6 @@
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_markup">Click to remove the selected encoding from the list</property>
                                 <property name="tooltip_text" translatable="yes">Click to remove the selected encoding from the list</property>
-                                <property name="use_action_appearance">False</property>
                                 <signal name="clicked" handler="on_encodings_delete_clicked" swapped="no"/>
                                 <child>
                                   <object class="GtkAlignment" id="alignment32">
@@ -1195,6 +2098,12 @@
                                 <property name="bottom_attach">2</property>
                                 <property name="y_options"/>
                               </packing>
+                            </child>
+                            <child>
+                              <placeholder/>
+                            </child>
+                            <child>
+                              <placeholder/>
                             </child>
                             <child>
                               <placeholder/>
@@ -1307,7 +2216,6 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
-                            <property name="use_action_appearance">False</property>
                             <property name="xalign">0</property>
                             <property name="draw_indicator">True</property>
                             <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
@@ -1325,7 +2233,6 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
-                            <property name="use_action_appearance">False</property>
                             <property name="xalign">0</property>
                             <property name="draw_indicator">True</property>
                             <property name="group">warn_close0</property>
@@ -1344,7 +2251,6 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
-                            <property name="use_action_appearance">False</property>
                             <property name="xalign">0</property>
                             <property name="draw_indicator">True</property>
                             <property name="group">warn_close0</property>
@@ -1363,7 +2269,6 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
-                            <property name="use_action_appearance">False</property>
                             <property name="xalign">0</property>
                             <property name="active">True</property>
                             <property name="draw_indicator">True</property>
@@ -1383,7 +2288,6 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
-                            <property name="use_action_appearance">False</property>
                             <property name="xalign">0</property>
                             <property name="draw_indicator">True</property>
                             <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
@@ -1402,9 +2306,8 @@
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
                             <property name="has_tooltip">True</property>
-                            <property name="tooltip_markup">This option applies to terminal windows&apos; menus and borders etc; terminal colours are handled separately. It does not apply to the configuration applet.</property>
-                            <property name="tooltip_text" translatable="yes">This option applies to terminal windows&apos; menus and borders etc; terminal colours are handled separately. It does not apply to the configuration applet.</property>
-                            <property name="use_action_appearance">False</property>
+                            <property name="tooltip_markup">This option applies to terminal windows' menus and borders etc; terminal colours are handled separately. It does not apply to the configuration applet.</property>
+                            <property name="tooltip_text" translatable="yes">This option applies to terminal windows' menus and borders etc; terminal colours are handled separately. It does not apply to the configuration applet.</property>
                             <property name="xalign">0</property>
                             <property name="draw_indicator">True</property>
                             <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
@@ -1466,7 +2369,6 @@
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>
                 <property name="receives_default">False</property>
-                <property name="use_action_appearance">False</property>
                 <property name="use_stock">True</property>
               </object>
               <packing>
@@ -1489,14 +2391,51 @@
       <action-widget response="-7">closebutton3</action-widget>
     </action-widgets>
   </object>
+  <object class="GtkAdjustment" id="exit_pause_adjustment">
+    <property name="upper">600</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">5</property>
+  </object>
+  <object class="GtkAdjustment" id="height_adjustment">
+    <property name="lower">5</property>
+    <property name="upper">1000</property>
+    <property name="value">32</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="init_tabs_adjustment">
+    <property name="lower">1</property>
+    <property name="upper">20</property>
+    <property name="value">1</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">5</property>
+  </object>
+  <object class="GtkAdjustment" id="saturation_adjustment">
+    <property name="upper">1</property>
+    <property name="step_increment">0.01</property>
+    <property name="page_increment">0.10000000000000001</property>
+  </object>
+  <object class="GtkAdjustment" id="scrollback_lines_adjustment">
+    <property name="upper">100000</property>
+    <property name="value">1000</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="width_adjustment">
+    <property name="lower">10</property>
+    <property name="upper">1000</property>
+    <property name="value">80</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
   <object class="GtkDialog" id="Profile_Editor">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">ROXTerm profile</property>
     <property name="resizable">False</property>
     <property name="type_hint">dialog</property>
-    <signal name="destroy" handler="on_Profile_Editor_destroy" swapped="no"/>
     <signal name="close" handler="on_Profile_Editor_close" swapped="no"/>
+    <signal name="destroy" handler="on_Profile_Editor_destroy" swapped="no"/>
     <signal name="response" handler="on_Profile_Editor_response" swapped="no"/>
     <child internal-child="vbox">
       <object class="GtkVBox" id="dialog-vbox2">
@@ -1516,7 +2455,6 @@
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>
                 <property name="receives_default">False</property>
-                <property name="use_action_appearance">False</property>
                 <property name="use_stock">True</property>
               </object>
               <packing>
@@ -1608,8 +2546,7 @@
                                     <property name="receives_default">True</property>
                                     <property name="has_tooltip">True</property>
                                     <property name="tooltip_text" translatable="yes">Click to change the font; monospace fonts are recommended.</property>
-                                    <property name="use_action_appearance">False</property>
-                                    <property name="font_name">Monospace 12</property>
+                                    <property name="font">Sans 12</property>
                                     <signal name="font-set" handler="on_font_set" swapped="no"/>
                                   </object>
                                   <packing>
@@ -1638,8 +2575,7 @@
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
                                     <property name="has_tooltip">True</property>
-                                    <property name="tooltip_text" translatable="yes">Set the terminal&apos;s size in characters from the adjacent values.</property>
-                                    <property name="use_action_appearance">False</property>
+                                    <property name="tooltip_text" translatable="yes">Set the terminal's size in characters from the adjacent values.</property>
                                     <property name="use_underline">True</property>
                                     <property name="xalign">0</property>
                                     <property name="active">True</property>
@@ -1769,7 +2705,6 @@
                                     <property name="has_tooltip">True</property>
                                     <property name="tooltip_markup">Use a maximised window.</property>
                                     <property name="tooltip_text" translatable="yes">Use a maximised window.</property>
-                                    <property name="use_action_appearance">False</property>
                                     <property name="use_underline">True</property>
                                     <property name="xalign">0</property>
                                     <property name="draw_indicator">True</property>
@@ -1787,7 +2722,6 @@
                                     <property name="has_tooltip">True</property>
                                     <property name="tooltip_markup">Make the terminal take up the whole screen with no window borders.</property>
                                     <property name="tooltip_text" translatable="yes">Make the terminal take up the whole screen with no window borders.</property>
-                                    <property name="use_action_appearance">False</property>
                                     <property name="use_underline">True</property>
                                     <property name="xalign">0</property>
                                     <property name="draw_indicator">True</property>
@@ -1809,7 +2743,6 @@
                                     <property name="has_tooltip">True</property>
                                     <property name="tooltip_markup">Whether new windows with this profile will have a menu bar. You can also turn the menu bar on and off from terminal menus.</property>
                                     <property name="tooltip_text" translatable="yes">Whether new windows with this profile will have a menu bar. You can also turn the menu bar on and off from terminal menus.</property>
-                                    <property name="use_action_appearance">False</property>
                                     <property name="use_underline">True</property>
                                     <property name="xalign">0</property>
                                     <property name="draw_indicator">True</property>
@@ -1831,7 +2764,6 @@
                                     <property name="has_tooltip">True</property>
                                     <property name="tooltip_markup">If this option is enabled the tabs at the top of each terminal are always shown, even in windows which only contain one tab</property>
                                     <property name="tooltip_text" translatable="yes">If this option is enabled the tabs at the top of each terminal are always shown, even in windows which only contain one tab</property>
-                                    <property name="use_action_appearance">False</property>
                                     <property name="use_underline">True</property>
                                     <property name="xalign">0</property>
                                     <property name="draw_indicator">True</property>
@@ -1854,7 +2786,6 @@
                                     <property name="has_tooltip">True</property>
                                     <property name="tooltip_markup">Whether new windows with this profile will have a menu bar. You can also turn the menu bar on and off from terminal menus.</property>
                                     <property name="tooltip_text" translatable="yes">Whether new windows with this profile will have a menu bar. You can also turn the menu bar on and off from terminal menus.</property>
-                                    <property name="use_action_appearance">False</property>
                                     <property name="use_underline">True</property>
                                     <property name="xalign">0</property>
                                     <property name="draw_indicator">True</property>
@@ -1876,7 +2807,6 @@
                                     <property name="has_tooltip">True</property>
                                     <property name="tooltip_markup">Enables a button in the tab bar which adds a new tab when clicked.</property>
                                     <property name="tooltip_text" translatable="yes">Enables a button in the tab bar which adds a new tab when clicked.</property>
-                                    <property name="use_action_appearance">False</property>
                                     <property name="use_underline">True</property>
                                     <property name="xalign">0</property>
                                     <property name="draw_indicator">True</property>
@@ -1923,14 +2853,13 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="has_tooltip">True</property>
-                                    <property name="tooltip_markup">The title string may include &amp;apos;%s&amp;apos; which is substituted with the contents of the current tab&amp;apos;s label. No other % characters or sequences are permitted except &apos;%%&apos; which is displayed as a single %.</property>
-                                    <property name="tooltip_text" translatable="yes">The title string may include &apos;%s&apos; which is substituted with the contents of the current tab&apos;s label. No other % characters or sequences are permitted except &apos;%%&apos; which is displayed as a single %.</property>
+                                    <property name="tooltip_markup">The title string may include &amp;apos;%s&amp;apos; which is substituted with the contents of the current tab&amp;apos;s label. No other % characters or sequences are permitted except '%%' which is displayed as a single %.</property>
+                                    <property name="tooltip_text" translatable="yes">The title string may include '%s' which is substituted with the contents of the current tab's label. No other % characters or sequences are permitted except '%%' which is displayed as a single %.</property>
                                     <property name="invisible_char">●</property>
-                                    <property name="invisible_char_set">True</property>
                                     <property name="primary_icon_activatable">False</property>
                                     <property name="secondary_icon_activatable">False</property>
-                                    <signal name="changed" handler="on_editable_changed" swapped="no"/>
                                     <signal name="activate" handler="on_entry_activate" swapped="no"/>
+                                    <signal name="changed" handler="on_editable_changed" swapped="no"/>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -1979,7 +2908,6 @@
                                     <property name="has_tooltip">True</property>
                                     <property name="tooltip_markup">Click to edit this colour scheme.</property>
                                     <property name="tooltip_text" translatable="yes">Click to edit this colour scheme.</property>
-                                    <property name="use_action_appearance">False</property>
                                     <signal name="clicked" handler="on_edit_colour_scheme_clicked" swapped="no"/>
                                     <child>
                                       <object class="GtkAlignment" id="alignment18">
@@ -2091,12 +3019,11 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
                                 <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
-                                <accelerator key="b" signal="clicked" modifiers="GDK_MOD1_MASK"/>
                                 <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
+                                <accelerator key="b" signal="clicked" modifiers="GDK_MOD1_MASK"/>
                               </object>
                               <packing>
                                 <property name="right_attach">2</property>
@@ -2113,7 +3040,6 @@
                                 <property name="receives_default">False</property>
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_text" translatable="yes">If selected, "printing" an ASCII bell character will cause a beep.</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
                                 <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
@@ -2135,7 +3061,6 @@
                                 <property name="receives_default">False</property>
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_text" translatable="yes">If selected, "printing" an ASCII bell character will cause the terminal to flash.</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
                                 <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
@@ -2152,14 +3077,13 @@
                             </child>
                             <child>
                               <object class="GtkRadioButton" id="cursor_blink_mode2">
-                                <property name="label" translatable="yes">Do_n&apos;t blink</property>
+                                <property name="label" translatable="yes">Do_n't blink</property>
                                 <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
                                 <property name="has_tooltip">True</property>
-                                <property name="tooltip_text" translatable="yes">The terminal cursor doesn&apos;t blink.</property>
-                                <property name="use_action_appearance">False</property>
+                                <property name="tooltip_text" translatable="yes">The terminal cursor doesn't blink.</property>
                                 <property name="use_underline">True</property>
                                 <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
@@ -2183,7 +3107,6 @@
                                 <property name="receives_default">False</property>
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_text" translatable="yes">The terminal cursor blinks.</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
                                 <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
@@ -2220,7 +3143,6 @@
                                 <property name="receives_default">False</property>
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_text" translatable="yes">Whether the terminal cursor blinks depends on the GTK system setting.</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
                                 <property name="xalign">0</property>
                                 <property name="active">True</property>
@@ -2244,7 +3166,6 @@
                                 <property name="receives_default">False</property>
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_text" translatable="yes">The cursor is a horizontal line at the bottom of each character.</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
                                 <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
@@ -2268,7 +3189,6 @@
                                 <property name="receives_default">False</property>
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_text" translatable="yes">The cursor is a vertical line at the left of each character.</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
                                 <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
@@ -2292,7 +3212,6 @@
                                 <property name="receives_default">False</property>
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_text" translatable="yes">The cursor is a rectangle taking up the whole of a character space.</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
                                 <property name="xalign">0</property>
                                 <property name="active">True</property>
@@ -2328,8 +3247,7 @@
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
                                 <property name="has_tooltip">True</property>
-                                <property name="tooltip_text" translatable="yes">If the "bell rings" in a terminal while it isn&apos;t the active tab or window, its tab label will flash and/or its window will be marked "urgent". This only works with recent versions of vte.</property>
-                                <property name="use_action_appearance">False</property>
+                                <property name="tooltip_text" translatable="yes">If the "bell rings" in a terminal while it isn't the active tab or window, its tab label will flash and/or its window will be marked "urgent". This only works with recent versions of vte.</property>
                                 <property name="use_underline">True</property>
                                 <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
@@ -2351,7 +3269,6 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
                                 <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
@@ -2388,11 +3305,10 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="invisible_char">•</property>
-                                    <property name="invisible_char_set">True</property>
                                     <property name="primary_icon_activatable">False</property>
                                     <property name="secondary_icon_activatable">False</property>
-                                    <signal name="changed" handler="on_editable_changed" swapped="no"/>
                                     <signal name="activate" handler="on_entry_activate" swapped="no"/>
+                                    <signal name="changed" handler="on_editable_changed" swapped="no"/>
                                   </object>
                                   <packing>
                                     <property name="expand">True</property>
@@ -2432,11 +3348,10 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="invisible_char">•</property>
-                                    <property name="invisible_char_set">True</property>
                                     <property name="primary_icon_activatable">False</property>
                                     <property name="secondary_icon_activatable">False</property>
-                                    <signal name="changed" handler="on_editable_changed" swapped="no"/>
                                     <signal name="activate" handler="on_entry_activate" swapped="no"/>
+                                    <signal name="changed" handler="on_editable_changed" swapped="no"/>
                                   </object>
                                   <packing>
                                     <property name="expand">True</property>
@@ -2479,11 +3394,10 @@
                                     <property name="tooltip_markup">Words can be selected by double-clicking. Characters not in this list count as the start or end of a word</property>
                                     <property name="tooltip_text" translatable="yes">Words can be selected by double-clicking. Characters not in this list count as the start or end of a word</property>
                                     <property name="invisible_char">•</property>
-                                    <property name="invisible_char_set">True</property>
                                     <property name="primary_icon_activatable">False</property>
                                     <property name="secondary_icon_activatable">False</property>
-                                    <signal name="changed" handler="on_editable_changed" swapped="no"/>
                                     <signal name="activate" handler="on_entry_activate" swapped="no"/>
+                                    <signal name="changed" handler="on_editable_changed" swapped="no"/>
                                   </object>
                                   <packing>
                                     <property name="expand">True</property>
@@ -2556,9 +3470,9 @@
                                 <property name="invisible_char">•</property>
                                 <property name="primary_icon_activatable">False</property>
                                 <property name="secondary_icon_activatable">False</property>
-                                <accelerator key="m" signal="grab_focus" modifiers="GDK_MOD1_MASK"/>
-                                <signal name="changed" handler="on_editable_changed" swapped="no"/>
                                 <signal name="activate" handler="on_entry_activate" swapped="no"/>
+                                <signal name="changed" handler="on_editable_changed" swapped="no"/>
+                                <accelerator key="m" signal="grab_focus" modifiers="GDK_MOD1_MASK"/>
                               </object>
                               <packing>
                                 <property name="left_attach">1</property>
@@ -2610,13 +3524,12 @@
                                 <property name="receives_default">False</property>
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_text" translatable="yes">Enable the adjacent custom command for this profile.</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
                                 <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">use_default_shell</property>
-                                <signal name="toggled" handler="on_command_toggled" swapped="no"/>
                                 <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
+                                <signal name="toggled" handler="on_command_toggled" swapped="no"/>
                               </object>
                               <packing>
                                 <property name="top_attach">1</property>
@@ -2633,13 +3546,12 @@
                                 <property name="receives_default">False</property>
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_text" translatable="yes">Connect to a ssh (secure shell) with this profile.</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
                                 <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">use_default_shell</property>
-                                <signal name="toggled" handler="on_command_toggled" swapped="no"/>
                                 <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
+                                <signal name="toggled" handler="on_command_toggled" swapped="no"/>
                               </object>
                               <packing>
                                 <property name="top_attach">2</property>
@@ -2656,7 +3568,6 @@
                                 <property name="receives_default">True</property>
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_text" translatable="yes">Click here to edit the ssh details.</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
                                 <signal name="activate" handler="on_edit_ssh_clicked" swapped="no"/>
                                 <signal name="clicked" handler="on_edit_ssh_clicked" swapped="no"/>
@@ -2697,7 +3608,6 @@
                                 <property name="receives_default">False</property>
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_text" translatable="yes">Whether to log sessions to login records (utmp/wtmp/utmpx/wtmpx)</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
                                 <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
@@ -2719,7 +3629,6 @@
                                 <property name="receives_default">False</property>
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_text" translatable="yes">Whether shells running in the terminal are login shells</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
                                 <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
@@ -2739,7 +3648,6 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
                                 <property name="xalign">0</property>
                                 <property name="active">True</property>
@@ -2883,8 +3791,8 @@
                                         <property name="invisible_char">•</property>
                                         <property name="primary_icon_activatable">False</property>
                                         <property name="secondary_icon_activatable">False</property>
-                                        <signal name="changed" handler="on_editable_changed" swapped="no"/>
                                         <signal name="activate" handler="on_entry_activate" swapped="no"/>
+                                        <signal name="changed" handler="on_editable_changed" swapped="no"/>
                                       </object>
                                       <packing>
                                         <property name="expand">True</property>
@@ -2915,7 +3823,6 @@
                                         <property name="has_tooltip">True</property>
                                         <property name="tooltip_markup">Run the browser without a terminal.</property>
                                         <property name="tooltip_text" translatable="yes">Run the browser without a terminal.</property>
-                                        <property name="use_action_appearance">False</property>
                                         <property name="relief">none</property>
                                         <property name="use_underline">True</property>
                                         <property name="xalign">0</property>
@@ -2938,7 +3845,6 @@
                                         <property name="receives_default">False</property>
                                         <property name="has_tooltip">True</property>
                                         <property name="tooltip_text" translatable="yes">Run the browser in a new ROXTerm window.</property>
-                                        <property name="use_action_appearance">False</property>
                                         <property name="use_underline">True</property>
                                         <property name="xalign">0</property>
                                         <property name="draw_indicator">True</property>
@@ -2960,7 +3866,6 @@
                                         <property name="receives_default">False</property>
                                         <property name="has_tooltip">True</property>
                                         <property name="tooltip_text" translatable="yes">Run the browser in a new ROXTerm tab.</property>
-                                        <property name="use_action_appearance">False</property>
                                         <property name="use_underline">True</property>
                                         <property name="xalign">0</property>
                                         <property name="active">True</property>
@@ -3045,8 +3950,8 @@
                                         <property name="invisible_char">•</property>
                                         <property name="primary_icon_activatable">False</property>
                                         <property name="secondary_icon_activatable">False</property>
-                                        <signal name="changed" handler="on_editable_changed" swapped="no"/>
                                         <signal name="activate" handler="on_entry_activate" swapped="no"/>
+                                        <signal name="changed" handler="on_editable_changed" swapped="no"/>
                                       </object>
                                       <packing>
                                         <property name="expand">True</property>
@@ -3077,7 +3982,6 @@
                                         <property name="has_tooltip">True</property>
                                         <property name="tooltip_markup">Run the mailer without a terminal.</property>
                                         <property name="tooltip_text" translatable="yes">Run the mailer without a terminal.</property>
-                                        <property name="use_action_appearance">False</property>
                                         <property name="use_underline">True</property>
                                         <property name="xalign">0</property>
                                         <property name="active">True</property>
@@ -3100,7 +4004,6 @@
                                         <property name="has_tooltip">True</property>
                                         <property name="tooltip_markup">Run the mailer in a new ROXTerm window.</property>
                                         <property name="tooltip_text" translatable="yes">Run the mailer in a new ROXTerm window.</property>
-                                        <property name="use_action_appearance">False</property>
                                         <property name="use_underline">True</property>
                                         <property name="xalign">0</property>
                                         <property name="active">True</property>
@@ -3124,7 +4027,6 @@
                                         <property name="has_tooltip">True</property>
                                         <property name="tooltip_markup">Run the mailer in a new ROXTerm tab.</property>
                                         <property name="tooltip_text" translatable="yes">Run the mailer in a new ROXTerm tab.</property>
-                                        <property name="use_action_appearance">False</property>
                                         <property name="use_underline">True</property>
                                         <property name="xalign">0</property>
                                         <property name="draw_indicator">True</property>
@@ -3228,11 +4130,10 @@
                                         <property name="tooltip_markup">File manager to use when a directory URI is opened.</property>
                                         <property name="tooltip_text" translatable="yes">File manager to use when a directory URI is opened.</property>
                                         <property name="invisible_char">•</property>
-                                        <property name="invisible_char_set">True</property>
                                         <property name="primary_icon_activatable">False</property>
                                         <property name="secondary_icon_activatable">False</property>
-                                        <signal name="changed" handler="on_editable_changed" swapped="no"/>
                                         <signal name="activate" handler="on_entry_activate" swapped="no"/>
+                                        <signal name="changed" handler="on_editable_changed" swapped="no"/>
                                       </object>
                                       <packing>
                                         <property name="expand">True</property>
@@ -3263,7 +4164,6 @@
                                         <property name="has_tooltip">True</property>
                                         <property name="tooltip_markup">Run the filer without a terminal.</property>
                                         <property name="tooltip_text" translatable="yes">Run the filer without a terminal.</property>
-                                        <property name="use_action_appearance">False</property>
                                         <property name="use_underline">True</property>
                                         <property name="xalign">0</property>
                                         <property name="active">True</property>
@@ -3286,7 +4186,6 @@
                                         <property name="has_tooltip">True</property>
                                         <property name="tooltip_markup">Run the filer in a new ROXTerm window.</property>
                                         <property name="tooltip_text" translatable="yes">Run the filer in a new ROXTerm window.</property>
-                                        <property name="use_action_appearance">False</property>
                                         <property name="use_underline">True</property>
                                         <property name="xalign">0</property>
                                         <property name="draw_indicator">True</property>
@@ -3309,7 +4208,6 @@
                                         <property name="has_tooltip">True</property>
                                         <property name="tooltip_markup">Run the filer in a new ROXTerm tab.</property>
                                         <property name="tooltip_text" translatable="yes">Run the filer in a new ROXTerm tab.</property>
-                                        <property name="use_action_appearance">False</property>
                                         <property name="use_underline">True</property>
                                         <property name="xalign">0</property>
                                         <property name="draw_indicator">True</property>
@@ -3391,11 +4289,10 @@
                                         <property name="tooltip_markup">File manager to use when a file URI is opened.</property>
                                         <property name="tooltip_text" translatable="yes">File manager to use when a file URI is opened.</property>
                                         <property name="invisible_char">•</property>
-                                        <property name="invisible_char_set">True</property>
                                         <property name="primary_icon_activatable">False</property>
                                         <property name="secondary_icon_activatable">False</property>
-                                        <signal name="changed" handler="on_editable_changed" swapped="no"/>
                                         <signal name="activate" handler="on_entry_activate" swapped="no"/>
+                                        <signal name="changed" handler="on_editable_changed" swapped="no"/>
                                       </object>
                                       <packing>
                                         <property name="expand">True</property>
@@ -3426,7 +4323,6 @@
                                         <property name="has_tooltip">True</property>
                                         <property name="tooltip_markup">Run the filer without a terminal.</property>
                                         <property name="tooltip_text" translatable="yes">Run the filer without a terminal.</property>
-                                        <property name="use_action_appearance">False</property>
                                         <property name="use_underline">True</property>
                                         <property name="xalign">0</property>
                                         <property name="active">True</property>
@@ -3449,7 +4345,6 @@
                                         <property name="has_tooltip">True</property>
                                         <property name="tooltip_markup">Run the filer in a new ROXTerm window.</property>
                                         <property name="tooltip_text" translatable="yes">Run the filer in a new ROXTerm window.</property>
-                                        <property name="use_action_appearance">False</property>
                                         <property name="use_underline">True</property>
                                         <property name="xalign">0</property>
                                         <property name="draw_indicator">True</property>
@@ -3471,7 +4366,6 @@
                                         <property name="has_tooltip">True</property>
                                         <property name="tooltip_markup">Run the filer in a new ROXTerm tab.</property>
                                         <property name="tooltip_text" translatable="yes">Run the filer in a new ROXTerm tab.</property>
-                                        <property name="use_action_appearance">False</property>
                                         <property name="use_underline">True</property>
                                         <property name="xalign">0</property>
                                         <property name="draw_indicator">True</property>
@@ -3498,9 +4392,8 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
-                                    <property name="tooltip_markup">If set open the file&apos;s parent directory instead of the file.</property>
-                                    <property name="tooltip_text" translatable="yes">If set open the file&apos;s parent directory instead of the file.</property>
-                                    <property name="use_action_appearance">False</property>
+                                    <property name="tooltip_markup">If set open the file's parent directory instead of the file.</property>
+                                    <property name="tooltip_text" translatable="yes">If set open the file's parent directory instead of the file.</property>
                                     <property name="use_underline">True</property>
                                     <property name="xalign">0</property>
                                     <property name="draw_indicator">True</property>
@@ -3546,7 +4439,6 @@
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
                             <property name="tooltip_text" translatable="yes">If enabled, patterns which look like filenames will be highlighted even if they lack a file:// URI prefix.</property>
-                            <property name="use_action_appearance">False</property>
                             <property name="use_underline">True</property>
                             <property name="xalign">0</property>
                             <property name="draw_indicator">True</property>
@@ -3609,7 +4501,6 @@
                                 <property name="receives_default">False</property>
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_text" translatable="yes">Use the background colour from the configured colour scheme</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
                                 <property name="xalign">0</property>
                                 <property name="active">True</property>
@@ -3635,7 +4526,6 @@
                                     <property name="receives_default">False</property>
                                     <property name="has_tooltip">True</property>
                                     <property name="tooltip_text" translatable="yes">A background image will be blended with the background colour depending on the transparency setting</property>
-                                    <property name="use_action_appearance">False</property>
                                     <property name="use_underline">True</property>
                                     <property name="xalign">0</property>
                                     <property name="draw_indicator">True</property>
@@ -3728,7 +4618,6 @@
                                             <property name="receives_default">False</property>
                                             <property name="has_tooltip">True</property>
                                             <property name="tooltip_text" translatable="yes">Whether to move the picture with the scrollbar</property>
-                                            <property name="use_action_appearance">False</property>
                                             <property name="use_underline">True</property>
                                             <property name="xalign">0</property>
                                             <property name="draw_indicator">True</property>
@@ -3771,7 +4660,6 @@
                                 <property name="receives_default">False</property>
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_text" translatable="yes">The desktop background will show through the terminal background to an extent determined by the transparency setting</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
                                 <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
@@ -3972,7 +4860,6 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
                                 <property name="xalign">0</property>
                                 <property name="active">True</property>
@@ -3992,7 +4879,6 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
                                 <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
@@ -4012,7 +4898,6 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
                                 <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
@@ -4090,7 +4975,6 @@
                                 <property name="receives_default">False</property>
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_text" translatable="yes">Whether to make the scrollbar jump to the bottom when new text is printed in the terminal</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
                                 <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
@@ -4111,7 +4995,6 @@
                                 <property name="receives_default">False</property>
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_text" translatable="yes">Whether to make the scrollbar jump to the bottom when text is typed into a terminal</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
                                 <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
@@ -4253,7 +5136,6 @@
                                     <property name="receives_default">True</property>
                                     <property name="has_tooltip">True</property>
                                     <property name="tooltip_text" translatable="yes">Reset the backspace and delete keys to their defaults</property>
-                                    <property name="use_action_appearance">False</property>
                                     <property name="use_underline">True</property>
                                     <signal name="clicked" handler="on_reset_compat_clicked" swapped="no"/>
                                   </object>
@@ -4280,7 +5162,6 @@
                                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_text" translatable="yes">This option disables the keyboard shortcut for opening the first menu. The default shortcut is F10.</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
                                 <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
@@ -4302,7 +5183,6 @@
                                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_text" translatable="yes">This option disables the underlined shortcut keys in the menus (eg Alt+F for the File menu).</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
                                 <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
@@ -4324,7 +5204,6 @@
                                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_text" translatable="yes">This option disables the shortcut keys for switching tabs (Alt+1-9 and Alt+0 by default)</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
                                 <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
@@ -4406,12 +5285,12 @@
                                   <object class="GtkEntry" id="title_string">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
-                                    <property name="tooltip_text" translatable="yes">The title string may include &apos;%s&apos; which is substituted with the title set by the child command (usually the current directory for shells). No other % characters or sequences are permitted except &apos;%%&apos; which is displayed as a single %.</property>
+                                    <property name="tooltip_text" translatable="yes">The title string may include '%s' which is substituted with the title set by the child command (usually the current directory for shells). No other % characters or sequences are permitted except '%%' which is displayed as a single %.</property>
                                     <property name="invisible_char">●</property>
                                     <property name="primary_icon_activatable">False</property>
                                     <property name="secondary_icon_activatable">False</property>
-                                    <signal name="changed" handler="on_editable_changed" swapped="no"/>
                                     <signal name="activate" handler="on_entry_activate" swapped="no"/>
+                                    <signal name="changed" handler="on_editable_changed" swapped="no"/>
                                   </object>
                                   <packing>
                                     <property name="expand">True</property>
@@ -4427,7 +5306,6 @@
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
                                     <property name="tooltip_text" translatable="yes">This option causes the tab number to be shown at the start of the title.</property>
-                                    <property name="use_action_appearance">False</property>
                                     <property name="use_underline">True</property>
                                     <property name="xalign">0</property>
                                     <property name="draw_indicator">True</property>
@@ -4481,7 +5359,6 @@
                                             <property name="can_focus">True</property>
                                             <property name="receives_default">False</property>
                                             <property name="tooltip_markup">Nothing happens if the tab label is middle-clicked.</property>
-                                            <property name="use_action_appearance">False</property>
                                             <property name="use_underline">True</property>
                                             <property name="xalign">0</property>
                                             <property name="active">True</property>
@@ -4514,7 +5391,6 @@
                                             <property name="can_focus">True</property>
                                             <property name="receives_default">False</property>
                                             <property name="tooltip_markup">If the tab label is middle-clicked the tab is closed.</property>
-                                            <property name="use_action_appearance">False</property>
                                             <property name="use_underline">True</property>
                                             <property name="xalign">0</property>
                                             <property name="draw_indicator">True</property>
@@ -4546,8 +5422,7 @@
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
                                             <property name="receives_default">False</property>
-                                            <property name="tooltip_markup">If the tab label is middle-clicked the tab&apos;s name is pasted from the clipboard.</property>
-                                            <property name="use_action_appearance">False</property>
+                                            <property name="tooltip_markup">If the tab label is middle-clicked the tab's name is pasted from the clipboard.</property>
                                             <property name="use_underline">True</property>
                                             <property name="xalign">0</property>
                                             <property name="draw_indicator">True</property>
@@ -4590,7 +5465,6 @@
                                         <property name="has_tooltip">True</property>
                                         <property name="tooltip_markup">This option makes the Next and Previous Tab operations respectively wrap around from the first and last tab to the opposite end of the row; the move tab left/right/up/down menu items are affected similarly.</property>
                                         <property name="tooltip_text" translatable="yes">This option makes the Next and Previous Tab operations respectively wrap around from the first and last tab to the opposite end of the row; the move tab left/right/up/down menu items are affected similarly.</property>
-                                        <property name="use_action_appearance">False</property>
                                         <property name="use_underline">True</property>
                                         <property name="xalign">0</property>
                                         <property name="draw_indicator">True</property>
@@ -4613,12 +5487,11 @@
                                         <property name="has_tooltip">True</property>
                                         <property name="tooltip_markup">If this option is enabled close buttons are shown at the top of tabs.</property>
                                         <property name="tooltip_text" translatable="yes">If this option is enabled close buttons are shown at the top of tabs.</property>
-                                        <property name="use_action_appearance">False</property>
                                         <property name="use_underline">True</property>
                                         <property name="xalign">0</property>
                                         <property name="draw_indicator">True</property>
-                                        <signal name="toggled" handler="on_close_buttons_toggled" swapped="no"/>
                                         <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
+                                        <signal name="toggled" handler="on_close_buttons_toggled" swapped="no"/>
                                       </object>
                                       <packing>
                                         <property name="expand">True</property>
@@ -4637,7 +5510,6 @@
                                         <property name="has_tooltip">True</property>
                                         <property name="tooltip_markup">If this option is enabled the icons in close buttons may be changed in inactive tabs to reflect the status of their terminals.</property>
                                         <property name="tooltip_text" translatable="yes">If this option is enabled the icons in close buttons may be changed in inactive tabs to reflect the status of their terminals.</property>
-                                        <property name="use_action_appearance">False</property>
                                         <property name="use_underline">True</property>
                                         <property name="xalign">0</property>
                                         <property name="draw_indicator">True</property>
@@ -4659,7 +5531,6 @@
                                         <property name="has_tooltip">True</property>
                                         <property name="tooltip_markup">Whether to open new tabs adjacent to the current tab in a window, otherwise append them.</property>
                                         <property name="tooltip_text" translatable="yes">Whether to open new tabs adjacent to the current tab in a window, otherwise append them.</property>
-                                        <property name="use_action_appearance">False</property>
                                         <property name="use_underline">True</property>
                                         <property name="xalign">0</property>
                                         <property name="image_position">bottom</property>
@@ -4698,7 +5569,7 @@
                                     <property name="can_focus">False</property>
                                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                                     <property name="stock">gtk-dialog-info</property>
-                                    <property name="icon-size">6</property>
+                                    <property name="icon_size">6</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -4713,8 +5584,8 @@
                                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                                     <property name="label" translatable="yes">The following tab options do not apply to windows that are already open; they only apply to windows opened subsequently.</property>
                                     <property name="wrap">True</property>
-                                    <property name="max_width_chars">40</property>
                                     <property name="width_chars">30</property>
+                                    <property name="max_width_chars">40</property>
                                   </object>
                                   <packing>
                                     <property name="expand">True</property>
@@ -4860,927 +5731,19 @@
       <action-widget response="-7">closebutton2</action-widget>
     </action-widgets>
   </object>
-  <object class="GtkDialog" id="Colour_Scheme_Editor">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="title" translatable="yes">ROXTerm Colour Scheme</property>
-    <property name="resizable">False</property>
-    <property name="type_hint">dialog</property>
-    <signal name="destroy" handler="on_Colour_Editor_destroy" swapped="no"/>
-    <signal name="close" handler="on_Colour_Editor_close" swapped="no"/>
-    <signal name="response" handler="on_Colour_Editor_response" swapped="no"/>
-    <child internal-child="vbox">
-      <object class="GtkVBox" id="dialog-vbox5">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="orientation">vertical</property>
-        <child internal-child="action_area">
-          <object class="GtkButtonBox" id="dialog-action_area5">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="homogeneous">True</property>
-            <property name="layout_style">end</property>
-            <child>
-              <object class="GtkButton" id="revert">
-                <property name="label" translatable="yes">_Revert</property>
-                <property name="use_action_appearance">False</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                <property name="use_action_appearance">False</property>
-                <property name="use_underline">True</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton" id="closebutton1">
-                <property name="label">gtk-close</property>
-                <property name="use_action_appearance">False</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="can_default">True</property>
-                <property name="receives_default">True</property>
-                <property name="has_tooltip">True</property>
-                <property name="tooltip_text" translatable="yes">Close this window</property>
-                <property name="use_action_appearance">False</property>
-                <property name="use_stock">True</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="pack_type">end</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkVBox" id="vbox2">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="border_width">8</property>
-            <property name="spacing">8</property>
-            <child>
-              <object class="GtkCheckButton" id="set_fgbg">
-                <property name="label" translatable="yes">_Set text and background colours</property>
-                <property name="use_action_appearance">False</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">False</property>
-                <property name="has_tooltip">True</property>
-                <property name="tooltip_text" translatable="yes">Whether to set terminals&apos; text and background colours using the fields below</property>
-                <property name="halign">start</property>
-                <property name="use_action_appearance">False</property>
-                <property name="use_underline">True</property>
-                <property name="xalign">0.5</property>
-                <property name="draw_indicator">True</property>
-                <signal name="toggled" handler="on_set_fgbg_toggled" swapped="no"/>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkTable" id="table1">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="halign">start</property>
-                <property name="n_rows">3</property>
-                <property name="n_columns">4</property>
-                <property name="column_spacing">8</property>
-                <property name="row_spacing">4</property>
-                <child>
-                  <object class="GtkLabel" id="text_colour_label">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="halign">start</property>
-                    <property name="label" translatable="yes">_Text colour</property>
-                    <property name="use_underline">True</property>
-                    <property name="mnemonic_widget">foreground_colour</property>
-                  </object>
-                  <packing>
-                    <property name="x_options">GTK_FILL</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkColorButton" id="foreground_colour">
-                    <property name="use_action_appearance">False</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="has_tooltip">True</property>
-                    <property name="tooltip_markup" translatable="yes">Foreground colour of text; click to change</property>
-                    <property name="tooltip_text" translatable="yes">Foreground colour of text; click to change</property>
-                    <property name="halign">start</property>
-                    <property name="use_action_appearance">False</property>
-                    <property name="color">#000000000000</property>
-                    <signal name="color-set" handler="on_color_set" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="left_attach">1</property>
-                    <property name="right_attach">2</property>
-                    <property name="x_options">GTK_FILL</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="background_colour_label">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="halign">start</property>
-                    <property name="label" translatable="yes">_Background colour</property>
-                    <property name="use_underline">True</property>
-                    <property name="mnemonic_widget">background_colour</property>
-                  </object>
-                  <packing>
-                    <property name="left_attach">2</property>
-                    <property name="right_attach">3</property>
-                    <property name="x_options">GTK_FILL</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkColorButton" id="background_colour">
-                    <property name="use_action_appearance">False</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="has_tooltip">True</property>
-                    <property name="tooltip_markup" translatable="yes">Background colour of terminals; click to change</property>
-                    <property name="tooltip_text" translatable="yes">Background colour of terminals; click to change</property>
-                    <property name="halign">start</property>
-                    <property name="use_action_appearance">False</property>
-                    <property name="color">#000000000000</property>
-                    <signal name="color-set" handler="on_color_set" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="left_attach">3</property>
-                    <property name="right_attach">4</property>
-                    <property name="x_options">GTK_FILL</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkCheckButton" id="set_bold_colour">
-                    <property name="label" translatable="yes">Set b_old colour</property>
-                    <property name="use_action_appearance">False</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">False</property>
-                    <property name="has_tooltip">True</property>
-                    <property name="tooltip_markup" translatable="yes">Set the cursor colour from the adjacent field</property>
-                    <property name="tooltip_text" translatable="yes">Set the cursor colour from the adjacent field</property>
-                    <property name="halign">start</property>
-                    <property name="use_action_appearance">False</property>
-                    <property name="use_underline">True</property>
-                    <property name="xalign">0</property>
-                    <property name="draw_indicator">True</property>
-                    <signal name="toggled" handler="on_set_bold_colour_toggled" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="top_attach">1</property>
-                    <property name="bottom_attach">2</property>
-                    <property name="x_options">GTK_FILL</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkColorButton" id="bold_colour">
-                    <property name="use_action_appearance">False</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="has_tooltip">True</property>
-                    <property name="tooltip_markup" translatable="yes">Foreground colour of text; click to change</property>
-                    <property name="tooltip_text" translatable="yes">Foreground colour of text; click to change</property>
-                    <property name="halign">start</property>
-                    <property name="use_action_appearance">False</property>
-                    <property name="color">#000000000000</property>
-                    <signal name="color-set" handler="on_color_set" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="left_attach">1</property>
-                    <property name="right_attach">2</property>
-                    <property name="top_attach">1</property>
-                    <property name="bottom_attach">2</property>
-                    <property name="x_options">GTK_FILL</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkCheckButton" id="set_dim_colour">
-                    <property name="label" translatable="yes">Set _dim colour</property>
-                    <property name="use_action_appearance">False</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">False</property>
-                    <property name="has_tooltip">True</property>
-                    <property name="tooltip_markup" translatable="yes">Set the cursor colour from the adjacent field</property>
-                    <property name="tooltip_text" translatable="yes">Set the cursor colour from the adjacent field</property>
-                    <property name="halign">start</property>
-                    <property name="use_action_appearance">False</property>
-                    <property name="use_underline">True</property>
-                    <property name="xalign">0</property>
-                    <property name="draw_indicator">True</property>
-                    <signal name="toggled" handler="on_set_dim_colour_toggled" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="left_attach">2</property>
-                    <property name="right_attach">3</property>
-                    <property name="top_attach">1</property>
-                    <property name="bottom_attach">2</property>
-                    <property name="x_options">GTK_FILL</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkColorButton" id="dim_colour">
-                    <property name="use_action_appearance">False</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="has_tooltip">True</property>
-                    <property name="tooltip_markup" translatable="yes">Background colour of terminals; click to change</property>
-                    <property name="tooltip_text" translatable="yes">Background colour of terminals; click to change</property>
-                    <property name="halign">start</property>
-                    <property name="use_action_appearance">False</property>
-                    <property name="color">#000000000000</property>
-                    <signal name="color-set" handler="on_color_set" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="left_attach">3</property>
-                    <property name="right_attach">4</property>
-                    <property name="top_attach">1</property>
-                    <property name="bottom_attach">2</property>
-                    <property name="x_options">GTK_FILL</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkCheckButton" id="use_custom_colours">
-                    <property name="label" translatable="yes">Use custom _palette</property>
-                    <property name="use_action_appearance">False</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">False</property>
-                    <property name="has_tooltip">True</property>
-                    <property name="tooltip_markup" translatable="yes">Whether to set the terminal&amp;apos;s colours from the table below</property>
-                    <property name="tooltip_text" translatable="yes">Whether to set the terminal&apos;s colours from the table below</property>
-                    <property name="halign">start</property>
-                    <property name="use_action_appearance">False</property>
-                    <property name="use_underline">True</property>
-                    <property name="xalign">0</property>
-                    <property name="draw_indicator">True</property>
-                    <signal name="toggled" handler="on_use_custom_colours_toggled" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="right_attach">2</property>
-                    <property name="top_attach">2</property>
-                    <property name="bottom_attach">3</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkCheckButton" id="fgbg_track_palette">
-                    <property name="label" translatable="yes">_Get text and background colours from palette</property>
-                    <property name="use_action_appearance">False</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">False</property>
-                    <property name="has_tooltip">True</property>
-                    <property name="tooltip_markup" translatable="yes">Whether to use the palette table below to set the background and text foreground colours</property>
-                    <property name="tooltip_text" translatable="yes">Whether to use the palette table below to set the background and text foreground colours</property>
-                    <property name="halign">start</property>
-                    <property name="use_action_appearance">False</property>
-                    <property name="use_underline">True</property>
-                    <property name="xalign">0</property>
-                    <property name="draw_indicator">True</property>
-                    <signal name="toggled" handler="on_fgbg_track_palette_toggled" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="left_attach">2</property>
-                    <property name="right_attach">4</property>
-                    <property name="top_attach">2</property>
-                    <property name="bottom_attach">3</property>
-                    <property name="x_options">GTK_FILL</property>
-                  </packing>
-                </child>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkTable" id="table4">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="n_rows">3</property>
-                <property name="n_columns">9</property>
-                <child>
-                  <object class="GtkColorButton" id="palette2_7">
-                    <property name="use_action_appearance">False</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="use_action_appearance">False</property>
-                    <property name="color">#000000000000</property>
-                    <signal name="color-set" handler="on_color_set" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="left_attach">8</property>
-                    <property name="right_attach">9</property>
-                    <property name="top_attach">2</property>
-                    <property name="bottom_attach">3</property>
-                    <property name="x_options">GTK_FILL</property>
-                    <property name="y_options"/>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkColorButton" id="palette2_6">
-                    <property name="use_action_appearance">False</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="use_action_appearance">False</property>
-                    <property name="color">#000000000000</property>
-                    <signal name="color-set" handler="on_color_set" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="left_attach">7</property>
-                    <property name="right_attach">8</property>
-                    <property name="top_attach">2</property>
-                    <property name="bottom_attach">3</property>
-                    <property name="x_options">GTK_FILL</property>
-                    <property name="y_options"/>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkColorButton" id="palette2_5">
-                    <property name="use_action_appearance">False</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="use_action_appearance">False</property>
-                    <property name="color">#000000000000</property>
-                    <signal name="color-set" handler="on_color_set" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="left_attach">6</property>
-                    <property name="right_attach">7</property>
-                    <property name="top_attach">2</property>
-                    <property name="bottom_attach">3</property>
-                    <property name="x_options">GTK_FILL</property>
-                    <property name="y_options"/>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkColorButton" id="palette2_4">
-                    <property name="use_action_appearance">False</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="use_action_appearance">False</property>
-                    <property name="color">#000000000000</property>
-                    <signal name="color-set" handler="on_color_set" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="left_attach">5</property>
-                    <property name="right_attach">6</property>
-                    <property name="top_attach">2</property>
-                    <property name="bottom_attach">3</property>
-                    <property name="x_options">GTK_FILL</property>
-                    <property name="y_options"/>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkColorButton" id="palette2_3">
-                    <property name="use_action_appearance">False</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="use_action_appearance">False</property>
-                    <property name="color">#000000000000</property>
-                    <signal name="color-set" handler="on_color_set" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="left_attach">4</property>
-                    <property name="right_attach">5</property>
-                    <property name="top_attach">2</property>
-                    <property name="bottom_attach">3</property>
-                    <property name="x_options">GTK_FILL</property>
-                    <property name="y_options"/>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkColorButton" id="palette2_2">
-                    <property name="use_action_appearance">False</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="use_action_appearance">False</property>
-                    <property name="color">#000000000000</property>
-                    <signal name="color-set" handler="on_color_set" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="left_attach">3</property>
-                    <property name="right_attach">4</property>
-                    <property name="top_attach">2</property>
-                    <property name="bottom_attach">3</property>
-                    <property name="x_options">GTK_FILL</property>
-                    <property name="y_options"/>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkColorButton" id="palette2_1">
-                    <property name="use_action_appearance">False</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="use_action_appearance">False</property>
-                    <property name="color">#000000000000</property>
-                    <signal name="color-set" handler="on_color_set" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="left_attach">2</property>
-                    <property name="right_attach">3</property>
-                    <property name="top_attach">2</property>
-                    <property name="bottom_attach">3</property>
-                    <property name="x_options">GTK_FILL</property>
-                    <property name="y_options"/>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkColorButton" id="palette2_0">
-                    <property name="use_action_appearance">False</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="use_action_appearance">False</property>
-                    <property name="color">#000000000000</property>
-                    <signal name="color-set" handler="on_color_set" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="left_attach">1</property>
-                    <property name="right_attach">2</property>
-                    <property name="top_attach">2</property>
-                    <property name="bottom_attach">3</property>
-                    <property name="x_options">GTK_FILL</property>
-                    <property name="y_options"/>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkColorButton" id="palette1_7">
-                    <property name="use_action_appearance">False</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="use_action_appearance">False</property>
-                    <property name="color">#000000000000</property>
-                    <signal name="color-set" handler="on_color_set" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="left_attach">8</property>
-                    <property name="right_attach">9</property>
-                    <property name="top_attach">1</property>
-                    <property name="bottom_attach">2</property>
-                    <property name="x_options">GTK_FILL</property>
-                    <property name="y_options"/>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkColorButton" id="palette1_6">
-                    <property name="use_action_appearance">False</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="use_action_appearance">False</property>
-                    <property name="color">#000000000000</property>
-                    <signal name="color-set" handler="on_color_set" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="left_attach">7</property>
-                    <property name="right_attach">8</property>
-                    <property name="top_attach">1</property>
-                    <property name="bottom_attach">2</property>
-                    <property name="x_options">GTK_FILL</property>
-                    <property name="y_options"/>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkColorButton" id="palette1_5">
-                    <property name="use_action_appearance">False</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="use_action_appearance">False</property>
-                    <property name="color">#000000000000</property>
-                    <signal name="color-set" handler="on_color_set" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="left_attach">6</property>
-                    <property name="right_attach">7</property>
-                    <property name="top_attach">1</property>
-                    <property name="bottom_attach">2</property>
-                    <property name="x_options">GTK_FILL</property>
-                    <property name="y_options"/>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkColorButton" id="palette1_4">
-                    <property name="use_action_appearance">False</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="use_action_appearance">False</property>
-                    <property name="color">#000000000000</property>
-                    <signal name="color-set" handler="on_color_set" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="left_attach">5</property>
-                    <property name="right_attach">6</property>
-                    <property name="top_attach">1</property>
-                    <property name="bottom_attach">2</property>
-                    <property name="x_options">GTK_FILL</property>
-                    <property name="y_options"/>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkColorButton" id="palette1_3">
-                    <property name="use_action_appearance">False</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="use_action_appearance">False</property>
-                    <property name="color">#000000000000</property>
-                    <signal name="color-set" handler="on_color_set" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="left_attach">4</property>
-                    <property name="right_attach">5</property>
-                    <property name="top_attach">1</property>
-                    <property name="bottom_attach">2</property>
-                    <property name="x_options">GTK_FILL</property>
-                    <property name="y_options"/>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkColorButton" id="palette1_2">
-                    <property name="use_action_appearance">False</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="use_action_appearance">False</property>
-                    <property name="color">#000000000000</property>
-                    <signal name="color-set" handler="on_color_set" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="left_attach">3</property>
-                    <property name="right_attach">4</property>
-                    <property name="top_attach">1</property>
-                    <property name="bottom_attach">2</property>
-                    <property name="x_options">GTK_FILL</property>
-                    <property name="y_options"/>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkColorButton" id="palette1_1">
-                    <property name="use_action_appearance">False</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="use_action_appearance">False</property>
-                    <property name="color">#000000000000</property>
-                    <signal name="color-set" handler="on_color_set" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="left_attach">2</property>
-                    <property name="right_attach">3</property>
-                    <property name="top_attach">1</property>
-                    <property name="bottom_attach">2</property>
-                    <property name="x_options">GTK_FILL</property>
-                    <property name="y_options"/>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkColorButton" id="palette1_0">
-                    <property name="use_action_appearance">False</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="use_action_appearance">False</property>
-                    <property name="color">#000000000000</property>
-                    <signal name="color-set" handler="on_color_set" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="left_attach">1</property>
-                    <property name="right_attach">2</property>
-                    <property name="top_attach">1</property>
-                    <property name="bottom_attach">2</property>
-                    <property name="x_options">GTK_FILL</property>
-                    <property name="y_options"/>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkColorButton" id="palette0_7">
-                    <property name="use_action_appearance">False</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="use_action_appearance">False</property>
-                    <property name="color">#000000000000</property>
-                    <signal name="color-set" handler="on_color_set" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="left_attach">8</property>
-                    <property name="right_attach">9</property>
-                    <property name="x_options">GTK_FILL</property>
-                    <property name="y_options"/>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkColorButton" id="palette0_6">
-                    <property name="use_action_appearance">False</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="use_action_appearance">False</property>
-                    <property name="color">#000000000000</property>
-                    <signal name="color-set" handler="on_color_set" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="left_attach">7</property>
-                    <property name="right_attach">8</property>
-                    <property name="x_options">GTK_FILL</property>
-                    <property name="y_options"/>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkColorButton" id="palette0_5">
-                    <property name="use_action_appearance">False</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="use_action_appearance">False</property>
-                    <property name="color">#000000000000</property>
-                    <signal name="color-set" handler="on_color_set" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="left_attach">6</property>
-                    <property name="right_attach">7</property>
-                    <property name="x_options">GTK_FILL</property>
-                    <property name="y_options"/>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkColorButton" id="palette0_4">
-                    <property name="use_action_appearance">False</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="use_action_appearance">False</property>
-                    <property name="color">#000000000000</property>
-                    <signal name="color-set" handler="on_color_set" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="left_attach">5</property>
-                    <property name="right_attach">6</property>
-                    <property name="x_options">GTK_FILL</property>
-                    <property name="y_options"/>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkColorButton" id="palette0_3">
-                    <property name="use_action_appearance">False</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="use_action_appearance">False</property>
-                    <property name="color">#000000000000</property>
-                    <signal name="color-set" handler="on_color_set" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="left_attach">4</property>
-                    <property name="right_attach">5</property>
-                    <property name="x_options">GTK_FILL</property>
-                    <property name="y_options"/>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkColorButton" id="palette0_2">
-                    <property name="use_action_appearance">False</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="use_action_appearance">False</property>
-                    <property name="color">#000000000000</property>
-                    <signal name="color-set" handler="on_color_set" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="left_attach">3</property>
-                    <property name="right_attach">4</property>
-                    <property name="x_options">GTK_FILL</property>
-                    <property name="y_options"/>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkColorButton" id="palette0_1">
-                    <property name="use_action_appearance">False</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="use_action_appearance">False</property>
-                    <property name="color">#000000000000</property>
-                    <signal name="color-set" handler="on_color_set" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="left_attach">2</property>
-                    <property name="right_attach">3</property>
-                    <property name="x_options">GTK_FILL</property>
-                    <property name="y_options"/>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkColorButton" id="palette0_0">
-                    <property name="use_action_appearance">False</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="use_action_appearance">False</property>
-                    <property name="color">#000000000000</property>
-                    <signal name="color-set" handler="on_color_set" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="left_attach">1</property>
-                    <property name="right_attach">2</property>
-                    <property name="x_options">GTK_FILL</property>
-                    <property name="y_options"/>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkRadioButton" id="palette_size2">
-                    <property name="use_action_appearance">False</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">False</property>
-                    <property name="use_action_appearance">False</property>
-                    <property name="use_underline">True</property>
-                    <property name="xalign">0</property>
-                    <property name="draw_indicator">True</property>
-                    <property name="group">palette_size0</property>
-                    <signal name="toggled" handler="on_palette_size_toggled" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="top_attach">2</property>
-                    <property name="bottom_attach">3</property>
-                    <property name="x_options">GTK_FILL</property>
-                    <property name="y_options"/>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkRadioButton" id="palette_size1">
-                    <property name="use_action_appearance">False</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">False</property>
-                    <property name="has_tooltip">True</property>
-                    <property name="tooltip_markup" translatable="yes">Set 16 palette entries from both rows</property>
-                    <property name="tooltip_text" translatable="yes">Set 16 palette entries from both rows</property>
-                    <property name="use_action_appearance">False</property>
-                    <property name="use_underline">True</property>
-                    <property name="xalign">0</property>
-                    <property name="draw_indicator">True</property>
-                    <property name="group">palette_size0</property>
-                    <signal name="toggled" handler="on_palette_size_toggled" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="top_attach">1</property>
-                    <property name="bottom_attach">2</property>
-                    <property name="x_options">GTK_FILL</property>
-                    <property name="y_options"/>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkRadioButton" id="palette_size0">
-                    <property name="use_action_appearance">False</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">False</property>
-                    <property name="has_tooltip">True</property>
-                    <property name="tooltip_markup" translatable="yes">Set just the first 8 palette entries from this row</property>
-                    <property name="tooltip_text" translatable="yes">Set just the first 8 palette entries from this row</property>
-                    <property name="use_action_appearance">False</property>
-                    <property name="use_underline">True</property>
-                    <property name="xalign">0</property>
-                    <property name="active">True</property>
-                    <property name="draw_indicator">True</property>
-                    <signal name="toggled" handler="on_palette_size_toggled" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="x_options">GTK_FILL</property>
-                    <property name="y_options"/>
-                  </packing>
-                </child>
-              </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkHBox" id="cursor_colour_hbox">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="spacing">10</property>
-                <child>
-                  <object class="GtkCheckButton" id="set_cursor_colour">
-                    <property name="label" translatable="yes">Set _cursor colour</property>
-                    <property name="use_action_appearance">False</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">False</property>
-                    <property name="has_tooltip">True</property>
-                    <property name="tooltip_markup" translatable="yes">Set the cursor colour from the adjacent field</property>
-                    <property name="tooltip_text" translatable="yes">Set the cursor colour from the adjacent field</property>
-                    <property name="halign">start</property>
-                    <property name="use_action_appearance">False</property>
-                    <property name="use_underline">True</property>
-                    <property name="xalign">0</property>
-                    <property name="draw_indicator">True</property>
-                    <signal name="toggled" handler="on_set_cursor_colour_toggled" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkColorButton" id="cursor_colour">
-                    <property name="use_action_appearance">False</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="has_tooltip">True</property>
-                    <property name="tooltip_markup" translatable="yes">Click to change the cursor colour</property>
-                    <property name="tooltip_text" translatable="yes">Click to change the cursor colour</property>
-                    <property name="use_action_appearance">False</property>
-                    <property name="color">#000000000000</property>
-                    <signal name="color-set" handler="on_color_set" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-              </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">3</property>
-              </packing>
-            </child>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">2</property>
-          </packing>
-        </child>
-      </object>
-    </child>
-    <action-widgets>
-      <action-widget response="1">revert</action-widget>
-      <action-widget response="-7">closebutton1</action-widget>
-    </action-widgets>
+  <object class="GtkSizeGroup" id="general_entries_size_group">
+    <widgets>
+      <widget name="sel_by_word"/>
+      <widget name="color_term"/>
+      <widget name="term"/>
+    </widgets>
   </object>
-  <object class="GtkAdjustment" id="exit_pause_adjustment">
-    <property name="upper">600</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">5</property>
-  </object>
-  <object class="GtkAdjustment" id="height_adjustment">
-    <property name="lower">5</property>
-    <property name="upper">1000</property>
-    <property name="value">32</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">10</property>
-  </object>
-  <object class="GtkAdjustment" id="init_tabs_adjustment">
-    <property name="lower">1</property>
-    <property name="upper">20</property>
-    <property name="value">1</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">5</property>
-  </object>
-  <object class="GtkAdjustment" id="saturation_adjustment">
-    <property name="upper">1</property>
-    <property name="step_increment">0.01</property>
-    <property name="page_increment">0.10000000000000001</property>
-  </object>
-  <object class="GtkAdjustment" id="scrollback_lines_adjustment">
-    <property name="upper">100000</property>
-    <property name="value">1000</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">10</property>
+  <object class="GtkSizeGroup" id="general_entry_labels_size_group">
+    <widgets>
+      <widget name="sel_by_word_label"/>
+      <widget name="label43"/>
+      <widget name="label42"/>
+    </widgets>
   </object>
   <object class="GtkDialog" id="ssh_dialog">
     <property name="can_focus">False</property>
@@ -5809,7 +5772,6 @@
                 <property name="can_default">True</property>
                 <property name="has_default">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_action_appearance">False</property>
                 <property name="use_stock">True</property>
               </object>
               <packing>
@@ -5856,9 +5818,9 @@
                 <property name="invisible_char">•</property>
                 <property name="primary_icon_activatable">False</property>
                 <property name="secondary_icon_activatable">False</property>
+                <signal name="activate" handler="on_ssh_entry_activate" swapped="no"/>
                 <signal name="changed" handler="on_editable_changed" swapped="no"/>
                 <signal name="changed" handler="on_ssh_host_changed" swapped="no"/>
-                <signal name="activate" handler="on_ssh_entry_activate" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -5889,8 +5851,8 @@
                 <property name="invisible_char">•</property>
                 <property name="primary_icon_activatable">False</property>
                 <property name="secondary_icon_activatable">False</property>
-                <signal name="changed" handler="on_editable_changed" swapped="no"/>
                 <signal name="activate" handler="on_ssh_entry_activate" swapped="no"/>
+                <signal name="changed" handler="on_editable_changed" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -5944,8 +5906,8 @@
                 <property name="invisible_char">•</property>
                 <property name="primary_icon_activatable">False</property>
                 <property name="secondary_icon_activatable">False</property>
-                <signal name="changed" handler="on_editable_changed" swapped="no"/>
                 <signal name="activate" handler="on_ssh_entry_activate" swapped="no"/>
+                <signal name="changed" handler="on_editable_changed" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -5983,26 +5945,5 @@
     <action-widgets>
       <action-widget response="0">button1</action-widget>
     </action-widgets>
-  </object>
-  <object class="GtkSizeGroup" id="general_entries_size_group">
-    <widgets>
-      <widget name="sel_by_word"/>
-      <widget name="color_term"/>
-      <widget name="term"/>
-    </widgets>
-  </object>
-  <object class="GtkSizeGroup" id="general_entry_labels_size_group">
-    <widgets>
-      <widget name="sel_by_word_label"/>
-      <widget name="label43"/>
-      <widget name="label42"/>
-    </widgets>
-  </object>
-  <object class="GtkAdjustment" id="width_adjustment">
-    <property name="lower">10</property>
-    <property name="upper">1000</property>
-    <property name="value">80</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">10</property>
   </object>
 </interface>

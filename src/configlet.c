@@ -31,6 +31,7 @@
 
 #include <ctype.h>
 #include <stdarg.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include <unistd.h>
@@ -573,11 +574,52 @@ static gboolean remove_name_from_list(ConfigletList *cl, const char *old_name)
     return remove;
 }
 
+static gboolean configlet_copy_to_user_dir(ConfigletData *cg,
+        const char *src_path, const char *family, const char *new_leaf)
+{
+    char *new_path = options_file_filename_for_saving(family, NULL);
+    char *buffer = NULL;
+    gsize size;
+    GError *error = NULL;
+    gboolean success = FALSE;
+
+    if (!g_file_test(new_path, G_FILE_TEST_IS_DIR))
+    {
+        if (g_mkdir_with_parents(new_path, 0755) == -1)
+        {
+            dlg_warning(GTK_WINDOW(cg->widget),
+                    _("Unable to create directory '%s'"), new_path);
+            return FALSE;
+        }
+    }
+    g_free(new_path);
+    new_path = options_file_filename_for_saving(family, new_leaf, NULL);
+    if (g_file_test(src_path, G_FILE_TEST_IS_REGULAR))
+    {
+        if (g_file_get_contents(src_path, &buffer, &size, &error))
+            success = g_file_set_contents(new_path, buffer, size, &error);
+        g_free(buffer);
+    }
+    else
+    {
+        success = g_file_set_contents(new_path, "", -1, &error);
+    }
+    if (!success)
+    {
+        dlg_warning(GTK_WINDOW(cg->widget),
+                _("Unable to copy profile/scheme: %s"),
+                error && error->message ? error->message : _("unknown reason"));
+    }
+    if (error)
+        g_error_free(error);
+    g_free(new_path);
+    return success;
+}
+
 /* This is Add for Encodings */
 static void configlet_copy(ConfigletList *cl,
         const char *old_leaf, const char *new_leaf)
 {
-    GError *error = NULL;
     gboolean success = FALSE;
 
     if (cl->encodings)
@@ -590,32 +632,9 @@ static void configlet_copy(ConfigletList *cl,
     {
         char *old_path = options_file_build_filename(cl->family, old_leaf,
                 NULL);
-        char *new_path = options_file_filename_for_saving(cl->family,
-            new_leaf, NULL);
-        char *dir = options_file_filename_for_saving(cl->family, NULL);
-        char *buffer = NULL;
-        gsize size;
 
-        if (!g_file_test(dir, G_FILE_TEST_IS_DIR))
-        {
-            if (g_mkdir_with_parents(dir, 0755) == -1)
-            {
-                dlg_warning(GTK_WINDOW(cl->cg->widget),
-                        _("Unable to create directory '%s'"), dir);
-                return;
-            }
-        }
-        if (g_file_test(old_path, G_FILE_TEST_IS_REGULAR))
-        {
-            if (g_file_get_contents(old_path, &buffer, &size, &error))
-                success = g_file_set_contents(new_path, buffer, size, &error);
-        }
-        else
-        {
-            success = g_file_set_contents(new_path, "", -1, &error);
-        }
-        g_free(buffer);
-        g_free(new_path);
+        success = configlet_copy_to_user_dir(cl->cg, old_path,
+                cl->family, new_leaf);
         g_free(old_path);
     }
     if (success)
@@ -624,14 +643,6 @@ static void configlet_copy(ConfigletList *cl,
         optsdbus_send_stuff_changed_signal(OPTSDBUS_ADDED, cl->family,
                 new_leaf, NULL);
     }
-    else
-    {
-        dlg_warning(GTK_WINDOW(cl->cg->widget),
-                _("Unable to copy profile/scheme: %s"),
-                error && error->message ? error->message : _("unknown reason"));
-    }
-    if (error)
-        g_error_free(error);
 }
 
 /* This is Edit for Encodings */
@@ -691,6 +702,107 @@ static void configlet_rename(ConfigletList *cl,
     }
 }
 
+static const char *configlet_find_text_editor(void)
+{
+    static char *editor = NULL;
+    static char const *subs[] = {"vi", "emacs", "gedit", "kate", NULL};
+    static char const *editors[] = {"gedit", "kate", "gvim", "emacs", NULL};
+    char *env;
+    int n;
+
+    if (editor)
+        return editor;
+    env = getenv("EDITOR");
+    for (n = 0; subs[n] && !editor; ++n)
+    {
+        if (strstr(env, subs[n]))
+        {
+            editor = g_find_program_in_path(
+                    strcmp(subs[n], "vi") ? subs[n] : "gvim");
+        }
+    }
+    if (!editor)
+    {
+        for (n = 0; editors[n] && !editor; ++n)
+            editor = g_find_program_in_path(editors[n]);
+    }
+    return editor;
+}
+
+static char *configlet_make_profile_editable(ConfigletData *cg,
+        const char *family_name, const char *name)
+{
+    char *path = options_file_filename_for_saving(family_name, name, NULL);
+    if (!g_file_test(path, G_FILE_TEST_EXISTS))
+    {
+        char *src = options_file_build_filename(family_name, name, NULL);
+        if (src)
+        {
+            configlet_copy_to_user_dir(cg, src, family_name, name);
+            g_free(src);
+        }
+    }
+    return path;
+}
+
+static void shortcuts_file_modified(GFileMonitor *monitor,
+        GFile *file, GFile *other_file, GFileMonitorEvent event_type,
+        char *name)
+{
+    (void) monitor;
+    (void) other_file;
+    (void) event_type;
+
+    /* FIXME: Send dbus signal */
+    g_print("Shortcuts '%s' were modified\n", name);
+    g_object_unref(monitor);
+    g_object_unref(file);
+    g_free(name);
+}
+
+static void edit_shortcuts(ConfigletData *cg, const char *name)
+{
+    char *filename;
+    const char *editor = configlet_find_text_editor();
+    char const *cmdv[3];
+    GError *error = NULL;
+    GPid pid;
+
+    if (!editor)
+    {
+        dlg_critical(GTK_WINDOW(cg->widget),
+                _("Unable to find a text editor. Please install "
+                "gedit, gvim, kate or emacs."));
+        return;
+    }
+    filename = configlet_make_profile_editable(cg, "Shortcuts", name);
+    if (!filename)
+        return;
+    cmdv[0] = editor;
+    cmdv[1] = filename;
+    cmdv[2] = NULL;
+    if (g_spawn_async(NULL, (char **) cmdv, NULL, G_SPAWN_DEFAULT, NULL, NULL,
+            &pid, &error))
+    {
+        GFile *f = g_file_new_for_path(filename);
+        GFileMonitor *monitor = g_file_monitor_file(f, G_FILE_MONITOR_NONE,
+                NULL, &error);
+        if (monitor)
+        {
+            g_signal_connect(monitor, "changed",
+                    G_CALLBACK(shortcuts_file_modified), g_strdup(name));
+        }
+    }
+    if (error)
+    {
+        dlg_critical(GTK_WINDOW(cg->widget),
+                _("Error trying to edit or monitor Shortcuts file '%s': %s"),
+                        filename, error->message);
+        g_error_free(error);
+    }
+    g_free(filename);
+}
+
 static void edit_thing_by_name(ConfigletList *cl, const char *name)
 {
     GdkScreen *scrn = gtk_widget_get_screen(cl->cg->widget);
@@ -705,9 +817,7 @@ static void edit_thing_by_name(ConfigletList *cl, const char *name)
     }
     else if (!strcmp(cl->family, "Shortcuts"))
     {
-        dlg_message(GTK_WINDOW(cl->cg->widget),
-                _("Shortcuts can currently only be edited by hovering "
-                    "over the menu entries and pressing keys"));
+        edit_shortcuts(cl->cg, name);
     }
     else if (cl->encodings)
     {
@@ -936,6 +1046,12 @@ void on_shortcuts_delete_clicked(GtkButton *button, ConfigletData *cg)
     on_delete_clicked(&cg->shortcuts);
 }
 
+void on_shortcuts_edit_clicked(GtkButton *button, ConfigletData *cg)
+{
+    (void) button;
+    edit_selected_thing(&cg->shortcuts);
+}
+
 void on_encodings_delete_clicked(GtkButton *button, ConfigletData *cg)
 {
     (void) button;
@@ -1079,13 +1195,17 @@ gboolean configlet_open(GdkScreen *scrn)
         configlet_setup_family(cg, &cg->shortcuts, "Shortcuts");
         configlet_setup_family(cg, &cg->encodings, "encodings");
 
-        if (GTK_CHECK_VERSION(3, 10, 0) || gtk_is_newer_than(3, 10))
+        if (gtk_is_newer_than(3, 10))
         {
             gtk_widget_hide(GTK_WIDGET(gtk_builder_get_object(
                     cg->capp.builder, "edit_shortcuts")));
+            gtk_widget_show(GTK_WIDGET(gtk_builder_get_object(
+                    cg->capp.builder, "shortcuts_edit")));
         }
         else
         {
+            gtk_widget_hide(GTK_WIDGET(gtk_builder_get_object(
+                    cg->capp.builder, "shortcuts_edit")));
             capplet_set_boolean_toggle(&cg->capp, "edit_shortcuts", FALSE);
         }
         capplet_set_radio(&cg->capp, "warn_close", 3);
