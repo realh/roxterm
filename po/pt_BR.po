@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: roxterm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-04-27 19:40+0100\n"
+"POT-Creation-Date: 2014-05-03 18:16+0100\n"
 "PO-Revision-Date: 2013-05-26 04:27+0000\n"
 "Last-Translator: salmora8 <shorterfire@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/"
@@ -91,155 +91,130 @@ msgstr "Não foi possível analisar cor '%s' para %s no esquema %s"
 msgid "Invalid palette size %d in colour scheme %s"
 msgstr "Tamanho de paleta inválida %d no esquema de cores %s"
 
-#: ../src/configlet.c:96
+#: ../src/configlet.c:97
 msgid "Profile"
 msgstr "Perfil"
 
-#: ../src/configlet.c:100
+#: ../src/configlet.c:101
 msgid "Colour Scheme"
 msgstr "Esquema de Cores"
 
-#: ../src/configlet.c:104
+#: ../src/configlet.c:105
 msgid "Keyboard Shortcuts Scheme"
 msgstr "Esquema de Atalhos do Teclado"
 
-#: ../src/configlet.c:108
+#: ../src/configlet.c:109
 msgid "Character Encodings"
 msgstr "Codificação de Caracteres"
 
-#: ../src/configlet.c:112
+#: ../src/configlet.c:113
 #, c-format
 msgid "Full name for family '%s' not known"
 msgstr "Nome completo para família '%s'  não é conhecido"
 
-#: ../src/configlet.c:154
+#: ../src/configlet.c:155
 #, c-format
 msgid "Bad options family basename '%s'"
 msgstr "Más opções para familia do nome do arquivo '%s'"
 
-#: ../src/configlet.c:559
+#: ../src/configlet.c:560
 #, c-format
 msgid "'%s' will now refer to a %s provided by the system"
 msgstr "'%s' agora vai se referir para um %s fornecido pelo sistema"
 
-#: ../src/configlet.c:591
-#, c-format
-msgid "Unable to create directory '%s'"
-msgstr "Não foi possível criar diretório '%s'"
-
-#: ../src/configlet.c:610
-#, c-format
-msgid "Unable to copy profile/scheme: %s"
-msgstr "Não foi possível copiar perfil/esquema: %s"
-
-#: ../src/configlet.c:611 ../src/roxterm.c:840 ../src/session.c:503
-#: ../src/shortcuts.c:196
-msgid "unknown reason"
-msgstr "Razão desconhecida"
-
-#: ../src/configlet.c:701
+#: ../src/configlet.c:660
 msgid "Unable to rename profile/scheme"
 msgstr "Não foi possível renomear perfil/esquema"
 
-#: ../src/configlet.c:799
-msgid ""
-"Unable to find a text editor. Please install gedit, gvim, kate or emacs."
-msgstr ""
-
-#: ../src/configlet.c:824
-#, fuzzy, c-format
-msgid "Error trying to edit or monitor Shortcuts file '%s': %s"
-msgstr "Não foi possível ler as teclas de atalhos de arquivo %s: %s"
-
-#: ../src/configlet.c:850
+#: ../src/configlet.c:683
 msgid "Encoding names have no properties"
 msgstr "Nomes de codificação não tem propriedades"
 
-#: ../src/configlet.c:854
+#: ../src/configlet.c:687
 #, c-format
 msgid "Option family name '%s' not recognised for editing"
 msgstr "Nome da família de opção '%s' não é reconhecido para edição"
 
-#: ../src/configlet.c:876
+#: ../src/configlet.c:709
 msgid "No selection to edit"
 msgstr "Nenhuma seleção para editar"
 
-#: ../src/configlet.c:909
+#: ../src/configlet.c:742
 msgid "Can't get iterator for activated item"
 msgstr "Não é possível obter iterator para o item ativado"
 
-#: ../src/configlet.c:935
+#: ../src/configlet.c:768
 msgid "Add Encoding"
 msgstr "Adicionar Codificação"
 
-#: ../src/configlet.c:936 ../src/roxterm-config.ui:2024
+#: ../src/configlet.c:769 ../src/roxterm-config.ui:2024
 msgid "_Add"
 msgstr "_Adicionar"
 
-#: ../src/configlet.c:943
+#: ../src/configlet.c:776
 #, c-format
 msgid "Copy %s"
 msgstr "Copiar %s"
 
-#: ../src/configlet.c:945 ../src/menutree.c:136 ../src/roxterm-config.ui:1085
+#: ../src/configlet.c:778 ../src/menutree.c:136 ../src/roxterm-config.ui:1085
 #: ../src/roxterm-config.ui:1403 ../src/roxterm-config.ui:1666
 msgid "_Copy"
 msgstr "_Copiar"
 
-#: ../src/configlet.c:963 ../src/configlet.c:1121
+#: ../src/configlet.c:796 ../src/configlet.c:954
 msgid "No selection to copy"
 msgstr "Nenhum seleção para copiar"
 
-#: ../src/configlet.c:1003
+#: ../src/configlet.c:836
 #, c-format
 msgid "You may not delete the selected default %s"
 msgstr "Você não pode remover o padrão selecionado %s"
 
-#: ../src/configlet.c:1010
+#: ../src/configlet.c:843
 msgid "No selection to delete"
 msgstr "Nenhuma seleção para remover"
 
-#: ../src/configlet.c:1016
+#: ../src/configlet.c:849
 #, c-format
 msgid "'%s' is a system %s and can not be deleted"
 msgstr "'%s' é um sistema %s e não pode ser removido"
 
-#: ../src/configlet.c:1039
+#: ../src/configlet.c:872
 #, c-format
 msgid "Unable to delete '%s'"
 msgstr "Não foi possível remover '%s'"
 
-#: ../src/configlet.c:1095
+#: ../src/configlet.c:928
 msgid "Edit Encoding"
 msgstr "Editar Codificação"
 
-#: ../src/configlet.c:1102
+#: ../src/configlet.c:935
 #, c-format
 msgid "Rename %s"
 msgstr "Renomear %s"
 
-#: ../src/configlet.c:1109
+#: ../src/configlet.c:942
 msgid "Apply"
 msgstr ""
 
-#: ../src/configlet.c:1200
+#: ../src/configlet.c:1033
 #, c-format
 msgid "Unable to create 'Configlet' from UI definition: %s"
 msgstr "Não foi possível criar 'Configlet' de uma definição UI: %s"
 
-#: ../src/configlet.c:1272
+#: ../src/configlet.c:1105
 msgid "Trying to decrease profile_lock below 0"
 msgstr "Tentando diminuir abaixo de 0 profile_lock"
 
-#: ../src/configlet.c:1290
+#: ../src/configlet.c:1123
 msgid "Trying to decrease colours_lock below 0"
 msgstr "Tentando diminuir abaixo de 0 colours_lock"
 
-#: ../src/configlet.c:1308
+#: ../src/configlet.c:1141
 msgid "Trying to decrease shortcuts_lock below 0"
 msgstr "Tentando diminuir abaixo de 0 shortcuts_lock"
 
-#: ../src/configlet.c:1326
+#: ../src/configlet.c:1159
 msgid "Trying to decrease encodings_lock below 0"
 msgstr "Tentando diminuir abaixo de 0 encodings_lock"
 
@@ -877,6 +852,21 @@ msgstr "Não foi possível salvar arquivo de opções %s"
 #, c-format
 msgid "Error looking up option '%s' in '%s': %s"
 msgstr "Erro olhando opção '%s' em '%s': %s"
+
+#: ../src/optsfile.c:449
+#, c-format
+msgid "Unable to create directory '%s'"
+msgstr "Não foi possível criar diretório '%s'"
+
+#: ../src/optsfile.c:467
+#, c-format
+msgid "Unable to copy profile/scheme: %s"
+msgstr "Não foi possível copiar perfil/esquema: %s"
+
+#: ../src/optsfile.c:468 ../src/roxterm.c:840 ../src/session.c:503
+#: ../src/shortcuts.c:202
+msgid "unknown reason"
+msgstr "Razão desconhecida"
 
 #: ../src/profilegui.c:83
 #, c-format
@@ -1535,15 +1525,25 @@ msgstr "Falha ao conectar gerenciamento de sessão: %s"
 msgid "Unable to load session '%s': %s"
 msgstr "Não foi possível ler sessão '%s': %s"
 
-#: ../src/shortcuts.c:193
+#: ../src/shortcuts.c:199
 #, c-format
 msgid "Unable to read keys from shortcuts file %s: %s"
 msgstr "Não foi possível ler as teclas de atalhos de arquivo %s: %s"
 
-#: ../src/shortcuts.c:238
+#: ../src/shortcuts.c:244
 #, c-format
 msgid "Shortcut '%s' in '%s' has invalid value"
 msgstr "Atalho '%s' em '%s' tem um valor inválido"
+
+#: ../src/shortcuts.c:478
+msgid ""
+"Unable to find a text editor. Please install gedit, gvim, kate or emacs."
+msgstr ""
+
+#: ../src/shortcuts.c:503
+#, fuzzy, c-format
+msgid "Error trying to edit or monitor Shortcuts file '%s': %s"
+msgstr "Não foi possível ler as teclas de atalhos de arquivo %s: %s"
 
 #: ../src/uri.c:118
 msgid "Unable to find a web browser"

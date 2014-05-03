@@ -63,7 +63,7 @@ VteTerminal *roxterm_get_vte_terminal(ROXTermData *roxterm);
 const char *roxterm_get_profile_name(ROXTermData *roxterm);
 
 const char *roxterm_get_colour_scheme_name(ROXTermData *roxterm);
-        
+
 char *roxterm_get_cwd(ROXTermData *roxterm);
 
 /* Returns non-full-screen dimensions */
@@ -72,6 +72,10 @@ void roxterm_get_nonfs_dimensions(ROXTermData *roxterm, int *cols, int *rows);
 double roxterm_get_zoom_factor(ROXTermData *roxterm);
 
 char const * const *roxterm_get_actual_commandv(ROXTermData *roxterm);
+
+void roxterm_stuff_changed_handler(const char *what_happened,
+        const char *family_name, const char *current_name,
+        const char *new_name);
 
 #if ENABLE_SM
 gboolean roxterm_load_session(const char *xml, gssize len,

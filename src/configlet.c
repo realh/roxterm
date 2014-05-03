@@ -28,6 +28,7 @@
 #include "optsdbus.h"
 #include "optsfile.h"
 #include "profilegui.h"
+#include "shortcuts.h"
 
 #include <ctype.h>
 #include <stdarg.h>
@@ -574,48 +575,6 @@ static gboolean remove_name_from_list(ConfigletList *cl, const char *old_name)
     return remove;
 }
 
-static gboolean configlet_copy_to_user_dir(ConfigletData *cg,
-        const char *src_path, const char *family, const char *new_leaf)
-{
-    char *new_path = options_file_filename_for_saving(family, NULL);
-    char *buffer = NULL;
-    gsize size;
-    GError *error = NULL;
-    gboolean success = FALSE;
-
-    if (!g_file_test(new_path, G_FILE_TEST_IS_DIR))
-    {
-        if (g_mkdir_with_parents(new_path, 0755) == -1)
-        {
-            dlg_warning(GTK_WINDOW(cg->widget),
-                    _("Unable to create directory '%s'"), new_path);
-            return FALSE;
-        }
-    }
-    g_free(new_path);
-    new_path = options_file_filename_for_saving(family, new_leaf, NULL);
-    if (g_file_test(src_path, G_FILE_TEST_IS_REGULAR))
-    {
-        if (g_file_get_contents(src_path, &buffer, &size, &error))
-            success = g_file_set_contents(new_path, buffer, size, &error);
-        g_free(buffer);
-    }
-    else
-    {
-        success = g_file_set_contents(new_path, "", -1, &error);
-    }
-    if (!success)
-    {
-        dlg_warning(GTK_WINDOW(cg->widget),
-                _("Unable to copy profile/scheme: %s"),
-                error && error->message ? error->message : _("unknown reason"));
-    }
-    if (error)
-        g_error_free(error);
-    g_free(new_path);
-    return success;
-}
-
 /* This is Add for Encodings */
 static void configlet_copy(ConfigletList *cl,
         const char *old_leaf, const char *new_leaf)
@@ -633,8 +592,8 @@ static void configlet_copy(ConfigletList *cl,
         char *old_path = options_file_build_filename(cl->family, old_leaf,
                 NULL);
 
-        success = configlet_copy_to_user_dir(cl->cg, old_path,
-                cl->family, new_leaf);
+        success = options_file_copy_to_user_dir(GTK_WINDOW(cl->cg->widget),
+                old_path, cl->family, new_leaf);
         g_free(old_path);
     }
     if (success)
@@ -702,132 +661,6 @@ static void configlet_rename(ConfigletList *cl,
     }
 }
 
-static const char *configlet_find_text_editor(void)
-{
-    static char *editor = NULL;
-    static char const *subs[] = {"vi", "emacs", "gedit", "kate", NULL};
-    static char const *editors[] = {"gedit", "kate", "gvim", "emacs", NULL};
-    char *env;
-    int n;
-
-    if (editor)
-        return editor;
-    env = getenv("EDITOR");
-    for (n = 0; subs[n] && !editor; ++n)
-    {
-        if (strstr(env, subs[n]))
-        {
-            editor = g_find_program_in_path(
-                    strcmp(subs[n], "vi") ? subs[n] : "gvim");
-        }
-    }
-    if (!editor)
-    {
-        for (n = 0; editors[n] && !editor; ++n)
-            editor = g_find_program_in_path(editors[n]);
-    }
-    return editor;
-}
-
-static char *configlet_make_profile_editable(ConfigletData *cg,
-        const char *family_name, const char *name)
-{
-    char *path = options_file_filename_for_saving(family_name, name, NULL);
-    if (!g_file_test(path, G_FILE_TEST_EXISTS))
-    {
-        char *src = options_file_build_filename(family_name, name, NULL);
-        if (src)
-        {
-            configlet_copy_to_user_dir(cg, src, family_name, name);
-            g_free(src);
-        }
-    }
-    return path;
-}
-
-typedef struct {
-    GFileMonitor *monitor;
-    GFile *file;
-    char *name;
-} ShortcutsMonitorDetails_;
-
-static gboolean remove_shortcuts_monitor(ShortcutsMonitorDetails_ *md)
-{
-    g_object_unref(md->monitor);
-    /* Trying to unref file gives an error, is it destroyed with monitor? */
-    //g_object_unref(md->file);
-    g_free(md->name);
-    g_free(md);
-    return FALSE;
-}
-
-static void shortcuts_file_modified(GFileMonitor *monitor,
-        GFile *file, GFile *other_file, GFileMonitorEvent event_type,
-        char *name)
-{
-    (void) monitor;
-    (void) other_file;
-
-    /* FIXME: Send dbus signal */
-    g_debug("Shortcuts '%s' were modified, event %x", name, event_type);
-    if (event_type == G_FILE_MONITOR_EVENT_CHANGES_DONE_HINT)
-    {
-        optsdbus_send_stuff_changed_signal(OPTSDBUS_CHANGED,
-                "Shortcuts", name, NULL);
-        g_file_monitor_cancel(monitor);
-        g_signal_handlers_disconnect_by_func(monitor, shortcuts_file_modified,
-                name);
-        ShortcutsMonitorDetails_ *md = g_new(ShortcutsMonitorDetails_, 1);
-        md->monitor = monitor;
-        md->file = file;
-        md->name = name;
-        g_idle_add((GSourceFunc) remove_shortcuts_monitor, md);
-    }
-}
-
-static void edit_shortcuts(ConfigletData *cg, const char *name)
-{
-    char *filename;
-    const char *editor = configlet_find_text_editor();
-    char const *cmdv[3];
-    GError *error = NULL;
-    GPid pid;
-
-    if (!editor)
-    {
-        dlg_critical(GTK_WINDOW(cg->widget),
-                _("Unable to find a text editor. Please install "
-                "gedit, gvim, kate or emacs."));
-        return;
-    }
-    filename = configlet_make_profile_editable(cg, "Shortcuts", name);
-    if (!filename)
-        return;
-    cmdv[0] = editor;
-    cmdv[1] = filename;
-    cmdv[2] = NULL;
-    if (g_spawn_async(NULL, (char **) cmdv, NULL, G_SPAWN_DEFAULT, NULL, NULL,
-            &pid, &error))
-    {
-        GFile *f = g_file_new_for_path(filename);
-        GFileMonitor *monitor = g_file_monitor_file(f, G_FILE_MONITOR_NONE,
-                NULL, &error);
-        if (monitor)
-        {
-            g_signal_connect(monitor, "changed",
-                    G_CALLBACK(shortcuts_file_modified), g_strdup(name));
-        }
-    }
-    if (error)
-    {
-        dlg_critical(GTK_WINDOW(cg->widget),
-                _("Error trying to edit or monitor Shortcuts file '%s': %s"),
-                        filename, error->message);
-        g_error_free(error);
-    }
-    g_free(filename);
-}
-
 static void edit_thing_by_name(ConfigletList *cl, const char *name)
 {
     GdkScreen *scrn = gtk_widget_get_screen(cl->cg->widget);
@@ -842,7 +675,7 @@ static void edit_thing_by_name(ConfigletList *cl, const char *name)
     }
     else if (!strcmp(cl->family, "Shortcuts"))
     {
-        edit_shortcuts(cl->cg, name);
+        shortcuts_edit(GTK_WINDOW(cl->cg->widget), name);
     }
     else if (cl->encodings)
     {

@@ -313,7 +313,7 @@ char *options_file_filename_for_saving(const char *leafname, ...)
 	va_list ap;
 	char *result;
 	char *partial;
-	
+
 	if (!xdg_dir)
 	{
 		xdg_dir = g_build_filename(g_get_user_config_dir(),
@@ -431,6 +431,62 @@ int options_file_lookup_int_with_default(
 		report_lookup_err(err, key, group_name);
 	}
 	return result;
+}
+
+gboolean options_file_copy_to_user_dir(GtkWindow *window,
+        const char *src_path, const char *family, const char *new_leaf)
+{
+    char *new_path = options_file_filename_for_saving(family, NULL);
+    char *buffer = NULL;
+    gsize size;
+    GError *error = NULL;
+    gboolean success = FALSE;
+
+    if (!g_file_test(new_path, G_FILE_TEST_IS_DIR))
+    {
+        if (g_mkdir_with_parents(new_path, 0755) == -1)
+        {
+            dlg_warning(window, _("Unable to create directory '%s'"), new_path);
+            return FALSE;
+        }
+    }
+    g_free(new_path);
+    new_path = options_file_filename_for_saving(family, new_leaf, NULL);
+    if (g_file_test(src_path, G_FILE_TEST_IS_REGULAR))
+    {
+        if (g_file_get_contents(src_path, &buffer, &size, &error))
+            success = g_file_set_contents(new_path, buffer, size, &error);
+        g_free(buffer);
+    }
+    else
+    {
+        success = g_file_set_contents(new_path, "", -1, &error);
+    }
+    if (!success)
+    {
+        dlg_warning(window, _("Unable to copy profile/scheme: %s"),
+                error && error->message ? error->message : _("unknown reason"));
+    }
+    if (error)
+        g_error_free(error);
+    g_free(new_path);
+    return success;
+}
+
+char *options_file_make_editable(GtkWindow *window,
+        const char *family_name, const char *name)
+{
+    char *path = options_file_filename_for_saving(family_name, name, NULL);
+    if (!g_file_test(path, G_FILE_TEST_EXISTS))
+    {
+        char *src = options_file_build_filename(family_name, name, NULL);
+        if (src)
+        {
+            options_file_copy_to_user_dir(window, src, family_name, name);
+            g_free(src);
+        }
+    }
+    return path;
 }
 
 /* vi:set sw=4 ts=4 noet cindent cino= */

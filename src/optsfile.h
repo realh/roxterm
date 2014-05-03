@@ -61,6 +61,12 @@ int options_file_lookup_int_with_default(
 		GKeyFile *kf, const char *group_name,
 		const char *key, int default_value);
 
+gboolean options_file_copy_to_user_dir(GtkWindow *window,
+        const char *src_path, const char *family, const char *new_leaf);
+
+char *options_file_make_editable(GtkWindow *window,
+        const char *family_name, const char *name);
+
 #endif /* OPTSFILE_H */
 
 /* vi:set sw=4 ts=4 noet cindent cino= */

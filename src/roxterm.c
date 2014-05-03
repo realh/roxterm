@@ -4018,7 +4018,7 @@ static void stuff_changed_do_menu(MenuTree *mtree,
     }
 }
 
-static void roxterm_stuff_changed_handler(const char *what_happened,
+void roxterm_stuff_changed_handler(const char *what_happened,
         const char *family_name, const char *current_name,
         const char *new_name)
 {

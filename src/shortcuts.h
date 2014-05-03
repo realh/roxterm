@@ -19,7 +19,9 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+#include "defns.h"
 
+#ifndef ROXTERM_CAPPLET
 #include "options.h"
 
 /* Call once to connect signal to save shortcuts when changed by user; or you
@@ -48,6 +50,11 @@ gboolean shortcuts_key_is_shortcut(Options *shortcuts,
         guint key, GdkModifierType modifiers);
 
 const char *shortcuts_get_index_str(Options *shortcuts);
+
+#endif /* ROXTERM_CAPPLET */
+
+/* window = parent window for dialogs in case of error etc */
+void shortcuts_edit(GtkWindow *window, const char *name);
 
 #endif /* SHORTCUTS_H */
 

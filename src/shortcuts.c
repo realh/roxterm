@@ -21,12 +21,18 @@
 #include "defns.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "dlg.h"
 #include "dynopts.h"
+#include "optsdbus.h"
 #include "optsfile.h"
 #include "shortcuts.h"
+
+#ifndef ROXTERM_CAPPLET
+
+#include "roxterm.h"
 
 #define SHORTCUTS_GROUP "roxterm shortcuts scheme"
 
@@ -382,6 +388,123 @@ const char *shortcuts_get_index_str(Options *shortcuts)
     ShortcutsData *data = options_get_data(shortcuts);
 
     return data ? data->index_str : NULL;
+}
+
+#endif /* ROXTERM_CAPPLET */
+
+static const char *shortcuts_find_text_editor(void)
+{
+    static char *editor = NULL;
+    static char const *subs[] = {"vi", "emacs", "gedit", "kate", NULL};
+    static char const *editors[] = {"gedit", "kate", "gvim", "emacs", NULL};
+    char *env;
+    int n;
+
+    if (editor)
+        return editor;
+    env = getenv("EDITOR");
+    for (n = 0; subs[n] && !editor; ++n)
+    {
+        if (strstr(env, subs[n]))
+        {
+            editor = g_find_program_in_path(
+                    strcmp(subs[n], "vi") ? subs[n] : "gvim");
+        }
+    }
+    if (!editor)
+    {
+        for (n = 0; editors[n] && !editor; ++n)
+            editor = g_find_program_in_path(editors[n]);
+    }
+    return editor;
+}
+
+typedef struct {
+    GFileMonitor *monitor;
+    GFile *file;
+    char *name;
+} ShortcutsMonitorDetails_;
+
+static gboolean remove_shortcuts_monitor(ShortcutsMonitorDetails_ *md)
+{
+    g_object_unref(md->monitor);
+    /* Trying to unref file gives an error, is it destroyed with monitor? */
+    //g_object_unref(md->file);
+    g_free(md->name);
+    g_free(md);
+    return FALSE;
+}
+
+static void shortcuts_file_modified(GFileMonitor *monitor,
+        GFile *file, GFile *other_file, GFileMonitorEvent event_type,
+        char *name)
+{
+    (void) monitor;
+    (void) other_file;
+
+    /* FIXME: Send dbus signal */
+    g_debug("Shortcuts '%s' were modified, event %x", name, event_type);
+    if (event_type == G_FILE_MONITOR_EVENT_CHANGES_DONE_HINT)
+    {
+#ifdef ROXTERM_CAPPLET
+        optsdbus_send_stuff_changed_signal(OPTSDBUS_CHANGED,
+                "Shortcuts", name, NULL);
+#else
+        roxterm_stuff_changed_handler(OPTSDBUS_CHANGED,
+                "Shortcuts", name, NULL);
+#endif
+        g_file_monitor_cancel(monitor);
+        g_signal_handlers_disconnect_by_func(monitor, shortcuts_file_modified,
+                name);
+        ShortcutsMonitorDetails_ *md = g_new(ShortcutsMonitorDetails_, 1);
+        md->monitor = monitor;
+        md->file = file;
+        md->name = name;
+        g_idle_add((GSourceFunc) remove_shortcuts_monitor, md);
+    }
+}
+
+void shortcuts_edit(GtkWindow *window, const char *name)
+{
+    char *filename;
+    const char *editor = shortcuts_find_text_editor();
+    char const *cmdv[3];
+    GError *error = NULL;
+    GPid pid;
+
+    if (!editor)
+    {
+        dlg_critical(window,
+                _("Unable to find a text editor. Please install "
+                "gedit, gvim, kate or emacs."));
+        return;
+    }
+    filename = options_file_make_editable(window, "Shortcuts", name);
+    if (!filename)
+        return;
+    cmdv[0] = editor;
+    cmdv[1] = filename;
+    cmdv[2] = NULL;
+    if (g_spawn_async(NULL, (char **) cmdv, NULL, G_SPAWN_DEFAULT, NULL, NULL,
+            &pid, &error))
+    {
+        GFile *f = g_file_new_for_path(filename);
+        GFileMonitor *monitor = g_file_monitor_file(f, G_FILE_MONITOR_NONE,
+                NULL, &error);
+        if (monitor)
+        {
+            g_signal_connect(monitor, "changed",
+                    G_CALLBACK(shortcuts_file_modified), g_strdup(name));
+        }
+    }
+    if (error)
+    {
+        dlg_critical(window,
+                _("Error trying to edit or monitor Shortcuts file '%s': %s"),
+                        filename, error->message);
+        g_error_free(error);
+    }
+    g_free(filename);
 }
 
 /* vi:set sw=4 ts=4 noet cindent cino= */

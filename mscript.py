@@ -12,7 +12,7 @@ MINILIB_SOURCES = "colourscheme.c dlg.c display.c dragrcv.c dynopts.c " \
         "encodings.c globalopts.c logo.c options.c optsfile.c rtdbus.c"
 
 ROXTERM_CONFIG_SOURCES = "capplet.c colourgui.c configlet.c getname.c " \
-        "optsdbus.c profilegui.c"
+        "optsdbus.c profilegui.c shortcuts.c"
 
 ROXTERM_SOURCES = "about.c main.c multitab.c multitab-close-button.c " \
         "multitab-label.c menutree.c optsdbus.c roxterm.c shortcuts.c " \
