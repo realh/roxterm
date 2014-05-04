@@ -148,6 +148,22 @@ static void menutree_build_shell(MenuTree *menu_tree, GtkMenuShell * shell, ...)
 #define ENC_INPUT_ITEMS \
         _("C_haracter Encoding"), MENUTREE_PREFERENCES_CHARACTER_ENCODING
 
+#define PREFS_ITEMS1 \
+        _("Select _Profile"), MENUTREE_PREFERENCES_SELECT_PROFILE, \
+        _("Select _Colour Scheme"), MENUTREE_PREFERENCES_SELECT_COLOUR_SCHEME, \
+        _("Select _Shortcuts Scheme"), MENUTREE_PREFERENCES_SELECT_SHORTCUTS, \
+        "_", MENUTREE_NULL_ID, \
+        _("_Edit Current Profile"), MENUTREE_PREFERENCES_EDIT_CURRENT_PROFILE, \
+        _("E_dit Current Colour Scheme"), \
+            MENUTREE_PREFERENCES_EDIT_CURRENT_COLOUR_SCHEME
+
+#define PREFS_ITEMS2 \
+        "_", MENUTREE_NULL_ID, \
+        _("Configuration _Manager"), MENUTREE_PREFERENCES_CONFIG_MANAGER, \
+        "_", MENUTREE_NULL_ID, \
+        ENC_INPUT_ITEMS, \
+        NULL
+
 GtkMenu *menutree_submenu_from_id(MenuTree *mtree, MenuTreeID id)
 {
     GtkWidget *item = menutree_get_widget_for_id(mtree, id);
@@ -570,19 +586,20 @@ static void menutree_build(MenuTree *menu_tree, Options *shortcuts,
 #endif
 
     submenu = gtk_menu_new();
-    menutree_build_shell(menu_tree, GTK_MENU_SHELL(submenu),
-        _("Select _Profile"), MENUTREE_PREFERENCES_SELECT_PROFILE,
-        _("Select _Colour Scheme"), MENUTREE_PREFERENCES_SELECT_COLOUR_SCHEME,
-        _("Select _Shortcuts Scheme"), MENUTREE_PREFERENCES_SELECT_SHORTCUTS,
-        "_", MENUTREE_NULL_ID,
-        _("_Edit Current Profile"), MENUTREE_PREFERENCES_EDIT_CURRENT_PROFILE,
-        _("E_dit Current Colour Scheme"),
-            MENUTREE_PREFERENCES_EDIT_CURRENT_COLOUR_SCHEME,
-        "_", MENUTREE_NULL_ID,
-        _("Configuration _Manager"), MENUTREE_PREFERENCES_CONFIG_MANAGER,
-        "_", MENUTREE_NULL_ID,
-        ENC_INPUT_ITEMS,
-        NULL);
+    if (gtk_is_newer_than(3, 10))
+    {
+        menutree_build_shell(menu_tree, GTK_MENU_SHELL(submenu),
+            PREFS_ITEMS1,
+            _("Edi_t Current Shortcuts Scheme"),
+                MENUTREE_PREFERENCES_EDIT_CURRENT_SHORTCUTS_SCHEME,
+            PREFS_ITEMS2);
+    }
+    else
+    {
+        menutree_build_shell(menu_tree, GTK_MENU_SHELL(submenu),
+            PREFS_ITEMS1,
+            PREFS_ITEMS2);
+    }
     gtk_menu_item_set_submenu(GTK_MENU_ITEM(menu_tree->item_widgets
             [MENUTREE_PREFERENCES]), submenu);
 
@@ -655,6 +672,12 @@ static MenuTree *menutree_new_common(Options *shortcuts,
         gboolean disable_tab_shortcuts, gpointer user_data)
 {
     MenuTree *tree = g_new0(MenuTree, 1);
+    int n;
+
+    for (n = 0; n < MENUTREE_NUM_IDS; ++n)
+    {
+        tree->item_widgets[n] = NULL;
+    }
 
     tree->user_data = user_data;
     tree->accel_group = accel_group;

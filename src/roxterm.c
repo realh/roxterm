@@ -2151,6 +2151,12 @@ static void roxterm_edit_colour_scheme_action(MultiWin * win)
             roxterm->display_name);
 }
 
+static void roxterm_edit_shortcuts_scheme_action(MultiWin * win)
+{
+    shortcuts_edit(GTK_WINDOW(multi_win_get_widget(win)),
+            multi_win_get_shortcuts_scheme_name(win));
+}
+
 
 #ifdef HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX
 static void roxterm_open_search_action(MultiWin *win)
@@ -2862,6 +2868,13 @@ static void roxterm_connect_menu_signals(MultiWin * win)
     multi_win_menu_connect_swapped(win,
             MENUTREE_PREFERENCES_EDIT_CURRENT_COLOUR_SCHEME,
         G_CALLBACK(roxterm_edit_colour_scheme_action), win, NULL, NULL, NULL);
+    if (gtk_is_newer_than(3, 10))
+    {
+        multi_win_menu_connect_swapped(win,
+                MENUTREE_PREFERENCES_EDIT_CURRENT_SHORTCUTS_SCHEME,
+            G_CALLBACK(roxterm_edit_shortcuts_scheme_action),
+            win, NULL, NULL, NULL);
+    }
 
     multi_win_menu_connect_swapped(win, MENUTREE_HELP_ABOUT,
         G_CALLBACK(roxterm_show_about), win, NULL, NULL, NULL);
