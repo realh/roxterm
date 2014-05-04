@@ -12,7 +12,7 @@
     <signal name="destroy" handler="on_Colour_Editor_destroy" swapped="no"/>
     <signal name="response" handler="on_Colour_Editor_response" swapped="no"/>
     <child internal-child="vbox">
-      <object class="GtkVBox" id="dialog-vbox5">
+      <object class="GtkBox" id="dialog-vbox5">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
@@ -864,7 +864,7 @@
     <signal name="destroy" handler="on_Configlet_destroy" swapped="no"/>
     <signal name="response" handler="on_Configlet_response" swapped="no"/>
     <child internal-child="vbox">
-      <object class="GtkVBox" id="dialog-vbox3">
+      <object class="GtkBox" id="dialog-vbox3">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
@@ -1546,6 +1546,7 @@
                                 <property name="tooltip_markup">Select a row to choose which keyboard shortcuts scheme the buttons below apply to. Select a radio button to set the shortcuts scheme used when roxterm is run without a --shortcut-scheme option.</property>
                                 <property name="tooltip_text" translatable="yes">Select a row to choose which keyboard shortcuts scheme the buttons below apply to. Select a radio button to set the shortcuts scheme used when roxterm is run without a --shortcut-scheme option.</property>
                                 <property name="headers_visible">False</property>
+                                <signal name="row-activated" handler="on_row_activated" swapped="no"/>
                                 <child internal-child="selection">
                                   <object class="GtkTreeSelection" id="treeview-selection3"/>
                                 </child>
@@ -2156,6 +2157,9 @@
                             <child>
                               <placeholder/>
                             </child>
+                            <child>
+                              <placeholder/>
+                            </child>
                           </object>
                           <packing>
                             <property name="expand">True</property>
@@ -2438,7 +2442,7 @@
     <signal name="destroy" handler="on_Profile_Editor_destroy" swapped="no"/>
     <signal name="response" handler="on_Profile_Editor_response" swapped="no"/>
     <child internal-child="vbox">
-      <object class="GtkVBox" id="dialog-vbox2">
+      <object class="GtkBox" id="dialog-vbox2">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
@@ -5753,7 +5757,7 @@
     <property name="type_hint">dialog</property>
     <property name="transient_for">Profile_Editor</property>
     <child internal-child="vbox">
-      <object class="GtkVBox" id="dialog-vbox4">
+      <object class="GtkBox" id="dialog-vbox4">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
