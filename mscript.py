@@ -397,6 +397,8 @@ elif ctx.mode == 'build':
         fp = open(sources[0], 'r')
         s = fp.read()
         fp.close()
+        s = re.sub(r'requires lib="gtk\+" version=".*"',
+                r'requires lib="gtk+" version="2.18"', s)
         s = re.sub(r'class="GtkBox" id=(.*)hbox',
                 r'class="GtkHBox" id=\1hbox', s)
         s = re.sub(r'class="GtkBox" id=(.*)vbox',
