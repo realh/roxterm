@@ -41,7 +41,7 @@ inline static void box_compat_packh(GtkWidget *box, GtkWidget *child,
         gboolean expand, int spacing)
 {
 #if GTK_CHECK_VERSION(3, 0, 0)
-    box_compat_pack(box, child, expand, FALSE, spacing / 2, 0);
+    box_compat_pack(box, child, expand, TRUE, spacing / 2, 0);
 #else
     gtk_box_pack_start(GTK_BOX(box), child, expand, expand, spacing);
 #endif
@@ -51,7 +51,7 @@ inline static void box_compat_packv(GtkWidget *box, GtkWidget *child,
         gboolean expand, int spacing)
 {
 #if GTK_CHECK_VERSION(3, 0, 0)
-    box_compat_pack(box, child, FALSE, expand, 0, spacing / 2);
+    box_compat_pack(box, child, TRUE, expand, 0, spacing / 2);
 #else
     gtk_box_pack_start(GTK_BOX(box), child, expand, expand, spacing);
 #endif
