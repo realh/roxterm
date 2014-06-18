@@ -4396,7 +4396,7 @@ void roxterm_launch(const char *display_name, char **env)
     {
         ROXTermData *partner;
         char *wtitle = global_options_lookup_string("title");
-        MultiWin *focused = NULL;
+        MultiWin *next_best = NULL;
         GList *link;
 
         win = NULL;
@@ -4404,24 +4404,31 @@ void roxterm_launch(const char *display_name, char **env)
         {
             GtkWidget *w;
             guint32 workspace;
+            gboolean title_ok;
 
             win = link->data;
-            if (wtitle && !g_strcmp0(multi_win_get_title_template(win), wtitle))
-                break;
             w = multi_win_get_widget(win);
-            if (gtk_window_is_active(GTK_WINDOW(w)))
+            title_ok = !wtitle ||
+                    !g_strcmp0(multi_win_get_title_template(win), wtitle);
+            if (gtk_window_is_active(GTK_WINDOW(w)) && title_ok)
             {
-                focused = win;
-                if (!wtitle)
-                    break;
+                break;
             }
-            if (!focused)
+            if (title_ok)
             {
                 if (x11support_get_wm_desktop(gtk_widget_get_window(w),
                     &workspace))
                 {
                     if ((int) workspace == global_options_workspace)
-                        focused = win;
+                    {
+                        next_best = win;
+                    }
+                    else if (wtitle)
+                    {
+                        /* Titles match but window is on wrong workspace */
+                        if (!next_best)
+                            next_best = win;
+                    }
                 }
                 else
                 {
@@ -4432,15 +4439,16 @@ void roxterm_launch(const char *display_name, char **env)
                      * and
        * https://sourceforge.net/p/roxterm/discussion/422638/thread/2cc9a9aa/
                      */
-                    focused = win;
+                    if (!next_best)
+                        next_best = win;
                 }
             }
             win = NULL;
         }
         if (!win)
         {
-            if (focused)
-                win = focused;
+            if (next_best)
+                win = next_best;
         }
         partner = win ? multi_win_get_user_data_for_current_tab(win) : NULL;
         if (partner)
