@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2014 Tony Houghton <h@realh.co.uk> -->
+<application>
+ <id type="desktop">roxterm.desktop</id>
+ <metadata_license>GPL-2.0+</metadata_license>
+ <project_license>GPL-2.0+ and LGPL-3.0+</project_license>
+ <name>ROXTerm</name>
+ <summary>Terminal emulator</summary>
+ <description>
+  <p>
+  ROXTerm is a terminal emulator intended to provide similar features to
+  gnome-terminal, based on the same VTE library. It is more configurable than
+  gnome-terminal and aimed more at "power" users who make heavy use of
+  terminals.
+  </p>
+  <p>
+  As well as GTK3 ROXTerm can still be built against GTK2 for compatibility
+  reasons. However, continuing support for GTK2 is not likely to be practical in
+  the long term, so the GTK3 version is recommended.
+  </p>
+ </description>
+ <screenshots>
+  <screenshot type="default" width="672" height="362">
+  http://roxterm.sourceforge.net/lib/screenshot1.png</screenshot>
+  <screenshot type="default" width="784" height="441">
+  http://roxterm.sourceforge.net/lib/screenshot2.png</screenshot>
+ </screenshots>
+ <url type="homepage">http://roxterm.sourceforge.net</url>
+ <updatecontact>h@realh.co.uk</updatecontact>
+ <project_group>GNOME</project_group>
+</application>
