@@ -2257,7 +2257,7 @@ def parse_linguas(ctx, podir = None, linguas = None):
 
 
 
-def foreach_lingua(ctx, fn, podir = None, linguas = None):
+def foreach_lingua(ctx, fn, podir = None, linguas = None, prefix = None):
     """ Runs fn(ctx, lang, f) for each lang found in linguas,
         where f is .po file.
         Default podir is '${TOP_DIR}/po'
@@ -2269,6 +2269,8 @@ def foreach_lingua(ctx, fn, podir = None, linguas = None):
         linguas = opj(podir, "LINGUAS")
     langs = parse_linguas(ctx, linguas = linguas)
     for l in langs:
+        if prefix:
+            l = prefix + l
         f = opj(podir, l + ".po")
         if not os.path.isfile(ctx.subst(f)):
             raise MaitchNotFoundError("Linguas file %s includes %s, "
@@ -2278,9 +2280,15 @@ def foreach_lingua(ctx, fn, podir = None, linguas = None):
 
 def PoRulesFromLinguas(ctx, *args, **kwargs):
     """ Generates a PoRule for each language listed in linguas. Default linguas
-    is podir/LINGUAS. Default podir is ${TOP_DIR}/po. Other args are passed to
-    each PoRule. Also generates .mo rules unless nomo is True. """
+    is podir/LINGUAS. Default podir is ${TOP_DIR}/po. Default pot file is
+    po/${PACKAGE}.pot, otherwise specify in sources. Other args are passed to
+    each PoRule. Also generates .mo rules unless nomo is True. If prefix arg is
+    given this is added to po and mo filenames. """
     nomo = kwargs.get("nomo")
+    prefix = kwargs.get("prefix")
+    podir = kwargs.get("podir")
+    if not podir:
+        podir = opj("${TOP_DIR}", "po")
     rules = []
 
     def add_po_rule(ctx, l, f):
@@ -2288,11 +2296,11 @@ def PoRulesFromLinguas(ctx, *args, **kwargs):
         rules.append(PoRule(*args, **kwargs))
         if not nomo:
             rules.append(Rule(rule = "${MSGFMT} -c -o ${TGT} ${SRC}",
-                    targets = opj("po", l + ".mo"),
+                    targets = opj(podir, l + ".mo"),
                     sources = f))
 
     foreach_lingua(ctx, add_po_rule,
-            kwargs.get('podir'), kwargs.get('linguas'))
+            kwargs.get('podir'), kwargs.get('linguas'), kwargs.get('prefix'))
     return rules
 
 

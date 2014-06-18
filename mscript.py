@@ -38,13 +38,10 @@ if ctx.mode == 'configure' or ctx.mode == 'help':
     ctx.arg_disable('sm', "Don't enable session management")
     ctx.arg_disable('gtk3', "Use GTK+2 instead of GTK+3 and compatible "
             "version of VTE", default = None)
-    ctx.arg_disable('gettext', "Disable translation of program strings with " \
-            "gettext", default = None)
-    ctx.arg_disable('po4a', "Disable translation of documentation with po4a",
+    ctx.arg_disable('nls', "Disable all translations",
             default = None)
-    ctx.arg_disable('translations', "Disable all translations", default = None)
-    ctx.arg_disable('nls', "Disable all translations (same as --disable-nls)",
-            default = None)
+    ctx.arg_disable('translations',
+            "Disable all translations (same as --disable-nls)", default = None)
     ctx.arg_disable('git', "Assume this is a release tarball: "
             "don't attempt to generate changelogs, pixmaps etc")
     ctx.arg_enable("rox-locales",
@@ -126,34 +123,32 @@ if ctx.mode == 'configure':
 
     ctx.setenv('BUG_TRACKER', "http://sourceforge.net/tracker/?group_id=124080")
 
-    gt = ctx.env['ENABLE_GETTEXT']
-    po4a = ctx.env['ENABLE_PO4A']
     trans = ctx.env['ENABLE_TRANSLATIONS'] and ctx.env['ENABLE_NLS']
-    if trans != False and gt != False:
+    if trans != False:
         try:
             ctx.find_prog_env("xgettext")
             ctx.find_prog_env("msgcat")
             ctx.find_prog_env("msgmerge")
             ctx.find_prog_env("msgfmt")
         except MaitchNotFoundError:
-            if trans == True or gt == True:
+            if trans == True:
                 raise
             else:
-                mprint("WARNING: gettext tools not found, not building " \
-                        "programs' translations", file = sys.stderr)
+                mprint("WARNING: Translation tools not found, not building " \
+                        " programs' translations", file = sys.stderr)
                 ctx.setenv('HAVE_GETTEXT', False)
         else:
             ctx.setenv('HAVE_GETTEXT', True)
     else:
         ctx.setenv('HAVE_GETTEXT', False)
 
-    if trans != False and po4a != False:
+    if trans != False:
         try:
             ctx.find_prog_env("po4a-gettextize")
             ctx.find_prog_env("po4a-updatepo")
             ctx.find_prog_env("po4a-translate")
         except MaitchNotFoundError:
-            if trans == True or po4a == True:
+            if trans == True:
                 raise
             else:
                     mprint("WARNING: po4a tools not found, not building " \
@@ -169,6 +164,23 @@ if ctx.mode == 'configure':
             ctx.setenv('PO4ADIR', "${TOP_DIR}/po4a")
     else:
         ctx.setenv('HAVE_PO4A', False)
+
+    if trans != False and ctx.env['HAVE_GETTEXT']:
+        try:
+            ctx.find_prog_env("itstool")
+        except MaitchNotFoundError:
+            if trans == True:
+                raise
+            else:
+                    mprint("WARNING: itstool not found, not building " \
+                            "AppData file's translations", file = sys.stderr)
+                    ctx.setenv('HAVE_ITSTOOL', False)
+        else:
+            ctx.setenv('HAVE_ITSTOOL', True)
+            ctx.setenv('POXML_DIR', "${TOP_DIR}/poxml")
+            ctx.setenv('APPDATA_ITS', "${POXML_DIR}/appdata.its")
+    else:
+        ctx.setenv('HAVE_ITSTOOL', False)
 
     gda = ctx.env.get("WITH_GNOME_DEFAULT_APPLICATIONS")
     if gda == None or gda == True:
@@ -455,9 +467,9 @@ elif ctx.mode == 'build':
 
 
     # Translations (po4a)
-    linguas = parse_linguas(ctx)
-    charset_rule = "${SED} -i s/charset=CHARSET/charset=UTF-8/ ${TGT}"
     if ctx.env['HAVE_PO4A']:
+        linguas = parse_linguas(ctx, podir = "${PO4ADIR}")
+        charset_rule = "${SED} -i s/charset=CHARSET/charset=UTF-8/ ${TGT}"
         ctx.ensure_out_dir("po4a")
         if ctx.env['XMLTOMAN']:
             # Workaround for deadlock (?)
@@ -545,11 +557,51 @@ elif ctx.mode == 'build':
                         use_shell = True))
 
 
+    # Translations (itstool)
+    if ctx.env['HAVE_ITSTOOL']:
+        podir = "${POXML_DIR}"
+        linguas = parse_linguas(ctx, podir = podir)
+        xmlout = "${POXML_DIR}/roxterm.appdata.xml"
+        xmlin = xmlout + ".in"
+        potfile = "${POXML_DIR}/roxterm.appdata.xml.pot"
+        ctx.add_rule(Rule( \
+                rule = ["${ITSTOOL} -i ${APPDATA_ITS} -o ${TGT} ${SRC}",
+                    "${SED} -i 's/Project-Id-Version: PACKAGE VERSION/" \
+                        "Project-Id-Version: roxterm ${VERSION}/' " \
+                        "${TGT}"],
+                sources = xmlin,
+                targets = potfile,
+                deps = "${APPDATA_ITS}",
+                where = NOWHERE,
+                use_shell = True))
+        if linguas:
+            for r in PoRulesFromLinguas(ctx, podir = podir,
+                    sources = potfile):
+                ctx.add_rule(r)
+            sources = []
+            for l in parse_linguas(ctx, podir = podir):
+                sources.append(opj("${POXML_DIR}", l + ".mo"))
+            ctx.add_rule(Rule( \
+                    rule = "${ITSTOOL} -i ${APPDATA_ITS} -j " + xmlin +
+                            " -o ${TGT} ${SRC}",
+                    sources = sources,
+                    targets = xmlout,
+                    where = NOWHERE))
+    else:
+        linguas = None
+    if not linguas:
+        ctx.add_rule(Rule(rule = "cp ${SRC} ${TGT}",
+                sources = "${POXML_DIR}/roxterm.appdata.xml.in",
+                targets = "${POXML_DIR}/roxterm.appdata.xml",
+                where = NOWHERE))
+
+
 elif ctx.mode == "install" or ctx.mode == "uninstall":
 
     ctx.install_bin("roxterm roxterm-config")
     ctx.install_data("roxterm-config.ui")
     ctx.install_data("roxterm.desktop", "${DATADIR}/applications")
+    ctx.install_data("poxml/roxterm.appdata.xml", "${DATADIR}/appdata")
     if ctx.env['XMLTOMAN']:
         ctx.install_man("roxterm.1 roxterm-config.1")
     ctx.install_doc("AUTHORS ChangeLog README")
@@ -606,11 +658,14 @@ elif ctx.mode == 'pristine' or ctx.mode == 'clean':
                 "favicon.ico logo_text.png roxterm_logo.png".split()] + \
             ctx.glob("*.pot", "${TOP_DIR}", "po") + \
             ctx.glob("*.pot", "${TOP_DIR}", "po4a") + \
+            ctx.glob("*.pot", "${TOP_DIR}", "poxml") + \
             ctx.glob("*.po~", "${TOP_DIR}", "po") + \
-            ctx.glob("*.po~", "${TOP_DIR}", "po4a")
+            ctx.glob("*.po~", "${TOP_DIR}", "po4a") + \
+            ctx.glob("*.po~", "${TOP_DIR}", "poxml")
         for d in \
                 [ctx.subst("${TOP_DIR}/Help/" + d) for d in "es fr gl".split()]:
             recursively_remove(d, False, [])
+    clean += ctx.glob("*.mo", "${TOP_DIR}", "poxml")
     for f in clean:
         ctx.delete(f)
 
