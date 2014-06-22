@@ -608,7 +608,10 @@ elif ctx.mode == "install" or ctx.mode == "uninstall":
     ctx.install_doc(ctx.glob("*.html",
             subdir = ctx.subst("${TOP_DIR}/Help/en")),
             "${HTMLDIR}/en")
-    ctx.install_doc(ctx.glob("*",
+    ctx.install_doc(ctx.glob("*.png",
+            subdir = ctx.subst("${TOP_DIR}/Help/lib")),
+            "${HTMLDIR}/lib")
+    ctx.install_doc(ctx.glob("*.css",
             subdir = ctx.subst("${TOP_DIR}/Help/lib")),
             "${HTMLDIR}/lib")
     ctx.install_data("roxterm.svg", "${DATADIR}/icons/hicolor/scalable/apps")
