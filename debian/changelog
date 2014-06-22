@@ -1,4 +1,4 @@
-roxterm (2.9.0-16) unstable; urgency=low
+roxterm (2.9.0-17) unstable; urgency=low
 
   * Corrected profile editor page selection when background options
     are disabled (doesn't affect Debian).
@@ -8,9 +8,9 @@ roxterm (2.9.0-16) unstable; urgency=low
   * debian/copyright: Updated year.
   * Override --tab to false if no match for --title.
   * Support XDG AppData spec.
-    + debian/control: Added Build-Depends on itstool
+  * debian/control: Added Build-Depends on imagemagick, itstool.
 
- -- Tony Houghton <tony@tiber>  Wed, 18 Jun 2014 19:55:30 +0100
+ -- Tony Houghton <h@realh.co.uk>  Sun, 22 Jun 2014 13:36:39 +0100
 
 roxterm (2.8.2-1) unstable; urgency=medium
 
