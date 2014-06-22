@@ -460,7 +460,14 @@ gboolean options_file_copy_to_user_dir(GtkWindow *window,
     }
     else
     {
-        success = g_file_set_contents(new_path, "", -1, &error);
+        const char *content = "";
+        if (!strcmp(family, "Profiles"))
+            content = "[roxterm profile]";
+        else if (!strcmp(family, "Colours"))
+            content = "[roxterm colour scheme]";
+        else if (!strcmp(family, "Shortcuts"))
+            content = "[roxterm shortcuts scheme]";
+        success = g_file_set_contents(new_path, content, -1, &error);
     }
     if (!success)
     {
