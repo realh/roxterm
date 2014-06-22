@@ -236,7 +236,7 @@ GKeyFile *options_file_open(const char *leafname, const char *group_name)
 	}
 
 	first_group = g_key_file_get_start_group(kf);
-	if (strcmp(first_group, group_name))
+	if (!first_group || strcmp(first_group, group_name))
 	{
 		dlg_critical(NULL, _("Options file %s does not start with group '%s'"),
 				filename, group_name);
