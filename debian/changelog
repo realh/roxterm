@@ -1,4 +1,4 @@
-roxterm (2.9.0-20) unstable; urgency=low
+roxterm (2.9.0-26) unstable; urgency=low
 
   * Corrected profile editor page selection when background options
     are disabled (doesn't affect Debian).
@@ -11,8 +11,9 @@ roxterm (2.9.0-20) unstable; urgency=low
   * debian/control: Added Build-Depends on imagemagick, itstool.
   * Exclude logo source xcf (gimp) file from installation.
   * Don't crash trying to use a copy of an empty profile (Closes: #752253).
+  * Fixed background transparency support for recent versions of vte.
 
- -- Tony Houghton <h@realh.co.uk>  Sun, 22 Jun 2014 16:10:45 +0100
+ -- Tony Houghton <h@realh.co.uk>  Tue, 24 Jun 2014 17:27:09 +0100
 
 roxterm (2.8.2-1) unstable; urgency=medium
 
