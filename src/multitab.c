@@ -1852,7 +1852,7 @@ static gboolean multi_win_delete_event_cb(GtkWidget *widget, GdkEvent *event,
 
 #if NEED_TRANSPARENCY_FIX
 static gboolean
-multi_win_draw(GtkWidget *widget, CairoContext *cr, void *handle)
+multi_win_draw(GtkWidget *widget, cairo_t *cr, void *handle)
 {
     GtkStyleContext *context = gtk_widget_get_style_context(widget);
     int width = gtk_widget_get_allocated_width(widget);
