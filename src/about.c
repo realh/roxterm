@@ -73,6 +73,13 @@ static GtkWidget *about_dialog_create(void)
 
     gtk_about_dialog_set_program_name(ad, "ROXTerm");
     gtk_about_dialog_set_version(ad, VERSION);
+    gtk_about_dialog_set_comments(ad,
+#if GTK_CHECK_VERSION(3, 0, 0)
+            _("GTK 3/VTE 2.90 build")
+#else
+            _("GTK 2/VTE 9 build")
+#endif
+            );
     gtk_about_dialog_set_copyright(ad, _("(c) 2005-2014 Tony Houghton"));
     gtk_about_dialog_set_website(ad, "http://roxterm.sourceforge.net");
     gtk_about_dialog_set_authors(ad, authors);
