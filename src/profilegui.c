@@ -32,9 +32,7 @@
 #include "options.h"
 #include "profilegui.h"
 
-#if !VTE_BACKGROUND_DEPRECATED
 #define MANAGE_PREVIEW
-#endif
 
 struct _ProfileGUI {
     CappletData capp;
@@ -113,7 +111,6 @@ void profilegui_check_entries_for_changes(ProfileGUI * pg)
     PG_UPDATE_IF(win_title)
 }
 
-#if !VTE_BACKGROUND_DEPRECATED
 static void profilegui_set_bgimg_shading(ProfileGUI *pg, gboolean sensitive)
 {
     gtk_widget_set_sensitive(profilegui_widget(pg,
@@ -140,7 +137,6 @@ static void profilegui_set_background_shading(ProfileGUI *pg)
     profilegui_set_transparency_shading(pg, !gtk_toggle_button_get_active(
             GTK_TOGGLE_BUTTON(profilegui_widget(pg, "background_type0"))));
 }
-#endif
 
 static void profilegui_set_command_shading(ProfileGUI *pg)
 {
@@ -274,14 +270,9 @@ void on_profile_notebook_switch_page(GtkNotebook * notebook, GtkWidget *page,
  */
 void on_bgtype_toggled(GtkToggleButton *button, ProfileGUI *pg)
 {
-#if VTE_BACKGROUND_DEPRECATED
-    (void) button;
-    (void) pg;
-#else
     if (gtk_toggle_button_get_active(button))
         profilegui_set_background_shading(pg);
     on_radio_toggled(button, &pg->capp);
-#endif
 }
 
 void on_command_toggled(GtkToggleButton *button, ProfileGUI *pg)
@@ -419,12 +410,7 @@ static char *get_bgimg_filename(ProfileGUI *pg, GtkFileChooser *chooser)
 
 void on_bgimg_chosen(GtkFileChooser *chooser, ProfileGUI *pg)
 {
-#if VTE_BACKGROUND_DEPRECATED
-    (void) chooser;
-    (void) pg;
-#else
     g_free(get_bgimg_filename(pg, chooser));
-#endif
 }
 
 #define DEFAULT_BACKSPACE_BINDING 0
@@ -456,7 +442,6 @@ void on_edit_colour_scheme_clicked(GtkButton *button, ProfileGUI *pg)
     colourgui_open(name, gtk_widget_get_screen(combo));
 }
 
-#if !VTE_BACKGROUND_DEPRECATED
 static char *pg_get_dragged_in_filename(const char *text, gulong length)
 {
     char *first_file = first_file = strstr(text, "\r\n");
@@ -492,7 +477,6 @@ static gboolean bgimg_drag_data_received(GtkWidget *widget,
     g_free(filename);
     return result;
 }
-#endif
 
 static void exit_action_changed(GtkComboBox *combo, ProfileGUI *pg)
 {
@@ -752,7 +736,6 @@ static void profilegui_fill_in_dialog(ProfileGUI * pg)
     capplet_set_spin_button(&pg->capp, "height", 24);
     on_cell_size_toggled(GTK_TOGGLE_BUTTON(profilegui_widget(pg, "cell_size")),
             pg);
-#if !VTE_BACKGROUND_DEPRECATED
     capplet_set_radio(&pg->capp, "background_type", 0);
     profilegui_set_background_shading(pg);
     capplet_set_float_range(&pg->capp, "saturation", 1.0);
@@ -760,7 +743,6 @@ static void profilegui_fill_in_dialog(ProfileGUI * pg)
     val = options_lookup_string_with_default(profile, "background_img", "");
     profilegui_fill_in_file_chooser(pg, val);
     g_free(val);
-#endif
     capplet_set_radio(&pg->capp, "scrollbar_pos", 1);
     capplet_set_spin_button(&pg->capp, "scrollback_lines", 1000);
     capplet_set_boolean_toggle(&pg->capp, "scroll_on_output", FALSE);
@@ -819,9 +801,7 @@ static void profilegui_setup_list_store(ProfileGUI *pg)
     static char const *labels[] = {
             N_("Appearance"), N_("General"), N_("Command"),
             N_("Net URIs"), N_("File URIs"),
-#if !VTE_BACKGROUND_DEPRECATED
             N_("Background"),
-#endif
             N_("Scrolling"), N_("Keyboard"), N_("Tabs")
     };
     GtkTreeIter iter;
@@ -836,13 +816,7 @@ static void profilegui_setup_list_store(ProfileGUI *pg)
     {
         gtk_list_store_append(pg->list_store, &iter);
         gtk_list_store_set(pg->list_store, &iter,
-                0, gettext(labels[n]), 1,
-#if VTE_BACKGROUND_DEPRECATED
-                (n < 5) ? n : (n + 1),
-#else
-                n,
-#endif
-                -1);
+                0, gettext(labels[n]), 1, n, -1);
     }
     tvw = gtk_tree_view_new_with_model(GTK_TREE_MODEL(pg->list_store));
     tv = GTK_TREE_VIEW(tvw);
@@ -922,12 +896,10 @@ ProfileGUI *profilegui_open(const char *profile_name, GdkScreen *scrn)
 
     g_hash_table_insert(profilegui_being_edited, g_strdup(profile_name), pg);
 
-#if !VTE_BACKGROUND_DEPRECATED
     profilegui_setup_file_chooser(pg);
     pg->bgimg_drd = drag_receive_setup_dest_widget(
             profilegui_widget(pg, "bgimg_drag_target_vbox"),
             bgimg_drag_data_received, NULL, pg);
-#endif
     profilegui_fill_in_dialog(pg);
     profilegui_connect_handlers(pg);
 
@@ -963,9 +935,7 @@ void profilegui_delete(ProfileGUI * pg)
     UNREF_LOG(g_object_unref(pg->capp.builder));
     dynamic_options_unref(dynopts, pg->profile_name);
     g_free(pg->profile_name);
-#if !VTE_BACKGROUND_DEPRECATED
     drag_receive_data_delete(pg->bgimg_drd);
-#endif
     g_free(pg);
     capplet_dec_windows();
     configlet_unlock_profiles();
