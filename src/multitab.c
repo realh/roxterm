@@ -1850,6 +1850,20 @@ static gboolean multi_win_delete_event_cb(GtkWidget *widget, GdkEvent *event,
     return TRUE;
 }
 
+#if NEED_TRANSPARENCY_FIX
+static gboolean
+multi_win_draw(GtkWidget *widget, CairoContext *cr, void *handle)
+{
+    GtkStyleContext *context = gtk_widget_get_style_context(widget);
+    int width = gtk_widget_get_allocated_width(widget);
+    int height = gtk_widget_get_allocated_height(widget);
+    (void) handle;
+    gtk_render_background(context, cr, 0, 0, width, height);
+    gtk_render_frame(context, cr, 0, 0, width, height);
+    return FALSE;
+}
+#endif
+
 MultiWin *multi_win_new_blank(const char *display_name, Options *shortcuts,
         int zoom_index,
         gboolean disable_menu_shortcuts, gboolean disable_tab_shortcuts,
@@ -1925,6 +1939,11 @@ MultiWin *multi_win_new_blank(const char *display_name, Options *shortcuts,
             G_CALLBACK(multi_win_composited_changed), win);
     g_signal_connect(win->gtkwin, "map-event",
             G_CALLBACK(multi_win_map_event_handler), win);
+#endif
+
+#if NEED_TRANSPARENCY_FIX
+    g_signal_connect(win->gtkwin, "draw", G_CALLBACK(multi_win_draw), win);
+    gtk_widget_set_app_paintable(win->gtkwin, TRUE);
 #endif
 
 #if GTK_CHECK_VERSION(3, 0, 0)
