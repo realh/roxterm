@@ -349,7 +349,6 @@ static void on_update_preview(GtkFileChooser *chooser, ProfileGUI *pg)
 }
 #endif
 
-#if !VTE_BACKGROUND_DEPRECATED
 static void profilegui_setup_file_chooser(ProfileGUI *pg)
 {
     GtkFileChooser *chooser =
@@ -406,7 +405,6 @@ static char *get_bgimg_filename(ProfileGUI *pg, GtkFileChooser *chooser)
     capplet_set_string(pg->capp.options, "background_img", new_filename);
     return new_filename;
 }
-#endif
 
 void on_bgimg_chosen(GtkFileChooser *chooser, ProfileGUI *pg)
 {
