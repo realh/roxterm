@@ -188,25 +188,50 @@ char *uri_get_ssh_command(const char *uri, const char *ssh)
 {
     const char *at;
     char *result;
+    char *hostname;
+    const char *port;
+    char *user;
+
+    if (!ssh)
+        ssh = "ssh";
     if (g_str_has_prefix(uri, "ssh://"))
         uri += 6;
+
     at = strchr(uri, '@');
     if (at)
     {
-        char *user = g_strdup_printf("%.*s", at - uri, uri);
-        char *colon = strchr(user, ':');
+        char *colon;
 
+        user = g_strdup_printf("%.*s", (int) (at - uri), uri);
+        colon = strchr(user, ':');
         /* Just strip password, ssh doesn't support it on CLI */
         if (colon)
             *colon = 0;
         uri = at + 1;
-        result = g_strdup_printf("%s -l %s %s", ssh, user, uri);
-        g_free(user);
     }
     else
     {
-        result = g_strdup_printf("%s %s", ssh, uri);
+        user = NULL;
     }
+
+    port = strchr(uri, ':');
+    if (port)
+    {
+        hostname = g_strdup_printf("%.*s", (int) (port - uri), uri);
+        ++port;
+        uri = hostname;
+    }
+    else
+    {
+        hostname = NULL;
+    }
+
+    result = g_strdup_printf("%s%s%s%s%s %s", ssh,
+            user ? " -l " : "", user ? user : "",
+            port ? " -p " : "", port ? port : "",
+            uri);
+    g_free(hostname);
+    g_free(user);
     return result;
 }
 

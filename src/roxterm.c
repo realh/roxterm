@@ -227,12 +227,13 @@ static void roxterm_match_remove(ROXTermData *roxterm, VteTerminal *vte,
 
 #define URLMSGIDSET "[-A-Z\\^_a-z{|}~!\"#$%&'()*+,./0-9;:=?`]"
 #define URLEND "[^].}<> \t\r\n,\\\"]"
-#define URLPARTHOST "[A-Za-z0-9](-[A-Za-z0-9]*)*"
-#define URLHOST URLPARTHOST "\\." URLPARTHOST "(\\." URLPARTHOST ")*"
+#define URLPARTHOST "[A-Za-z0-9]+(-[A-Za-z0-9]+)*"
+#define URLFQDN URLPARTHOST "(\\." URLPARTHOST ")+"
+#define URLHOST URLPARTHOST "(\\." URLPARTHOST ")*"
 #define URLUSERCHARS "-A-Za-z0-9!#$%&'*+/=?^_`{|}~"
-#define URLUSER "[" URLUSERCHARS "](\\.[" URLUSERCHARS "])*"
-#define URLEXTHOST "(" URLUSER "(:[^@]+)@)?" URLHOST
-#define URLFQDNTAIL "\\." URLPARTHOST "(\\." URLPARTHOST ")*"
+#define URLUSER "[" URLUSERCHARS "]+(\\.[" URLUSERCHARS "]+)*"
+#define URLEXTHOST "(" URLUSER "(:[^@]+)?@)?" URLHOST
+#define URLFQDNTAIL "\\." URLHOST
 #define URLSCHEME "(telnet:|nntp:|https?:|ftps?:|webcal:)"
 #define URLPATHCHARS "-A-Za-z0-9_$.+!(),;@&=?/~#%"
 #define URLPATH "[/?][" URLPATHCHARS ":'*]*" URLEND
@@ -255,7 +256,7 @@ static const char *ftp_urls[] = {
 
 static const char *ssh_urls[] = {
     URLSTART "ssh://" URLEXTHOST "(:[0-9]+)?",
-    URLSTART URLHOST
+    URLSTART URLFQDN
 };
 
 
@@ -3224,7 +3225,6 @@ static void roxterm_apply_show_resize_grip(ROXTermData *roxterm)
         int grip =  options_lookup_int_with_default(roxterm->profile,
                         "show_resize_grip", TRUE);
         gtk_window_set_has_resize_grip(w, grip);
-        g_debug("Set resize grip: %d", grip);
     }
 }
 #endif
