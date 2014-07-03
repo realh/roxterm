@@ -35,7 +35,7 @@ static char *uri_find_first_listed_in_path(char const *const *programs)
         char *prog_name = g_strdup(programs[i]);
         char *args = strchr(prog_name, ' ');
         char *program;
-        
+
         if (args)
             *args++ = 0;
         program = g_find_program_in_path(prog_name);
@@ -60,8 +60,8 @@ static char *uri_find_first_listed_in_path(char const *const *programs)
 static char *uri_get_preferred_browser(void)
 {
     char const *browsers[] = { "x-www-browser", "firefox", "iceweasel",
-        "chromium", "chrome", "opera", "gnome-www-browser", "epiphany",
-        "konqueror", "mozilla", "netscape", NULL
+        "chromium", "google-chrome", "chrome", "opera", "gnome-www-browser",
+        "epiphany", "konqueror", "mozilla", "netscape", NULL
     };
     int i;
     char *default_choices_path = NULL;
