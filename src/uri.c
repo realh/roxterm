@@ -161,7 +161,7 @@ char *uri_get_browser_command(const char *url, const char *browser)
 
 char *uri_get_mailer_command(const char *address, const char *mailer)
 {
-    const char *mailers[] = { "claws-mail", "thunderbird", "balsa",
+    const char *mailers[] = { "claws-mail", "thunderbird", "icedove", "balsa",
         "evolution", "mutt", "pine", "elm", "mozilla", "mail", NULL
     };
 
