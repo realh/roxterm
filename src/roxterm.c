@@ -227,18 +227,16 @@ static void roxterm_match_remove(ROXTermData *roxterm, VteTerminal *vte,
 
 #define URLMSGIDSET "[-A-Z\\^_a-z{|}~!\"#$%&'()*+,./0-9;:=?`]"
 #define URLEND "[^].}<> \t\r\n,\\\"]"
-#define URLHOST "[A-Za-z0-9][-A-Za-z0-9.]*"
-#define URLEXTHOST "[A-Za-z0-9][-.:!%$^*&~#A-Za-z0-9@]*"
-#define URLFQDNTAIL "\\.[-A-Za-z0-9.]+"
-#define URLFQDN "[A-Za-z0-9]\\.[-A-Za-z0-9.]+"
+#define URLPARTHOST "[A-Za-z0-9](-[A-Za-z0-9]*)*"
+#define URLHOST URLPARTHOST "\\." URLPARTHOST "(\\." URLPARTHOST ")*"
+#define URLUSERCHARS "-A-Za-z0-9!#$%&'*+/=?^_`{|}~"
+#define URLUSER "[" URLUSERCHARS "](\\.[" URLUSERCHARS "])*"
+#define URLEXTHOST "(" URLUSER "(:[^@]+)@)?" URLHOST
+#define URLFQDNTAIL "\\." URLPARTHOST "(\\." URLPARTHOST ")*"
 #define URLSCHEME "(telnet:|nntp:|https?:|ftps?:|webcal:)"
-/*
-#define URLUSER "[A-Za-z0-9][-.A-Za-z0-9]*"
-#define URLUSERANDPASS URLUSER ":[-,?;.:/!%$^*&~\"#'A-Za-z0-9]+"
-#define URLPORT ":[0-9]+"
-*/
 #define URLPATHCHARS "-A-Za-z0-9_$.+!(),;@&=?/~#%"
 #define URLPATH "[/?][" URLPATHCHARS ":'*]*" URLEND
+#define URLNEWS URLSTART "news:" URLMSGIDSET "+@" URLEXTHOST
 
 static const char *full_urls[] = {
     URLSTART URLSCHEME "//" URLEXTHOST,
@@ -246,8 +244,8 @@ static const char *full_urls[] = {
 };
 
 static const char *web_urls[] = {
-    URLSTART "www[0-9]*" URLFQDNTAIL,
-    URLSTART "www[0-9]*" URLFQDNTAIL URLPATH
+    URLSTART "www[0-9-]*" URLFQDNTAIL,
+    URLSTART "www[0-9-]*" URLFQDNTAIL URLPATH
 };
 
 static const char *ftp_urls[] = {
@@ -256,17 +254,14 @@ static const char *ftp_urls[] = {
 };
 
 static const char *ssh_urls[] = {
-    URLSTART "[a-z][a-z0-9-]+\\.[a-z0-9-]+(\\.[a-z0-9-]+)+"
+    URLSTART "ssh://" URLEXTHOST "(:[0-9]+)?",
+    URLSTART URLHOST
 };
 
-#define URL_EMAIL_USER "[-A-Za-z.0-9]+"
-
-#define URL_NEWS URLSTART "news:" URLMSGIDSET "+@" URLEXTHOST
 
 static const char *mailto_urls[] = {
-    URLSTART URL_EMAIL_USER "@" URLHOST,
-    URLSTART "mailto:" URL_EMAIL_USER "@" URLHOST \
-        "\\?[A-Za-z]+=" URLMSGIDSET "+"
+    URLSTART URLUSER "@" URLHOST,
+    URLSTART "mailto:" URLUSER "@" URLHOST "\\?[A-Za-z]+=" URLMSGIDSET "+"
 };
 
 /* FIXME: Could support ~user but glib doesn't provide a convenience func.
@@ -274,7 +269,7 @@ static const char *mailto_urls[] = {
  * would complicate expression(s).
  */
 #define URLFILEBODY "(\\.|\\.\\.|~)?/[" URLPATHCHARS "]*"
-#define URL_FILE "\\bfile://" URLFILEBODY
+#define URLFILE "\\bfile://" URLFILEBODY
 
 static const char *file_urls[] = {
     "\\s" URLFILEBODY,
@@ -295,8 +290,8 @@ static void roxterm_add_matches(ROXTermData *roxterm, VteTerminal *vte)
         roxterm_match_add(roxterm, vte, mailto_urls[n], ROXTerm_Match_MailTo);
     for (n = 0; n < G_N_ELEMENTS(ssh_urls); ++n)
         roxterm_match_add(roxterm, vte, ssh_urls[n], ROXTerm_Match_SSH);
-    roxterm_match_add(roxterm, vte, URL_FILE, ROXTerm_Match_File);
-    roxterm_match_add(roxterm, vte, URL_NEWS, ROXTerm_Match_Complete);
+    roxterm_match_add(roxterm, vte, URLFILE, ROXTerm_Match_File);
+    roxterm_match_add(roxterm, vte, URLNEWS, ROXTerm_Match_Complete);
 }
 
 static void roxterm_add_file_matches(ROXTermData *roxterm, VteTerminal *vte)

@@ -184,11 +184,30 @@ char *uri_get_file_command(const char *filename, const char *filer)
     return uri_get_command(filename, filer, filers);
 }
 
-char *uri_get_ssh_command(const char *hostname, const char *ssh)
+char *uri_get_ssh_command(const char *uri, const char *ssh)
 {
-    const char *ssh_candidates[] = { "ssh", "rox", NULL };
+    const char *at;
+    char *result;
+    if (g_str_has_prefix(uri, "ssh://"))
+        uri += 6;
+    at = strchr(uri, '@');
+    if (at)
+    {
+        char *user = g_strdup_printf("%.*s", at - uri, uri);
+        char *colon = strchr(user, ':');
 
-    return uri_get_command(hostname, ssh, ssh_candidates);
+        /* Just strip password, ssh doesn't support it on CLI */
+        if (colon)
+            *colon = 0;
+        uri = at + 1;
+        result = g_strdup_printf("%s -l %s %s", ssh, user, uri);
+        g_free(user);
+    }
+    else
+    {
+        result = g_strdup_printf("%s %s", ssh, uri);
+    }
+    return result;
 }
 
 /* vi:set sw=4 ts=4 noet cindent cino= */
