@@ -46,6 +46,7 @@ struct _ProfileGUI {
         guint term : 1;
         guint browser : 1;
         guint mailer : 1;
+        guint ssh : 1;
         guint filer : 1;
         guint dir_filer : 1;
         guint command : 1;
@@ -104,6 +105,7 @@ void profilegui_check_entries_for_changes(ProfileGUI * pg)
     PG_UPDATE_IF(term)
     PG_UPDATE_IF(browser)
     PG_UPDATE_IF(mailer)
+    PG_UPDATE_IF(ssh)
     PG_UPDATE_IF(filer)
     PG_UPDATE_IF(dir_filer)
     PG_UPDATE_IF(command)
@@ -179,6 +181,7 @@ void on_editable_changed(GtkEditable * editable, ProfileGUI *pg)
     else PG_IF_CHANGED(term);
     else PG_IF_CHANGED(browser);
     else PG_IF_CHANGED(mailer);
+    else PG_IF_CHANGED(ssh);
     else PG_IF_CHANGED(dir_filer);
     else PG_IF_CHANGED(filer);
     else PG_IF_CHANGED(command);
@@ -724,6 +727,8 @@ static void profilegui_fill_in_dialog(ProfileGUI * pg)
     capplet_set_radio(&pg->capp, "browser_spawn_type", 0);
     capplet_set_text_entry(&pg->capp, "mailer", NULL);
     capplet_set_radio(&pg->capp, "mailer_spawn_type", 0);
+    capplet_set_text_entry(&pg->capp, "ssh", NULL);
+    capplet_set_radio(&pg->capp, "ssh_spawn_type", 2);
     capplet_set_text_entry(&pg->capp, "filer", NULL);
     capplet_set_radio(&pg->capp, "filer_spawn_type", 0);
     capplet_set_text_entry(&pg->capp, "dir_filer", NULL);

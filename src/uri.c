@@ -184,4 +184,11 @@ char *uri_get_file_command(const char *filename, const char *filer)
     return uri_get_command(filename, filer, filers);
 }
 
+char *uri_get_ssh_command(const char *hostname, const char *ssh)
+{
+    const char *ssh_candidates[] = { "ssh", "rox", NULL };
+
+    return uri_get_command(hostname, ssh, ssh_candidates);
+}
+
 /* vi:set sw=4 ts=4 noet cindent cino= */

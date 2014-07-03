@@ -63,6 +63,7 @@ typedef enum {
     ROXTerm_Match_FTP,
     ROXTerm_Match_MailTo,
     ROXTerm_Match_File,
+    ROXTerm_Match_SSH
 } ROXTerm_MatchType;
 
 typedef struct {
@@ -254,6 +255,10 @@ static const char *ftp_urls[] = {
     URLSTART "ftp[0-9]*" URLFQDNTAIL URLPATH
 };
 
+static const char *ssh_urls[] = {
+    URLSTART "[a-z][a-z0-9-]+\\.[a-z0-9-]+(\\.[a-z0-9-]+)+"
+};
+
 #define URL_EMAIL_USER "[-A-Za-z.0-9]+"
 
 #define URL_NEWS URLSTART "news:" URLMSGIDSET "+@" URLEXTHOST
@@ -288,6 +293,8 @@ static void roxterm_add_matches(ROXTermData *roxterm, VteTerminal *vte)
         roxterm_match_add(roxterm, vte, ftp_urls[n], ROXTerm_Match_FTP);
     for (n = 0; n < G_N_ELEMENTS(mailto_urls); ++n)
         roxterm_match_add(roxterm, vte, mailto_urls[n], ROXTerm_Match_MailTo);
+    for (n = 0; n < G_N_ELEMENTS(ssh_urls); ++n)
+        roxterm_match_add(roxterm, vte, ssh_urls[n], ROXTerm_Match_SSH);
     roxterm_match_add(roxterm, vte, URL_FILE, ROXTerm_Match_File);
     roxterm_match_add(roxterm, vte, URL_NEWS, ROXTerm_Match_Complete);
 }
@@ -1005,6 +1012,21 @@ static void roxterm_launch_filer(ROXTermData *roxterm, const char *uri)
     g_free(expu);
 }
 
+static void roxterm_launch_ssh(ROXTermData *roxterm, const char *uri)
+{
+    char *ssh_o = roxterm_lookup_uri_handler(roxterm, "ssh");
+    char *ssh = uri_get_ssh_command(uri, ssh_o);
+
+    if (ssh_o)
+        g_free(ssh_o);
+    if (ssh)
+    {
+        roxterm_spawn(roxterm, ssh, options_lookup_int_with_default
+            (roxterm->profile, "ssh_spawn_type", ROXTerm_SpawnNewTab));
+        g_free(ssh);
+    }
+}
+
 static void roxterm_launch_uri(ROXTermData *roxterm)
 {
     switch (roxterm->match_type)
@@ -1014,6 +1036,9 @@ static void roxterm_launch_uri(ROXTermData *roxterm)
             break;
         case ROXTerm_Match_File:
             roxterm_launch_filer(roxterm, roxterm->matched_url);
+            break;
+        case ROXTerm_Match_SSH:
+            roxterm_launch_ssh(roxterm, roxterm->matched_url);
             break;
         default:
             roxterm_launch_browser(roxterm, roxterm->matched_url);
@@ -1071,7 +1096,8 @@ typedef enum {
     ROXTerm_DontShowURIMenuItems,
     ROXTerm_ShowWebURIMenuItems,
     ROXTerm_ShowMailURIMenuItems,
-    ROXTerm_ShowFileURIMenuItems
+    ROXTerm_ShowFileURIMenuItems,
+    ROXTerm_ShowSSHHostMenuItems,
 } ROXTerm_URIMenuItemsShowType;
 
 static void
@@ -1086,6 +1112,8 @@ set_show_uri_menu_items(MenuTree *tree, ROXTerm_URIMenuItemsShowType show_type)
         show_type == ROXTerm_ShowFileURIMenuItems);
     menutree_set_show_item(tree, MENUTREE_COPY_URI,
         show_type != ROXTerm_DontShowURIMenuItems);
+    menutree_set_show_item(tree, MENUTREE_SSH_HOST,
+        show_type == ROXTerm_ShowSSHHostMenuItems);
     menutree_set_show_item(tree, MENUTREE_URI_SEPARATOR,
         show_type != ROXTerm_DontShowURIMenuItems);
 }
@@ -1742,6 +1770,10 @@ static void roxterm_uri_drag_data_get(GtkWidget *widget,
         {
             uri_list[0] = g_strdup_printf("mailto:%s", utf8);
         }
+        else if (roxterm->match_type == ROXTerm_Match_SSH)
+        {
+            uri_list[0] = g_strdup_printf("ssh://%s", utf8);
+        }
         else
         {
             uri_list[0] = g_strdup(utf8);
@@ -1804,6 +1836,9 @@ static gboolean roxterm_click_handler(GtkWidget *widget,
         {
             switch (roxterm->match_type)
             {
+                case ROXTerm_Match_SSH:
+                    show_type = ROXTerm_ShowSSHHostMenuItems;
+                    break;
                 case ROXTerm_Match_MailTo:
                     show_type = ROXTerm_ShowMailURIMenuItems;
                     break;
@@ -2041,6 +2076,15 @@ static void roxterm_copy_url_action(MultiWin * win)
         gtk_clipboard_set_text(gtk_clipboard_get(GDK_SELECTION_CLIPBOARD),
             roxterm->matched_url, -1);
     }
+}
+
+static void roxterm_ssh_host_action(MultiWin * win)
+{
+    ROXTermData *roxterm = multi_win_get_user_data_for_current_tab(win);
+
+    g_return_if_fail(roxterm);
+    if (roxterm->matched_url)
+        roxterm_launch_ssh(roxterm, roxterm->matched_url);
 }
 
 static void roxterm_copy_clipboard_action(MultiWin * win)
@@ -2888,6 +2932,8 @@ static void roxterm_connect_menu_signals(MultiWin * win)
         G_CALLBACK(roxterm_open_in_filer_action), win, NULL, NULL, NULL);
     multi_win_menu_connect_swapped(win, MENUTREE_COPY_URI,
         G_CALLBACK(roxterm_copy_url_action), win, NULL, NULL, NULL);
+    multi_win_menu_connect_swapped(win, MENUTREE_SSH_HOST,
+        G_CALLBACK(roxterm_ssh_host_action), win, NULL, NULL, NULL);
 #ifdef HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX
     multi_win_menu_connect_swapped(win, MENUTREE_SEARCH_FIND,
         G_CALLBACK(roxterm_open_search_action), win, NULL, NULL, NULL);

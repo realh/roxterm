@@ -37,6 +37,8 @@ char *uri_get_directory_command(const char *dirname, const char *filer);
 
 char *uri_get_file_command(const char *filename, const char *filer);
 
+char *uri_get_ssh_command(const char *hostname, const char *ssh);
+
 #endif /* URI_H */
 
 /* vi:set sw=4 ts=4 noet cindent cino= */
