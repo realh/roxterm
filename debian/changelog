@@ -1,4 +1,4 @@
-roxterm (2.9.0-33) unstable; urgency=low
+roxterm (2.9.0-34) unstable; urgency=low
 
   * Add support for launching ssh from matching URIs (Karl E. Jorgensen).
   * Corrected profile editor page selection when background options
@@ -14,8 +14,12 @@ roxterm (2.9.0-33) unstable; urgency=low
   * Don't crash trying to use a copy of an empty profile (Closes: #752253).
   * Fixed background transparency support for recent versions of vte.
   * Added GTK & VTE version summary to About dialog.
+  * Changed GTK colour scheme:
+    + Make bold black (LP: #1340721).
+    + Don't set cursor colour due to
+      <https://bugzilla.gnome.org/show_bug.cgi?id=695011>.
 
- -- Tony Houghton <h@realh.co.uk>  Thu, 03 Jul 2014 19:00:06 +0100
+ -- Tony Houghton <h@realh.co.uk>  Fri, 11 Jul 2014 15:44:02 +0100
 
 roxterm (2.8.2-1) unstable; urgency=medium
 
