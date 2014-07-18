@@ -78,6 +78,11 @@
 				the filename; move the pointer over the filename to get the whole URL. Similarly you can highlight an email address
 				with or without a leading mailto:.</p>
 
+				<p>As of version 2.9.1 ssh URI and hostname matching is supported. URIs including a path name can only be copied to
+				the clipboard; in the absence of a pathname ROXTerm can also start a ssh session to the described host. Plain
+				hostnames are also matched, but only if they start with "ssh" or end with ".local" or ".lan". Attempting to match
+				more generic hostnames would cause too many false positives.</p>
+
 				<h2>Drag &amp; Drop <a class="pageAnchor" name="DragAndDrop">:</a></h2>
 
 				<p>You can now drag items onto terminal windows. Text objects are fed to the terminal as if typed. Files and URIs

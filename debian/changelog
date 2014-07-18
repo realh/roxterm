@@ -1,25 +1,26 @@
-roxterm (2.9.0-34) unstable; urgency=low
+roxterm (2.9.0-36) unstable; urgency=low
 
-  * Add support for launching ssh from matching URIs (Karl E. Jorgensen).
-  * Corrected profile editor page selection when background options
-    are disabled (doesn't affect Debian).
-  * Changed keyboard shortcut for Find Next to avoid clash with New Window.
-  * Allow Shortcuts files to be reloaded and edited as text.
-  * Fixed wrapping of some dialog labels.
-  * debian/copyright: Updated year.
-  * Override --tab to false if no match for --title.
-  * Support XDG AppData spec.
-  * debian/control: Added Build-Depends on imagemagick, itstool.
-  * Exclude logo source xcf (gimp) file from installation.
-  * Don't crash trying to use a copy of an empty profile (Closes: #752253).
-  * Fixed background transparency support for recent versions of vte.
-  * Added GTK & VTE version summary to About dialog.
-  * Changed GTK colour scheme:
+  * Changed default GTK colour scheme:
     + Make bold black (LP: #1340721).
     + Don't set cursor colour due to
       <https://bugzilla.gnome.org/show_bug.cgi?id=695011>.
+  * Add support for launching ssh from matching URIs
+    (based on a patch by Karl E. Jorgensen).
+  * Fixed background transparency support for recent versions of vte.
+  * Don't crash trying to use a copy of an empty profile (Closes: #752253).
+  * Allow Shortcuts files to be reloaded and edited as text.
+  * Override --tab to false if no match for --title.
+  * debian/control: Added Build-Depends on imagemagick, itstool.
+  * debian/copyright: Updated year.
+  * Support XDG AppData spec.
+  * Corrected profile editor page selection when background options
+    are disabled (doesn't affect Debian).
+  * Changed keyboard shortcut for Find Next to avoid clash with New Window.
+  * Fixed wrapping of some dialog labels.
+  * Exclude logo source xcf (gimp) file from installation.
+  * Added GTK & VTE version summary to About dialog.
 
- -- Tony Houghton <h@realh.co.uk>  Fri, 11 Jul 2014 15:44:02 +0100
+ -- Tony Houghton <h@realh.co.uk>  Fri, 18 Jul 2014 15:26:03 +0100
 
 roxterm (2.8.2-1) unstable; urgency=medium
 
