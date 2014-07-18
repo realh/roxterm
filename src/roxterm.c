@@ -63,7 +63,8 @@ typedef enum {
     ROXTerm_Match_FTP,
     ROXTerm_Match_MailTo,
     ROXTerm_Match_File,
-    ROXTerm_Match_SSH
+    ROXTerm_Match_SSH_Host,
+    ROXTerm_Match_SSH_URI,
 } ROXTerm_MatchType;
 
 typedef struct {
@@ -232,12 +233,12 @@ static void roxterm_match_remove(ROXTermData *roxterm, VteTerminal *vte,
 #define URLHOST URLPARTHOST "(\\." URLPARTHOST ")*"
 #define URLUSERCHARS "-A-Za-z0-9!#$%&'*+/=?^_`{|}~"
 #define URLUSER "[" URLUSERCHARS "]+(\\.[" URLUSERCHARS "]+)*"
-#define URLEXTHOST "(" URLUSER "(:[^@]+)?@)?" URLHOST
+#define URLEXTHOST "(" URLUSER "(:[^@]+)?@)?" URLHOST "(:[0-9]+)?"
 #define URLFQDNTAIL "\\." URLHOST
 #define URLSCHEME "(telnet:|nntp:|https?:|ftps?:|webcal:)"
 #define URLPATHCHARS "-A-Za-z0-9_$.+!(),;@&=?/~#%"
 #define URLPATH "[/?][" URLPATHCHARS ":'*]*" URLEND
-#define URLNEWS URLSTART "news:" URLMSGIDSET "+@" URLEXTHOST
+#define URLNEWS URLSTART "news:" URLMSGIDSET "+@" URLHOST
 
 static const char *full_urls[] = {
     URLSTART URLSCHEME "//" URLEXTHOST,
@@ -250,15 +251,20 @@ static const char *web_urls[] = {
 };
 
 static const char *ftp_urls[] = {
-    URLSTART "ftp[0-9]*" URLFQDNTAIL,
-    URLSTART "ftp[0-9]*" URLFQDNTAIL URLPATH
+    URLSTART "ftp[0-9-]*" URLFQDNTAIL,
+    URLSTART "ftp[0-9-]*" URLFQDNTAIL URLPATH
 };
 
-static const char *ssh_urls[] = {
-    URLSTART "ssh://" URLEXTHOST "(:[0-9]+)?",
-    URLSTART URLFQDN
+static const char *ssh_urls1[] = {
+    URLSTART "ssh://" URLEXTHOST,
+    URLSTART "ssh[0-9-]*" URLFQDNTAIL,
+    URLSTART URLHOST "\\.l(ocal|an)"
 };
 
+static const char *ssh_urls2[] = {
+    URLSTART "(git\\+)?ssh://" URLEXTHOST,
+    URLSTART "(git\\+)?ssh://" URLEXTHOST URLPATH,
+};
 
 static const char *mailto_urls[] = {
     URLSTART URLUSER "@" URLHOST,
@@ -289,8 +295,10 @@ static void roxterm_add_matches(ROXTermData *roxterm, VteTerminal *vte)
         roxterm_match_add(roxterm, vte, ftp_urls[n], ROXTerm_Match_FTP);
     for (n = 0; n < G_N_ELEMENTS(mailto_urls); ++n)
         roxterm_match_add(roxterm, vte, mailto_urls[n], ROXTerm_Match_MailTo);
-    for (n = 0; n < G_N_ELEMENTS(ssh_urls); ++n)
-        roxterm_match_add(roxterm, vte, ssh_urls[n], ROXTerm_Match_SSH);
+    for (n = 0; n < G_N_ELEMENTS(ssh_urls1); ++n)
+        roxterm_match_add(roxterm, vte, ssh_urls1[n], ROXTerm_Match_SSH_Host);
+    for (n = 0; n < G_N_ELEMENTS(ssh_urls2); ++n)
+        roxterm_match_add(roxterm, vte, ssh_urls2[n], ROXTerm_Match_SSH_URI);
     roxterm_match_add(roxterm, vte, URLFILE, ROXTerm_Match_File);
     roxterm_match_add(roxterm, vte, URLNEWS, ROXTerm_Match_Complete);
 }
@@ -1033,7 +1041,7 @@ static void roxterm_launch_uri(ROXTermData *roxterm)
         case ROXTerm_Match_File:
             roxterm_launch_filer(roxterm, roxterm->matched_url);
             break;
-        case ROXTerm_Match_SSH:
+        case ROXTerm_Match_SSH_Host:
             roxterm_launch_ssh(roxterm, roxterm->matched_url);
             break;
         default:
@@ -1094,6 +1102,7 @@ typedef enum {
     ROXTerm_ShowMailURIMenuItems,
     ROXTerm_ShowFileURIMenuItems,
     ROXTerm_ShowSSHHostMenuItems,
+    ROXTerm_ShowSSHURIMenuItems,
 } ROXTerm_URIMenuItemsShowType;
 
 static void
@@ -1766,9 +1775,12 @@ static void roxterm_uri_drag_data_get(GtkWidget *widget,
         {
             uri_list[0] = g_strdup_printf("mailto:%s", utf8);
         }
-        else if (roxterm->match_type == ROXTerm_Match_SSH)
+        else if (roxterm->match_type == ROXTerm_Match_SSH_Host)
         {
-            uri_list[0] = g_strdup_printf("ssh://%s", utf8);
+            if (g_str_has_prefix(utf8, "ssh://"))
+                uri_list[0] = g_strdup(utf8);
+            else
+                uri_list[0] = g_strdup_printf("ssh://%s", utf8);
         }
         else
         {
@@ -1832,8 +1844,11 @@ static gboolean roxterm_click_handler(GtkWidget *widget,
         {
             switch (roxterm->match_type)
             {
-                case ROXTerm_Match_SSH:
+                case ROXTerm_Match_SSH_Host:
                     show_type = ROXTerm_ShowSSHHostMenuItems;
+                    break;
+                case ROXTerm_Match_SSH_URI:
+                    show_type = ROXTerm_ShowSSHURIMenuItems;
                     break;
                 case ROXTerm_Match_MailTo:
                     show_type = ROXTerm_ShowMailURIMenuItems;
