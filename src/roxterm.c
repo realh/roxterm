@@ -64,7 +64,7 @@ typedef enum {
     ROXTerm_Match_MailTo,
     ROXTerm_Match_File,
     ROXTerm_Match_SSH_Host,
-    ROXTerm_Match_SSH_URI,
+    ROXTerm_Match_Misc_URI,
 } ROXTerm_MatchType;
 
 typedef struct {
@@ -255,15 +255,14 @@ static const char *ftp_urls[] = {
     URLSTART "ftp[0-9-]*" URLFQDNTAIL URLPATH
 };
 
-static const char *ssh_urls1[] = {
+static const char *ssh_urls[] = {
     URLSTART "ssh://" URLEXTHOST,
     URLSTART "ssh[0-9-]*" URLFQDNTAIL,
     URLSTART URLHOST "\\.l(ocal|an)"
 };
 
-static const char *ssh_urls2[] = {
-    URLSTART "(git\\+)?ssh://" URLEXTHOST,
-    URLSTART "(git\\+)?ssh://" URLEXTHOST URLPATH,
+static const char *misc_urls[] = {
+    URLSTART "((git\\+)?ssh|svn|bzr|hg)://" URLEXTHOST URLPATH,
 };
 
 static const char *mailto_urls[] = {
@@ -295,10 +294,10 @@ static void roxterm_add_matches(ROXTermData *roxterm, VteTerminal *vte)
         roxterm_match_add(roxterm, vte, ftp_urls[n], ROXTerm_Match_FTP);
     for (n = 0; n < G_N_ELEMENTS(mailto_urls); ++n)
         roxterm_match_add(roxterm, vte, mailto_urls[n], ROXTerm_Match_MailTo);
-    for (n = 0; n < G_N_ELEMENTS(ssh_urls1); ++n)
-        roxterm_match_add(roxterm, vte, ssh_urls1[n], ROXTerm_Match_SSH_Host);
-    for (n = 0; n < G_N_ELEMENTS(ssh_urls2); ++n)
-        roxterm_match_add(roxterm, vte, ssh_urls2[n], ROXTerm_Match_SSH_URI);
+    for (n = 0; n < G_N_ELEMENTS(ssh_urls); ++n)
+        roxterm_match_add(roxterm, vte, ssh_urls[n], ROXTerm_Match_SSH_Host);
+    for (n = 0; n < G_N_ELEMENTS(misc_urls); ++n)
+        roxterm_match_add(roxterm, vte, misc_urls[n], ROXTerm_Match_Misc_URI);
     roxterm_match_add(roxterm, vte, URLFILE, ROXTerm_Match_File);
     roxterm_match_add(roxterm, vte, URLNEWS, ROXTerm_Match_Complete);
 }
@@ -1102,7 +1101,7 @@ typedef enum {
     ROXTerm_ShowMailURIMenuItems,
     ROXTerm_ShowFileURIMenuItems,
     ROXTerm_ShowSSHHostMenuItems,
-    ROXTerm_ShowSSHURIMenuItems,
+    ROXTerm_ShowMiscURIMenuItems,
 } ROXTerm_URIMenuItemsShowType;
 
 static void
@@ -1847,8 +1846,8 @@ static gboolean roxterm_click_handler(GtkWidget *widget,
                 case ROXTerm_Match_SSH_Host:
                     show_type = ROXTerm_ShowSSHHostMenuItems;
                     break;
-                case ROXTerm_Match_SSH_URI:
-                    show_type = ROXTerm_ShowSSHURIMenuItems;
+                case ROXTerm_Match_Misc_URI:
+                    show_type = ROXTerm_ShowMiscURIMenuItems;
                     break;
                 case ROXTerm_Match_MailTo:
                     show_type = ROXTerm_ShowMailURIMenuItems;
