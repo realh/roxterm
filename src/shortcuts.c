@@ -485,8 +485,7 @@ void shortcuts_edit(GtkWindow *window, const char *name)
     cmdv[0] = editor;
     cmdv[1] = filename;
     cmdv[2] = NULL;
-    if (g_spawn_async(NULL, (char **) cmdv, NULL, G_SPAWN_DEFAULT, NULL, NULL,
-            &pid, &error))
+    if (g_spawn_async(NULL, (char **) cmdv, NULL, 0, NULL, NULL, &pid, &error))
     {
         GFile *f = g_file_new_for_path(filename);
         GFileMonitor *monitor = g_file_monitor_file(f, G_FILE_MONITOR_NONE,
