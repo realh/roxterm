@@ -692,16 +692,16 @@ elif ctx.mode == 'dist':
     if os.path.exists("AppInfo.xml"):
         ctx.add_dist("AppInfo.xml")
     # Translations
-    ctx.add_dist("po/LINGUAS po4a/LINGUAS")
-    files = ctx.glob("*.po", os.curdir, "po4a") + \
-            ctx.glob("*.pot", os.curdir, "po4a")
-    if files:
-        ctx.add_dist(files)
-    if os.path.exists("po/POTFILES.in"):
-        ctx.add_dist("po/POTFILES.in")
-    if os.path.exists("po/roxterm.pot"):
-        ctx.add_dist("po/roxterm.pot")
-    files = ctx.glob("*.po", os.curdir, "po", False)
+    for f in ("po/LINGUAS", "po4a/LINGUAS", "poxml/LINGUAS",
+            "po/POTFILES.in", "po/roxterm.pot",
+            "poxml/roxterm.appdata.xml", "poxml/roxterm.appdata.xml.in",
+            "poxml/roxterm.appdata.xml.pot"):
+        if os.path.exists(f):
+            ctx.add_dist(f)
+    files = ctx.glob("*.po", os.curdir, "po") + \
+            ctx.glob("*.po", os.curdir, "po4a") + \
+            ctx.glob("*.pot", os.curdir, "po4a") + \
+            ctx.glob("*.po", os.curdir, "poxml")
     if files:
         ctx.add_dist(files)
 
