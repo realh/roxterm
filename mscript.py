@@ -695,7 +695,7 @@ elif ctx.mode == 'dist':
     for f in ("po/LINGUAS", "po4a/LINGUAS", "poxml/LINGUAS",
             "po/POTFILES.in", "po/roxterm.pot",
             "poxml/roxterm.appdata.xml", "poxml/roxterm.appdata.xml.in",
-            "poxml/roxterm.appdata.xml.pot"):
+            "poxml/appdata.its", "poxml/roxterm.appdata.xml.pot"):
         if os.path.exists(f):
             ctx.add_dist(f)
     files = ctx.glob("*.po", os.curdir, "po") + \
