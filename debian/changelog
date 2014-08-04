@@ -1,5 +1,6 @@
 roxterm (2.9.2-1) unstable; urgency=low
 
+  * Update debhelper compatibility to 9.
   * Allow package to be built repeatedly from same unpacked source:
     + mscript.py: More thorough clean
     + debian/source/options: Ignore changes to main .pot file.
@@ -24,7 +25,7 @@ roxterm (2.9.2-1) unstable; urgency=low
   * Exclude logo source xcf (gimp) file from installation.
   * Added GTK & VTE version summary to About dialog.
 
- -- Tony Houghton <h@realh.co.uk>  Mon, 04 Aug 2014 14:50:11 +0100
+ -- Tony Houghton <h@realh.co.uk>  Mon, 04 Aug 2014 19:42:47 +0100
 
 roxterm (2.8.2-1) unstable; urgency=medium
 
