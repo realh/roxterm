@@ -656,16 +656,21 @@ elif ctx.mode == 'pristine' or ctx.mode == 'clean':
                 "favicon.ico logo_text.png roxterm_logo.png".split()] + \
             ctx.glob("*.pot", "${TOP_DIR}", "po") + \
             ctx.glob("*.pot", "${TOP_DIR}", "po4a") + \
-            ctx.glob("*.pot", "${TOP_DIR}", "poxml") + \
+            ctx.glob("*.pot", "${TOP_DIR}", "poxml")
+    clean += ctx.glob("*.mo", "${TOP_DIR}", "poxml") + \
+            ctx.glob("*.mo", "${TOP_DIR}", "po") + \
             ctx.glob("*.po~", "${TOP_DIR}", "po") + \
             ctx.glob("*.po~", "${TOP_DIR}", "po4a") + \
             ctx.glob("*.po~", "${TOP_DIR}", "poxml")
-        for d in \
-                [ctx.subst("${TOP_DIR}/Help/" + d) for d in "es fr gl".split()]:
-            recursively_remove(d, False, [])
-    clean += ctx.glob("*.mo", "${TOP_DIR}", "poxml")
+    clean += ["${TOP_DIR}/" + f for f in \
+            "roxterm.1.xml roxterm-config.1.xml roxterm.spec".split()]
     for f in clean:
         ctx.delete(f)
+    f = open(ctx.subst("${TOP_DIR}/po4a/LINGUAS"), 'r')
+    hd = ctx.subst("${TOP_DIR}/Help/")
+    for d in [hd + l.strip() for l in f.readlines() + ['pt']]:
+        recursively_remove(d, False, [])
+    f.close()
 
 elif ctx.mode == 'dist':
 
