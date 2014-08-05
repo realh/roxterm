@@ -424,7 +424,6 @@ elif ctx.mode == 'build':
         args = { 'copyright_holder': "(c) 2013 Tony Houghton",
                 'version': "${VERSION}",
                 'bugs_addr': "${BUG_TRACKER}",
-                'diffpat': '^"Project-Id-Version:',
                 'use_shell': True }
         code_pot = '${BUILD_DIR}/po/code.pot'
         glade_pot = '${BUILD_DIR}/po/glade.pot'
@@ -444,7 +443,8 @@ elif ctx.mode == 'build':
                 wdeps = "roxterm-config.ui-stamp"))
         ctx.add_rule(Rule(sources = [code_pot, glade_pot],
                 targets = '${TOP_DIR}/po/${PACKAGE}.pot',
-                rule = '${MSGCAT} -o ${TGT} ${SRC}'))
+                rule = '${MSGCAT} -o ${TGT} ${SRC}',
+                diffpat = gettext_diffpat))
 
     # Symlinks so ROX can use translations
     if ctx.env["ENABLE_ROX_LOCALES"]:
@@ -476,8 +476,7 @@ elif ctx.mode == 'build':
                         sources = "${TOP_DIR}/%s.1.xml.in" % m,
                         targets = "${PO4ADIR}/%s.1.pot" % m,
                         where = NOWHERE,
-                        diffpat = ['^"Project-Id-Version:',
-                                '^"POT-Creation-Date:'],
+                        diffpat = gettext_diffpat,
                         use_shell = True))
                 for l in linguas:
                     po = "${PO4ADIR}/%s.1.%s.po" % (m, l)
@@ -487,7 +486,7 @@ elif ctx.mode == 'build':
                             sources = ["${TOP_DIR}/%s.1.xml.in" % m,
                                     "${PO4ADIR}/%s.1.pot" % m],
                             targets = po,
-                            diffpat = '^"POT-Creation-Date:',
+                            diffpat = gettext_diffpat,
                             where = NOWHERE,
                             use_shell = True))
                     ctx.add_rule(Rule(rule = "${PO4A_TRANSLATE} "
@@ -647,7 +646,13 @@ elif ctx.mode == "install" or ctx.mode == "uninstall":
 
 elif ctx.mode == 'pristine' or ctx.mode == 'clean':
 
-    clean = ["${TOP_DIR}/maitch.pyc"]
+    clean = ["${TOP_DIR}/maitch.pyc"] + \
+            ctx.glob("*.mo", "${TOP_DIR}", "poxml") + \
+            ctx.glob("*.mo", "${TOP_DIR}", "po") + \
+            ctx.glob("*.po~", "${TOP_DIR}", "po") + \
+            ctx.glob("*.po~", "${TOP_DIR}", "po4a") + \
+            ctx.glob("*.po~", "${TOP_DIR}", "poxml")
+
     if ctx.mode == 'pristine':
         clean += [APPINFO, VFILE, "${TOP_DIR}/ChangeLog"] + \
             ["${TOP_DIR}/Help/" + f for f in \
@@ -656,21 +661,17 @@ elif ctx.mode == 'pristine' or ctx.mode == 'clean':
                 "favicon.ico logo_text.png roxterm_logo.png".split()] + \
             ctx.glob("*.pot", "${TOP_DIR}", "po") + \
             ctx.glob("*.pot", "${TOP_DIR}", "po4a") + \
-            ctx.glob("*.pot", "${TOP_DIR}", "poxml")
-    clean += ctx.glob("*.mo", "${TOP_DIR}", "poxml") + \
-            ctx.glob("*.mo", "${TOP_DIR}", "po") + \
-            ctx.glob("*.po~", "${TOP_DIR}", "po") + \
-            ctx.glob("*.po~", "${TOP_DIR}", "po4a") + \
-            ctx.glob("*.po~", "${TOP_DIR}", "poxml")
-    clean += ["${TOP_DIR}/" + f for f in \
-            "roxterm.1.xml roxterm-config.1.xml roxterm.spec".split()]
+            ctx.glob("*.pot", "${TOP_DIR}", "poxml") + \
+            ["${TOP_DIR}/" + f for f in \
+                "roxterm.1.xml roxterm-config.1.xml roxterm.spec".split()]
+        f = open(ctx.subst("${TOP_DIR}/po4a/LINGUAS"), 'r')
+        hd = ctx.subst("${TOP_DIR}/Help/")
+        for d in [hd + l.strip() for l in f.readlines() + ['pt']]:
+            recursively_remove(d, False, [])
+        f.close()
+
     for f in clean:
         ctx.delete(f)
-    f = open(ctx.subst("${TOP_DIR}/po4a/LINGUAS"), 'r')
-    hd = ctx.subst("${TOP_DIR}/Help/")
-    for d in [hd + l.strip() for l in f.readlines() + ['pt']]:
-        recursively_remove(d, False, [])
-    f.close()
 
 elif ctx.mode == 'dist':
 

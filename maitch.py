@@ -1398,14 +1398,14 @@ class Rule(object):
         where:  Where to look for sources: SRC, TOP or both (default SRC).
         lock:   Some jobs can't be run simultaneously so you can pass in a Lock
                 object to prevent that.
-        diffpat: If this is given (a list or string) it invokes special
-                behaviour. For each target T, if T already exists it's backed
-                up to T.old before running the rule. Then T is compared
-                line-by-line with T.old. Lines containing a match for a regex
-                in diffpat are considered equal. If the files are equal T is
-                replaced by T.old and touched.
-                This is to prevent VCS conflicts when a build changes a
-                POT-Creation-Date but not the content.
+        diffpat: If this is given (a string) it invokes special behaviour. For
+                each target T, if T already exists it's backed up to T.old
+                before running the rule. Then T is compared line-by-line with
+                T.old. Lines containing a match for the regex in diffpat are
+                skipped. If the files are equal T is replaced by T.old and
+                touched. This is to prevent VCS etc conflicts when a build
+                messes with headers in .pot and .po files but the main content
+                is unchanged.
         verbose: Show dependency info if debug is enabled.
         """
         if not 'where' in kwargs:
@@ -1446,10 +1446,8 @@ class Rule(object):
         if self.dir:
             Rule.using_dir = True
         diffpat = kwargs.get('diffpat')
-        if isinstance(diffpat, basestring):
-            diffpat = [diffpat]
         if diffpat:
-            self.diffpat = [re.compile(d) for d in diffpat]
+            self.diffpat = re.compile(diffpat)
         else:
             self.diffpat = None
         self.verbose = kwargs.get('verbose', False)
@@ -1588,6 +1586,7 @@ class Rule(object):
             self.ctx.ensure_out_dir_for_file(t)
         if self.diffpat:
             for t in self.targets:
+                t = self.ctx.subst(t)
                 if os.path.exists(t):
                     shutil.copy(t, t + '.old')
         try:
@@ -1623,25 +1622,23 @@ class Rule(object):
             if self.diffpat:
                 for t in self.targets:
                     same = False
+                    t = self.ctx.subst(t)
                     s = t + '.old'
                     if os.path.exists(t) and os.path.exists(s):
                         f = open(s, 'r')
-                        u = f.readlines()
+                        u = [l and not self.diffpat.search(l) \
+                                for l in f.readlines()]
                         f.close()
                         f = open(t, 'r')
-                        v = f.readlines()
+                        v = [l and not self.diffpat.search(l) \
+                                for l in f.readlines()]
                         f.close()
                         if len(u) == len(v):
                             same = True
                             for n in range(len(u)):
                                 if u[n] != v[n]:
                                     same = False
-                                    for p in self.diffpat:
-                                        if p.search(u[n]) and p.search(v[n]):
-                                            same = True
-                                            break
-                                    if not same:
-                                        break
+                                    break
                         if same:
                             os.rename(s, t)
                         else:
@@ -2088,6 +2085,11 @@ def mk_parent_dir_rule(ctx, env, targets, sources):
         ctx.ensure_out_dir_for_file(t)
 
 
+gettext_diffpat = '^"(#-#-#-#-#|POT-Creation-Date:|PO-Revision-Date:|' + \
+        'Language:|MIME-Version:|Content-Type:|Content-Transfer-Encoding:|' + \
+        'Project-Id-Version:)'
+
+
 def manipulate_kwargs_for_pot_rule(ctx, kwargs, potfiles = False):
     """ Helper function. It processes the following args for certain rules:
 
@@ -2101,7 +2103,8 @@ def manipulate_kwargs_for_pot_rule(ctx, kwargs, potfiles = False):
     opts_prefix: Goes on front of _XGETTEXT_OPTS added to env from above args
     xgettext_opts: Additional xgettext_opts
 
-    '^"POT-Creation-Date:' is added to a new or existing diffpat.
+    diffpat is set to match certain headers that xgettext adds or removes
+    at will.
     """
 
     def pot_deps(ctx, rule):
@@ -2158,15 +2161,7 @@ def manipulate_kwargs_for_pot_rule(ctx, kwargs, potfiles = False):
                 xgto[n] = "'%s'" % s
             kwargs['use_shell'] = True
     ctx.setenv(varname, ' '.join(xgto))
-    diffpat = kwargs.get('diffpat')
-    if not diffpat:
-        diffpat = []
-        kwargs['diffpat'] = diffpat
-    elif isinstance(diffpat, basestring):
-        diffpat = [diffpat]
-        kwargs['diffpat'] = diffpat
-    if not '^"POT-Creation-Date:' in diffpat:
-        diffpat.append('^"POT-Creation-Date:')
+    kwargs['diffpat'] = gettext_diffpat
 
 
 class PotRule(Rule):
@@ -2227,15 +2222,7 @@ class PoRule(TouchRule):
             kwargs['sources'] = "${TOP_DIR}/po/${PACKAGE}.pot"
         if not 'rule' in kwargs:
             kwargs['rule'] = ["${MSGMERGE} -q -U ${TGT} ${SRC}", self.touch]
-        diffpat = kwargs.get('diffpat')
-        if not diffpat:
-            diffpat = []
-            kwargs['diffpat'] = diffpat
-        elif isinstance(diffpat, basestring):
-            diffpat = [diffpat]
-            kwargs['diffpat'] = diffpat
-        if not '^"POT-Creation-Date:' in diffpat:
-            diffpat.append('^"POT-Creation-Date:')
+        kwargs['diffpat'] = gettext_diffpat
         Rule.__init__(self, *args, **kwargs)
 
 
