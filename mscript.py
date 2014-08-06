@@ -696,6 +696,7 @@ elif ctx.mode == 'dist':
             "INSTALL INSTALL.Debian " \
             "NEWS README README.translations " \
             "roxterm.1.xml.in roxterm-config.1.xml.in " \
+            "roxterm.appdata.xml.in " \
             "roxterm.desktop roxterm.lsm.in roxterm.spec.in " \
             "roxterm.svg roxterm.xml TODO " \
             "src/roxterm-config.glade src/roxterm-config.ui")
@@ -712,7 +713,6 @@ elif ctx.mode == 'dist':
     # Translations
     for f in ("po/LINGUAS", "po4a/LINGUAS", "poxml/LINGUAS",
             "po/POTFILES.in", "po/roxterm.pot",
-            "poxml/roxterm.appdata.xml", "poxml/roxterm.appdata.xml.in",
             "poxml/appdata.its", "poxml/roxterm.appdata.xml.pot"):
         if os.path.exists(f):
             ctx.add_dist(f)
