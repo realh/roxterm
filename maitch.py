@@ -2270,7 +2270,7 @@ def PotRules(ctx, **kwargs):
     """
     def generate_potfiles(ctx, env, targets, sources):
         potfiles = []
-        relpath = os.path.relpath(ctx.subst("${ABS_TOP_DIR}"))
+        relpath = ".."
         for s in sources:
             fp = open(subst(env, s), 'r')
             for f in fp.readlines():
