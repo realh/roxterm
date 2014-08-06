@@ -158,7 +158,8 @@ if ctx.mode == 'configure':
                     "--package-version=${VERSION} " \
                     "--copyright-holder='Tony Houghton' " \
                     "--msgid-bugs-address=${BUG_TRACKER}")
-            ctx.setenv('PO4ADIR', "${TOP_DIR}/po4a")
+            ctx.setenv('PO4ADIR', "${ABS_TOP_DIR}/po4a")
+            ctx.setenv('PO4ABUILDDIR', "${ABS_BUILD_DIR}/po4a")
     else:
         ctx.setenv('HAVE_PO4A', False)
 
@@ -174,7 +175,8 @@ if ctx.mode == 'configure':
                     ctx.setenv('HAVE_ITSTOOL', False)
         else:
             ctx.setenv('HAVE_ITSTOOL', True)
-            ctx.setenv('POXML_DIR', "${TOP_DIR}/poxml")
+            ctx.setenv('POXML_DIR', "${ABS_TOP_DIR}/poxml")
+            ctx.setenv('POXML_BUILD_DIR', "${ABS_BUILD_DIR}/poxml")
             ctx.setenv('APPDATA_ITS', "${POXML_DIR}/appdata.its")
     else:
         ctx.setenv('HAVE_ITSTOOL', False)
@@ -377,7 +379,7 @@ elif ctx.mode == 'build':
         xmltomanrule = "${XMLTOMAN} ${XMLTOMAN_OPTS} ${SRC} ${XMLTOMAN_OUTPUT}"
         # Something is causing a thread to hang between calling xsltproc
         # and exiting from subprocess.Popen. Could it be trying to run two
-        # at once. Making one wdep on the other should stop jobs overlapping.
+        # at once? Making one wdep on the other should stop jobs overlapping.
         ctx.add_rule(Rule(
                 rule = xmltomanrule,
                 targets = "roxterm.1",
@@ -419,14 +421,15 @@ elif ctx.mode == 'build':
 
     # Translations (gettext)
     if ctx.env['HAVE_GETTEXT']:
-        podir = '${BUILD_DIR}/po'
+        podir = '${ABS_BUILD_DIR}/po'
         ctx.add_rule(Rule(rule = mkdir_rule, targets = podir))
         args = { 'copyright_holder': "(c) 2013 Tony Houghton",
                 'version': "${VERSION}",
                 'bugs_addr': "${BUG_TRACKER}",
-                'use_shell': True }
-        code_pot = '${BUILD_DIR}/po/code.pot'
-        glade_pot = '${BUILD_DIR}/po/glade.pot'
+                'use_shell': True,
+                'dir': podir }
+        code_pot = '${ABS_BUILD_DIR}/po/code.pot'
+        glade_pot = '${ABS_BUILD_DIR}/po/glade.pot'
         trans_rules = PoRulesFromLinguas(ctx, **args) + \
                 PotRules(ctx,
                         targets = code_pot,
@@ -440,9 +443,10 @@ elif ctx.mode == 'build':
                 targets = glade_pot,
                 deps = podir,
                 xgettext_opts = '-L Glade',
-                wdeps = "roxterm-config.ui-stamp"))
+                wdeps = "roxterm-config.ui-stamp",
+                dir = "${ABS_TOP_DIR}/po"))
         ctx.add_rule(Rule(sources = [code_pot, glade_pot],
-                targets = '${TOP_DIR}/po/${PACKAGE}.pot',
+                targets = '${ABS_TOP_DIR}/po/${PACKAGE}.pot',
                 rule = '${MSGCAT} -o ${TGT} ${SRC}',
                 diffpat = gettext_diffpat))
 
@@ -451,7 +455,7 @@ elif ctx.mode == 'build':
         def add_rox_locale(ctx, l, f):
             d = opj("locale", l, "LC_MESSAGES")
             ctx.add_rule(Rule(rule = mkdir_rule, targets = d))
-            ctx.add_rule(Rule(rule = "ln -nfs ../../../po/%s.mo ${TGT}" % l,
+            ctx.add_rule(Rule(rule = "ln -nfs ../../po/%s.mo ${TGT}" % l,
                     targets = opj(d, "roxterm.mo"),
                     wdeps = [d, opj("po", "%s.mo" % l)]))
 
@@ -473,64 +477,69 @@ elif ctx.mode == 'build':
                 ctx.add_rule(Rule(rule = ["${PO4A_GETTEXTIZE} ${PO4AOPTS} " \
                         "-f docbook -m ${SRC} -p ${TGT}",
                         charset_rule],
-                        sources = "${TOP_DIR}/%s.1.xml.in" % m,
-                        targets = "${PO4ADIR}/%s.1.pot" % m,
+                        sources = "../%s.1.xml.in" % m,
+                        targets = "%s.1.pot" % m,
                         where = NOWHERE,
                         diffpat = gettext_diffpat,
+                        dir = "${PO4ADIR}",
                         use_shell = True))
                 for l in linguas:
                     po = "${PO4ADIR}/%s.1.%s.po" % (m, l)
                     ctx.add_rule(Rule(rule = ["${PO4A_UPDATEPO} ${PO4AOPTS} " \
                             "-f docbook -m ${SRC} -p ${TGT}",
                             charset_rule],
-                            sources = ["${TOP_DIR}/%s.1.xml.in" % m,
-                                    "${PO4ADIR}/%s.1.pot" % m],
+                            sources = ["../%s.1.xml.in" % m, "%s.1.pot" % m],
                             targets = po,
                             diffpat = gettext_diffpat,
                             where = NOWHERE,
+                            dir = "${PO4ADIR}",
                             use_shell = True))
                     ctx.add_rule(Rule(rule = "${PO4A_TRANSLATE} "
                             "${PO4ACHARSET} " \
-                            "-k 0 -f docbook -m ${TOP_DIR}/%s.1.xml.in " \
+                            "-k 0 -f docbook -m ../%s.1.xml.in " \
                             "-p ${SRC} -l ${TGT}" % m,
                             sources = po,
-                            targets = "po4a/%s.1.%s.xml.in" % (m, l),
+                            targets = "${ABS_BUILD_DIR}/po4a/%s.1.%s.xml.in" % \
+                                    (m, l),
                             where = NOWHERE,
+                            dir = "${PO4ADIR}",
                             use_shell = True))
                     ctx.add_rule(Rule(rule = "${SED} " \
                             "'s/@VERSION@/${VERSION}/; " \
                             "s#@htmldir@#${HTMLDIR}#' <${SRC} >${TGT}",
-                            sources = "po4a/%s.1.%s.xml.in" % (m, l),
-                            targets = "po4a/%s.1.%s.xml" % (m, l),
+                            sources = "${PO4ABUILDDIR}/%s.1.%s.xml.in" % (m, l),
+                            targets = "${PO4ABUILDDIR}/%s.1.%s.xml" % (m, l),
                             deps = po,
                             where = NOWHERE,
                             use_shell = True))
-                    mtarget = "po4a/%s/%s.1" % (l, m)
+                    mtarget = "${PO4ABUILDDIR}/%s/%s.1" % (l, m)
                     ctx.add_rule(Rule( \
                             rule = [mk_parent_dir_rule, xmltomanrule],
-                            sources = "po4a/%s.1.%s.xml" % (m, l),
+                            sources = "${PO4ABUILDDIR}/%s.1.%s.xml" % (m, l),
                             targets = mtarget,
                             wdeps = lastmtarget,
                             where = NOWHERE))
                     lastmtarget = mtarget
         for h in ROXTERM_HTML_BASENAMES:
-            master = "${TOP_DIR}/Help/en/%s.html" % h
-            pot = "${PO4ADIR}/%s.html.pot" % h
+            master = "../Help/en/%s.html" % h
+            pot = "%s.html.pot" % h
             ctx.add_rule(Rule(rule = ["${PO4A_GETTEXTIZE} ${PO4AOPTS} " \
                     "-f xhtml -m ${SRC} -p ${TGT}",
                     charset_rule,
                     "${SED} -i 's/SOME DESCRIPTIVE TITLE/" \
                             "Translations for roxterm docs/' ${TGT}",
-                    "${SED} -i 's/Copyright (C) YEAR/Copyright (C) 2010/' " \
+                    "${SED} -i 's/Copyright (C) YEAR/" + \
+                            "Copyright (C) 2010-2014/' " \
                             "${TGT}",
                     "${SED} -i 's/FIRST AUTHOR <EMAIL@ADDRESS>, YEAR/"
-                            "Tony Houghton <h@realh.co.uk>, 2010/' ${TGT}"],
+                            "Tony Houghton <h@realh.co.uk>, 2014/' ${TGT}"],
                     sources = master,
-                    targets = pot,
+                    targets = "${PO4ADIR}/" + pot,
                     where = NOWHERE,
+                    dir = "${PO4ADIR}",
                     use_shell = True))
             for l in linguas:
-                ldir = "${TOP_DIR}/Help/%s" % l
+                ldir = "../Help/%s" % l
                 ctx.ensure_out_dir(ldir)
                 po = "${PO4ADIR}/%s.html.%s.po" % (h, l)
                 ctx.add_rule(Rule(rule = ["${PO4A_UPDATEPO} ${PO4AOPTS} " \
@@ -539,6 +548,7 @@ elif ctx.mode == 'build':
                         sources = [master, pot],
                         targets = po,
                         where = NOWHERE,
+                        dir = "${PO4ADIR}",
                         use_shell = True))
                 ctx.add_rule(Rule(rule = [mk_parent_dir_rule,
                         "${PO4A_TRANSLATE} "
@@ -546,8 +556,9 @@ elif ctx.mode == 'build':
                         "-k 0 -f xhtml -m %s " \
                         "-p ${SRC} -l ${TGT}" % master],
                         sources = po,
-                        targets = "%s/%s.html" % (ldir, h),
+                        targets = "${ABS_TOP_DIR}/Help/%s/%s.html" % (ldir, h),
                         where = NOWHERE,
+                        dir = "${PO4ADIR}",
                         use_shell = True))
 
 
@@ -555,8 +566,9 @@ elif ctx.mode == 'build':
     if ctx.env['HAVE_ITSTOOL']:
         podir = "${POXML_DIR}"
         linguas = parse_linguas(ctx, podir = podir)
-        xmlout = "${POXML_DIR}/roxterm.appdata.xml"
-        xmlin = xmlout + ".in"
+        basename = "roxterm.appdata.xml"
+        xmlout = "${ABS_BUILD_DIR}/" + basename
+        xmlin = "../" + basename + ".in"
         potfile = "${POXML_DIR}/roxterm.appdata.xml.pot"
         ctx.add_rule(Rule( \
                 rule = ["${ITSTOOL} -i ${APPDATA_ITS} -o ${TGT} ${SRC}",
@@ -567,26 +579,29 @@ elif ctx.mode == 'build':
                 targets = potfile,
                 deps = "${APPDATA_ITS}",
                 where = NOWHERE,
+                dir = podir,
                 use_shell = True))
         if linguas:
             for r in PoRulesFromLinguas(ctx, podir = podir,
+                    modir = "${POXML_BUILD_DIR}",
                     sources = potfile):
                 ctx.add_rule(r)
             sources = []
             for l in parse_linguas(ctx, podir = podir):
-                sources.append(opj("${POXML_DIR}", l + ".mo"))
+                sources.append(opj("${POXML_BUILD_DIR}", l + ".mo"))
             ctx.add_rule(Rule( \
                     rule = "${ITSTOOL} -i ${APPDATA_ITS} -j " + xmlin +
                             " -o ${TGT} ${SRC}",
                     sources = sources,
                     targets = xmlout,
+                    dir = podir,
                     where = NOWHERE))
     else:
         linguas = None
     if not linguas:
         ctx.add_rule(Rule(rule = "cp ${SRC} ${TGT}",
-                sources = "${POXML_DIR}/roxterm.appdata.xml.in",
-                targets = "${POXML_DIR}/roxterm.appdata.xml",
+                sources = "${ABS_TOP_DIR}/roxterm.appdata.xml.in",
+                targets = "${ABS_BUILD_DIR}/roxterm.appdata.xml",
                 where = NOWHERE))
 
 
@@ -595,7 +610,7 @@ elif ctx.mode == "install" or ctx.mode == "uninstall":
     ctx.install_bin("roxterm roxterm-config")
     ctx.install_data("roxterm-config.ui")
     ctx.install_data("roxterm.desktop", "${DATADIR}/applications")
-    ctx.install_data("poxml/roxterm.appdata.xml", "${DATADIR}/appdata")
+    ctx.install_data("roxterm.appdata.xml", "${DATADIR}/appdata")
     if ctx.env['XMLTOMAN']:
         ctx.install_man("roxterm.1 roxterm-config.1")
     ctx.install_doc("AUTHORS ChangeLog README")
@@ -647,8 +662,6 @@ elif ctx.mode == "install" or ctx.mode == "uninstall":
 elif ctx.mode == 'pristine' or ctx.mode == 'clean':
 
     clean = ["${TOP_DIR}/maitch.pyc"] + \
-            ctx.glob("*.mo", "${TOP_DIR}", "poxml") + \
-            ctx.glob("*.mo", "${TOP_DIR}", "po") + \
             ctx.glob("*.po~", "${TOP_DIR}", "po") + \
             ctx.glob("*.po~", "${TOP_DIR}", "po4a") + \
             ctx.glob("*.po~", "${TOP_DIR}", "poxml")

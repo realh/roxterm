@@ -351,7 +351,7 @@ Other predefined variables [default values shown in squarer brackets]:
 
         # Everything hinges on BUILD_DIR
         self.get_build_dir()
-        self.build_dir = os.path.abspath(self.subst(self.env['BUILD_DIR']))
+        self.build_dir = opap(self.subst(self.env['BUILD_DIR']))
         self.ensure_out_dir(self.build_dir)
         log_file = opj(self.build_dir, ".maitch", "log")
         self.ensure_out_dir_for_file(log_file)
@@ -418,8 +418,11 @@ Other predefined variables [default values shown in squarer brackets]:
                 self.env[v[0]] = d
 
         self.top_dir = self.subst(self.env['TOP_DIR'])
+        self.env['ABS_TOP_DIR'] = opap(self.top_dir)
         self.src_dir = self.subst(self.env['SRC_DIR'])
+        self.env['ABS_SRC_DIR'] = opap(self.subst(self.src_dir))
         self.check_build_dir()
+        self.env['ABS_BUILD_DIR'] = opap(self.subst(self.env['BUILD_DIR']))
         self.dest_dir = self.subst(self.env['DESTDIR'])
 
         self.definitions = {}
@@ -429,9 +432,9 @@ Other predefined variables [default values shown in squarer brackets]:
         # In dist mode everything is relative to TOP_DIR
         if self.mode == "dist":
             self.env['TOP_DIR'] = os.curdir
-            bd = os.path.abspath(self.build_dir)
+            bd = opap(self.build_dir)
             self.env['BUILD_DIR'] = bd
-            td = os.path.abspath(self.top_dir)
+            td = opap(self.top_dir)
             mprint('make[0]: Entering directory "%s"' % td)
             os.chdir(td)
 
@@ -598,12 +601,12 @@ Other predefined variables [default values shown in squarer brackets]:
         setting defaults if necessary. """
         if not kwargs:
             kwargs = self.env
-        self.env['MSCRIPT_DIR'] = os.path.abspath(os.path.dirname(sys.argv[0]))
+        self.env['MSCRIPT_DIR'] = opap(os.path.dirname(sys.argv[0]))
         self.env['MSCRIPT_REAL_DIR'] = \
-                os.path.abspath(os.path.dirname(os.path.realpath(sys.argv[0])))
+                opap(os.path.dirname(os.path.realpath(sys.argv[0])))
         bd = kwargs.get('BUILD_DIR')
         if bd:
-            bd = os.path.abspath(bd)
+            bd = opap(bd)
         else:
             bd = opj("${MSCRIPT_REAL_DIR}", "build")
         self.env['BUILD_DIR'] = bd
@@ -627,9 +630,9 @@ Other predefined variables [default values shown in squarer brackets]:
 
     def get_lock_file_name(self):
         if self.env.get("LOCK_TOP"):
-            return os.path.abspath(opj(self.subst("${TOP_DIR}"), ".maitchlock"))
+            return opap(opj(self.subst("${TOP_DIR}"), ".maitchlock"))
         else:
-            return os.path.abspath(opj(self.subst("${BUILD_DIR}"),
+            return opap(opj(self.subst("${BUILD_DIR}"),
                     ".maitch", "lock"))
 
 
@@ -667,7 +670,7 @@ Other predefined variables [default values shown in squarer brackets]:
             dir = self.subst(dir)
         else:
             orig_dir = os.curdir
-            dir = os.path.abspath(orig_dir)
+            dir = opap(orig_dir)
         if subdir:
             dir = opj(dir, subdir)
         matches = fnmatch.filter(os.listdir(dir), pattern)
@@ -742,7 +745,7 @@ Other predefined variables [default values shown in squarer brackets]:
             suffix = "tar.bz2"
             zname = "tarball"
         basedir = self.subst("${PACKAGE}-${VERSION}")
-        filename = os.path.abspath(
+        filename = opap(
                 self.subst("${BUILD_DIR}/%s.%s" % (basedir, suffix)))
         mprint("Creating %s '%s'" % (zname, filename))
         if self.dist_as_zip:
@@ -1044,10 +1047,10 @@ int main() { %s(); return 0; }
         return present == 1
 
 
-    def find_source(self, name, where = SRC, fatal = True):
+    def find_source(self, name, cwd = None, where = SRC, fatal = True):
         """ Finds a source file relative to BUILD_DIR (higher priority) or
-        SRC_DIR, returning full path or raising exception if not found. Returns
-        absolute paths unchanged. If fatal is False, unfound files are
+        SRC_DIR or cwd, returning full path or raising exception if not found.
+        Returns absolute paths unchanged. If fatal is False, unfound files are
         returned unchanged"""
         name = self.subst(name)
         if os.path.exists(name):
@@ -1068,6 +1071,11 @@ int main() { %s(); return 0; }
             p = opj(self.top_dir, name)
             if os.path.exists(p):
                 return p
+        if cwd:
+            p = opj(self.subst(cwd), name)
+            if os.path.exists(p):
+                return p
+            print p, "not found in", cwd, self.subst(cwd)
         if fatal:
             self.not_found(name)
         else:
@@ -1089,14 +1097,14 @@ int main() { %s(); return 0; }
         return self.env.get(k)
 
 
-    def get_stamp(self, name, where = NOWHERE):
+    def get_stamp(self, name, cwd = None, where = NOWHERE):
         """ Returns the mtime for named file. Uses find_source() and subst and
         therefore may raise MaitchNotFoundError or KeyError. """
-        n = self.find_source(self.subst(name), where)
+        n = self.find_source(self.subst(name), cwd, where)
         return os.stat(name).st_mtime
 
 
-    def get_extreme_stamp(self, nodes, comparator, where = NOWHERE,
+    def get_extreme_stamp(self, nodes, comparator, cwd = None, where = NOWHERE,
             verbose = False):
         """ Like global version, but runs subst() and find_source() on each
         item. Items that don't exist are skipped because some suffix rules
@@ -1106,26 +1114,28 @@ int main() { %s(); return 0; }
         pnodes = []
         for n in nodes:
             try:
-                pnodes.append(self.find_source(self.subst(n), where))
+                pnodes.append(self.find_source(self.subst(n), cwd, where))
             except MaitchNotFoundError:
                 pass
         return get_extreme_stamp(pnodes, comparator, verbose)
 
 
-    def get_oldest(self, nodes, where = NOWHERE, verbose = False):
+    def get_oldest(self, nodes, cwd = None, where = NOWHERE, verbose = False):
         """ Like global version, but runs subst() and find_source() on each
         item, so may raise MaitchNotFoundError or KeyError. """
         if verbose:
             verbose += "Oldest"
-        return self.get_extreme_stamp(nodes, lambda a, b: a < b, where, verbose)
+        return self.get_extreme_stamp(nodes, lambda a, b: a < b,
+                cwd, where, verbose)
 
 
-    def get_newest(self, nodes, where = NOWHERE, verbose = False):
+    def get_newest(self, nodes, cwd = None, where = NOWHERE, verbose = False):
         """ Like global version, but runs subst() and find_source() on each
         item, so may raise MaitchNotFoundError or KeyError. """
         if verbose:
             verbose += "Newest"
-        return self.get_extreme_stamp(nodes, lambda a, b: a > b, where, verbose)
+        return self.get_extreme_stamp(nodes, lambda a, b: a > b,
+                cwd, where, verbose)
 
 
     def subst_file(self, source, target, at = False):
@@ -1148,7 +1158,7 @@ int main() { %s(); return 0; }
         directory = process_nodes(directory)
         if self.dest_dir:
             directory = [self.dest_dir + os.sep + d for d in directory]
-        directory = [os.path.abspath(self.subst(d)) for d in directory]
+        directory = [opap(self.subst(d)) for d in directory]
         if not sources:
             sources = []
         else:
@@ -1169,7 +1179,7 @@ int main() { %s(); return 0; }
                 f = directory
             self.installed.append([f, libtool])
             return
-        sources = [self.find_source(s, TOP | SRC, False) for s in sources]
+        sources = [self.find_source(s, None, TOP | SRC, False) for s in sources]
         if libtool:
             cmd = ["${LIBTOOL}", "--mode=install", "${INSTALL}"]
         else:
@@ -1502,7 +1512,8 @@ class Rule(object):
             # targets with build_dir.
             targets = [subst(env, t) for t in self.targets]
             if self.sources:
-                sources = [self.ctx.find_source(subst(env, s), self.where) \
+                sources = [self.ctx.find_source(subst(env, s),
+                                self.dir, self.where) \
                         for s in self.sources]
             else:
                 sources = None
@@ -1684,7 +1695,8 @@ class Rule(object):
         if verbose:
             verbose = "  "
         try:
-            oldest_target = self.ctx.get_oldest(self.targets, NOWHERE, verbose)
+            oldest_target = self.ctx.get_oldest(self.targets, self.dir,
+                    NOWHERE, verbose)
         except MaitchNotFoundError, KeyError:
             oldest_target = None
         if not oldest_target:
@@ -1694,8 +1706,8 @@ class Rule(object):
         if uptodate:
             # All sources and deps should be available at this point so
             # OK to let exception propagate
-            newest_dep = self.ctx.get_newest(self.cached_deps, self.where,
-                    verbose)
+            newest_dep = self.ctx.get_newest(self.cached_deps, self.dir,
+                    self.where, verbose)
             dprint("  %s newest dep is %s" % (self, newest_dep))
             if newest_dep and (newest_dep > oldest_target):
                 if verbose:
@@ -1717,7 +1729,7 @@ class Rule(object):
                 deps_stamp = os.stat(deps_name).st_mtime
                 if not newest_dep:
                     newest_dep = self.ctx.get_newest(self.cached_deps,
-                            self.where)
+                            self.dir, self.where)
                 if newest_dep and newest_dep > deps_stamp:
                     # sources/static deps are newer than dynamics
                     rebuild_deps = True
@@ -2105,6 +2117,10 @@ def manipulate_kwargs_for_pot_rule(ctx, kwargs, potfiles = False):
 
     diffpat is set to match certain headers that xgettext adds or removes
     at will.
+
+    dir must be set to the directory in which you want the pot file to be
+    output, for correct relative paths to files referenced in the pot file
+    and/or potfiles.
     """
 
     def pot_deps(ctx, rule):
@@ -2119,8 +2135,16 @@ def manipulate_kwargs_for_pot_rule(ctx, kwargs, potfiles = False):
     varname = "%s_XGETTEXT_OPTS" % opts_prefix
     if not 'where' in kwargs:
         kwargs['where'] = SRC | TOP
-    if not 'targets' in kwargs:
-        kwargs['targets'] = ["${TOP_DIR}/po/${PACKAGE}.pot"]
+    targets = kwargs.get('targets')
+    if not targets:
+        targets = ["${TOP_DIR}/po/${PACKAGE}.pot"]
+        kwargs['targets'] = targets
+    elif isinstance(targets, basestring):
+        targets = [targets]
+    for n in range(len(targets)):
+        t = ctx.subst(targets[n])
+        if not os.path.isabs(t):
+            targets[n] = opap(t)
     if potfiles:
         potfiles = " -f"
     else:
@@ -2186,12 +2210,13 @@ def PotRules(ctx, **kwargs):
     """
     def generate_potfiles(ctx, env, targets, sources):
         potfiles = []
+        relpath = os.path.relpath(ctx.subst("${ABS_TOP_DIR}"))
         for s in sources:
             fp = open(subst(env, s), 'r')
             for f in fp.readlines():
                 f = f.strip()
                 if len(f) and f[0] != '#':
-                    potfiles.append(opj(env['TOP_DIR'], f.strip()))
+                    potfiles.append(opj(relpath, f))
             fp.close()
         t = subst(env, targets[0])
         ctx.ensure_out_dir_for_file(t)
@@ -2200,15 +2225,18 @@ def PotRules(ctx, **kwargs):
             fp.write("%s\n" % f)
         fp.close()
 
+    podir = "${ABS_TOP_DIR}/po"
+    kwargs['dir'] = podir
     manipulate_kwargs_for_pot_rule(ctx, kwargs, True)
 
-    src1 = kwargs.get('sources', "${TOP_DIR}/po/POTFILES.in")
+    src1 = kwargs.get('sources', podir + "/POTFILES.in")
     rule1 = Rule(rule = generate_potfiles,
-            sources = src1,
-            targets = ["${BUILD_DIR}/po/POTFILES"],
+            sources = opap(ctx.subst(src1)),
+            targets = ["${ABS_BUILD_DIR}/po/POTFILES"],
+            dir = podir,
             where = kwargs['where'])
 
-    kwargs['sources'] = ["${BUILD_DIR}/po/POTFILES"]
+    kwargs['sources'] = ["${ABS_BUILD_DIR}/po/POTFILES"]
     rule2 = Rule(**kwargs)
 
     return [rule1, rule2]
@@ -2216,10 +2244,10 @@ def PotRules(ctx, **kwargs):
 
 class PoRule(TouchRule):
     """ Updates a po file from a pot (default src is
-    ${TOP_DIR}/po/${PACKAGE}.pot). """
+    ${ABS_TOP_DIR}/po/${PACKAGE}.pot). """
     def __init__(self, *args, **kwargs):
         if not 'sources' in kwargs:
-            kwargs['sources'] = "${TOP_DIR}/po/${PACKAGE}.pot"
+            kwargs['sources'] = "${ABS_TOP_DIR}/po/${PACKAGE}.pot"
         if not 'rule' in kwargs:
             kwargs['rule'] = ["${MSGMERGE} -q -U ${TGT} ${SRC}", self.touch]
         kwargs['diffpat'] = gettext_diffpat
@@ -2229,7 +2257,7 @@ class PoRule(TouchRule):
 
 def parse_linguas(ctx, podir = None, linguas = None):
     if not podir:
-        podir = opj("${TOP_DIR}", "po")
+        podir = opj("${ABS_TOP_DIR}", "po")
     if not linguas:
         linguas = opj(podir, "LINGUAS")
     langs = []
@@ -2247,11 +2275,11 @@ def parse_linguas(ctx, podir = None, linguas = None):
 def foreach_lingua(ctx, fn, podir = None, linguas = None, prefix = None):
     """ Runs fn(ctx, lang, f) for each lang found in linguas,
         where f is .po file.
-        Default podir is '${TOP_DIR}/po'
+        Default podir is '${ABS_TOP_DIR}/po'
         Default linguas is ${podir}/LINGUAS.
     """
     if not podir:
-        podir = opj("${TOP_DIR}", "po")
+        podir = opj("${ABS_TOP_DIR}", "po")
     if not linguas:
         linguas = opj(podir, "LINGUAS")
     langs = parse_linguas(ctx, linguas = linguas)
@@ -2266,16 +2294,21 @@ def foreach_lingua(ctx, fn, podir = None, linguas = None, prefix = None):
 
 
 def PoRulesFromLinguas(ctx, *args, **kwargs):
-    """ Generates a PoRule for each language listed in linguas. Default linguas
-    is podir/LINGUAS. Default podir is ${TOP_DIR}/po. Default pot file is
-    po/${PACKAGE}.pot, otherwise specify in sources. Other args are passed to
-    each PoRule. Also generates .mo rules unless nomo is True. If prefix arg is
-    given this is added to po and mo filenames. """
+    """ Generates a PoRule and .mo for each language listed in linguas. Default
+        linguas is podir/LINGUAS. Default podir is ${ABS_TOP_DIR}/po. Default
+        modir is ${ABS_BUILD_DIR}/po. Default pot file is po/${PACKAGE}.pot,
+        otherwise specify in sources. Other args are passed to each PoRule. Also
+        generates .mo rules unless nomo is True. If prefix arg is given this is
+        added to po and mo filenames.
+     """
     nomo = kwargs.get("nomo")
     prefix = kwargs.get("prefix")
     podir = kwargs.get("podir")
     if not podir:
-        podir = opj("${TOP_DIR}", "po")
+        podir = opj("${ABS_TOP_DIR}", "po")
+    modir = kwargs.get("modir")
+    if not modir:
+        modir = opj("${ABS_BUILD_DIR}", "po")
     rules = []
 
     def add_po_rule(ctx, l, f):
@@ -2283,8 +2316,9 @@ def PoRulesFromLinguas(ctx, *args, **kwargs):
         rules.append(PoRule(*args, **kwargs))
         if not nomo:
             rules.append(Rule(rule = "${MSGFMT} -c -o ${TGT} ${SRC}",
-                    targets = opj(podir, l + ".mo"),
-                    sources = f))
+                    targets = opj(modir, l + ".mo"),
+                    sources = f,
+                    dir = podir))
 
     foreach_lingua(ctx, add_po_rule,
             kwargs.get('podir'), kwargs.get('linguas'), kwargs.get('prefix'))
@@ -2403,6 +2437,12 @@ def set_default(d, k, v):
 def opj(*args):
     """ Like os.path.join and also calls os.path.normpath """
     return os.path.normpath(os.path.join(*args))
+
+
+
+def opap(p):
+    """ Like os.path.abspath and also calls os.path.normpath """
+    return os.path.normpath(os.path.abspath(p))
 
 
 
@@ -2799,7 +2839,7 @@ class BuildGroup(object):
                     continue
 
                 # Does file already exist?
-                self.ctx.find_source(dep, job.where)
+                self.ctx.find_source(dep, job.dir, job.where)
                 if self.verbose:
                     dprint(vdp +  "  %s already exists" % dep)
             except:
