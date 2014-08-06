@@ -417,26 +417,36 @@ Other predefined variables [default values shown in squarer brackets]:
                     d = v[1]
                 self.env[v[0]] = d
 
-        self.top_dir = self.subst(self.env['TOP_DIR'])
-        self.env['ABS_TOP_DIR'] = opap(self.top_dir)
-        self.src_dir = self.subst(self.env['SRC_DIR'])
-        self.env['ABS_SRC_DIR'] = opap(self.subst(self.src_dir))
+        # In dist mode everything is relative to TOP_DIR
+        bd = self.subst("${BUILD_DIR}")
+        td = self.subst("${TOP_DIR}")
+        if self.mode == "dist":
+            self.env['TOP_DIR'] = os.curdir
+            self.env['BUILD_DIR'] = bd
+            mprint('make[0]: Entering directory "%s"' % td)
+            os.chdir(td)
+        else:
+            mprint('make[0]: Entering directory "%s"' % td)
+            os.chdir(bd)
+
+        self.top_dir = self.subst("${TOP_DIR}")
+        self.abs_top_dir = opap(self.top_dir)
+        self.env['ABS_TOP_DIR'] = self.abs_top_dir
+        self.src_dir = self.subst("${SRC_DIR}")
+        self.abs_src_dir = opap(self.src_dir)
+        self.env['ABS_SRC_DIR'] = self.abs_src_dir
         self.check_build_dir()
-        self.env['ABS_BUILD_DIR'] = opap(self.subst(self.env['BUILD_DIR']))
+        self.build_dir = self.subst("${BUILD_DIR}")
+        self.abs_build_dir = opap(self.build_dir)
+        self.env['ABS_BUILD_DIR'] = self.abs_build_dir
         self.dest_dir = self.subst(self.env['DESTDIR'])
+        print "bd:", self.build_dir, "td:", self.top_dir, \
+                "abd:", self.abs_build_dir, "atd:", self.abs_top_dir
+
 
         self.definitions = {}
 
         self.created_by_config[".maitch"] = True
-
-        # In dist mode everything is relative to TOP_DIR
-        if self.mode == "dist":
-            self.env['TOP_DIR'] = os.curdir
-            bd = opap(self.build_dir)
-            self.env['BUILD_DIR'] = bd
-            td = opap(self.top_dir)
-            mprint('make[0]: Entering directory "%s"' % td)
-            os.chdir(td)
 
         if self.env.get('ENABLE_DEBUG'):
             global _debug
@@ -1053,38 +1063,47 @@ int main() { %s(); return 0; }
         Returns absolute paths unchanged. If fatal is False, unfound files are
         returned unchanged"""
         name = self.subst(name)
-        if os.path.exists(name):
-            return name
         if os.path.isabs(name):
             if os.path.exists(name):
                 return name
             else:
-                self.not_found(name)
-        p = opj(self.build_dir, name)
-        if os.path.exists(p):
-            return p
+                self.not_found(name, [name])
+        looked_for = []
         if where & SRC:
-            p = opj(self.src_dir, name)
+            p = opj(self.abs_src_dir, name)
+            looked_for.append('SRC: ' + p)
             if os.path.exists(p):
                 return p
         if where & TOP:
-            p = opj(self.top_dir, name)
+            p = opj(self.abs_top_dir, name)
+            looked_for.append('TOP: ' + p)
             if os.path.exists(p):
                 return p
         if cwd:
             p = opj(self.subst(cwd), name)
+            looked_for.append('CWD:' + p)
             if os.path.exists(p):
                 return p
-            print p, "not found in", cwd, self.subst(cwd)
-        if fatal:
-            self.not_found(name)
         else:
+            # If no cwd (Rule.dir) we should be in BUILD_DIR
+            p = opj(self.abs_build_dir, name)
+            looked_for.append(['BUILD: ' + p])
+            if os.path.exists(p):
+                return p
+        if fatal:
+            self.not_found(name, looked_for)
+        else:
+            dprint("find_source failed:", looked_for)
             return name
 
 
     @staticmethod
-    def not_found(name):
-        raise MaitchNotFoundError("Resource '%s' cannot be found" % name)
+    def not_found(name, looked_for = None):
+        if looked_for:
+            s = " - looked for " + str(looked_for)
+        else:
+            s = ""
+        raise MaitchNotFoundError(("Resource '%s' cannot be found" % name) + s)
 
 
     def setenv(self, k, v):
@@ -1109,7 +1128,8 @@ int main() { %s(); return 0; }
         """ Like global version, but runs subst() and find_source() on each
         item. Items that don't exist are skipped because some suffix rules
         don't necessarily use all sources or targets (eg gob2 doesn't always
-        output a private header). If verbose isn't False it must be a string
+        output a private header) and because this is also used on files which
+        may not have been built yet. If verbose isn't False it must be a string
         prefix """
         pnodes = []
         for n in nodes:
@@ -1736,10 +1756,16 @@ class Rule(object):
                 else:
                     # see whether cached deps are older than any file they list
                     dyn_deps = load_deps(deps_name)
-                    newest_impl_dep = get_newest(dyn_deps)
-                    if newest_impl_dep > newest_dep:
-                        newest_dep = newest_impl_dep
-                    rebuild_deps = newest_impl_dep > deps_stamp
+                    try:
+                        newest_impl_dep = self.ctx.get_newest(dyn_deps,
+                                self.dir)
+                    except MaitchNotFoundError:
+                        # Some header must have moved, deps need rebuilding
+                        rebuild_deps = True
+                    else:
+                        if newest_impl_dep > newest_dep:
+                            newest_dep = newest_impl_dep
+                        rebuild_deps = newest_impl_dep > deps_stamp
             else:
                 rebuild_deps = True
             if rebuild_deps:
@@ -1753,7 +1779,10 @@ class Rule(object):
                 dyn_deps = load_deps(deps_name)
             # Now we have up-to-date implicit dyn_deps, check whether targets
             # are older than them
-            if get_newest(dyn_deps) > oldest_target:
+            try:
+                if self.ctx.get_newest(dyn_deps, self.dir) > oldest_target:
+                    uptodate = False
+            except:
                 uptodate = False
         else:
             if verbose:
@@ -2813,9 +2842,15 @@ class BuildGroup(object):
             return
         for dep in deps:
             dep = self.ctx.subst(dep)
+            if job.dir and not os.path.isabs(dep):
+                absdep = self.ctx.subst(opj(job.dir, dep))
+            else:
+                absdep = None
             try:
                 # Has a rule to build this dep already been queued?
                 rule = self.queued.get(dep)
+                if not rule and absdep:
+                    rule = self.queued.get(absdep)
                 if rule:
                     if rule.calculating:
                         raise MaitchRecursionError("%s and %s have circular "
@@ -2828,7 +2863,8 @@ class BuildGroup(object):
 
                 # Is there an explicit rule for it?
                 rule = self.ctx.explicit_rules.get(dep)
-
+                if not rule and absdep:
+                    rule = self.ctx.explicit_rules.get(absdep)
                 if rule:
                     self.mark_blocking(job, rule)
                     if self.verbose:

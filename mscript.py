@@ -274,10 +274,10 @@ if ctx.mode == 'configure':
     ctx.define_from_var('NEED_TRANSPARENCY_FIX')
 
     ctx.subst_file("${TOP_DIR}/roxterm.1.xml.in",
-            "${TOP_DIR}/roxterm.1.xml", True)
+            "${BUILD_DIR}/roxterm.1.xml", True)
     ctx.subst_file("${TOP_DIR}/roxterm-config.1.xml.in",
-            "${TOP_DIR}/roxterm-config.1.xml", True)
-    ctx.subst_file("${TOP_DIR}/roxterm.spec.in", "${TOP_DIR}/roxterm.spec")
+            "${BUILD_DIR}/roxterm-config.1.xml", True)
+    ctx.subst_file("${TOP_DIR}/roxterm.spec.in", "${BUILD_DIR}/roxterm.spec")
     ctx.setenv('APPINFO_STRING', "${VERSION} (%s)" % \
             time.strftime("%Y-%m-%d", time.gmtime(time.time())))
     ctx.subst_file(APPINFO + ".in", APPINFO)
@@ -416,8 +416,8 @@ elif ctx.mode == 'build':
         fp = open(targets[0], 'w')
         fp.close()
     ctx.add_rule(Rule(rule = process_ui,
-            sources = "${SRC_DIR}/roxterm-config.ui",
-            targets = "roxterm-config.ui-stamp"))
+            sources = "${ABS_SRC_DIR}/roxterm-config.ui",
+            targets = "${ABS_BUILD_DIR}/roxterm-config.ui-stamp"))
 
     # Translations (gettext)
     if ctx.env['HAVE_GETTEXT']:
@@ -439,11 +439,11 @@ elif ctx.mode == 'build':
         for r in trans_rules:
             ctx.add_rule(r)
         ctx.add_rule(PotRule(ctx,
-                sources = '${SRC_DIR}/roxterm-config.ui',
+                sources = '../src/roxterm-config.ui',
                 targets = glade_pot,
                 deps = podir,
                 xgettext_opts = '-L Glade',
-                wdeps = "roxterm-config.ui-stamp",
+                wdeps = "${ABS_BUILD_DIR}/roxterm-config.ui-stamp",
                 dir = "${ABS_TOP_DIR}/po"))
         ctx.add_rule(Rule(sources = [code_pot, glade_pot],
                 targets = '${ABS_TOP_DIR}/po/${PACKAGE}.pot',
@@ -674,9 +674,7 @@ elif ctx.mode == 'pristine' or ctx.mode == 'clean':
                 "favicon.ico logo_text.png roxterm_logo.png".split()] + \
             ctx.glob("*.pot", "${TOP_DIR}", "po") + \
             ctx.glob("*.pot", "${TOP_DIR}", "po4a") + \
-            ctx.glob("*.pot", "${TOP_DIR}", "poxml") + \
-            ["${TOP_DIR}/" + f for f in \
-                "roxterm.1.xml roxterm-config.1.xml roxterm.spec".split()]
+            ctx.glob("*.pot", "${TOP_DIR}", "poxml")
         f = open(ctx.subst("${TOP_DIR}/po4a/LINGUAS"), 'r')
         hd = ctx.subst("${TOP_DIR}/Help/")
         for d in [hd + l.strip() for l in f.readlines() + ['pt']]:
