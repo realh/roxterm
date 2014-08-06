@@ -1059,13 +1059,15 @@ int main() { %s(); return 0; }
         SRC_DIR or cwd, returning full path or raising exception if not found.
         Returns absolute paths unchanged. If fatal is False, unfound files are
         returned unchanged"""
+        looked_for = []
         name = self.subst(name)
         if os.path.isabs(name):
             if os.path.exists(name):
                 return name
             else:
                 self.not_found(name, [name])
-        looked_for = []
+        elif cwd and os.path.exists(opj(cwd, name)):
+            return name
         if where & SRC:
             p = opj(self.abs_src_dir, name)
             looked_for.append('SRC: ' + p)
@@ -2222,6 +2224,8 @@ class PotRule(Rule):
     def __init__(self, ctx, **kwargs):
         potfiles = kwargs.get('potfiles', False)
         manipulate_kwargs_for_pot_rule(ctx, kwargs, potfiles)
+        print "PotRule sources", kwargs['sources']
+        print "PotRule rule", kwargs['rule']
         Rule.__init__(self, **kwargs)
 
 

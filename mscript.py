@@ -676,14 +676,16 @@ elif ctx.mode == 'pristine' or ctx.mode == 'clean':
             ctx.glob("*.pot", "${TOP_DIR}", "po") + \
             ctx.glob("*.pot", "${TOP_DIR}", "po4a") + \
             ctx.glob("*.pot", "${TOP_DIR}", "poxml")
-        f = open(ctx.subst("${TOP_DIR}/po4a/LINGUAS"), 'r')
-        hd = ctx.subst("${TOP_DIR}/Help/")
-        for d in [hd + l.strip() for l in f.readlines() + ['pt']]:
-            recursively_remove(d, False, [])
-        f.close()
 
     for f in clean:
         ctx.delete(f)
+
+    # Generated HTML doesn't go in tarball so must be cleaned
+    f = open(ctx.subst("${TOP_DIR}/po4a/LINGUAS"), 'r')
+    hd = ctx.subst("${TOP_DIR}/Help/")
+    for d in [hd + l.strip() for l in f.readlines() + ['pt']]:
+        recursively_remove(d, False, [])
+    f.close()
 
 elif ctx.mode == 'dist':
 
