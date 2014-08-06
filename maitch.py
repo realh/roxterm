@@ -1140,9 +1140,10 @@ int main() { %s(); return 0; }
             cwd = self.abs_build_dir
         for n in range(len(pnodes)):
             f = pnodes[n]
-            if not os.path.abspath(f):
+            if not os.path.isabs(f):
                 pnodes[n] = opj(cwd, f)
-        return get_extreme_stamp(pnodes, comparator, verbose)
+        try:
+            return get_extreme_stamp(pnodes, comparator, verbose)
 
 
     def get_oldest(self, nodes, cwd = None, where = NOWHERE, verbose = False):
