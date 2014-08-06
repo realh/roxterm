@@ -1391,6 +1391,7 @@ class Rule(object):
     using_dir = False
     dir_lock = threading.Condition()
     cwd = None
+    printed_cwd = None
     n_running = 0
 
     def __init__(self, **kwargs):
@@ -1577,14 +1578,11 @@ class Rule(object):
                 while Rule.n_running > 1:
                     Rule.dir_lock.wait()
                 #dprint("%s woke up to use dir '%s'" % (str(self), self.dir))
-                if Rule.cwd:
-                    mprint('make[0]: Leaving directory "%s"' % Rule.cwd)
                 if self.dir:
                     dir_ = self.dir
                     self.ctx.ensure_out_dir(dir_)
                 else:
                     dir_ = self.ctx.build_dir
-                mprint('make[0]: Entering directory "%s"' % dir_)
                 os.chdir(dir_)
                 Rule.cwd = self.dir
         except:
@@ -1626,6 +1624,16 @@ class Rule(object):
             if self.verbose:
                 dprint("%s is up-to-date" % self)
             return
+        if self.dir != Rule.printed_cwd:
+            d = Rule.printed_cwd
+            if not d:
+                d = self.ctx.abs_build_dir
+            mprint('make[0]: Leaving directory "%s"' % d)
+            d = self.dir
+            if not d:
+                d = self.ctx.abs_build_dir
+            mprint('make[0]: Entering directory "%s"' % d)
+            Rule.printed_cwd = self.dir
         env, targets, sources = self.process_env_tgt_src()
         if self.lock:
             self.lock.acquire()
