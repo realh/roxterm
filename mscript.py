@@ -487,7 +487,8 @@ elif ctx.mode == 'build':
                     po = "${PO4ADIR}/%s.1.%s.po" % (m, l)
                     ctx.add_rule(Rule(rule = ["${PO4A_UPDATEPO} ${PO4AOPTS} " \
                             "-f docbook -m ${SRC} -p ${TGT}",
-                            charset_rule],
+                            charset_rule,
+                            "rm -f ${TGT}~"],
                             sources = ["../%s.1.xml.in" % m, "%s.1.pot" % m],
                             targets = po,
                             diffpat = gettext_diffpat,

@@ -426,7 +426,6 @@ Other predefined variables [default values shown in squarer brackets]:
             mprint('make[0]: Entering directory "%s"' % td)
             os.chdir(td)
         else:
-            mprint('make[0]: Entering directory "%s"' % td)
             os.chdir(bd)
 
         self.top_dir = self.subst("${TOP_DIR}")
@@ -440,8 +439,6 @@ Other predefined variables [default values shown in squarer brackets]:
         self.abs_build_dir = opap(self.build_dir)
         self.env['ABS_BUILD_DIR'] = self.abs_build_dir
         self.dest_dir = self.subst(self.env['DESTDIR'])
-        print "bd:", self.build_dir, "td:", self.top_dir, \
-                "abd:", self.abs_build_dir, "atd:", self.abs_top_dir
 
 
         self.definitions = {}
