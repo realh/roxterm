@@ -1142,8 +1142,7 @@ int main() { %s(); return 0; }
             f = pnodes[n]
             if not os.path.isabs(f):
                 pnodes[n] = opj(cwd, f)
-        try:
-            return get_extreme_stamp(pnodes, comparator, verbose)
+        return get_extreme_stamp(pnodes, comparator, verbose)
 
 
     def get_oldest(self, nodes, cwd = None, where = NOWHERE, verbose = False):
