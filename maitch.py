@@ -1602,6 +1602,18 @@ class Rule(object):
         #dprint("%s done, releasing dir lock" % str(self))
         Rule.dir_lock.release()
 
+    """
+    def dump_uv(self, u, v):
+        f = open("/home/tony/roxterm/build/u", "w")
+        for l in u:
+            f.write(l)
+        f.close()
+        f = open("/home/tony/roxterm/build/v", "w")
+        for l in v:
+            f.write(l)
+        f.close()
+        sys.exit(1)
+    """
 
     def __inner_run(self):
         if self.is_uptodate():
@@ -1656,12 +1668,16 @@ class Rule(object):
                     s = t + '.old'
                     if os.path.exists(t) and os.path.exists(s):
                         f = open(s, 'r')
-                        u = [l and not self.diffpat.search(l) \
-                                for l in f.readlines()]
+                        u = []
+                        for l in f.readlines():
+                            if not self.diffpat.search(l):
+                                u.append(l)
                         f.close()
                         f = open(t, 'r')
-                        v = [l and not self.diffpat.search(l) \
-                                for l in f.readlines()]
+                        v = []
+                        for l in f.readlines():
+                            if not self.diffpat.search(l):
+                                v.append(l)
                         f.close()
                         if len(u) == len(v):
                             same = True
