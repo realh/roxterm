@@ -1136,6 +1136,12 @@ int main() { %s(); return 0; }
                 pnodes.append(self.find_source(self.subst(n), cwd, where))
             except MaitchNotFoundError:
                 pass
+        if not cwd:
+            cwd = self.abs_build_dir
+        for n in range(len(pnodes)):
+            f = pnodes[n]
+            if not os.path.abspath(f):
+                pnodes[n] = opj(cwd, f)
         return get_extreme_stamp(pnodes, comparator, verbose)
 
 
