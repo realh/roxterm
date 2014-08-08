@@ -1,9 +1,11 @@
-roxterm (2.9.2-1) unstable; urgency=low
+roxterm (2.9.3-1) unstable; urgency=low
 
+  * Applied wrap-and-sort.
+  * Shortened one-line description of roxterm virtual package.
   * Update debhelper compatibility to 9.
   * Allow package to be built repeatedly from same unpacked source:
-    + mscript.py, maitch.py: Clean *.mo, better at preventing po/pot files
-      being updated with pointless header changes.
+    + mscript.py, maitch.py: Better at preventing files such as *.po/*.pot
+      being needlessly updated with timestamps etc
   * Changed default GTK colour scheme:
     + Make bold black (LP: #1340721).
     + Don't set cursor colour due to
@@ -25,7 +27,7 @@ roxterm (2.9.2-1) unstable; urgency=low
   * Exclude logo source xcf (gimp) file from installation.
   * Added GTK & VTE version summary to About dialog.
 
- -- Tony Houghton <h@realh.co.uk>  Wed, 06 Aug 2014 21:15:45 +0100
+ -- Tony Houghton <h@realh.co.uk>  Fri, 08 Aug 2014 15:16:13 +0100
 
 roxterm (2.8.2-1) unstable; urgency=medium
 
