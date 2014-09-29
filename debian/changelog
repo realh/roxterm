@@ -1,3 +1,10 @@
+roxterm (2.9.4-3) UNRELEASED; urgency=medium
+
+  * Recognise _NET_WM_DESKTOP special value 0xffffffff correctly.
+  * Don't crash if EDITOR env variable is unset when editing shortcuts.
+
+ -- Tony Houghton <h@realh.co.uk>  Mon, 29 Sep 2014 17:06:37 +0100
+
 roxterm (2.9.4-1) unstable; urgency=low
 
   * Fixed metadata_license and non-default screenshot in appdata.
