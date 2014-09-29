@@ -403,12 +403,15 @@ static const char *shortcuts_find_text_editor(void)
     if (editor)
         return editor;
     env = getenv("EDITOR");
-    for (n = 0; subs[n] && !editor; ++n)
+    if (env)
     {
-        if (strstr(env, subs[n]))
+        for (n = 0; subs[n] && !editor; ++n)
         {
-            editor = g_find_program_in_path(
-                    strcmp(subs[n], "vi") ? subs[n] : "gvim");
+            if (strstr(env, subs[n]))
+            {
+                editor = g_find_program_in_path(
+                        strcmp(subs[n], "vi") ? subs[n] : "gvim");
+            }
         }
     }
     if (!editor)
