@@ -4466,7 +4466,8 @@ void roxterm_launch(const char *display_name, char **env)
                 if (x11support_get_wm_desktop(gtk_widget_get_window(w),
                     &workspace))
                 {
-                    if ((int) workspace == global_options_workspace)
+                    if (workspace == global_options_workspace ||
+                        workspace == WORKSPACE_ALL)
                     {
                         next_best = win;
                     }
