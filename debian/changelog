@@ -1,9 +1,10 @@
-roxterm (2.9.4-3) UNRELEASED; urgency=medium
+roxterm (2.9.5-1) unstable; urgency=medium
 
   * Recognise _NET_WM_DESKTOP special value 0xffffffff correctly.
-  * Don't crash if EDITOR env variable is unset when editing shortcuts.
+  * Don't crash if EDITOR env variable is unset when editing shortcuts
+    (Closes: #771022).
 
- -- Tony Houghton <h@realh.co.uk>  Mon, 29 Sep 2014 17:06:37 +0100
+ -- Tony Houghton <h@realh.co.uk>  Fri, 28 Nov 2014 18:20:06 +0000
 
 roxterm (2.9.4-1) unstable; urgency=low
 
