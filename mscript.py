@@ -278,6 +278,8 @@ if ctx.mode == 'configure':
     ctx.subst_file("${TOP_DIR}/roxterm-config.1.xml.in",
             "${BUILD_DIR}/roxterm-config.1.xml", True)
     ctx.subst_file("${TOP_DIR}/roxterm.spec.in", "${BUILD_DIR}/roxterm.spec")
+    ctx.subst_file("${TOP_DIR}/.ycm_extra_conf.py.in",
+            "${TOP_DIR}/.ycm_extra_conf.py", True)
     ctx.setenv('APPINFO_STRING', "${VERSION} (%s)" % \
             time.strftime("%Y-%m-%d", time.gmtime(time.time())))
     if not os.path.exists(ctx.subst(APPINFO)):
