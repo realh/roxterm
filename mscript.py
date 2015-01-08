@@ -705,7 +705,8 @@ elif ctx.mode == 'dist':
             "roxterm.appdata.xml.in " \
             "roxterm.desktop roxterm.lsm.in roxterm.spec.in " \
             "roxterm.svg roxterm.xml TODO " \
-            "src/roxterm-config.glade src/roxterm-config.ui")
+            "src/roxterm-config.glade src/roxterm-config.ui " \
+            ".ycm_extra_conf.py.in")
     ctx.add_dist([f.replace("${TOP_DIR}/", "") \
             for f in [LOGO_PNG, FAVICON, TEXT_LOGO]])
     ctx.add_dist(ctx.glob("*.[c|h]", os.curdir, "src"))

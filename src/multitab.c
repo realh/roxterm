@@ -838,6 +838,17 @@ static void multi_win_set_icon_title(MultiWin *win, const char *title)
         gdk_window_set_icon_name(w, title);
 }
 
+static void multi_win_highlight_selected_tab(MultiWin *win)
+{
+    GList *link;
+    for (link = win->tabs; link; link = g_list_next(link))
+    {
+        MultiTab *tab = link->data;
+        multitab_label_set_current(MULTITAB_LABEL(tab->label),
+                tab == win->current_tab);
+    }
+}
+
 void multi_win_select_tab(MultiWin * win, MultiTab * tab)
 {
     /* This is called by anything that causes a change of tab to keep things
@@ -874,6 +885,7 @@ void multi_win_select_tab(MultiWin * win, MultiTab * tab)
         }
     }
     multi_win_shade_for_next_and_previous_tab(win);
+    multi_win_highlight_selected_tab(win);
     /* FIXME: Ideally we should shade scroll up/down menu items if tab doesn't
      * have an adjustment, but in this implementation they always do
      */

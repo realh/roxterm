@@ -117,4 +117,7 @@ multitab_label_set_single (MultitabLabel *label, gboolean single);
 void
 multitab_label_set_fixed_width (MultitabLabel *label, int width);
 
+void
+multitab_label_set_current(MultitabLabel *label, gboolean current);
+
 #endif /* MULTITAB_LABEL_H */

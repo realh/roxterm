@@ -442,3 +442,9 @@ multitab_label_set_fixed_width (MultitabLabel *self, int width)
         gtk_label_set_width_chars (self->label, width);
     }
 }
+
+void
+multitab_label_set_current(MultitabLabel *label, gboolean current)
+{
+    gtk_widget_set_sensitive(GTK_WIDGET(label->label), current);
+}
