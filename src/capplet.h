@@ -76,6 +76,10 @@ void on_combo_changed(GtkComboBox * combo, CappletData *);
 
 /**********************************************/
 
+/* As cappelt_set_boolean_toggle but sets the given state instead of
+ * looking up option */
+void capplet_set_toggle(CappletData *capp, const char *name, gboolean state);
+
 /* Convenience functions to lookup an option and set the widget with the same
  * name */
 void capplet_set_boolean_toggle(CappletData *capp,

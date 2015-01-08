@@ -95,14 +95,20 @@ void capplet_set_float(Options * options, const char *name, double value)
     optsdbus_send_float_opt_signal(options->name, name, value);
 }
 
-void capplet_set_boolean_toggle(CappletData *capp,
-    const char *name, gboolean dflt)
+void capplet_set_toggle(CappletData *capp, const char *name, gboolean state)
 {
     capplet_ignore_changes = TRUE;
     gtk_toggle_button_set_active(
             GTK_TOGGLE_BUTTON(gtk_builder_get_object(capp->builder, name)),
-            options_lookup_int_with_default(capp->options, name, dflt));
+            state);
     capplet_ignore_changes = FALSE;
+}
+
+void capplet_set_boolean_toggle(CappletData *capp,
+    const char *name, gboolean dflt)
+{
+    capplet_set_toggle(capp, name,
+            options_lookup_int_with_default(capp->options, name, dflt));
 }
 
 void capplet_set_text_entry(CappletData *capp,

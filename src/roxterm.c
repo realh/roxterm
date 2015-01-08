@@ -3661,15 +3661,19 @@ static void roxterm_reflect_profile_change(Options * profile, const char *key)
             roxterm->maximise = options_lookup_int(roxterm->profile,
                     "maximise");
             if (roxterm->maximise)
+            {
                 gtk_window_maximize(roxterm_get_toplevel(roxterm));
+            }
             else
+            {
                 gtk_window_unmaximize(roxterm_get_toplevel(roxterm));
+            }
             apply_to_win = TRUE;
         }
         else if (!strcmp(key, "full_screen"))
         {
-            multi_win_set_fullscreen(win,
-                    options_lookup_int(roxterm->profile, "full_screen"));
+            int fs = options_lookup_int(roxterm->profile, "full_screen");
+            multi_win_set_fullscreen(win, fs);
             apply_to_win = TRUE;
         }
         else if (!strcmp(key, "background_img")

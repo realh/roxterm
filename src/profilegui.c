@@ -684,6 +684,18 @@ static void profilegui_fill_in_dialog(ProfileGUI * pg)
     Options *profile = pg->capp.options;
     char *val;
 
+    if (options_lookup_int_with_default(profile, "full_screen", 0))
+    {
+        capplet_set_toggle(&pg->capp, "full_screen", TRUE);
+    }
+    else if (options_lookup_int_with_default(profile, "maximise", 0))
+    {
+        capplet_set_toggle(&pg->capp, "maximise", TRUE);
+    }
+    else
+    {
+        capplet_set_toggle(&pg->capp, "cell_size", TRUE);
+    }
     gtk_font_button_set_font_name(
             GTK_FONT_BUTTON(profilegui_widget(pg, "font_button")),
             val = options_lookup_string_with_default(profile,
