@@ -666,6 +666,8 @@ elif ctx.mode == "install" or ctx.mode == "uninstall":
 elif ctx.mode == 'pristine' or ctx.mode == 'clean':
 
     clean = ["${TOP_DIR}/maitch.pyc"] + \
+            ["${TOP_DIR}/.ycm_extra_conf.py",
+             "${TOP_DIR}/.ycm_extra_conf.pyc"] + \
             ctx.glob("*.po~", "${TOP_DIR}", "po") + \
             ctx.glob("*.po~", "${TOP_DIR}", "po4a") + \
             ctx.glob("*.po~", "${TOP_DIR}", "poxml")
