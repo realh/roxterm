@@ -4447,7 +4447,8 @@ void roxterm_launch(const char *display_name, char **env)
     {
         ROXTermData *partner;
         char *wtitle = global_options_lookup_string("title");
-        MultiWin *next_best = NULL;
+        MultiWin *best_inactive = NULL;
+        MultiWin *best_in_other_ws = NULL;
         GList *link;
 
         win = NULL;
@@ -4473,13 +4474,14 @@ void roxterm_launch(const char *display_name, char **env)
                     if (workspace == global_options_workspace ||
                         workspace == WORKSPACE_ALL)
                     {
-                        next_best = win;
+                        if (!best_inactive)
+                            best_inactive = win;
                     }
                     else if (wtitle)
                     {
                         /* Titles match but window is on wrong workspace */
-                        if (!next_best)
-                            next_best = win;
+                        if (!best_in_other_ws)
+                            best_in_other_ws = win;
                     }
                 }
                 else
@@ -4491,16 +4493,18 @@ void roxterm_launch(const char *display_name, char **env)
                      * and
        * https://sourceforge.net/p/roxterm/discussion/422638/thread/2cc9a9aa/
                      */
-                    if (!next_best)
-                        next_best = win;
+                    if (!best_in_other_ws)
+                        best_in_other_ws = win;
                 }
             }
             win = NULL;
         }
         if (!win)
         {
-            if (next_best)
-                win = next_best;
+            if (best_inactive)
+                win = best_inactive;
+            else if (best_in_other_ws)
+                win = best_in_other_ws;
         }
         partner = win ? multi_win_get_user_data_for_current_tab(win) : NULL;
         if (partner)
