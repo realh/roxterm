@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: roxterm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-30 17:22+0100\n"
+"POT-Creation-Date: 2015-03-30 18:14+0100\n"
 "PO-Revision-Date: 2013-05-26 04:27+0000\n"
 "Last-Translator: salmora8 <shorterfire@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/"
@@ -345,15 +345,15 @@ msgstr ""
 msgid "Use the named keyboard shortcut scheme"
 msgstr "Usar o esquema de atalhos do teclado chamado"
 
-#: ../src/globalopts.c:253
+#: ../src/globalopts.c:251
 msgid "Maximise the window, overriding profile"
 msgstr "Maximize a janela, perfil principal"
 
-#: ../src/globalopts.c:256
+#: ../src/globalopts.c:254
 msgid "Synonym for --maximise"
 msgstr "Sinônimo para --maximise"
 
-#: ../src/globalopts.c:259
+#: ../src/globalopts.c:257
 msgid ""
 "Make the initial terminal take up the whole\n"
 "                                   screen with no window furniture"
@@ -361,7 +361,7 @@ msgstr ""
 "Faça o terminal inicial ocupar toda\n"
 "a tela sem mover a janela"
 
-#: ../src/globalopts.c:264
+#: ../src/globalopts.c:262
 msgid ""
 "Scale factor for terminal's fonts\n"
 "                                   (1.0 is normal)"
@@ -369,15 +369,15 @@ msgstr ""
 "Fator de escala para as fontes do terminal\n"
 "(1.0 é o normal)"
 
-#: ../src/globalopts.c:266
+#: ../src/globalopts.c:264
 msgid "ZOOM"
 msgstr "APROXIMAR"
 
-#: ../src/globalopts.c:269
+#: ../src/globalopts.c:267
 msgid "Use a separate process to run this terminal"
 msgstr "Usar um processo separado ao executar este termial"
 
-#: ../src/globalopts.c:272
+#: ../src/globalopts.c:270
 msgid ""
 "Replace any existing process as ROXTerm's\n"
 "                                   D-BUS service provider"
@@ -385,23 +385,23 @@ msgstr ""
 "Substitua qualquer processo existente do ROXTerm\n"
 "provedor de serviços D -BUS"
 
-#: ../src/globalopts.c:277
+#: ../src/globalopts.c:275
 msgid "Set window title"
 msgstr "Definir título da janela"
 
-#: ../src/globalopts.c:277
+#: ../src/globalopts.c:275
 msgid "TITLE"
 msgstr "TÍTULO"
 
-#: ../src/globalopts.c:280
+#: ../src/globalopts.c:278
 msgid "Set tab name"
 msgstr "Definir nome da aba"
 
-#: ../src/globalopts.c:280 ../src/globalopts.c:295
+#: ../src/globalopts.c:278 ../src/globalopts.c:293
 msgid "NAME"
 msgstr "NOME"
 
-#: ../src/globalopts.c:283
+#: ../src/globalopts.c:281
 msgid ""
 "Open a tab in an existing window instead of\n"
 "                                   a new window if possible"
@@ -409,19 +409,19 @@ msgstr ""
 "Abrir uma aba numa janela existente ao invés de\n"
 "uma nova janela, se possível"
 
-#: ../src/globalopts.c:288
+#: ../src/globalopts.c:286
 msgid "Fork into the background even if this is the first instance"
 msgstr "Deslocar no fundo, mesmo que esta seja a primeira instância"
 
-#: ../src/globalopts.c:292
+#: ../src/globalopts.c:290
 msgid "Disable session management"
 msgstr "Desativar o gerenciamento de sessão"
 
-#: ../src/globalopts.c:295
+#: ../src/globalopts.c:293
 msgid "Set X window system 'role' hint"
 msgstr "Definir 'papel' de dicas no X windows system"
 
-#: ../src/globalopts.c:303
+#: ../src/globalopts.c:301
 msgid ""
 "Don't set window geometry hints. This is a workaround for <https://bugzilla."
 "gnome.org/show_bug.cgi?id=649680>"
@@ -429,7 +429,7 @@ msgstr ""
 "Não defina dicas geometria da janela. Esta é uma solução para <https://"
 "bugzilla.gnome.org/show_bug.cgi?id=649680>"
 
-#: ../src/globalopts.c:308
+#: ../src/globalopts.c:306
 msgid ""
 "Execute remainder of command line inside the\n"
 "                                   terminal. Must be the final option."
@@ -437,12 +437,12 @@ msgstr ""
 "Executar restante da linha de comando dentro do\n"
 "terminal. Deve ser a opção final."
 
-#: ../src/globalopts.c:398
+#: ../src/globalopts.c:396
 #, c-format
 msgid "Error parsing command line options: %s"
 msgstr "Erro ao substituir opção de linha de comando: %s"
 
-#: ../src/globalopts.c:458
+#: ../src/globalopts.c:456
 msgid "Can't find roxterm-config"
 msgstr "Não foi possível obter roxterm-config"
 
