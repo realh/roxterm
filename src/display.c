@@ -65,21 +65,10 @@ static GdkScreen *get_matching_screen(const char *display_name,
     }
     else
     {
-#if GTK_CHECK_VERSION(3, 10, 0)
-        int n = 1;
-#else
-        int n = gdk_display_get_n_screens(dpy);
-#endif
-
-        while (--n >= 0)
-        {
-            screen = gdk_display_get_screen(dpy, n);
-            scrn_name = gdk_screen_make_display_name(screen);
-            if (strcmp(display_name, scrn_name))
-                screen = NULL;
-            else
-                break;
-        }
+        screen = gdk_display_get_screen(dpy, 0);
+        scrn_name = gdk_screen_make_display_name(screen);
+        if (strcmp(display_name, scrn_name))
+            screen = NULL;
     }
     g_free(scrn_name);
     return screen;

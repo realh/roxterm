@@ -17,7 +17,6 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#include "colour-compat.h"
 #include "multitab-label.h"
 
 G_DEFINE_TYPE (MultitabLabel, multitab_label, GTK_TYPE_EVENT_BOX);
@@ -93,8 +92,6 @@ multitab_label_single_width (MultitabLabel *self, gint *width,
         *width = alloc.width;
 }
 
-#if GTK_CHECK_VERSION(3, 0, 0)
-
 static void
 multitab_label_destroy (GtkWidget *w)
 {
@@ -167,70 +164,6 @@ multitab_label_get_preferred_width_for_height (GtkWidget *widget,
     multitab_modify_width (self, minimum_width, natural_width);
 }
 
-#else   /* !GTK3 */
-
-static void
-multitab_label_destroy (GtkObject *o)
-{
-    multitab_label_cancel_attention (MULTITAB_LABEL (o));
-    GTK_OBJECT_CLASS (multitab_label_parent_class)->destroy (o);
-}
-
-static void
-multitab_label_size_request (GtkWidget *widget, GtkRequisition *requisition)
-{
-    MultitabLabel *self = MULTITAB_LABEL (widget);
-
-    GTK_WIDGET_CLASS (multitab_label_parent_class)->size_request
-                    (widget, requisition);
-    if (self->fixed_width)
-    {
-        return;
-    }
-    if (self->single && requisition)
-    {
-        int w;
-
-        multitab_label_single_width (self, &requisition->width, &w);
-    }
-}
-
-#endif /* GTK2/3 */
-
-#if MULTITAB_LABEL_USE_PARENT_SALLOC
-inline static void
-multitab_label_disconnect_parent_salloc (MultitabLabel *self, GtkWidget *parent)
-{
-    g_signal_handler_disconnect (parent, self->parent_salloc_tag);
-}
-
-static void
-multitab_label_dispose (GObject *gobject)
-{
-    MultitabLabel *self = MULTITAB_LABEL (gobject);
-
-    if (self->parent)
-    {
-        multitab_label_disconnect_parent_salloc (self, self->parent);
-        self->parent = NULL;
-    }
-    G_OBJECT_CLASS (multitab_label_parent_class)->dispose (gobject);
-}
-
-static void
-multitab_label_parent_size_alloc_cb (GtkWidget *parent,
-        GdkRectangle *allocation, MultitabLabel *self)
-{
-    int width = -1;
-    (void) parent;
-    (void) allocation;
-
-    if (self->single)
-        multitab_label_single_width (self, &width, NULL);
-    gtk_widget_set_size_request (GTK_WIDGET (self), width, -1);
-}
-#endif
-
 static void
 multitab_label_class_init(MultitabLabelClass *klass)
 {
@@ -239,7 +172,6 @@ multitab_label_class_init(MultitabLabelClass *klass)
     GParamSpec *pspec;
 
     /* Make sure theme doesn't override our colour with a gradient or image */
-#if GTK_CHECK_VERSION(3, 0, 0)
     static const char *style =
             "* {\n"
               "background-image : none;\n"
@@ -249,20 +181,7 @@ multitab_label_class_init(MultitabLabelClass *klass)
     gtk_css_provider_load_from_data (klass->style_provider,
             style, -1, NULL);
     GTK_WIDGET_CLASS (klass)->destroy = multitab_label_destroy;
-#else
-    gtk_rc_parse_string ("style \"multitab-label-style\"\n"
-           "{\n"
-              "bg_pixmap[NORMAL] = \"<none>\"\n"
-              "bg_pixmap[ACTIVE] = \"<none>\"\n"
-           "}\n"
-           "widget \"*.multitab-label\" "
-           "style \"multitab-label-style\"");
-    GTK_OBJECT_CLASS (klass)->destroy = multitab_label_destroy;
-#endif
 
-#if MULTITAB_LABEL_USE_PARENT_SALLOC
-    oclass->dispose = multitab_label_dispose;
-#endif
     oclass->set_property = multitab_label_set_property;
     oclass->get_property = multitab_label_get_property;
 
@@ -271,13 +190,9 @@ multitab_label_class_init(MultitabLabelClass *klass)
             G_PARAM_READWRITE);
     g_object_class_install_property (oclass, PROP_ATTENTION_COLOR, pspec);
 
-#if GTK_CHECK_VERSION(3, 0, 0)
     wclass->get_preferred_width = multitab_label_get_preferred_width;
     wclass->get_preferred_width_for_height =
             multitab_label_get_preferred_width_for_height;
-#else
-    wclass->size_request = multitab_label_size_request;
-#endif
 }
 
 static void
@@ -290,22 +205,17 @@ multitab_label_init(MultitabLabel *self)
 
     self->single = FALSE;
     self->parent = NULL;
-#if MULTITAB_LABEL_USE_PARENT_SALLOC
-    self->parent_salloc_tag = 0;
-#endif
 #if MULTITAB_LABEL_GTK3_SIZE_KLUDGE
     self->best_width = NULL;
 #endif
-#if GTK_CHECK_VERSION (3, 0, 0)
     gtk_style_context_add_provider (gtk_widget_get_style_context (w),
             GTK_STYLE_PROVIDER (MULTITAB_LABEL_GET_CLASS
                     (self)->style_provider),
             GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-#endif
     gtk_widget_set_name (w, "multitab-label");
     if (!parsed_amber)
     {
-        COLOUR_PARSE(&amber, "#ffc450");
+        gdk_rgba_parse(&amber, "#ffc450");
         parsed_amber = TRUE;
     }
     gtk_event_box_set_visible_window (GTK_EVENT_BOX (self), FALSE);
@@ -317,15 +227,6 @@ multitab_label_init(MultitabLabel *self)
     gtk_container_add (GTK_CONTAINER (self), label);
 }
 
-#if MULTITAB_LABEL_USE_PARENT_SALLOC
-inline static void
-multitab_label_connect_parent_salloc (MultitabLabel *self, GtkWidget *parent)
-{
-    self->parent_salloc_tag = g_signal_connect(parent, "size-allocate",
-            G_CALLBACK(multitab_label_parent_size_alloc_cb), self);
-}
-#endif
-
 GtkWidget *
 multitab_label_new (GtkWidget *parent, const char *text, int *best_width)
 {
@@ -333,9 +234,6 @@ multitab_label_new (GtkWidget *parent, const char *text, int *best_width)
             g_object_new (MULTITAB_TYPE_LABEL, NULL);
 
     self->parent = parent;
-#if MULTITAB_LABEL_USE_PARENT_SALLOC
-    multitab_label_connect_parent_salloc (self, parent);
-#endif
     if (text)
         multitab_label_set_text (self, text);
     self->best_width = best_width;
@@ -346,11 +244,6 @@ void
 multitab_label_set_parent (MultitabLabel *self,
         GtkWidget *parent, int *best_width)
 {
-#if MULTITAB_LABEL_USE_PARENT_SALLOC
-    if (self->parent)
-        multitab_label_disconnect_parent_salloc (self, self->parent);
-    multitab_label_connect_parent_salloc (self, parent);
-#endif
     self->parent = parent;
     self->best_width = best_width;
 }
@@ -398,13 +291,8 @@ multitab_label_set_attention_color (MultitabLabel *self,
     GtkWidget *w = GTK_WIDGET (self);
 
     self->attention_color = *color;
-#if GTK_CHECK_VERSION(3, 0, 0)
     gtk_widget_override_background_color(w, GTK_STATE_FLAG_NORMAL, color);
     gtk_widget_override_background_color(w, GTK_STATE_FLAG_ACTIVE, color);
-#else
-    gtk_widget_modify_bg(w, GTK_STATE_NORMAL, color);
-    gtk_widget_modify_bg(w, GTK_STATE_ACTIVE, color);
-#endif
 }
 
 const MultitabColor *

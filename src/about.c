@@ -73,13 +73,6 @@ static GtkWidget *about_dialog_create(void)
 
     gtk_about_dialog_set_program_name(ad, "ROXTerm");
     gtk_about_dialog_set_version(ad, VERSION);
-    gtk_about_dialog_set_comments(ad,
-#if GTK_CHECK_VERSION(3, 0, 0)
-            _("GTK 3/VTE 2.90 build")
-#else
-            _("GTK 2/VTE 9 build")
-#endif
-            );
     gtk_about_dialog_set_copyright(ad, _("(c) 2005-2014 Tony Houghton"));
     gtk_about_dialog_set_website(ad, "http://roxterm.sourceforge.net");
     gtk_about_dialog_set_authors(ad, authors);
@@ -89,27 +82,16 @@ static GtkWidget *about_dialog_create(void)
 }
 
 void about_dialog_show(GtkWindow *parent,
-#if USE_ACTIVATE_LINK
         gboolean (*uri_handler)(GtkAboutDialog *, char *, gpointer),
-#else
-        GtkAboutDialogActivateLinkFunc www_hook,
-        GtkAboutDialogActivateLinkFunc email_hook,
-#endif
         gpointer hook_data
 )
 {
     GtkWidget *ad;
 
-#if !USE_ACTIVATE_LINK
-    gtk_about_dialog_set_url_hook(www_hook, hook_data, NULL);
-    gtk_about_dialog_set_email_hook(email_hook, hook_data, NULL);
-#endif
     ad = about_dialog_create();
     if (parent)
         gtk_window_set_transient_for(GTK_WINDOW(ad), parent);
-#if USE_ACTIVATE_LINK
     g_signal_connect(ad, "activate-link", G_CALLBACK(uri_handler), hook_data);
-#endif
     gtk_dialog_run(GTK_DIALOG(ad));
     gtk_widget_destroy(ad);
 }

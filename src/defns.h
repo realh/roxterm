@@ -66,33 +66,10 @@ enum {
 
 #define ROXTERM_LEAF_DIR "roxterm.sourceforge.net"
 
-#ifndef HAVE_GTK_WIDGET_GET_REALIZED
-#define gtk_widget_get_realized GTK_WIDGET_REALIZED
-#endif
-
-#ifndef HAVE_GTK_WIDGET_GET_MAPPED
-#define gtk_widget_get_mapped GTK_WIDGET_MAPPED
-#endif
-
 /* Whether to try to prevent tabs from being too wide to unmaximize correctly.
  * <http://mail.gnome.org/archives/gtk-devel-list/2011-September/msg00214.html
  */
-#define MULTITAB_LABEL_GTK3_SIZE_KLUDGE GTK_CHECK_VERSION(3, 0, 0)
-
-inline static gboolean gtk_is_newer_than(int major, int minor)
-{
-#if GTK_CHECK_VERSION(3, 0, 0)
-    int j = gtk_get_major_version();
-    return (j > major) || (j == major && gtk_get_minor_version() >= minor);
-#else
-    /* Run-time version info only available in GTK+3; this function is only
-     * used to check for versions > 3, so return FALSE in GTK+2.
-     */
-    (void) major;
-    (void) minor;
-    return FALSE;
-#endif
-}
+#define MULTITAB_LABEL_GTK3_SIZE_KLUDGE TRUE
 
 #endif /* DEFNS_H */
 

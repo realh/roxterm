@@ -31,27 +31,16 @@ multitab_close_button_set_size (MultitabCloseButton *self)
     gtk_widget_set_size_request (w, x + 2, y + 2);
 }
 
-#if GTK_CHECK_VERSION(3, 0, 0)
 static void
 multitab_close_button_style_updated (GtkWidget *self)
 {
     multitab_close_button_set_size (MULTITAB_CLOSE_BUTTON (self));
     GTK_WIDGET_CLASS (multitab_close_button_parent_class)->style_updated (self);
 }
-#else
-static void
-multitab_close_button_style_set (GtkWidget *self, GtkStyle *previous_style)
-{
-    multitab_close_button_set_size (MULTITAB_CLOSE_BUTTON (self));
-    GTK_WIDGET_CLASS (multitab_close_button_parent_class)->style_set (self,
-            previous_style);
-}
-#endif
 
 static void
 multitab_close_button_class_init(MultitabCloseButtonClass *klass)
 {
-#if GTK_CHECK_VERSION(3, 0, 0)
     static const char *button_style =
             "* {\n"
               "-GtkButton-default-border : 0;\n"
@@ -67,18 +56,6 @@ multitab_close_button_class_init(MultitabCloseButtonClass *klass)
             button_style, -1, NULL);
     GTK_WIDGET_CLASS (klass)->style_updated =
             multitab_close_button_style_updated;
-#else
-    gtk_rc_parse_string ("style \"multitab-close-button-style\"\n"
-           "{\n"
-              "GtkWidget::focus-padding = 0\n"
-              "GtkWidget::focus-line-width = 0\n"
-              "xthickness = 0\n"
-              "ythickness = 0\n"
-           "}\n"
-           "widget \"*.multitab-close-button\" "
-           "style \"multitab-close-button-style\"");
-    GTK_WIDGET_CLASS (klass)->style_set = multitab_close_button_style_set;
-#endif
 }
 
 static void
@@ -90,12 +67,10 @@ multitab_close_button_init(MultitabCloseButton *self)
 
     gtk_button_set_relief(parent, GTK_RELIEF_NONE);
     gtk_button_set_focus_on_click(parent, FALSE);
-#if GTK_CHECK_VERSION (3, 0, 0)
     gtk_style_context_add_provider (gtk_widget_get_style_context (w),
             GTK_STYLE_PROVIDER (MULTITAB_CLOSE_BUTTON_GET_CLASS
                     (self)->style_provider),
             GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-#endif
     gtk_widget_set_name (w, "multitab-close-button");
     self->image = GTK_IMAGE (image);
     gtk_widget_show (image);

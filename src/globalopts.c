@@ -295,12 +295,10 @@ static GOptionEntry global_g_options[] = {
         G_OPTION_ARG_STRING, &global_options_restart_session_id, NULL, NULL },
     { "clone-session-id", 0, G_OPTION_FLAG_HIDDEN,
         G_OPTION_ARG_STRING, &global_options_clone_session_id, NULL, NULL },
-#if GTK_CHECK_VERSION(3, 0, 0)
     { "no-geometry", 0, G_OPTION_FLAG_IN_MAIN | G_OPTION_FLAG_NO_ARG,
         G_OPTION_ARG_CALLBACK, global_options_set_bool,
         N_("Don't set window geometry hints. This is a workaround for "
         "<https://bugzilla.gnome.org/show_bug.cgi?id=649680>"), NULL },
-#endif
     { "execute", 'e', G_OPTION_FLAG_IN_MAIN | G_OPTION_FLAG_NO_ARG,
         G_OPTION_ARG_CALLBACK, global_options_swallow_execute,
         N_("Execute remainder of command line inside the\n"

@@ -291,54 +291,6 @@ void shortcuts_unref(Options *shortcuts)
     }
 }
 
-#if !GTK_CHECK_VERSION(3, 10, 0)
-void
-shortcuts_changed_handler(GtkAccelMap * map, const char *accel_path,
-    guint accel_key, GdkModifierType accel_mods, gpointer user_data)
-{
-    const char *path_without_root = accel_path + sizeof(ACCEL_PATH);
-    char *index_str = strchr(path_without_root, '/');
-    const char *path_leaf = accel_path;
-    Options *shortcuts;
-    char *accel_key_name = NULL;
-    guint index = G_MAXUINT;
-
-    accel_key_name = gtk_accelerator_name(accel_key, accel_mods);
-
-    if (index_str)
-    {
-        path_leaf = index_str + 1;
-        index_str = g_strndup(path_without_root, index_str -
-            path_without_root);
-    }
-    else
-    {
-        path_leaf = NULL;
-        index_str = g_strdup(path_without_root);
-    }
-    if (sscanf(index_str, "%x", &index) != 1 || index >= shortcuts_counter ||
-        (shortcuts = shortcuts_indexed_names[index]) == NULL)
-    {
-        g_critical("Keyboard shortcut changed with bad index string %s",
-                index_str);
-    }
-    else if (!shortcuts->deleted)
-    {
-        ShortcutsData *data = options_get_data(shortcuts);
-
-        options_set_string(shortcuts, path_leaf, accel_key_name);
-        shortcuts_change_item(data->items, path_leaf, accel_key, accel_mods);
-        options_file_save(shortcuts->kf, shortcuts->name);
-    }
-
-    g_free(index_str);
-    g_free(accel_key_name);
-
-    (void) map;
-    (void) user_data;
-}
-#endif
-
 void shortcuts_init(void)
 {
     if (!shortcuts_dynopts)
@@ -347,41 +299,6 @@ void shortcuts_init(void)
         shortcuts_enable_signal_handler(TRUE);
     }
 }
-
-#if !GTK_CHECK_VERSION(3, 10, 0)
-void shortcuts_enable_signal_handler(gboolean enable)
-{
-    static gulong handler_id = 0;
-
-    if (gtk_is_newer_than(3, 10))
-        return;
-
-    if (enable)
-    {
-        if (!handler_id)
-        {
-            handler_id = g_signal_connect(gtk_accel_map_get(), "changed",
-                G_CALLBACK(shortcuts_changed_handler), NULL);
-        }
-        else
-        {
-            g_warning("Shortcuts signal handler already connected");
-        }
-    }
-    else
-    {
-        if (handler_id)
-        {
-            g_signal_handler_disconnect(gtk_accel_map_get(), handler_id);
-            handler_id = 0;
-        }
-        else
-        {
-            g_warning("Shortcuts signal handler already disconnected");
-        }
-    }
-}
-#endif
 
 const char *shortcuts_get_index_str(Options *shortcuts)
 {

@@ -24,19 +24,10 @@
 
 #define COLOURSCHEME_GROUP "roxterm colour scheme"
 
-#if GTK_CHECK_VERSION(3,0,0)
-#define HAVE_COLORMAP 0
-#else
-#define HAVE_COLORMAP 1
-#endif
-
 typedef struct {
-    COLOUR_T *foreground, *background, *cursor, *bold, *dim;
-    COLOUR_T *palette;
+    GdkRGBA *foreground, *background, *cursor, *bold, *dim;
+    GdkRGBA *palette;
     int palette_size;
-#if HAVE_COLORMAP
-    GdkColormap *colourmap;
-#endif
 } ColourScheme;
 
 static DynamicOptions *colour_scheme_dynopts = NULL;
@@ -59,9 +50,6 @@ void colour_scheme_reset_cached_data(Options *opts)
     if (scheme)
         delete_scheme(scheme);
     scheme = g_new0(ColourScheme, 1);
-#if HAVE_COLORMAP
-    scheme->colourmap = gdk_colormap_get_system();
-#endif
     options_associate_data(opts, scheme);
 }
 
@@ -109,23 +97,19 @@ static const char *colour_scheme_choose_default(int palette_entry)
 }
 
 static gboolean
-colour_scheme_parse(ColourScheme * scheme, COLOUR_T *colour,
+colour_scheme_parse(ColourScheme * scheme, GdkRGBA *colour,
         const char *colour_name)
 {
     (void) scheme;
-    if (COLOUR_PARSE(colour, colour_name))
+    if (gdk_rgba_parse(colour, colour_name))
     {
-#if HAVE_COLORMAP
-        return gdk_colormap_alloc_color(scheme->colourmap, colour, TRUE, TRUE);
-#else
         return TRUE;
-#endif
     }
     return FALSE;
 }
 
 static gboolean colour_scheme_lookup_and_parse(Options * opts,
-        ColourScheme * scheme, COLOUR_T * colour, const char *key,
+        ColourScheme * scheme, GdkRGBA * colour, const char *key,
         const char *default_colour, gboolean warn)
 {
     char *name = options_lookup_string(opts, key);
@@ -168,7 +152,7 @@ colour_scheme_parse_palette_range(Options * opts, ColourScheme * scheme,
 static void colour_scheme_parse_palette(Options * opts, ColourScheme * scheme)
 {
     if (!scheme->palette)
-        scheme->palette = g_new0(COLOUR_T, 24);
+        scheme->palette = g_new0(GdkRGBA, 24);
     scheme->palette_size = options_lookup_int(opts, "palette_size");
     switch (scheme->palette_size)
     {
@@ -193,7 +177,7 @@ static void colour_scheme_parse_palette(Options * opts, ColourScheme * scheme)
     colour_scheme_parse_palette_range(opts, scheme, 0, scheme->palette_size);
 }
 
-COLOUR_T *colour_scheme_get_palette(Options * opts)
+GdkRGBA *colour_scheme_get_palette(Options * opts)
 {
     ColourScheme *scheme;
 
@@ -217,21 +201,21 @@ int colour_scheme_get_palette_size(Options * opts)
     return scheme->palette_size;
 }
 
-static COLOUR_T *colour_scheme_get_named_colour(Options *opts,
+static GdkRGBA *colour_scheme_get_named_colour(Options *opts,
         const char *name, const char *dflt,
         size_t member_offset, gboolean allow_null)
 {
     ColourScheme *scheme;
-    COLOUR_T **member;
+    GdkRGBA **member;
 
     g_return_val_if_fail(opts, NULL);
     scheme = options_get_data(opts);
     g_return_val_if_fail(scheme, NULL);
 
-    member = (COLOUR_T **) (((char *) scheme) + member_offset);
+    member = (GdkRGBA **) (((char *) scheme) + member_offset);
     if (!*member)
     {
-        *member = g_new0(COLOUR_T, 1);
+        *member = g_new0(GdkRGBA, 1);
         if (!colour_scheme_lookup_and_parse(opts, scheme, *member,
                     name, allow_null ? NULL : dflt, TRUE))
         {
@@ -242,35 +226,35 @@ static COLOUR_T *colour_scheme_get_named_colour(Options *opts,
     return *member;
 }
 
-COLOUR_T *colour_scheme_get_cursor_colour(Options *opts,
+GdkRGBA *colour_scheme_get_cursor_colour(Options *opts,
         gboolean allow_null)
 {
     return colour_scheme_get_named_colour(opts, "cursor", "#ccc",
             offsetof(ColourScheme, cursor), allow_null);
 }
 
-COLOUR_T *colour_scheme_get_foreground_colour(Options * opts,
+GdkRGBA *colour_scheme_get_foreground_colour(Options * opts,
             gboolean allow_null)
 {
     return colour_scheme_get_named_colour(opts, "foreground", "#ccc",
             offsetof(ColourScheme, foreground), allow_null);
 }
 
-COLOUR_T *colour_scheme_get_background_colour(Options * opts,
+GdkRGBA *colour_scheme_get_background_colour(Options * opts,
         gboolean allow_null)
 {
     return colour_scheme_get_named_colour(opts, "background", "#000",
             offsetof(ColourScheme, background), allow_null);
 }
 
-COLOUR_T *colour_scheme_get_bold_colour(Options * opts,
+GdkRGBA *colour_scheme_get_bold_colour(Options * opts,
         gboolean allow_null)
 {
     return colour_scheme_get_named_colour(opts, "bold", "#fff",
             offsetof(ColourScheme, bold), allow_null);
 }
 
-COLOUR_T *colour_scheme_get_dim_colour(Options * opts,
+GdkRGBA *colour_scheme_get_dim_colour(Options * opts,
         gboolean allow_null)
 {
     return colour_scheme_get_named_colour(opts, "dim", "#888",
@@ -288,10 +272,10 @@ void colour_scheme_set_palette_size(Options * opts, int size)
 }
 
 static void colour_scheme_set_colour(Options *opts, ColourScheme *scheme,
-        COLOUR_T **colour, const char *key, const char *colour_name)
+        GdkRGBA **colour, const char *key, const char *colour_name)
 {
     if (!*colour)
-        *colour = g_new(COLOUR_T, 1);
+        *colour = g_new(GdkRGBA, 1);
     if (!colour_name || colour_scheme_parse(scheme, *colour, colour_name))
         options_set_string(opts, key, colour_name);
     if (!colour_name)
@@ -306,7 +290,7 @@ void colour_scheme_set_palette_entry(Options * opts, int index,
 {
     ColourScheme *scheme;
     char key[8];
-    COLOUR_T *colour;
+    GdkRGBA *colour;
 
     g_return_if_fail(opts);
     g_return_if_fail(colour_name);
@@ -323,12 +307,12 @@ static void colour_scheme_set_named_colour(Options *opts,
         const char *colour_name, size_t member_offset)
 {
     ColourScheme *scheme;
-    COLOUR_T **member;
+    GdkRGBA **member;
 
     g_return_if_fail(opts);
     scheme = options_get_data(opts);
     g_return_if_fail(scheme);
-    member = (COLOUR_T **) (((char *) scheme) + member_offset);
+    member = (GdkRGBA **) (((char *) scheme) + member_offset);
     colour_scheme_set_colour(opts, scheme, member,
             field_name, colour_name);
 }

@@ -328,13 +328,9 @@ void search_open_dialog(ROXTermData *roxterm)
                 "perl-compatible regular expression. An empty string "
                 "clears any previous search."));
         gtk_label_set_mnemonic_widget(GTK_LABEL(w), entry);
-#if GTK_CHECK_VERSION(3, 0, 0)
         hbox = gtk_grid_new();
         gtk_orientable_set_orientation(GTK_ORIENTABLE(hbox),
                 GTK_ORIENTATION_HORIZONTAL);
-#else
-        hbox = gtk_hbox_new(FALSE, 0);
-#endif
         box_compat_packh(hbox, w, FALSE, DLG_SPACING);
         box_compat_packh(hbox, entry, TRUE, DLG_SPACING);
         box_compat_packv(vbox, hbox, FALSE, DLG_SPACING);
