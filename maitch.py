@@ -749,7 +749,7 @@ Other predefined variables [default values shown in squarer brackets]:
             zname = "zip archive"
         else:
             import tarfile
-            suffix = "tar.bz2"
+            suffix = "tar.xz"
             zname = "tarball"
         basedir = self.subst("${PACKAGE}-${VERSION}")
         filename = opap(
@@ -758,7 +758,7 @@ Other predefined variables [default values shown in squarer brackets]:
         if self.dist_as_zip:
             tar = zipfile.ZipFile(filename, 'w', zipfile.ZIP_DEFLATED)
         else:
-            tar = tarfile.open(filename, 'w:bz2')
+            tar = tarfile.open(filename, 'w:xz')
         for f, kwargs in self.tar_contents:
             f = self.subst(f)
             kwargs = dict(kwargs)
