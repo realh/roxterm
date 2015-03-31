@@ -749,7 +749,7 @@ Other predefined variables [default values shown in squarer brackets]:
             zname = "zip archive"
         else:
             import tarfile
-            suffix = "tar.xz"
+            suffix = "tar.bz2"
             zname = "tarball"
         basedir = self.subst("${PACKAGE}-${VERSION}")
         filename = opap(
@@ -758,7 +758,7 @@ Other predefined variables [default values shown in squarer brackets]:
         if self.dist_as_zip:
             tar = zipfile.ZipFile(filename, 'w', zipfile.ZIP_DEFLATED)
         else:
-            tar = tarfile.open(filename, 'w:xz')
+            tar = tarfile.open(filename, 'w:bz2')
         for f, kwargs in self.tar_contents:
             f = self.subst(f)
             kwargs = dict(kwargs)
@@ -2254,8 +2254,6 @@ class PotRule(Rule):
     def __init__(self, ctx, **kwargs):
         potfiles = kwargs.get('potfiles', False)
         manipulate_kwargs_for_pot_rule(ctx, kwargs, potfiles)
-        print "PotRule sources", kwargs['sources']
-        print "PotRule rule", kwargs['rule']
         Rule.__init__(self, **kwargs)
 
 
