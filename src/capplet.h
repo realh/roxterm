@@ -60,11 +60,6 @@ inline static GtkWidget *capplet_lookup_widget(const CappletData *capp,
     return GTK_WIDGET(gtk_builder_get_object(capp->builder, name));
 }
 
-/* Currently GtkBuilder doesn't support text combos properly so we have to find
- * them via parent.
- */
-GtkWidget *capplet_lookup_combo(GtkBuilder *builder, const char *name);
-
 /**********************************************/
 /* Generic handlers */
 

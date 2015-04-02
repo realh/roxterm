@@ -36,36 +36,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-static int
-    capplet_open_windows = 0;
+static int capplet_open_windows = 0;
 
 gboolean capplet_ignore_changes = FALSE;
-
-GtkWidget *capplet_lookup_combo(GtkBuilder *builder, const char *name)
-{
-    char *box_name = g_strdup_printf("%s_hbox", name);
-    GObject *box = gtk_builder_get_object(builder, box_name);
-    GList *children;
-    GList *link;
-    GtkWidget *combo = NULL;
-    
-    g_free(box_name);
-    g_return_val_if_fail(box != NULL, NULL);
-    children = gtk_container_get_children(GTK_CONTAINER(box));
-    for (link = children; link; link = g_list_next(link))
-    {
-        if (GTK_IS_COMBO_BOX(link->data) &&
-                !strcmp(gtk_buildable_get_name(link->data), name))
-        {
-            combo = link->data;
-            break;
-        }
-    }
-    g_list_free(children);
-    if (!combo)
-        g_critical(_("Combo '%s' not found"), name);
-    return combo;
-}
 
 void capplet_save_file(Options * options)
 {
@@ -177,7 +150,7 @@ void capplet_set_combo(CappletData *capp,
 {
     capplet_ignore_changes = TRUE;
     gtk_combo_box_set_active(
-            GTK_COMBO_BOX(capplet_lookup_combo(capp->builder, name)),
+            GTK_COMBO_BOX(capplet_lookup_widget(capp, name)),
             options_lookup_int_with_default(capp->options, name, dflt));
     capplet_ignore_changes = FALSE;
 }
