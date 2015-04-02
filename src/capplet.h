@@ -54,6 +54,12 @@ int capplet_which_radio_is_selected(GtkWidget *widget);
 void capplet_set_radio_by_index(GtkBuilder *builder,
         const char *basename, int index);
 
+inline static GtkWidget *capplet_lookup_widget(const CappletData *capp,
+        const char *name)
+{
+    return GTK_WIDGET(gtk_builder_get_object(capp->builder, name));
+}
+
 /* Currently GtkBuilder doesn't support text combos properly so we have to find
  * them via parent.
  */

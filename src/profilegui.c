@@ -433,7 +433,7 @@ void on_reset_compat_clicked(GtkButton *button, ProfileGUI *pg)
 void on_edit_colour_scheme_clicked(GtkButton *button, ProfileGUI *pg)
 {
     (void) button;
-    GtkWidget *combo = capplet_lookup_combo(pg->capp.builder, "colour_scheme");
+    GtkWidget *combo = capplet_lookup_widget(&pg->capp, "colour_scheme");
     char *name;
     name = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(combo));
     colourgui_open(name, gtk_widget_get_screen(combo));
@@ -550,7 +550,8 @@ static void profilegui_add_combo_items_by_name(GtkWidget *combo,
     }
 }
 
-static void on_colour_scheme_combo_changed(GtkComboBox *combo,
+/* GtkBuilder signal handlers can't be static */
+void on_colour_scheme_combo_changed(GtkComboBox *combo,
         CappletData *capp)
 {
     char *value;
@@ -609,18 +610,32 @@ static void profilegui_make_a_combo(ProfileGUI *pg, const char *name)
     g_free(box_name);
 }
 
+static void profilegui_init_colour_scheme_combo(ProfileGUI *pg)
+{
+    GtkWidget *combo = GTK_WIDGET(gtk_builder_get_object(pg->capp.builder,
+                "colour_scheme"));
+    char **schemes = dynamic_options_list_sorted(
+            dynamic_options_get("Colours"));
+    int n;
+    profilegui_add_combo_item(combo, _("(Don't set)"));
+    if (!schemes[0] || strcmp(schemes[0], _("Default")))
+        profilegui_add_combo_item(combo, _("Default"));
+    for (n = 0; schemes[n]; ++n)
+        profilegui_add_combo_item(combo, schemes[n]);
+}
+
 static void profilegui_make_combos(ProfileGUI *pg)
 {
     profilegui_make_a_combo(pg, "exit_action");
     profilegui_make_a_combo(pg, "backspace_binding");
     profilegui_make_a_combo(pg, "delete_binding");
     profilegui_make_a_combo(pg, "tab_pos");
-    profilegui_make_a_combo(pg, "colour_scheme");
+    profilegui_init_colour_scheme_combo(pg);
 }
 
 static void profilegui_set_colour_scheme_combo(CappletData *capp)
 {
-    GtkWidget *combo = capplet_lookup_combo(capp->builder, "colour_scheme");
+    GtkWidget *combo = capplet_lookup_widget(capp, "colour_scheme");
     char *value = options_lookup_string(capp->options, "colour_scheme");
     int active = 0;
     if (value && value[0])

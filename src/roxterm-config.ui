@@ -241,7 +241,7 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
                     <property name="has_tooltip">True</property>
-                    <property name="tooltip_markup" translatable="yes">Whether to set the terminal&amp;apos;s colours from the table below</property>
+                    <property name="tooltip_markup" translatable="yes">Whether to set the terminal's colours from the table below</property>
                     <property name="tooltip_text" translatable="yes">Whether to set the terminal's colours from the table below</property>
                     <property name="halign">start</property>
                     <property name="use_underline">True</property>
@@ -2109,6 +2109,43 @@
       <action-widget response="-7">closebutton3</action-widget>
     </action-widgets>
   </object>
+  <object class="GtkAdjustment" id="exit_pause_adjustment">
+    <property name="upper">600</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">5</property>
+  </object>
+  <object class="GtkAdjustment" id="height_adjustment">
+    <property name="lower">5</property>
+    <property name="upper">1000</property>
+    <property name="value">32</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="init_tabs_adjustment">
+    <property name="lower">1</property>
+    <property name="upper">20</property>
+    <property name="value">1</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">5</property>
+  </object>
+  <object class="GtkAdjustment" id="saturation_adjustment">
+    <property name="upper">1</property>
+    <property name="step_increment">0.01</property>
+    <property name="page_increment">0.10000000000000001</property>
+  </object>
+  <object class="GtkAdjustment" id="scrollback_lines_adjustment">
+    <property name="upper">100000</property>
+    <property name="value">1000</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="width_adjustment">
+    <property name="lower">10</property>
+    <property name="upper">1000</property>
+    <property name="value">80</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
   <object class="GtkDialog" id="Profile_Editor">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -2516,7 +2553,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="has_tooltip">True</property>
-                                    <property name="tooltip_markup">The title string may include &amp;apos;%s&amp;apos; which is substituted with the contents of the current tab&amp;apos;s label. No other % characters or sequences are permitted except '%%' which is displayed as a single %.</property>
+                                    <property name="tooltip_markup">The title string may include '%s' which is substituted with the contents of the current tab's label. No other % characters or sequences are permitted except '%%' which is displayed as a single %.</property>
                                     <property name="tooltip_text" translatable="yes">The title string may include '%s' which is substituted with the contents of the current tab's label. No other % characters or sequences are permitted except '%%' which is displayed as a single %.</property>
                                     <property name="hexpand">True</property>
                                     <property name="invisible_char">●</property>
@@ -2538,24 +2575,11 @@
                                     <property name="xalign">0</property>
                                     <property name="label" translatable="yes">C_olour scheme:</property>
                                     <property name="use_underline">True</property>
+                                    <property name="mnemonic_widget">colour_scheme</property>
+                                    <property name="ellipsize">end</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">0</property>
-                                    <property name="top_attach">1</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkHBox" id="colour_scheme_hbox">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="hexpand">True</property>
-                                    <property name="spacing">8</property>
-                                    <child>
-                                      <placeholder/>
-                                    </child>
-                                  </object>
-                                  <packing>
-                                    <property name="left_attach">1</property>
                                     <property name="top_attach">1</property>
                                   </packing>
                                 </child>
@@ -2574,6 +2598,18 @@
                                   </object>
                                   <packing>
                                     <property name="left_attach">2</property>
+                                    <property name="top_attach">1</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkComboBoxText" id="colour_scheme">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="hexpand">True</property>
+                                    <signal name="changed" handler="on_colour_scheme_combo_changed" swapped="no"/>
+                                  </object>
+                                  <packing>
+                                    <property name="left_attach">1</property>
                                     <property name="top_attach">1</property>
                                   </packing>
                                 </child>
@@ -2863,7 +2899,7 @@
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
                                 <property name="has_tooltip">True</property>
-                                <property name="tooltip_text" translatable="yes">If the "bell rings" in a terminal while it isn't the active tab or window, its tab label will flash and/or its window will be marked "urgent". This only works with recent versions of vte.</property>
+                                <property name="tooltip_text" translatable="yes">If the "bell rings" in a terminal while it isn't the active tab or window, its tab label will flash and/or its window will be marked "urgent".</property>
                                 <property name="use_underline">True</property>
                                 <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
@@ -5509,6 +5545,20 @@
       <action-widget response="-7">closebutton2</action-widget>
     </action-widgets>
   </object>
+  <object class="GtkSizeGroup" id="general_entries_size_group">
+    <widgets>
+      <widget name="sel_by_word"/>
+      <widget name="color_term"/>
+      <widget name="term"/>
+    </widgets>
+  </object>
+  <object class="GtkSizeGroup" id="general_entry_labels_size_group">
+    <widgets>
+      <widget name="sel_by_word_label"/>
+      <widget name="label43"/>
+      <widget name="label42"/>
+    </widgets>
+  </object>
   <object class="GtkDialog" id="ssh_dialog">
     <property name="can_focus">False</property>
     <property name="border_width">5</property>
@@ -5699,56 +5749,5 @@
     <action-widgets>
       <action-widget response="0">button1</action-widget>
     </action-widgets>
-  </object>
-  <object class="GtkAdjustment" id="exit_pause_adjustment">
-    <property name="upper">600</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">5</property>
-  </object>
-  <object class="GtkSizeGroup" id="general_entries_size_group">
-    <widgets>
-      <widget name="sel_by_word"/>
-      <widget name="color_term"/>
-      <widget name="term"/>
-    </widgets>
-  </object>
-  <object class="GtkSizeGroup" id="general_entry_labels_size_group">
-    <widgets>
-      <widget name="sel_by_word_label"/>
-      <widget name="label43"/>
-      <widget name="label42"/>
-    </widgets>
-  </object>
-  <object class="GtkAdjustment" id="height_adjustment">
-    <property name="lower">5</property>
-    <property name="upper">1000</property>
-    <property name="value">32</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">10</property>
-  </object>
-  <object class="GtkAdjustment" id="init_tabs_adjustment">
-    <property name="lower">1</property>
-    <property name="upper">20</property>
-    <property name="value">1</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">5</property>
-  </object>
-  <object class="GtkAdjustment" id="saturation_adjustment">
-    <property name="upper">1</property>
-    <property name="step_increment">0.01</property>
-    <property name="page_increment">0.10000000000000001</property>
-  </object>
-  <object class="GtkAdjustment" id="scrollback_lines_adjustment">
-    <property name="upper">100000</property>
-    <property name="value">1000</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">10</property>
-  </object>
-  <object class="GtkAdjustment" id="width_adjustment">
-    <property name="lower">10</property>
-    <property name="upper">1000</property>
-    <property name="value">80</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">10</property>
   </object>
 </interface>
