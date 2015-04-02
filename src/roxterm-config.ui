@@ -2561,6 +2561,7 @@
                                 </child>
                                 <child>
                                   <object class="GtkButton" id="edit_colour_scheme">
+                                    <property name="label" translatable="yes">Edit</property>
                                     <property name="use_action_appearance">False</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
@@ -2570,48 +2571,6 @@
                                     <property name="tooltip_markup">Click to edit this colour scheme.</property>
                                     <property name="tooltip_text" translatable="yes">Click to edit this colour scheme.</property>
                                     <signal name="clicked" handler="on_edit_colour_scheme_clicked" swapped="no"/>
-                                    <child>
-                                      <object class="GtkAlignment" id="alignment18">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="xscale">0</property>
-                                        <property name="yscale">0</property>
-                                        <child>
-                                          <object class="GtkHBox" id="hbox16">
-                                            <property name="visible">True</property>
-                                            <property name="can_focus">False</property>
-                                            <property name="spacing">2</property>
-                                            <child>
-                                              <object class="GtkImage" id="image8">
-                                                <property name="visible">True</property>
-                                                <property name="can_focus">False</property>
-                                                <property name="stock">gtk-select-color</property>
-                                              </object>
-                                              <packing>
-                                                <property name="expand">False</property>
-                                                <property name="fill">False</property>
-                                                <property name="position">0</property>
-                                              </packing>
-                                            </child>
-                                            <child>
-                                              <object class="GtkLabel" id="label28">
-                                                <property name="visible">True</property>
-                                                <property name="can_focus">False</property>
-                                                <property name="yalign">0.49000000953674316</property>
-                                                <property name="label" translatable="yes">_Edit</property>
-                                                <property name="use_underline">True</property>
-                                              </object>
-                                              <packing>
-                                                <property name="expand">False</property>
-                                                <property name="fill">False</property>
-                                                <property name="pack_type">end</property>
-                                                <property name="position">1</property>
-                                              </packing>
-                                            </child>
-                                          </object>
-                                        </child>
-                                      </object>
-                                    </child>
                                   </object>
                                   <packing>
                                     <property name="left_attach">2</property>
