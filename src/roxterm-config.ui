@@ -5650,13 +5650,13 @@
           </packing>
         </child>
         <child>
-          <object class="GtkTable" id="table5">
+          <object class="GtkGrid" id="grid10">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="n_rows">4</property>
-            <property name="n_columns">2</property>
+            <property name="hexpand">True</property>
+            <property name="vexpand">True</property>
+            <property name="row_spacing">6</property>
             <property name="column_spacing">8</property>
-            <property name="row_spacing">8</property>
             <child>
               <object class="GtkLabel" id="ssh_address_label">
                 <property name="visible">True</property>
@@ -5667,8 +5667,8 @@
                 <property name="mnemonic_widget">ssh_address</property>
               </object>
               <packing>
-                <property name="x_options">GTK_FILL</property>
-                <property name="y_options">GTK_FILL</property>
+                <property name="left_attach">0</property>
+                <property name="top_attach">0</property>
               </packing>
             </child>
             <child>
@@ -5676,6 +5676,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="tooltip_text" translatable="yes">Ssh server address.</property>
+                <property name="hexpand">True</property>
                 <property name="invisible_char">•</property>
                 <property name="primary_icon_activatable">False</property>
                 <property name="secondary_icon_activatable">False</property>
@@ -5685,8 +5686,7 @@
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
-                <property name="y_options">GTK_FILL</property>
+                <property name="top_attach">0</property>
               </packing>
             </child>
             <child>
@@ -5699,9 +5699,8 @@
                 <property name="mnemonic_widget">ssh_user</property>
               </object>
               <packing>
+                <property name="left_attach">0</property>
                 <property name="top_attach">1</property>
-                <property name="bottom_attach">2</property>
-                <property name="y_options">GTK_FILL</property>
               </packing>
             </child>
             <child>
@@ -5709,6 +5708,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="tooltip_text" translatable="yes">Remote username.</property>
+                <property name="hexpand">True</property>
                 <property name="invisible_char">•</property>
                 <property name="primary_icon_activatable">False</property>
                 <property name="secondary_icon_activatable">False</property>
@@ -5717,31 +5717,7 @@
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
                 <property name="top_attach">1</property>
-                <property name="bottom_attach">2</property>
-                <property name="y_options">GTK_FILL</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkSpinButton" id="ssh_port">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="tooltip_text" translatable="yes">Ssh server port.</property>
-                <property name="invisible_char">•</property>
-                <property name="truncate_multiline">True</property>
-                <property name="caps_lock_warning">False</property>
-                <property name="primary_icon_activatable">False</property>
-                <property name="secondary_icon_activatable">False</property>
-                <property name="update_policy">if-valid</property>
-                <signal name="changed" handler="on_spin_button_changed" swapped="no"/>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
-                <property name="top_attach">2</property>
-                <property name="bottom_attach">3</property>
-                <property name="y_options">GTK_FILL</property>
               </packing>
             </child>
             <child>
@@ -5754,28 +5730,27 @@
                 <property name="mnemonic_widget">ssh_port</property>
               </object>
               <packing>
+                <property name="left_attach">0</property>
                 <property name="top_attach">2</property>
-                <property name="bottom_attach">3</property>
-                <property name="y_options">GTK_FILL</property>
               </packing>
             </child>
             <child>
-              <object class="GtkEntry" id="ssh_options">
+              <object class="GtkSpinButton" id="ssh_port">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="tooltip_text" translatable="yes">Miscellaneous options to add to the ssh command line.</property>
+                <property name="tooltip_text" translatable="yes">Ssh server port.</property>
+                <property name="hexpand">True</property>
                 <property name="invisible_char">•</property>
+                <property name="truncate_multiline">True</property>
+                <property name="caps_lock_warning">False</property>
                 <property name="primary_icon_activatable">False</property>
                 <property name="secondary_icon_activatable">False</property>
-                <signal name="activate" handler="on_ssh_entry_activate" swapped="no"/>
-                <signal name="changed" handler="on_editable_changed" swapped="no"/>
+                <property name="update_policy">if-valid</property>
+                <signal name="changed" handler="on_spin_button_changed" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
-                <property name="top_attach">3</property>
-                <property name="bottom_attach">4</property>
-                <property name="y_options">GTK_FILL</property>
+                <property name="top_attach">2</property>
               </packing>
             </child>
             <child>
@@ -5788,16 +5763,31 @@
                 <property name="mnemonic_widget">ssh_options</property>
               </object>
               <packing>
+                <property name="left_attach">0</property>
                 <property name="top_attach">3</property>
-                <property name="bottom_attach">4</property>
-                <property name="y_options">GTK_FILL</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkEntry" id="ssh_options">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="tooltip_text" translatable="yes">Miscellaneous options to add to the ssh command line.</property>
+                <property name="hexpand">True</property>
+                <property name="invisible_char">•</property>
+                <property name="primary_icon_activatable">False</property>
+                <property name="secondary_icon_activatable">False</property>
+                <signal name="activate" handler="on_ssh_entry_activate" swapped="no"/>
+                <signal name="changed" handler="on_editable_changed" swapped="no"/>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">3</property>
               </packing>
             </child>
           </object>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="padding">4</property>
             <property name="position">1</property>
           </packing>
         </child>
