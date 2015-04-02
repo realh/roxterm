@@ -435,11 +435,7 @@ void on_edit_colour_scheme_clicked(GtkButton *button, ProfileGUI *pg)
     (void) button;
     GtkWidget *combo = capplet_lookup_combo(pg->capp.builder, "colour_scheme");
     char *name;
-#ifdef HAVE_GTK_COMBO_BOX_TEXT_NEW
     name = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(combo));
-#else
-    name = gtk_combo_box_get_active_text(GTK_COMBO_BOX(combo));
-#endif
     colourgui_open(name, gtk_widget_get_screen(combo));
 }
 
@@ -493,11 +489,7 @@ static void exit_action_changed(GtkComboBox *combo, ProfileGUI *pg)
 
 inline static void profilegui_add_combo_item(GtkWidget *combo, const char *item)
 {
-#ifdef HAVE_GTK_COMBO_BOX_TEXT_NEW
     gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(combo), item);
-#else
-    gtk_combo_box_append_text(GTK_COMBO_BOX(combo), item);
-#endif
 }
 
 static void profilegui_add_combo_items(GtkWidget *combo, ...)
@@ -576,11 +568,7 @@ static void on_colour_scheme_combo_changed(GtkComboBox *combo,
     }
     else
     {
-#ifdef HAVE_GTK_COMBO_BOX_TEXT_NEW
         value = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(combo));
-#else
-        value = gtk_combo_box_get_active_text(combo);
-#endif
     }
     capplet_set_string(capp->options, "colour_scheme", value);
     g_free(value);
@@ -596,19 +584,11 @@ static void profilegui_make_a_combo(ProfileGUI *pg, const char *name)
 
     if (strcmp(name, "colour_scheme"))
     {
-#ifdef HAVE_GTK_COMBO_BOX_TEXT_NEW
         combo = gtk_combo_box_text_new();
-#else
-        combo = gtk_combo_box_new_text();
-#endif
     }
     else
     {
-#ifdef HAVE_GTK_COMBO_BOX_TEXT_NEW
         combo = gtk_combo_box_text_new_with_entry();
-#else
-        combo = gtk_combo_box_entry_new();
-#endif
     }
     gtk_label_set_mnemonic_widget(GTK_LABEL(label), combo);
     profilegui_add_combo_items_by_name(combo, name);
@@ -730,10 +710,6 @@ static void profilegui_fill_in_dialog(ProfileGUI * pg)
     capplet_set_boolean_toggle(&pg->capp, "new_tabs_adjacent", FALSE);
     capplet_set_boolean_toggle(&pg->capp, "show_tab_num", TRUE);
     capplet_set_radio(&pg->capp, "middle_click_tab", 0);
-    capplet_set_boolean_toggle(&pg->capp, "show_resize_grip", TRUE);
-#if ! GTK_CHECK_VERSION(3, 0, 0)
-    gtk_widget_hide(profilegui_widget(pg, "show_resize_grip"));
-#endif
     profilegui_set_close_buttons_shading(pg);
     capplet_set_text_entry(&pg->capp, "browser", NULL);
     capplet_set_radio(&pg->capp, "browser_spawn_type", 0);

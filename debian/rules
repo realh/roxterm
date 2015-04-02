@@ -15,8 +15,7 @@ CONFIGURE_MISC = $(CONFIGURE_DIRS) $(CONFIGURE_TRANS) $(CONFIGURE_GIT)
 CONFIGURE_COMMON = $(CONFIGURE_GDA) $(CONFIGURE_LDFLAGS) $(CONFIGURE_MISC)
 MSCRIPT_OPTS = --lock-top
 COMMON_DIRS = --top-dir=../.. --src-dir='$${TOP_DIR}/src'
-DIRS_GTK2 = --build-dir=debian/build-gtk2 $(COMMON_DIRS)
-DIRS_GTK3 = --build-dir=debian/build-gtk3 $(COMMON_DIRS)
+BUILD_DIRS = --build-dir=debian/build $(COMMON_DIRS)
 CFLAGS = $(shell dpkg-buildflags | grep '^CFLAGS=')
 CPPFLAGS = $(shell dpkg-buildflags | grep '^CPPFLAGS=')
 LDFLAGS = $(shell dpkg-buildflags | grep '^LDFLAGS=') -Wl,--as-needed
@@ -31,34 +30,24 @@ endif
 
 override_dh_auto_configure:
 	python mscript.py configure $(MSCRIPT_OPTS) $(CONFIGURE_COMMON) \
-		 --disable-gtk3 $(DIRS_GTK2) \
-		 "$(CFLAGS)" "$(CPPFLAGS)" "$(LDFLAGS)"
-	python mscript.py configure $(MSCRIPT_OPTS) $(CONFIGURE_COMMON) \
-		--enable-gtk3 --enable-deprecated-bg-opts $(DIRS_GTK3) \
-		 "$(CFLAGS)" "$(CPPFLAGS)" "$(LDFLAGS)"
+		$(BUILD_DIRS) "$(CFLAGS)" "$(CPPFLAGS)" "$(LDFLAGS)"
 
 override_dh_auto_build:
-	python mscript.py build $(MSCRIPT_OPTS) $(DIRS_GTK2)
-	python mscript.py build $(MSCRIPT_OPTS) $(DIRS_GTK3)
+	python mscript.py build $(MSCRIPT_OPTS) $(BUILD_DIRS)
 
 override_dh_auto_install:
-	python mscript.py install $(MSCRIPT_OPTS) $(DIRS_GTK3) --destdir=../tmp
+	python mscript.py install $(MSCRIPT_OPTS) $(BUILD_DIRS) --destdir=../tmp
 
 override_dh_install:
 	dh_install
-	install -d debian/roxterm-gtk2/usr/bin
-	libtool --mode=install install debian/build-gtk2/roxterm \
-		debian/build-gtk2/roxterm-config \
-		`pwd`/debian/roxterm-gtk2/usr/bin
-	dh_install -proxterm-common debian/roxterm.xpm usr/share/pixmaps/
+	dh_install debian/roxterm.xpm usr/share/pixmaps/
 
 override_dh_auto_test:
 
 override_dh_auto_clean:
-	python mscript.py clean $(MSCRIPT_OPTS) $(DIRS_GTK3)
-	rm -rf debian/build-gtk2 debian/build-gtk3
+	python mscript.py clean $(MSCRIPT_OPTS) $(BUILD_DIRS)
+	rm -rf debian/build
 	rm -f maitch.py[co]
 
 override_dh_strip:
-	dh_strip -proxterm-gtk2 --dbg-package=roxterm-gtk2-dbg
-	dh_strip -proxterm-gtk3 --dbg-package=roxterm-gtk3-dbg
+	dh_strip -k

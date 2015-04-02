@@ -31,12 +31,6 @@
 
 #define DEFAULT_PALETTE_SIZE 16
 
-#if GTK_CHECK_VERSION(3,0,0)
-#define HAVE_COLORMAP 0
-#else
-#define HAVE_COLORMAP 1
-#endif
-
 struct _ColourGUI {
     CappletData capp;
     GtkWidget *widget;
@@ -48,26 +42,17 @@ struct _ColourGUI {
 static GHashTable *colourgui_being_edited = NULL;
 
 static void colourgui_set_colour_widget(GtkBuilder *builder,
-        const char *widget_name, COLOUR_T *colour, gboolean ignore)
+        const char *widget_name, GdkRGBA *colour, gboolean ignore)
 {
-#if HAVE_COLORMAP
-    static GdkColormap *colour_map = NULL;
-#endif
     GtkWidget *widget;
 
     if (!colour)
         return;
-#if HAVE_COLORMAP
-    if (!colour_map)
-        colour_map = gdk_colormap_get_system();
-    g_return_if_fail(gdk_colormap_alloc_color(colour_map, colour,
-                TRUE, TRUE));
-#endif
     widget = GTK_WIDGET(gtk_builder_get_object(builder, widget_name));
     /* Setting a colour doesn't seem to cause a change signal so
      * explicitly raise one if necessary */
     capplet_ignore_changes = TRUE;
-    COLOUR_BUTTON_SET(widget, colour);
+    gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(widget), colour);
     capplet_ignore_changes = FALSE;
     if (!ignore)
         g_signal_emit_by_name(widget, "color-set");
@@ -107,7 +92,7 @@ static void colourgui_set_all_palette_widgets(GtkBuilder *builder,
         Options *colour_scheme, gboolean ignore)
 {
     int n;
-    COLOUR_T *palette = colour_scheme_get_palette(colour_scheme);
+    GdkRGBA *palette = colour_scheme_get_palette(colour_scheme);
 
     g_return_if_fail(palette);
     for (n = 0; n < 24; ++n)
@@ -233,13 +218,13 @@ static void colourgui_set_fgbg_track_toggle(GtkBuilder *builder,
                     "set_fgbg")))
             && colour_scheme_get_palette_size(colour_scheme))
     {
-        COLOUR_T *palette = colour_scheme_get_palette(colour_scheme);
-        COLOUR_T *fg = colour_scheme_get_foreground_colour(colour_scheme, TRUE);
-        COLOUR_T *bg = colour_scheme_get_background_colour(colour_scheme, TRUE);
+        GdkRGBA *palette = colour_scheme_get_palette(colour_scheme);
+        GdkRGBA *fg = colour_scheme_get_foreground_colour(colour_scheme, TRUE);
+        GdkRGBA *bg = colour_scheme_get_background_colour(colour_scheme, TRUE);
 
         if (fg && bg
-                && COLOUR_EQUAL(&palette[0], fg)
-                && COLOUR_EQUAL(&palette[7], bg))
+                && gdk_rgba_equal(&palette[0], fg)
+                && gdk_rgba_equal(&palette[7], bg))
         {
             track = TRUE;
         }
@@ -394,11 +379,14 @@ void on_Colour_Editor_close(GtkWidget *widget, ColourGUI * cg)
     colourgui_delete(cg);
 }
 
-static const char *colourgui_name_colour(const COLOUR_T *colour)
+static const char *colourgui_name_colour(const GdkRGBA *colour)
 {
     static char colour_name[16];
 
-    COLOUR_SPRINTF(colour_name, colour);
+    sprintf(colour_name, "#%04hx%04hx%04hx", \
+        (guint16) (colour->red * 65535), \
+        (guint16) (colour->green * 65535), \
+        (guint16) (colour->blue * 65535));
     return colour_name;
 }
 
@@ -408,10 +396,10 @@ static const char *colourgui_read_colour_widget(ColourGUI *cg,
     GtkColorButton *button =
             GTK_COLOR_BUTTON(gtk_builder_get_object(cg->capp.builder,
                     widget_name));
-    COLOUR_T colour;
+    GdkRGBA colour;
 
     g_return_val_if_fail(button, NULL);
-    COLOUR_BUTTON_GET(button, &colour);
+    gtk_color_chooser_get_rgba(GTK_COLOR_CHOOSER(button), &colour);
     return colourgui_name_colour(&colour);
 }
 
@@ -442,7 +430,7 @@ static void colourgui_set_colour_option_from_widget(ColourGUI *cg,
 void on_color_set(GtkColorButton *button, ColourGUI * cg)
 {
     const char *widget_name;
-    COLOUR_T colour;
+    GdkRGBA colour;
     const char *colour_name;
     const char *option_name = NULL;
     char dyn_opt_nm[8];
@@ -454,7 +442,7 @@ void on_color_set(GtkColorButton *button, ColourGUI * cg)
     }
     widget_name = gtk_buildable_get_name(GTK_BUILDABLE(button));
     g_return_if_fail(widget_name);
-    COLOUR_BUTTON_GET(button, &colour);
+    gtk_color_chooser_get_rgba(GTK_COLOR_CHOOSER(button), &colour);
     colour_name = colourgui_name_colour(&colour);
     if (!strcmp(widget_name, "foreground_colour"))
     {
@@ -546,11 +534,12 @@ void on_set_fgbg_toggled(GtkToggleButton *button, ColourGUI * cg)
 static void mirror_colour(ColourGUI *cg, const char *source_widget_name,
         const char *target_widget, const char *target_option)
 {
-    COLOUR_T colour;
+    GdkRGBA colour;
     const char *colour_name;
 
-    COLOUR_BUTTON_GET(gtk_builder_get_object(cg->capp.builder,
-                source_widget_name),
+    gtk_color_chooser_get_rgba(
+            GTK_COLOR_CHOOSER(gtk_builder_get_object(cg->capp.builder,
+                source_widget_name)),
         &colour);
     colour_name = colourgui_name_colour(&colour);
     colourgui_set_colour_widget(cg->capp.builder, target_widget, &colour, TRUE);

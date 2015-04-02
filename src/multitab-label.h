@@ -45,13 +45,7 @@
 typedef struct _MultitabLabel        MultitabLabel;
 typedef struct _MultitabLabelClass   MultitabLabelClass;
 
-#define MULTITAB_LABEL_USE_PARENT_SALLOC !GTK_CHECK_VERSION(3, 0, 0)
-
-#if GTK_CHECK_VERSION(3, 0, 0)
 typedef GdkRGBA MultitabColor;
-#else
-typedef COLOUR_T MultitabColor;
-#endif
 
 struct _MultitabLabel
 {
@@ -63,18 +57,13 @@ struct _MultitabLabel
     gboolean single;
     gboolean fixed_width;
     GtkWidget *parent;
-#if MULTITAB_LABEL_USE_PARENT_SALLOC
-    gulong parent_salloc_tag;
-#endif
     int *best_width;
 };
 
 struct _MultitabLabelClass
 {
     GtkEventBoxClass parent_class;
-#if GTK_CHECK_VERSION(3, 0, 0)
     GtkCssProvider *style_provider;
-#endif
 };
 
 GType multitab_label_get_type (void);

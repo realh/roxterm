@@ -24,19 +24,9 @@
 #include <stdarg.h>
 #include <string.h>
 
-#ifndef HAVE_G_MKDIR_WITH_PARENTS
-#include <sys/stat.h>
-#include <sys/types.h>
-#endif
-
 #include "dlg.h"
 #include "globalopts.h"
 #include "optsfile.h"
-
-#ifndef HAVE_G_FILE_SET_CONTENTS
-extern gboolean g_file_set_contents(const gchar * filename,
-					const gchar * contents, gssize length, GError ** error);
-#endif
 
 static char **options_pathv = NULL;
 
@@ -258,52 +248,12 @@ gboolean options_file_mkdir_with_parents(const char *dirname)
 		g_critical(_("Invalid directory name '%s'"), dirname);
 		return FALSE;
 	}
-#ifdef HAVE_G_MKDIR_WITH_PARENTS
 	if (g_mkdir_with_parents(dirname, 0755) == -1)
 	{
 		dlg_critical(NULL, _("Failed to create directory '%s': %s"),
 			dirname, strerror(errno));
 		return FALSE;
 	}
-#else
-	if (mkdir(dirname, 0755))
-	{
-		char *parent;
-
-		switch (errno)
-		{
-			case EEXIST:
-				return TRUE;
-			case ENOENT:
-				/* Recursively try to make parent */
-				parent = g_path_get_dirname(dirname);
-				if (parent && !strcmp(parent, dirname))
-				{
-					g_critical(_("Unable to create parent directory of %s"),
-						dirname);
-					g_free(parent);
-					return FALSE;
-				}
-				if (options_file_mkdir_with_parents(parent))
-				{
-					/* Successfully made parent, try again to make target */
-					g_free(parent);
-					if (!mkdir(dirname, 0755))
-						return TRUE;
-				}
-				else
-				{
-					g_free(parent);
-				}
-				/* Fall through to default (failure) if couldn't create parent
-				 */
-			default:
-				dlg_critical(NULL, _("Failed to create directory '%s': %s"),
-					dirname, strerror(errno));
-				return FALSE;
-		}
-	}
-#endif /* HAVE_G_MKDIR_WITH_PARENTS */
 	return TRUE;
 }
 

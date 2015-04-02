@@ -2254,8 +2254,6 @@ class PotRule(Rule):
     def __init__(self, ctx, **kwargs):
         potfiles = kwargs.get('potfiles', False)
         manipulate_kwargs_for_pot_rule(ctx, kwargs, potfiles)
-        print "PotRule sources", kwargs['sources']
-        print "PotRule rule", kwargs['rule']
         Rule.__init__(self, **kwargs)
 
 

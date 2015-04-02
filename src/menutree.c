@@ -119,11 +119,7 @@ static void menutree_build_shell(MenuTree *menu_tree, GtkMenuShell * shell, ...)
         _("_Copy address to clipboard"), MENUTREE_COPY_URI, \
         _("_"), MENUTREE_URI_SEPARATOR
 
-#ifdef HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX
 #define MENUTREE_SEARCH_ITEM _("_Search"), MENUTREE_SEARCH,
-#else
-#define MENUTREE_SEARCH_ITEM
-#endif
 #define TOP_LEVEL_MENU_ITEMS \
         _("_File"), MENUTREE_FILE, \
         _("_Edit"), MENUTREE_EDIT, \
@@ -248,9 +244,7 @@ void menutree_apply_shortcuts(MenuTree *tree, Options *shortcuts)
     menutree_set_accel_path_for_submenu(tree, MENUTREE_FILE, "File");
     menutree_set_accel_path_for_submenu(tree, MENUTREE_EDIT, "Edit");
     menutree_set_accel_path_for_submenu(tree, MENUTREE_VIEW, "View");
-#ifdef HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX
     menutree_set_accel_path_for_submenu(tree, MENUTREE_SEARCH, "Search");
-#endif
     menutree_set_accel_path_for_submenu(tree, MENUTREE_PREFERENCES,
             "Preferences");
     menutree_set_accel_path_for_submenu(tree, MENUTREE_HELP, "Help");
@@ -575,7 +569,6 @@ static void menutree_build(MenuTree *menu_tree, Options *shortcuts,
     gtk_menu_item_set_submenu(GTK_MENU_ITEM(menu_tree->item_widgets
             [MENUTREE_VIEW]), submenu);
 
-#ifdef HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX
     submenu = gtk_menu_new();
     menutree_build_shell(menu_tree, GTK_MENU_SHELL(submenu),
         _("_Find..."), MENUTREE_SEARCH_FIND,
@@ -584,23 +577,13 @@ static void menutree_build(MenuTree *menu_tree, Options *shortcuts,
         NULL);
     gtk_menu_item_set_submenu(GTK_MENU_ITEM(menu_tree->item_widgets
             [MENUTREE_SEARCH]), submenu);
-#endif
 
     submenu = gtk_menu_new();
-    if (gtk_is_newer_than(3, 10))
-    {
-        menutree_build_shell(menu_tree, GTK_MENU_SHELL(submenu),
-            PREFS_ITEMS1,
-            _("Edi_t Current Shortcuts Scheme"),
-                MENUTREE_PREFERENCES_EDIT_CURRENT_SHORTCUTS_SCHEME,
-            PREFS_ITEMS2);
-    }
-    else
-    {
-        menutree_build_shell(menu_tree, GTK_MENU_SHELL(submenu),
-            PREFS_ITEMS1,
-            PREFS_ITEMS2);
-    }
+    menutree_build_shell(menu_tree, GTK_MENU_SHELL(submenu),
+        PREFS_ITEMS1,
+        _("Edi_t Current Shortcuts Scheme"),
+            MENUTREE_PREFERENCES_EDIT_CURRENT_SHORTCUTS_SCHEME,
+        PREFS_ITEMS2);
     gtk_menu_item_set_submenu(GTK_MENU_ITEM(menu_tree->item_widgets
             [MENUTREE_PREFERENCES]), submenu);
 

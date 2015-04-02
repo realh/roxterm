@@ -15,8 +15,8 @@ ROXTERM_CONFIG_SOURCES = "capplet.c colourgui.c configlet.c getname.c " \
         "optsdbus.c profilegui.c shortcuts.c"
 
 ROXTERM_SOURCES = "about.c main.c multitab.c multitab-close-button.c " \
-        "multitab-label.c menutree.c optsdbus.c roxterm.c shortcuts.c " \
-        "uri.c x11support.c"
+        "multitab-label.c menutree.c optsdbus.c roxterm.c search.c " \
+        "shortcuts.c uri.c x11support.c"
 
 ROXTERM_HTML_BASENAMES = "guide index installation news".split()
 
@@ -36,8 +36,6 @@ if ctx.mode == 'configure' or ctx.mode == 'help':
             "Where to install GNOME Default Applications file",
             default = None)
     ctx.arg_disable('sm', "Don't enable session management")
-    ctx.arg_disable('gtk3', "Use GTK+2 instead of GTK+3 and compatible "
-            "version of VTE", default = None)
     ctx.arg_disable('nls', "Disable all translations",
             default = None)
     ctx.arg_disable('translations',
@@ -195,23 +193,10 @@ if ctx.mode == 'configure':
         gda = ""
     ctx.setenv("WITH_GNOME_DEFAULT_APPLICATIONS", gda)
 
-    gtk3 = ctx.env['ENABLE_GTK3']
-    if gtk3 != False:
-        try:
-            ctx.pkg_config('gtk+-3.0', 'GTK')
-            ctx.pkg_config('vte-2.90', 'VTE')
-            vte_version = ctx.prog_output("${PKG_CONFIG} --modversion vte-2.90")
-            ctx.setenv('NEED_TRANSPARENCY_FIX', vte_version >= "0.34.8")
-        except MaitchChildError:
-            if gtk3 == True:
-                raise
-            gtk3 = False
-        else:
-            gtk3 = True
-    if not gtk3:
-        ctx.pkg_config('gtk+-2.0', 'GTK', '2.18')
-        ctx.pkg_config('vte', 'VTE', '0.20')
-        ctx.setenv('NEED_TRANSPARENCY_FIX', 0)
+    ctx.pkg_config('gtk+-3.0', 'GTK', '3.10')
+    ctx.pkg_config('vte-2.90', 'VTE')
+    vte_version = ctx.prog_output("${PKG_CONFIG} --modversion vte-2.90")
+    ctx.setenv('NEED_TRANSPARENCY_FIX', vte_version >= "0.34.8")
 
     sm = ctx.env['ENABLE_SM']
     if sm != False:
@@ -229,14 +214,17 @@ if ctx.mode == 'configure':
     ctx.pkg_config('dbus-glib-1', 'DBUS', '0.22')
     ctx.pkg_config('gmodule-export-2.0', 'GMODULE')
 
-    for f in "get_current_dir_name g_mkdir_with_parents " \
-            "gdk_window_get_display gdk_window_get_screen " \
-            "gtk_widget_get_realized gtk_widget_get_mapped " \
-            "gtk_combo_box_text_new gtk_rc_style_unref " \
-            "gtk_drag_begin_with_coordinates".split():
-        ctx.check_func(f, "${CFLAGS} ${MCFLAGS} ${GTK_CFLAGS}",
-                "${LIBS} ${GTK_LIBS}")
-    for f in ["vte_terminal_search_set_gregex", "vte_terminal_get_pty_object"]:
+    for f in ["get_current_dir_name"]:
+        ctx.check_func(f, "${CFLAGS} ${MCFLAGS} ${LIBS}")
+    #for f in "get_current_dir_name g_mkdir_with_parents " \
+    #        "gdk_window_get_display gdk_window_get_screen " \
+    #        "gtk_widget_get_realized gtk_widget_get_mapped " \
+    #        "gtk_combo_box_text_new gtk_rc_style_unref " \
+    #        "gtk_drag_begin_with_coordinates".split():
+    #    ctx.check_func(f, "${CFLAGS} ${MCFLAGS} ${GTK_CFLAGS}",
+    #            "${LIBS} ${GTK_LIBS}")
+    for f in ["vte_terminal_set_word_chars",
+            "vte_terminal_set_background_tint_color"]:
         ctx.check_func(f, "${CFLAGS} ${MCFLAGS} ${VTE_CFLAGS}",
                 "${LIBS} ${VTE_LIBS}")
 
@@ -322,8 +310,6 @@ elif ctx.mode == 'build':
     # roxterm
     if bool(ctx.env['ENABLE_SM']):
         ROXTERM_SOURCES += " session.c"
-    if bool(ctx.env['HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX']):
-        ROXTERM_SOURCES += " search.c"
     for c in ROXTERM_SOURCES.split():
         ctx.add_rule(LibtoolCRule(
                 sources = c,
@@ -404,24 +390,6 @@ elif ctx.mode == 'build':
         #        targets = "manpages",
         #        sources = "roxterm.1 roxterm-config.1"))
 
-    # Make sure .ui file is GTK2-compatible
-    def process_ui(ctx, env, targets, sources):
-        fp = open(sources[0], 'r')
-        s = fp.read()
-        fp.close()
-        s = re.sub(r'requires lib="gtk\+" version=".*"',
-                r'requires lib="gtk+" version="2.18"', s)
-        s = re.sub(r'class="GtkBox" id=(.*)hbox',
-                r'class="GtkHBox" id=\1hbox', s)
-        s = re.sub(r'class="GtkBox" id=(.*)vbox',
-                r'class="GtkVBox" id=\1vbox', s)
-        save_if_different(sources[0], s)
-        fp = open(targets[0], 'w')
-        fp.close()
-    ctx.add_rule(Rule(rule = process_ui,
-            sources = "${ABS_SRC_DIR}/roxterm-config.ui",
-            targets = "${ABS_BUILD_DIR}/roxterm-config.ui-stamp"))
-
     # Translations (gettext)
     if ctx.env['HAVE_GETTEXT']:
         podir = '${ABS_BUILD_DIR}/po'
@@ -446,7 +414,6 @@ elif ctx.mode == 'build':
                 targets = glade_pot,
                 deps = podir,
                 xgettext_opts = '-L Glade',
-                wdeps = "${ABS_BUILD_DIR}/roxterm-config.ui-stamp",
                 dir = "${ABS_TOP_DIR}/po"))
         ctx.add_rule(Rule(sources = [code_pot, glade_pot],
                 targets = '${ABS_TOP_DIR}/po/${PACKAGE}.pot',

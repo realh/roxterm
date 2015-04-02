@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.18.2 -->
+<!-- Generated with glade 3.18.3 -->
 <interface>
-  <requires lib="gtk+" version="2.18"/>
+  <requires lib="gtk+" version="3.0"/>
   <object class="GtkDialog" id="Colour_Scheme_Editor">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -12,7 +12,7 @@
     <signal name="destroy" handler="on_Colour_Editor_destroy" swapped="no"/>
     <signal name="response" handler="on_Colour_Editor_response" swapped="no"/>
     <child internal-child="vbox">
-      <object class="GtkVBox" id="dialog-vbox5">
+      <object class="GtkBox" id="dialog-vbox5">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
@@ -864,7 +864,7 @@
     <signal name="destroy" handler="on_Configlet_destroy" swapped="no"/>
     <signal name="response" handler="on_Configlet_response" swapped="no"/>
     <child internal-child="vbox">
-      <object class="GtkVBox" id="dialog-vbox3">
+      <object class="GtkBox" id="dialog-vbox3">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
@@ -1746,84 +1746,52 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkVBox" id="edit_shortcuts_vbox">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
+                              <object class="GtkButton" id="shortcuts_edit">
+                                <property name="use_action_appearance">False</property>
+                                <property name="can_focus">True</property>
+                                <property name="can_default">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="tooltip_text" translatable="yes">Click to edit the selected Shortcuts scheme in a text editor.</property>
+                                <signal name="clicked" handler="on_shortcuts_edit_clicked" swapped="no"/>
                                 <child>
-                                  <object class="GtkCheckButton" id="edit_shortcuts">
-                                    <property name="label" translatable="yes">_Enable editing</property>
-                                    <property name="use_action_appearance">False</property>
+                                  <object class="GtkAlignment" id="alignment21">
                                     <property name="visible">True</property>
-                                    <property name="can_focus">True</property>
-                                    <property name="receives_default">False</property>
-                                    <property name="has_tooltip">True</property>
-                                    <property name="tooltip_markup" translatable="yes">Check to enable shortcuts to be edited by pressing the desired key(s) while "hovering" over a menu item.</property>
-                                    <property name="tooltip_text" translatable="yes">Check to enable shortcuts to be edited by pressing the desired key(s) while "hovering" over a menu item.</property>
-                                    <property name="use_underline">True</property>
-                                    <property name="xalign">0</property>
-                                    <property name="draw_indicator">True</property>
-                                    <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">0</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkButton" id="shortcuts_edit">
-                                    <property name="use_action_appearance">False</property>
-                                    <property name="can_focus">True</property>
-                                    <property name="can_default">True</property>
-                                    <property name="receives_default">True</property>
-                                    <property name="tooltip_text" translatable="yes">Click to edit the selected Shortcuts scheme in a text editor.</property>
-                                    <signal name="clicked" handler="on_shortcuts_edit_clicked" swapped="no"/>
+                                    <property name="can_focus">False</property>
+                                    <property name="xscale">0</property>
+                                    <property name="yscale">0</property>
                                     <child>
-                                      <object class="GtkAlignment" id="alignment21">
+                                      <object class="GtkHBox" id="hbox23">
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
-                                        <property name="xscale">0</property>
-                                        <property name="yscale">0</property>
+                                        <property name="spacing">2</property>
                                         <child>
-                                          <object class="GtkHBox" id="hbox23">
+                                          <object class="GtkImage" id="image11">
                                             <property name="visible">True</property>
                                             <property name="can_focus">False</property>
-                                            <property name="spacing">2</property>
-                                            <child>
-                                              <object class="GtkImage" id="image11">
-                                                <property name="visible">True</property>
-                                                <property name="can_focus">False</property>
-                                                <property name="stock">gtk-properties</property>
-                                              </object>
-                                              <packing>
-                                                <property name="expand">False</property>
-                                                <property name="fill">False</property>
-                                                <property name="position">0</property>
-                                              </packing>
-                                            </child>
-                                            <child>
-                                              <object class="GtkLabel" id="label31">
-                                                <property name="visible">True</property>
-                                                <property name="can_focus">False</property>
-                                                <property name="label" translatable="yes">_Edit</property>
-                                                <property name="use_underline">True</property>
-                                              </object>
-                                              <packing>
-                                                <property name="expand">False</property>
-                                                <property name="fill">False</property>
-                                                <property name="position">1</property>
-                                              </packing>
-                                            </child>
+                                            <property name="stock">gtk-properties</property>
                                           </object>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="fill">False</property>
+                                            <property name="position">0</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkLabel" id="label31">
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
+                                            <property name="label" translatable="yes">_Edit</property>
+                                            <property name="use_underline">True</property>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="fill">False</property>
+                                            <property name="position">1</property>
+                                          </packing>
                                         </child>
                                       </object>
                                     </child>
                                   </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">1</property>
-                                  </packing>
                                 </child>
                               </object>
                             </child>
@@ -2099,6 +2067,12 @@
                                 <property name="bottom_attach">2</property>
                                 <property name="y_options"/>
                               </packing>
+                            </child>
+                            <child>
+                              <placeholder/>
+                            </child>
+                            <child>
+                              <placeholder/>
                             </child>
                             <child>
                               <placeholder/>
@@ -2442,7 +2416,7 @@
     <signal name="destroy" handler="on_Profile_Editor_destroy" swapped="no"/>
     <signal name="response" handler="on_Profile_Editor_response" swapped="no"/>
     <child internal-child="vbox">
-      <object class="GtkVBox" id="dialog-vbox2">
+      <object class="GtkBox" id="dialog-vbox2">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
@@ -2781,24 +2755,7 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkCheckButton" id="show_resize_grip">
-                                    <property name="label" translatable="yes">Show window _resize grip</property>
-                                    <property name="use_action_appearance">False</property>
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">True</property>
-                                    <property name="receives_default">False</property>
-                                    <property name="has_tooltip">True</property>
-                                    <property name="tooltip_markup">Whether new windows with this profile will have a menu bar. You can also turn the menu bar on and off from terminal menus.</property>
-                                    <property name="tooltip_text" translatable="yes">Whether new windows with this profile will have a menu bar. You can also turn the menu bar on and off from terminal menus.</property>
-                                    <property name="use_underline">True</property>
-                                    <property name="xalign">0</property>
-                                    <property name="draw_indicator">True</property>
-                                    <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
-                                  </object>
-                                  <packing>
-                                    <property name="top_attach">2</property>
-                                    <property name="bottom_attach">3</property>
-                                  </packing>
+                                  <placeholder/>
                                 </child>
                                 <child>
                                   <object class="GtkCheckButton" id="show_add_tab_btn">
@@ -2817,8 +2774,6 @@
                                     <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                                   </object>
                                   <packing>
-                                    <property name="left_attach">1</property>
-                                    <property name="right_attach">2</property>
                                     <property name="top_attach">2</property>
                                     <property name="bottom_attach">3</property>
                                   </packing>
@@ -4088,7 +4043,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <child>
-                                  <object class="GtkHBox" id="hbox23">
+                                  <object class="GtkHBox" id="hbox5">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="spacing">8</property>
@@ -4116,8 +4071,8 @@
                                         <property name="invisible_char">•</property>
                                         <property name="primary_icon_activatable">False</property>
                                         <property name="secondary_icon_activatable">False</property>
-                                        <signal name="changed" handler="on_editable_changed" swapped="no"/>
                                         <signal name="activate" handler="on_entry_activate" swapped="no"/>
+                                        <signal name="changed" handler="on_editable_changed" swapped="no"/>
                                       </object>
                                       <packing>
                                         <property name="expand">True</property>
@@ -4148,7 +4103,6 @@
                                         <property name="has_tooltip">True</property>
                                         <property name="tooltip_markup">Run the SSH command without a terminal.</property>
                                         <property name="tooltip_text" translatable="yes">Run the SSH command without a terminal.</property>
-                                        <property name="use_action_appearance">False</property>
                                         <property name="use_underline">True</property>
                                         <property name="xalign">0</property>
                                         <property name="active">True</property>
@@ -4171,7 +4125,6 @@
                                         <property name="has_tooltip">True</property>
                                         <property name="tooltip_markup">Run the SSH command in a new ROXTerm window.</property>
                                         <property name="tooltip_text" translatable="yes">Run the SSH command in a new ROXTerm window.</property>
-                                        <property name="use_action_appearance">False</property>
                                         <property name="use_underline">True</property>
                                         <property name="xalign">0</property>
                                         <property name="active">True</property>
@@ -4195,7 +4148,6 @@
                                         <property name="has_tooltip">True</property>
                                         <property name="tooltip_markup">Run the SSH command in a new ROXTerm tab.</property>
                                         <property name="tooltip_text" translatable="yes">Run the SSH command in a new ROXTerm tab.</property>
-                                        <property name="use_action_appearance">False</property>
                                         <property name="use_underline">True</property>
                                         <property name="xalign">0</property>
                                         <property name="draw_indicator">True</property>
@@ -4981,7 +4933,7 @@
                             <property name="border_width">8</property>
                             <property name="spacing">6</property>
                             <child>
-                              <object class="GtkHBox" id="hbox5">
+                              <object class="GtkHBox" id="hbox8">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
@@ -5727,7 +5679,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkHBox" id="hbox8">
+                              <object class="GtkHBox" id="hbox19">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
@@ -5770,7 +5722,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkHBox" id="hbox19">
+                              <object class="GtkHBox" id="hbox26">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <child>
@@ -5922,7 +5874,7 @@
     <property name="type_hint">dialog</property>
     <property name="transient_for">Profile_Editor</property>
     <child internal-child="vbox">
-      <object class="GtkVBox" id="dialog-vbox4">
+      <object class="GtkBox" id="dialog-vbox4">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="orientation">vertical</property>

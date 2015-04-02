@@ -24,8 +24,6 @@
 #include "menutree.h"
 #include "options.h"
 
-#define HAVE_COMPOSITE GTK_CHECK_VERSION(2, 10, 0)
-
 typedef struct MultiTab MultiTab;
 typedef struct MultiWin MultiWin;
 

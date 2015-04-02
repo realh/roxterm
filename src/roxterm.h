@@ -26,9 +26,7 @@
 
 #include <vte/vte.h>
 
-#ifdef HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX
 #include "multitab.h"
-#endif
 
 typedef struct ROXTermData ROXTermData;
 
@@ -82,8 +80,6 @@ gboolean roxterm_load_session(const char *xml, gssize len,
         const char *client_id);
 #endif
 
-#ifdef HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX
-
 MultiWin *roxterm_get_multi_win(ROXTermData *roxterm);
 
 VteTerminal *roxterm_get_vte(ROXTermData *roxterm);
@@ -102,8 +98,6 @@ gboolean roxterm_set_search(ROXTermData *roxterm,
 
 const char *roxterm_get_search_pattern(ROXTermData *roxterm);
 guint roxterm_get_search_flags(ROXTermData *roxterm);
-
-#endif
 
 #endif /* ROXTERM_H */
 

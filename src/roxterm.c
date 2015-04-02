@@ -28,9 +28,6 @@
 #include <unistd.h>
 
 #include <gdk/gdkx.h>
-#if !GTK_CHECK_VERSION(3, 0, 0)
-#include <gdk/gdkkeysyms.h>
-#endif
 
 #include "about.h"
 #include "boxcompat.h"
@@ -45,9 +42,7 @@
 #include "optsdbus.h"
 #include "roxterm.h"
 #include "multitab.h"
-#ifdef HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX
 #include "search.h"
-#endif
 #if ENABLE_SM
 #include "session.h"
 #endif
@@ -114,10 +109,8 @@ struct ROXTermData {
     char *reply;
     int columns, rows;
     char **env;
-#ifdef HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX
     char *search_pattern;
     guint search_flags;
-#endif
     int file_match_tag[2];
     gboolean from_session;
 };
@@ -666,11 +659,9 @@ static char *roxterm_fork_command(VteTerminal *vte,
         const char *working_directory,
         gboolean login, gboolean utmp, gboolean wtmp, pid_t *pid)
 {
-#ifdef HAVE_VTE_TERMINAL_GET_PTY_OBJECT
     GPid *ppid = (GPid *) pid;
     GError *error = NULL;
     VtePty *pty;
-#endif
     char *filename = argv[0];
     char **new_argv = NULL;
     char *reply = NULL;
@@ -698,7 +689,6 @@ static char *roxterm_fork_command(VteTerminal *vte,
         argv = new_argv;
     }
 
-#ifdef HAVE_VTE_TERMINAL_GET_PTY_OBJECT
     pty = vte_terminal_pty_new(vte,
             (login ? 0 : VTE_PTY_NO_LASTLOG) |
             (utmp ? 0 : VTE_PTY_NO_UTMP) |
@@ -734,15 +724,6 @@ static char *roxterm_fork_command(VteTerminal *vte,
     }
     if (error)
         g_error_free(error);
-#else
-    *pid = vte_terminal_fork_command(vte, filename,
-            argv + (login ? 1 : 0), envv,
-            working_directory, login, utmp, wtmp);
-    if (*pid == -1)
-    {
-        reply = g_strdup(_("The new terminal's command failed to run"));
-    }
-#endif
 
     if (new_argv)
     {
@@ -1168,10 +1149,10 @@ static double roxterm_get_window_saturation(ROXTermData *roxterm)
 }
 
 static void roxterm_apply_window_background(ROXTermData *roxterm,
-        const COLOUR_T *background, double saturation)
+        const GdkRGBA *background, double saturation)
 {
     GtkWindow *w = roxterm_get_toplevel(roxterm);
-    static COLOUR_T black = COLOUR_INIT_BLACK;
+    static GdkRGBA black = {0, 0, 0, 1};
 
     if (!background)
     {
@@ -1182,14 +1163,10 @@ static void roxterm_apply_window_background(ROXTermData *roxterm,
     }
     if (w)
     {
-#if GTK_CHECK_VERSION(3, 0, 0)
-        COLOUR_T bg = *background;
+        GdkRGBA bg = *background;
         bg.alpha = 1.0 - saturation;
         gtk_widget_override_background_color(GTK_WIDGET(w),
                 GTK_STATE_FLAG_NORMAL, &bg);
-#else
-        gtk_widget_modify_bg(GTK_WIDGET(w), GTK_STATE_NORMAL, background);
-#endif
     }
 }
 #else
@@ -1201,18 +1178,15 @@ static void roxterm_update_background(ROXTermData * roxterm, VteTerminal * vte)
     char *background_file;
     double saturation = roxterm_get_config_saturation(roxterm);
     gboolean true_trans = FALSE;
-    COLOUR_T *bg = colour_scheme_get_background_colour(
+    GdkRGBA *bg = colour_scheme_get_background_colour(
             roxterm->colour_scheme, FALSE);
 
-#if GTK_CHECK_VERSION(3, 0, 0) && \
-        !defined HAVE_VTE_TERMINAL_SET_BACKGROUND_TINT_RGBA
+#ifdef HAVE_VTE_TERMINAL_SET_BACKGROUND_TINT_COLOR
     GdkColor c;
     c.red = (guint16) (bg->red * 65535);
     c.green = (guint16) (bg->green * 65535);
     c.blue = (guint16) (bg->blue * 65535);
     vte_terminal_set_background_tint_color(vte, &c);
-#else
-    COLOUR_SET_VTE_TINT(vte, bg);
 #endif
 
     switch (options_lookup_int(roxterm->profile, "background_type"))
@@ -1259,34 +1233,22 @@ static void roxterm_update_background(ROXTermData * roxterm, VteTerminal * vte)
 static void
 roxterm_update_cursor_colour(ROXTermData * roxterm, VteTerminal * vte)
 {
-    COLOUR_SET_VTE(_cursor)(vte,
+    vte_terminal_set_color_cursor_rgba(vte,
             colour_scheme_get_cursor_colour(roxterm->colour_scheme, TRUE));
 }
 
 static void
 roxterm_update_bold_colour(ROXTermData * roxterm, VteTerminal * vte)
 {
-    COLOUR_SET_VTE(_bold)(vte,
-            colour_scheme_get_bold_colour(roxterm->colour_scheme,
-#if GTK_CHECK_VERSION(3, 0, 0)
-            TRUE
-#else
-            FALSE
-#endif
-            ));
+    vte_terminal_set_color_bold_rgba(vte,
+            colour_scheme_get_bold_colour(roxterm->colour_scheme, TRUE));
 }
 
 static void
 roxterm_update_dim_colour(ROXTermData * roxterm, VteTerminal * vte)
 {
-    COLOUR_SET_VTE(_dim)(vte,
-            colour_scheme_get_dim_colour(roxterm->colour_scheme,
-#if GTK_CHECK_VERSION(3, 0, 0)
-            TRUE
-#else
-            FALSE
-#endif
-            ));
+    vte_terminal_set_color_dim_rgba(vte,
+            colour_scheme_get_dim_colour(roxterm->colour_scheme, TRUE));
 }
 
 guint16 extrapolate_chroma(guint16 bg, guint16 fg, double factor)
@@ -1297,10 +1259,10 @@ guint16 extrapolate_chroma(guint16 bg, guint16 fg, double factor)
     return (guint16) CLAMP(ext, 0, 0xffff);
 }
 
-static const COLOUR_T *extrapolate_colours(const COLOUR_T *bg,
-        const COLOUR_T *fg, double factor)
+static const GdkRGBA *extrapolate_colours(const GdkRGBA *bg,
+        const GdkRGBA *fg, double factor)
 {
-    static COLOUR_T ext;
+    static GdkRGBA ext;
 
 #define EXTRAPOLATE(c) ext. c = \
     extrapolate_chroma(bg ? bg->  c : 0, fg ? fg->  c : 0xffff, factor)
@@ -1314,47 +1276,36 @@ static void
 roxterm_apply_colour_scheme(ROXTermData *roxterm, VteTerminal *vte)
 {
     gboolean bold_dim_set = FALSE;
-    const COLOUR_T *bd = NULL;
+    const GdkRGBA *bd = NULL;
     int ncolours = 0;
-    const COLOUR_T *palette = NULL;
-    const COLOUR_T *foreground =
+    const GdkRGBA *palette = NULL;
+    const GdkRGBA *foreground =
             colour_scheme_get_foreground_colour(roxterm->colour_scheme, TRUE);
-    const COLOUR_T *background =
+    const GdkRGBA *background =
             colour_scheme_get_background_colour(roxterm->colour_scheme, TRUE);
 
     vte_terminal_set_default_colors(vte);
     ncolours = colour_scheme_get_palette_size(roxterm->colour_scheme);
     if (ncolours)
         palette = colour_scheme_get_palette(roxterm->colour_scheme);
-    COLOUR_SET_VTE(s)(vte, foreground, background, palette, ncolours);
+    vte_terminal_set_colors_rgba(vte, foreground, background,
+            palette, ncolours);
     roxterm_apply_window_background(roxterm, background,
             roxterm_get_window_saturation(roxterm));
     if (!ncolours && foreground && background)
     {
-        COLOUR_SET_VTE(_bold)(vte,
+        vte_terminal_set_color_bold_rgba(vte,
                 extrapolate_colours(background, foreground, 1.2));
-        COLOUR_SET_VTE(_dim)(vte,
+        vte_terminal_set_color_dim_rgba(vte,
                 extrapolate_colours(background, foreground, 0.7));
         bold_dim_set = TRUE;
     }
-    bd = colour_scheme_get_bold_colour(roxterm->colour_scheme,
-#if GTK_CHECK_VERSION(3, 0, 0)
-            TRUE
-#else
-            FALSE
-#endif
-            );
+    bd = colour_scheme_get_bold_colour(roxterm->colour_scheme, TRUE);
     if (bd || !bold_dim_set)
-        COLOUR_SET_VTE(_bold)(vte, bd);
-    bd = colour_scheme_get_dim_colour(roxterm->colour_scheme,
-#if GTK_CHECK_VERSION(3, 0, 0)
-            TRUE
-#else
-            FALSE
-#endif
-            );
+        vte_terminal_set_color_bold_rgba(vte, bd);
+    bd = colour_scheme_get_dim_colour(roxterm->colour_scheme, TRUE);
     if (bd || !bold_dim_set)
-        COLOUR_SET_VTE(_dim)(vte, bd);
+        vte_terminal_set_color_dim_rgba(vte, bd);
     roxterm_update_cursor_colour(roxterm, vte);
     roxterm_force_redraw(roxterm);
 }
@@ -1395,12 +1346,8 @@ roxterm_set_vte_size(ROXTermData *roxterm, VteTerminal *vte,
 
     if (drbl && pd)
     {
-#if GTK_CHECK_VERSION(2, 24, 0)
         cw = gdk_window_get_width(drbl);
         ch = gdk_window_get_height(drbl);
-#else
-        gdk_drawable_get_size(GDK_DRAWABLE(drbl), &cw, &ch);
-#endif
         gtk_window_get_size(GTK_WINDOW(pw), &ww, &wh);
     }
     vte_terminal_set_size(vte, columns, rows);
@@ -1638,7 +1585,6 @@ static void roxterm_match_text_size(ROXTermData *roxterm, ROXTermData *other)
     roxterm_update_geometry(roxterm, vte);
 }
 
-#if USE_ACTIVATE_LINK
 static gboolean roxterm_about_uri_hook(GtkAboutDialog *about,
         gchar *link, gpointer data)
 {
@@ -1653,21 +1599,6 @@ static gboolean roxterm_about_uri_hook(GtkAboutDialog *about,
     }
     return TRUE;
 }
-#else
-static void roxterm_about_www_hook(GtkAboutDialog *about,
-        const gchar *link, gpointer data)
-{
-    (void) about;
-    roxterm_launch_browser(data, link);
-}
-
-static void roxterm_about_email_hook(GtkAboutDialog *about,
-        const gchar *link, gpointer data)
-{
-    (void) about;
-    roxterm_launch_email(data, link);
-}
-#endif
 
 static gboolean roxterm_popup_handler(GtkWidget * widget, ROXTermData * roxterm)
 {
@@ -1814,13 +1745,8 @@ static gboolean roxterm_motion_handler(GtkWidget *widget, GdkEventButton *event,
 
 
     target_list = roxterm_get_uri_drag_target_list();
-#ifdef HAVE_GTK_DRAG_BEGIN_WITH_COORDINATES
     gtk_drag_begin_with_coordinates(roxterm->widget, target_list,
             GDK_ACTION_COPY, 1, (GdkEvent *) event, event->x, event->y);
-#else
-    gtk_drag_begin(roxterm->widget, target_list,
-            GDK_ACTION_COPY, 1, (GdkEvent *) event);
-#endif
 
     return TRUE;
 }
@@ -1973,7 +1899,6 @@ static void check_preferences_submenu_pair(ROXTermData *roxterm, MenuTreeID id,
     multi_win_set_ignore_toggles(win, FALSE);
 }
 
-#ifdef HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX
 inline static void roxterm_shade_mtree_search_items(MenuTree *mtree,
         gboolean shade)
 {
@@ -1993,7 +1918,6 @@ static void roxterm_shade_search_menu_items(ROXTermData *roxterm)
     roxterm_shade_mtree_search_items(multi_win_get_menu_bar(win), shade);
     roxterm_shade_mtree_search_items(multi_win_get_popup_menu(win), shade);
 }
-#endif
 
 static void roxterm_tab_selection_handler(ROXTermData * roxterm, MultiTab * tab)
 {
@@ -2013,9 +1937,7 @@ static void roxterm_tab_selection_handler(ROXTermData * roxterm, MultiTab * tab)
     check_preferences_submenu_pair(roxterm,
             MENUTREE_PREFERENCES_SELECT_SHORTCUTS,
             options_get_leafname(multi_win_get_shortcut_scheme(win)));
-#ifdef HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX
     roxterm_shade_search_menu_items(roxterm);
-#endif
 
     multi_win_set_ignore_toggles(win, TRUE);
     if (!popup_menu->encodings)
@@ -2208,7 +2130,6 @@ static void roxterm_edit_shortcuts_scheme_action(MultiWin * win)
 }
 
 
-#ifdef HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX
 static void roxterm_open_search_action(MultiWin *win)
 {
     ROXTermData *roxterm = multi_win_get_user_data_for_current_tab(win);
@@ -2232,7 +2153,6 @@ static void roxterm_find_prev_action(MultiWin *win)
     g_return_if_fail(roxterm);
     vte_terminal_search_find_previous(VTE_TERMINAL(roxterm->widget));
 }
-#endif
 
 static void roxterm_show_about(MultiWin * win)
 {
@@ -2243,11 +2163,7 @@ static void roxterm_show_about(MultiWin * win)
      * same GdkScreen.
      */
     about_dialog_show(GTK_WINDOW(multi_win_get_widget(win)),
-#if USE_ACTIVATE_LINK
             roxterm_about_uri_hook,
-#else
-            roxterm_about_www_hook, roxterm_about_email_hook,
-#endif
             roxterm);
 }
 
@@ -2918,13 +2834,10 @@ static void roxterm_connect_menu_signals(MultiWin * win)
     multi_win_menu_connect_swapped(win,
             MENUTREE_PREFERENCES_EDIT_CURRENT_COLOUR_SCHEME,
         G_CALLBACK(roxterm_edit_colour_scheme_action), win, NULL, NULL, NULL);
-    if (gtk_is_newer_than(3, 10))
-    {
-        multi_win_menu_connect_swapped(win,
-                MENUTREE_PREFERENCES_EDIT_CURRENT_SHORTCUTS_SCHEME,
-            G_CALLBACK(roxterm_edit_shortcuts_scheme_action),
-            win, NULL, NULL, NULL);
-    }
+    multi_win_menu_connect_swapped(win,
+            MENUTREE_PREFERENCES_EDIT_CURRENT_SHORTCUTS_SCHEME,
+        G_CALLBACK(roxterm_edit_shortcuts_scheme_action),
+        win, NULL, NULL, NULL);
 
     multi_win_menu_connect_swapped(win, MENUTREE_HELP_ABOUT,
         G_CALLBACK(roxterm_show_about), win, NULL, NULL, NULL);
@@ -2944,25 +2857,21 @@ static void roxterm_connect_menu_signals(MultiWin * win)
         G_CALLBACK(roxterm_copy_url_action), win, NULL, NULL, NULL);
     multi_win_menu_connect_swapped(win, MENUTREE_SSH_HOST,
         G_CALLBACK(roxterm_ssh_host_action), win, NULL, NULL, NULL);
-#ifdef HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX
     multi_win_menu_connect_swapped(win, MENUTREE_SEARCH_FIND,
         G_CALLBACK(roxterm_open_search_action), win, NULL, NULL, NULL);
     multi_win_menu_connect_swapped(win, MENUTREE_SEARCH_FIND_NEXT,
         G_CALLBACK(roxterm_find_next_action), win, NULL, NULL, NULL);
     multi_win_menu_connect_swapped(win, MENUTREE_SEARCH_FIND_PREVIOUS,
         G_CALLBACK(roxterm_find_prev_action), win, NULL, NULL, NULL);
-#endif
 
     roxterm_add_all_pref_submenus(win);
 }
 
-#if HAVE_COMPOSITE
 static void roxterm_composited_changed_handler(VteTerminal *vte,
         ROXTermData *roxterm)
 {
     roxterm_update_background(roxterm, vte);
 }
-#endif
 
 static void roxterm_connect_misc_signals(ROXTermData * roxterm)
 {
@@ -3005,10 +2914,8 @@ static void roxterm_connect_misc_signals(ROXTermData * roxterm)
             G_CALLBACK(roxterm_text_changed_handler), roxterm);
     g_signal_connect(roxterm->widget, "resize-window",
             G_CALLBACK(roxterm_resize_window_handler), roxterm);
-#if HAVE_COMPOSITE
     g_signal_connect(roxterm->widget, "composited-changed",
             G_CALLBACK(roxterm_composited_changed_handler), roxterm);
-#endif
     g_signal_connect(roxterm->widget, "key-press-event",
             G_CALLBACK(roxterm_key_press_handler), roxterm);
 }
@@ -3132,11 +3039,6 @@ static void roxterm_apply_disable_menu_access(ROXTermData *roxterm)
             "disable_menu_access", FALSE);
     GtkSettings *settings;
     GtkBindingSet *binding_set;
-#if GTK_CHECK_VERSION(3, 0, 0)
-#define F10_KEY GDK_KEY_F10
-#else
-#define F10_KEY GDK_F10
-#endif
 
     if (disable == disabled)
         return;
@@ -3154,11 +3056,11 @@ static void roxterm_apply_disable_menu_access(ROXTermData *roxterm)
             VTE_TERMINAL_GET_CLASS(roxterm->widget));
     if (disable)
     {
-        gtk_binding_entry_skip(binding_set, F10_KEY, GDK_SHIFT_MASK);
+        gtk_binding_entry_skip(binding_set, GDK_KEY_F10, GDK_SHIFT_MASK);
     }
     else
     {
-        gtk_binding_entry_remove(binding_set, F10_KEY, GDK_SHIFT_MASK);
+        gtk_binding_entry_remove(binding_set, GDK_KEY_F10, GDK_SHIFT_MASK);
     }
 }
 
@@ -3229,20 +3131,6 @@ static void roxterm_apply_match_files(ROXTermData *roxterm, VteTerminal *vte)
 
 }
 
-#if GTK_CHECK_VERSION(3, 0, 0)
-static void roxterm_apply_show_resize_grip(ROXTermData *roxterm)
-{
-    GtkWindow *w = roxterm_get_toplevel(roxterm);
-
-    if (w)
-    {
-        int grip =  options_lookup_int_with_default(roxterm->profile,
-                        "show_resize_grip", TRUE);
-        gtk_window_set_has_resize_grip(w, grip);
-    }
-}
-#endif
-
 inline static void roxterm_apply_middle_click_tab(ROXTermData *roxterm)
 {
     multi_tab_set_middle_click_tab_action(roxterm->tab,
@@ -3304,9 +3192,6 @@ static void roxterm_apply_profile(ROXTermData *roxterm, VteTerminal *vte,
     roxterm_apply_show_tab_number(roxterm);
     roxterm_apply_show_tab_status(roxterm);
     roxterm_apply_match_files(roxterm, vte);
-#if GTK_CHECK_VERSION(3, 0, 0)
-    roxterm_apply_show_resize_grip(roxterm);
-#endif
     roxterm_apply_middle_click_tab(roxterm);
 
     roxterm_apply_colour_scheme_from_profile(roxterm);
@@ -3404,11 +3289,7 @@ roxterm_tab_received(GtkWidget *rcvd_widget, ROXTermData *roxterm)
 
 inline static GtkAdjustment *roxterm_get_vte_adjustment(VteTerminal *vte)
 {
-#if GTK_CHECK_VERSION(3, 0, 0)
     return gtk_scrollable_get_vadjustment(GTK_SCROLLABLE(vte));
-#else
-    return vte_terminal_get_adjustment(vte);
-#endif
 }
 
 static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
@@ -3457,7 +3338,6 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
             "scrollbar_pos", MultiWinScrollBar_Right));
     if (scrollbar_pos)
     {
-#if GTK_CHECK_VERSION(3, 0, 0)
         GtkGrid *grid = GTK_GRID(roxterm->hbox = gtk_grid_new());
 
         roxterm->scrollbar =
@@ -3477,25 +3357,6 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
                 "vexpand", TRUE, NULL);
         g_object_set(roxterm->scrollbar, "hexpand", FALSE,
                 "vexpand", TRUE, NULL);
-#else
-        roxterm->hbox = gtk_hbox_new(FALSE, 0);
-        roxterm->scrollbar =
-                gtk_vscrollbar_new(roxterm_get_vte_adjustment(vte));
-        if (scrollbar_pos == MultiWinScrollBar_Left)
-        {
-            gtk_box_pack_end(GTK_BOX(roxterm->hbox), roxterm->widget,
-                    TRUE, TRUE, 0);
-            gtk_box_pack_end(GTK_BOX(roxterm->hbox), roxterm->scrollbar,
-                FALSE, FALSE, 0);
-        }
-        else
-        {
-            gtk_box_pack_start(GTK_BOX(roxterm->hbox), roxterm->widget,
-                    TRUE, TRUE, 0);
-            gtk_box_pack_start(GTK_BOX(roxterm->hbox), roxterm->scrollbar,
-                    FALSE, FALSE, 0);
-        }
-#endif
         gtk_widget_show_all(roxterm->hbox);
     }
     else
@@ -3777,12 +3638,6 @@ static void roxterm_reflect_profile_change(Options * profile, const char *key)
         {
             roxterm_apply_match_files(roxterm, vte);
         }
-#if GTK_CHECK_VERSION(3, 0, 0)
-        else if (!strcmp(key, "show_resize_grip"))
-        {
-            roxterm_apply_show_resize_grip(roxterm);
-        }
-#endif
         else if (!strcmp(key, "middle_click_tab"))
         {
             roxterm_apply_middle_click_tab(roxterm);
@@ -3802,13 +3657,13 @@ static gboolean roxterm_update_colour_option(Options *scheme, const char *key,
         const char *value)
 {
     void (*setter)(Options *, const char *) = NULL;
-    COLOUR_T *old_colour;
-    COLOUR_T *pnew_colour = NULL;
-    COLOUR_T  new_colour;
+    GdkRGBA *old_colour;
+    GdkRGBA *pnew_colour = NULL;
+    GdkRGBA  new_colour;
 
     if (value)
     {
-        g_return_val_if_fail(COLOUR_PARSE(&new_colour, value), FALSE);
+        g_return_val_if_fail(gdk_rgba_parse(&new_colour, value), FALSE);
         pnew_colour = &new_colour;
     }
     if (!strcmp(key, "foreground"))
@@ -3828,24 +3683,12 @@ static gboolean roxterm_update_colour_option(Options *scheme, const char *key,
     }
     else if (!strcmp(key, "bold"))
     {
-        old_colour = colour_scheme_get_bold_colour(scheme,
-#if GTK_CHECK_VERSION(3, 0, 0)
-            TRUE
-#else
-            FALSE
-#endif
-            );
+        old_colour = colour_scheme_get_bold_colour(scheme, TRUE);
         setter = colour_scheme_set_bold_colour;
     }
     else if (!strcmp(key, "dim"))
     {
-        old_colour = colour_scheme_get_dim_colour(scheme,
-#if GTK_CHECK_VERSION(3, 0, 0)
-            TRUE
-#else
-            FALSE
-#endif
-            );
+        old_colour = colour_scheme_get_dim_colour(scheme, TRUE);
         setter = colour_scheme_set_dim_colour;
     }
     else
@@ -3854,7 +3697,7 @@ static gboolean roxterm_update_colour_option(Options *scheme, const char *key,
     }
     if (!old_colour && !pnew_colour)
         return FALSE;
-    if (old_colour && pnew_colour && COLOUR_EQUAL(old_colour, pnew_colour))
+    if (old_colour && pnew_colour && gdk_rgba_equal(old_colour, pnew_colour))
         return FALSE;
     if (setter)
         setter(scheme, value);
@@ -3896,21 +3739,6 @@ static void roxterm_reflect_colour_change(Options *scheme, const char *key)
     }
 }
 
-#if !GTK_CHECK_VERSION(3, 10, 0)
-static void roxterm_apply_can_edit_shortcuts(void)
-{
-    if (gtk_is_newer_than(3, 10))
-        return;
-    g_type_class_unref(g_type_class_ref(GTK_TYPE_MENU_ITEM));
-    g_type_class_unref(g_type_class_ref(GTK_TYPE_CHECK_MENU_ITEM));
-    g_type_class_unref(g_type_class_ref(GTK_TYPE_RADIO_MENU_ITEM));
-    gtk_settings_set_long_property(gtk_settings_get_default(),
-            "gtk-can-change-accels",
-            global_options_lookup_int_with_default("edit_shortcuts", FALSE),
-            "roxterm");
-}
-#endif
-
 static void
 roxterm_opt_signal_handler(const char *profile_name, const char *key,
     OptsDBusOptType opt_type, OptsDBusValue val)
@@ -3942,18 +3770,11 @@ roxterm_opt_signal_handler(const char *profile_name, const char *key,
     else if (!strcmp(profile_name, "Global") &&
             (!strcmp(key, "warn_close") ||
             !strcmp(key, "only_warn_running") ||
-#if !GTK_CHECK_VERSION(3, 10, 0)
-            !strcmp(key, "edit_shortcuts") ||
-#endif
             !strcmp(key, "prefer_dark_theme")))
     {
         options_set_int(global_options, key, val.i);
         if (!strcmp(key, "prefer_dark_theme"))
             global_options_apply_dark_theme();
-#if !GTK_CHECK_VERSION(3, 10, 0)
-        else if (!strcmp(key, "edit_shortcuts"))
-            roxterm_apply_can_edit_shortcuts();
-#endif
     }
     else
     {
@@ -4447,7 +4268,8 @@ void roxterm_launch(const char *display_name, char **env)
     {
         ROXTermData *partner;
         char *wtitle = global_options_lookup_string("title");
-        MultiWin *next_best = NULL;
+        MultiWin *best_inactive = NULL;
+        MultiWin *best_in_other_ws = NULL;
         GList *link;
 
         win = NULL;
@@ -4473,13 +4295,14 @@ void roxterm_launch(const char *display_name, char **env)
                     if (workspace == global_options_workspace ||
                         workspace == WORKSPACE_ALL)
                     {
-                        next_best = win;
+                        if (!best_inactive)
+                            best_inactive = win;
                     }
                     else if (wtitle)
                     {
                         /* Titles match but window is on wrong workspace */
-                        if (!next_best)
-                            next_best = win;
+                        if (!best_in_other_ws)
+                            best_in_other_ws = win;
                     }
                 }
                 else
@@ -4491,16 +4314,18 @@ void roxterm_launch(const char *display_name, char **env)
                      * and
        * https://sourceforge.net/p/roxterm/discussion/422638/thread/2cc9a9aa/
                      */
-                    if (!next_best)
-                        next_best = win;
+                    if (!best_in_other_ws)
+                        best_in_other_ws = win;
                 }
             }
             win = NULL;
         }
         if (!win)
         {
-            if (next_best)
-                win = next_best;
+            if (best_inactive)
+                win = best_inactive;
+            else if (best_in_other_ws)
+                win = best_in_other_ws;
         }
         partner = win ? multi_win_get_user_data_for_current_tab(win) : NULL;
         if (partner)
@@ -4781,9 +4606,6 @@ void roxterm_init(void)
         (MultiTabGetShowCloseButton) roxterm_get_show_tab_close_button,
         (MultiTabGetNewTabAdjacent) roxterm_get_new_tab_adjacent
         );
-#if !GTK_CHECK_VERSION(3, 10, 0)
-    roxterm_apply_can_edit_shortcuts();
-#endif
 }
 
 gboolean roxterm_spawn_command_line(const gchar *command_line,
@@ -5536,8 +5358,6 @@ gboolean roxterm_load_session(const char *xml, gssize len,
 }
 #endif /* ENABLE_SM */
 
-#ifdef HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX
-
 MultiWin *roxterm_get_multi_win(ROXTermData *roxterm)
 {
     return roxterm_get_win(roxterm);
@@ -5605,8 +5425,5 @@ guint roxterm_get_search_flags(ROXTermData *roxterm)
 {
     return roxterm->search_flags;
 }
-
-#endif /* HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX */
-
 
 /* vi:set sw=4 ts=4 et cindent cino= */

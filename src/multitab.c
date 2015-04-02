@@ -26,18 +26,10 @@
 #include "multitab-close-button.h"
 #include "multitab-label.h"
 #include "shortcuts.h"
-#if HAVE_COMPOSITE
 #include <gdk/gdkx.h>
 #include "x11support.h"
-#endif
 
 #define HORIZ_TAB_WIDTH_CHARS 16
-
-#if GTK_CHECK_VERSION(3,0,0)
-#define HAVE_COLORMAP 0
-#else
-#define HAVE_COLORMAP 1
-#endif
 
 struct MultiTab {
     MultiWin *parent;
@@ -95,9 +87,7 @@ struct MultiWin {
     gboolean fullscreen;
     char *title_template;
     char *child_title;
-#if HAVE_COMPOSITE
     gboolean composite;
-#endif
     char *display_name;
     gboolean title_template_locked;
     gboolean clear_demands_attention;
@@ -165,9 +155,6 @@ static void multi_win_restore_size(MultiWin *win)
     MultiTab *tab = win->current_tab;
     int w = -1;
     int h = -1;
-#if !GTK_CHECK_VERSION(3, 0, 0)
-    GtkRequisition win_rq, term_rq;
-#endif
 
     if (!tab || !tab->active_widget ||
             !gtk_widget_get_realized(tab->active_widget))
@@ -176,24 +163,8 @@ static void multi_win_restore_size(MultiWin *win)
     }
     if (multi_win_is_maximised(win) || multi_win_is_fullscreen(win))
         return;
-#if GTK_CHECK_VERSION(3, 0, 0)
     multi_win_size_func(tab->user_data, FALSE, &w, &h);
     gtk_window_resize_to_geometry(GTK_WINDOW(win->gtkwin), w, h);
-#else
-    /* Find new difference between window and term widget (padding) */
-    gtk_widget_size_request(win->gtkwin, &win_rq);
-    gtk_widget_size_request(tab->active_widget, &term_rq);
-    /*
-    g_debug("Window request %dx%d, term %dx%d",
-            win_rq.width, win_rq.height, term_rq.width, term_rq.height);
-    */
-    /* What size is the terminal supposed to be? */
-    multi_win_size_func(tab->user_data, TRUE, &w, &h);
-    /* Resize window to terminal's previous size + new padding */
-    gtk_window_resize(GTK_WINDOW(win->gtkwin),
-            w + win_rq.width - term_rq.width,
-            h + win_rq.height - term_rq.height);
-#endif
 }
 
 MultiTab *multi_tab_get_from_widget(GtkWidget *widget)
@@ -334,23 +305,19 @@ const char *multi_tab_get_display_name(MultiTab *tab)
     return tab->parent ? tab->parent->display_name : NULL;
 }
 
-#if GTK_CHECK_VERSION(3, 0, 0)
 static gboolean multi_win_clear_geometry_hints(GtkWindow *w)
 {
     gtk_window_set_geometry_hints(w, NULL, NULL, 0);
     return FALSE;
 }
-#endif
 
 void multi_win_set_geometry_hints(MultiWin *win, GtkWidget *child,
     GdkGeometry *geometry, GdkWindowHints geom_mask)
 {
     gtk_window_set_geometry_hints(GTK_WINDOW(win->gtkwin), child,
         geometry, geom_mask);
-#if GTK_CHECK_VERSION(3, 0, 0)
     if (global_options_lookup_int_with_default("no-geometry", FALSE))
         g_idle_add((GSourceFunc) multi_win_clear_geometry_hints, win->gtkwin);
-#endif
 }
 
 static void multi_win_set_geometry_hints_for_tab(MultiWin * win, MultiTab * tab)
@@ -779,9 +746,6 @@ static void multi_win_pack_for_single_tab(MultiWin *win)
 {
     MultiTab *tab = win->tabs->data;
 
-#if !GTK_CHECK_VERSION(3, 0, 0)
-    g_object_set(G_OBJECT(win->notebook), "homogeneous", FALSE, NULL);
-#endif
     multi_tab_pack_for_single(tab, GTK_CONTAINER(win->notebook));
 }
 
@@ -798,9 +762,6 @@ static void multi_win_pack_for_multiple_tabs(MultiWin *win)
     GList *link;
     GtkContainer *nb = GTK_CONTAINER(win->notebook);
 
-#if !GTK_CHECK_VERSION(3, 0, 0)
-    g_object_set(G_OBJECT(win->notebook), "homogeneous", TRUE, NULL);
-#endif
     for (link = win->tabs; link; link = g_list_next(link))
     {
         MultiTab *tab = link->data;
@@ -900,12 +861,7 @@ static void add_menu_bar(MultiWin *win)
     if (win->show_menu_bar)
         return;
     menu_bar = menutree_get_top_level_widget(win->menu_bar);
-#if GTK_CHECK_VERSION(3, 0, 0)
     gtk_grid_attach(GTK_GRID(win->vbox), menu_bar, 0, -1, 1, 1);
-#else
-    gtk_box_pack_start(GTK_BOX(win->vbox), menu_bar, FALSE, FALSE, 0);
-    gtk_box_reorder_child(GTK_BOX(win->vbox), menu_bar, 0);
-#endif
     gtk_widget_show(menu_bar);
     win->show_menu_bar = TRUE;
 }
@@ -1092,8 +1048,7 @@ static GtkWidget *make_tab_label(MultiTab *tab, GtkPositionType tab_pos)
             &tab->parent->best_tab_width);
     multi_tab_set_full_window_title(tab, tab->window_title_template,
             tab->window_title);
-#if GTK_CHECK_VERSION(3, 0, 0)
-    /* GtkBox will be replaced by GtkGrid one day, but at the moment it
+    /* TODO: GtkBox will be replaced by GtkGrid one day, but at the moment it
      * doesn't work properly because GtkNotebook has no homogeneous option
      * and GtkGrid doesn't have pack_end to right-align close button.
      */
@@ -1104,9 +1059,6 @@ static GtkWidget *make_tab_label(MultiTab *tab, GtkPositionType tab_pos)
     */
     tab->label_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
     gtk_box_set_homogeneous(GTK_BOX(tab->label_box), FALSE);
-#else
-    tab->label_box = gtk_hbox_new(FALSE, 4);
-#endif
     gtk_box_pack_start(GTK_BOX(tab->label_box), tab->label, TRUE, TRUE, 0);
     g_signal_connect(tab->label, "button-press-event",
             G_CALLBACK(tab_clicked_handler), tab);
@@ -1182,7 +1134,7 @@ static void page_added_callback(GtkNotebook *notebook, GtkWidget *child,
         {
             multi_tab_pack_for_multiple(tab, GTK_CONTAINER(notebook));
         }
-#if GTK_CHECK_VERSION(3, 0, 0)
+#if 0
         if (old_win_destroyed && !vert_tabs)
         {
             /* The dragged tab's label will now be stupidly small,
@@ -1381,11 +1333,7 @@ static void multi_win_set_window_title_action(MultiWin * win)
     int response;
     const char *title;
     GtkWidget *content_area = gtk_dialog_get_content_area(dialog);
-#if GTK_CHECK_VERSION(3, 0, 0)
     GtkWidget *hbox = gtk_grid_new();
-#else
-    GtkWidget *hbox = gtk_hbox_new(FALSE, 8);
-#endif
 
     gtk_dialog_set_default_response(dialog, GTK_RESPONSE_APPLY);
     box_compat_packv(content_area, title_w, FALSE, 8);
@@ -1745,8 +1693,6 @@ void multi_win_show(MultiWin *win)
             "ROXTermWin", win);
 }
 
-#if HAVE_COMPOSITE
-#if GTK_CHECK_VERSION(3, 0, 0)
 void multi_win_set_colormap(MultiWin *win)
 {
     GdkScreen *screen = gtk_widget_get_screen(win->gtkwin);
@@ -1764,26 +1710,6 @@ void multi_win_set_colormap(MultiWin *win)
         win->composite = FALSE;
     }
 }
-#else
-void multi_win_set_colormap(MultiWin *win)
-{
-    GdkScreen *screen = gtk_widget_get_screen(win->gtkwin);
-    GdkColormap *colormap = gdk_screen_get_rgba_colormap(screen);
-
-    if (gdk_screen_is_composited(screen) && colormap)
-    {
-        gtk_widget_set_colormap(win->gtkwin, colormap);
-        win->composite = TRUE;
-    }
-    else
-    {
-        gtk_widget_set_colormap(win->gtkwin,
-                gdk_screen_get_default_colormap(screen));
-        win->composite = FALSE;
-    }
-}
-#endif  /* !GTK3 */
-
 static void multi_win_composited_changed(GtkWidget *widget, MultiWin *win)
 {
     gboolean composited =
@@ -1847,8 +1773,6 @@ static gboolean multi_win_map_event_handler(GtkWidget *widget,
     return FALSE;
 }
 
-#endif /* HAVE_COMPOSITE */
-
 /* Close window explicitly instead of allowing system to close it by returning
  * FALSE from delete-event handler. This cures
  * https://sourceforge.net/p/roxterm/bugs/89/
@@ -1883,20 +1807,8 @@ MultiWin *multi_win_new_blank(const char *display_name, Options *shortcuts,
         gboolean add_tab_button)
 {
     MultiWin *win = g_new0(MultiWin, 1);
-#if !GTK_CHECK_VERSION(2, 24, 0)
-    static gboolean set_nwc_hook = FALSE;
-#endif
     GtkNotebook *notebook;
     char *role = NULL;
-
-#if !GTK_CHECK_VERSION(2, 24, 0)
-    if (!set_nwc_hook)
-    {
-        gtk_notebook_set_window_creation_hook(multi_win_notebook_creation_hook,
-                win, NULL);
-        set_nwc_hook = TRUE;
-    }
-#endif
 
     win->best_tab_width = G_MAXINT;
     win->tab_pos = tab_pos;
@@ -1945,26 +1857,20 @@ MultiWin *multi_win_new_blank(const char *display_name, Options *shortcuts,
                 G_CALLBACK(multi_win_delete_event_cb), win);
     }
 
-#if HAVE_COMPOSITE
     multi_win_set_colormap(win);
     g_signal_connect(win->gtkwin, "composited-changed",
             G_CALLBACK(multi_win_composited_changed), win);
     g_signal_connect(win->gtkwin, "map-event",
             G_CALLBACK(multi_win_map_event_handler), win);
-#endif
 
 #if NEED_TRANSPARENCY_FIX
     g_signal_connect(win->gtkwin, "draw", G_CALLBACK(multi_win_draw), win);
     gtk_widget_set_app_paintable(win->gtkwin, TRUE);
 #endif
 
-#if GTK_CHECK_VERSION(3, 0, 0)
     win->vbox = gtk_grid_new();
     gtk_orientable_set_orientation(GTK_ORIENTABLE(win->vbox),
             GTK_ORIENTATION_VERTICAL);
-#else
-    win->vbox = gtk_vbox_new(FALSE, 0);
-#endif
     gtk_container_add(GTK_CONTAINER(win->gtkwin), win->vbox);
 
     options_ref(shortcuts);
@@ -2007,21 +1913,9 @@ MultiWin *multi_win_new_blank(const char *display_name, Options *shortcuts,
 
     win->notebook = gtk_notebook_new();
     notebook = GTK_NOTEBOOK(win->notebook);
-#if GTK_CHECK_VERSION(2, 24, 0)
     g_signal_connect(notebook, "create-window",
             G_CALLBACK(multi_win_notebook_creation_hook), win);
-#endif
     gtk_notebook_set_scrollable(notebook, TRUE);
-#if !GTK_CHECK_VERSION(3, 0, 0)
-    if (win->tab_pos == GTK_POS_LEFT || win->tab_pos == GTK_POS_RIGHT)
-    {
-        g_object_set(notebook, "tab-hborder", 0, NULL);
-    }
-    else
-    {
-        g_object_set(notebook, "tab-vborder", 0, NULL);
-    }
-#endif
     if ((int) tab_pos == -1)
     {
         gtk_notebook_set_show_tabs(notebook, always_show_tabs);
@@ -2054,11 +1948,7 @@ MultiWin *multi_win_new_blank(const char *display_name, Options *shortcuts,
         G_CALLBACK(multi_win_page_switched), win);
     g_signal_connect(win->gtkwin, "focus-in-event",
         G_CALLBACK(multi_win_focus_in), win);
-#if GTK_CHECK_VERSION(2, 24, 0)
     gtk_notebook_set_group_name(notebook, "ROXTerm");
-#else
-    gtk_notebook_set_group(notebook, &multi_win_all);
-#endif
     g_signal_connect(win->notebook, "page-reordered",
         G_CALLBACK(page_reordered_callback), win);
     g_signal_connect(win->notebook, "page-added",
@@ -2635,11 +2525,7 @@ const char *multi_win_get_title(MultiWin *win)
 
 gboolean multi_win_composite(MultiWin *win)
 {
-#if HAVE_COMPOSITE
     return gdk_screen_is_composited(gtk_widget_get_screen(win->gtkwin));
-#else
-    return FALSE;
-#endif
 }
 
 const char *multi_win_get_display_name(MultiWin *win)

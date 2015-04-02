@@ -24,19 +24,8 @@
 #include "defns.h"
 #endif
 
-#if GTK_CHECK_VERSION(2,25,0)
-#define USE_ACTIVATE_LINK 1
-#else
-#define USE_ACTIVATE_LINK 0
-#endif
-
 void about_dialog_show(GtkWindow *parent,
-#if USE_ACTIVATE_LINK
         gboolean (*uri_handler)(GtkAboutDialog *, char *, gpointer),
-#else
-        GtkAboutDialogActivateLinkFunc www_hook,
-        GtkAboutDialogActivateLinkFunc email_hook,
-#endif
         gpointer hook_data
 );
 
