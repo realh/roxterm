@@ -2109,43 +2109,6 @@
       <action-widget response="-7">closebutton3</action-widget>
     </action-widgets>
   </object>
-  <object class="GtkAdjustment" id="exit_pause_adjustment">
-    <property name="upper">600</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">5</property>
-  </object>
-  <object class="GtkAdjustment" id="height_adjustment">
-    <property name="lower">5</property>
-    <property name="upper">1000</property>
-    <property name="value">32</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">10</property>
-  </object>
-  <object class="GtkAdjustment" id="init_tabs_adjustment">
-    <property name="lower">1</property>
-    <property name="upper">20</property>
-    <property name="value">1</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">5</property>
-  </object>
-  <object class="GtkAdjustment" id="saturation_adjustment">
-    <property name="upper">1</property>
-    <property name="step_increment">0.01</property>
-    <property name="page_increment">0.10000000000000001</property>
-  </object>
-  <object class="GtkAdjustment" id="scrollback_lines_adjustment">
-    <property name="upper">100000</property>
-    <property name="value">1000</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">10</property>
-  </object>
-  <object class="GtkAdjustment" id="width_adjustment">
-    <property name="lower">10</property>
-    <property name="upper">1000</property>
-    <property name="value">80</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">10</property>
-  </object>
   <object class="GtkDialog" id="Profile_Editor">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -2190,9 +2153,11 @@
           </packing>
         </child>
         <child>
-          <object class="GtkHBox" id="main_hbox">
+          <object class="GtkGrid" id="grid11">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="hexpand">True</property>
+            <property name="column_spacing">4</property>
             <child>
               <object class="GtkFrame" id="page_selector_container">
                 <property name="visible">True</property>
@@ -2207,15 +2172,15 @@
                 </child>
               </object>
               <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
+                <property name="left_attach">0</property>
+                <property name="top_attach">0</property>
               </packing>
             </child>
             <child>
               <object class="GtkNotebook" id="profile_notebook">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
+                <property name="can_focus">False</property>
+                <property name="hexpand">True</property>
                 <property name="show_tabs">False</property>
                 <signal name="switch-page" handler="on_profile_notebook_switch_page" swapped="no"/>
                 <child>
@@ -2232,15 +2197,17 @@
                         <property name="top_padding">4</property>
                         <property name="left_padding">12</property>
                         <child>
-                          <object class="GtkVBox" id="vbox11">
+                          <object class="GtkGrid" id="grid12">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="spacing">8</property>
+                            <property name="hexpand">True</property>
+                            <property name="row_spacing">8</property>
                             <child>
-                              <object class="GtkHBox" id="hbox2">
+                              <object class="GtkGrid" id="grid13">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="spacing">8</property>
+                                <property name="hexpand">True</property>
+                                <property name="column_spacing">8</property>
                                 <child>
                                   <object class="GtkLabel" id="font_label">
                                     <property name="visible">True</property>
@@ -2251,9 +2218,8 @@
                                     <property name="mnemonic_widget">font_button</property>
                                   </object>
                                   <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">0</property>
+                                    <property name="left_attach">0</property>
+                                    <property name="top_attach">0</property>
                                   </packing>
                                 </child>
                                 <child>
@@ -2264,27 +2230,28 @@
                                     <property name="receives_default">True</property>
                                     <property name="has_tooltip">True</property>
                                     <property name="tooltip_text" translatable="yes">Click to change the font; monospace fonts are recommended.</property>
+                                    <property name="hexpand">True</property>
                                     <property name="font">Sans 12</property>
                                     <signal name="font-set" handler="on_font_set" swapped="no"/>
                                   </object>
                                   <packing>
-                                    <property name="expand">True</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">1</property>
+                                    <property name="left_attach">1</property>
+                                    <property name="top_attach">0</property>
                                   </packing>
                                 </child>
                               </object>
                               <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">0</property>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">0</property>
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkHBox" id="hbox3">
+                              <object class="GtkGrid" id="grid14">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="spacing">8</property>
+                                <property name="hexpand">True</property>
+                                <property name="row_spacing">4</property>
+                                <property name="column_spacing">4</property>
                                 <child>
                                   <object class="GtkRadioButton" id="cell_size">
                                     <property name="label" translatable="yes">_Size</property>
@@ -2301,9 +2268,8 @@
                                     <signal name="toggled" handler="on_cell_size_toggled" swapped="no"/>
                                   </object>
                                   <packing>
-                                    <property name="expand">True</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">0</property>
+                                    <property name="left_attach">0</property>
+                                    <property name="top_attach">0</property>
                                   </packing>
                                 </child>
                                 <child>
@@ -2316,9 +2282,8 @@
                                     <property name="mnemonic_widget">width</property>
                                   </object>
                                   <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">1</property>
+                                    <property name="left_attach">1</property>
+                                    <property name="top_attach">0</property>
                                   </packing>
                                 </child>
                                 <child>
@@ -2327,17 +2292,18 @@
                                     <property name="can_focus">True</property>
                                     <property name="tooltip_text" translatable="yes">New windows with this profile will open at this size.</property>
                                     <property name="invisible_char">•</property>
+                                    <property name="text" translatable="yes">80</property>
                                     <property name="primary_icon_activatable">False</property>
                                     <property name="secondary_icon_activatable">False</property>
                                     <property name="adjustment">width_adjustment</property>
                                     <property name="climb_rate">1</property>
                                     <property name="numeric">True</property>
+                                    <property name="value">80</property>
                                     <signal name="value-changed" handler="on_spin_button_changed" swapped="no"/>
                                   </object>
                                   <packing>
-                                    <property name="expand">True</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">2</property>
+                                    <property name="left_attach">2</property>
+                                    <property name="top_attach">0</property>
                                   </packing>
                                 </child>
                                 <child>
@@ -2348,9 +2314,8 @@
                                     <property name="label" translatable="yes">columns</property>
                                   </object>
                                   <packing>
-                                    <property name="expand">True</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">3</property>
+                                    <property name="left_attach">3</property>
+                                    <property name="top_attach">0</property>
                                   </packing>
                                 </child>
                                 <child>
@@ -2362,9 +2327,8 @@
                                     <property name="use_underline">True</property>
                                   </object>
                                   <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">4</property>
+                                    <property name="left_attach">4</property>
+                                    <property name="top_attach">0</property>
                                   </packing>
                                 </child>
                                 <child>
@@ -2373,17 +2337,18 @@
                                     <property name="can_focus">True</property>
                                     <property name="tooltip_text" translatable="yes">New windows with this profile will open at this size.</property>
                                     <property name="invisible_char">•</property>
+                                    <property name="text" translatable="yes">32</property>
                                     <property name="primary_icon_activatable">False</property>
                                     <property name="secondary_icon_activatable">False</property>
                                     <property name="adjustment">height_adjustment</property>
                                     <property name="climb_rate">1</property>
                                     <property name="numeric">True</property>
+                                    <property name="value">32</property>
                                     <signal name="value-changed" handler="on_spin_button_changed" swapped="no"/>
                                   </object>
                                   <packing>
-                                    <property name="expand">True</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">5</property>
+                                    <property name="left_attach">5</property>
+                                    <property name="top_attach">0</property>
                                   </packing>
                                 </child>
                                 <child>
@@ -2393,28 +2358,9 @@
                                     <property name="label" translatable="yes">rows</property>
                                   </object>
                                   <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">6</property>
+                                    <property name="left_attach">6</property>
+                                    <property name="top_attach">0</property>
                                   </packing>
-                                </child>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">1</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkTable" id="appearance_table">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="n_rows">3</property>
-                                <property name="n_columns">2</property>
-                                <property name="column_spacing">8</property>
-                                <property name="row_spacing">8</property>
-                                <child>
-                                  <placeholder/>
                                 </child>
                                 <child>
                                   <object class="GtkRadioButton" id="maximise">
@@ -2426,12 +2372,18 @@
                                     <property name="has_tooltip">True</property>
                                     <property name="tooltip_markup">Use a maximised window.</property>
                                     <property name="tooltip_text" translatable="yes">Use a maximised window.</property>
+                                    <property name="margin_bottom">4</property>
                                     <property name="use_underline">True</property>
                                     <property name="xalign">0</property>
                                     <property name="draw_indicator">True</property>
                                     <property name="group">cell_size</property>
                                     <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                                   </object>
+                                  <packing>
+                                    <property name="left_attach">0</property>
+                                    <property name="top_attach">1</property>
+                                    <property name="width">3</property>
+                                  </packing>
                                 </child>
                                 <child>
                                   <object class="GtkRadioButton" id="full_screen">
@@ -2443,6 +2395,7 @@
                                     <property name="has_tooltip">True</property>
                                     <property name="tooltip_markup">Make the terminal take up the whole screen with no window borders.</property>
                                     <property name="tooltip_text" translatable="yes">Make the terminal take up the whole screen with no window borders.</property>
+                                    <property name="margin_bottom">4</property>
                                     <property name="use_underline">True</property>
                                     <property name="xalign">0</property>
                                     <property name="draw_indicator">True</property>
@@ -2450,8 +2403,9 @@
                                     <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                                   </object>
                                   <packing>
-                                    <property name="left_attach">1</property>
-                                    <property name="right_attach">2</property>
+                                    <property name="left_attach">3</property>
+                                    <property name="top_attach">1</property>
+                                    <property name="width">4</property>
                                   </packing>
                                 </child>
                                 <child>
@@ -2470,8 +2424,9 @@
                                     <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                                   </object>
                                   <packing>
-                                    <property name="top_attach">1</property>
-                                    <property name="bottom_attach">2</property>
+                                    <property name="left_attach">0</property>
+                                    <property name="top_attach">2</property>
+                                    <property name="width">3</property>
                                   </packing>
                                 </child>
                                 <child>
@@ -2491,10 +2446,9 @@
                                     <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                                   </object>
                                   <packing>
-                                    <property name="left_attach">1</property>
-                                    <property name="right_attach">2</property>
-                                    <property name="top_attach">1</property>
-                                    <property name="bottom_attach">2</property>
+                                    <property name="left_attach">3</property>
+                                    <property name="top_attach">2</property>
+                                    <property name="width">4</property>
                                   </packing>
                                 </child>
                                 <child>
@@ -2514,37 +2468,47 @@
                                     <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                                   </object>
                                   <packing>
-                                    <property name="top_attach">2</property>
-                                    <property name="bottom_attach">3</property>
+                                    <property name="left_attach">0</property>
+                                    <property name="top_attach">3</property>
+                                    <property name="width">3</property>
                                   </packing>
+                                </child>
+                                <child>
+                                  <placeholder/>
+                                </child>
+                                <child>
+                                  <placeholder/>
+                                </child>
+                                <child>
+                                  <placeholder/>
+                                </child>
+                                <child>
+                                  <placeholder/>
                                 </child>
                               </object>
                               <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">False</property>
-                                <property name="position">2</property>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">1</property>
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkTable" id="appearance_table2">
+                              <object class="GtkGrid" id="grid15">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="n_rows">2</property>
-                                <property name="n_columns">3</property>
-                                <property name="column_spacing">8</property>
+                                <property name="hexpand">True</property>
                                 <property name="row_spacing">8</property>
+                                <property name="column_spacing">8</property>
                                 <child>
                                   <object class="GtkLabel" id="label27">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="margin_left">1</property>
                                     <property name="xalign">0</property>
                                     <property name="label" translatable="yes">Window _title:</property>
                                     <property name="use_underline">True</property>
                                   </object>
                                   <packing>
-                                    <property name="x_options"/>
-                                    <property name="y_options">GTK_FILL</property>
+                                    <property name="left_attach">0</property>
+                                    <property name="top_attach">0</property>
                                   </packing>
                                 </child>
                                 <child>
@@ -2554,6 +2518,7 @@
                                     <property name="has_tooltip">True</property>
                                     <property name="tooltip_markup">The title string may include &amp;apos;%s&amp;apos; which is substituted with the contents of the current tab&amp;apos;s label. No other % characters or sequences are permitted except '%%' which is displayed as a single %.</property>
                                     <property name="tooltip_text" translatable="yes">The title string may include '%s' which is substituted with the contents of the current tab's label. No other % characters or sequences are permitted except '%%' which is displayed as a single %.</property>
+                                    <property name="hexpand">True</property>
                                     <property name="invisible_char">●</property>
                                     <property name="primary_icon_activatable">False</property>
                                     <property name="secondary_icon_activatable">False</property>
@@ -2562,29 +2527,28 @@
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
-                                    <property name="right_attach">3</property>
+                                    <property name="top_attach">0</property>
+                                    <property name="width">2</property>
                                   </packing>
                                 </child>
                                 <child>
                                   <object class="GtkLabel" id="colour_scheme_label">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="margin_left">1</property>
                                     <property name="xalign">0</property>
                                     <property name="label" translatable="yes">C_olour scheme:</property>
                                     <property name="use_underline">True</property>
                                   </object>
                                   <packing>
+                                    <property name="left_attach">0</property>
                                     <property name="top_attach">1</property>
-                                    <property name="bottom_attach">2</property>
-                                    <property name="x_options"/>
-                                    <property name="y_options">GTK_FILL</property>
                                   </packing>
                                 </child>
                                 <child>
                                   <object class="GtkHBox" id="colour_scheme_hbox">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
+                                    <property name="hexpand">True</property>
                                     <property name="spacing">8</property>
                                     <child>
                                       <placeholder/>
@@ -2592,9 +2556,7 @@
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
-                                    <property name="right_attach">2</property>
                                     <property name="top_attach">1</property>
-                                    <property name="bottom_attach">2</property>
                                   </packing>
                                 </child>
                                 <child>
@@ -2653,17 +2615,13 @@
                                   </object>
                                   <packing>
                                     <property name="left_attach">2</property>
-                                    <property name="right_attach">3</property>
                                     <property name="top_attach">1</property>
-                                    <property name="bottom_attach">2</property>
-                                    <property name="x_options">GTK_FILL</property>
                                   </packing>
                                 </child>
                               </object>
                               <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">False</property>
-                                <property name="position">3</property>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">2</property>
                               </packing>
                             </child>
                           </object>
@@ -3382,6 +3340,7 @@
                                 <property name="tooltip_text" translatable="yes">Pause for this number of seconds after the command exits before performing the action above.</property>
                                 <property name="editable">False</property>
                                 <property name="invisible_char">•</property>
+                                <property name="text" translatable="yes">0.0</property>
                                 <property name="primary_icon_activatable">False</property>
                                 <property name="secondary_icon_activatable">False</property>
                                 <property name="adjustment">exit_pause_adjustment</property>
@@ -3567,7 +3526,6 @@
                                         <property name="tooltip_text" translatable="yes">Run the browser in a new ROXTerm tab.</property>
                                         <property name="use_underline">True</property>
                                         <property name="xalign">0</property>
-                                        <property name="active">True</property>
                                         <property name="draw_indicator">True</property>
                                         <property name="group">browser_spawn_type0</property>
                                         <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
@@ -3705,7 +3663,6 @@
                                         <property name="tooltip_text" translatable="yes">Run the mailer in a new ROXTerm window.</property>
                                         <property name="use_underline">True</property>
                                         <property name="xalign">0</property>
-                                        <property name="active">True</property>
                                         <property name="draw_indicator">True</property>
                                         <property name="group">mailer_spawn_type0</property>
                                         <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
@@ -3867,7 +3824,6 @@
                                         <property name="tooltip_text" translatable="yes">Run the SSH command in a new ROXTerm window.</property>
                                         <property name="use_underline">True</property>
                                         <property name="xalign">0</property>
-                                        <property name="active">True</property>
                                         <property name="draw_indicator">True</property>
                                         <property name="group">ssh_spawn_type0</property>
                                         <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
@@ -4796,10 +4752,12 @@
                                     <property name="can_focus">True</property>
                                     <property name="tooltip_text" translatable="yes">Number of lines of output text to retain in the buffer so that they can still be viewed by scrolling up</property>
                                     <property name="invisible_char">•</property>
+                                    <property name="text" translatable="yes">1000</property>
                                     <property name="primary_icon_activatable">False</property>
                                     <property name="secondary_icon_activatable">False</property>
                                     <property name="adjustment">scrollback_lines_adjustment</property>
                                     <property name="climb_rate">1</property>
+                                    <property name="value">1000</property>
                                     <signal name="value-changed" handler="on_spin_button_changed" swapped="no"/>
                                   </object>
                                   <packing>
@@ -5489,11 +5447,13 @@
                                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                                     <property name="max_length">2</property>
                                     <property name="invisible_char">●</property>
+                                    <property name="text" translatable="yes">1</property>
                                     <property name="primary_icon_activatable">False</property>
                                     <property name="secondary_icon_activatable">False</property>
                                     <property name="adjustment">init_tabs_adjustment</property>
                                     <property name="climb_rate">1</property>
                                     <property name="numeric">True</property>
+                                    <property name="value">1</property>
                                     <signal name="value-changed" handler="on_spin_button_changed" swapped="no"/>
                                   </object>
                                   <packing>
@@ -5573,17 +5533,15 @@
                 </child>
               </object>
               <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
+                <property name="left_attach">1</property>
+                <property name="top_attach">0</property>
               </packing>
             </child>
           </object>
           <packing>
-            <property name="expand">False</property>
+            <property name="expand">True</property>
             <property name="fill">True</property>
-            <property name="padding">8</property>
-            <property name="position">2</property>
+            <property name="position">1</property>
           </packing>
         </child>
       </object>
@@ -5591,20 +5549,6 @@
     <action-widgets>
       <action-widget response="-7">closebutton2</action-widget>
     </action-widgets>
-  </object>
-  <object class="GtkSizeGroup" id="general_entries_size_group">
-    <widgets>
-      <widget name="sel_by_word"/>
-      <widget name="color_term"/>
-      <widget name="term"/>
-    </widgets>
-  </object>
-  <object class="GtkSizeGroup" id="general_entry_labels_size_group">
-    <widgets>
-      <widget name="sel_by_word_label"/>
-      <widget name="label43"/>
-      <widget name="label42"/>
-    </widgets>
   </object>
   <object class="GtkDialog" id="ssh_dialog">
     <property name="can_focus">False</property>
@@ -5796,5 +5740,56 @@
     <action-widgets>
       <action-widget response="0">button1</action-widget>
     </action-widgets>
+  </object>
+  <object class="GtkAdjustment" id="exit_pause_adjustment">
+    <property name="upper">600</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">5</property>
+  </object>
+  <object class="GtkSizeGroup" id="general_entries_size_group">
+    <widgets>
+      <widget name="sel_by_word"/>
+      <widget name="color_term"/>
+      <widget name="term"/>
+    </widgets>
+  </object>
+  <object class="GtkSizeGroup" id="general_entry_labels_size_group">
+    <widgets>
+      <widget name="sel_by_word_label"/>
+      <widget name="label43"/>
+      <widget name="label42"/>
+    </widgets>
+  </object>
+  <object class="GtkAdjustment" id="height_adjustment">
+    <property name="lower">5</property>
+    <property name="upper">1000</property>
+    <property name="value">32</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="init_tabs_adjustment">
+    <property name="lower">1</property>
+    <property name="upper">20</property>
+    <property name="value">1</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">5</property>
+  </object>
+  <object class="GtkAdjustment" id="saturation_adjustment">
+    <property name="upper">1</property>
+    <property name="step_increment">0.01</property>
+    <property name="page_increment">0.10000000000000001</property>
+  </object>
+  <object class="GtkAdjustment" id="scrollback_lines_adjustment">
+    <property name="upper">100000</property>
+    <property name="value">1000</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="width_adjustment">
+    <property name="lower">10</property>
+    <property name="upper">1000</property>
+    <property name="value">80</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
   </object>
 </interface>
