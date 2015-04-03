@@ -3044,170 +3044,27 @@
                         <property name="top_padding">4</property>
                         <property name="left_padding">12</property>
                         <child>
-                          <object class="GtkTable" id="table3">
+                          <object class="GtkGrid" id="grid17">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="n_rows">5</property>
-                            <property name="n_columns">3</property>
-                            <property name="column_spacing">6</property>
                             <property name="row_spacing">8</property>
+                            <property name="column_spacing">6</property>
                             <child>
-                              <object class="GtkEntry" id="command">
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="tooltip_text" translatable="yes">Command to run in place of a shell</property>
-                                <property name="invisible_char">•</property>
-                                <property name="primary_icon_activatable">False</property>
-                                <property name="secondary_icon_activatable">False</property>
-                                <signal name="activate" handler="on_entry_activate" swapped="no"/>
-                                <signal name="changed" handler="on_editable_changed" swapped="no"/>
-                                <accelerator key="m" signal="grab_focus" modifiers="GDK_MOD1_MASK"/>
-                              </object>
-                              <packing>
-                                <property name="left_attach">1</property>
-                                <property name="right_attach">3</property>
-                                <property name="top_attach">1</property>
-                                <property name="bottom_attach">2</property>
-                                <property name="y_options"/>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkLabel" id="label14">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                                <property name="xalign">0</property>
-                                <property name="label" translatable="yes">_Pause:</property>
-                                <property name="use_underline">True</property>
-                              </object>
-                              <packing>
-                                <property name="top_attach">4</property>
-                                <property name="bottom_attach">5</property>
-                                <property name="x_options">GTK_FILL</property>
-                                <property name="y_options"/>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkLabel" id="exit_action_label">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="xalign">0</property>
-                                <property name="xpad">1</property>
-                                <property name="label" translatable="yes">When command e_xits:</property>
-                                <property name="use_underline">True</property>
-                                <property name="justify">right</property>
-                                <property name="mnemonic_widget">exit_action</property>
-                              </object>
-                              <packing>
-                                <property name="top_attach">3</property>
-                                <property name="bottom_attach">4</property>
-                                <property name="x_options">GTK_FILL</property>
-                                <property name="y_options"/>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkRadioButton" id="use_custom_command">
-                                <property name="label" translatable="yes">_Custom command</property>
+                              <object class="GtkRadioButton" id="use_default_shell">
+                                <property name="label" translatable="yes">_Default shell</property>
                                 <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
-                                <property name="has_tooltip">True</property>
-                                <property name="tooltip_text" translatable="yes">Enable the adjacent custom command for this profile.</property>
                                 <property name="use_underline">True</property>
                                 <property name="xalign">0</property>
+                                <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
-                                <property name="group">use_default_shell</property>
-                                <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                                 <signal name="toggled" handler="on_command_toggled" swapped="no"/>
                               </object>
                               <packing>
-                                <property name="top_attach">1</property>
-                                <property name="bottom_attach">2</property>
-                                <property name="y_options">GTK_FILL</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkRadioButton" id="use_ssh">
-                                <property name="label" translatable="yes">_Ssh</property>
-                                <property name="use_action_appearance">False</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">False</property>
-                                <property name="has_tooltip">True</property>
-                                <property name="tooltip_text" translatable="yes">Connect to a ssh (secure shell) with this profile.</property>
-                                <property name="use_underline">True</property>
-                                <property name="xalign">0</property>
-                                <property name="draw_indicator">True</property>
-                                <property name="group">use_default_shell</property>
-                                <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
-                                <signal name="toggled" handler="on_command_toggled" swapped="no"/>
-                              </object>
-                              <packing>
-                                <property name="top_attach">2</property>
-                                <property name="bottom_attach">3</property>
-                                <property name="y_options">GTK_FILL</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkButton" id="edit_ssh">
-                                <property name="label" translatable="yes">_Edit...</property>
-                                <property name="use_action_appearance">False</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
-                                <property name="has_tooltip">True</property>
-                                <property name="tooltip_text" translatable="yes">Click here to edit the ssh details.</property>
-                                <property name="use_underline">True</property>
-                                <signal name="activate" handler="on_edit_ssh_clicked" swapped="no"/>
-                                <signal name="clicked" handler="on_edit_ssh_clicked" swapped="no"/>
-                              </object>
-                              <packing>
-                                <property name="left_attach">2</property>
-                                <property name="right_attach">3</property>
-                                <property name="top_attach">2</property>
-                                <property name="bottom_attach">3</property>
-                                <property name="x_options">GTK_FILL</property>
-                                <property name="y_options">GTK_FILL</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkEntry" id="ssh_host">
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="tooltip_text" translatable="yes">Ssh server address. Use the Edit... button to change it.</property>
-                                <property name="editable">False</property>
-                                <property name="invisible_char">•</property>
-                                <property name="primary_icon_activatable">False</property>
-                                <property name="secondary_icon_activatable">False</property>
-                              </object>
-                              <packing>
-                                <property name="left_attach">1</property>
-                                <property name="right_attach">2</property>
-                                <property name="top_attach">2</property>
-                                <property name="bottom_attach">3</property>
-                                <property name="y_options">GTK_FILL</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkCheckButton" id="update_records">
-                                <property name="label" translatable="yes">_Update login records</property>
-                                <property name="use_action_appearance">False</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">False</property>
-                                <property name="has_tooltip">True</property>
-                                <property name="tooltip_text" translatable="yes">Whether to log sessions to login records (utmp/wtmp/utmpx/wtmpx)</property>
-                                <property name="use_underline">True</property>
-                                <property name="xalign">0</property>
-                                <property name="draw_indicator">True</property>
-                                <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
-                              </object>
-                              <packing>
-                                <property name="left_attach">2</property>
-                                <property name="right_attach">3</property>
-                                <property name="x_options">GTK_FILL</property>
-                                <property name="y_options"/>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">0</property>
                               </packing>
                             </child>
                             <child>
@@ -3226,43 +3083,154 @@
                               </object>
                               <packing>
                                 <property name="left_attach">1</property>
-                                <property name="right_attach">2</property>
-                                <property name="x_options">GTK_FILL</property>
-                                <property name="y_options"/>
+                                <property name="top_attach">0</property>
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkRadioButton" id="use_default_shell">
-                                <property name="label" translatable="yes">_Default shell</property>
+                              <object class="GtkCheckButton" id="update_records">
+                                <property name="label" translatable="yes">_Update login records</property>
                                 <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
+                                <property name="has_tooltip">True</property>
+                                <property name="tooltip_text" translatable="yes">Whether to log sessions to login records (utmp/wtmp/utmpx/wtmpx)</property>
+                                <property name="use_underline">True</property>
+                                <property name="xalign">0</property>
+                                <property name="draw_indicator">True</property>
+                                <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
+                              </object>
+                              <packing>
+                                <property name="left_attach">2</property>
+                                <property name="top_attach">0</property>
+                                <property name="width">2</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkRadioButton" id="use_custom_command">
+                                <property name="label" translatable="yes">_Custom command</property>
+                                <property name="use_action_appearance">False</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">False</property>
+                                <property name="has_tooltip">True</property>
+                                <property name="tooltip_text" translatable="yes">Enable the adjacent custom command for this profile.</property>
                                 <property name="use_underline">True</property>
                                 <property name="xalign">0</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
+                                <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                                 <signal name="toggled" handler="on_command_toggled" swapped="no"/>
                               </object>
                               <packing>
-                                <property name="y_options">GTK_FILL</property>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">1</property>
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkLabel" id="label15">
+                              <object class="GtkEntry" id="command">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="tooltip_text" translatable="yes">Command to run in place of a shell</property>
+                                <property name="hexpand">True</property>
+                                <property name="invisible_char">•</property>
+                                <property name="primary_icon_activatable">False</property>
+                                <property name="secondary_icon_activatable">False</property>
+                                <signal name="activate" handler="on_entry_activate" swapped="no"/>
+                                <signal name="changed" handler="on_editable_changed" swapped="no"/>
+                                <accelerator key="m" signal="grab_focus" modifiers="GDK_MOD1_MASK"/>
+                              </object>
+                              <packing>
+                                <property name="left_attach">1</property>
+                                <property name="top_attach">1</property>
+                                <property name="width">3</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkRadioButton" id="use_ssh">
+                                <property name="label" translatable="yes">_Ssh</property>
+                                <property name="use_action_appearance">False</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">False</property>
+                                <property name="has_tooltip">True</property>
+                                <property name="tooltip_text" translatable="yes">Connect to a ssh (secure shell) with this profile.</property>
+                                <property name="use_underline">True</property>
+                                <property name="xalign">0</property>
+                                <property name="active">True</property>
+                                <property name="draw_indicator">True</property>
+                                <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
+                                <signal name="toggled" handler="on_command_toggled" swapped="no"/>
+                              </object>
+                              <packing>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">2</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkEntry" id="ssh_host">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="tooltip_text" translatable="yes">Ssh server address. Use the Edit... button to change it.</property>
+                                <property name="hexpand">True</property>
+                                <property name="editable">False</property>
+                                <property name="invisible_char">•</property>
+                                <property name="primary_icon_activatable">False</property>
+                                <property name="secondary_icon_activatable">False</property>
+                              </object>
+                              <packing>
+                                <property name="left_attach">1</property>
+                                <property name="top_attach">2</property>
+                                <property name="width">2</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="exit_action_label">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="xalign">0</property>
+                                <property name="xpad">1</property>
+                                <property name="label" translatable="yes">When command e_xits:</property>
+                                <property name="use_underline">True</property>
+                                <property name="justify">right</property>
+                                <property name="mnemonic_widget">exit_action</property>
+                              </object>
+                              <packing>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">3</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkComboBoxText" id="exit_action">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="hexpand">True</property>
+                                <items>
+                                  <item translatable="yes">Exit terminal</item>
+                                  <item translatable="yes">Hold terminal open</item>
+                                  <item translatable="yes">Restart command</item>
+                                  <item translatable="yes">Ask user</item>
+                                </items>
+                                <signal name="changed" handler="on_combo_changed" swapped="no"/>
+                              </object>
+                              <packing>
+                                <property name="left_attach">1</property>
+                                <property name="top_attach">3</property>
+                                <property name="width">3</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="label14">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                                 <property name="xalign">0</property>
-                                <property name="label" translatable="yes">secs</property>
+                                <property name="label" translatable="yes">_Pause:</property>
+                                <property name="use_underline">True</property>
                               </object>
                               <packing>
-                                <property name="left_attach">2</property>
-                                <property name="right_attach">3</property>
+                                <property name="left_attach">0</property>
                                 <property name="top_attach">4</property>
-                                <property name="bottom_attach">5</property>
-                                <property name="x_options">GTK_FILL</property>
-                                <property name="y_options">GTK_FILL</property>
                               </packing>
                             </child>
                             <child>
@@ -3271,6 +3239,7 @@
                                 <property name="can_focus">True</property>
                                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                                 <property name="tooltip_text" translatable="yes">Pause for this number of seconds after the command exits before performing the action above.</property>
+                                <property name="hexpand">True</property>
                                 <property name="editable">False</property>
                                 <property name="invisible_char">•</property>
                                 <property name="text" translatable="yes">0.0</property>
@@ -3282,29 +3251,40 @@
                               </object>
                               <packing>
                                 <property name="left_attach">1</property>
-                                <property name="right_attach">2</property>
                                 <property name="top_attach">4</property>
-                                <property name="bottom_attach">5</property>
-                                <property name="y_options"/>
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkComboBoxText" id="exit_action">
+                              <object class="GtkButton" id="edit_ssh">
+                                <property name="label" translatable="yes">_Edit...</property>
+                                <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <items>
-                                  <item translatable="yes">Exit terminal</item>
-                                  <item translatable="yes">Hold terminal open</item>
-                                  <item translatable="yes">Restart command</item>
-                                  <item translatable="yes">Ask user</item>
-                                </items>
-                                <signal name="changed" handler="on_combo_changed" swapped="no"/>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="has_tooltip">True</property>
+                                <property name="tooltip_text" translatable="yes">Click here to edit the ssh details.</property>
+                                <property name="use_underline">True</property>
+                                <signal name="activate" handler="on_edit_ssh_clicked" swapped="no"/>
+                                <signal name="clicked" handler="on_edit_ssh_clicked" swapped="no"/>
                               </object>
                               <packing>
-                                <property name="left_attach">1</property>
-                                <property name="right_attach">3</property>
-                                <property name="top_attach">3</property>
-                                <property name="bottom_attach">4</property>
+                                <property name="left_attach">3</property>
+                                <property name="top_attach">2</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="label15">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                                <property name="has_tooltip">True</property>
+                                <property name="xalign">0</property>
+                                <property name="label" translatable="yes">secs</property>
+                              </object>
+                              <packing>
+                                <property name="left_attach">2</property>
+                                <property name="top_attach">4</property>
+                                <property name="width">2</property>
                               </packing>
                             </child>
                           </object>
