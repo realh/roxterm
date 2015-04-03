@@ -2114,6 +2114,8 @@
     <property name="step_increment">1</property>
     <property name="page_increment">5</property>
   </object>
+  <object class="GtkSizeGroup" id="general_entries_size_group"/>
+  <object class="GtkSizeGroup" id="general_entry_labels_size_group"/>
   <object class="GtkAdjustment" id="height_adjustment">
     <property name="lower">5</property>
     <property name="upper">1000</property>
@@ -2663,122 +2665,11 @@
                         <property name="top_padding">8</property>
                         <property name="left_padding">12</property>
                         <child>
-                          <object class="GtkTable" id="general_table">
+                          <object class="GtkGrid" id="grid16">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="n_rows">8</property>
-                            <property name="n_columns">4</property>
-                            <property name="column_spacing">16</property>
-                            <property name="row_spacing">16</property>
-                            <child>
-                              <object class="GtkCheckButton" id="allow_bold">
-                                <property name="label" translatable="yes">Allow _bold text</property>
-                                <property name="use_action_appearance">False</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">False</property>
-                                <property name="use_underline">True</property>
-                                <property name="xalign">0</property>
-                                <property name="draw_indicator">True</property>
-                                <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
-                                <accelerator key="b" signal="clicked" modifiers="GDK_MOD1_MASK"/>
-                              </object>
-                              <packing>
-                                <property name="right_attach">2</property>
-                                <property name="x_options">GTK_FILL</property>
-                                <property name="y_options"/>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkCheckButton" id="audible_bell">
-                                <property name="label" translatable="yes">Audible bel_l</property>
-                                <property name="use_action_appearance">False</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">False</property>
-                                <property name="has_tooltip">True</property>
-                                <property name="tooltip_text" translatable="yes">If selected, "printing" an ASCII bell character will cause a beep.</property>
-                                <property name="use_underline">True</property>
-                                <property name="xalign">0</property>
-                                <property name="draw_indicator">True</property>
-                                <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
-                              </object>
-                              <packing>
-                                <property name="top_attach">1</property>
-                                <property name="bottom_attach">2</property>
-                                <property name="x_options">GTK_FILL</property>
-                                <property name="y_options"/>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkCheckButton" id="visible_bell">
-                                <property name="label" translatable="yes">_Visible bell</property>
-                                <property name="use_action_appearance">False</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">False</property>
-                                <property name="has_tooltip">True</property>
-                                <property name="tooltip_text" translatable="yes">If selected, "printing" an ASCII bell character will cause the terminal to flash.</property>
-                                <property name="use_underline">True</property>
-                                <property name="xalign">0</property>
-                                <property name="draw_indicator">True</property>
-                                <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
-                              </object>
-                              <packing>
-                                <property name="left_attach">1</property>
-                                <property name="right_attach">2</property>
-                                <property name="top_attach">1</property>
-                                <property name="bottom_attach">2</property>
-                                <property name="x_options">GTK_FILL</property>
-                                <property name="y_options"/>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkRadioButton" id="cursor_blink_mode2">
-                                <property name="label" translatable="yes">Do_n't blink</property>
-                                <property name="use_action_appearance">False</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">False</property>
-                                <property name="has_tooltip">True</property>
-                                <property name="tooltip_text" translatable="yes">The terminal cursor doesn't blink.</property>
-                                <property name="use_underline">True</property>
-                                <property name="xalign">0</property>
-                                <property name="draw_indicator">True</property>
-                                <property name="group">cursor_blink_mode0</property>
-                                <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
-                              </object>
-                              <packing>
-                                <property name="left_attach">3</property>
-                                <property name="right_attach">4</property>
-                                <property name="top_attach">2</property>
-                                <property name="bottom_attach">3</property>
-                                <property name="y_options">GTK_FILL</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkRadioButton" id="cursor_blink_mode1">
-                                <property name="label" translatable="yes">Blin_k</property>
-                                <property name="use_action_appearance">False</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">False</property>
-                                <property name="has_tooltip">True</property>
-                                <property name="tooltip_text" translatable="yes">The terminal cursor blinks.</property>
-                                <property name="use_underline">True</property>
-                                <property name="xalign">0</property>
-                                <property name="draw_indicator">True</property>
-                                <property name="group">cursor_blink_mode0</property>
-                                <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
-                              </object>
-                              <packing>
-                                <property name="left_attach">2</property>
-                                <property name="right_attach">3</property>
-                                <property name="top_attach">2</property>
-                                <property name="bottom_attach">3</property>
-                                <property name="y_options">GTK_FILL</property>
-                              </packing>
-                            </child>
+                            <property name="row_spacing">4</property>
+                            <property name="column_spacing">4</property>
                             <child>
                               <object class="GtkLabel" id="cursor_blink_mode_label">
                                 <property name="visible">True</property>
@@ -2787,9 +2678,8 @@
                                 <property name="label" translatable="yes">Blinking cursor:</property>
                               </object>
                               <packing>
+                                <property name="left_attach">0</property>
                                 <property name="top_attach">2</property>
-                                <property name="bottom_attach">3</property>
-                                <property name="y_options">GTK_FILL</property>
                               </packing>
                             </child>
                             <child>
@@ -2809,56 +2699,59 @@
                               </object>
                               <packing>
                                 <property name="left_attach">1</property>
-                                <property name="right_attach">2</property>
                                 <property name="top_attach">2</property>
-                                <property name="bottom_attach">3</property>
-                                <property name="y_options">GTK_FILL</property>
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkRadioButton" id="cursor_shape2">
-                                <property name="label" translatable="yes">_Underline</property>
+                              <object class="GtkRadioButton" id="cursor_blink_mode1">
+                                <property name="label" translatable="yes">Blin_k</property>
                                 <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
                                 <property name="has_tooltip">True</property>
-                                <property name="tooltip_text" translatable="yes">The cursor is a horizontal line at the bottom of each character.</property>
+                                <property name="tooltip_text" translatable="yes">The terminal cursor blinks.</property>
                                 <property name="use_underline">True</property>
                                 <property name="xalign">0</property>
+                                <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
-                                <property name="group">cursor_shape0</property>
-                                <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
-                              </object>
-                              <packing>
-                                <property name="left_attach">3</property>
-                                <property name="right_attach">4</property>
-                                <property name="top_attach">3</property>
-                                <property name="bottom_attach">4</property>
-                                <property name="y_options">GTK_FILL</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkRadioButton" id="cursor_shape1">
-                                <property name="label" translatable="yes">_I-beam</property>
-                                <property name="use_action_appearance">False</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">False</property>
-                                <property name="has_tooltip">True</property>
-                                <property name="tooltip_text" translatable="yes">The cursor is a vertical line at the left of each character.</property>
-                                <property name="use_underline">True</property>
-                                <property name="xalign">0</property>
-                                <property name="draw_indicator">True</property>
-                                <property name="group">cursor_shape0</property>
                                 <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
                               </object>
                               <packing>
                                 <property name="left_attach">2</property>
-                                <property name="right_attach">3</property>
+                                <property name="top_attach">2</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkRadioButton" id="cursor_blink_mode2">
+                                <property name="label" translatable="yes">Do_n't blink</property>
+                                <property name="use_action_appearance">False</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">False</property>
+                                <property name="has_tooltip">True</property>
+                                <property name="tooltip_text" translatable="yes">The terminal cursor doesn't blink.</property>
+                                <property name="use_underline">True</property>
+                                <property name="xalign">0</property>
+                                <property name="active">True</property>
+                                <property name="draw_indicator">True</property>
+                                <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
+                              </object>
+                              <packing>
+                                <property name="left_attach">3</property>
+                                <property name="top_attach">2</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="cursor_shape_label">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="xalign">0</property>
+                                <property name="label" translatable="yes">Cursor shape:</property>
+                              </object>
+                              <packing>
+                                <property name="left_attach">0</property>
                                 <property name="top_attach">3</property>
-                                <property name="bottom_attach">4</property>
-                                <property name="y_options">GTK_FILL</property>
                               </packing>
                             </child>
                             <child>
@@ -2878,23 +2771,215 @@
                               </object>
                               <packing>
                                 <property name="left_attach">1</property>
-                                <property name="right_attach">2</property>
                                 <property name="top_attach">3</property>
-                                <property name="bottom_attach">4</property>
-                                <property name="y_options">GTK_FILL</property>
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkLabel" id="cursor_shape_label">
+                              <object class="GtkRadioButton" id="cursor_shape1">
+                                <property name="label" translatable="yes">_I-beam</property>
+                                <property name="use_action_appearance">False</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">False</property>
+                                <property name="has_tooltip">True</property>
+                                <property name="tooltip_text" translatable="yes">The cursor is a vertical line at the left of each character.</property>
+                                <property name="use_underline">True</property>
+                                <property name="xalign">0</property>
+                                <property name="active">True</property>
+                                <property name="draw_indicator">True</property>
+                                <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
+                              </object>
+                              <packing>
+                                <property name="left_attach">2</property>
+                                <property name="top_attach">3</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkRadioButton" id="cursor_shape2">
+                                <property name="label" translatable="yes">_Underline</property>
+                                <property name="use_action_appearance">False</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">False</property>
+                                <property name="has_tooltip">True</property>
+                                <property name="tooltip_text" translatable="yes">The cursor is a horizontal line at the bottom of each character.</property>
+                                <property name="use_underline">True</property>
+                                <property name="xalign">0</property>
+                                <property name="active">True</property>
+                                <property name="draw_indicator">True</property>
+                                <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
+                              </object>
+                              <packing>
+                                <property name="left_attach">3</property>
+                                <property name="top_attach">3</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="sel_by_word_label">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="xalign">0</property>
-                                <property name="label" translatable="yes">Cursor shape:</property>
+                                <property name="label" translatable="yes">_Select-by-word characters:</property>
+                                <property name="use_underline">True</property>
                               </object>
                               <packing>
-                                <property name="top_attach">3</property>
-                                <property name="bottom_attach">4</property>
-                                <property name="y_options">GTK_FILL</property>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">4</property>
+                                <property name="width">2</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkEntry" id="sel_by_word">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="has_tooltip">True</property>
+                                <property name="tooltip_markup">Words can be selected by double-clicking. Characters not in this list count as the start or end of a word</property>
+                                <property name="tooltip_text" translatable="yes">Words can be selected by double-clicking. Characters not in this list count as the start or end of a word</property>
+                                <property name="invisible_char">•</property>
+                                <property name="primary_icon_activatable">False</property>
+                                <property name="secondary_icon_activatable">False</property>
+                                <signal name="activate" handler="on_entry_activate" swapped="no"/>
+                                <signal name="changed" handler="on_editable_changed" swapped="no"/>
+                              </object>
+                              <packing>
+                                <property name="left_attach">2</property>
+                                <property name="top_attach">4</property>
+                                <property name="width">2</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="label43">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="xalign">0</property>
+                                <property name="label" translatable="yes">_COLORTERM environment variable:</property>
+                                <property name="use_underline">True</property>
+                              </object>
+                              <packing>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">5</property>
+                                <property name="width">2</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkEntry" id="color_term">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="invisible_char">•</property>
+                                <property name="primary_icon_activatable">False</property>
+                                <property name="secondary_icon_activatable">False</property>
+                                <signal name="activate" handler="on_entry_activate" swapped="no"/>
+                                <signal name="changed" handler="on_editable_changed" swapped="no"/>
+                              </object>
+                              <packing>
+                                <property name="left_attach">2</property>
+                                <property name="top_attach">5</property>
+                                <property name="width">2</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="label42">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="xalign">0</property>
+                                <property name="label" translatable="yes">_TERM environment variable:</property>
+                                <property name="use_underline">True</property>
+                              </object>
+                              <packing>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">6</property>
+                                <property name="width">2</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkEntry" id="term">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="invisible_char">•</property>
+                                <property name="primary_icon_activatable">False</property>
+                                <property name="secondary_icon_activatable">False</property>
+                                <signal name="activate" handler="on_entry_activate" swapped="no"/>
+                                <signal name="changed" handler="on_editable_changed" swapped="no"/>
+                              </object>
+                              <packing>
+                                <property name="left_attach">2</property>
+                                <property name="top_attach">6</property>
+                                <property name="width">2</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkCheckButton" id="allow_bold">
+                                <property name="label" translatable="yes">Allow _bold text</property>
+                                <property name="use_action_appearance">False</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">False</property>
+                                <property name="use_underline">True</property>
+                                <property name="xalign">0</property>
+                                <property name="draw_indicator">True</property>
+                                <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
+                                <accelerator key="b" signal="clicked" modifiers="GDK_MOD1_MASK"/>
+                              </object>
+                              <packing>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">0</property>
+                                <property name="width">2</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkCheckButton" id="hide_mouse">
+                                <property name="label" translatable="yes">Hide mouse _pointer when typing</property>
+                                <property name="use_action_appearance">False</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">False</property>
+                                <property name="use_underline">True</property>
+                                <property name="xalign">0</property>
+                                <property name="draw_indicator">True</property>
+                                <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
+                              </object>
+                              <packing>
+                                <property name="left_attach">2</property>
+                                <property name="top_attach">0</property>
+                                <property name="width">2</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkCheckButton" id="audible_bell">
+                                <property name="label" translatable="yes">Audible bel_l</property>
+                                <property name="use_action_appearance">False</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">False</property>
+                                <property name="has_tooltip">True</property>
+                                <property name="tooltip_text" translatable="yes">If selected, "printing" an ASCII bell character will cause a beep.</property>
+                                <property name="use_underline">True</property>
+                                <property name="xalign">0</property>
+                                <property name="draw_indicator">True</property>
+                                <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
+                              </object>
+                              <packing>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">1</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkCheckButton" id="visible_bell">
+                                <property name="label" translatable="yes">_Visible bell</property>
+                                <property name="use_action_appearance">False</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">False</property>
+                                <property name="has_tooltip">True</property>
+                                <property name="tooltip_text" translatable="yes">If selected, "printing" an ASCII bell character will cause the terminal to flash.</property>
+                                <property name="use_underline">True</property>
+                                <property name="xalign">0</property>
+                                <property name="draw_indicator">True</property>
+                                <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
+                              </object>
+                              <packing>
+                                <property name="left_attach">1</property>
+                                <property name="top_attach">1</property>
                               </packing>
                             </child>
                             <child>
@@ -2913,162 +2998,8 @@
                               </object>
                               <packing>
                                 <property name="left_attach">2</property>
-                                <property name="right_attach">4</property>
                                 <property name="top_attach">1</property>
-                                <property name="bottom_attach">2</property>
-                                <property name="x_options">GTK_FILL</property>
-                                <property name="y_options"/>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkCheckButton" id="hide_mouse">
-                                <property name="label" translatable="yes">Hide mouse _pointer when typing</property>
-                                <property name="use_action_appearance">False</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">False</property>
-                                <property name="use_underline">True</property>
-                                <property name="xalign">0</property>
-                                <property name="draw_indicator">True</property>
-                                <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
-                              </object>
-                              <packing>
-                                <property name="left_attach">2</property>
-                                <property name="right_attach">4</property>
-                                <property name="x_options">GTK_FILL</property>
-                                <property name="y_options"/>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkHBox" id="termhbox">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="spacing">8</property>
-                                <child>
-                                  <object class="GtkLabel" id="label42">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="xalign">0</property>
-                                    <property name="label" translatable="yes">_TERM environment variable:</property>
-                                    <property name="use_underline">True</property>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">0</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkEntry" id="term">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">True</property>
-                                    <property name="invisible_char">•</property>
-                                    <property name="primary_icon_activatable">False</property>
-                                    <property name="secondary_icon_activatable">False</property>
-                                    <signal name="activate" handler="on_entry_activate" swapped="no"/>
-                                    <signal name="changed" handler="on_editable_changed" swapped="no"/>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">True</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">1</property>
-                                  </packing>
-                                </child>
-                              </object>
-                              <packing>
-                                <property name="right_attach">4</property>
-                                <property name="top_attach">6</property>
-                                <property name="bottom_attach">8</property>
-                                <property name="y_options"/>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkHBox" id="hbox6">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="spacing">8</property>
-                                <child>
-                                  <object class="GtkLabel" id="label43">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="xalign">0</property>
-                                    <property name="label" translatable="yes">_COLORTERM environment variable:</property>
-                                    <property name="use_underline">True</property>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">0</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkEntry" id="color_term">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">True</property>
-                                    <property name="invisible_char">•</property>
-                                    <property name="primary_icon_activatable">False</property>
-                                    <property name="secondary_icon_activatable">False</property>
-                                    <signal name="activate" handler="on_entry_activate" swapped="no"/>
-                                    <signal name="changed" handler="on_editable_changed" swapped="no"/>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">True</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">1</property>
-                                  </packing>
-                                </child>
-                              </object>
-                              <packing>
-                                <property name="right_attach">4</property>
-                                <property name="top_attach">5</property>
-                                <property name="bottom_attach">6</property>
-                                <property name="y_options"/>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkHBox" id="hbox7a">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="spacing">8</property>
-                                <child>
-                                  <object class="GtkLabel" id="sel_by_word_label">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="xalign">0</property>
-                                    <property name="label" translatable="yes">_Select-by-word characters:</property>
-                                    <property name="use_underline">True</property>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">0</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkEntry" id="sel_by_word">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">True</property>
-                                    <property name="has_tooltip">True</property>
-                                    <property name="tooltip_markup">Words can be selected by double-clicking. Characters not in this list count as the start or end of a word</property>
-                                    <property name="tooltip_text" translatable="yes">Words can be selected by double-clicking. Characters not in this list count as the start or end of a word</property>
-                                    <property name="invisible_char">•</property>
-                                    <property name="primary_icon_activatable">False</property>
-                                    <property name="secondary_icon_activatable">False</property>
-                                    <signal name="activate" handler="on_entry_activate" swapped="no"/>
-                                    <signal name="changed" handler="on_editable_changed" swapped="no"/>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">True</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">1</property>
-                                  </packing>
-                                </child>
-                              </object>
-                              <packing>
-                                <property name="right_attach">4</property>
-                                <property name="top_attach">4</property>
-                                <property name="bottom_attach">5</property>
-                                <property name="y_options"/>
+                                <property name="width">2</property>
                               </packing>
                             </child>
                           </object>
@@ -5569,20 +5500,6 @@
     <action-widgets>
       <action-widget response="-7">closebutton2</action-widget>
     </action-widgets>
-  </object>
-  <object class="GtkSizeGroup" id="general_entries_size_group">
-    <widgets>
-      <widget name="sel_by_word"/>
-      <widget name="color_term"/>
-      <widget name="term"/>
-    </widgets>
-  </object>
-  <object class="GtkSizeGroup" id="general_entry_labels_size_group">
-    <widgets>
-      <widget name="sel_by_word_label"/>
-      <widget name="label43"/>
-      <widget name="label42"/>
-    </widgets>
   </object>
   <object class="GtkDialog" id="ssh_dialog">
     <property name="can_focus">False</property>
