@@ -3347,7 +3347,7 @@
                       <object class="GtkLabel" id="label7">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="margin_left">8</property>
+                        <property name="margin_left">12</property>
                         <property name="xalign">0</property>
                         <property name="label" translatable="yes">Browser</property>
                         <property name="use_underline">True</property>
@@ -3386,7 +3386,7 @@
                         <property name="has_tooltip">True</property>
                         <property name="tooltip_markup">Run the browser without a terminal.</property>
                         <property name="tooltip_text" translatable="yes">Run the browser without a terminal.</property>
-                        <property name="margin_left">8</property>
+                        <property name="margin_left">12</property>
                         <property name="relief">none</property>
                         <property name="use_underline">True</property>
                         <property name="xalign">0</property>
@@ -3460,7 +3460,7 @@
                       <object class="GtkLabel" id="label10">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="margin_left">8</property>
+                        <property name="margin_left">12</property>
                         <property name="xalign">0</property>
                         <property name="label" translatable="yes">Mailer</property>
                         <property name="use_underline">True</property>
@@ -3498,7 +3498,7 @@
                         <property name="has_tooltip">True</property>
                         <property name="tooltip_markup">Run the mailer without a terminal.</property>
                         <property name="tooltip_text" translatable="yes">Run the mailer without a terminal.</property>
-                        <property name="margin_left">8</property>
+                        <property name="margin_left">12</property>
                         <property name="use_underline">True</property>
                         <property name="xalign">0</property>
                         <property name="active">True</property>
@@ -3573,7 +3573,7 @@
                       <object class="GtkLabel" id="label32">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="margin_left">8</property>
+                        <property name="margin_left">12</property>
                         <property name="margin_right">8</property>
                         <property name="xalign">0</property>
                         <property name="label" translatable="yes">SSH Command</property>
@@ -3615,6 +3615,7 @@
                         <property name="has_tooltip">True</property>
                         <property name="tooltip_markup">Run the SSH command without a terminal.</property>
                         <property name="tooltip_text" translatable="yes">Run the SSH command without a terminal.</property>
+                        <property name="margin_left">12</property>
                         <property name="use_underline">True</property>
                         <property name="xalign">0</property>
                         <property name="active">True</property>
@@ -3990,11 +3991,12 @@
                         <property name="can_focus">False</property>
                         <property name="left_padding">12</property>
                         <child>
-                          <object class="GtkVBox" id="vbox6">
+                          <object class="GtkGrid" id="grid18">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="border_width">8</property>
-                            <property name="spacing">4</property>
+                            <property name="margin_top">8</property>
+                            <property name="row_spacing">8</property>
+                            <property name="column_spacing">8</property>
                             <child>
                               <object class="GtkRadioButton" id="background_type0">
                                 <property name="label" translatable="yes">_None (use solid colour)</property>
@@ -4011,147 +4013,77 @@
                                 <signal name="toggled" handler="on_bgtype_toggled" swapped="no"/>
                               </object>
                               <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">False</property>
-                                <property name="position">0</property>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">0</property>
+                                <property name="width">3</property>
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkVBox" id="bgimg_drag_target_vbox">
+                              <object class="GtkRadioButton" id="background_type1">
+                                <property name="label" translatable="yes">Background _image</property>
+                                <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <child>
-                                  <object class="GtkRadioButton" id="background_type1">
-                                    <property name="label" translatable="yes">Background _image</property>
-                                    <property name="use_action_appearance">False</property>
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">True</property>
-                                    <property name="receives_default">False</property>
-                                    <property name="has_tooltip">True</property>
-                                    <property name="tooltip_text" translatable="yes">A background image will be blended with the background colour depending on the transparency setting</property>
-                                    <property name="use_underline">True</property>
-                                    <property name="xalign">0</property>
-                                    <property name="draw_indicator">True</property>
-                                    <property name="group">background_type0</property>
-                                    <signal name="toggled" handler="on_bgtype_toggled" swapped="no"/>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">False</property>
-                                    <property name="position">0</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkVBox" id="vbox7">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="spacing">8</property>
-                                    <child>
-                                      <object class="GtkHBox" id="background_img_hbox">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="spacing">4</property>
-                                        <child>
-                                          <object class="GtkLabel" id="label18">
-                                            <property name="visible">True</property>
-                                            <property name="can_focus">False</property>
-                                            <property name="label" translatable="yes">    </property>
-                                          </object>
-                                          <packing>
-                                            <property name="expand">False</property>
-                                            <property name="fill">False</property>
-                                            <property name="position">0</property>
-                                          </packing>
-                                        </child>
-                                        <child>
-                                          <object class="GtkLabel" id="img_label">
-                                            <property name="visible">True</property>
-                                            <property name="can_focus">False</property>
-                                            <property name="label" translatable="yes">Image _file:</property>
-                                            <property name="use_underline">True</property>
-                                          </object>
-                                          <packing>
-                                            <property name="expand">False</property>
-                                            <property name="fill">False</property>
-                                            <property name="position">1</property>
-                                          </packing>
-                                        </child>
-                                        <child>
-                                          <object class="GtkFileChooserButton" id="background_img">
-                                            <property name="visible">True</property>
-                                            <property name="can_focus">False</property>
-                                            <signal name="file-set" handler="on_bgimg_chosen" swapped="no"/>
-                                          </object>
-                                          <packing>
-                                            <property name="expand">True</property>
-                                            <property name="fill">True</property>
-                                            <property name="position">2</property>
-                                          </packing>
-                                        </child>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">True</property>
-                                        <property name="position">0</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <object class="GtkHBox" id="hbox10">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="spacing">4</property>
-                                        <child>
-                                          <object class="GtkLabel" id="label19">
-                                            <property name="visible">True</property>
-                                            <property name="can_focus">False</property>
-                                            <property name="label" translatable="yes">   </property>
-                                          </object>
-                                          <packing>
-                                            <property name="expand">False</property>
-                                            <property name="fill">False</property>
-                                            <property name="position">0</property>
-                                          </packing>
-                                        </child>
-                                        <child>
-                                          <object class="GtkCheckButton" id="scroll_background">
-                                            <property name="label" translatable="yes">Background image _scrolls</property>
-                                            <property name="use_action_appearance">False</property>
-                                            <property name="visible">True</property>
-                                            <property name="can_focus">True</property>
-                                            <property name="receives_default">False</property>
-                                            <property name="has_tooltip">True</property>
-                                            <property name="tooltip_text" translatable="yes">Whether to move the picture with the scrollbar</property>
-                                            <property name="use_underline">True</property>
-                                            <property name="xalign">0</property>
-                                            <property name="draw_indicator">True</property>
-                                            <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
-                                          </object>
-                                          <packing>
-                                            <property name="expand">False</property>
-                                            <property name="fill">False</property>
-                                            <property name="position">1</property>
-                                          </packing>
-                                        </child>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">1</property>
-                                      </packing>
-                                    </child>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">True</property>
-                                    <property name="padding">8</property>
-                                    <property name="position">1</property>
-                                  </packing>
-                                </child>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">False</property>
+                                <property name="has_tooltip">True</property>
+                                <property name="tooltip_text" translatable="yes">A background image will be blended with the background colour depending on the transparency setting</property>
+                                <property name="use_underline">True</property>
+                                <property name="xalign">0</property>
+                                <property name="active">True</property>
+                                <property name="draw_indicator">True</property>
+                                <signal name="toggled" handler="on_bgtype_toggled" swapped="no"/>
                               </object>
                               <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">1</property>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">1</property>
+                                <property name="width">3</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="img_label">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="margin_left">12</property>
+                                <property name="label" translatable="yes">Image _file:</property>
+                                <property name="use_underline">True</property>
+                              </object>
+                              <packing>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">2</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkFileChooserButton" id="background_img">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="hexpand">True</property>
+                                <signal name="file-set" handler="on_bgimg_chosen" swapped="no"/>
+                              </object>
+                              <packing>
+                                <property name="left_attach">1</property>
+                                <property name="top_attach">2</property>
+                                <property name="width">2</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkCheckButton" id="scroll_background">
+                                <property name="label" translatable="yes">Background image _scrolls</property>
+                                <property name="use_action_appearance">False</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">False</property>
+                                <property name="has_tooltip">True</property>
+                                <property name="tooltip_text" translatable="yes">Whether to move the picture with the scrollbar</property>
+                                <property name="margin_left">12</property>
+                                <property name="use_underline">True</property>
+                                <property name="xalign">0</property>
+                                <property name="draw_indicator">True</property>
+                                <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
+                              </object>
+                              <packing>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">3</property>
+                                <property name="width">3</property>
                               </packing>
                             </child>
                             <child>
@@ -4165,107 +4097,69 @@
                                 <property name="tooltip_text" translatable="yes">The desktop background will show through the terminal background to an extent determined by the transparency setting</property>
                                 <property name="use_underline">True</property>
                                 <property name="xalign">0</property>
+                                <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
-                                <property name="group">background_type0</property>
                                 <signal name="toggled" handler="on_bgtype_toggled" swapped="no"/>
                               </object>
                               <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">False</property>
-                                <property name="position">2</property>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">4</property>
+                                <property name="width">3</property>
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkVBox" id="vbox8">
+                              <object class="GtkLabel" id="transp_l1">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <child>
-                                  <object class="GtkLabel" id="transp_l1">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="xalign">0</property>
-                                    <property name="label" translatable="yes">Trans_parency:</property>
-                                    <property name="use_underline">True</property>
-                                    <property name="mnemonic_widget">saturation</property>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">False</property>
-                                    <property name="padding">6</property>
-                                    <property name="position">0</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkHBox" id="hbox9">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="spacing">4</property>
-                                    <child>
-                                      <object class="GtkLabel" id="label20">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="label" translatable="yes">   </property>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">0</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <object class="GtkLabel" id="transp_l2">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="label" translatable="yes">&lt;i&gt;&lt;small&gt;Opaque&lt;/small&gt;&lt;/i&gt;</property>
-                                        <property name="use_markup">True</property>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">1</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <object class="GtkHScale" id="saturation">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">True</property>
-                                        <property name="adjustment">saturation_adjustment</property>
-                                        <property name="digits">0</property>
-                                        <property name="draw_value">False</property>
-                                        <signal name="value-changed" handler="on_float_range_changed" swapped="no"/>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">True</property>
-                                        <property name="fill">True</property>
-                                        <property name="position">2</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <object class="GtkLabel" id="transp_l3">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="label" translatable="yes">&lt;i&gt;&lt;small&gt;Transparent&lt;/small&gt;&lt;/i&gt;</property>
-                                        <property name="use_markup">True</property>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">3</property>
-                                      </packing>
-                                    </child>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">False</property>
-                                    <property name="position">1</property>
-                                  </packing>
-                                </child>
+                                <property name="xalign">0</property>
+                                <property name="label" translatable="yes">Trans_parency:</property>
+                                <property name="use_underline">True</property>
+                                <property name="mnemonic_widget">saturation</property>
                               </object>
                               <packing>
-                                <property name="expand">True</property>
-                                <property name="fill">True</property>
-                                <property name="padding">8</property>
-                                <property name="position">3</property>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">5</property>
+                                <property name="width">3</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="transp_l2">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="xalign">1</property>
+                                <property name="label" translatable="yes">&lt;i&gt;&lt;small&gt;Opaque&lt;/small&gt;&lt;/i&gt;</property>
+                                <property name="use_markup">True</property>
+                              </object>
+                              <packing>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">6</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkHScale" id="saturation">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="hexpand">True</property>
+                                <property name="adjustment">saturation_adjustment</property>
+                                <property name="digits">0</property>
+                                <property name="draw_value">False</property>
+                                <signal name="value-changed" handler="on_float_range_changed" swapped="no"/>
+                              </object>
+                              <packing>
+                                <property name="left_attach">1</property>
+                                <property name="top_attach">6</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="transp_l3">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="label" translatable="yes">&lt;i&gt;&lt;small&gt;Transparent&lt;/small&gt;&lt;/i&gt;</property>
+                                <property name="use_markup">True</property>
+                              </object>
+                              <packing>
+                                <property name="left_attach">2</property>
+                                <property name="top_attach">6</property>
                               </packing>
                             </child>
                           </object>
