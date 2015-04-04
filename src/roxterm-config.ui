@@ -2367,6 +2367,7 @@
                                     <property name="xalign">1</property>
                                     <property name="label" translatable="yes">_Height:</property>
                                     <property name="use_underline">True</property>
+                                    <property name="mnemonic_widget">height</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">4</property>
@@ -2547,6 +2548,7 @@
                                     <property name="xalign">0</property>
                                     <property name="label" translatable="yes">Window _title:</property>
                                     <property name="use_underline">True</property>
+                                    <property name="mnemonic_widget">win_title</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">0</property>
@@ -2828,6 +2830,7 @@
                                 <property name="xalign">0</property>
                                 <property name="label" translatable="yes">_Select-by-word characters:</property>
                                 <property name="use_underline">True</property>
+                                <property name="mnemonic_widget">sel_by_word</property>
                               </object>
                               <packing>
                                 <property name="left_attach">0</property>
@@ -2861,6 +2864,7 @@
                                 <property name="xalign">0</property>
                                 <property name="label" translatable="yes">_COLORTERM environment variable:</property>
                                 <property name="use_underline">True</property>
+                                <property name="mnemonic_widget">color_term</property>
                               </object>
                               <packing>
                                 <property name="left_attach">0</property>
@@ -2891,6 +2895,7 @@
                                 <property name="xalign">0</property>
                                 <property name="label" translatable="yes">_TERM environment variable:</property>
                                 <property name="use_underline">True</property>
+                                <property name="mnemonic_widget">term</property>
                               </object>
                               <packing>
                                 <property name="left_attach">0</property>
@@ -3236,6 +3241,7 @@
                                 <property name="xalign">0</property>
                                 <property name="label" translatable="yes">_Pause:</property>
                                 <property name="use_underline">True</property>
+                                <property name="mnemonic_widget">exit_pause</property>
                               </object>
                               <packing>
                                 <property name="left_attach">0</property>
@@ -3341,9 +3347,8 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="xalign">0</property>
-                        <property name="label" translatable="yes">&lt;b&gt;_Web browser&lt;/b&gt;</property>
+                        <property name="label" translatable="yes">&lt;b&gt;Web browser&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
-                        <property name="use_underline">True</property>
                         <property name="mnemonic_widget">browser</property>
                       </object>
                       <packing>
@@ -3358,7 +3363,7 @@
                         <property name="can_focus">False</property>
                         <property name="margin_left">12</property>
                         <property name="xalign">0</property>
-                        <property name="label" translatable="yes">Browser</property>
+                        <property name="label" translatable="yes">Bro_wser</property>
                         <property name="use_underline">True</property>
                         <property name="mnemonic_widget">browser</property>
                         <property name="max_width_chars">3</property>
@@ -3456,9 +3461,8 @@
                         <property name="can_focus">False</property>
                         <property name="margin_top">8</property>
                         <property name="xalign">0</property>
-                        <property name="label" translatable="yes">&lt;b&gt;E_mail&lt;/b&gt;</property>
+                        <property name="label" translatable="yes">&lt;b&gt;Email&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
-                        <property name="use_underline">True</property>
                         <property name="mnemonic_widget">browser</property>
                       </object>
                       <packing>
@@ -3473,7 +3477,7 @@
                         <property name="can_focus">False</property>
                         <property name="margin_left">12</property>
                         <property name="xalign">0</property>
-                        <property name="label" translatable="yes">Mailer</property>
+                        <property name="label" translatable="yes">_Mailer</property>
                         <property name="use_underline">True</property>
                         <property name="mnemonic_widget">mailer</property>
                       </object>
@@ -3571,9 +3575,8 @@
                         <property name="can_focus">False</property>
                         <property name="margin_top">8</property>
                         <property name="xalign">0</property>
-                        <property name="label" translatable="yes">&lt;b&gt;_Ssh&lt;/b&gt;</property>
+                        <property name="label" translatable="yes">&lt;b&gt;Ssh&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
-                        <property name="use_underline">True</property>
                         <property name="mnemonic_widget">browser</property>
                       </object>
                       <packing>
@@ -3589,7 +3592,7 @@
                         <property name="margin_left">12</property>
                         <property name="margin_right">8</property>
                         <property name="xalign">0</property>
-                        <property name="label" translatable="yes">SSH Command</property>
+                        <property name="label" translatable="yes">_SSH Command</property>
                         <property name="use_underline">True</property>
                         <property name="mnemonic_widget">ssh</property>
                       </object>
@@ -3733,8 +3736,7 @@
                         <property name="margin_left">8</property>
                         <property name="xalign">0</property>
                         <property name="label" translatable="yes">Filer</property>
-                        <property name="use_underline">True</property>
-                        <property name="mnemonic_widget">filer</property>
+                        <property name="mnemonic_widget">dir_filer</property>
                       </object>
                       <packing>
                         <property name="left_attach">0</property>
@@ -3831,7 +3833,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="xalign">0</property>
-                        <property name="label" translatable="yes">&lt;b&gt;_Files&lt;/b&gt;</property>
+                        <property name="label" translatable="yes">&lt;b&gt;Files&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
                         <property name="use_underline">True</property>
                         <property name="mnemonic_widget">dir_filer</property>
@@ -3848,7 +3850,9 @@
                         <property name="can_focus">False</property>
                         <property name="margin_left">8</property>
                         <property name="xalign">0</property>
-                        <property name="label" translatable="yes">Filer</property>
+                        <property name="label" translatable="yes">_Filer</property>
+                        <property name="use_underline">True</property>
+                        <property name="mnemonic_widget">filer</property>
                         <property name="ellipsize">end</property>
                       </object>
                       <packing>
@@ -4066,6 +4070,7 @@
                                 <property name="margin_left">12</property>
                                 <property name="label" translatable="yes">Image _file:</property>
                                 <property name="use_underline">True</property>
+                                <property name="mnemonic_widget">background_img</property>
                               </object>
                               <packing>
                                 <property name="left_attach">0</property>
@@ -4162,6 +4167,7 @@
                                 <property name="can_focus">True</property>
                                 <property name="hexpand">True</property>
                                 <property name="adjustment">saturation_adjustment</property>
+                                <property name="fill_level">0</property>
                                 <property name="digits">0</property>
                                 <property name="draw_value">False</property>
                                 <signal name="value-changed" handler="on_float_range_changed" swapped="no"/>
@@ -4475,6 +4481,7 @@
                                 <property name="xalign">0</property>
                                 <property name="label" translatable="yes">_Backspace key generates:</property>
                                 <property name="use_underline">True</property>
+                                <property name="mnemonic_widget">backspace_binding</property>
                               </object>
                               <packing>
                                 <property name="left_attach">0</property>
