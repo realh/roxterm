@@ -1956,6 +1956,7 @@
                             <property name="xalign">0</property>
                             <property name="active">True</property>
                             <property name="draw_indicator">True</property>
+                            <property name="group">warn_close0</property>
                             <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
                           </object>
                           <packing>
@@ -1973,6 +1974,7 @@
                             <property name="xalign">0</property>
                             <property name="active">True</property>
                             <property name="draw_indicator">True</property>
+                            <property name="group">warn_close0</property>
                             <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
                           </object>
                           <packing>
@@ -1990,6 +1992,7 @@
                             <property name="xalign">0</property>
                             <property name="active">True</property>
                             <property name="draw_indicator">True</property>
+                            <property name="group">warn_close0</property>
                             <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
                           </object>
                           <packing>
@@ -2715,6 +2718,7 @@
                                 <property name="xalign">0</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
+                                <property name="group">cursor_blink_mode0</property>
                                 <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
                               </object>
                               <packing>
@@ -2735,6 +2739,7 @@
                                 <property name="xalign">0</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
+                                <property name="group">cursor_blink_mode0</property>
                                 <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
                               </object>
                               <packing>
@@ -2787,6 +2792,7 @@
                                 <property name="xalign">0</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
+                                <property name="group">cursor_shape0</property>
                                 <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
                               </object>
                               <packing>
@@ -2807,6 +2813,7 @@
                                 <property name="xalign">0</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
+                                <property name="group">cursor_shape0</property>
                                 <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
                               </object>
                               <packing>
@@ -3119,6 +3126,7 @@
                                 <property name="xalign">0</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
+                                <property name="group">use_default_shell</property>
                                 <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                                 <signal name="toggled" handler="on_command_toggled" swapped="no"/>
                               </object>
@@ -3159,6 +3167,7 @@
                                 <property name="xalign">0</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
+                                <property name="group">use_default_shell</property>
                                 <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                                 <signal name="toggled" handler="on_command_toggled" swapped="no"/>
                               </object>
@@ -3412,6 +3421,7 @@
                         <property name="xalign">0</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
+                        <property name="group">browser_spawn_type0</property>
                         <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
                       </object>
                       <packing>
@@ -3432,6 +3442,7 @@
                         <property name="xalign">0</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
+                        <property name="group">browser_spawn_type0</property>
                         <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
                       </object>
                       <packing>
@@ -3524,6 +3535,7 @@
                         <property name="xalign">0</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
+                        <property name="group">mailer_spawn_type0</property>
                         <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
                       </object>
                       <packing>
@@ -3545,6 +3557,7 @@
                         <property name="xalign">0</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
+                        <property name="group">mailer_spawn_type0</property>
                         <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
                       </object>
                       <packing>
@@ -3641,6 +3654,7 @@
                         <property name="xalign">0</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
+                        <property name="group">ssh_spawn_type0</property>
                         <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
                       </object>
                       <packing>
@@ -3662,6 +3676,7 @@
                         <property name="xalign">0</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
+                        <property name="group">ssh_spawn_type0</property>
                         <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
                       </object>
                       <packing>
@@ -3781,6 +3796,7 @@
                         <property name="xalign">0</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
+                        <property name="group">dir_spawn_type0</property>
                         <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
                       </object>
                       <packing>
@@ -3802,6 +3818,7 @@
                         <property name="xalign">0</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
+                        <property name="group">dir_spawn_type0</property>
                         <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
                       </object>
                       <packing>
@@ -3894,6 +3911,7 @@
                         <property name="xalign">0</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
+                        <property name="group">filer_spawn_type0</property>
                       </object>
                       <packing>
                         <property name="left_attach">1</property>
@@ -3914,6 +3932,7 @@
                         <property name="xalign">0</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
+                        <property name="group">filer_spawn_type0</property>
                         <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
                       </object>
                       <packing>
@@ -4031,6 +4050,7 @@
                                 <property name="xalign">0</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
+                                <property name="group">background_type0</property>
                                 <signal name="toggled" handler="on_bgtype_toggled" swapped="no"/>
                               </object>
                               <packing>
@@ -4099,6 +4119,7 @@
                                 <property name="xalign">0</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
+                                <property name="group">background_type0</property>
                                 <signal name="toggled" handler="on_bgtype_toggled" swapped="no"/>
                               </object>
                               <packing>
