@@ -4462,118 +4462,90 @@
                         <property name="can_focus">False</property>
                         <property name="left_padding">12</property>
                         <child>
-                          <object class="GtkVBox" id="vbox10">
+                          <object class="GtkGrid" id="grid22">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="border_width">8</property>
-                            <property name="spacing">14</property>
+                            <property name="margin_top">4</property>
+                            <property name="row_spacing">8</property>
+                            <property name="column_spacing">8</property>
                             <child>
-                              <object class="GtkTable" id="table2">
+                              <object class="GtkLabel" id="backspace_binding_label">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="n_rows">2</property>
-                                <property name="n_columns">2</property>
-                                <property name="column_spacing">8</property>
-                                <property name="row_spacing">8</property>
-                                <child>
-                                  <object class="GtkLabel" id="delete_binding_label">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="xalign">0</property>
-                                    <property name="label" translatable="yes">_Delete key generates:</property>
-                                    <property name="use_underline">True</property>
-                                    <property name="mnemonic_widget">delete_binding</property>
-                                  </object>
-                                  <packing>
-                                    <property name="top_attach">1</property>
-                                    <property name="bottom_attach">2</property>
-                                    <property name="x_options">GTK_FILL</property>
-                                    <property name="y_options"/>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel" id="backspace_binding_label">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="xalign">0</property>
-                                    <property name="label" translatable="yes">_Backspace key generates:</property>
-                                    <property name="use_underline">True</property>
-                                  </object>
-                                  <packing>
-                                    <property name="x_options">GTK_FILL</property>
-                                    <property name="y_options"/>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkComboBoxText" id="delete_binding">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <items>
-                                      <item translatable="yes">Automatic choice</item>
-                                      <item translatable="yes">Ctrl-H</item>
-                                      <item translatable="yes">ASCII DEL</item>
-                                      <item translatable="yes">Escape sequence</item>
-                                    </items>
-                                    <signal name="changed" handler="on_combo_changed" swapped="no"/>
-                                  </object>
-                                  <packing>
-                                    <property name="left_attach">1</property>
-                                    <property name="right_attach">2</property>
-                                    <property name="top_attach">1</property>
-                                    <property name="bottom_attach">2</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkComboBoxText" id="backspace_binding">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <items>
-                                      <item translatable="yes">Automatic choice</item>
-                                      <item translatable="yes">Ctrl-H</item>
-                                      <item translatable="yes">ASCII DEL</item>
-                                      <item translatable="yes">Escape sequence</item>
-                                    </items>
-                                    <signal name="changed" handler="on_combo_changed" swapped="no"/>
-                                  </object>
-                                  <packing>
-                                    <property name="left_attach">1</property>
-                                    <property name="right_attach">2</property>
-                                  </packing>
-                                </child>
+                                <property name="xalign">0</property>
+                                <property name="label" translatable="yes">_Backspace key generates:</property>
+                                <property name="use_underline">True</property>
                               </object>
                               <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">False</property>
-                                <property name="position">0</property>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">0</property>
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkHBox" id="hbox12">
+                              <object class="GtkComboBoxText" id="backspace_binding">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <child>
-                                  <object class="GtkButton" id="reset_compat">
-                                    <property name="label" translatable="yes">_Reset to defaults</property>
-                                    <property name="use_action_appearance">False</property>
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">True</property>
-                                    <property name="receives_default">True</property>
-                                    <property name="has_tooltip">True</property>
-                                    <property name="tooltip_text" translatable="yes">Reset the backspace and delete keys to their defaults</property>
-                                    <property name="use_underline">True</property>
-                                    <signal name="clicked" handler="on_reset_compat_clicked" swapped="no"/>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">False</property>
-                                    <property name="position">0</property>
-                                  </packing>
-                                </child>
+                                <items>
+                                  <item translatable="yes">Automatic choice</item>
+                                  <item translatable="yes">Ctrl-H</item>
+                                  <item translatable="yes">ASCII DEL</item>
+                                  <item translatable="yes">Escape sequence</item>
+                                </items>
+                                <signal name="changed" handler="on_combo_changed" swapped="no"/>
                               </object>
                               <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">False</property>
-                                <property name="position">1</property>
+                                <property name="left_attach">1</property>
+                                <property name="top_attach">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="delete_binding_label">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="xalign">0</property>
+                                <property name="label" translatable="yes">_Delete key generates:</property>
+                                <property name="use_underline">True</property>
+                                <property name="mnemonic_widget">delete_binding</property>
+                              </object>
+                              <packing>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">1</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkComboBoxText" id="delete_binding">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <items>
+                                  <item translatable="yes">Automatic choice</item>
+                                  <item translatable="yes">Ctrl-H</item>
+                                  <item translatable="yes">ASCII DEL</item>
+                                  <item translatable="yes">Escape sequence</item>
+                                </items>
+                                <signal name="changed" handler="on_combo_changed" swapped="no"/>
+                              </object>
+                              <packing>
+                                <property name="left_attach">1</property>
+                                <property name="top_attach">1</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkButton" id="reset_compat">
+                                <property name="label" translatable="yes">_Reset to defaults</property>
+                                <property name="use_action_appearance">False</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="has_tooltip">True</property>
+                                <property name="tooltip_text" translatable="yes">Reset the backspace and delete keys to their defaults</property>
+                                <property name="halign">start</property>
+                                <property name="use_underline">True</property>
+                                <signal name="clicked" handler="on_reset_compat_clicked" swapped="no"/>
+                              </object>
+                              <packing>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">2</property>
+                                <property name="width">2</property>
                               </packing>
                             </child>
                             <child>
@@ -4592,9 +4564,9 @@
                                 <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                               </object>
                               <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">2</property>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">3</property>
+                                <property name="width">2</property>
                               </packing>
                             </child>
                             <child>
@@ -4613,9 +4585,9 @@
                                 <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                               </object>
                               <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">3</property>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">4</property>
+                                <property name="width">2</property>
                               </packing>
                             </child>
                             <child>
@@ -4634,9 +4606,9 @@
                                 <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                               </object>
                               <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">4</property>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">5</property>
+                                <property name="width">2</property>
                               </packing>
                             </child>
                           </object>
