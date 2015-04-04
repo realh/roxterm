@@ -4162,12 +4162,13 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkHScale" id="saturation">
+                              <object class="GtkScale" id="saturation">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="hexpand">True</property>
                                 <property name="adjustment">saturation_adjustment</property>
-                                <property name="fill_level">0</property>
+                                <property name="restrict_to_fill_level">False</property>
+                                <property name="fill_level">-1</property>
                                 <property name="digits">0</property>
                                 <property name="draw_value">False</property>
                                 <signal name="value-changed" handler="on_float_range_changed" swapped="no"/>
