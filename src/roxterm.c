@@ -140,7 +140,7 @@ inline static char const **roxterm_list_encodings(void)
 
 static void roxterm_apply_encoding(ROXTermData *roxterm, VteTerminal *vte)
 {
-    vte_terminal_set_encoding(vte, roxterm->encoding);
+    vte_terminal_set_encoding(vte, roxterm->encoding, NULL);
 }
 
 void roxterm_encoding_toggled(GtkCheckMenuItem *item, gpointer win)
@@ -559,9 +559,12 @@ static char **roxterm_get_environment(ROXTermData *roxterm, const char *term)
         new_env[n * 2 + 1] = roxterm->display_name;
         ++n;
     }
-    new_env[n * 2] = "TERM";
-    new_env[n * 2 + 1] = term;
-    ++n;
+    if (term)
+    {
+        new_env[n * 2] = "TERM";
+        new_env[n * 2 + 1] = term;
+        ++n;
+    }
     cterm = options_lookup_string(roxterm->profile, "color_term");
     if (cterm)
     {
@@ -655,7 +658,7 @@ static const char *roxterm_check_cwd(const char *cwd)
 }
 
 static char *roxterm_fork_command(VteTerminal *vte,
-        const char *term, char **argv, char **envv,
+        char **argv, char **envv,
         const char *working_directory,
         gboolean login, gboolean utmp, gboolean wtmp, pid_t *pid)
 {
@@ -689,16 +692,14 @@ static char *roxterm_fork_command(VteTerminal *vte,
         argv = new_argv;
     }
 
-    pty = vte_terminal_pty_new(vte,
+    pty = vte_terminal_pty_new_sync(vte,
             (login ? 0 : VTE_PTY_NO_LASTLOG) |
             (utmp ? 0 : VTE_PTY_NO_UTMP) |
-            (wtmp ? 0 : VTE_PTY_NO_WTMP), &error);
+            (wtmp ? 0 : VTE_PTY_NO_WTMP),
+            NULL, &error);
     if (pty)
     {
-        vte_terminal_set_pty_object(vte, pty);
-        if (!term)
-            term = vte_terminal_get_default_emulation(vte);
-        vte_pty_set_term(pty, term);
+        vte_terminal_set_pty(vte, pty);
         if (g_spawn_async(working_directory, argv, envv,
                 G_SPAWN_DO_NOT_REAP_CHILD |
                     (login ? G_SPAWN_FILE_AND_ARGV_ZERO : G_SPAWN_SEARCH_PATH),
@@ -747,7 +748,7 @@ static void roxterm_run_command(ROXTermData *roxterm, VteTerminal *vte)
     char *reply = NULL;
 
     if (!term)
-        term = vte_terminal_get_default_emulation(vte);
+        term = "xterm";
     env = roxterm_get_environment(roxterm, term);
     roxterm->running = TRUE;
     roxterm_show_status(roxterm, "window-close");
@@ -848,7 +849,7 @@ static void roxterm_run_command(ROXTermData *roxterm, VteTerminal *vte)
         gboolean xtmplog = options_lookup_int_with_default(roxterm->profile,
                 "update_records", 1);
 
-        reply = roxterm_fork_command(vte, term, commandv, env,
+        reply = roxterm_fork_command(vte, commandv, env,
                 roxterm->directory, login, xtmplog, xtmplog, &roxterm->pid);
     }
     else
