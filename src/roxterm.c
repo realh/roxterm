@@ -50,6 +50,16 @@
 #include "uri.h"
 #include "x11support.h"
 
+/* vte_terminal_set_word_chars was removed from vte 0.38 but reinstated
+ * in 0.40. Hopefully this will allow the option to be ignored in 0.38
+ * but work in 0.40 without recompiling roxterm.
+ */
+void __attribute__((weak))
+vte_terminal_set_word_chars(VteTerminal *vte, const char *chars)
+{
+    (void) vte;
+    (void) chars;
+}
 
 typedef enum {
     ROXTerm_Match_Invalid,
@@ -1116,7 +1126,8 @@ roxterm_set_show_uri_menu_items(ROXTermData * roxterm,
 
 static double roxterm_get_config_saturation(ROXTermData *roxterm)
 {
-    double saturation = options_lookup_double(roxterm->profile, "saturation");
+    double saturation = options_lookup_double(roxterm->profile,
+            "saturation");
 
     if (saturation == -1)
     {
@@ -1130,126 +1141,18 @@ static double roxterm_get_config_saturation(ROXTermData *roxterm)
     return saturation;
 }
 
-#if 0
-/* Setting window background creates a worse problem than it solves:
- * https://sourceforge.net/p/roxterm/feature-requests/57/
- */
-static double roxterm_get_window_saturation(ROXTermData *roxterm)
-{
-
-    switch (options_lookup_int(roxterm->profile, "background_type"))
-    {
-        case 1:
-            return 0;
-        case 2:
-            return roxterm_get_config_saturation(roxterm);
-        default:
-            return 0;
-    }
-    return 0;
-}
-
-static void roxterm_apply_window_background(ROXTermData *roxterm,
-        const GdkRGBA *background, double saturation)
-{
-    GtkWindow *w = roxterm_get_toplevel(roxterm);
-    static GdkRGBA black = {0, 0, 0, 1};
-
-    if (!background)
-    {
-        background =
-            colour_scheme_get_background_colour(roxterm->colour_scheme, TRUE);
-        if (!background)
-            background = &black;
-    }
-    if (w)
-    {
-        GdkRGBA bg = *background;
-        bg.alpha = 1.0 - saturation;
-        gtk_widget_override_background_color(GTK_WIDGET(w),
-                GTK_STATE_FLAG_NORMAL, &bg);
-    }
-}
-#else
-#define roxterm_apply_window_background(r, b, s)
-#endif
-
-static void roxterm_update_background(ROXTermData * roxterm, VteTerminal * vte)
-{
-    char *background_file;
-    double saturation = roxterm_get_config_saturation(roxterm);
-    gboolean true_trans = FALSE;
-    GdkRGBA *bg = colour_scheme_get_background_colour(
-            roxterm->colour_scheme, FALSE);
-
-#ifdef HAVE_VTE_TERMINAL_SET_BACKGROUND_TINT_COLOR
-    GdkColor c;
-    c.red = (guint16) (bg->red * 65535);
-    c.green = (guint16) (bg->green * 65535);
-    c.blue = (guint16) (bg->blue * 65535);
-    vte_terminal_set_background_tint_color(vte, &c);
-#endif
-
-    switch (options_lookup_int(roxterm->profile, "background_type"))
-    {
-        case 1:
-            background_file = options_lookup_string(roxterm->profile,
-                    "background_img");
-            if (background_file &&
-                    g_file_test(background_file, G_FILE_TEST_EXISTS))
-            {
-                vte_terminal_set_background_image_file(vte, background_file);
-                vte_terminal_set_scroll_background(vte,
-                    options_lookup_int(roxterm->profile, "scroll_background")
-                    == 1);
-                break;
-            }
-            else
-            {
-                vte_terminal_set_background_image(vte, NULL);
-            }
-            vte_terminal_set_background_transparent(vte, FALSE);
-            roxterm_apply_window_background(roxterm, bg, 0);
-            if (background_file)
-                g_free(background_file);
-            break;
-        case 2:
-            vte_terminal_set_background_image(vte, NULL);
-            true_trans = multi_win_composite(roxterm_get_win(roxterm));
-            vte_terminal_set_background_transparent(vte,
-                    saturation < 1 && !true_trans);
-            roxterm_apply_window_background(roxterm, bg, saturation);
-            break;
-        default:
-            saturation = 1;
-            vte_terminal_set_background_image(vte, NULL);
-            vte_terminal_set_background_transparent(vte, FALSE);
-            roxterm_apply_window_background(roxterm, bg, 0);
-    }
-    vte_terminal_set_background_saturation(vte, saturation);
-    vte_terminal_set_opacity(vte, true_trans ?
-            (guint16) (0xffff * (1 - saturation)) : 0xffff);
-}
-
 static void
 roxterm_update_cursor_colour(ROXTermData * roxterm, VteTerminal * vte)
 {
-    vte_terminal_set_color_cursor_rgba(vte,
+    vte_terminal_set_color_cursor(vte,
             colour_scheme_get_cursor_colour(roxterm->colour_scheme, TRUE));
 }
 
 static void
 roxterm_update_bold_colour(ROXTermData * roxterm, VteTerminal * vte)
 {
-    vte_terminal_set_color_bold_rgba(vte,
+    vte_terminal_set_color_bold(vte,
             colour_scheme_get_bold_colour(roxterm->colour_scheme, TRUE));
-}
-
-static void
-roxterm_update_dim_colour(ROXTermData * roxterm, VteTerminal * vte)
-{
-    vte_terminal_set_color_dim_rgba(vte,
-            colour_scheme_get_dim_colour(roxterm->colour_scheme, TRUE));
 }
 
 guint16 extrapolate_chroma(guint16 bg, guint16 fg, double factor)
@@ -1273,65 +1176,59 @@ static const GdkRGBA *extrapolate_colours(const GdkRGBA *bg,
     return &ext;
 }
 
+static const GdkRGBA *roxterm_get_background_colour_with_transparency(
+        ROXTermData * roxterm)
+{
+    const GdkRGBA *bgro =
+            colour_scheme_get_background_colour(roxterm->colour_scheme, TRUE);
+    static GdkRGBA background;
+    float alpha = roxterm_get_config_saturation(roxterm);
+    
+    if (bgro)
+    {
+        background = *bgro;
+    }
+    else if (alpha < 1.0f)
+    {
+        bgro = colour_scheme_get_background_colour(roxterm->colour_scheme,
+                FALSE);
+        background = *bgro;
+        bgro = NULL;
+    }
+    background.alpha = alpha;
+    return (alpha < 1.0f) ? &background : bgro;
+}
+
 static void
 roxterm_apply_colour_scheme(ROXTermData *roxterm, VteTerminal *vte)
 {
-    gboolean bold_dim_set = FALSE;
+    gboolean bold = FALSE;
     const GdkRGBA *bd = NULL;
     int ncolours = 0;
     const GdkRGBA *palette = NULL;
     const GdkRGBA *foreground =
             colour_scheme_get_foreground_colour(roxterm->colour_scheme, TRUE);
     const GdkRGBA *background =
-            colour_scheme_get_background_colour(roxterm->colour_scheme, TRUE);
-
+            roxterm_get_background_colour_with_transparency(roxterm);
+    
     vte_terminal_set_default_colors(vte);
     ncolours = colour_scheme_get_palette_size(roxterm->colour_scheme);
     if (ncolours)
         palette = colour_scheme_get_palette(roxterm->colour_scheme);
-    vte_terminal_set_colors_rgba(vte, foreground, background,
+    vte_terminal_set_colors(vte, foreground, background,
             palette, ncolours);
-    roxterm_apply_window_background(roxterm, background,
-            roxterm_get_window_saturation(roxterm));
     if (!ncolours && foreground && background)
     {
-        vte_terminal_set_color_bold_rgba(vte,
+        vte_terminal_set_color_bold(vte,
                 extrapolate_colours(background, foreground, 1.2));
-        vte_terminal_set_color_dim_rgba(vte,
-                extrapolate_colours(background, foreground, 0.7));
-        bold_dim_set = TRUE;
+        bold = TRUE;
     }
     bd = colour_scheme_get_bold_colour(roxterm->colour_scheme, TRUE);
-    if (bd || !bold_dim_set)
-        vte_terminal_set_color_bold_rgba(vte, bd);
-    bd = colour_scheme_get_dim_colour(roxterm->colour_scheme, TRUE);
-    if (bd || !bold_dim_set)
-        vte_terminal_set_color_dim_rgba(vte, bd);
+    if (bd || !bold)
+        vte_terminal_set_color_bold(vte, bd);
     roxterm_update_cursor_colour(roxterm, vte);
     roxterm_force_redraw(roxterm);
 }
-
-#if VTE_CHECK_VERSION(0, 24, 0)
-static void roxterm_get_vte_padding(VteTerminal *vte, int *w, int *h)
-{
-    GtkBorder *border = NULL;
-
-    gtk_widget_style_get(GTK_WIDGET(vte), "inner-border", &border, NULL);
-    if (border == NULL)
-    {
-        g_warning(_("VTE's inner-border property unavailable"));
-        *w = *h = 0;
-    }
-    else
-    {
-        *w = border->left + border->right;
-        *h = border->top + border->bottom;
-        gtk_border_free(border);
-    }
-}
-#else
-#define roxterm_get_vte_padding vte_terminal_get_padding
-#endif
 
 static void
 roxterm_set_vte_size(ROXTermData *roxterm, VteTerminal *vte,
@@ -1357,12 +1254,10 @@ roxterm_set_vte_size(ROXTermData *roxterm, VteTerminal *vte,
      */
     if (drbl && pd)
     {
-        int px, py;
         int req_w, req_h;
 
-        roxterm_get_vte_padding(vte, &px, &py);
-        req_w = vte_terminal_get_char_width(vte) * columns + px;
-        req_h = vte_terminal_get_char_height(vte) * rows + py;
+        req_w = vte_terminal_get_char_width(vte) * columns;
+        req_h = vte_terminal_get_char_height(vte) * rows;
         /*
         g_debug("Child was %dx%d, window bigger by %dx%d; "
                 "resizing for child calc %dx%d",
@@ -1377,7 +1272,8 @@ static void roxterm_geometry_func(ROXTermData *roxterm,
 {
     VteTerminal *vte = VTE_TERMINAL(roxterm->widget);
 
-    roxterm_get_vte_padding(vte, &geom->base_width, &geom->base_height);
+    geom->base_width = 0;
+    geom->base_height = 0;
     geom->width_inc = vte_terminal_get_char_width(vte);
     geom->height_inc = vte_terminal_get_char_height(vte);
     geom->min_width = geom->base_width + 4 * geom->width_inc;
@@ -1396,11 +1292,8 @@ static void roxterm_size_func(ROXTermData *roxterm, gboolean pixels,
         *pheight = vte_terminal_get_row_count(vte);
     if (pixels)
     {
-        int px, py;
-
-        roxterm_get_vte_padding(vte, &px, &py);
-        *pwidth = *pwidth * vte_terminal_get_char_width(vte) + px;
-        *pheight = *pheight * vte_terminal_get_char_height(vte) + py;
+        *pwidth = *pwidth * vte_terminal_get_char_width(vte);
+        *pheight = *pheight * vte_terminal_get_char_height(vte);
     }
 }
 
@@ -1471,43 +1364,34 @@ roxterm_apply_profile_font(ROXTermData *roxterm, VteTerminal *vte,
         roxterm->pango_desc = NULL;
     }
     fdesc = options_lookup_string(roxterm->profile, "font");
-    if (fdesc && roxterm->target_zoom_factor == 1.0)
-    {
-        vte_terminal_set_font_from_string(vte, fdesc);
-        roxterm->pango_desc = pango_font_description_copy(
-                    vte_terminal_get_font(vte));
-    }
-    else
-    {
-        double zf = roxterm->target_zoom_factor;
+    double zf = roxterm->target_zoom_factor;
 
-        if (fdesc && fdesc[0])
-        {
-            pango_desc = pango_font_description_from_string(fdesc);
-            if (!pango_desc)
-                g_warning(_("Couldn't create a font from '%s'"), fdesc);
-        }
+    if (fdesc && fdesc[0])
+    {
+        pango_desc = pango_font_description_from_string(fdesc);
         if (!pango_desc)
-        {
-            if (zf == roxterm->current_zoom_factor)
-            {
-                if (fdesc)
-                    g_free(fdesc);
-                return;
-            }
-            pango_desc = pango_font_description_copy(
-                    vte_terminal_get_font(vte));
-            zf /= roxterm->current_zoom_factor;
-        }
-        if (!pango_desc)
-        {
-            g_free(fdesc);
-            g_return_if_fail(pango_desc != NULL);
-        }
-        resize_pango_for_zoom(pango_desc, zf);
-        vte_terminal_set_font(vte, pango_desc);
-        roxterm->pango_desc = pango_desc;
+            g_warning(_("Couldn't create a font from '%s'"), fdesc);
     }
+    if (!pango_desc)
+    {
+        if (zf == roxterm->current_zoom_factor)
+        {
+            if (fdesc)
+                g_free(fdesc);
+            return;
+        }
+        pango_desc = pango_font_description_copy(
+                vte_terminal_get_font(vte));
+        zf /= roxterm->current_zoom_factor;
+    }
+    if (!pango_desc)
+    {
+        g_free(fdesc);
+        g_return_if_fail(pango_desc != NULL);
+    }
+    resize_pango_for_zoom(pango_desc, zf);
+    vte_terminal_set_font(vte, pango_desc);
+    roxterm->pango_desc = pango_desc;
     g_free(fdesc);
     roxterm->current_zoom_factor = roxterm->target_zoom_factor;
     if (update_geometry)
@@ -1614,14 +1498,12 @@ static gboolean roxterm_popup_handler(GtkWidget * widget, ROXTermData * roxterm)
 static gboolean roxterm_check_match(ROXTermData *roxterm, VteTerminal *vte,
         int event_x, int event_y)
 {
-    int xpad, ypad;
     int tag;
 
-    roxterm_get_vte_padding(vte, &xpad, &ypad);
     g_free(roxterm->matched_url);
     roxterm->matched_url = vte_terminal_match_check(vte,
-        (event_x - ypad) / vte_terminal_get_char_width(vte),
-        (event_y - ypad) / vte_terminal_get_char_height(vte), &tag);
+        event_x / vte_terminal_get_char_width(vte),
+        event_y / vte_terminal_get_char_height(vte), &tag);
     if (roxterm->matched_url)
         roxterm->match_type = roxterm_get_match_type(roxterm, tag);
     return roxterm->matched_url != NULL;
@@ -1958,9 +1840,6 @@ static void roxterm_tab_selection_handler(ROXTermData * roxterm, MultiTab * tab)
     menutree_select_encoding(menu_bar, roxterm->encoding);
     menutree_select_encoding(short_popup, roxterm->encoding);
     multi_win_set_ignore_toggles(win, FALSE);
-
-    roxterm_apply_window_background(roxterm, NULL,
-            roxterm_get_window_saturation(roxterm));
 }
 
 static gboolean run_child_when_idle(ROXTermData *roxterm)
@@ -2346,6 +2225,15 @@ static void roxterm_child_exited(VteTerminal *vte, ROXTermData *roxterm)
 {
     double delay = 0;
 
+    if (!roxterm)
+    {
+        roxterm = g_object_get_data(G_OBJECT(vte), "roxterm");
+    }
+    if (!roxterm)
+    {
+        g_critical("Unable to get ROXTermData from VteTerminal exit signal");
+        return;
+    }
     roxterm->running = FALSE;
     roxterm_show_status(roxterm, "dialog-error");
     if ((options_lookup_int(roxterm->profile, "exit_action") !=
@@ -2650,7 +2538,6 @@ static void roxterm_resize_window_handler(VteTerminal *vte,
         guint width, guint height, ROXTermData *roxterm)
 {
     MultiWin *win = roxterm_get_win(roxterm);
-    int pad_w, pad_h;
     GtkAllocation alloc;
     int columns, rows;
 
@@ -2665,13 +2552,10 @@ static void roxterm_resize_window_handler(VteTerminal *vte,
     if (alloc.width == (int) width && alloc.height == (int) height)
         return;
     /* Compute nearest grid size */
-    roxterm_get_vte_padding(vte, &pad_w, &pad_h);
     columns = (int) (0.5 +
-            (double) (width - pad_w) /
-            (double) vte_terminal_get_char_width(vte));
+            (double) width / (double) vte_terminal_get_char_width(vte));
     rows = (int) (0.5 +
-            (double) (height - pad_h) /
-            (double) vte_terminal_get_char_height(vte));
+            (double) height / (double) vte_terminal_get_char_height(vte));
     /* Only resize window now if this is current tab */
     if (roxterm->tab == multi_win_get_current_tab(win))
         roxterm_set_vte_size(roxterm, vte, columns, rows);
@@ -2871,11 +2755,12 @@ static void roxterm_connect_menu_signals(MultiWin * win)
 static void roxterm_composited_changed_handler(VteTerminal *vte,
         ROXTermData *roxterm)
 {
-    roxterm_update_background(roxterm, vte);
+    roxterm_apply_colour_scheme(roxterm, vte);
 }
 
 static void roxterm_connect_misc_signals(ROXTermData * roxterm)
 {
+    g_object_set_data(G_OBJECT(roxterm->widget), "roxterm", roxterm);
     g_signal_connect(roxterm->widget,
         "child-exited", G_CALLBACK(roxterm_child_exited), roxterm);
     g_signal_connect(roxterm->widget, "popup-menu",
@@ -2940,13 +2825,6 @@ roxterm_update_audible_bell(ROXTermData * roxterm, VteTerminal * vte)
 }
 
 inline static void
-roxterm_update_visible_bell(ROXTermData * roxterm, VteTerminal * vte)
-{
-    vte_terminal_set_visible_bell(vte, options_lookup_int
-        (roxterm->profile, "visible_bell") == 1);
-}
-
-inline static void
 roxterm_update_allow_bold(ROXTermData * roxterm, VteTerminal * vte)
 {
     vte_terminal_set_allow_bold(vte, options_lookup_int
@@ -3005,7 +2883,7 @@ static void roxterm_set_scroll_on_keystroke(ROXTermData * roxterm,
 static void roxterm_set_backspace_binding(ROXTermData * roxterm,
         VteTerminal * vte)
 {
-    vte_terminal_set_backspace_binding(vte, (VteTerminalEraseBinding)
+    vte_terminal_set_backspace_binding(vte, (VteEraseBinding)
         options_lookup_int_with_default(roxterm->profile,
             "backspace_binding", VTE_ERASE_AUTO));
 }
@@ -3013,7 +2891,7 @@ static void roxterm_set_backspace_binding(ROXTermData * roxterm,
 static void roxterm_set_delete_binding(ROXTermData * roxterm,
         VteTerminal * vte)
 {
-    vte_terminal_set_delete_binding(vte, (VteTerminalEraseBinding)
+    vte_terminal_set_delete_binding(vte, (VteEraseBinding)
         options_lookup_int_with_default(roxterm->profile,
             "delete_binding", VTE_ERASE_AUTO));
 }
@@ -3165,13 +3043,11 @@ static void roxterm_apply_profile(ROXTermData *roxterm, VteTerminal *vte,
 {
     roxterm_set_select_by_word_chars(roxterm, vte);
     roxterm_update_audible_bell(roxterm, vte);
-    roxterm_update_visible_bell(roxterm, vte);
     roxterm_update_allow_bold(roxterm, vte);
     roxterm_update_cursor_blink_mode(roxterm, vte);
     roxterm_update_cursor_shape(roxterm, vte);
 
     roxterm_apply_colour_scheme(roxterm, vte);
-    roxterm_update_background(roxterm, vte);
 
     roxterm_update_font(roxterm, vte, update_geometry);
 
@@ -3493,10 +3369,6 @@ static void roxterm_reflect_profile_change(Options * profile, const char *key)
         {
             roxterm_update_audible_bell(roxterm, vte);
         }
-        else if (!strcmp(key, "visible_bell"))
-        {
-            roxterm_update_visible_bell(roxterm, vte);
-        }
         else if (!strcmp(key, "cursor_blink_mode"))
         {
             roxterm_update_cursor_blink_mode(roxterm, vte);
@@ -3538,12 +3410,9 @@ static void roxterm_reflect_profile_change(Options * profile, const char *key)
             multi_win_set_fullscreen(win, fs);
             apply_to_win = TRUE;
         }
-        else if (!strcmp(key, "background_img")
-                || !strcmp(key, "background_type")
-                || !strcmp(key, "scroll_background")
-                || !strcmp(key, "saturation"))
+        else if (!strcmp(key, "saturation"))
         {
-            roxterm_update_background(roxterm, vte);
+            roxterm_apply_colour_scheme(roxterm, vte);
         }
         else if (!strcmp(key, "scrollback_lines"))
         {
@@ -3570,7 +3439,7 @@ static void roxterm_reflect_profile_change(Options * profile, const char *key)
             char *encoding =
                 options_lookup_string(roxterm->profile, "encoding");
 
-            vte_terminal_set_encoding(vte, encoding);
+            vte_terminal_set_encoding(vte, encoding, NULL);
             if (encoding)
                 g_free(encoding);
         }
@@ -3687,11 +3556,6 @@ static gboolean roxterm_update_colour_option(Options *scheme, const char *key,
         old_colour = colour_scheme_get_bold_colour(scheme, TRUE);
         setter = colour_scheme_set_bold_colour;
     }
-    else if (!strcmp(key, "dim"))
-    {
-        old_colour = colour_scheme_get_dim_colour(scheme, TRUE);
-        setter = colour_scheme_set_dim_colour;
-    }
     else
     {
         old_colour = colour_scheme_get_palette(scheme) + atoi(key);
@@ -3733,8 +3597,6 @@ static void roxterm_reflect_colour_change(Options *scheme, const char *key)
             roxterm_update_cursor_colour(roxterm, vte);
         else if (!strcmp(key, "bold"))
             roxterm_update_bold_colour(roxterm, vte);
-        else if (!strcmp(key, "dim"))
-            roxterm_update_dim_colour(roxterm, vte);
         else
             roxterm_apply_colour_scheme(roxterm, vte);
     }
@@ -5410,7 +5272,7 @@ gboolean roxterm_set_search(ROXTermData *roxterm,
             return FALSE;
     }
 
-    vte_terminal_search_set_gregex(VTE_TERMINAL(roxterm->widget), regex);
+    vte_terminal_search_set_gregex(VTE_TERMINAL(roxterm->widget), regex, 0);
     vte_terminal_search_set_wrap_around(VTE_TERMINAL(roxterm->widget),
             flags & ROXTERM_SEARCH_WRAP);
     roxterm_shade_search_menu_items(roxterm);

@@ -213,6 +213,7 @@ if ctx.mode == 'configure':
     ctx.pkg_config('dbus-1', 'DBUS', '1.0')
     ctx.pkg_config('dbus-glib-1', 'DBUS', '0.22')
     ctx.pkg_config('gmodule-export-2.0', 'GMODULE')
+    ctx.pkg_config('x11')
 
     for f in ["get_current_dir_name"]:
         ctx.check_func(f, "${CFLAGS} ${MCFLAGS} ${LIBS}")
@@ -235,7 +236,7 @@ if ctx.mode == 'configure':
     ctx.setenv('ROXTERM_CFLAGS',
             "${CFLAGS} ${MCFLAGS} ${VTE_CFLAGS} ${SM_CFLAGS} ${DBUS_CFLAGS}")
     ctx.setenv('ROXTERM_LIBS',
-            "${LIBS} ${VTE_LIBS} ${SM_LIBS} ${DBUS_LIBS}")
+            "${LIBS} ${VTE_LIBS} ${SM_LIBS} ${DBUS_LIBS} ${X11_LIBS}")
     ctx.setenv('ROXTERM_CONFIG_CFLAGS',
             "${CFLAGS} ${MCFLAGS} ${GTK_CFLAGS} ${DBUS_CFLAGS} " \
             "${GMODULE_CFLAGS} -DROXTERM_CAPPLET")

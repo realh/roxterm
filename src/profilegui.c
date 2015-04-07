@@ -113,33 +113,6 @@ void profilegui_check_entries_for_changes(ProfileGUI * pg)
     PG_UPDATE_IF(win_title)
 }
 
-static void profilegui_set_bgimg_shading(ProfileGUI *pg, gboolean sensitive)
-{
-    gtk_widget_set_sensitive(profilegui_widget(pg,
-                "scroll_background"), sensitive);
-    gtk_widget_set_sensitive(profilegui_widget(pg, "background_img"),
-            sensitive);
-    gtk_widget_set_sensitive(profilegui_widget(pg, "img_label"),
-            sensitive);
-}
-
-static void profilegui_set_transparency_shading(ProfileGUI *pg,
-        gboolean sensitive)
-{
-    gtk_widget_set_sensitive(profilegui_widget(pg, "saturation"), sensitive);
-    gtk_widget_set_sensitive(profilegui_widget(pg, "transp_l1"), sensitive);
-    gtk_widget_set_sensitive(profilegui_widget(pg, "transp_l2"), sensitive);
-    gtk_widget_set_sensitive(profilegui_widget(pg, "transp_l3"), sensitive);
-}
-
-static void profilegui_set_background_shading(ProfileGUI *pg)
-{
-    profilegui_set_bgimg_shading(pg, gtk_toggle_button_get_active(
-            GTK_TOGGLE_BUTTON(profilegui_widget(pg, "background_type1"))));
-    profilegui_set_transparency_shading(pg, !gtk_toggle_button_get_active(
-            GTK_TOGGLE_BUTTON(profilegui_widget(pg, "background_type0"))));
-}
-
 static void profilegui_set_command_shading(ProfileGUI *pg)
 {
     gboolean use_custom = gtk_toggle_button_get_active(
@@ -267,17 +240,6 @@ void on_profile_notebook_switch_page(GtkNotebook * notebook, GtkWidget *page,
     profilegui_check_entries_for_changes(pg);
 }
 
-/* The deprectated background config signal handlers shouldn't be removed
- * altogether because they're still referenced in the .ui file and would
- * cause warnings.
- */
-void on_bgtype_toggled(GtkToggleButton *button, ProfileGUI *pg)
-{
-    if (gtk_toggle_button_get_active(button))
-        profilegui_set_background_shading(pg);
-    on_radio_toggled(button, &pg->capp);
-}
-
 void on_command_toggled(GtkToggleButton *button, ProfileGUI *pg)
 {
     (void) button;
@@ -296,122 +258,6 @@ void on_cell_size_toggled(GtkToggleButton *button, ProfileGUI *pg)
 
     gtk_widget_set_sensitive(profilegui_widget(pg, "width"), state);
     gtk_widget_set_sensitive(profilegui_widget(pg, "height"), state);
-}
-
-#define PREVIEW_SIZE 160
-
-#ifdef MANAGE_PREVIEW
-static void
-pg_load_preview(GtkFileChooser *chooser, GtkWidget *preview,
-        const char *filename, ProfileGUI *pg)
-{
-    int width, height;
-    GdkPixbuf *pixbuf = NULL;
-    GError *error = NULL;
-    (void) pg;
-
-    if (filename && gdk_pixbuf_get_file_info(filename, &width, &height))
-    {
-        if (width <= PREVIEW_SIZE && height <= PREVIEW_SIZE)
-        {
-            pixbuf = gdk_pixbuf_new_from_file(filename, &error);
-        }
-        else
-        {
-            pixbuf = gdk_pixbuf_new_from_file_at_scale(filename,
-                    PREVIEW_SIZE, PREVIEW_SIZE, TRUE, &error);
-        }
-    }
-    else if (filename)
-    {
-        /* Get an appropriate error */
-        pixbuf = gdk_pixbuf_new_from_file_at_scale(filename,
-                PREVIEW_SIZE, PREVIEW_SIZE, TRUE, &error);
-    }
-    gtk_image_set_from_pixbuf(GTK_IMAGE(preview), pixbuf);
-
-    if (error)
-        g_error_free(error);
-    gtk_file_chooser_set_preview_widget_active(chooser, pixbuf != NULL);
-}
-
-static void on_update_preview(GtkFileChooser *chooser, ProfileGUI *pg)
-{
-    GtkWidget *preview = gtk_file_chooser_get_preview_widget(chooser);
-    char *filename = gtk_file_chooser_get_preview_filename(chooser);
-    GdkPixbuf *old_pixbuf = NULL;
-
-    if (gtk_image_get_storage_type(GTK_IMAGE(preview)) == GTK_IMAGE_PIXBUF)
-        old_pixbuf = gtk_image_get_pixbuf(GTK_IMAGE(preview));
-    if (old_pixbuf)
-    {
-        UNREF_LOG(g_object_unref(old_pixbuf));
-    }
-    pg_load_preview(chooser, preview, filename, pg);
-    g_free(filename);
-}
-#endif
-
-static void profilegui_setup_file_chooser(ProfileGUI *pg)
-{
-    GtkFileChooser *chooser =
-            GTK_FILE_CHOOSER(gtk_builder_get_object(pg->capp.builder,
-                    "background_img"));
-
-    GtkFileFilter *img_filter = gtk_file_filter_new();
-    GtkFileFilter *all_filter = gtk_file_filter_new();
-#ifdef MANAGE_PREVIEW
-    GtkWidget *preview = gtk_image_new();
-#endif
-
-    gtk_file_filter_set_name(img_filter, _("Image files"));
-    gtk_file_filter_set_name(all_filter, "All filetypes");
-    gtk_file_filter_add_pixbuf_formats(img_filter);
-    gtk_file_filter_add_pattern (all_filter, "*");
-    gtk_file_chooser_add_filter(chooser, img_filter);
-    gtk_file_chooser_add_filter(chooser, all_filter);
-
-    gtk_file_chooser_set_use_preview_label(chooser, FALSE);
-#ifdef MANAGE_PREVIEW
-    gtk_file_chooser_set_preview_widget(chooser, preview);
-    g_signal_connect(chooser, "update-preview",
-            G_CALLBACK(on_update_preview), pg);
-#endif
-}
-
-static void profilegui_fill_in_file_chooser(ProfileGUI *pg,
-        const char *old_filename)
-{
-    GtkFileChooser *chooser =
-            GTK_FILE_CHOOSER(gtk_builder_get_object(pg->capp.builder,
-                    "background_img"));
-
-#ifdef MANAGE_PREVIEW
-    GtkWidget *preview = gtk_file_chooser_get_preview_widget(chooser);
-#endif
-
-    gtk_file_chooser_set_filename(chooser, old_filename);
-#ifdef MANAGE_PREVIEW
-    pg_load_preview(chooser, preview, old_filename, pg);
-#endif
-}
-
-static char *get_bgimg_filename(ProfileGUI *pg, GtkFileChooser *chooser)
-{
-    char *new_filename = gtk_file_chooser_get_filename(chooser);
-
-    if (!g_file_test(new_filename, G_FILE_TEST_IS_REGULAR))
-    {
-        g_free(new_filename);
-        return NULL;
-    }
-    capplet_set_string(pg->capp.options, "background_img", new_filename);
-    return new_filename;
-}
-
-void on_bgimg_chosen(GtkFileChooser *chooser, ProfileGUI *pg)
-{
-    g_free(get_bgimg_filename(pg, chooser));
 }
 
 #define DEFAULT_BACKSPACE_BINDING 0
@@ -437,42 +283,6 @@ void on_edit_colour_scheme_clicked(GtkButton *button, ProfileGUI *pg)
     char *name;
     name = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(combo));
     colourgui_open(name, gtk_widget_get_screen(combo));
-}
-
-static char *pg_get_dragged_in_filename(const char *text, gulong length)
-{
-    char *first_file = first_file = strstr(text, "\r\n");
-
-    if (first_file)
-    {
-        return g_strndup(text, first_file - text);
-    }
-    return g_strndup(text, length);
-}
-
-static gboolean bgimg_drag_data_received(GtkWidget *widget,
-        const char *text, gulong length, gpointer data)
-{
-    ProfileGUI *pg = data;
-    gboolean result = FALSE;
-    char *filename = pg_get_dragged_in_filename(text, length);
-    (void) widget;
-
-    if (gdk_pixbuf_get_file_info(filename, NULL, NULL))
-    {
-        GtkFileChooser *chooser =
-                GTK_FILE_CHOOSER(gtk_builder_get_object(pg->capp.builder,
-                        "background_img"));
-
-        gtk_file_chooser_set_filename(chooser, filename);
-        /* Don't need to call capplet_set_string because we'll get a signal */
-        gtk_toggle_button_set_active(
-                GTK_TOGGLE_BUTTON(profilegui_widget(pg, "background_type1")),
-                TRUE);
-        result = TRUE;
-    }
-    g_free(filename);
-    return result;
 }
 
 static void exit_action_changed(GtkComboBox *combo, ProfileGUI *pg)
@@ -599,7 +409,6 @@ static void profilegui_fill_in_dialog(ProfileGUI * pg)
             "hide_menubar", FALSE));
     capplet_set_boolean_toggle(&pg->capp, "allow_bold", TRUE);
     capplet_set_boolean_toggle(&pg->capp, "audible_bell", TRUE);
-    capplet_set_boolean_toggle(&pg->capp, "visible_bell", FALSE);
     capplet_set_boolean_toggle(&pg->capp, "bell_highlights_tab", TRUE);
     {
         /* Use legacy cursor_blinks if cursor_blink_mode has not been set */
@@ -613,6 +422,7 @@ static void profilegui_fill_in_dialog(ProfileGUI * pg)
     capplet_set_text_entry(&pg->capp, "sel_by_word", "-A-Za-z0-9,./?%&#_");
     capplet_set_text_entry(&pg->capp, "color_term", NULL);
     capplet_set_text_entry(&pg->capp, "term", NULL);
+    capplet_set_float_range(&pg->capp, "saturation", 1.0f);
     capplet_set_combo(&pg->capp, "tab_pos", 0);
     capplet_set_spin_button(&pg->capp, "init_tabs", 1);
     capplet_set_boolean_toggle(&pg->capp, "wrap_switch_tab", FALSE);
@@ -640,13 +450,6 @@ static void profilegui_fill_in_dialog(ProfileGUI * pg)
     capplet_set_spin_button(&pg->capp, "height", 24);
     on_cell_size_toggled(GTK_TOGGLE_BUTTON(profilegui_widget(pg, "cell_size")),
             pg);
-    capplet_set_radio(&pg->capp, "background_type", 0);
-    profilegui_set_background_shading(pg);
-    capplet_set_float_range(&pg->capp, "saturation", 1.0);
-    capplet_set_boolean_toggle(&pg->capp, "scroll_background", TRUE);
-    val = options_lookup_string_with_default(profile, "background_img", "");
-    profilegui_fill_in_file_chooser(pg, val);
-    g_free(val);
     capplet_set_radio(&pg->capp, "scrollbar_pos", 1);
     capplet_set_spin_button(&pg->capp, "scrollback_lines", 1000);
     capplet_set_boolean_toggle(&pg->capp, "scroll_on_output", FALSE);
@@ -705,7 +508,6 @@ static void profilegui_setup_list_store(ProfileGUI *pg)
     static char const *labels[] = {
             N_("Appearance"), N_("General"), N_("Command"),
             N_("Net URIs"), N_("File URIs"),
-            N_("Background"),
             N_("Scrolling"), N_("Keyboard"), N_("Tabs")
     };
     GtkTreeIter iter;
@@ -800,10 +602,6 @@ ProfileGUI *profilegui_open(const char *profile_name, GdkScreen *scrn)
 
     g_hash_table_insert(profilegui_being_edited, g_strdup(profile_name), pg);
 
-    profilegui_setup_file_chooser(pg);
-    pg->bgimg_drd = drag_receive_setup_dest_widget(
-            profilegui_widget(pg, "bgimg_drag_target_vbox"),
-            bgimg_drag_data_received, NULL, pg);
     profilegui_fill_in_dialog(pg);
     profilegui_connect_handlers(pg);
 

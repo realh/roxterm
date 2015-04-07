@@ -254,13 +254,6 @@ GdkRGBA *colour_scheme_get_bold_colour(Options * opts,
             offsetof(ColourScheme, bold), allow_null);
 }
 
-GdkRGBA *colour_scheme_get_dim_colour(Options * opts,
-        gboolean allow_null)
-{
-    return colour_scheme_get_named_colour(opts, "dim", "#888",
-            offsetof(ColourScheme, dim), allow_null);
-}
-
 void colour_scheme_set_palette_size(Options * opts, int size)
 {
     ColourScheme *scheme;
@@ -342,13 +335,6 @@ void colour_scheme_set_bold_colour(Options * opts,
 {
     colour_scheme_set_named_colour(opts, "bold", colour_name,
             offsetof(ColourScheme, bold));
-}
-
-void colour_scheme_set_dim_colour(Options * opts,
-        const char *colour_name)
-{
-    colour_scheme_set_named_colour(opts, "dim", colour_name,
-            offsetof(ColourScheme, dim));
 }
 
 /* vi:set sw=4 ts=4 noet cindent cino= */

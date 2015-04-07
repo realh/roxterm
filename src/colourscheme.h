@@ -41,9 +41,6 @@ GdkRGBA *colour_scheme_get_cursor_colour(Options * opts,
 GdkRGBA *colour_scheme_get_bold_colour(Options * opts,
         gboolean allow_null);
 
-GdkRGBA *colour_scheme_get_dim_colour(Options * opts,
-        gboolean allow_null);
-
 GdkRGBA *colour_scheme_get_foreground_colour(Options * opts,
         gboolean allow_null);
 
@@ -58,8 +55,6 @@ void colour_scheme_set_palette_entry(Options * opts, int index,
 void colour_scheme_set_cursor_colour(Options * opts, const char *colour_name);
 
 void colour_scheme_set_bold_colour(Options * opts, const char *colour_name);
-
-void colour_scheme_set_dim_colour(Options * opts, const char *colour_name);
 
 void colour_scheme_set_foreground_colour(Options * opts,
 		const char *colour_name);

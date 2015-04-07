@@ -81,13 +81,6 @@ static void colourgui_set_bold_colour_widget(GtkBuilder *builder,
             colour_scheme_get_bold_colour(colour_scheme, FALSE), ignore);
 }
 
-static void colourgui_set_dim_colour_widget(GtkBuilder *builder,
-        Options *colour_scheme, gboolean ignore)
-{
-    colourgui_set_colour_widget(builder, "dim_colour",
-            colour_scheme_get_dim_colour(colour_scheme, FALSE), ignore);
-}
-
 static void colourgui_set_all_palette_widgets(GtkBuilder *builder,
         Options *colour_scheme, gboolean ignore)
 {
@@ -181,14 +174,6 @@ static void colourgui_set_bold_shading(GtkBuilder *builder)
             GTK_WIDGET(gtk_builder_get_object(builder, "bold_colour")),
             gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(
                     gtk_builder_get_object(builder, "set_bold_colour"))));
-}
-
-static void colourgui_set_dim_shading(GtkBuilder *builder)
-{
-    gtk_widget_set_sensitive(
-            GTK_WIDGET(gtk_builder_get_object(builder, "dim_colour")),
-            gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(
-                    gtk_builder_get_object(builder, "set_dim_colour"))));
 }
 
 static void colourgui_set_fgbg_toggle(GtkBuilder *builder,
@@ -298,13 +283,6 @@ inline static void colourgui_set_bold_toggle(GtkBuilder *builder,
             "bold", "set_bold_colour");
 }
 
-inline static void colourgui_set_dim_toggle(GtkBuilder *builder,
-        Options *colour_scheme, gboolean ignore)
-{
-    colourgui_set_named_toggle(builder, colour_scheme, ignore,
-            "dim", "set_dim_colour");
-}
-
 static void colourgui_set_all_toggles(GtkBuilder *builder,
         Options *colour_scheme, gboolean ignore)
 {
@@ -313,7 +291,6 @@ static void colourgui_set_all_toggles(GtkBuilder *builder,
     colourgui_set_palette_toggles(builder, colour_scheme, ignore);
     colourgui_set_cursor_toggle(builder, colour_scheme, ignore);
     colourgui_set_bold_toggle(builder, colour_scheme, ignore);
-    colourgui_set_dim_toggle(builder, colour_scheme, ignore);
 }
 
 static void colourgui_set_all_shading(GtkBuilder *builder)
@@ -323,7 +300,6 @@ static void colourgui_set_all_shading(GtkBuilder *builder)
     colourgui_set_fgbg_track_shading(builder);
     colourgui_set_cursor_shading(builder);
     colourgui_set_bold_shading(builder);
-    colourgui_set_dim_shading(builder);
 }
 
 static void colourgui_fill_in_dialog(ColourGUI * cg, gboolean ignore)
@@ -337,7 +313,6 @@ static void colourgui_fill_in_dialog(ColourGUI * cg, gboolean ignore)
     colourgui_set_fgbg_colour_widgets(builder, colour_scheme, ignore);
     colourgui_set_cursor_colour_widget(builder, colour_scheme, ignore);
     colourgui_set_bold_colour_widget(builder, colour_scheme, ignore);
-    colourgui_set_dim_colour_widget(builder, colour_scheme, ignore);
 }
 
 static void colourgui_revert(ColourGUI *cg)
@@ -463,11 +438,6 @@ void on_color_set(GtkColorButton *button, ColourGUI * cg)
     {
         option_name = "bold";
         colour_scheme_set_bold_colour(opts, colour_name);
-    }
-    else if (!strcmp(widget_name, "dim_colour"))
-    {
-        option_name = "dim";
-        colour_scheme_set_dim_colour(opts, colour_name);
     }
     else if (!strncmp(widget_name, "palette", 7) && strlen(widget_name) == 10)
     {
@@ -656,21 +626,6 @@ void on_set_bold_colour_toggled(GtkToggleButton *button, ColourGUI *cg)
         COLOURGUI_SET_COLOUR_OPTION_FROM_WIDGET(cg, bold);
     else
         COLOURGUI_SET_COLOUR_OPTION(cg->capp.options, bold, NULL);
-}
-
-void on_set_dim_colour_toggled(GtkToggleButton *button, ColourGUI *cg)
-{
-    int state;
-
-    if (capplet_ignore_changes)
-        return;
-
-    colourgui_set_dim_shading(cg->capp.builder);
-    state = gtk_toggle_button_get_active(button);
-    if (state)
-        COLOURGUI_SET_COLOUR_OPTION_FROM_WIDGET(cg, dim);
-    else
-        COLOURGUI_SET_COLOUR_OPTION(cg->capp.options, dim, NULL);
 }
 
 void on_palette_size_toggled(GtkToggleButton *button, ColourGUI *cg)
