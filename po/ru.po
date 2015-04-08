@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: roxterm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-08 14:05+0100\n"
+"POT-Creation-Date: 2015-04-08 14:28+0100\n"
 "PO-Revision-Date: 2013-05-23 15:18+0000\n"
 "Last-Translator: Tony Houghton <h@realh.co.uk>\n"
 "Language-Team: Russian (http://www.transifex.com/projects/p/roxterm/language/"
@@ -845,49 +845,49 @@ msgstr ""
 msgid "(Don't set)"
 msgstr ""
 
-#: ../src/profilegui.c:509 ../src/roxterm-config.ui:2681
+#: ../src/profilegui.c:510 ../src/roxterm-config.ui:2681
 msgid "Appearance"
 msgstr "Вид"
 
-#: ../src/profilegui.c:509 ../src/roxterm-config.ui:3048
+#: ../src/profilegui.c:510 ../src/roxterm-config.ui:3068
 msgid "General"
 msgstr "Основные"
 
-#: ../src/profilegui.c:509 ../src/roxterm-config.ui:3338
+#: ../src/profilegui.c:510 ../src/roxterm-config.ui:3358
 msgid "Command"
 msgstr "Команда"
 
-#: ../src/profilegui.c:510 ../src/roxterm-config.ui:3709
+#: ../src/profilegui.c:511 ../src/roxterm-config.ui:3729
 msgid "Net URIs"
 msgstr ""
 
-#: ../src/profilegui.c:510 ../src/roxterm-config.ui:4007
+#: ../src/profilegui.c:511 ../src/roxterm-config.ui:4027
 msgid "File URIs"
 msgstr ""
 
-#: ../src/profilegui.c:511 ../src/roxterm-config.ui:4435
+#: ../src/profilegui.c:512 ../src/roxterm-config.ui:4455
 msgid "Scrolling"
 msgstr "Скроллинг"
 
-#: ../src/profilegui.c:511 ../src/roxterm-config.ui:4830
+#: ../src/profilegui.c:512 ../src/roxterm-config.ui:4850
 msgid "Keyboard"
 msgstr "Клавиатура"
 
-#: ../src/profilegui.c:511 ../src/roxterm-config.ui:4845
+#: ../src/profilegui.c:512 ../src/roxterm-config.ui:4865
 msgid "Tabs"
 msgstr "Вкладки"
 
-#: ../src/profilegui.c:587
+#: ../src/profilegui.c:588
 #, c-format
 msgid "Unable to load GTK UI definitions: %s"
 msgstr ""
 
-#: ../src/profilegui.c:595
+#: ../src/profilegui.c:596
 #, c-format
 msgid "ROXTerm Profile \"%s\""
 msgstr ""
 
-#: ../src/profilegui.c:627
+#: ../src/profilegui.c:628
 msgid "Deleting edited profile that wasn't in list of profiles being edited"
 msgstr ""
 
@@ -935,7 +935,7 @@ msgstr ""
 msgid "Unable to convert dragged URI to UTF-8: %s"
 msgstr ""
 
-#: ../src/roxterm.c:1711 ../src/roxterm.c:3269
+#: ../src/roxterm.c:1711 ../src/roxterm.c:3277
 msgid "ROXTerm"
 msgstr ""
 
@@ -1001,194 +1001,194 @@ msgstr ""
 msgid "Colour scheme '%s' not found"
 msgstr ""
 
-#: ../src/roxterm.c:3324
+#: ../src/roxterm.c:3332
 #, c-format
 msgid "Unknown option type (%d)"
 msgstr ""
 
-#: ../src/roxterm.c:3647
+#: ../src/roxterm.c:3659
 #, c-format
 msgid "Profile/key '%s/%s' not understood"
 msgstr ""
 
-#: ../src/roxterm.c:3729
+#: ../src/roxterm.c:3741
 #, c-format
 msgid "Changed options family '%s' not known"
 msgstr ""
 
-#: ../src/roxterm.c:3744
+#: ../src/roxterm.c:3756
 msgid "[Deleted]"
 msgstr ""
 
-#: ../src/roxterm.c:3767
+#: ../src/roxterm.c:3779
 #, c-format
 msgid "Options family change action '%s' not known"
 msgstr ""
 
-#: ../src/roxterm.c:3872
+#: ../src/roxterm.c:3884
 #, c-format
 msgid ""
 "Invalid ROXTERM_ID %p in D-Bus message (this is expected if you used "
 "roxterm's --separate option)"
 msgstr ""
 
-#: ../src/roxterm.c:3896
+#: ../src/roxterm.c:3908
 #, c-format
 msgid "Unknown profile '%s' in D-Bus signal"
 msgstr ""
 
-#: ../src/roxterm.c:4071
+#: ../src/roxterm.c:4083
 msgid "Invalid geometry specification"
 msgstr ""
 
-#: ../src/roxterm.c:4401
+#: ../src/roxterm.c:4413
 msgid ""
 "Closing this ROXTerm tab may cause loss of data. Are you sure you want to "
 "continue?"
 msgstr ""
 
-#: ../src/roxterm.c:4405
+#: ../src/roxterm.c:4417
 msgid ""
 "You are about to close a ROXTerm window; this may cause loss of data. Are "
 "you sure you want to continue?"
 msgstr ""
 
-#: ../src/roxterm.c:4409
+#: ../src/roxterm.c:4421
 msgid ""
 "You are about to close a window containing multiple ROXTerm tabs; this may "
 "cause loss of data. Are you sure you want to continue?"
 msgstr ""
 
-#: ../src/roxterm.c:4418
+#: ../src/roxterm.c:4430
 msgid "ROXTerm: Confirm close"
 msgstr ""
 
-#: ../src/roxterm.c:4422
+#: ../src/roxterm.c:4434
 msgid "_Don't show this again"
 msgstr ""
 
-#: ../src/roxterm.c:4430
+#: ../src/roxterm.c:4442
 msgid "Only warn if tasks are still _running"
 msgstr ""
 
-#: ../src/roxterm.c:4542
+#: ../src/roxterm.c:4554
 #, c-format
 msgid "Unable to spawn command %s: %s"
 msgstr ""
 
-#: ../src/roxterm.c:4710
+#: ../src/roxterm.c:4722
 #, c-format
 msgid "Unknown <window> attribute '%s'"
 msgstr ""
 
-#: ../src/roxterm.c:4761
+#: ../src/roxterm.c:4773
 msgid "Session contains window with no valid tabs"
 msgstr ""
 
-#: ../src/roxterm.c:4865
+#: ../src/roxterm.c:4877
 #, c-format
 msgid "Unknown <tab> attribute '%s'"
 msgstr ""
 
-#: ../src/roxterm.c:4898
+#: ../src/roxterm.c:4910
 msgid "<command> with no arguments"
 msgstr ""
 
-#: ../src/roxterm.c:4948
+#: ../src/roxterm.c:4960
 #, c-format
 msgid "Unknown <command> attribute '%s'"
 msgstr ""
 
-#: ../src/roxterm.c:4960
+#: ../src/roxterm.c:4972
 msgid "<command> missing argc attribute"
 msgstr ""
 
-#: ../src/roxterm.c:4974
+#: ../src/roxterm.c:4986
 #, c-format
 msgid "Too many <arg> elements for <command argc='%d>"
 msgstr ""
 
-#: ../src/roxterm.c:4991
+#: ../src/roxterm.c:5003
 #, c-format
 msgid "Unknown <arg> attribute '%s'"
 msgstr ""
 
-#: ../src/roxterm.c:5003
+#: ../src/roxterm.c:5015
 msgid "<arg> missing s attribute"
 msgstr ""
 
-#: ../src/roxterm.c:5023
+#: ../src/roxterm.c:5035
 #, c-format
 msgid "Unknown <roxterm_session> attribute '%s'"
 msgstr ""
 
-#: ../src/roxterm.c:5042
+#: ../src/roxterm.c:5054
 msgid "<roxterm_session> tag nested within <window>"
 msgstr ""
 
-#: ../src/roxterm.c:5056
+#: ../src/roxterm.c:5068
 msgid "<window> tag not within <roxterm_session>"
 msgstr ""
 
-#: ../src/roxterm.c:5061
+#: ../src/roxterm.c:5073
 msgid "<window> tag nested within another <window>"
 msgstr ""
 
-#: ../src/roxterm.c:5073
+#: ../src/roxterm.c:5085
 msgid "<tab> tag not within <window>"
 msgstr ""
 
-#: ../src/roxterm.c:5078
+#: ../src/roxterm.c:5090
 msgid "<tab> tag nested within another <tab>"
 msgstr ""
 
-#: ../src/roxterm.c:5090
+#: ../src/roxterm.c:5102
 msgid "<command> tag not within <tab>"
 msgstr ""
 
-#: ../src/roxterm.c:5095
+#: ../src/roxterm.c:5107
 msgid "<command> tag nested within another <command>"
 msgstr ""
 
-#: ../src/roxterm.c:5107
+#: ../src/roxterm.c:5119
 msgid "<arg> tag not within <command>"
 msgstr ""
 
-#: ../src/roxterm.c:5117
+#: ../src/roxterm.c:5129
 #, c-format
 msgid "Unknown element <%s>"
 msgstr ""
 
-#: ../src/roxterm.c:5133
+#: ../src/roxterm.c:5145
 msgid "Unmatched </roxterm_session>"
 msgstr ""
 
-#: ../src/roxterm.c:5138
+#: ../src/roxterm.c:5150
 msgid "Attempt to close <roxterm_session> without closing <window>"
 msgstr ""
 
-#: ../src/roxterm.c:5151
+#: ../src/roxterm.c:5163
 msgid "Unmatched </window>"
 msgstr ""
 
-#: ../src/roxterm.c:5156
+#: ../src/roxterm.c:5168
 msgid "Attempt to close <window> without closing <tab>"
 msgstr ""
 
-#: ../src/roxterm.c:5168
+#: ../src/roxterm.c:5180
 msgid "Unmatched </tab>"
 msgstr ""
 
-#: ../src/roxterm.c:5182
+#: ../src/roxterm.c:5194
 msgid "Unmatched </command>"
 msgstr ""
 
-#: ../src/roxterm.c:5188
+#: ../src/roxterm.c:5200
 #, c-format
 msgid "Unknown closing element </%s>"
 msgstr ""
 
-#: ../src/roxterm.c:5198
+#: ../src/roxterm.c:5210
 #, c-format
 msgid "Unable to parse data for session '%s': %s"
 msgstr ""
@@ -1910,278 +1910,288 @@ msgid ""
 "its tab label will flash and/or its window will be marked \"urgent\"."
 msgstr ""
 
-#: ../src/roxterm-config.ui:3035
+#: ../src/roxterm-config.ui:3029
+msgid "Re_wrap text when terminal width changes"
+msgstr ""
+
+#: ../src/roxterm-config.ui:3034
+msgid ""
+"Enabling this option causes existing text to be rerwapped when the "
+"terminal's width (number of columns) changes."
+msgstr ""
+
+#: ../src/roxterm-config.ui:3055
 msgid "<b>General</b>"
 msgstr "<b>Общие</b>"
 
-#: ../src/roxterm-config.ui:3076
+#: ../src/roxterm-config.ui:3096
 msgid "_Default shell"
 msgstr ""
 
-#: ../src/roxterm-config.ui:3094
+#: ../src/roxterm-config.ui:3114
 msgid "_Login shell"
 msgstr ""
 
-#: ../src/roxterm-config.ui:3100
+#: ../src/roxterm-config.ui:3120
 msgid "Whether shells running in the terminal are login shells"
 msgstr ""
 
-#: ../src/roxterm-config.ui:3113
+#: ../src/roxterm-config.ui:3133
 msgid "_Update login records"
 msgstr ""
 
-#: ../src/roxterm-config.ui:3119
+#: ../src/roxterm-config.ui:3139
 msgid "Whether to log sessions to login records (utmp/wtmp/utmpx/wtmpx)"
 msgstr ""
 
-#: ../src/roxterm-config.ui:3133
+#: ../src/roxterm-config.ui:3153
 msgid "_Custom command"
 msgstr ""
 
-#: ../src/roxterm-config.ui:3139
+#: ../src/roxterm-config.ui:3159
 msgid "Enable the adjacent custom command for this profile."
 msgstr ""
 
-#: ../src/roxterm-config.ui:3157
+#: ../src/roxterm-config.ui:3177
 msgid "Command to run in place of a shell"
 msgstr ""
 
-#: ../src/roxterm-config.ui:3174
+#: ../src/roxterm-config.ui:3194
 msgid "_Ssh"
 msgstr ""
 
-#: ../src/roxterm-config.ui:3180
+#: ../src/roxterm-config.ui:3200
 msgid "Connect to a ssh (secure shell) with this profile."
 msgstr ""
 
-#: ../src/roxterm-config.ui:3198
+#: ../src/roxterm-config.ui:3218
 msgid "Ssh server address. Use the Edit... button to change it."
 msgstr ""
 
-#: ../src/roxterm-config.ui:3217
+#: ../src/roxterm-config.ui:3237
 msgid "When command e_xits:"
 msgstr ""
 
-#: ../src/roxterm-config.ui:3233
+#: ../src/roxterm-config.ui:3253
 msgid "Exit terminal"
 msgstr ""
 
-#: ../src/roxterm-config.ui:3234
+#: ../src/roxterm-config.ui:3254
 msgid "Hold terminal open"
 msgstr ""
 
-#: ../src/roxterm-config.ui:3235
+#: ../src/roxterm-config.ui:3255
 msgid "Restart command"
 msgstr ""
 
-#: ../src/roxterm-config.ui:3236
+#: ../src/roxterm-config.ui:3256
 msgid "Ask user"
 msgstr ""
 
-#: ../src/roxterm-config.ui:3252
+#: ../src/roxterm-config.ui:3272
 msgid "_Pause:"
 msgstr ""
 
-#: ../src/roxterm-config.ui:3266
+#: ../src/roxterm-config.ui:3286
 msgid ""
 "Pause for this number of seconds after the command exits before performing "
 "the action above."
 msgstr ""
 
-#: ../src/roxterm-config.ui:3270
+#: ../src/roxterm-config.ui:3290
 msgid "0.0"
 msgstr ""
 
-#: ../src/roxterm-config.ui:3284
+#: ../src/roxterm-config.ui:3304
 msgid "_Edit..."
 msgstr ""
 
-#: ../src/roxterm-config.ui:3290
+#: ../src/roxterm-config.ui:3310
 msgid "Click here to edit the ssh details."
 msgstr ""
 
-#: ../src/roxterm-config.ui:3307
+#: ../src/roxterm-config.ui:3327
 msgid "secs"
 msgstr ""
 
-#: ../src/roxterm-config.ui:3323
+#: ../src/roxterm-config.ui:3343
 msgid "<b>Command</b>"
 msgstr ""
 
-#: ../src/roxterm-config.ui:3337
+#: ../src/roxterm-config.ui:3357
 msgid "Use the default shell in this profile."
 msgstr ""
 
-#: ../src/roxterm-config.ui:3360
+#: ../src/roxterm-config.ui:3380
 #, fuzzy
 msgid "<b>Web browser</b>"
 msgstr "<b>_Web-браузер</b>"
 
-#: ../src/roxterm-config.ui:3376
+#: ../src/roxterm-config.ui:3396
 #, fuzzy
 msgid "Bro_wser"
 msgstr "Браузер"
 
-#: ../src/roxterm-config.ui:3390
+#: ../src/roxterm-config.ui:3410
 msgid "Web browser to use when a link is opened"
 msgstr "Веб-браузер используемый для открытия ссылок"
 
-#: ../src/roxterm-config.ui:3405 ../src/roxterm-config.ui:3518
-#: ../src/roxterm-config.ui:3636 ../src/roxterm-config.ui:3777
-#: ../src/roxterm-config.ui:3894
+#: ../src/roxterm-config.ui:3425 ../src/roxterm-config.ui:3538
+#: ../src/roxterm-config.ui:3656 ../src/roxterm-config.ui:3797
+#: ../src/roxterm-config.ui:3914
 msgid "Independent"
 msgstr ""
 
-#: ../src/roxterm-config.ui:3412
+#: ../src/roxterm-config.ui:3432
 msgid "Run the browser without a terminal."
 msgstr ""
 
-#: ../src/roxterm-config.ui:3428 ../src/roxterm-config.ui:3540
-#: ../src/roxterm-config.ui:3658 ../src/roxterm-config.ui:3799
-#: ../src/roxterm-config.ui:3916
+#: ../src/roxterm-config.ui:3448 ../src/roxterm-config.ui:3560
+#: ../src/roxterm-config.ui:3678 ../src/roxterm-config.ui:3819
+#: ../src/roxterm-config.ui:3936
 msgid "New terminal window"
 msgstr ""
 
-#: ../src/roxterm-config.ui:3434
+#: ../src/roxterm-config.ui:3454
 msgid "Run the browser in a new ROXTerm window."
 msgstr ""
 
-#: ../src/roxterm-config.ui:3449 ../src/roxterm-config.ui:3562
-#: ../src/roxterm-config.ui:3680 ../src/roxterm-config.ui:3821
-#: ../src/roxterm-config.ui:3937
+#: ../src/roxterm-config.ui:3469 ../src/roxterm-config.ui:3582
+#: ../src/roxterm-config.ui:3700 ../src/roxterm-config.ui:3841
+#: ../src/roxterm-config.ui:3957
 msgid "New terminal tab"
 msgstr ""
 
-#: ../src/roxterm-config.ui:3455
+#: ../src/roxterm-config.ui:3475
 msgid "Run the browser in a new ROXTerm tab."
 msgstr ""
 
-#: ../src/roxterm-config.ui:3474
+#: ../src/roxterm-config.ui:3494
 #, fuzzy
 msgid "<b>Email</b>"
 msgstr "<b>E_mail</b>"
 
-#: ../src/roxterm-config.ui:3490
+#: ../src/roxterm-config.ui:3510
 #, fuzzy
 msgid "_Mailer"
 msgstr "Клиент"
 
-#: ../src/roxterm-config.ui:3503
+#: ../src/roxterm-config.ui:3523
 msgid "EMail program to use when an email address is opened"
 msgstr "Клиент электронной почты используемый при нажатии на e-mail адрес"
 
-#: ../src/roxterm-config.ui:3525
+#: ../src/roxterm-config.ui:3545
 msgid "Run the mailer without a terminal."
 msgstr ""
 
-#: ../src/roxterm-config.ui:3547
+#: ../src/roxterm-config.ui:3567
 msgid "Run the mailer in a new ROXTerm window."
 msgstr ""
 
-#: ../src/roxterm-config.ui:3569
+#: ../src/roxterm-config.ui:3589
 msgid "Run the mailer in a new ROXTerm tab."
 msgstr ""
 
-#: ../src/roxterm-config.ui:3588
+#: ../src/roxterm-config.ui:3608
 #, fuzzy
 msgid "<b>Ssh</b>"
 msgstr "<b>Файлы</b>"
 
-#: ../src/roxterm-config.ui:3605
+#: ../src/roxterm-config.ui:3625
 #, fuzzy
 msgid "_SSH Command"
 msgstr "Команда"
 
-#: ../src/roxterm-config.ui:3619 ../src/roxterm-config.ui:3620
+#: ../src/roxterm-config.ui:3639 ../src/roxterm-config.ui:3640
 #, fuzzy
 msgid "SSH program to use when a host name is opened"
 msgstr "Клиент электронной почты используемый при нажатии на e-mail адрес"
 
-#: ../src/roxterm-config.ui:3643
+#: ../src/roxterm-config.ui:3663
 msgid "Run the SSH command without a terminal."
 msgstr ""
 
-#: ../src/roxterm-config.ui:3665
+#: ../src/roxterm-config.ui:3685
 msgid "Run the SSH command in a new ROXTerm window."
 msgstr ""
 
-#: ../src/roxterm-config.ui:3687
+#: ../src/roxterm-config.ui:3707
 msgid "Run the SSH command in a new ROXTerm tab."
 msgstr ""
 
-#: ../src/roxterm-config.ui:3731
+#: ../src/roxterm-config.ui:3751
 msgid "<b>_Directories</b>"
 msgstr "<b>Директории</b>"
 
-#: ../src/roxterm-config.ui:3748
+#: ../src/roxterm-config.ui:3768
 msgid "Filer"
 msgstr ""
 
-#: ../src/roxterm-config.ui:3762
+#: ../src/roxterm-config.ui:3782
 msgid "File manager to use when a directory URI is opened."
 msgstr ""
 
-#: ../src/roxterm-config.ui:3784 ../src/roxterm-config.ui:3901
+#: ../src/roxterm-config.ui:3804 ../src/roxterm-config.ui:3921
 msgid "Run the filer without a terminal."
 msgstr ""
 
-#: ../src/roxterm-config.ui:3806 ../src/roxterm-config.ui:3923
+#: ../src/roxterm-config.ui:3826 ../src/roxterm-config.ui:3943
 msgid "Run the filer in a new ROXTerm window."
 msgstr ""
 
-#: ../src/roxterm-config.ui:3828 ../src/roxterm-config.ui:3944
+#: ../src/roxterm-config.ui:3848 ../src/roxterm-config.ui:3964
 msgid "Run the filer in a new ROXTerm tab."
 msgstr ""
 
-#: ../src/roxterm-config.ui:3846
+#: ../src/roxterm-config.ui:3866
 #, fuzzy
 msgid "<b>Files</b>"
 msgstr "<b>Файлы</b>"
 
-#: ../src/roxterm-config.ui:3863
+#: ../src/roxterm-config.ui:3883
 #, fuzzy
 msgid "_Filer"
 msgstr "Клиент"
 
-#: ../src/roxterm-config.ui:3879
+#: ../src/roxterm-config.ui:3899
 msgid "File manager to use when a file URI is opened."
 msgstr ""
 
-#: ../src/roxterm-config.ui:3959
+#: ../src/roxterm-config.ui:3979
 msgid "O_pen parent directory instead"
 msgstr ""
 
-#: ../src/roxterm-config.ui:3965
+#: ../src/roxterm-config.ui:3985
 msgid "If set open the file's parent directory instead of the file."
 msgstr ""
 
-#: ../src/roxterm-config.ui:3980
+#: ../src/roxterm-config.ui:4000
 msgid "_Match filenames without file:// prefix"
 msgstr ""
 
-#: ../src/roxterm-config.ui:3985
+#: ../src/roxterm-config.ui:4005
 msgid ""
 "If enabled, patterns which look like filenames will be highlighted even if "
 "they lack a file:// URI prefix."
 msgstr ""
 
-#: ../src/roxterm-config.ui:4035
+#: ../src/roxterm-config.ui:4055
 msgid "_No scrollbar"
 msgstr "Без полосы прокрутки"
 
-#: ../src/roxterm-config.ui:4053
+#: ../src/roxterm-config.ui:4073
 msgid "Scrollbar on _right"
 msgstr "Полоса прокрутки справа"
 
-#: ../src/roxterm-config.ui:4071
+#: ../src/roxterm-config.ui:4091
 msgid "Scrollbar on _left"
 msgstr "Полоса прокрутки слева"
 
-#: ../src/roxterm-config.ui:4089
+#: ../src/roxterm-config.ui:4109
 msgid "Scroll on _output"
 msgstr "Следовать за выводом"
 
-#: ../src/roxterm-config.ui:4095
+#: ../src/roxterm-config.ui:4115
 msgid ""
 "Whether to make the scrollbar jump to the bottom when new text is printed in "
 "the terminal"
@@ -2189,11 +2199,11 @@ msgstr ""
 "Независимо от положения полосы прокрутки она будет всё время стремиться вниз "
 "пока новые сообщения выводятся в терминале"
 
-#: ../src/roxterm-config.ui:4108
+#: ../src/roxterm-config.ui:4128
 msgid "Scroll on _keystroke"
 msgstr "Следовать за вводом"
 
-#: ../src/roxterm-config.ui:4114
+#: ../src/roxterm-config.ui:4134
 msgid ""
 "Whether to make the scrollbar jump to the bottom when text is typed into a "
 "terminal"
@@ -2201,17 +2211,17 @@ msgstr ""
 "Независимо от положения полосы прокрутки она будет стремиться вниз когда в "
 "терминале вводится текст"
 
-#: ../src/roxterm-config.ui:4149
+#: ../src/roxterm-config.ui:4169
 msgid "Changes to the scrollbar position only take effect in new windows."
 msgstr ""
 "Изменения позиции полосы прокрутки вступят в силу только во вновь открытых "
 "окнах."
 
-#: ../src/roxterm-config.ui:4174
+#: ../src/roxterm-config.ui:4194
 msgid "Scroll_back:"
 msgstr ""
 
-#: ../src/roxterm-config.ui:4187
+#: ../src/roxterm-config.ui:4207
 msgid ""
 "Number of lines of output text to retain in the buffer so that they can "
 "still be viewed by scrolling up"
@@ -2219,93 +2229,93 @@ msgstr ""
 "Количество строк вывода текста сохраняемых в буфере, которые могут быть "
 "просмотрены с помощью прокрутки вверх"
 
-#: ../src/roxterm-config.ui:4190
+#: ../src/roxterm-config.ui:4210
 msgid "1000"
 msgstr ""
 
-#: ../src/roxterm-config.ui:4209
+#: ../src/roxterm-config.ui:4229
 msgid "lines"
 msgstr "линий"
 
-#: ../src/roxterm-config.ui:4230
+#: ../src/roxterm-config.ui:4250
 msgid "<b>Scrolling</b>"
 msgstr "<b>Прокрутка</b>"
 
-#: ../src/roxterm-config.ui:4243
+#: ../src/roxterm-config.ui:4263
 msgid "Background"
 msgstr "Фон"
 
-#: ../src/roxterm-config.ui:4274
+#: ../src/roxterm-config.ui:4294
 msgid "_Backspace key generates:"
 msgstr ""
 
-#: ../src/roxterm-config.ui:4288 ../src/roxterm-config.ui:4319
+#: ../src/roxterm-config.ui:4308 ../src/roxterm-config.ui:4339
 msgid "Automatic choice"
 msgstr ""
 
-#: ../src/roxterm-config.ui:4289 ../src/roxterm-config.ui:4320
+#: ../src/roxterm-config.ui:4309 ../src/roxterm-config.ui:4340
 msgid "Ctrl-H"
 msgstr ""
 
-#: ../src/roxterm-config.ui:4290 ../src/roxterm-config.ui:4321
+#: ../src/roxterm-config.ui:4310 ../src/roxterm-config.ui:4341
 msgid "ASCII DEL"
 msgstr ""
 
-#: ../src/roxterm-config.ui:4291 ../src/roxterm-config.ui:4322
+#: ../src/roxterm-config.ui:4311 ../src/roxterm-config.ui:4342
 msgid "Escape sequence"
 msgstr ""
 
-#: ../src/roxterm-config.ui:4305
+#: ../src/roxterm-config.ui:4325
 msgid "_Delete key generates:"
 msgstr ""
 
-#: ../src/roxterm-config.ui:4333
+#: ../src/roxterm-config.ui:4353
 msgid "_Reset to defaults"
 msgstr ""
 
-#: ../src/roxterm-config.ui:4339
+#: ../src/roxterm-config.ui:4359
 msgid "Reset the backspace and delete keys to their defaults"
 msgstr ""
 
-#: ../src/roxterm-config.ui:4352
+#: ../src/roxterm-config.ui:4372
 msgid "Disable menu _access key (F10 by default)"
 msgstr ""
 
-#: ../src/roxterm-config.ui:4359
+#: ../src/roxterm-config.ui:4379
 msgid ""
 "This option disables the keyboard shortcut for opening the first menu. The "
 "default shortcut is F10."
 msgstr ""
 
-#: ../src/roxterm-config.ui:4373
+#: ../src/roxterm-config.ui:4393
 msgid "Disable other menu _shortcut keys (Alt+...)"
 msgstr ""
 
-#: ../src/roxterm-config.ui:4380
+#: ../src/roxterm-config.ui:4400
 msgid ""
 "This option disables the underlined shortcut keys in the menus (eg Alt+F for "
 "the File menu)."
 msgstr ""
 
-#: ../src/roxterm-config.ui:4394
+#: ../src/roxterm-config.ui:4414
 msgid "Disable _tab switching shortcut keys (Alt+number)"
 msgstr ""
 
-#: ../src/roxterm-config.ui:4401
+#: ../src/roxterm-config.ui:4421
 msgid ""
 "This option disables the shortcut keys for switching tabs (Alt+1-9 and Alt+0 "
 "by default)"
 msgstr ""
 
-#: ../src/roxterm-config.ui:4422
+#: ../src/roxterm-config.ui:4442
 msgid "<b>Keyboard</b>"
 msgstr "<b>Клавиатура</b>"
 
-#: ../src/roxterm-config.ui:4469
+#: ../src/roxterm-config.ui:4489
 msgid "_Tab title:"
 msgstr ""
 
-#: ../src/roxterm-config.ui:4482
+#: ../src/roxterm-config.ui:4502
 msgid ""
 "The title string may include '%s' which is substituted with the title set by "
 "the child command (usually the current directory for shells). No other % "
@@ -2313,141 +2323,141 @@ msgid ""
 "single %."
 msgstr ""
 
-#: ../src/roxterm-config.ui:4497
+#: ../src/roxterm-config.ui:4517
 msgid "S_how number"
 msgstr "Показывать номер"
 
-#: ../src/roxterm-config.ui:4502
+#: ../src/roxterm-config.ui:4522
 msgid ""
 "This option causes the tab number to be shown at the start of the title."
 msgstr ""
 
-#: ../src/roxterm-config.ui:4529
+#: ../src/roxterm-config.ui:4549
 msgid "<b>Middle click on label action</b>"
 msgstr "<b>Действие средней кнопки мыши</b>"
 
-#: ../src/roxterm-config.ui:4539
+#: ../src/roxterm-config.ui:4559
 msgid "Do n_othing"
 msgstr "Ничего не делать"
 
-#: ../src/roxterm-config.ui:4558
+#: ../src/roxterm-config.ui:4578
 msgid "C_lose tab"
 msgstr "Закрыть вкладку"
 
-#: ../src/roxterm-config.ui:4577
+#: ../src/roxterm-config.ui:4597
 msgid "_Paste tab name"
 msgstr ""
 
-#: ../src/roxterm-config.ui:4596
+#: ../src/roxterm-config.ui:4616
 msgid "_Wrap when switching tabs"
 msgstr ""
 
-#: ../src/roxterm-config.ui:4604
+#: ../src/roxterm-config.ui:4624
 msgid ""
 "This option makes the Next and Previous Tab operations respectively wrap "
 "around from the first and last tab to the opposite end of the row; the move "
 "tab left/right/up/down menu items are affected similarly."
 msgstr ""
 
-#: ../src/roxterm-config.ui:4617
+#: ../src/roxterm-config.ui:4637
 msgid "Show Close _buttons on tabs"
 msgstr ""
 
-#: ../src/roxterm-config.ui:4625
+#: ../src/roxterm-config.ui:4645
 msgid "If this option is enabled close buttons are shown at the top of tabs."
 msgstr ""
 
-#: ../src/roxterm-config.ui:4639
+#: ../src/roxterm-config.ui:4659
 msgid "Show terminal _status in close buttons"
 msgstr ""
 
-#: ../src/roxterm-config.ui:4647
+#: ../src/roxterm-config.ui:4667
 msgid ""
 "If this option is enabled the icons in close buttons may be changed in "
 "inactive tabs to reflect the status of their terminals."
 msgstr ""
 
-#: ../src/roxterm-config.ui:4660
+#: ../src/roxterm-config.ui:4680
 msgid "Open new tabs _adjacent to current tab"
 msgstr ""
 
-#: ../src/roxterm-config.ui:4667
+#: ../src/roxterm-config.ui:4687
 msgid ""
 "Whether to open new tabs adjacent to the current tab in a window, otherwise "
 "append them."
 msgstr ""
 
-#: ../src/roxterm-config.ui:4710
+#: ../src/roxterm-config.ui:4730
 msgid ""
 "The following tab options do not apply to windows that are already open; "
 "they only apply to windows opened subsequently."
 msgstr ""
 
-#: ../src/roxterm-config.ui:4737
+#: ../src/roxterm-config.ui:4757
 msgid "Initial _number of tabs:"
 msgstr ""
 
-#: ../src/roxterm-config.ui:4754
+#: ../src/roxterm-config.ui:4774
 msgid "1"
 msgstr ""
 
-#: ../src/roxterm-config.ui:4775
+#: ../src/roxterm-config.ui:4795
 msgid "Tab pos_ition:"
 msgstr ""
 
-#: ../src/roxterm-config.ui:4790
+#: ../src/roxterm-config.ui:4810
 msgid "Top"
 msgstr ""
 
-#: ../src/roxterm-config.ui:4791
+#: ../src/roxterm-config.ui:4811
 msgid "Bottom"
 msgstr ""
 
-#: ../src/roxterm-config.ui:4792
+#: ../src/roxterm-config.ui:4812
 msgid "Left"
 msgstr ""
 
-#: ../src/roxterm-config.ui:4793
+#: ../src/roxterm-config.ui:4813
 msgid "Right"
 msgstr ""
 
-#: ../src/roxterm-config.ui:4794
+#: ../src/roxterm-config.ui:4814
 msgid "Hidden"
 msgstr ""
 
-#: ../src/roxterm-config.ui:4817
+#: ../src/roxterm-config.ui:4837
 msgid "<b>Tabs</b>"
 msgstr "<b>Вкладки</b>"
 
-#: ../src/roxterm-config.ui:4927
+#: ../src/roxterm-config.ui:4947
 msgid "_Address"
 msgstr ""
 
-#: ../src/roxterm-config.ui:4940
+#: ../src/roxterm-config.ui:4960
 msgid "Ssh server address."
 msgstr ""
 
-#: ../src/roxterm-config.ui:4959
+#: ../src/roxterm-config.ui:4979
 msgid "_User"
 msgstr ""
 
-#: ../src/roxterm-config.ui:4972
+#: ../src/roxterm-config.ui:4992
 msgid "Remote username."
 msgstr ""
 
-#: ../src/roxterm-config.ui:4990
+#: ../src/roxterm-config.ui:5010
 msgid "_Port"
 msgstr ""
 
-#: ../src/roxterm-config.ui:5003
+#: ../src/roxterm-config.ui:5023
 msgid "Ssh server port."
 msgstr ""
 
-#: ../src/roxterm-config.ui:5023
+#: ../src/roxterm-config.ui:5043
 msgid "_Other options"
 msgstr ""
 
-#: ../src/roxterm-config.ui:5036
+#: ../src/roxterm-config.ui:5056
 msgid "Miscellaneous options to add to the ssh command line."
 msgstr "Без полосы прокрутки"
 

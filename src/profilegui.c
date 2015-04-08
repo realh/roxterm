@@ -419,6 +419,7 @@ static void profilegui_fill_in_dialog(ProfileGUI * pg)
     }
     capplet_set_radio(&pg->capp, "cursor_shape", 0);
     capplet_set_boolean_toggle(&pg->capp, "hide_mouse", TRUE);
+    capplet_set_boolean_toggle(&pg->capp, "autowrap", TRUE);
     capplet_set_text_entry(&pg->capp, "sel_by_word", "-A-Za-z0-9,./?%&#_");
     capplet_set_text_entry(&pg->capp, "color_term", NULL);
     capplet_set_text_entry(&pg->capp, "term", NULL);
