@@ -26,6 +26,7 @@ DEBUGGER=""
 case $1 in
     --debug) shift
         DEBUGGER="gdb --args"
+        DBGENV='G_MESSAGES_DEBUG=all'
         ;;
     --config)
         shift
@@ -34,12 +35,12 @@ case $1 in
     --valgrind) shift ;
         ulimit -c unlimited
         DEBUGGER="valgrind --freelist-vol=50000000"
-        DBGENV='G_SLICE=always-malloc'
+        DBGENV='G_SLICE=always-malloc G_MESSAGES_DEBUG=all'
         ;;
     --leaks) shift ;
         DEBUGGER="valgrind --freelist-vol=50000000 "
         DEBUGGER="$DEBUGGER --leak-check=full --num-callers=80"
-        DBGENV='G_SLICE=always-malloc'
+        DBGENV='G_SLICE=always-malloc G_MESSAGES_DEBUG=all'
         ;;
     --compile)
         shift

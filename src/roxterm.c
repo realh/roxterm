@@ -1078,8 +1078,8 @@ static void roxterm_data_delete(ROXTermData *roxterm)
         pango_font_description_free(roxterm->pango_desc);
     if (roxterm->replace_task_dialog)
     {
-        gtk_widget_destroy(roxterm->replace_task_dialog);
         roxterm->postponed_free = TRUE;
+        gtk_widget_destroy(roxterm->replace_task_dialog);
     }
     else
     {
@@ -2227,11 +2227,14 @@ static void roxterm_child_exited(VteTerminal *vte, ROXTermData *roxterm)
 
     if (!roxterm)
     {
+        g_warning("child-exited signal handler called with null "
+                "ROXTermData for vte widget %p", vte);
         roxterm = g_object_get_data(G_OBJECT(vte), "roxterm");
     }
     if (!roxterm)
     {
-        g_critical("Unable to get ROXTermData from VteTerminal exit signal");
+        g_critical("Unable to get ROXTermData from child-exited signal "
+                "for vte widget %p", vte);
         return;
     }
     roxterm->running = FALSE;
