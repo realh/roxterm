@@ -1183,14 +1183,7 @@ static const GdkRGBA *extrapolate_colours(const GdkRGBA *bg,
 static void roxterm_get_vte_padding(ROXTermData *roxterm,
         int *pad_w, int *pad_h)
 {
-    int w = 2;
-    int h = 2;
-    if (roxterm->style_context)
-    {
-        w = roxterm->padding_w;
-        h = roxterm->padding_h;
-    }
-    else
+    if (!roxterm->style_context)
     {
         roxterm->style_context =
             gtk_widget_get_style_context(roxterm->widget);
@@ -1200,26 +1193,28 @@ static void roxterm_get_vte_padding(ROXTermData *roxterm,
             GtkStateFlags state = gtk_widget_get_state_flags(roxterm->widget);
             gtk_style_context_get_padding(roxterm->style_context,
                     state, &border);
-            w = border.left + border.right;
-            h = border.top + border.bottom;
+            roxterm->padding_w = border.left + border.right;
+            roxterm->padding_h = border.top + border.bottom;
             gtk_style_context_get_border(roxterm->style_context,
                     state, &border);
-            w += border.left + border.right;
-            h += border.top + border.bottom;
+            roxterm->padding_w += border.left + border.right;
+            roxterm->padding_h += border.top + border.bottom;
             gtk_style_context_get_margin(roxterm->style_context,
                     state, &border);
-            w += border.left + border.right;
-            h += border.top + border.bottom;
+            roxterm->padding_w += border.left + border.right;
+            roxterm->padding_h += border.top + border.bottom;
         }
         else
         {
             g_warning("Unable to get VTE widget's style context");
+            /* I think default is 1 pixel each side */
+            roxterm->padding_w = roxterm->padding_h = 2;
         }
     }
     if (pad_w)
-        *pad_w = w;
+        *pad_w = roxterm->padding_w;
     if (pad_h)
-        *pad_h = h;
+        *pad_h = roxterm->padding_h;
 }
 
 static const GdkRGBA *roxterm_get_background_colour_with_transparency(
