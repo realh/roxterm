@@ -123,6 +123,8 @@ struct ROXTermData {
     guint search_flags;
     int file_match_tag[2];
     gboolean from_session;
+    GtkStyleContext *style_context;
+    int padding_w, padding_h;
 };
 
 #define PROFILE_NAME_KEY "roxterm_profile_name"
@@ -466,6 +468,8 @@ static ROXTermData *roxterm_data_clone(ROXTermData *old_gt)
         new_gt->rows = vte_terminal_get_row_count(vte);
     }
     new_gt->file_match_tag[0] = new_gt->file_match_tag[1] = -1;
+
+    new_gt->style_context = NULL;
 
     return new_gt;
 }
@@ -1176,6 +1180,48 @@ static const GdkRGBA *extrapolate_colours(const GdkRGBA *bg,
     return &ext;
 }
 
+static void roxterm_get_vte_padding(ROXTermData *roxterm,
+        int *pad_w, int *pad_h)
+{
+    int w = 2;
+    int h = 2;
+    if (roxterm->style_context)
+    {
+        w = roxterm->padding_w;
+        h = roxterm->padding_h;
+    }
+    else
+    {
+        roxterm->style_context =
+            gtk_widget_get_style_context(roxterm->widget);
+        if (roxterm->style_context)
+        {
+            GtkBorder border;
+            GtkStateFlags state = gtk_widget_get_state_flags(roxterm->widget);
+            gtk_style_context_get_padding(roxterm->style_context,
+                    state, &border);
+            w = border.left + border.right;
+            h = border.top + border.bottom;
+            gtk_style_context_get_border(roxterm->style_context,
+                    state, &border);
+            w += border.left + border.right;
+            h += border.top + border.bottom;
+            gtk_style_context_get_margin(roxterm->style_context,
+                    state, &border);
+            w += border.left + border.right;
+            h += border.top + border.bottom;
+        }
+        else
+        {
+            g_warning("Unable to get VTE widget's style context");
+        }
+    }
+    if (pad_w)
+        *pad_w = w;
+    if (pad_h)
+        *pad_h = h;
+}
+
 static const GdkRGBA *roxterm_get_background_colour_with_transparency(
         ROXTermData * roxterm)
 {
@@ -1254,10 +1300,12 @@ roxterm_set_vte_size(ROXTermData *roxterm, VteTerminal *vte,
      */
     if (drbl && pd)
     {
+        int px, py;
         int req_w, req_h;
 
-        req_w = vte_terminal_get_char_width(vte) * columns;
-        req_h = vte_terminal_get_char_height(vte) * rows;
+        roxterm_get_vte_padding(roxterm, &px, &py);
+        req_w = vte_terminal_get_char_width(vte) * columns + px;
+        req_h = vte_terminal_get_char_height(vte) * rows + py;
         /*
         g_debug("Child was %dx%d, window bigger by %dx%d; "
                 "resizing for child calc %dx%d",
@@ -1272,8 +1320,7 @@ static void roxterm_geometry_func(ROXTermData *roxterm,
 {
     VteTerminal *vte = VTE_TERMINAL(roxterm->widget);
 
-    geom->base_width = 0;
-    geom->base_height = 0;
+    roxterm_get_vte_padding(roxterm, &geom->base_width, &geom->base_height);
     geom->width_inc = vte_terminal_get_char_width(vte);
     geom->height_inc = vte_terminal_get_char_height(vte);
     geom->min_width = geom->base_width + 4 * geom->width_inc;
@@ -1292,8 +1339,11 @@ static void roxterm_size_func(ROXTermData *roxterm, gboolean pixels,
         *pheight = vte_terminal_get_row_count(vte);
     if (pixels)
     {
-        *pwidth = *pwidth * vte_terminal_get_char_width(vte);
-        *pheight = *pheight * vte_terminal_get_char_height(vte);
+        int px, py;
+
+        roxterm_get_vte_padding(roxterm, &px, &py);
+        *pwidth = *pwidth * vte_terminal_get_char_width(vte) + px;
+        *pheight = *pheight * vte_terminal_get_char_height(vte) + py;
     }
 }
 
@@ -1498,12 +1548,14 @@ static gboolean roxterm_popup_handler(GtkWidget * widget, ROXTermData * roxterm)
 static gboolean roxterm_check_match(ROXTermData *roxterm, VteTerminal *vte,
         int event_x, int event_y)
 {
+    int xpad, ypad;
     int tag;
 
+    roxterm_get_vte_padding(roxterm, &xpad, &ypad);
     g_free(roxterm->matched_url);
     roxterm->matched_url = vte_terminal_match_check(vte,
-        event_x / vte_terminal_get_char_width(vte),
-        event_y / vte_terminal_get_char_height(vte), &tag);
+        (event_x - ypad) / vte_terminal_get_char_width(vte),
+        (event_y - ypad) / vte_terminal_get_char_height(vte), &tag);
     if (roxterm->matched_url)
         roxterm->match_type = roxterm_get_match_type(roxterm, tag);
     return roxterm->matched_url != NULL;
@@ -2128,11 +2180,10 @@ static void roxterm_open_config_manager(MultiWin * win)
 }
 
 static void
-roxterm_style_change_handler(GtkWidget * widget, GtkStyle * previous_style,
-    ROXTermData * roxterm)
+roxterm_style_change_handler(GtkWidget * widget, ROXTermData * roxterm)
 {
     (void) widget;
-    (void) previous_style;
+    roxterm->style_context = NULL;
     roxterm_update_geometry(roxterm, VTE_TERMINAL(roxterm->widget));
 }
 
@@ -2541,6 +2592,7 @@ static void roxterm_resize_window_handler(VteTerminal *vte,
         guint width, guint height, ROXTermData *roxterm)
 {
     MultiWin *win = roxterm_get_win(roxterm);
+    int pad_w, pad_h;
     GtkAllocation alloc;
     int columns, rows;
 
@@ -2555,10 +2607,13 @@ static void roxterm_resize_window_handler(VteTerminal *vte,
     if (alloc.width == (int) width && alloc.height == (int) height)
         return;
     /* Compute nearest grid size */
+    roxterm_get_vte_padding(roxterm, &pad_w, &pad_h);
     columns = (int) (0.5 +
-            (double) width / (double) vte_terminal_get_char_width(vte));
+            (double) (width - pad_w) /
+            (double) vte_terminal_get_char_width(vte));
     rows = (int) (0.5 +
-            (double) height / (double) vte_terminal_get_char_height(vte));
+            (double) (height - pad_h) /
+            (double) vte_terminal_get_char_height(vte));
     /* Only resize window now if this is current tab */
     if (roxterm->tab == multi_win_get_current_tab(win))
         roxterm_set_vte_size(roxterm, vte, columns, rows);
@@ -2776,7 +2831,7 @@ static void roxterm_connect_misc_signals(ROXTermData * roxterm)
         G_CALLBACK(roxterm_icon_title_handler), roxterm);
     g_signal_connect(roxterm->widget, "window-title-changed",
         G_CALLBACK(roxterm_window_title_handler), roxterm);
-    g_signal_connect(roxterm->widget, "style_set",
+    g_signal_connect(roxterm->widget, "style-updated",
         G_CALLBACK(roxterm_style_change_handler), roxterm);
     g_signal_connect(roxterm->widget, "char-size-changed",
         G_CALLBACK(roxterm_char_size_changed), roxterm);
@@ -4098,6 +4153,7 @@ static ROXTermData *roxterm_data_new(const char *display_name,
     roxterm->pid = -1;
     roxterm->env = global_options_copy_strv(env);
     roxterm->file_match_tag[0] = roxterm->file_match_tag[1] = -1;
+    roxterm->style_context = NULL;
     return roxterm;
 }
 

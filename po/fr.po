@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: roxterm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-08 14:28+0100\n"
+"POT-Creation-Date: 2015-04-26 17:17+0100\n"
 "PO-Revision-Date: 2013-05-23 15:18+0000\n"
 "Last-Translator: Tony Houghton <h@realh.co.uk>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/roxterm/language/"
@@ -831,7 +831,7 @@ msgstr ""
 msgid "Unable to copy profile/scheme: %s"
 msgstr ""
 
-#: ../src/optsfile.c:425 ../src/roxterm.c:842 ../src/session.c:503
+#: ../src/optsfile.c:425 ../src/roxterm.c:846 ../src/session.c:503
 #: ../src/shortcuts.c:202
 msgid "unknown reason"
 msgstr ""
@@ -891,304 +891,304 @@ msgstr ""
 msgid "Deleting edited profile that wasn't in list of profiles being edited"
 msgstr ""
 
-#: ../src/roxterm.c:190
+#: ../src/roxterm.c:192
 #, c-format
 msgid "Action '%s' not recognised for encodings"
 msgstr ""
 
-#: ../src/roxterm.c:619
+#: ../src/roxterm.c:623
 #, c-format
 msgid "Unable to look up login details: %s"
 msgstr ""
 
-#: ../src/roxterm.c:724
+#: ../src/roxterm.c:728
 #, c-format
 msgid "The new terminal's command failed to run: %s"
 msgstr ""
 
-#: ../src/roxterm.c:734
+#: ../src/roxterm.c:738
 #, c-format
 msgid "Failed to create pty: %s"
 msgstr ""
 
-#: ../src/roxterm.c:841
+#: ../src/roxterm.c:845
 #, c-format
 msgid "Unable to parse command %s: %s"
 msgstr ""
 
-#: ../src/roxterm.c:867
+#: ../src/roxterm.c:871
 msgid "Trying to run NULL command in new terminal"
 msgstr ""
 
-#: ../src/roxterm.c:1138
+#: ../src/roxterm.c:1142
 #, c-format
 msgid "Saturation option %f out of range"
 msgstr ""
 
-#: ../src/roxterm.c:1373
+#: ../src/roxterm.c:1423
 #, c-format
 msgid "Couldn't create a font from '%s'"
 msgstr ""
 
-#: ../src/roxterm.c:1567
+#: ../src/roxterm.c:1619
 #, c-format
 msgid "Unable to convert dragged URI to UTF-8: %s"
 msgstr ""
 
-#: ../src/roxterm.c:1711 ../src/roxterm.c:3277
+#: ../src/roxterm.c:1763 ../src/roxterm.c:3332
 msgid "ROXTerm"
 msgstr ""
 
-#: ../src/roxterm.c:1760
+#: ../src/roxterm.c:1812
 #, c-format
 msgid "No menu item matches profile/scheme '%s'"
 msgstr ""
 
-#: ../src/roxterm.c:1957
+#: ../src/roxterm.c:2009
 msgid "Kill current task?"
 msgstr ""
 
-#: ../src/roxterm.c:1958
+#: ../src/roxterm.c:2010
 msgid ""
 "The current task is still running; to restart it the current instance must "
 "be killed. Do you want to kill the current task to replace it with a new "
 "instance?"
 msgstr ""
 
-#: ../src/roxterm.c:2182
+#: ../src/roxterm.c:2233
 msgid ""
 "The command in this terminal has terminated. What do you want to do with the "
 "terminal now?"
 msgstr ""
 
-#: ../src/roxterm.c:2187
+#: ../src/roxterm.c:2238
 #, fuzzy
 msgid "Close"
 msgstr "_Fermer l'onglet"
 
-#: ../src/roxterm.c:2189
+#: ../src/roxterm.c:2240
 msgid "Leave open"
 msgstr ""
 
-#: ../src/roxterm.c:2191
+#: ../src/roxterm.c:2242
 msgid "Rerun command"
 msgstr ""
 
-#: ../src/roxterm.c:2246
+#: ../src/roxterm.c:2297
 msgid ""
 "\n"
 ".\n"
 msgstr ""
 
-#: ../src/roxterm.c:2310
+#: ../src/roxterm.c:2361
 #, c-format
 msgid "Unknown colour scheme '%s'"
 msgstr ""
 
-#: ../src/roxterm.c:2338 ../src/roxterm.c:2395 ../src/roxterm.c:2438
-#: ../src/roxterm.c:2478
+#: ../src/roxterm.c:2389 ../src/roxterm.c:2446 ../src/roxterm.c:2489
+#: ../src/roxterm.c:2529
 #, c-format
 msgid "Menu item has no '%s' data"
 msgstr ""
 
-#: ../src/roxterm.c:2347 ../src/roxterm.c:2421
+#: ../src/roxterm.c:2398 ../src/roxterm.c:2472
 #, c-format
 msgid "Profile '%s' not found"
 msgstr ""
 
-#: ../src/roxterm.c:2459
+#: ../src/roxterm.c:2510
 #, c-format
 msgid "Colour scheme '%s' not found"
 msgstr ""
 
-#: ../src/roxterm.c:3332
+#: ../src/roxterm.c:3387
 #, c-format
 msgid "Unknown option type (%d)"
 msgstr ""
 
-#: ../src/roxterm.c:3659
+#: ../src/roxterm.c:3714
 #, c-format
 msgid "Profile/key '%s/%s' not understood"
 msgstr ""
 
-#: ../src/roxterm.c:3741
+#: ../src/roxterm.c:3796
 #, c-format
 msgid "Changed options family '%s' not known"
 msgstr ""
 
-#: ../src/roxterm.c:3756
+#: ../src/roxterm.c:3811
 msgid "[Deleted]"
 msgstr ""
 
-#: ../src/roxterm.c:3779
+#: ../src/roxterm.c:3834
 #, c-format
 msgid "Options family change action '%s' not known"
 msgstr ""
 
-#: ../src/roxterm.c:3884
+#: ../src/roxterm.c:3939
 #, c-format
 msgid ""
 "Invalid ROXTERM_ID %p in D-Bus message (this is expected if you used "
 "roxterm's --separate option)"
 msgstr ""
 
-#: ../src/roxterm.c:3908
+#: ../src/roxterm.c:3963
 #, c-format
 msgid "Unknown profile '%s' in D-Bus signal"
 msgstr ""
 
-#: ../src/roxterm.c:4083
+#: ../src/roxterm.c:4138
 msgid "Invalid geometry specification"
 msgstr ""
 
-#: ../src/roxterm.c:4413
+#: ../src/roxterm.c:4469
 msgid ""
 "Closing this ROXTerm tab may cause loss of data. Are you sure you want to "
 "continue?"
 msgstr ""
 
-#: ../src/roxterm.c:4417
+#: ../src/roxterm.c:4473
 msgid ""
 "You are about to close a ROXTerm window; this may cause loss of data. Are "
 "you sure you want to continue?"
 msgstr ""
 
-#: ../src/roxterm.c:4421
+#: ../src/roxterm.c:4477
 msgid ""
 "You are about to close a window containing multiple ROXTerm tabs; this may "
 "cause loss of data. Are you sure you want to continue?"
 msgstr ""
 
-#: ../src/roxterm.c:4430
+#: ../src/roxterm.c:4486
 msgid "ROXTerm: Confirm close"
 msgstr ""
 
-#: ../src/roxterm.c:4434
+#: ../src/roxterm.c:4490
 msgid "_Don't show this again"
 msgstr ""
 
-#: ../src/roxterm.c:4442
+#: ../src/roxterm.c:4498
 msgid "Only warn if tasks are still _running"
 msgstr ""
 
-#: ../src/roxterm.c:4554
+#: ../src/roxterm.c:4610
 #, c-format
 msgid "Unable to spawn command %s: %s"
 msgstr ""
 
-#: ../src/roxterm.c:4722
+#: ../src/roxterm.c:4778
 #, c-format
 msgid "Unknown <window> attribute '%s'"
 msgstr ""
 
-#: ../src/roxterm.c:4773
+#: ../src/roxterm.c:4829
 msgid "Session contains window with no valid tabs"
 msgstr ""
 
-#: ../src/roxterm.c:4877
+#: ../src/roxterm.c:4933
 #, c-format
 msgid "Unknown <tab> attribute '%s'"
 msgstr ""
 
-#: ../src/roxterm.c:4910
+#: ../src/roxterm.c:4966
 msgid "<command> with no arguments"
 msgstr ""
 
-#: ../src/roxterm.c:4960
+#: ../src/roxterm.c:5016
 #, c-format
 msgid "Unknown <command> attribute '%s'"
 msgstr ""
 
-#: ../src/roxterm.c:4972
+#: ../src/roxterm.c:5028
 msgid "<command> missing argc attribute"
 msgstr ""
 
-#: ../src/roxterm.c:4986
+#: ../src/roxterm.c:5042
 #, c-format
 msgid "Too many <arg> elements for <command argc='%d>"
 msgstr ""
 
-#: ../src/roxterm.c:5003
+#: ../src/roxterm.c:5059
 #, c-format
 msgid "Unknown <arg> attribute '%s'"
 msgstr ""
 
-#: ../src/roxterm.c:5015
+#: ../src/roxterm.c:5071
 msgid "<arg> missing s attribute"
 msgstr ""
 
-#: ../src/roxterm.c:5035
+#: ../src/roxterm.c:5091
 #, c-format
 msgid "Unknown <roxterm_session> attribute '%s'"
 msgstr ""
 
-#: ../src/roxterm.c:5054
+#: ../src/roxterm.c:5110
 msgid "<roxterm_session> tag nested within <window>"
 msgstr ""
 
-#: ../src/roxterm.c:5068
+#: ../src/roxterm.c:5124
 msgid "<window> tag not within <roxterm_session>"
 msgstr ""
 
-#: ../src/roxterm.c:5073
+#: ../src/roxterm.c:5129
 msgid "<window> tag nested within another <window>"
 msgstr ""
 
-#: ../src/roxterm.c:5085
+#: ../src/roxterm.c:5141
 msgid "<tab> tag not within <window>"
 msgstr ""
 
-#: ../src/roxterm.c:5090
+#: ../src/roxterm.c:5146
 msgid "<tab> tag nested within another <tab>"
 msgstr ""
 
-#: ../src/roxterm.c:5102
+#: ../src/roxterm.c:5158
 msgid "<command> tag not within <tab>"
 msgstr ""
 
-#: ../src/roxterm.c:5107
+#: ../src/roxterm.c:5163
 msgid "<command> tag nested within another <command>"
 msgstr ""
 
-#: ../src/roxterm.c:5119
+#: ../src/roxterm.c:5175
 msgid "<arg> tag not within <command>"
 msgstr ""
 
-#: ../src/roxterm.c:5129
+#: ../src/roxterm.c:5185
 #, c-format
 msgid "Unknown element <%s>"
 msgstr ""
 
-#: ../src/roxterm.c:5145
+#: ../src/roxterm.c:5201
 msgid "Unmatched </roxterm_session>"
 msgstr ""
 
-#: ../src/roxterm.c:5150
+#: ../src/roxterm.c:5206
 msgid "Attempt to close <roxterm_session> without closing <window>"
 msgstr ""
 
-#: ../src/roxterm.c:5163
+#: ../src/roxterm.c:5219
 msgid "Unmatched </window>"
 msgstr ""
 
-#: ../src/roxterm.c:5168
+#: ../src/roxterm.c:5224
 msgid "Attempt to close <window> without closing <tab>"
 msgstr ""
 
-#: ../src/roxterm.c:5180
+#: ../src/roxterm.c:5236
 msgid "Unmatched </tab>"
 msgstr ""
 
-#: ../src/roxterm.c:5194
+#: ../src/roxterm.c:5250
 msgid "Unmatched </command>"
 msgstr ""
 
-#: ../src/roxterm.c:5200
+#: ../src/roxterm.c:5256
 #, c-format
 msgid "Unknown closing element </%s>"
 msgstr ""
 
-#: ../src/roxterm.c:5210
+#: ../src/roxterm.c:5266
 #, c-format
 msgid "Unable to parse data for session '%s': %s"
 msgstr ""
