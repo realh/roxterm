@@ -44,6 +44,7 @@ flags = [
 '-x',
 'c',
 '-isystem', '/usr/include',
+'-I', 'build',
 ]
 
 maitch_flags = '@VTE_CFLAGS@'
