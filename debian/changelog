@@ -1,11 +1,12 @@
-roxterm (3.0.0-9) unstable; urgency=medium
+roxterm (3.0.0-12) unstable; urgency=medium
 
+  * Fixed some unsafe uses of sprintf.
   * Provide option to rewrap text when terminal width changes.
   * Drop support for GTK2 etc.
   * Provide a single binary package.
   * Use vte-2.91 API.
 
- -- Tony Houghton <h@realh.co.uk>  Mon, 27 Apr 2015 00:57:37 +0100
+ -- Tony Houghton <h@realh.co.uk>  Tue, 12 May 2015 13:17:33 +0200
 
 roxterm (2.9.7-1) unstable; urgency=low
 
