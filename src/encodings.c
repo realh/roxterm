@@ -31,7 +31,7 @@ static const char *encodings_get_key(int n)
 {
     static char key[16];
 
-    sprintf(key, "e%d", n);
+    snprintf(key, sizeof(key) - 1, "e%d", n);
     return key;
 }
 
@@ -44,8 +44,8 @@ static GPtrArray *encodings_build_default(void)
     return enc;
 }
 
-static int encodings_compare(const char const **penc1,
-        const char const **penc2)
+static int encodings_compare(char const * const *penc1,
+        char const * const *penc2)
 {
     return dynamic_options_strcmp(*penc1, *penc2);
 

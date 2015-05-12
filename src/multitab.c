@@ -1208,16 +1208,19 @@ MultiWin *multi_win_clone(MultiWin *old,
 {
     GtkPositionType tab_pos = GTK_POS_TOP;
     int num_tabs = 1;
-    char geom[16];
+    char *geom;
     int width, height;
+    MultiWin *result;
 
     multi_win_initial_tabs(user_data_template, &tab_pos, &num_tabs);
     multi_win_default_size_func(multi_tab_get_user_data(old->current_tab),
             &width, &height);
-    sprintf(geom, "%dx%d", width, height);
-    return multi_win_new_with_geom(old->display_name, old->shortcuts,
+    geom = g_strdup_printf("%dx%d", width, height);
+    result = multi_win_new_with_geom(old->display_name, old->shortcuts,
             old->zoom_index, user_data_template, geom,
             num_tabs, tab_pos, always_show_tabs, old->show_add_tab_button);
+    g_free(geom);
+    return result;
 }
 
 static void multi_win_new_window_action(MultiWin * win)

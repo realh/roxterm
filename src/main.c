@@ -62,7 +62,7 @@ static DBusMessage *create_dbus_message(int argc, char **argv,
     for (n = 0; message && n < argc; ++n)
     {
         char *arg;
-        char tmp[16];
+        char *tmp = NULL;
 
         if (!strcmp(argv[n], "--tab"))
         {
@@ -80,7 +80,7 @@ static DBusMessage *create_dbus_message(int argc, char **argv,
                     g_warning(_("Unable to read current workspace"));
                 }
             }
-            sprintf(tmp, "--tab=%u", global_options_workspace);
+            tmp = g_strdup_printf("--tab=%u", global_options_workspace);
             arg = tmp;
         }
         else
@@ -90,6 +90,8 @@ static DBusMessage *create_dbus_message(int argc, char **argv,
         message = rtdbus_append_args(message,
                 DBUS_TYPE_STRING, RTDBUS_ARG(arg),
                 DBUS_TYPE_INVALID);
+        if (tmp)
+            g_free(tmp);
     }
     if (display)
     {
