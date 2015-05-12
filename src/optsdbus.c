@@ -50,7 +50,7 @@
 #ifdef ROXTERM_CAPPLET
 
 static gboolean optsdbus_read_args(DBusMessage *message,
-        char RTDBUS_ARG_CONST **arg, char RTDBUS_ARG_CONST **display,
+        char const **arg, char const **display,
         DBusError *perror, DBusMessage **preply_error)
 {
     gboolean result = arg ? dbus_message_get_args(message, perror,
@@ -84,9 +84,9 @@ static DBusHandlerResult optsdbus_method_handler(DBusConnection *connection,
         EditColourScheme,
         OpenConfiglet
     } action = Unknown;
-    RTDBUS_ARG_CONST char *profile_name = NULL;
-    RTDBUS_ARG_CONST char *display_name = NULL;
-    char RTDBUS_ARG_CONST **parg = NULL;
+    const char *profile_name = NULL;
+    const char *display_name = NULL;
+    char const **parg = NULL;
     GdkScreen *scrn = NULL;
     (void) connection;
     (void) user_data;
@@ -163,8 +163,8 @@ static DBusMessage *optsdbus_signal_new(const char *signal_name,
 {
     return rtdbus_signal_new(OPTSDBUS_OBJECT_PATH, OPTSDBUS_INTERFACE,
             signal_name,
-            DBUS_TYPE_STRING, RTDBUS_ARG(profile_name),
-            DBUS_TYPE_STRING, RTDBUS_ARG(key),
+            DBUS_TYPE_STRING, &profile_name,
+            DBUS_TYPE_STRING, &key,
             DBUS_TYPE_INVALID);
 }
 
@@ -182,7 +182,7 @@ gboolean optsdbus_send_string_opt_signal(const char *profile_name,
         if (!value)
             value = "";
         if (!rtdbus_append_args(message,
-                DBUS_TYPE_STRING, RTDBUS_ARG(value), DBUS_TYPE_INVALID))
+                DBUS_TYPE_STRING, &value, DBUS_TYPE_INVALID))
         {
             return FALSE;
         }
@@ -208,7 +208,7 @@ gboolean optsdbus_send_int_opt_signal(const char *profile_name,
 
         dbus_error_init(&derror);
         if (!dbus_message_append_args(message,
-                DBUS_TYPE_INT32, RTDBUS_ARG(value), DBUS_TYPE_INVALID))
+                DBUS_TYPE_INT32, &value, DBUS_TYPE_INVALID))
         {
             return FALSE;
         }
@@ -234,7 +234,7 @@ gboolean optsdbus_send_float_opt_signal(const char *profile_name,
 
         dbus_error_init(&derror);
         if (!dbus_message_append_args(message,
-                DBUS_TYPE_DOUBLE, RTDBUS_ARG(value), DBUS_TYPE_INVALID))
+                DBUS_TYPE_DOUBLE, &value, DBUS_TYPE_INVALID))
         {
             return FALSE;
         }
@@ -262,7 +262,7 @@ gboolean optsdbus_send_stuff_changed_signal(const char *what_happened,
         if (new_name)
         {
             if (!dbus_message_append_args(message,
-                    DBUS_TYPE_STRING, RTDBUS_ARG(new_name), DBUS_TYPE_INVALID))
+                    DBUS_TYPE_STRING, &new_name, DBUS_TYPE_INVALID))
             {
                 return FALSE;
             }
@@ -281,8 +281,8 @@ gboolean optsdbus_send_edit_opts_message(const char *method, const char *arg,
         display_name = "";
     message = rtdbus_method_new(OPTSDBUS_NAME,
             OPTSDBUS_OBJECT_PATH, OPTSDBUS_INTERFACE, method,
-            DBUS_TYPE_STRING, RTDBUS_ARG(arg),
-            DBUS_TYPE_STRING, RTDBUS_ARG(display_name),
+            DBUS_TYPE_STRING, &arg,
+            DBUS_TYPE_STRING, &display_name,
             DBUS_TYPE_INVALID);
 
     if (!message)
@@ -307,8 +307,8 @@ static OptsDBusSetProfileHandler optsdbus_set_shortcut_scheme_handler = NULL;
 static gboolean optsdbus_set_profile_callback(OptsDBusSetProfileHandler handler,
         DBusMessage *message, DBusError *pderror)
 {
-    RTDBUS_ARG_CONST char *id_str = NULL;
-    RTDBUS_ARG_CONST char *profile_name = NULL;
+    const char *id_str = NULL;
+    const char *profile_name = NULL;
 
     gboolean result = dbus_message_get_args(message, pderror,
             DBUS_TYPE_STRING, &id_str,
@@ -341,8 +341,8 @@ static DBusHandlerResult
 optsdbus_message_filter(DBusConnection * connection, DBusMessage * message,
     void *user_data)
 {
-    RTDBUS_ARG_CONST char *profile_name = NULL;
-    RTDBUS_ARG_CONST char *key = NULL;
+    const char *profile_name = NULL;
+    const char *key = NULL;
     OptsDBusValue val;
     char *dbus_str = NULL;
     const char *signal_name;
@@ -350,9 +350,9 @@ optsdbus_message_filter(DBusConnection * connection, DBusMessage * message,
     DBusError derror;
     OptsDBusOptType opt_type = OptsDBus_InvalidOpt;
     const char *what_happened = NULL;
-    RTDBUS_ARG_CONST char *family_name = NULL;
-    RTDBUS_ARG_CONST char *current_name = NULL;
-    RTDBUS_ARG_CONST char *new_name = NULL;
+    const char *family_name = NULL;
+    const char *current_name = NULL;
+    const char *new_name = NULL;
 
     (void) connection;
     (void) user_data;

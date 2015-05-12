@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: roxterm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-27 13:14+0100\n"
+"POT-Creation-Date: 2015-05-12 13:30+0200\n"
 "PO-Revision-Date: 2013-05-26 04:27+0000\n"
 "Last-Translator: salmora8 <shorterfire@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/"
@@ -251,7 +251,7 @@ msgstr ""
 "Lista de URI caiu no widget que tinha um formato errado (%d) ou comprimento "
 "(%d)"
 
-#: ../src/getname.c:77 ../src/multitab.c:1273 ../src/multitab.c:1319
+#: ../src/getname.c:77 ../src/multitab.c:1276 ../src/multitab.c:1322
 msgid "_Cancel"
 msgstr ""
 
@@ -437,27 +437,27 @@ msgstr "Não foi possível obter roxterm-config"
 msgid "Unable to read current workspace"
 msgstr "Não foi possível ler espaço de trabalho atual"
 
-#: ../src/main.c:226
+#: ../src/main.c:228
 #, c-format
 msgid "Parent failed to read signal from child for --fork: %s"
 msgstr "Falha pai ao ler sinal filho do --fork: %s"
 
-#: ../src/main.c:241
+#: ../src/main.c:243
 #, c-format
 msgid "Child failed to signal parent for --fork: %s"
 msgstr "Falha no sinal filho, pai para --fork: %s"
 
-#: ../src/main.c:278
+#: ../src/main.c:280
 #, c-format
 msgid "Unable to open pipe to implement --fork: %s"
 msgstr "Não foi possível abrir pipe para implementar --fork: %s"
 
-#: ../src/main.c:294
+#: ../src/main.c:296
 #, c-format
 msgid "Unable to fork to implement --fork: %s"
 msgstr "Não foi possível deslocar para implementar --fork: %s"
 
-#: ../src/main.c:360
+#: ../src/main.c:362
 msgid "Missing command after -e/--execute option"
 msgstr "Procurando comando depois -e/--execute opção"
 
@@ -730,19 +730,19 @@ msgstr "Mover Aba para _Baixo"
 msgid "'%s' contains invalid %% sequences for a title template"
 msgstr "'%s' contém inválidas sequências %% para o título do modelo"
 
-#: ../src/multitab.c:1270
+#: ../src/multitab.c:1273
 msgid "Name Tab"
 msgstr "Nome da Aba"
 
-#: ../src/multitab.c:1274 ../src/multitab.c:1320
+#: ../src/multitab.c:1277 ../src/multitab.c:1323
 msgid "_Apply"
 msgstr ""
 
-#: ../src/multitab.c:1316
+#: ../src/multitab.c:1319
 msgid "Set Window Title"
 msgstr "Definir Título da Janela"
 
-#: ../src/multitab.c:1327
+#: ../src/multitab.c:1330
 msgid ""
 "The title string may include '%s' which is substituted with the title set by "
 "the child command (usually the current directory for shells). No other % "

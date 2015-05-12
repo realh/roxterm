@@ -64,7 +64,7 @@ typedef enum {
 } OptsDBusOptType;
 
 typedef union {
-	RTDBUS_ARG_CONST char *s;
+	const char *s;
 	int i;
 	double f;
 } OptsDBusValue;

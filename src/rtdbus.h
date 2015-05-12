@@ -28,9 +28,6 @@
 
 #include <dbus/dbus-glib-lowlevel.h>
 
-#define RTDBUS_ARG(a) &(a)
-#define RTDBUS_ARG_CONST const
-
 /* These are just stubs; they should have a specific suffix appended */
 #define RTDBUS_NAME "net.sf.roxterm"
 #define RTDBUS_OBJECT_PATH "/net/sf/roxterm"
@@ -64,14 +61,14 @@ gboolean rtdbus_add_signal_rule_and_filter(
 		DBusHandleMessageFunction);
 
 /* Creates a signal message with the given arguments passed as pairs of
- * DBUS_TYPE_*, RTDBUS_ARG(*) terminated by DBUS_TYPE_INVALID */
+ * DBUS_TYPE_*, &(*) terminated by DBUS_TYPE_INVALID */
 DBusMessage *rtdbus_signal_new(const char *object_path, const char *interface,
 		const char *signal_name, int first_arg_type, ...);
 
 /* As above but creates a method call */
-DBusMessage *rtdbus_method_new(
-		const char *bus_name, const char *object_path, const char *interface,
-		const char *method_name, int first_arg_type, ...);
+DBusMessage *rtdbus_method_new(const char *bus_name, const char *object_path,
+        const char *interface, const char *method_name,
+        int first_arg_type, ...);
 
 /* Appends args (see above) to message and returns the modified message. On
  * failure (unlikely) the message is freed, an error is printed and NULL is

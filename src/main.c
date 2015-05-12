@@ -54,7 +54,7 @@ static DBusMessage *create_dbus_message(int argc, char **argv,
             ROXTERM_DBUS_METHOD_NAME, DBUS_TYPE_INVALID);
     for (n = 0; environ[n]; ++n);
     message = rtdbus_append_args(message,
-            DBUS_TYPE_ARRAY, DBUS_TYPE_STRING, RTDBUS_ARG(environ), n,
+            DBUS_TYPE_ARRAY, DBUS_TYPE_STRING, &environ, n,
             DBUS_TYPE_INVALID);
     if (!message)
         return NULL;
@@ -88,7 +88,7 @@ static DBusMessage *create_dbus_message(int argc, char **argv,
             arg = argv[n];
         }
         message = rtdbus_append_args(message,
-                DBUS_TYPE_STRING, RTDBUS_ARG(arg),
+                DBUS_TYPE_STRING, &arg,
                 DBUS_TYPE_INVALID);
         if (tmp)
             g_free(tmp);
@@ -96,7 +96,7 @@ static DBusMessage *create_dbus_message(int argc, char **argv,
     if (display)
     {
         message = rtdbus_append_args(message,
-                DBUS_TYPE_STRING, RTDBUS_ARG(display),
+                DBUS_TYPE_STRING, &display,
                 DBUS_TYPE_INVALID);
     }
     return message;
@@ -118,8 +118,8 @@ static int run_via_dbus(DBusMessage *message)
         const char *d = "-d";
 
         message = rtdbus_append_args(message,
-                DBUS_TYPE_STRING, RTDBUS_ARG(d),
-                DBUS_TYPE_STRING, RTDBUS_ARG(cwd),
+                DBUS_TYPE_STRING, &d,
+                DBUS_TYPE_STRING, &cwd,
                 DBUS_TYPE_INVALID);
         if (!message)
             result = -1;
@@ -131,13 +131,13 @@ static int run_via_dbus(DBusMessage *message)
         const char *e = "-e";
 
         message = rtdbus_append_args(message,
-                DBUS_TYPE_STRING, RTDBUS_ARG(e), DBUS_TYPE_INVALID);
+                DBUS_TYPE_STRING, &e, DBUS_TYPE_INVALID);
         if (!message)
             return -1;
         for (n = 0; global_options_commandv[n]; ++n)
         {
             message = rtdbus_append_args(message,
-                    DBUS_TYPE_STRING, RTDBUS_ARG(global_options_commandv[n]),
+                    DBUS_TYPE_STRING, &global_options_commandv[n],
                     DBUS_TYPE_INVALID);
             if (!message)
                 return -1;

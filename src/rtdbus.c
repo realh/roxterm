@@ -68,7 +68,7 @@ gboolean rtdbus_send_message_with_reply(DBusMessage *message)
     DBusError derror;
     DBusMessage *reply;
     gboolean result = TRUE;
-    RTDBUS_ARG_CONST char *reply_msg = NULL;
+    const char *reply_msg = NULL;
 
     dbus_error_init(&derror);
     reply = dbus_connection_send_with_reply_and_block(rtdbus_connection,
@@ -277,7 +277,7 @@ char **rtdbus_get_message_args_as_strings(DBusMessageIter *iter)
             != DBUS_TYPE_INVALID;
             dbus_message_iter_next(iter))
     {
-        RTDBUS_ARG_CONST char *arg;
+        const char *arg;
 
         if (argtype != DBUS_TYPE_STRING)
         {
