@@ -30,7 +30,7 @@ inline static void box_compat_pack(GtkWidget *box, GtkWidget *child,
 {
     gtk_container_add(GTK_CONTAINER(box), child);
     g_object_set(child, "hexpand", hexpand, "vexpand", vexpand,
-            "margin-left", hspacing, "margin-right", hspacing,
+            "margin-start", hspacing, "margin-end", hspacing,
             "margin-top", vspacing, "margin-bottom", vspacing,
             NULL);
 }

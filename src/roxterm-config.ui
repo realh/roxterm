@@ -42,7 +42,7 @@
             </child>
             <child>
               <object class="GtkButton" id="closebutton1">
-                <property name="label">gtk-close</property>
+                <property name="label">Close</property>
                 <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -50,7 +50,6 @@
                 <property name="receives_default">True</property>
                 <property name="has_tooltip">True</property>
                 <property name="tooltip_text" translatable="yes">Close this window</property>
-                <property name="use_stock">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -82,7 +81,7 @@
                 <property name="tooltip_text" translatable="yes">Whether to set terminals' text and background colours using the fields below</property>
                 <property name="halign">start</property>
                 <property name="use_underline">True</property>
-                <property name="xalign">0</property>
+                <property name="xalign">0.5</property>
                 <property name="draw_indicator">True</property>
                 <signal name="toggled" handler="on_set_fgbg_toggled" swapped="no"/>
               </object>
@@ -171,7 +170,7 @@
                     <property name="tooltip_text" translatable="yes">Set the cursor colour from the adjacent field</property>
                     <property name="halign">start</property>
                     <property name="use_underline">True</property>
-                    <property name="xalign">0</property>
+                    <property name="xalign">0.5</property>
                     <property name="draw_indicator">True</property>
                     <signal name="toggled" handler="on_set_bold_colour_toggled" swapped="no"/>
                   </object>
@@ -210,7 +209,7 @@
                     <property name="tooltip_text" translatable="yes">Whether to set the terminal's colours from the table below</property>
                     <property name="halign">start</property>
                     <property name="use_underline">True</property>
-                    <property name="xalign">0</property>
+                    <property name="xalign">0.5</property>
                     <property name="draw_indicator">True</property>
                     <signal name="toggled" handler="on_use_custom_colours_toggled" swapped="no"/>
                   </object>
@@ -232,7 +231,7 @@
                     <property name="tooltip_text" translatable="yes">Whether to use the palette table below to set the background and text foreground colours</property>
                     <property name="halign">start</property>
                     <property name="use_underline">True</property>
-                    <property name="xalign">0</property>
+                    <property name="xalign">0.5</property>
                     <property name="draw_indicator">True</property>
                     <signal name="toggled" handler="on_fgbg_track_palette_toggled" swapped="no"/>
                   </object>
@@ -265,7 +264,7 @@
                     <property name="tooltip_markup" translatable="yes">Set just the first 8 palette entries from this row</property>
                     <property name="tooltip_text" translatable="yes">Set just the first 8 palette entries from this row</property>
                     <property name="use_underline">True</property>
-                    <property name="xalign">0</property>
+                    <property name="xalign">0.5</property>
                     <property name="active">True</property>
                     <property name="draw_indicator">True</property>
                     <signal name="toggled" handler="on_palette_size_toggled" swapped="no"/>
@@ -389,7 +388,7 @@
                     <property name="tooltip_markup" translatable="yes">Set 16 palette entries from both rows</property>
                     <property name="tooltip_text" translatable="yes">Set 16 palette entries from both rows</property>
                     <property name="use_underline">True</property>
-                    <property name="xalign">0</property>
+                    <property name="xalign">0.5</property>
                     <property name="active">True</property>
                     <property name="draw_indicator">True</property>
                     <signal name="toggled" handler="on_palette_size_toggled" swapped="no"/>
@@ -509,7 +508,7 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
                     <property name="use_underline">True</property>
-                    <property name="xalign">0</property>
+                    <property name="xalign">0.5</property>
                     <property name="active">True</property>
                     <property name="draw_indicator">True</property>
                     <signal name="toggled" handler="on_palette_size_toggled" swapped="no"/>
@@ -638,7 +637,7 @@
                     <property name="tooltip_text" translatable="yes">Set the cursor colour from the adjacent field</property>
                     <property name="halign">start</property>
                     <property name="use_underline">True</property>
-                    <property name="xalign">0</property>
+                    <property name="xalign">0.5</property>
                     <property name="draw_indicator">True</property>
                     <signal name="toggled" handler="on_set_cursor_colour_toggled" swapped="no"/>
                   </object>
@@ -706,13 +705,12 @@
             <property name="layout_style">end</property>
             <child>
               <object class="GtkButton" id="closebutton3">
-                <property name="label">gtk-close</property>
+                <property name="label">Close</property>
                 <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>
                 <property name="receives_default">False</property>
-                <property name="use_stock">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -736,7 +734,7 @@
               <object class="GtkFrame" id="profiles_frame">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="margin_left">4</property>
+                <property name="margin_start">4</property>
                 <property name="margin_top">4</property>
                 <property name="label_xalign">0</property>
                 <property name="shadow_type">none</property>
@@ -744,9 +742,9 @@
                   <object class="GtkAlignment" id="alignment24">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="top_padding">4</property>
-                    <property name="bottom_padding">4</property>
-                    <property name="left_padding">12</property>
+                    <property name="margin_start">12</property>
+                    <property name="margin_top">4</property>
+                    <property name="margin_bottom">4</property>
                     <child>
                       <object class="GtkGrid" id="grid5">
                         <property name="visible">True</property>
@@ -786,6 +784,7 @@
                         </child>
                         <child>
                           <object class="GtkButton" id="profile_rename">
+                            <property name="label" translatable="yes">_Rename</property>
                             <property name="use_action_appearance">False</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -794,47 +793,9 @@
                             <property name="has_tooltip">True</property>
                             <property name="tooltip_markup">Click to rename the selected profile</property>
                             <property name="tooltip_text" translatable="yes">Click to rename the selected profile</property>
+                            <property name="halign">center</property>
+                            <property name="use_underline">True</property>
                             <signal name="clicked" handler="on_profile_rename_clicked" swapped="no"/>
-                            <child>
-                              <object class="GtkAlignment" id="alignment17">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="xscale">0</property>
-                                <property name="yscale">0</property>
-                                <child>
-                                  <object class="GtkHBox" id="hbox22">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="spacing">2</property>
-                                    <child>
-                                      <object class="GtkImage" id="image7">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="stock">gtk-edit</property>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">0</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <object class="GtkLabel" id="label49">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="label" translatable="yes">_Rename</property>
-                                        <property name="use_underline">True</property>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">1</property>
-                                      </packing>
-                                    </child>
-                                  </object>
-                                </child>
-                              </object>
-                            </child>
                           </object>
                           <packing>
                             <property name="left_attach">1</property>
@@ -843,6 +804,7 @@
                         </child>
                         <child>
                           <object class="GtkButton" id="profile_delete">
+                            <property name="label" translatable="yes">_Delete</property>
                             <property name="use_action_appearance">False</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -851,47 +813,9 @@
                             <property name="has_tooltip">True</property>
                             <property name="tooltip_markup">Click to delete the selected profile</property>
                             <property name="tooltip_text" translatable="yes">Click to delete the selected profile</property>
+                            <property name="halign">center</property>
+                            <property name="use_underline">True</property>
                             <signal name="clicked" handler="on_profile_delete_clicked" swapped="no"/>
-                            <child>
-                              <object class="GtkAlignment" id="alignment16">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="xscale">0</property>
-                                <property name="yscale">0</property>
-                                <child>
-                                  <object class="GtkHBox" id="hbox21">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="spacing">2</property>
-                                    <child>
-                                      <object class="GtkImage" id="image6">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="stock">gtk-delete</property>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">0</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <object class="GtkLabel" id="profile_delete_label">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="label" translatable="yes">_Delete</property>
-                                        <property name="use_underline">True</property>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">1</property>
-                                      </packing>
-                                    </child>
-                                  </object>
-                                </child>
-                              </object>
-                            </child>
                           </object>
                           <packing>
                             <property name="left_attach">0</property>
@@ -900,6 +824,7 @@
                         </child>
                         <child>
                           <object class="GtkButton" id="profile_copy">
+                            <property name="label" translatable="yes">_Copy</property>
                             <property name="use_action_appearance">False</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -908,47 +833,9 @@
                             <property name="has_tooltip">True</property>
                             <property name="tooltip_markup">Click to create a new profile with settings copied from the current selection</property>
                             <property name="tooltip_text" translatable="yes">Click to create a new profile with settings copied from the current selection</property>
+                            <property name="halign">center</property>
+                            <property name="use_underline">True</property>
                             <signal name="clicked" handler="on_profile_copy_clicked" swapped="no"/>
-                            <child>
-                              <object class="GtkAlignment" id="alignment15">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="xscale">0</property>
-                                <property name="yscale">0</property>
-                                <child>
-                                  <object class="GtkHBox" id="hbox20">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="spacing">2</property>
-                                    <child>
-                                      <object class="GtkImage" id="image5">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="stock">gtk-copy</property>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">0</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <object class="GtkLabel" id="label47">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="label" translatable="yes">_Copy</property>
-                                        <property name="use_underline">True</property>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">1</property>
-                                      </packing>
-                                    </child>
-                                  </object>
-                                </child>
-                              </object>
-                            </child>
                           </object>
                           <packing>
                             <property name="left_attach">1</property>
@@ -957,6 +844,7 @@
                         </child>
                         <child>
                           <object class="GtkButton" id="profile_edit">
+                            <property name="label" translatable="yes">_Edit</property>
                             <property name="use_action_appearance">False</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -965,48 +853,9 @@
                             <property name="has_tooltip">True</property>
                             <property name="tooltip_markup">Click to edit the selected profile</property>
                             <property name="tooltip_text" translatable="yes">Click to edit the selected profile</property>
+                            <property name="halign">center</property>
+                            <property name="use_underline">True</property>
                             <signal name="clicked" handler="on_profile_edit_clicked" swapped="no"/>
-                            <child>
-                              <object class="GtkAlignment" id="alignment33">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="xscale">0</property>
-                                <property name="yscale">0</property>
-                                <child>
-                                  <object class="GtkHBox" id="hbox35">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="spacing">2</property>
-                                    <child>
-                                      <object class="GtkImage" id="image19">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="stock">gtk-properties</property>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">0</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <object class="GtkLabel" id="label67">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="yalign">0.49000000953674316</property>
-                                        <property name="label" translatable="yes">_Edit</property>
-                                        <property name="use_underline">True</property>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">1</property>
-                                      </packing>
-                                    </child>
-                                  </object>
-                                </child>
-                              </object>
-                            </child>
                           </object>
                           <packing>
                             <property name="left_attach">0</property>
@@ -1033,6 +882,7 @@
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">_Profiles</property>
                 <property name="use_underline">True</property>
+                <property name="angle">0.040000000000000001</property>
               </object>
               <packing>
                 <property name="tab_fill">False</property>
@@ -1042,7 +892,7 @@
               <object class="GtkFrame" id="colour_schemes_frame">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="margin_left">4</property>
+                <property name="margin_start">4</property>
                 <property name="margin_top">4</property>
                 <property name="label_xalign">0</property>
                 <property name="shadow_type">none</property>
@@ -1050,8 +900,9 @@
                   <object class="GtkAlignment" id="alignment25">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="top_padding">4</property>
-                    <property name="left_padding">12</property>
+                    <property name="margin_start">12</property>
+                    <property name="margin_top">4</property>
+                    <property name="margin_bottom">4</property>
                     <child>
                       <object class="GtkGrid" id="grid6">
                         <property name="visible">True</property>
@@ -1089,6 +940,7 @@
                         </child>
                         <child>
                           <object class="GtkButton" id="colours_edit">
+                            <property name="label" translatable="yes">_Edit</property>
                             <property name="use_action_appearance">False</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -1097,47 +949,9 @@
                             <property name="has_tooltip">True</property>
                             <property name="tooltip_markup">Click to edit the selected colour scheme</property>
                             <property name="tooltip_text" translatable="yes">Click to edit the selected colour scheme</property>
+                            <property name="halign">center</property>
+                            <property name="use_underline">True</property>
                             <signal name="clicked" handler="on_colours_edit_clicked" swapped="no"/>
-                            <child>
-                              <object class="GtkAlignment" id="alignment34">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="xscale">0</property>
-                                <property name="yscale">0</property>
-                                <child>
-                                  <object class="GtkHBox" id="hbox36">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="spacing">2</property>
-                                    <child>
-                                      <object class="GtkImage" id="image20">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="stock">gtk-properties</property>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">0</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <object class="GtkLabel" id="label68">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="label" translatable="yes">_Edit</property>
-                                        <property name="use_underline">True</property>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">1</property>
-                                      </packing>
-                                    </child>
-                                  </object>
-                                </child>
-                              </object>
-                            </child>
                           </object>
                           <packing>
                             <property name="left_attach">0</property>
@@ -1146,6 +960,7 @@
                         </child>
                         <child>
                           <object class="GtkButton" id="colours_copy">
+                            <property name="label" translatable="yes">_Copy</property>
                             <property name="use_action_appearance">False</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -1154,47 +969,9 @@
                             <property name="has_tooltip">True</property>
                             <property name="tooltip_markup">Click to create a new colour scheme with settings copied from the current selection</property>
                             <property name="tooltip_text" translatable="yes">Click to create a new colour scheme with settings copied from the current selection</property>
+                            <property name="halign">center</property>
+                            <property name="use_underline">True</property>
                             <signal name="clicked" handler="on_colours_copy_clicked" swapped="no"/>
-                            <child>
-                              <object class="GtkAlignment" id="alignment19">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="xscale">0</property>
-                                <property name="yscale">0</property>
-                                <child>
-                                  <object class="GtkHBox" id="hbox24">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="spacing">2</property>
-                                    <child>
-                                      <object class="GtkImage" id="image9">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="stock">gtk-copy</property>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">0</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <object class="GtkLabel" id="label51">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="label" translatable="yes">_Copy</property>
-                                        <property name="use_underline">True</property>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">1</property>
-                                      </packing>
-                                    </child>
-                                  </object>
-                                </child>
-                              </object>
-                            </child>
                           </object>
                           <packing>
                             <property name="left_attach">1</property>
@@ -1203,6 +980,7 @@
                         </child>
                         <child>
                           <object class="GtkButton" id="colours_delete">
+                            <property name="label" translatable="yes">_Delete</property>
                             <property name="use_action_appearance">False</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -1211,47 +989,9 @@
                             <property name="has_tooltip">True</property>
                             <property name="tooltip_markup">Click to delete the selected colour scheme</property>
                             <property name="tooltip_text" translatable="yes">Click to delete the selected colour scheme</property>
+                            <property name="halign">center</property>
+                            <property name="use_underline">True</property>
                             <signal name="clicked" handler="on_colours_delete_clicked" swapped="no"/>
-                            <child>
-                              <object class="GtkAlignment" id="alignment20">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="xscale">0</property>
-                                <property name="yscale">0</property>
-                                <child>
-                                  <object class="GtkHBox" id="hbox25">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="spacing">2</property>
-                                    <child>
-                                      <object class="GtkImage" id="image10">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="stock">gtk-delete</property>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">0</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <object class="GtkLabel" id="label52">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="label" translatable="yes">_Delete</property>
-                                        <property name="use_underline">True</property>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">1</property>
-                                      </packing>
-                                    </child>
-                                  </object>
-                                </child>
-                              </object>
-                            </child>
                           </object>
                           <packing>
                             <property name="left_attach">0</property>
@@ -1260,6 +1000,7 @@
                         </child>
                         <child>
                           <object class="GtkButton" id="colours_rename">
+                            <property name="label" translatable="yes">_Rename</property>
                             <property name="use_action_appearance">False</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -1268,47 +1009,9 @@
                             <property name="has_tooltip">True</property>
                             <property name="tooltip_markup">Click to rename the selected colour scheme</property>
                             <property name="tooltip_text" translatable="yes">Click to rename the selected colour scheme</property>
+                            <property name="halign">center</property>
+                            <property name="use_underline">True</property>
                             <signal name="clicked" handler="on_colours_rename_clicked" swapped="no"/>
-                            <child>
-                              <object class="GtkAlignment" id="alignment12">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="xscale">0</property>
-                                <property name="yscale">0</property>
-                                <child>
-                                  <object class="GtkHBox" id="hbox17">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="spacing">2</property>
-                                    <child>
-                                      <object class="GtkImage" id="image2">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="stock">gtk-edit</property>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">0</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <object class="GtkLabel" id="label44">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="label" translatable="yes">_Rename</property>
-                                        <property name="use_underline">True</property>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">1</property>
-                                      </packing>
-                                    </child>
-                                  </object>
-                                </child>
-                              </object>
-                            </child>
                           </object>
                           <packing>
                             <property name="left_attach">1</property>
@@ -1336,7 +1039,6 @@
               <object class="GtkLabel" id="label39">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="xpad">1</property>
                 <property name="label" translatable="yes">Co_lours</property>
                 <property name="use_underline">True</property>
               </object>
@@ -1350,7 +1052,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="valign">end</property>
-                <property name="margin_left">4</property>
+                <property name="margin_start">4</property>
                 <property name="margin_top">4</property>
                 <property name="label_xalign">0</property>
                 <property name="shadow_type">none</property>
@@ -1358,9 +1060,9 @@
                   <object class="GtkAlignment" id="alignment26">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="top_padding">4</property>
-                    <property name="bottom_padding">4</property>
-                    <property name="left_padding">12</property>
+                    <property name="margin_start">12</property>
+                    <property name="margin_top">4</property>
+                    <property name="margin_bottom">4</property>
                     <child>
                       <object class="GtkGrid" id="grid7">
                         <property name="visible">True</property>
@@ -1398,52 +1100,15 @@
                         </child>
                         <child>
                           <object class="GtkButton" id="shortcuts_edit">
+                            <property name="label" translatable="yes">_Edit</property>
                             <property name="use_action_appearance">False</property>
                             <property name="can_focus">True</property>
                             <property name="can_default">True</property>
                             <property name="receives_default">True</property>
                             <property name="tooltip_text" translatable="yes">Click to edit the selected Shortcuts scheme in a text editor.</property>
+                            <property name="halign">center</property>
+                            <property name="use_underline">True</property>
                             <signal name="clicked" handler="on_shortcuts_edit_clicked" swapped="no"/>
-                            <child>
-                              <object class="GtkAlignment" id="alignment21">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="xscale">0</property>
-                                <property name="yscale">0</property>
-                                <child>
-                                  <object class="GtkHBox" id="hbox23">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="spacing">2</property>
-                                    <child>
-                                      <object class="GtkImage" id="image11">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="stock">gtk-properties</property>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">0</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <object class="GtkLabel" id="label31">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="label" translatable="yes">_Edit</property>
-                                        <property name="use_underline">True</property>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">1</property>
-                                      </packing>
-                                    </child>
-                                  </object>
-                                </child>
-                              </object>
-                            </child>
                           </object>
                           <packing>
                             <property name="left_attach">0</property>
@@ -1452,6 +1117,7 @@
                         </child>
                         <child>
                           <object class="GtkButton" id="shortcuts_copy">
+                            <property name="label" translatable="yes">_Copy</property>
                             <property name="use_action_appearance">False</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -1460,47 +1126,9 @@
                             <property name="has_tooltip">True</property>
                             <property name="tooltip_markup">Click to create a new keyboard shortcuts scheme with settings copied from the current selection</property>
                             <property name="tooltip_text" translatable="yes">Click to create a new keyboard shortcuts scheme with settings copied from the current selection</property>
+                            <property name="halign">center</property>
+                            <property name="use_underline">True</property>
                             <signal name="clicked" handler="on_shortcuts_copy_clicked" swapped="no"/>
-                            <child>
-                              <object class="GtkAlignment" id="alignment22">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="xscale">0</property>
-                                <property name="yscale">0</property>
-                                <child>
-                                  <object class="GtkHBox" id="hbox27">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="spacing">2</property>
-                                    <child>
-                                      <object class="GtkImage" id="image12">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="stock">gtk-copy</property>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">0</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <object class="GtkLabel" id="label54">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="label" translatable="yes">_Copy</property>
-                                        <property name="use_underline">True</property>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">1</property>
-                                      </packing>
-                                    </child>
-                                  </object>
-                                </child>
-                              </object>
-                            </child>
                           </object>
                           <packing>
                             <property name="left_attach">1</property>
@@ -1509,6 +1137,7 @@
                         </child>
                         <child>
                           <object class="GtkButton" id="shortcuts_delete">
+                            <property name="label" translatable="yes">_Delete</property>
                             <property name="use_action_appearance">False</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -1517,47 +1146,9 @@
                             <property name="has_tooltip">True</property>
                             <property name="tooltip_markup">Click to delete the selected profile</property>
                             <property name="tooltip_text" translatable="yes">Click to delete the selected profile</property>
+                            <property name="halign">center</property>
+                            <property name="use_underline">True</property>
                             <signal name="clicked" handler="on_shortcuts_delete_clicked" swapped="no"/>
-                            <child>
-                              <object class="GtkAlignment" id="alignment31">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="xscale">0</property>
-                                <property name="yscale">0</property>
-                                <child>
-                                  <object class="GtkHBox" id="hbox33">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="spacing">2</property>
-                                    <child>
-                                      <object class="GtkImage" id="image17">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="stock">gtk-delete</property>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">0</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <object class="GtkLabel" id="label65">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="label" translatable="yes">_Delete</property>
-                                        <property name="use_underline">True</property>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">1</property>
-                                      </packing>
-                                    </child>
-                                  </object>
-                                </child>
-                              </object>
-                            </child>
                           </object>
                           <packing>
                             <property name="left_attach">0</property>
@@ -1566,6 +1157,7 @@
                         </child>
                         <child>
                           <object class="GtkButton" id="shortcuts_rename">
+                            <property name="label" translatable="yes">_Rename</property>
                             <property name="use_action_appearance">False</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -1574,48 +1166,9 @@
                             <property name="has_tooltip">True</property>
                             <property name="tooltip_markup">Click to rename the selected keyboard shortcuts scheme</property>
                             <property name="tooltip_text" translatable="yes">Click to rename the selected keyboard shortcuts scheme</property>
+                            <property name="halign">center</property>
+                            <property name="use_underline">True</property>
                             <signal name="clicked" handler="on_shortcuts_rename_clicked" swapped="no"/>
-                            <child>
-                              <object class="GtkAlignment" id="alignment13">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="xscale">0</property>
-                                <property name="yscale">0</property>
-                                <child>
-                                  <object class="GtkHBox" id="hbox18">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="spacing">2</property>
-                                    <child>
-                                      <object class="GtkImage" id="image3">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="stock">gtk-edit</property>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">0</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <object class="GtkLabel" id="label45">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="xalign">0.52999997138977051</property>
-                                        <property name="label" translatable="yes">_Rename</property>
-                                        <property name="use_underline">True</property>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">1</property>
-                                      </packing>
-                                    </child>
-                                  </object>
-                                </child>
-                              </object>
-                            </child>
                           </object>
                           <packing>
                             <property name="left_attach">1</property>
@@ -1645,7 +1198,6 @@
                 <property name="can_focus">False</property>
                 <property name="valign">start</property>
                 <property name="yalign">0.50999999046325684</property>
-                <property name="xpad">1</property>
                 <property name="label" translatable="yes">S_hortcuts</property>
                 <property name="use_underline">True</property>
                 <property name="justify">center</property>
@@ -1659,7 +1211,7 @@
               <object class="GtkFrame" id="encodings_frame">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="margin_left">4</property>
+                <property name="margin_start">4</property>
                 <property name="margin_top">4</property>
                 <property name="label_xalign">0</property>
                 <property name="shadow_type">none</property>
@@ -1667,9 +1219,9 @@
                   <object class="GtkAlignment" id="alignment27">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="top_padding">4</property>
-                    <property name="bottom_padding">4</property>
-                    <property name="left_padding">12</property>
+                    <property name="margin_start">12</property>
+                    <property name="margin_top">4</property>
+                    <property name="margin_bottom">4</property>
                     <child>
                       <object class="GtkGrid" id="grid8">
                         <property name="visible">True</property>
@@ -1707,6 +1259,7 @@
                         </child>
                         <child>
                           <object class="GtkButton" id="encodings_copy">
+                            <property name="label" translatable="yes">_Add</property>
                             <property name="use_action_appearance">False</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -1715,50 +1268,9 @@
                             <property name="has_tooltip">True</property>
                             <property name="tooltip_markup">Click to add a new encoding name</property>
                             <property name="tooltip_text" translatable="yes">Click to add a new encoding name</property>
+                            <property name="halign">center</property>
+                            <property name="use_underline">True</property>
                             <signal name="clicked" handler="on_encodings_copy_clicked" swapped="no"/>
-                            <child>
-                              <object class="GtkAlignment" id="alignment29">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="xscale">0</property>
-                                <property name="yscale">0</property>
-                                <property name="top_padding">4</property>
-                                <child>
-                                  <object class="GtkHBox" id="hbox31">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="spacing">2</property>
-                                    <child>
-                                      <object class="GtkImage" id="image15">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="stock">gtk-add</property>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">0</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <object class="GtkLabel" id="label63">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="xpad">1</property>
-                                        <property name="ypad">1</property>
-                                        <property name="label" translatable="yes">_Add</property>
-                                        <property name="use_underline">True</property>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">1</property>
-                                      </packing>
-                                    </child>
-                                  </object>
-                                </child>
-                              </object>
-                            </child>
                           </object>
                           <packing>
                             <property name="left_attach">0</property>
@@ -1767,6 +1279,7 @@
                         </child>
                         <child>
                           <object class="GtkButton" id="encodings_delete">
+                            <property name="label" translatable="yes">_Delete</property>
                             <property name="use_action_appearance">False</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -1775,47 +1288,9 @@
                             <property name="has_tooltip">True</property>
                             <property name="tooltip_markup">Click to remove the selected encoding from the list</property>
                             <property name="tooltip_text" translatable="yes">Click to remove the selected encoding from the list</property>
+                            <property name="halign">center</property>
+                            <property name="use_underline">True</property>
                             <signal name="clicked" handler="on_encodings_delete_clicked" swapped="no"/>
-                            <child>
-                              <object class="GtkAlignment" id="alignment32">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="xscale">0</property>
-                                <property name="yscale">0</property>
-                                <child>
-                                  <object class="GtkHBox" id="hbox34">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="spacing">2</property>
-                                    <child>
-                                      <object class="GtkImage" id="image18">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="stock">gtk-delete</property>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">0</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <object class="GtkLabel" id="label66">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="label" translatable="yes">_Delete</property>
-                                        <property name="use_underline">True</property>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">1</property>
-                                      </packing>
-                                    </child>
-                                  </object>
-                                </child>
-                              </object>
-                            </child>
                           </object>
                           <packing>
                             <property name="left_attach">0</property>
@@ -1824,6 +1299,7 @@
                         </child>
                         <child>
                           <object class="GtkButton" id="encodings_rename">
+                            <property name="label" translatable="yes">_Edit</property>
                             <property name="use_action_appearance">False</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -1832,47 +1308,9 @@
                             <property name="has_tooltip">True</property>
                             <property name="tooltip_markup">Click to edit the selected encoding name</property>
                             <property name="tooltip_text" translatable="yes">Click to edit the selected encoding name</property>
+                            <property name="halign">center</property>
+                            <property name="use_underline">True</property>
                             <signal name="clicked" handler="on_encodings_rename_clicked" swapped="no"/>
-                            <child>
-                              <object class="GtkAlignment" id="alignment28">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="xscale">0</property>
-                                <property name="yscale">0</property>
-                                <child>
-                                  <object class="GtkHBox" id="hbox30">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="spacing">2</property>
-                                    <child>
-                                      <object class="GtkImage" id="image14">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="stock">gtk-edit</property>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">0</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <object class="GtkLabel" id="label62">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="label" translatable="yes">_Edit</property>
-                                        <property name="use_underline">True</property>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">1</property>
-                                      </packing>
-                                    </child>
-                                  </object>
-                                </child>
-                              </object>
-                            </child>
                           </object>
                           <packing>
                             <property name="left_attach">1</property>
@@ -1921,9 +1359,9 @@
                   <object class="GtkAlignment" id="alignment14">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="top_padding">4</property>
-                    <property name="bottom_padding">4</property>
-                    <property name="left_padding">12</property>
+                    <property name="margin_start">12</property>
+                    <property name="margin_top">4</property>
+                    <property name="margin_bottom">4</property>
                     <child>
                       <object class="GtkGrid" id="grid9">
                         <property name="visible">True</property>
@@ -1935,7 +1373,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
-                            <property name="xalign">0</property>
+                            <property name="xalign">0.5</property>
                             <property name="active">True</property>
                             <property name="draw_indicator">True</property>
                             <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
@@ -1952,7 +1390,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
-                            <property name="xalign">0</property>
+                            <property name="xalign">0.5</property>
                             <property name="active">True</property>
                             <property name="draw_indicator">True</property>
                             <property name="group">warn_close0</property>
@@ -1970,7 +1408,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
-                            <property name="xalign">0</property>
+                            <property name="xalign">0.5</property>
                             <property name="active">True</property>
                             <property name="draw_indicator">True</property>
                             <property name="group">warn_close0</property>
@@ -1988,7 +1426,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
-                            <property name="xalign">0</property>
+                            <property name="xalign">0.5</property>
                             <property name="active">True</property>
                             <property name="draw_indicator">True</property>
                             <property name="group">warn_close0</property>
@@ -2006,7 +1444,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
-                            <property name="xalign">0</property>
+                            <property name="xalign">0.5</property>
                             <property name="draw_indicator">True</property>
                             <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                           </object>
@@ -2026,7 +1464,7 @@
                             <property name="tooltip_markup">This option applies to terminal windows' menus and borders etc; terminal colours are handled separately. It does not apply to the configuration applet.</property>
                             <property name="tooltip_text" translatable="yes">This option applies to terminal windows' menus and borders etc; terminal colours are handled separately. It does not apply to the configuration applet.</property>
                             <property name="margin_top">8</property>
-                            <property name="xalign">0</property>
+                            <property name="xalign">0.5</property>
                             <property name="draw_indicator">True</property>
                             <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                           </object>
@@ -2043,7 +1481,7 @@
                   <object class="GtkLabel" id="label50">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="margin_left">4</property>
+                    <property name="margin_start">4</property>
                     <property name="margin_top">4</property>
                     <property name="margin_bottom">4</property>
                     <property name="label" translatable="yes">&lt;b&gt;Miscellaneous global options&lt;/b&gt;</property>
@@ -2081,6 +1519,25 @@
     <action-widgets>
       <action-widget response="-7">closebutton3</action-widget>
     </action-widgets>
+  </object>
+  <object class="GtkSizeGroup" id="actions_sizegroup">
+    <widgets>
+      <widget name="profile_rename"/>
+      <widget name="profile_delete"/>
+      <widget name="profile_copy"/>
+      <widget name="profile_edit"/>
+      <widget name="colours_rename"/>
+      <widget name="colours_delete"/>
+      <widget name="colours_copy"/>
+      <widget name="colours_edit"/>
+      <widget name="shortcuts_rename"/>
+      <widget name="shortcuts_delete"/>
+      <widget name="shortcuts_copy"/>
+      <widget name="shortcuts_edit"/>
+      <widget name="encodings_rename"/>
+      <widget name="encodings_delete"/>
+      <widget name="encodings_copy"/>
+    </widgets>
   </object>
   <object class="GtkAdjustment" id="exit_pause_adjustment">
     <property name="upper">600</property>
@@ -2145,13 +1602,12 @@
             <property name="layout_style">end</property>
             <child>
               <object class="GtkButton" id="closebutton2">
-                <property name="label">gtk-close</property>
+                <property name="label">Close</property>
                 <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>
                 <property name="receives_default">False</property>
-                <property name="use_stock">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -2209,8 +1665,8 @@
                       <object class="GtkAlignment" id="alignment10">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="top_padding">4</property>
-                        <property name="left_padding">12</property>
+                        <property name="margin_start">12</property>
+                        <property name="margin_top">4</property>
                         <child>
                           <object class="GtkGrid" id="grid12">
                             <property name="visible">True</property>
@@ -2277,7 +1733,7 @@
                                     <property name="has_tooltip">True</property>
                                     <property name="tooltip_text" translatable="yes">Set the terminal's size in characters from the adjacent values.</property>
                                     <property name="use_underline">True</property>
-                                    <property name="xalign">0</property>
+                                    <property name="xalign">0.5</property>
                                     <property name="active">True</property>
                                     <property name="draw_indicator">True</property>
                                     <signal name="toggled" handler="on_cell_size_toggled" swapped="no"/>
@@ -2390,7 +1846,7 @@
                                     <property name="tooltip_text" translatable="yes">Use a maximised window.</property>
                                     <property name="margin_bottom">4</property>
                                     <property name="use_underline">True</property>
-                                    <property name="xalign">0</property>
+                                    <property name="xalign">0.5</property>
                                     <property name="draw_indicator">True</property>
                                     <property name="group">cell_size</property>
                                     <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
@@ -2413,7 +1869,7 @@
                                     <property name="tooltip_text" translatable="yes">Make the terminal take up the whole screen with no window borders.</property>
                                     <property name="margin_bottom">4</property>
                                     <property name="use_underline">True</property>
-                                    <property name="xalign">0</property>
+                                    <property name="xalign">0.5</property>
                                     <property name="draw_indicator">True</property>
                                     <property name="group">cell_size</property>
                                     <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
@@ -2435,7 +1891,7 @@
                                     <property name="tooltip_markup">Whether new windows with this profile will have a menu bar. You can also turn the menu bar on and off from terminal menus.</property>
                                     <property name="tooltip_text" translatable="yes">Whether new windows with this profile will have a menu bar. You can also turn the menu bar on and off from terminal menus.</property>
                                     <property name="use_underline">True</property>
-                                    <property name="xalign">0</property>
+                                    <property name="xalign">0.5</property>
                                     <property name="draw_indicator">True</property>
                                     <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                                   </object>
@@ -2457,7 +1913,7 @@
                                     <property name="tooltip_markup">If this option is enabled the tabs at the top of each terminal are always shown, even in windows which only contain one tab</property>
                                     <property name="tooltip_text" translatable="yes">If this option is enabled the tabs at the top of each terminal are always shown, even in windows which only contain one tab</property>
                                     <property name="use_underline">True</property>
-                                    <property name="xalign">0</property>
+                                    <property name="xalign">0.5</property>
                                     <property name="draw_indicator">True</property>
                                     <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                                   </object>
@@ -2479,7 +1935,7 @@
                                     <property name="tooltip_markup">Enables a button in the tab bar which adds a new tab when clicked.</property>
                                     <property name="tooltip_text" translatable="yes">Enables a button in the tab bar which adds a new tab when clicked.</property>
                                     <property name="use_underline">True</property>
-                                    <property name="xalign">0</property>
+                                    <property name="xalign">0.5</property>
                                     <property name="draw_indicator">True</property>
                                     <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                                   </object>
@@ -2695,8 +2151,8 @@
                       <object class="GtkAlignment" id="alignment1">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="top_padding">8</property>
-                        <property name="left_padding">12</property>
+                        <property name="margin_start">12</property>
+                        <property name="margin_top">8</property>
                         <child>
                           <object class="GtkGrid" id="grid16">
                             <property name="visible">True</property>
@@ -2725,7 +2181,7 @@
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_text" translatable="yes">Whether the terminal cursor blinks depends on the GTK system setting.</property>
                                 <property name="use_underline">True</property>
-                                <property name="xalign">0</property>
+                                <property name="xalign">0.5</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
@@ -2745,7 +2201,7 @@
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_text" translatable="yes">The terminal cursor blinks.</property>
                                 <property name="use_underline">True</property>
-                                <property name="xalign">0</property>
+                                <property name="xalign">0.5</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">cursor_blink_mode0</property>
@@ -2766,7 +2222,7 @@
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_text" translatable="yes">The terminal cursor doesn't blink.</property>
                                 <property name="use_underline">True</property>
-                                <property name="xalign">0</property>
+                                <property name="xalign">0.5</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">cursor_blink_mode0</property>
@@ -2840,7 +2296,7 @@
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_text" translatable="yes">The cursor is a horizontal line at the bottom of each character.</property>
                                 <property name="use_underline">True</property>
-                                <property name="xalign">0</property>
+                                <property name="xalign">0.5</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">cursor_shape0</property>
@@ -2955,7 +2411,7 @@
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
                                 <property name="use_underline">True</property>
-                                <property name="xalign">0</property>
+                                <property name="xalign">0.5</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                                 <accelerator key="b" signal="clicked" modifiers="GDK_MOD1_MASK"/>
@@ -2974,7 +2430,7 @@
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
                                 <property name="use_underline">True</property>
-                                <property name="xalign">0</property>
+                                <property name="xalign">0.5</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                               </object>
@@ -2994,7 +2450,7 @@
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_text" translatable="yes">If selected, "printing" an ASCII bell character will cause a beep.</property>
                                 <property name="use_underline">True</property>
-                                <property name="xalign">0</property>
+                                <property name="xalign">0.5</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                               </object>
@@ -3014,7 +2470,7 @@
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_text" translatable="yes">If the "bell rings" in a terminal while it isn't the active tab or window, its tab label will flash and/or its window will be marked "urgent".</property>
                                 <property name="use_underline">True</property>
-                                <property name="xalign">0</property>
+                                <property name="xalign">0.5</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                               </object>
@@ -3033,7 +2489,7 @@
                                 <property name="receives_default">False</property>
                                 <property name="tooltip_text" translatable="yes">Enabling this option causes existing text to be rerwapped when the terminal's width (number of columns) changes.</property>
                                 <property name="use_underline">True</property>
-                                <property name="xalign">0</property>
+                                <property name="xalign">0.5</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                                 <accelerator key="w" signal="clicked" modifiers="GDK_MOD1_MASK"/>
@@ -3083,8 +2539,8 @@
                       <object class="GtkAlignment" id="alignment7">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="top_padding">4</property>
-                        <property name="left_padding">12</property>
+                        <property name="margin_start">12</property>
+                        <property name="margin_top">4</property>
                         <child>
                           <object class="GtkGrid" id="grid17">
                             <property name="visible">True</property>
@@ -3099,7 +2555,7 @@
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
                                 <property name="use_underline">True</property>
-                                <property name="xalign">0</property>
+                                <property name="xalign">0.5</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_command_toggled" swapped="no"/>
@@ -3119,7 +2575,7 @@
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_text" translatable="yes">Whether shells running in the terminal are login shells</property>
                                 <property name="use_underline">True</property>
-                                <property name="xalign">0</property>
+                                <property name="xalign">0.5</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                               </object>
@@ -3138,7 +2594,7 @@
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_text" translatable="yes">Whether to log sessions to login records (utmp/wtmp/utmpx/wtmpx)</property>
                                 <property name="use_underline">True</property>
-                                <property name="xalign">0</property>
+                                <property name="xalign">0.5</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                               </object>
@@ -3158,7 +2614,7 @@
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_text" translatable="yes">Enable the adjacent custom command for this profile.</property>
                                 <property name="use_underline">True</property>
-                                <property name="xalign">0</property>
+                                <property name="xalign">0.5</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">use_default_shell</property>
@@ -3199,7 +2655,7 @@
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_text" translatable="yes">Connect to a ssh (secure shell) with this profile.</property>
                                 <property name="use_underline">True</property>
-                                <property name="xalign">0</property>
+                                <property name="xalign">0.5</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">use_default_shell</property>
@@ -3233,7 +2689,6 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="xalign">0</property>
-                                <property name="xpad">1</property>
                                 <property name="label" translatable="yes">When command e_xits:</property>
                                 <property name="use_underline">True</property>
                                 <property name="justify">right</property>
@@ -3366,8 +2821,8 @@
                   <object class="GtkGrid" id="net_uris_page">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="margin_left">8</property>
-                    <property name="margin_right">8</property>
+                    <property name="margin_start">8</property>
+                    <property name="margin_end">8</property>
                     <property name="margin_top">8</property>
                     <property name="margin_bottom">8</property>
                     <property name="row_spacing">8</property>
@@ -3391,7 +2846,7 @@
                       <object class="GtkLabel" id="label7">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="margin_left">12</property>
+                        <property name="margin_start">12</property>
                         <property name="xalign">0</property>
                         <property name="label" translatable="yes">Bro_wser</property>
                         <property name="use_underline">True</property>
@@ -3430,10 +2885,10 @@
                         <property name="has_tooltip">True</property>
                         <property name="tooltip_markup">Run the browser without a terminal.</property>
                         <property name="tooltip_text" translatable="yes">Run the browser without a terminal.</property>
-                        <property name="margin_left">12</property>
+                        <property name="margin_start">12</property>
                         <property name="relief">none</property>
                         <property name="use_underline">True</property>
-                        <property name="xalign">0</property>
+                        <property name="xalign">0.5</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
                         <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
@@ -3453,7 +2908,7 @@
                         <property name="has_tooltip">True</property>
                         <property name="tooltip_text" translatable="yes">Run the browser in a new ROXTerm window.</property>
                         <property name="use_underline">True</property>
-                        <property name="xalign">0</property>
+                        <property name="xalign">0.5</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
                         <property name="group">browser_spawn_type0</property>
@@ -3474,7 +2929,7 @@
                         <property name="has_tooltip">True</property>
                         <property name="tooltip_text" translatable="yes">Run the browser in a new ROXTerm tab.</property>
                         <property name="use_underline">True</property>
-                        <property name="xalign">0</property>
+                        <property name="xalign">0.5</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
                         <property name="group">browser_spawn_type0</property>
@@ -3505,7 +2960,7 @@
                       <object class="GtkLabel" id="label10">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="margin_left">12</property>
+                        <property name="margin_start">12</property>
                         <property name="xalign">0</property>
                         <property name="label" translatable="yes">_Mailer</property>
                         <property name="use_underline">True</property>
@@ -3543,9 +2998,9 @@
                         <property name="has_tooltip">True</property>
                         <property name="tooltip_markup">Run the mailer without a terminal.</property>
                         <property name="tooltip_text" translatable="yes">Run the mailer without a terminal.</property>
-                        <property name="margin_left">12</property>
+                        <property name="margin_start">12</property>
                         <property name="use_underline">True</property>
-                        <property name="xalign">0</property>
+                        <property name="xalign">0.5</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
                         <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
@@ -3566,7 +3021,7 @@
                         <property name="tooltip_markup">Run the mailer in a new ROXTerm window.</property>
                         <property name="tooltip_text" translatable="yes">Run the mailer in a new ROXTerm window.</property>
                         <property name="use_underline">True</property>
-                        <property name="xalign">0</property>
+                        <property name="xalign">0.5</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
                         <property name="group">mailer_spawn_type0</property>
@@ -3588,7 +3043,7 @@
                         <property name="tooltip_markup">Run the mailer in a new ROXTerm tab.</property>
                         <property name="tooltip_text" translatable="yes">Run the mailer in a new ROXTerm tab.</property>
                         <property name="use_underline">True</property>
-                        <property name="xalign">0</property>
+                        <property name="xalign">0.5</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
                         <property name="group">mailer_spawn_type0</property>
@@ -3619,8 +3074,8 @@
                       <object class="GtkLabel" id="label32">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="margin_left">12</property>
-                        <property name="margin_right">8</property>
+                        <property name="margin_start">12</property>
+                        <property name="margin_end">8</property>
                         <property name="xalign">0</property>
                         <property name="label" translatable="yes">_SSH Command</property>
                         <property name="use_underline">True</property>
@@ -3661,9 +3116,9 @@
                         <property name="has_tooltip">True</property>
                         <property name="tooltip_markup">Run the SSH command without a terminal.</property>
                         <property name="tooltip_text" translatable="yes">Run the SSH command without a terminal.</property>
-                        <property name="margin_left">12</property>
+                        <property name="margin_start">12</property>
                         <property name="use_underline">True</property>
-                        <property name="xalign">0</property>
+                        <property name="xalign">0.5</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
                         <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
@@ -3684,7 +3139,7 @@
                         <property name="tooltip_markup">Run the SSH command in a new ROXTerm window.</property>
                         <property name="tooltip_text" translatable="yes">Run the SSH command in a new ROXTerm window.</property>
                         <property name="use_underline">True</property>
-                        <property name="xalign">0</property>
+                        <property name="xalign">0.5</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
                         <property name="group">ssh_spawn_type0</property>
@@ -3706,7 +3161,7 @@
                         <property name="tooltip_markup">Run the SSH command in a new ROXTerm tab.</property>
                         <property name="tooltip_text" translatable="yes">Run the SSH command in a new ROXTerm tab.</property>
                         <property name="use_underline">True</property>
-                        <property name="xalign">0</property>
+                        <property name="xalign">0.5</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
                         <property name="group">ssh_spawn_type0</property>
@@ -3737,8 +3192,8 @@
                   <object class="GtkGrid" id="file_uris_page">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="margin_left">8</property>
-                    <property name="margin_right">8</property>
+                    <property name="margin_start">8</property>
+                    <property name="margin_end">8</property>
                     <property name="margin_top">8</property>
                     <property name="margin_bottom">8</property>
                     <property name="row_spacing">8</property>
@@ -3763,7 +3218,7 @@
                       <object class="GtkLabel" id="label3">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="margin_left">8</property>
+                        <property name="margin_start">8</property>
                         <property name="xalign">0</property>
                         <property name="label" translatable="yes">Filer</property>
                         <property name="mnemonic_widget">dir_filer</property>
@@ -3802,9 +3257,9 @@
                         <property name="has_tooltip">True</property>
                         <property name="tooltip_markup">Run the filer without a terminal.</property>
                         <property name="tooltip_text" translatable="yes">Run the filer without a terminal.</property>
-                        <property name="margin_left">7</property>
+                        <property name="margin_start">7</property>
                         <property name="use_underline">True</property>
-                        <property name="xalign">0</property>
+                        <property name="xalign">0.5</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
                         <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
@@ -3825,7 +3280,7 @@
                         <property name="tooltip_markup">Run the filer in a new ROXTerm window.</property>
                         <property name="tooltip_text" translatable="yes">Run the filer in a new ROXTerm window.</property>
                         <property name="use_underline">True</property>
-                        <property name="xalign">0</property>
+                        <property name="xalign">0.5</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
                         <property name="group">dir_spawn_type0</property>
@@ -3847,7 +3302,7 @@
                         <property name="tooltip_markup">Run the filer in a new ROXTerm tab.</property>
                         <property name="tooltip_text" translatable="yes">Run the filer in a new ROXTerm tab.</property>
                         <property name="use_underline">True</property>
-                        <property name="xalign">0</property>
+                        <property name="xalign">0.5</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
                         <property name="group">dir_spawn_type0</property>
@@ -3878,7 +3333,7 @@
                       <object class="GtkLabel" id="label1">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="margin_left">8</property>
+                        <property name="margin_start">8</property>
                         <property name="xalign">0</property>
                         <property name="label" translatable="yes">_Filer</property>
                         <property name="use_underline">True</property>
@@ -3919,9 +3374,9 @@
                         <property name="has_tooltip">True</property>
                         <property name="tooltip_markup">Run the filer without a terminal.</property>
                         <property name="tooltip_text" translatable="yes">Run the filer without a terminal.</property>
-                        <property name="margin_left">8</property>
+                        <property name="margin_start">8</property>
                         <property name="use_underline">True</property>
-                        <property name="xalign">0</property>
+                        <property name="xalign">0.5</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
                         <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
@@ -3942,7 +3397,7 @@
                         <property name="tooltip_markup">Run the filer in a new ROXTerm window.</property>
                         <property name="tooltip_text" translatable="yes">Run the filer in a new ROXTerm window.</property>
                         <property name="use_underline">True</property>
-                        <property name="xalign">0</property>
+                        <property name="xalign">0.5</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
                         <property name="group">filer_spawn_type0</property>
@@ -3963,7 +3418,7 @@
                         <property name="tooltip_markup">Run the filer in a new ROXTerm tab.</property>
                         <property name="tooltip_text" translatable="yes">Run the filer in a new ROXTerm tab.</property>
                         <property name="use_underline">True</property>
-                        <property name="xalign">0</property>
+                        <property name="xalign">0.5</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
                         <property name="group">filer_spawn_type0</property>
@@ -3983,9 +3438,9 @@
                         <property name="receives_default">False</property>
                         <property name="tooltip_markup">If set open the file's parent directory instead of the file.</property>
                         <property name="tooltip_text" translatable="yes">If set open the file's parent directory instead of the file.</property>
-                        <property name="margin_left">8</property>
+                        <property name="margin_start">8</property>
                         <property name="use_underline">True</property>
-                        <property name="xalign">0</property>
+                        <property name="xalign">0.5</property>
                         <property name="draw_indicator">True</property>
                         <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                       </object>
@@ -4005,7 +3460,7 @@
                         <property name="tooltip_text" translatable="yes">If enabled, patterns which look like filenames will be highlighted even if they lack a file:// URI prefix.</property>
                         <property name="margin_top">8</property>
                         <property name="use_underline">True</property>
-                        <property name="xalign">0</property>
+                        <property name="xalign">0.5</property>
                         <property name="draw_indicator">True</property>
                         <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                       </object>
@@ -4042,7 +3497,7 @@
                       <object class="GtkAlignment" id="alignment5">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="left_padding">12</property>
+                        <property name="margin_start">12</property>
                         <child>
                           <object class="GtkGrid" id="grid19">
                             <property name="visible">True</property>
@@ -4058,7 +3513,7 @@
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
                                 <property name="use_underline">True</property>
-                                <property name="xalign">0</property>
+                                <property name="xalign">0.5</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
@@ -4076,7 +3531,7 @@
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
                                 <property name="use_underline">True</property>
-                                <property name="xalign">0</property>
+                                <property name="xalign">0.5</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">scrollbar_pos0</property>
                                 <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
@@ -4094,7 +3549,7 @@
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
                                 <property name="use_underline">True</property>
-                                <property name="xalign">0</property>
+                                <property name="xalign">0.5</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">scrollbar_pos0</property>
                                 <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
@@ -4114,7 +3569,7 @@
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_text" translatable="yes">Whether to make the scrollbar jump to the bottom when new text is printed in the terminal</property>
                                 <property name="use_underline">True</property>
-                                <property name="xalign">0</property>
+                                <property name="xalign">0.5</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                               </object>
@@ -4133,7 +3588,7 @@
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_text" translatable="yes">Whether to make the scrollbar jump to the bottom when text is typed into a terminal</property>
                                 <property name="use_underline">True</property>
-                                <property name="xalign">0</property>
+                                <property name="xalign">0.5</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                               </object>
@@ -4152,7 +3607,8 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                                    <property name="stock">gtk-dialog-info</property>
+                                    <property name="icon_name">dialog-information</property>
+                                    <property name="icon_size">3</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">0</property>
@@ -4229,7 +3685,7 @@
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
                                     <property name="use_underline">True</property>
-                                    <property name="xalign">0</property>
+                                    <property name="xalign">0.5</property>
                                     <property name="draw_indicator">True</property>
                                     <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                                   </object>
@@ -4283,7 +3739,7 @@
                       <object class="GtkAlignment" id="alignment6">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="left_padding">12</property>
+                        <property name="margin_start">12</property>
                         <child>
                           <object class="GtkGrid" id="grid22">
                             <property name="visible">True</property>
@@ -4383,7 +3839,7 @@
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_text" translatable="yes">This option disables the keyboard shortcut for opening the first menu. The default shortcut is F10.</property>
                                 <property name="use_underline">True</property>
-                                <property name="xalign">0</property>
+                                <property name="xalign">0.5</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                               </object>
@@ -4404,7 +3860,7 @@
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_text" translatable="yes">This option disables the underlined shortcut keys in the menus (eg Alt+F for the File menu).</property>
                                 <property name="use_underline">True</property>
-                                <property name="xalign">0</property>
+                                <property name="xalign">0.5</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                               </object>
@@ -4425,7 +3881,7 @@
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_text" translatable="yes">This option disables the shortcut keys for switching tabs (Alt+1-9 and Alt+0 by default)</property>
                                 <property name="use_underline">True</property>
-                                <property name="xalign">0</property>
+                                <property name="xalign">0.5</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                               </object>
@@ -4443,7 +3899,6 @@
                       <object class="GtkLabel" id="label30">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="xalign">0.4699999988079071</property>
                         <property name="label" translatable="yes">&lt;b&gt;Keyboard&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
                       </object>
@@ -4475,7 +3930,7 @@
                       <object class="GtkAlignment" id="alignment8">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="left_padding">12</property>
+                        <property name="margin_start">12</property>
                         <child>
                           <object class="GtkGrid" id="grid23">
                             <property name="visible">True</property>
@@ -4526,7 +3981,7 @@
                                     <property name="receives_default">False</property>
                                     <property name="tooltip_text" translatable="yes">This option causes the tab number to be shown at the start of the title.</property>
                                     <property name="use_underline">True</property>
-                                    <property name="xalign">0</property>
+                                    <property name="xalign">0.5</property>
                                     <property name="draw_indicator">True</property>
                                     <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                                   </object>
@@ -4568,7 +4023,7 @@
                                     <property name="receives_default">False</property>
                                     <property name="tooltip_markup">Nothing happens if the tab label is middle-clicked.</property>
                                     <property name="use_underline">True</property>
-                                    <property name="xalign">0</property>
+                                    <property name="xalign">0.5</property>
                                     <property name="active">True</property>
                                     <property name="draw_indicator">True</property>
                                     <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
@@ -4587,7 +4042,7 @@
                                     <property name="receives_default">False</property>
                                     <property name="tooltip_markup">If the tab label is middle-clicked the tab is closed.</property>
                                     <property name="use_underline">True</property>
-                                    <property name="xalign">0</property>
+                                    <property name="xalign">0.5</property>
                                     <property name="draw_indicator">True</property>
                                     <property name="group">middle_click_tab0</property>
                                     <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
@@ -4606,7 +4061,7 @@
                                     <property name="receives_default">False</property>
                                     <property name="tooltip_markup">If the tab label is middle-clicked the tab's name is pasted from the clipboard.</property>
                                     <property name="use_underline">True</property>
-                                    <property name="xalign">0</property>
+                                    <property name="xalign">0.5</property>
                                     <property name="draw_indicator">True</property>
                                     <property name="group">middle_click_tab0</property>
                                     <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
@@ -4628,7 +4083,7 @@
                                     <property name="tooltip_markup">This option makes the Next and Previous Tab operations respectively wrap around from the first and last tab to the opposite end of the row; the move tab left/right/up/down menu items are affected similarly.</property>
                                     <property name="tooltip_text" translatable="yes">This option makes the Next and Previous Tab operations respectively wrap around from the first and last tab to the opposite end of the row; the move tab left/right/up/down menu items are affected similarly.</property>
                                     <property name="use_underline">True</property>
-                                    <property name="xalign">0</property>
+                                    <property name="xalign">0.5</property>
                                     <property name="draw_indicator">True</property>
                                     <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                                   </object>
@@ -4649,7 +4104,7 @@
                                     <property name="tooltip_markup">If this option is enabled close buttons are shown at the top of tabs.</property>
                                     <property name="tooltip_text" translatable="yes">If this option is enabled close buttons are shown at the top of tabs.</property>
                                     <property name="use_underline">True</property>
-                                    <property name="xalign">0</property>
+                                    <property name="xalign">0.5</property>
                                     <property name="draw_indicator">True</property>
                                     <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                                     <signal name="toggled" handler="on_close_buttons_toggled" swapped="no"/>
@@ -4671,7 +4126,7 @@
                                     <property name="tooltip_markup">If this option is enabled the icons in close buttons may be changed in inactive tabs to reflect the status of their terminals.</property>
                                     <property name="tooltip_text" translatable="yes">If this option is enabled the icons in close buttons may be changed in inactive tabs to reflect the status of their terminals.</property>
                                     <property name="use_underline">True</property>
-                                    <property name="xalign">0</property>
+                                    <property name="xalign">0.5</property>
                                     <property name="draw_indicator">True</property>
                                     <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                                   </object>
@@ -4691,7 +4146,7 @@
                                     <property name="tooltip_markup">Whether to open new tabs adjacent to the current tab in a window, otherwise append them.</property>
                                     <property name="tooltip_text" translatable="yes">Whether to open new tabs adjacent to the current tab in a window, otherwise append them.</property>
                                     <property name="use_underline">True</property>
-                                    <property name="xalign">0</property>
+                                    <property name="xalign">0.5</property>
                                     <property name="image_position">bottom</property>
                                     <property name="draw_indicator">True</property>
                                     <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
@@ -4718,7 +4173,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                                    <property name="stock">gtk-dialog-info</property>
+                                    <property name="icon_name">dialog-information</property>
                                     <property name="icon_size">3</property>
                                   </object>
                                   <packing>
@@ -4796,7 +4251,6 @@
                                     <property name="can_focus">False</property>
                                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                                     <property name="xalign">0</property>
-                                    <property name="xpad">1</property>
                                     <property name="label" translatable="yes">Tab pos_ition:</property>
                                     <property name="use_underline">True</property>
                                     <property name="justify">right</property>
@@ -4913,14 +4367,13 @@
             <property name="layout_style">end</property>
             <child>
               <object class="GtkButton" id="button1">
-                <property name="label">gtk-close</property>
+                <property name="label">Close</property>
                 <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>
                 <property name="has_default">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_stock">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>

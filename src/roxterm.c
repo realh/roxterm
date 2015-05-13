@@ -2927,7 +2927,6 @@ static void roxterm_set_scrollback_lines(ROXTermData * roxterm,
             options_lookup_int_with_default(roxterm->profile,
                     "scrollback_lines", 1000) :
             -1;
-    g_debug("Setting scrollback lines to %d", lines);
     vte_terminal_set_scrollback_lines(vte, lines);
 }
 
