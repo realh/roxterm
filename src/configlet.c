@@ -59,6 +59,7 @@ struct _ConfigletData {
     CappletData capp;
     gboolean ignore_destroy;
     GtkWidget *widget;
+    GtkSizeGroup *size_group;
     ConfigletList profile;
     ConfigletList colours;
     ConfigletList shortcuts;
@@ -986,6 +987,29 @@ void on_encodings_rename_clicked(GtkButton *button, ConfigletData *cg)
 
 /********************************************************************/
 
+static void configlet_add_button_to_size_group(ConfigletData *cg,
+        const char *family, const char *button)
+{
+    char *obj_name = g_strdup_printf("%c%s_%s",
+            tolower(family[0]), family + 1, button);
+    gtk_size_group_add_widget(cg->size_group,
+            GTK_WIDGET(gtk_builder_get_object(cg->capp.builder, obj_name)));
+    g_free(obj_name);
+}
+
+static void configlet_add_family_to_size_group(ConfigletData *cg,
+        const char *family)
+{
+    const char *f2 = strcmp(family, "Profiles") ? family : "profile";
+    configlet_add_button_to_size_group(cg, f2, "copy");
+    configlet_add_button_to_size_group(cg, f2, "rename");
+    configlet_add_button_to_size_group(cg, f2, "delete");
+    if (strcmp(f2, "encodings"))
+    {
+        configlet_add_button_to_size_group(cg, f2, "edit");
+    }
+}
+
 static void configlet_setup_family(ConfigletData *cg, ConfigletList *cl,
         const char *family)
 {
@@ -1003,6 +1027,13 @@ static void configlet_setup_family(ConfigletData *cg, ConfigletList *cl,
     shade_actions_for_name(cl, cname = configlet_get_configured_name(cl));
     g_free(cname);
     g_free(wbasename);
+    /* If size_group is NULL it means actions_sizegroup was found in the UI
+     * file and we don't need to do anything.
+     */
+    if (cg->size_group)
+    {
+        configlet_add_family_to_size_group(cg, family);
+    }
 }
 
 gboolean configlet_open(GdkScreen *scrn)
@@ -1041,6 +1072,15 @@ gboolean configlet_open(GdkScreen *scrn)
         }
         if (scrn)
             gtk_window_set_screen(GTK_WINDOW(cg->widget), scrn);
+
+        /* GtkBuilder doesn't seem to load size group. Bug? If the size group
+         * does load after all we probably don't need to do anything further,
+         * otherwise we have to create our own and add widgets manually.
+         */
+        GObject *size_group = gtk_builder_get_object(cg->capp.builder,
+                "actions_sizegroup");
+        cg->size_group = size_group ? NULL :
+            gtk_size_group_new(GTK_SIZE_GROUP_BOTH);
 
         cg->capp.options = options_open("Global", "roxterm options");
 
