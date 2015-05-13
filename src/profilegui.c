@@ -452,6 +452,7 @@ static void profilegui_fill_in_dialog(ProfileGUI * pg)
     on_cell_size_toggled(GTK_TOGGLE_BUTTON(profilegui_widget(pg, "cell_size")),
             pg);
     capplet_set_radio(&pg->capp, "scrollbar_pos", 1);
+    capplet_set_boolean_toggle(&pg->capp, "limit_scrollback", FALSE);
     capplet_set_spin_button(&pg->capp, "scrollback_lines", 1000);
     capplet_set_boolean_toggle(&pg->capp, "scroll_on_output", FALSE);
     capplet_set_boolean_toggle(&pg->capp, "scroll_on_keystroke", FALSE);

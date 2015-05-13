@@ -31,15 +31,15 @@
 #include "optsfile.h"
 
 typedef struct {
-	GKeyFile *kf;
-	int ref;
-	gpointer user_data;
-	gboolean kf_dirty;
-	const char *group_name;		/* For GKeyFile */
-	char *name;					/* leafname for saving; includes "Profiles"
-								   or "Shortcuts" or whatever */
-	gboolean deleted;			/* Has been deleted by configlet while still
-								   in use */
+    GKeyFile *kf;
+    int ref;
+    gpointer user_data;
+    gboolean kf_dirty;
+    const char *group_name; /* For GKeyFile */
+    char *name;             /* leafname for saving; includes "Profiles"
+                               or "Shortcuts" or whatever */
+    gboolean deleted;       /* Has been deleted by configlet while still
+                               in use */
 } Options;
 
 
@@ -56,7 +56,7 @@ void options_reload_keyfile(Options *options);
 /* Options start off with one reference when opened; this adds a reference */
 inline static void options_ref(Options *options)
 {
-	++options->ref;
+    ++options->ref;
 }
 
 /* Usually use options_unref instead except in special cases */
@@ -66,18 +66,18 @@ void options_delete(Options *options);
 gboolean options_unref(Options * options);
 
 char *options_lookup_string_with_default(Options * options,
-	const char *key, const char *default_value);
+    const char *key, const char *default_value);
 
 inline static char *options_lookup_string(Options * options, const char *key)
 {
-	return options_lookup_string_with_default(options, key, NULL);
+    return options_lookup_string_with_default(options, key, NULL);
 }
 
 int options_lookup_int_with_default(Options * options, const char *key, int d);
 
 inline static int options_lookup_int(Options * options, const char *key)
 {
-	return options_lookup_int_with_default(options, key, -1);
+    return options_lookup_int_with_default(options, key, -1);
 }
 
 double options_lookup_double(Options * options, const char *key);
@@ -92,13 +92,13 @@ void options_set_double(Options * options, const char *key, double value);
  * GdkRGBAs along with palette options */
 inline static void options_associate_data(Options * options, gpointer user_data)
 {
-	options->user_data = user_data;
+    options->user_data = user_data;
 }
 
 /* Returns the data associated above */
 inline static gpointer options_get_data(Options * options)
 {
-	return options->user_data;
+    return options->user_data;
 }
 
 /* Returns the last path element of the name member */

@@ -4187,20 +4187,6 @@
                                 <property name="can_focus">False</property>
                                 <property name="column_spacing">8</property>
                                 <child>
-                                  <object class="GtkLabel" id="label23">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="halign">start</property>
-                                    <property name="label" translatable="yes">Scroll_back:</property>
-                                    <property name="use_underline">True</property>
-                                    <property name="mnemonic_widget">scrollback_lines</property>
-                                  </object>
-                                  <packing>
-                                    <property name="left_attach">0</property>
-                                    <property name="top_attach">0</property>
-                                  </packing>
-                                </child>
-                                <child>
                                   <object class="GtkSpinButton" id="scrollback_lines">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
@@ -4226,10 +4212,29 @@
                                     <property name="can_focus">False</property>
                                     <property name="hexpand">True</property>
                                     <property name="xalign">0</property>
-                                    <property name="label" translatable="yes">lines</property>
+                                    <property name="label" translatable="yes">l_ines</property>
+                                    <property name="use_underline">True</property>
+                                    <property name="mnemonic_widget">scrollback_lines</property>
+                                    <property name="ellipsize">middle</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">2</property>
+                                    <property name="top_attach">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkCheckButton" id="limit_scrollback">
+                                    <property name="label" translatable="yes">Li_mit scrollback:</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="receives_default">False</property>
+                                    <property name="use_underline">True</property>
+                                    <property name="xalign">0</property>
+                                    <property name="draw_indicator">True</property>
+                                    <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
+                                  </object>
+                                  <packing>
+                                    <property name="left_attach">0</property>
                                     <property name="top_attach">0</property>
                                   </packing>
                                 </child>

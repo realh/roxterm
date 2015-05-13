@@ -2922,8 +2922,13 @@ roxterm_update_mouse_autohide(ROXTermData * roxterm, VteTerminal * vte)
 static void roxterm_set_scrollback_lines(ROXTermData * roxterm,
         VteTerminal * vte)
 {
-    vte_terminal_set_scrollback_lines(vte, options_lookup_int_with_default
-        (roxterm->profile, "scrollback_lines", 1000));
+    int lines = options_lookup_int_with_default(roxterm->profile,
+                "limit_scrollback", 0) ?
+            options_lookup_int_with_default(roxterm->profile,
+                    "scrollback_lines", 1000) :
+            -1;
+    g_debug("Setting scrollback lines to %d", lines);
+    vte_terminal_set_scrollback_lines(vte, lines);
 }
 
 static void roxterm_set_scroll_on_output(ROXTermData * roxterm,
@@ -3479,7 +3484,8 @@ static void roxterm_reflect_profile_change(Options * profile, const char *key)
         {
             roxterm_apply_colour_scheme(roxterm, vte);
         }
-        else if (!strcmp(key, "scrollback_lines"))
+        else if (!strcmp(key, "scrollback_lines") ||
+                !strcmp(key, "limit_scrollback"))
         {
             roxterm_set_scrollback_lines(roxterm, vte);
         }
