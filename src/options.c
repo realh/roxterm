@@ -145,10 +145,11 @@ int options_lookup_int_with_default(Options * options,
 			key, default_value);
 }
 
-double options_lookup_double(Options *options, const char *key)
+double options_lookup_double_with_default(Options *options, const char *key,
+        double d)
 {
 	char *str_val = options_lookup_string(options, key);
-	double result = 0;
+	double result = d;
 
 	if (str_val)
 	{
@@ -161,6 +162,7 @@ double options_lookup_double(Options *options, const char *key)
 			dlg_warning(NULL,
 			  _("Unable to convert value '%s' for key '%s' in '%s' to number"),
 				str_val, key, options->name);
+            result = d;
 		}
 		else if (errno)
 		{
@@ -168,6 +170,7 @@ double options_lookup_double(Options *options, const char *key)
 				_("Unable to convert value '%s' for key '%s' in '%s' "
 						"to number: %s"),
 				str_val, key, options->name, strerror(errno));
+            result = d;
 		}
 	}
 	return result;

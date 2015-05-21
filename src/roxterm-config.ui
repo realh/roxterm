@@ -2100,7 +2100,7 @@
                                     <property name="hexpand">True</property>
                                     <property name="adjustment">saturation_adjustment</property>
                                     <property name="restrict_to_fill_level">False</property>
-                                    <property name="fill_level">0.96999999999999997</property>
+                                    <property name="fill_level">1.0</property>
                                     <property name="digits">0</property>
                                     <property name="draw_value">False</property>
                                     <signal name="value-changed" handler="on_float_range_changed" swapped="no"/>
@@ -3093,7 +3093,6 @@
                         <property name="has_tooltip">True</property>
                         <property name="tooltip_markup" translatable="yes">SSH program to use when a host name is opened</property>
                         <property name="tooltip_text" translatable="yes">SSH program to use when a host name is opened</property>
-                        <property name="opacity">0.96862745098039216</property>
                         <property name="invisible_char">•</property>
                         <property name="primary_icon_activatable">False</property>
                         <property name="secondary_icon_activatable">False</property>

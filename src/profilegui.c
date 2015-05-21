@@ -423,7 +423,7 @@ static void profilegui_fill_in_dialog(ProfileGUI * pg)
     capplet_set_text_entry(&pg->capp, "sel_by_word", "-A-Za-z0-9,./?%&#_");
     capplet_set_text_entry(&pg->capp, "color_term", NULL);
     capplet_set_text_entry(&pg->capp, "term", NULL);
-    capplet_set_float_range(&pg->capp, "saturation", 1.0f);
+    capplet_set_float_range(&pg->capp, "saturation", 1.0);
     capplet_set_combo(&pg->capp, "tab_pos", 0);
     capplet_set_spin_button(&pg->capp, "init_tabs", 1);
     capplet_set_boolean_toggle(&pg->capp, "wrap_switch_tab", FALSE);

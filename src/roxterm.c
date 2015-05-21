@@ -1130,14 +1130,10 @@ roxterm_set_show_uri_menu_items(ROXTermData * roxterm,
 
 static double roxterm_get_config_saturation(ROXTermData *roxterm)
 {
-    double saturation = options_lookup_double(roxterm->profile,
-            "saturation");
+    double saturation = options_lookup_double_with_default(roxterm->profile,
+            "saturation", 1.0);
 
-    if (saturation == -1)
-    {
-        saturation = 1;
-    }
-    else if (saturation < 0 || saturation > 1)
+    if (saturation < 0 || saturation > 1)
     {
         g_warning(_("Saturation option %f out of range"), saturation);
         saturation = CLAMP(saturation, 0, 1);

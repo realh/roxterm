@@ -135,10 +135,9 @@ void capplet_set_spin_button_float(CappletData *capp,
 void capplet_set_float_range(CappletData *capp,
     const char *name, double dflt)
 {
-    double value = options_lookup_double(capp->options, name);
+    double value = options_lookup_double_with_default(capp->options, name,
+            dflt);
 
-    if (value == -1)
-        value = dflt;
     capplet_ignore_changes = TRUE;
     gtk_range_set_value(GTK_RANGE(gtk_builder_get_object(capp->builder, name)),
             value);

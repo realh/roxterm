@@ -80,7 +80,13 @@ inline static int options_lookup_int(Options * options, const char *key)
     return options_lookup_int_with_default(options, key, -1);
 }
 
-double options_lookup_double(Options * options, const char *key);
+double options_lookup_double_with_default(Options * options, const char *key,
+        double d);
+
+inline static double options_lookup_double(Options * options, const char *key)
+{
+    return options_lookup_double_with_default(options, key, 0.0);
+}
 
 void options_set_string(Options * options, const char *key, const char *value);
 
