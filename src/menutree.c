@@ -130,6 +130,7 @@ static void menutree_build_shell(MenuTree *menu_tree, GtkMenuShell * shell, ...)
         _("_Help"), MENUTREE_HELP
 
 #define COPY_PASTE_MENU_ITEMS \
+        _("Select _All"), MENUTREE_EDIT_SELECT_ALL, \
         _("_Copy"), MENUTREE_EDIT_COPY, \
         _("_Paste"), MENUTREE_EDIT_PASTE, \
         _("Cop_y & Paste"), MENUTREE_EDIT_COPY_AND_PASTE, \

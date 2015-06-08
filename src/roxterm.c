@@ -1942,6 +1942,14 @@ static void roxterm_ssh_host_action(MultiWin * win)
         roxterm_launch_ssh(roxterm, roxterm->matched_url);
 }
 
+static void roxterm_select_all_action(MultiWin * win)
+{
+    ROXTermData *roxterm = multi_win_get_user_data_for_current_tab(win);
+
+    g_return_if_fail(roxterm);
+    vte_terminal_select_all(VTE_TERMINAL(roxterm->widget));
+}
+
 static void roxterm_copy_clipboard_action(MultiWin * win)
 {
     ROXTermData *roxterm = multi_win_get_user_data_for_current_tab(win);
@@ -2749,6 +2757,8 @@ static void roxterm_add_all_pref_submenus(MultiWin *win)
 
 static void roxterm_connect_menu_signals(MultiWin * win)
 {
+    multi_win_menu_connect_swapped(win, MENUTREE_EDIT_SELECT_ALL,
+        G_CALLBACK(roxterm_select_all_action), win, NULL, NULL, NULL);
     multi_win_menu_connect_swapped(win, MENUTREE_EDIT_COPY,
         G_CALLBACK(roxterm_copy_clipboard_action), win, NULL, NULL, NULL);
     multi_win_menu_connect_swapped(win, MENUTREE_EDIT_PASTE,
