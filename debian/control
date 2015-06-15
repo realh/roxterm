@@ -28,7 +28,8 @@ Package: roxterm-data
 Architecture: all
 Depends: ${misc:Depends}
 Replaces: roxterm (<< 2.0.0-1), roxterm-common
-Breaks: roxterm (<< 2.0.0-1), roxterm-common, roxterm-gtk2, roxterm-gtk3
+Breaks: roxterm (<< 2.0.0-1), roxterm-common (<< 3.0.0),
+    roxterm-gtk2 (<<3.0.0), roxterm-gtk3 (<<3.0.0)
 Recommends: dbus-x11, openssh-client, roxterm
 Description: Multi-tabbed GTK+/VTE terminal emulator - data files
  ROXTerm is a terminal emulator based on the VTE library. It was originally
@@ -43,7 +44,7 @@ Depends:
  ${misc:Depends},
  ${shlibs:Depends}
 Replaces: roxterm-gtk3
-Breaks: roxterm-gtk3
+Breaks: roxterm-gtk3 (<< 3.0.0)
 Provides: x-terminal-emulator
 Description: Multi-tabbed GTK+/VTE terminal emulator - binaries
  ROXTerm is a terminal emulator based on the VTE library. It was originally
@@ -54,7 +55,7 @@ Package: roxterm-dbg
 Architecture: any
 Depends: roxterm (= ${binary:Version}), ${misc:Depends}
 Replaces: roxterm-gtk3-dbg
-Breaks: roxterm-gtk3-dbg
+Breaks: roxterm-gtk3-dbg (<< 3.0.0)
 Section: debug
 Priority: extra
 Description: Debugging symbols for roxterm
