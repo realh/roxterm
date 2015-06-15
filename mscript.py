@@ -512,8 +512,7 @@ elif ctx.mode == 'build':
                     dir = "${PO4ADIR}",
                     use_shell = True))
             for l in linguas:
-                ldir = "../Help/%s" % l
-                ctx.ensure_out_dir(ldir)
+                ctx.ensure_out_dir("${ABS_TOP_DIR}/Help/%s" % l)
                 po = "${PO4ADIR}/%s.html.%s.po" % (h, l)
                 ctx.add_rule(Rule(rule = ["${PO4A_UPDATEPO} ${PO4AOPTS} " \
                         "-f xhtml -m ${SRC} -p ${TGT}",
@@ -529,7 +528,7 @@ elif ctx.mode == 'build':
                         "-k 0 -f xhtml -m %s " \
                         "-p ${SRC} -l ${TGT}" % master],
                         sources = po,
-                        targets = "${ABS_TOP_DIR}/Help/%s/%s.html" % (ldir, h),
+                        targets = "${ABS_TOP_DIR}/Help/%s/%s.html" % (l, h),
                         where = NOWHERE,
                         dir = "${PO4ADIR}",
                         use_shell = True))
