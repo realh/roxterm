@@ -24,27 +24,40 @@ Homepage: http://roxterm.sourceforge.net/
 Vcs-Git: git://git.code.sf.net/p/roxterm/code
 Vcs-Browser: https://sourceforge.net/p/roxterm/code/
 
+Package: roxterm-data
+Architecture: all
+Depends: ${misc:Depends}
+Replaces: roxterm (<< 2.0.0-1), roxterm-common
+Breaks: roxterm (<< 2.0.0-1), roxterm-common, roxterm-gtk2, roxterm-gtk3
+Recommends: dbus-x11, openssh-client, roxterm
+Description: Multi-tabbed GTK+/VTE terminal emulator - data files
+ ROXTerm is a terminal emulator based on the VTE library. It was originally
+ intended to be a lightweight alternative to gnome-terminal, but its role has
+ shifted to providing a richer range of features for power users.
+
 Package: roxterm
 Architecture: any
 Depends:
  librsvg2-common,
+ roxterm-data (= ${source:Version}),
  ${misc:Depends},
  ${shlibs:Depends}
-Replaces:
- roxterm-common,
- roxterm-gtk2,
- roxterm-gtk2-dbg,
- roxterm-gtk3, 
- roxterm-gtk3-dbg 
-Breaks:
- roxterm-common,
- roxterm-gtk2,
- roxterm-gtk2-dbg,
- roxterm-gtk3, 
- roxterm-gtk3-dbg 
+Replaces: roxterm-gtk3
+Breaks: roxterm-gtk3
 Provides: x-terminal-emulator
-Recommends: dbus-x11, openssh-client
-Description: Multi-tabbed GTK+/VTE terminal emulator - common files
+Description: Multi-tabbed GTK+/VTE terminal emulator - binaries
+ ROXTerm is a terminal emulator based on the VTE library. It was originally
+ intended to be a lightweight alternative to gnome-terminal, but its role has
+ shifted to providing a richer range of features for power users.
+
+Package: roxterm-dbg
+Architecture: any
+Depends: roxterm (= ${binary:Version}), ${misc:Depends}
+Replaces: roxterm-gtk3-dbg
+Breaks: roxterm-gtk3-dbg
+Section: debug
+Priority: extra
+Description: Debugging symbols for roxterm
  ROXTerm is a terminal emulator based on the VTE library. It was originally
  intended to be a lightweight alternative to gnome-terminal, but its role has
  shifted to providing a richer range of features for power users.
