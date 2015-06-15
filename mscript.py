@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import errno, os, re, sys, time
 
@@ -195,8 +195,9 @@ if ctx.mode == 'configure':
 
     ctx.pkg_config('gtk+-3.0', 'GTK', '3.10')
     ctx.pkg_config('vte-2.91', 'VTE')
-    vte_version = ctx.prog_output("${PKG_CONFIG} --modversion vte-2.91")
-    ctx.setenv('NEED_TRANSPARENCY_FIX', vte_version >= "0.34.8")
+    #vte_version = ctx.prog_output("${PKG_CONFIG} --modversion vte-2.91")[0]
+    #ctx.setenv('NEED_TRANSPARENCY_FIX', vte_version >= "0.34.8")
+    ctx.setenv('NEED_TRANSPARENCY_FIX', True)
 
     sm = ctx.env['ENABLE_SM']
     if sm != False:
