@@ -2419,7 +2419,8 @@ def call_subprocess(*args, **kwargs):
     [out, err] = sp.communicate()
     out = to_str(out).strip()
     err = to_str(err).strip()
-    mprint(out)
+    if out:
+        dprint(out)
     if err:
         mprint(err, file = sys.stderr)
     return sp.returncode
