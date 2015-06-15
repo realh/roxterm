@@ -29,6 +29,19 @@ try:
     basestring = basestring
 except NameError:
     basestring = (str, bytes)
+    def to_str(s):
+        if isinstance(s, bytes):
+            return str(s, "utf-8")
+        elif isinstance(s, str):
+            return s
+        else:
+            return str(s)
+else:
+    def to_str(s):
+        if isinstance(s, str):
+            return s
+        else:
+            return str(s)
 
 mswin = sys.platform.startswith("win")
 
@@ -890,7 +903,7 @@ Other predefined variables [default values shown in squarer brackets]:
         if proc.returncode:
             raise MaitchChildError("%s failed:\n%d:\n%s" % \
                     (' '.join(prog), proc.returncode, result[1].strip()))
-        return (str(result[0], "utf-8"), str(result[1], "utf-8"))
+        return (to_str(result[0]), to_str(result[1]))
 
 
     def prog_to_var(self, prog, var, use_shell = False):
@@ -1006,7 +1019,7 @@ Other predefined variables [default values shown in squarer brackets]:
         except MaitchChildError as e:
             if msg:
                 mprint("no")
-            dprint("check_compile failed:\n%s" % str(e))
+            dprint("check_compile failed:\n%s" % to_str(e))
             dprint("code was:\n%s" % code)
             result = False
         else:
@@ -1104,7 +1117,7 @@ int main() { %s(); return 0; }
     @staticmethod
     def not_found(name, looked_for = None):
         if looked_for:
-            s = " - looked for " + str(looked_for)
+            s = " - looked for " + to_str(looked_for)
         else:
             s = ""
         raise MaitchNotFoundError(("Resource '%s' cannot be found" % name) + s)
@@ -1219,7 +1232,7 @@ int main() { %s(); return 0; }
         elif other_options:
             cmd += list(other_options)
         if mode:
-            cmd += ["-m", str(mode)]
+            cmd += ["-m", to_str(mode)]
         if not sources:
             cmd.append("-d")
         cmd += sources + directory
@@ -1579,10 +1592,10 @@ class Rule(object):
             if self.dir != Rule.cwd:
                 # Wait for current rule to finish before changing cwd
                 #dprint("%s wants to use dir '%s', waiting for '%s'" \
-                #        % (str(self), self.dir, Rule.cwd))
+                #        % (to_str(self), self.dir, Rule.cwd))
                 while Rule.n_running > 1:
                     Rule.dir_lock.wait()
-                #dprint("%s woke up to use dir '%s'" % (str(self), self.dir))
+                #dprint("%s woke up to use dir '%s'" % (to_str(self), self.dir))
                 if self.dir:
                     dir_ = self.dir
                     self.ctx.ensure_out_dir(dir_)
@@ -1595,20 +1608,20 @@ class Rule(object):
             raise
         Rule.n_running += 1
         #dprint("%s increasing n_running to %d and releasing dir lock" \
-        #        % (str(self), Rule.n_running))
+        #        % (to_str(self), Rule.n_running))
         Rule.dir_lock.release()
         self.__inner_run()
-        #dprint("%s reacquring dir lock" % str(self))
+        #dprint("%s reacquring dir lock" % to_str(self))
         Rule.dir_lock.acquire()
         try:
             Rule.n_running -= 1
             #dprint("%s decreasing n_running to %d" \
-            #        % (str(self), Rule.n_running))
+            #        % (to_str(self), Rule.n_running))
             Rule.dir_lock.notify()
         except:
             Rule.dir_lock.release()
             raise
-        #dprint("%s done, releasing dir lock" % str(self))
+        #dprint("%s done, releasing dir lock" % to_str(self))
         Rule.dir_lock.release()
 
     """
@@ -1658,7 +1671,7 @@ class Rule(object):
                     else:
                         p = mprint
                     p("Internal function: %s(%s, %s)" %
-                            (rule.__name__, str(targets), str(sources)))
+                            (rule.__name__, to_str(targets), to_str(sources)))
                     rule(self.ctx, env, targets, sources)
                 else:
                     r = subst(env, rule)
@@ -1714,7 +1727,7 @@ class Rule(object):
 
 
     def __repr__(self):
-        return "JT:%s" % str(self.targets)
+        return "JT:%s" % to_str(self.targets)
         #return "T:%s S:%s" % (self.targets, self.sources)
 
 
@@ -2404,8 +2417,8 @@ def call_subprocess(*args, **kwargs):
         del kwargs['quiet']
     sp = subprocess.Popen(*args, **kwargs)
     [out, err] = sp.communicate()
-    out = str(out, "utf-8").strip()
-    err = str(err, "utf-8").strip()
+    out = to_str(out).strip()
+    err = to_str(err).strip()
     mprint(out)
     if err:
         mprint(err, file = sys.stderr)
@@ -2710,7 +2723,7 @@ def get_extreme_stamp(nodes, comparator, verbose = None):
                 nodest = n
                 stamp = s
     if verbose:
-        dprint("%s of %s is %s: %s" % (verbose, nodes, nodest, str(stamp)))
+        dprint("%s of %s is %s: %s" % (verbose, nodes, nodest, to_str(stamp)))
     return stamp
 
 
@@ -3010,12 +3023,13 @@ class Builder(threading.Thread):
                     self.bg.cond.release()
                     #dprint("%s released cond" % self.describe())
                 if job:
-                    dprint("%s running job %s" % (self.describe(), str(job)))
+                    dprint("%s running job %s" % (self.describe(), to_str(job)))
                     job.run()
-                    dprint("%s completed job %s" % (self.describe(), str(job)))
+                    dprint("%s completed job %s" % (self.describe(),
+                        to_str(job)))
                     self.bg.job_done(job)
                     dprint("%s marked job %s done" % \
-                            (self.describe(), str(job)))
+                            (self.describe(), to_str(job)))
         except:
             dprint("Exception in %s" % self.describe())
             report_exception()

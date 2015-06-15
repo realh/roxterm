@@ -29,14 +29,14 @@ endif
 	dh $@
 
 override_dh_auto_configure:
-	python mscript.py configure $(MSCRIPT_OPTS) $(CONFIGURE_COMMON) \
+	python3 mscript.py configure $(MSCRIPT_OPTS) $(CONFIGURE_COMMON) \
 		$(BUILD_DIRS) "$(CFLAGS)" "$(CPPFLAGS)" "$(LDFLAGS)"
 
 override_dh_auto_build:
-	python mscript.py build $(MSCRIPT_OPTS) $(BUILD_DIRS)
+	python3 mscript.py build $(MSCRIPT_OPTS) $(BUILD_DIRS)
 
 override_dh_auto_install:
-	python mscript.py install $(MSCRIPT_OPTS) $(BUILD_DIRS) --destdir=../tmp
+	python3 mscript.py install $(MSCRIPT_OPTS) $(BUILD_DIRS) --destdir=../tmp
 
 override_dh_install:
 	dh_install
@@ -45,7 +45,7 @@ override_dh_install:
 override_dh_auto_test:
 
 override_dh_auto_clean:
-	python mscript.py clean $(MSCRIPT_OPTS) $(BUILD_DIRS)
+	python3 mscript.py clean $(MSCRIPT_OPTS) $(BUILD_DIRS)
 	rm -rf debian/build
 	rm -f maitch.py[co]
 
