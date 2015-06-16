@@ -838,6 +838,7 @@ Other predefined variables [default values shown in squarer brackets]:
             return
         recursively_remove(self.build_dir, fatal, keep)
         recursively_remove(opj(self.build_dir, ".maitch", "deps"), fatal, [])
+        recursively_remove(opj(self.top_dir, "__pycache__"), False, [])
 
 
     def ensure_out_dir(self, *args):
