@@ -770,13 +770,21 @@ Other predefined variables [default values shown in squarer brackets]:
             suffix = "tar.xz"
             zname = "tarball"
         basedir = self.subst("${PACKAGE}-${VERSION}")
-        filename = opap(
-                self.subst("${BUILD_DIR}/%s.%s" % (basedir, suffix)))
-        mprint("Creating %s '%s'" % (zname, filename))
+
+        def get_filename(d, s):
+            return opap(self.subst("${BUILD_DIR}/%s.%s" % (d, s)))
+
+        filename = get_filename(basedir, suffix)
         if self.dist_as_zip:
             tar = zipfile.ZipFile(filename, 'w', zipfile.ZIP_DEFLATED)
         else:
-            tar = tarfile.open(filename, 'w:bz2')
+            try:
+                tar = tarfile.open(filename, 'w:xz')
+            except:
+                filename = get_filename(basedir, "tar.bz2")
+                tar = tarfile.open(filename, 'w:bz2')
+        mprint("Creating %s '%s'" % (zname, filename))
+
         for f, kwargs in self.tar_contents:
             f = self.subst(f)
             kwargs = dict(kwargs)
