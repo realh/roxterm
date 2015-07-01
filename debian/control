@@ -43,7 +43,7 @@ Depends:
  roxterm-data (= ${source:Version}),
  ${misc:Depends},
  ${shlibs:Depends}
-Replaces: roxterm-gtk3
+Replaces: roxterm-gtk3 (<< 3.0.0)
 Breaks: roxterm-gtk3 (<< 3.0.0)
 Provides: x-terminal-emulator
 Description: Multi-tabbed GTK+/VTE terminal emulator - binaries
@@ -54,7 +54,7 @@ Description: Multi-tabbed GTK+/VTE terminal emulator - binaries
 Package: roxterm-dbg
 Architecture: any
 Depends: roxterm (= ${binary:Version}), ${misc:Depends}
-Replaces: roxterm-gtk3-dbg
+Replaces: roxterm-gtk3-dbg (<< 3.0.0)
 Breaks: roxterm-gtk3-dbg (<< 3.0.0)
 Section: debug
 Priority: extra
@@ -62,3 +62,25 @@ Description: Debugging symbols for roxterm
  ROXTerm is a terminal emulator based on the VTE library. It was originally
  intended to be a lightweight alternative to gnome-terminal, but its role has
  shifted to providing a richer range of features for power users.
+
+Package: roxterm-gtk3
+Architecture: all
+Section: oldlibs
+Priority: extra
+Depends: roxterm (>= ${source:Version}), ${misc:Depends}
+Description: Multi-tabbed GTK+/VTE terminal emulator - transitional package
+ This is a dummy package to facilitate automatic upgrades from ROXTerm version
+ 2.x to 3.x, due to a change in the packaging structure. It may be removed
+ once the roxterm 3.x package is installed, but consider also explicitly
+ installing roxterm to prevent its accidental removal by autoremove.
+
+Package: roxterm-gtk3-dbg
+Architecture: all
+Section: oldlibs
+Priority: extra
+Depends: roxterm-dbg (>= ${source:Version}), ${misc:Depends}
+Description: Multi-tabbed GTK+/VTE terminal emulator - transitional package
+ This is a dummy package to facilitate automatic upgrades from ROXTerm version
+ 2.x to 3.x, due to a change in the packaging structure. It may be removed
+ once the roxterm-dbg 3.x package is installed, but consider also explicitly
+ installing roxterm-dbg to prevent its accidental removal by autoremove.
