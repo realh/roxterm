@@ -45,12 +45,10 @@
 typedef struct _MultitabLabel        MultitabLabel;
 typedef struct _MultitabLabelClass   MultitabLabelClass;
 
-typedef GdkRGBA MultitabColor;
-
 struct _MultitabLabel
 {
     GtkEventBox parent_instance;
-    MultitabColor attention_color;
+    GdkRGBA attention_color;
     GtkLabel *label;
     gboolean attention;
     guint timeout_tag;
@@ -93,9 +91,9 @@ multitab_label_cancel_attention (MultitabLabel *label);
 
 void
 multitab_label_set_attention_color (MultitabLabel *label,
-        const MultitabColor *color);
+        const GdkRGBA *color);
 
-const MultitabColor *
+const GdkRGBA *
 multitab_label_get_attention_color (MultitabLabel *label);
 
 /* Whether the tab is the only one in the window */

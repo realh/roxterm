@@ -28,7 +28,7 @@ static void
 multitab_label_set_property (GObject *object, guint prop,
         const GValue *value, GParamSpec *pspec)
 {
-    const MultitabColor *color;
+    const GdkRGBA *color;
     MultitabLabel *self = MULTITAB_LABEL (object);
 
     switch (prop)
@@ -67,12 +67,26 @@ multitab_label_get_property (GObject *object, guint prop,
 }
 
 static gboolean
+multitab_label_draw (GtkWidget *widget, cairo_t *cr)
+{
+    MultitabLabel *self = MULTITAB_LABEL (widget);
+    if (self->attention)
+    {
+        cairo_set_source_rgb(cr, self->attention_color.red,
+                self->attention_color.green,
+                self->attention_color.blue);
+        cairo_paint(cr);
+    }
+    return GTK_WIDGET_CLASS (multitab_label_parent_class)->draw (widget, cr);
+}
+
+static gboolean
 multitab_label_toggle_attention (gpointer data)
 {
     MultitabLabel *self = MULTITAB_LABEL (data);
 
-    gtk_event_box_set_visible_window (GTK_EVENT_BOX(self),
-            self->attention = !self->attention);
+    self->attention = !self->attention;
+    gtk_widget_queue_draw (GTK_WIDGET (data));
     return TRUE;
 }
 
@@ -173,17 +187,25 @@ multitab_label_class_init(MultitabLabelClass *klass)
 
     /* Make sure theme doesn't override our colour with a gradient or image */
     static const char *style =
-            "* {\n"
+            "MultitabLabel {\n"
               "background-image : none;\n"
             "}";
 
     klass->style_provider = gtk_css_provider_new ();
     gtk_css_provider_load_from_data (klass->style_provider,
             style, -1, NULL);
-    GTK_WIDGET_CLASS (klass)->destroy = multitab_label_destroy;
+
+    wclass->destroy = multitab_label_destroy;
+    wclass->draw = multitab_label_draw;
 
     oclass->set_property = multitab_label_set_property;
     oclass->get_property = multitab_label_get_property;
+
+    pspec = g_param_spec_string ("text",
+            "Text", "Text displayed in the label",
+            "",
+            G_PARAM_READWRITE);
+    g_object_class_install_property (oclass, PROP_TEXT, pspec);
 
     pspec = g_param_spec_pointer ("attention-color",
             "Attention Color", "Color to flash to draw attention",
@@ -200,7 +222,7 @@ multitab_label_init(MultitabLabel *self)
 {
     GtkWidget *label = gtk_label_new ("");
     GtkWidget *w = GTK_WIDGET(self);
-    static MultitabColor amber;
+    static GdkRGBA amber;
     static gboolean parsed_amber = FALSE;
 
     self->single = FALSE;
@@ -280,22 +302,17 @@ multitab_label_cancel_attention (MultitabLabel *self)
     if (self->attention)
     {
         multitab_label_toggle_attention (self);
-        self->attention = FALSE;
     }
 }
 
 void
 multitab_label_set_attention_color (MultitabLabel *self,
-        const MultitabColor *color)
+        const GdkRGBA *color)
 {
-    GtkWidget *w = GTK_WIDGET (self);
-
     self->attention_color = *color;
-    gtk_widget_override_background_color(w, GTK_STATE_FLAG_NORMAL, color);
-    gtk_widget_override_background_color(w, GTK_STATE_FLAG_ACTIVE, color);
 }
 
-const MultitabColor *
+const GdkRGBA *
 multitab_label_get_attention_color (MultitabLabel *self)
 {
     return &self->attention_color;
