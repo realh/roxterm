@@ -2547,7 +2547,7 @@ static void roxterm_text_changed_handler(VteTerminal *vte, ROXTermData *roxterm)
     }
 }
 
-static void roxterm_beep_handler(VteTerminal *vte, ROXTermData *roxterm)
+static void roxterm_bell_handler(VteTerminal *vte, ROXTermData *roxterm)
 {
     MultiWin *win = roxterm_get_win(roxterm);
     (void) vte;
@@ -2840,12 +2840,8 @@ static void roxterm_connect_misc_signals(ROXTermData * roxterm)
         G_CALLBACK(roxterm_uri_drag_ended), roxterm);
     g_signal_connect(roxterm->widget, "drag-data-get",
         G_CALLBACK(roxterm_uri_drag_data_get), roxterm);
-    if (g_signal_lookup("beep",
-            G_TYPE_FROM_INSTANCE(G_OBJECT(roxterm->widget))))
-    {
-        g_signal_connect(roxterm->widget, "beep",
-                G_CALLBACK(roxterm_beep_handler), roxterm);
-    }
+    g_signal_connect(roxterm->widget, "bell",
+            G_CALLBACK(roxterm_bell_handler), roxterm);
     /* None of these seem to get raised on text output */
     /*
     g_signal_connect(roxterm->widget, "text-modified",
