@@ -16,9 +16,9 @@ CONFIGURE_COMMON = $(CONFIGURE_GDA) $(CONFIGURE_LDFLAGS) $(CONFIGURE_MISC)
 MSCRIPT_OPTS = --lock-top
 COMMON_DIRS = --top-dir=../.. --src-dir='$${TOP_DIR}/src'
 BUILD_DIRS = --build-dir=debian/build $(COMMON_DIRS)
-CFLAGS = $(shell dpkg-buildflags | grep '^CFLAGS=')
-CPPFLAGS = $(shell dpkg-buildflags | grep '^CPPFLAGS=')
-LDFLAGS = $(shell dpkg-buildflags | grep '^LDFLAGS=') -Wl,--as-needed
+CFLAGS = $(shell dpkg-buildflags --get CFLAGS)
+CPPFLAGS = $(shell dpkg-buildflags --get CPPFLAGS)
+LDFLAGS = $(shell dpkg-buildflags --get LDFLAGS) -Wl,--as-needed
 
 ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 NUMJOBS = $(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))

@@ -1,5 +1,6 @@
 roxterm (3.0.1-1) unstable; urgency=medium
 
+  * Use dpkg-buildflags --get.
   * Updated Standards-Version to 3.9.6.
   * Build uses python3 (updated Build-Depends accordingly).
   * Upstream tarball now uses .xz compression.
@@ -11,7 +12,7 @@ roxterm (3.0.1-1) unstable; urgency=medium
   * Reorganized surviving binary packages.
   * Use vte-2.91 API (Closes: #788028).
 
- -- Tony Houghton <h@realh.co.uk>  Wed, 01 Jul 2015 18:50:46 +0100
+ -- Tony Houghton <h@realh.co.uk>  Fri, 03 Jul 2015 16:06:40 +0100
 
 roxterm (2.9.7-1) unstable; urgency=low
 
