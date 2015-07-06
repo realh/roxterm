@@ -43,8 +43,7 @@ Depends:
  ${misc:Depends},
  ${shlibs:Depends}
 Replaces: roxterm-gtk3 (<< 3.0.0), roxterm-gtk2 (<< 3.0.0)
-Breaks: roxterm-gtk3 (<< 3.0.0), roxterm-gtk2 (<< 3.0.0),
- roxterm-gtk3-dbg (<< 3.0.0), roxterm-gtk2-dbg (<< 3.0.0),
+Breaks: roxterm-gtk3 (<< 3.0.0), roxterm-gtk2 (<< 3.0.0)
 Provides: x-terminal-emulator
 Description: Multi-tabbed GTK+/VTE terminal emulator - binaries
  ROXTerm is a terminal emulator based on the VTE library. It was originally
