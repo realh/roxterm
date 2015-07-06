@@ -9,25 +9,16 @@ roxterm (3.0.1-1) unstable; urgency=medium
   * Fixed some unsafe uses of sprintf.
   * Provide option to rewrap text when terminal width changes.
   * Drop support for GTK2 etc (Closes: #790183).
+  * Replaced many calls to deprecated library functions.
   * Reorganized surviving binary packages.
   * Use vte-2.91 API (Closes: #788028).
-
- -- Tony Houghton <h@realh.co.uk>  Fri, 03 Jul 2015 16:06:40 +0100
-
-roxterm (2.9.7-1) unstable; urgency=low
-
   * Fixed colour/shortcut shceme CLI switch clash.
   * Fixed --tab aiming to target most recently focused window.
-
- -- Tony Houghton <h@realh.co.uk>  Mon, 30 Mar 2015 18:24:17 +0100
-
-roxterm (2.9.6-1) unstable; urgency=low
-
   * debian/copyright: Added .ycm_extra_conf.py.in.
   * Fade text in unselected tabs.
   * Fix maximise and full screen buttons in profile.
 
- -- Tony Houghton <h@realh.co.uk>  Thu, 08 Jan 2015 21:16:21 +0000
+ -- Tony Houghton <h@realh.co.uk>  Mon, 06 Jul 2015 14:24:40 +0100
 
 roxterm (2.9.5-1) unstable; urgency=medium
 
