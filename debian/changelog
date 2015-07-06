@@ -1,6 +1,7 @@
 roxterm (3.0.1-1) unstable; urgency=medium
 
-  * Use dpkg-buildflags --get.
+  * debian:rules: Use dpkg-buildflags --get, and correct passing of flags to
+    mscript.py configure.
   * Updated Standards-Version to 3.9.6.
   * Build uses python3 (updated Build-Depends accordingly).
   * Upstream tarball now uses .xz compression.
@@ -18,7 +19,7 @@ roxterm (3.0.1-1) unstable; urgency=medium
   * Fade text in unselected tabs.
   * Fix maximise and full screen buttons in profile.
 
- -- Tony Houghton <h@realh.co.uk>  Mon, 06 Jul 2015 14:24:40 +0100
+ -- Tony Houghton <h@realh.co.uk>  Mon, 06 Jul 2015 14:56:42 +0100
 
 roxterm (2.9.5-1) unstable; urgency=medium
 
