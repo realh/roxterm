@@ -1197,10 +1197,10 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="valign">start</property>
-                <property name="yalign">0.50999999046325684</property>
                 <property name="label" translatable="yes">S_hortcuts</property>
                 <property name="use_underline">True</property>
                 <property name="justify">center</property>
+                <property name="yalign">0.50999999046325684</property>
               </object>
               <packing>
                 <property name="position">2</property>
@@ -1683,10 +1683,10 @@
                                   <object class="GtkLabel" id="font_label">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="xalign">0</property>
                                     <property name="label" translatable="yes">_Font:</property>
                                     <property name="use_underline">True</property>
                                     <property name="mnemonic_widget">font_button</property>
+                                    <property name="xalign">0</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">0</property>
@@ -1747,10 +1747,10 @@
                                   <object class="GtkLabel" id="label8">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="xalign">0</property>
                                     <property name="label" translatable="yes">_Width:</property>
                                     <property name="use_underline">True</property>
                                     <property name="mnemonic_widget">width</property>
+                                    <property name="xalign">0</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -1781,8 +1781,8 @@
                                   <object class="GtkLabel" id="window_columns_label">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="xalign">0</property>
                                     <property name="label" translatable="yes">columns</property>
+                                    <property name="xalign">0</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">3</property>
@@ -1793,10 +1793,10 @@
                                   <object class="GtkLabel" id="label9">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="xalign">1</property>
                                     <property name="label" translatable="yes">_Height:</property>
                                     <property name="use_underline">True</property>
                                     <property name="mnemonic_widget">height</property>
+                                    <property name="xalign">1</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">4</property>
@@ -1974,10 +1974,10 @@
                                   <object class="GtkLabel" id="label27">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="xalign">0</property>
                                     <property name="label" translatable="yes">Window _title:</property>
                                     <property name="use_underline">True</property>
                                     <property name="mnemonic_widget">win_title</property>
+                                    <property name="xalign">0</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">0</property>
@@ -2008,11 +2008,11 @@
                                   <object class="GtkLabel" id="colour_scheme_label">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="xalign">0</property>
                                     <property name="label" translatable="yes">C_olour scheme:</property>
                                     <property name="use_underline">True</property>
                                     <property name="mnemonic_widget">colour_scheme</property>
                                     <property name="ellipsize">end</property>
+                                    <property name="xalign">0</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">0</property>
@@ -2070,11 +2070,11 @@
                                   <object class="GtkLabel" id="transp_l2">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="xalign">1</property>
                                     <property name="label" translatable="yes">&lt;i&gt;&lt;small&gt;Trans_parent&lt;/small&gt;&lt;/i&gt;</property>
                                     <property name="use_markup">True</property>
                                     <property name="use_underline">True</property>
                                     <property name="mnemonic_widget">saturation</property>
+                                    <property name="xalign">1</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">0</property>
@@ -2100,7 +2100,7 @@
                                     <property name="hexpand">True</property>
                                     <property name="adjustment">saturation_adjustment</property>
                                     <property name="restrict_to_fill_level">False</property>
-                                    <property name="fill_level">1.0</property>
+                                    <property name="fill_level">1</property>
                                     <property name="digits">0</property>
                                     <property name="draw_value">False</property>
                                     <signal name="value-changed" handler="on_float_range_changed" swapped="no"/>
@@ -2163,8 +2163,8 @@
                               <object class="GtkLabel" id="cursor_blink_mode_label">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="xalign">0</property>
                                 <property name="label" translatable="yes">Blinking cursor:</property>
+                                <property name="xalign">0</property>
                               </object>
                               <packing>
                                 <property name="left_attach">0</property>
@@ -2237,8 +2237,8 @@
                               <object class="GtkLabel" id="cursor_shape_label">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="xalign">0</property>
                                 <property name="label" translatable="yes">Cursor shape:</property>
+                                <property name="xalign">0</property>
                               </object>
                               <packing>
                                 <property name="left_attach">0</property>
@@ -2311,10 +2311,10 @@
                               <object class="GtkLabel" id="sel_by_word_label">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="xalign">0</property>
                                 <property name="label" translatable="yes">_Select-by-word characters:</property>
                                 <property name="use_underline">True</property>
                                 <property name="mnemonic_widget">sel_by_word</property>
+                                <property name="xalign">0</property>
                               </object>
                               <packing>
                                 <property name="left_attach">0</property>
@@ -2345,10 +2345,10 @@
                               <object class="GtkLabel" id="label43">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="xalign">0</property>
                                 <property name="label" translatable="yes">_COLORTERM environment variable:</property>
                                 <property name="use_underline">True</property>
                                 <property name="mnemonic_widget">color_term</property>
+                                <property name="xalign">0</property>
                               </object>
                               <packing>
                                 <property name="left_attach">0</property>
@@ -2376,10 +2376,10 @@
                               <object class="GtkLabel" id="label42">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="xalign">0</property>
                                 <property name="label" translatable="yes">_TERM environment variable:</property>
                                 <property name="use_underline">True</property>
                                 <property name="mnemonic_widget">term</property>
+                                <property name="xalign">0</property>
                               </object>
                               <packing>
                                 <property name="left_attach">0</property>
@@ -2688,11 +2688,11 @@
                               <object class="GtkLabel" id="exit_action_label">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="xalign">0</property>
                                 <property name="label" translatable="yes">When command e_xits:</property>
                                 <property name="use_underline">True</property>
                                 <property name="justify">right</property>
                                 <property name="mnemonic_widget">exit_action</property>
+                                <property name="xalign">0</property>
                               </object>
                               <packing>
                                 <property name="left_attach">0</property>
@@ -2723,10 +2723,10 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                                <property name="xalign">0</property>
                                 <property name="label" translatable="yes">_Pause:</property>
                                 <property name="use_underline">True</property>
                                 <property name="mnemonic_widget">exit_pause</property>
+                                <property name="xalign">0</property>
                               </object>
                               <packing>
                                 <property name="left_attach">0</property>
@@ -2778,8 +2778,8 @@
                                 <property name="can_focus">False</property>
                                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                                 <property name="has_tooltip">True</property>
-                                <property name="xalign">0</property>
                                 <property name="label" translatable="yes">secs</property>
+                                <property name="xalign">0</property>
                               </object>
                               <packing>
                                 <property name="left_attach">2</property>
@@ -2831,10 +2831,10 @@
                       <object class="GtkLabel" id="label6">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="xalign">0</property>
                         <property name="label" translatable="yes">&lt;b&gt;Web browser&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
                         <property name="mnemonic_widget">browser</property>
+                        <property name="xalign">0</property>
                       </object>
                       <packing>
                         <property name="left_attach">0</property>
@@ -2847,11 +2847,11 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="margin_start">12</property>
-                        <property name="xalign">0</property>
                         <property name="label" translatable="yes">Bro_wser</property>
                         <property name="use_underline">True</property>
                         <property name="mnemonic_widget">browser</property>
                         <property name="max_width_chars">3</property>
+                        <property name="xalign">0</property>
                       </object>
                       <packing>
                         <property name="left_attach">0</property>
@@ -2945,10 +2945,10 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="margin_top">8</property>
-                        <property name="xalign">0</property>
                         <property name="label" translatable="yes">&lt;b&gt;Email&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
                         <property name="mnemonic_widget">browser</property>
+                        <property name="xalign">0</property>
                       </object>
                       <packing>
                         <property name="left_attach">0</property>
@@ -2961,10 +2961,10 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="margin_start">12</property>
-                        <property name="xalign">0</property>
                         <property name="label" translatable="yes">_Mailer</property>
                         <property name="use_underline">True</property>
                         <property name="mnemonic_widget">mailer</property>
+                        <property name="xalign">0</property>
                       </object>
                       <packing>
                         <property name="left_attach">0</property>
@@ -3059,10 +3059,10 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="margin_top">8</property>
-                        <property name="xalign">0</property>
                         <property name="label" translatable="yes">&lt;b&gt;Ssh&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
                         <property name="mnemonic_widget">browser</property>
+                        <property name="xalign">0</property>
                       </object>
                       <packing>
                         <property name="left_attach">0</property>
@@ -3076,10 +3076,10 @@
                         <property name="can_focus">False</property>
                         <property name="margin_start">12</property>
                         <property name="margin_end">8</property>
-                        <property name="xalign">0</property>
                         <property name="label" translatable="yes">_SSH Command</property>
                         <property name="use_underline">True</property>
                         <property name="mnemonic_widget">ssh</property>
+                        <property name="xalign">0</property>
                       </object>
                       <packing>
                         <property name="left_attach">0</property>
@@ -3201,11 +3201,11 @@
                       <object class="GtkLabel" id="label4">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="xalign">0</property>
                         <property name="label" translatable="yes">&lt;b&gt;_Directories&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
                         <property name="use_underline">True</property>
                         <property name="mnemonic_widget">dir_filer</property>
+                        <property name="xalign">0</property>
                       </object>
                       <packing>
                         <property name="left_attach">0</property>
@@ -3218,9 +3218,9 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="margin_start">8</property>
-                        <property name="xalign">0</property>
                         <property name="label" translatable="yes">Filer</property>
                         <property name="mnemonic_widget">dir_filer</property>
+                        <property name="xalign">0</property>
                       </object>
                       <packing>
                         <property name="left_attach">0</property>
@@ -3316,11 +3316,11 @@
                       <object class="GtkLabel" id="label11">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="xalign">0</property>
                         <property name="label" translatable="yes">&lt;b&gt;Files&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
                         <property name="use_underline">True</property>
                         <property name="mnemonic_widget">dir_filer</property>
+                        <property name="xalign">0</property>
                       </object>
                       <packing>
                         <property name="left_attach">0</property>
@@ -3333,11 +3333,11 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="margin_start">8</property>
-                        <property name="xalign">0</property>
                         <property name="label" translatable="yes">_Filer</property>
                         <property name="use_underline">True</property>
                         <property name="mnemonic_widget">filer</property>
                         <property name="ellipsize">end</property>
+                        <property name="xalign">0</property>
                       </object>
                       <packing>
                         <property name="left_attach">0</property>
@@ -3619,11 +3619,11 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="hexpand">True</property>
-                                    <property name="xalign">0</property>
-                                    <property name="yalign">0</property>
                                     <property name="label" translatable="yes">Changes to the scrollbar position only take effect in new windows.</property>
                                     <property name="justify">fill</property>
                                     <property name="wrap">True</property>
+                                    <property name="xalign">0</property>
+                                    <property name="yalign">0</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -3666,11 +3666,11 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="hexpand">True</property>
-                                    <property name="xalign">0</property>
                                     <property name="label" translatable="yes">l_ines</property>
                                     <property name="use_underline">True</property>
                                     <property name="mnemonic_widget">scrollback_lines</property>
                                     <property name="ellipsize">middle</property>
+                                    <property name="xalign">0</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">2</property>
@@ -3750,10 +3750,10 @@
                               <object class="GtkLabel" id="backspace_binding_label">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="xalign">0</property>
                                 <property name="label" translatable="yes">_Backspace key generates:</property>
                                 <property name="use_underline">True</property>
                                 <property name="mnemonic_widget">backspace_binding</property>
+                                <property name="xalign">0</property>
                               </object>
                               <packing>
                                 <property name="left_attach">0</property>
@@ -3781,10 +3781,10 @@
                               <object class="GtkLabel" id="delete_binding_label">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="xalign">0</property>
                                 <property name="label" translatable="yes">_Delete key generates:</property>
                                 <property name="use_underline">True</property>
                                 <property name="mnemonic_widget">delete_binding</property>
+                                <property name="xalign">0</property>
                               </object>
                               <packing>
                                 <property name="left_attach">0</property>
@@ -4007,9 +4007,10 @@
                                     <property name="can_focus">False</property>
                                     <property name="label" translatable="yes">&lt;b&gt;Middle click on label action&lt;/b&gt;</property>
                                     <property name="use_markup">True</property>
+                                    <property name="yalign">0</property>
                                   </object>
                                   <packing>
-                                    <property name="left_attach">0</property>
+                                    <property name="left_attach">2</property>
                                     <property name="top_attach">0</property>
                                   </packing>
                                 </child>
@@ -4028,7 +4029,7 @@
                                     <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
                                   </object>
                                   <packing>
-                                    <property name="left_attach">0</property>
+                                    <property name="left_attach">2</property>
                                     <property name="top_attach">1</property>
                                   </packing>
                                 </child>
@@ -4047,7 +4048,7 @@
                                     <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
                                   </object>
                                   <packing>
-                                    <property name="left_attach">0</property>
+                                    <property name="left_attach">2</property>
                                     <property name="top_attach">2</property>
                                   </packing>
                                 </child>
@@ -4066,7 +4067,7 @@
                                     <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
                                   </object>
                                   <packing>
-                                    <property name="left_attach">0</property>
+                                    <property name="left_attach">2</property>
                                     <property name="top_attach">3</property>
                                   </packing>
                                 </child>
@@ -4082,12 +4083,12 @@
                                     <property name="tooltip_markup">This option makes the Next and Previous Tab operations respectively wrap around from the first and last tab to the opposite end of the row; the move tab left/right/up/down menu items are affected similarly.</property>
                                     <property name="tooltip_text" translatable="yes">This option makes the Next and Previous Tab operations respectively wrap around from the first and last tab to the opposite end of the row; the move tab left/right/up/down menu items are affected similarly.</property>
                                     <property name="use_underline">True</property>
-                                    <property name="xalign">0.5</property>
+                                    <property name="xalign">0</property>
                                     <property name="draw_indicator">True</property>
                                     <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                                   </object>
                                   <packing>
-                                    <property name="left_attach">1</property>
+                                    <property name="left_attach">0</property>
                                     <property name="top_attach">0</property>
                                   </packing>
                                 </child>
@@ -4103,13 +4104,13 @@
                                     <property name="tooltip_markup">If this option is enabled close buttons are shown at the top of tabs.</property>
                                     <property name="tooltip_text" translatable="yes">If this option is enabled close buttons are shown at the top of tabs.</property>
                                     <property name="use_underline">True</property>
-                                    <property name="xalign">0.5</property>
+                                    <property name="xalign">0</property>
                                     <property name="draw_indicator">True</property>
                                     <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                                     <signal name="toggled" handler="on_close_buttons_toggled" swapped="no"/>
                                   </object>
                                   <packing>
-                                    <property name="left_attach">1</property>
+                                    <property name="left_attach">0</property>
                                     <property name="top_attach">1</property>
                                   </packing>
                                 </child>
@@ -4125,12 +4126,12 @@
                                     <property name="tooltip_markup">If this option is enabled the icons in close buttons may be changed in inactive tabs to reflect the status of their terminals.</property>
                                     <property name="tooltip_text" translatable="yes">If this option is enabled the icons in close buttons may be changed in inactive tabs to reflect the status of their terminals.</property>
                                     <property name="use_underline">True</property>
-                                    <property name="xalign">0.5</property>
+                                    <property name="xalign">0</property>
                                     <property name="draw_indicator">True</property>
                                     <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                                   </object>
                                   <packing>
-                                    <property name="left_attach">1</property>
+                                    <property name="left_attach">0</property>
                                     <property name="top_attach">2</property>
                                   </packing>
                                 </child>
@@ -4145,14 +4146,26 @@
                                     <property name="tooltip_markup">Whether to open new tabs adjacent to the current tab in a window, otherwise append them.</property>
                                     <property name="tooltip_text" translatable="yes">Whether to open new tabs adjacent to the current tab in a window, otherwise append them.</property>
                                     <property name="use_underline">True</property>
-                                    <property name="xalign">0.5</property>
+                                    <property name="xalign">0</property>
                                     <property name="image_position">bottom</property>
                                     <property name="draw_indicator">True</property>
                                     <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                                   </object>
                                   <packing>
-                                    <property name="left_attach">1</property>
+                                    <property name="left_attach">0</property>
                                     <property name="top_attach">3</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkSeparator" id="separator1">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="orientation">vertical</property>
+                                  </object>
+                                  <packing>
+                                    <property name="left_attach">1</property>
+                                    <property name="top_attach">0</property>
+                                    <property name="height">4</property>
                                   </packing>
                                 </child>
                               </object>
@@ -4206,17 +4219,18 @@
                               <object class="GtkGrid" id="grid27">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
+                                <property name="row_spacing">6</property>
                                 <property name="column_spacing">8</property>
                                 <child>
                                   <object class="GtkLabel" id="label17">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                                    <property name="xalign">0</property>
                                     <property name="label" translatable="yes">Initial _number of tabs:</property>
                                     <property name="use_underline">True</property>
                                     <property name="justify">right</property>
                                     <property name="mnemonic_widget">init_tabs</property>
+                                    <property name="xalign">0</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">0</property>
@@ -4228,6 +4242,8 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                                    <property name="hexpand">True</property>
+                                    <property name="vexpand">False</property>
                                     <property name="max_length">2</property>
                                     <property name="invisible_char">●</property>
                                     <property name="text" translatable="yes">1</property>
@@ -4249,21 +4265,22 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                                    <property name="xalign">0</property>
                                     <property name="label" translatable="yes">Tab pos_ition:</property>
                                     <property name="use_underline">True</property>
                                     <property name="justify">right</property>
                                     <property name="mnemonic_widget">tab_pos</property>
+                                    <property name="xalign">0</property>
                                   </object>
                                   <packing>
-                                    <property name="left_attach">2</property>
-                                    <property name="top_attach">0</property>
+                                    <property name="left_attach">0</property>
+                                    <property name="top_attach">1</property>
                                   </packing>
                                 </child>
                                 <child>
                                   <object class="GtkComboBoxText" id="tab_pos">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
+                                    <property name="hexpand">True</property>
                                     <items>
                                       <item translatable="yes">Top</item>
                                       <item translatable="yes">Bottom</item>
@@ -4274,8 +4291,8 @@
                                     <signal name="changed" handler="on_combo_changed" swapped="no"/>
                                   </object>
                                   <packing>
-                                    <property name="left_attach">3</property>
-                                    <property name="top_attach">0</property>
+                                    <property name="left_attach">1</property>
+                                    <property name="top_attach">1</property>
                                   </packing>
                                 </child>
                               </object>
@@ -4400,10 +4417,10 @@
               <object class="GtkLabel" id="ssh_address_label">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="xalign">0</property>
                 <property name="label" translatable="yes">_Address</property>
                 <property name="use_underline">True</property>
                 <property name="mnemonic_widget">ssh_address</property>
+                <property name="xalign">0</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
@@ -4432,10 +4449,10 @@
               <object class="GtkLabel" id="ssh_user_label">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="xalign">0</property>
                 <property name="label" translatable="yes">_User</property>
                 <property name="use_underline">True</property>
                 <property name="mnemonic_widget">ssh_user</property>
+                <property name="xalign">0</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
@@ -4463,10 +4480,10 @@
               <object class="GtkLabel" id="ssh_port_label">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="xalign">0</property>
                 <property name="label" translatable="yes">_Port</property>
                 <property name="use_underline">True</property>
                 <property name="mnemonic_widget">ssh_port</property>
+                <property name="xalign">0</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
@@ -4496,10 +4513,10 @@
               <object class="GtkLabel" id="ssh_options_label">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="xalign">0</property>
                 <property name="label" translatable="yes">_Other options</property>
                 <property name="use_underline">True</property>
                 <property name="mnemonic_widget">ssh_options</property>
+                <property name="xalign">0</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
