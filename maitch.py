@@ -43,6 +43,14 @@ else:
         else:
             return str(s)
 
+if sys.version_info[0] < 3:
+    def open_utf8(*args, **kwargs):
+        return open(*args, **kwargs)
+else:
+    def open_utf8(*args, **kwargs):
+        kwargs["encoding"] = "utf8"
+        return open(*args, **kwargs)
+
 mswin = sys.platform.startswith("win")
 
 # curses is broken on Windows
@@ -1708,13 +1716,13 @@ class Rule(object):
                     t = self.ctx.subst(t)
                     s = t + '.old'
                     if os.path.exists(t) and os.path.exists(s):
-                        f = open(s, 'r')
+                        f = open_utf8(s, 'r')
                         u = []
                         for l in f.readlines():
                             if not self.diffpat.search(l):
                                 u.append(l)
                         f.close()
-                        f = open(t, 'r')
+                        f = open_utf8(t, 'r')
                         v = []
                         for l in f.readlines():
                             if not self.diffpat.search(l):
@@ -2486,7 +2494,7 @@ def subst_file(env, source, target, at = False):
     """ Run during configure phase to create a copy of source as target
     with ${} constructs substituted. Uses save_if_different() to avoid
     unnecessary rebuilds. """
-    fp = open(subst(env, source), 'r')
+    fp = open_utf8(subst(env, source), 'r')
     s = fp.read()
     fp.close()
     save_if_different(subst(env, target), subst(env, s, at = at))
@@ -2496,7 +2504,7 @@ def save_if_different(filename, content):
     """ Saves content to filename, only if file doesn't already contain
     identical content. """
     if os.path.exists(filename):
-        fp = open(filename, 'r')
+        fp = open_utf8(filename, 'r')
         old = fp.read()
         fp.close()
     else:
@@ -2506,7 +2514,7 @@ def save_if_different(filename, content):
             mprint("Creating '%s'" % filename)
         else:
             mprint("Updating '%s'" % filename)
-        fp = open(filename, 'w')
+        fp = open_utf8(filename, 'w')
         fp.write(content)
         fp.close()
     else:

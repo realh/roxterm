@@ -1,7 +1,5 @@
 #!/usr/bin/make -f
 
-export LC_ALL = C.utf8
-
 ifeq ($(wildcard .git),.git)
 CONFIGURE_GIT =
 else
