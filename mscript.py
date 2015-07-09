@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
 
-import sys
-reload(sys)
-sys.setdefaultencoding('UTF8')
-
-import errno, os, re, time
+import errno, os, re, sys, time
 
 from maitch import *
 

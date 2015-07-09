@@ -1,5 +1,7 @@
 #!/usr/bin/make -f
 
+export LC_ALL = C.utf8
+
 ifeq ($(wildcard .git),.git)
 CONFIGURE_GIT =
 else
@@ -18,6 +20,7 @@ CONFIGURE_COMMON = $(CONFIGURE_GDA) $(CONFIGURE_LDFLAGS) $(CONFIGURE_MISC)
 MSCRIPT_OPTS = --lock-top
 COMMON_DIRS = --top-dir=../.. --src-dir='$${TOP_DIR}/src'
 BUILD_DIRS = --build-dir=debian/build $(COMMON_DIRS)
+MSCRIPT = python3 mscript.py
 
 ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 NUMJOBS = $(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
@@ -28,15 +31,15 @@ endif
 	dh $@
 
 override_dh_auto_configure:
-	python3 mscript.py configure $(MSCRIPT_OPTS) $(CONFIGURE_COMMON) \
+	$(MSCRIPT) configure $(MSCRIPT_OPTS) $(CONFIGURE_COMMON) \
 		$(BUILD_DIRS) CFLAGS="$(CFLAGS)" CPPFLAGS="$(CPPFLAGS)" \
 		LDFLAGS="$(LDFLAGS)"
 
 override_dh_auto_build:
-	python3 mscript.py build $(MSCRIPT_OPTS) $(BUILD_DIRS)
+	$(MSCRIPT) build $(MSCRIPT_OPTS) $(BUILD_DIRS)
 
 override_dh_auto_install:
-	python3 mscript.py install $(MSCRIPT_OPTS) $(BUILD_DIRS) --destdir=../tmp
+	$(MSCRIPT) install $(MSCRIPT_OPTS) $(BUILD_DIRS) --destdir=../tmp
 
 override_dh_install:
 	dh_install
@@ -45,7 +48,7 @@ override_dh_install:
 override_dh_auto_test:
 
 override_dh_auto_clean:
-	python3 mscript.py clean $(MSCRIPT_OPTS) $(BUILD_DIRS)
+	$(MSCRIPT) clean $(MSCRIPT_OPTS) $(BUILD_DIRS)
 	rm -rf debian/build
 	rm -f maitch.py[co]
 
