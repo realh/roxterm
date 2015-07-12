@@ -805,8 +805,14 @@ static void multi_win_highlight_selected_tab(MultiWin *win)
     for (link = win->tabs; link; link = g_list_next(link))
     {
         MultiTab *tab = link->data;
-        multitab_label_set_current(MULTITAB_LABEL(tab->label),
-                tab == win->current_tab);
+        /* If this is called while a tab is being moved to another window its
+         * label may be NULL
+         */
+        if (tab->label)
+        {
+            multitab_label_set_current(MULTITAB_LABEL(tab->label),
+                    tab == win->current_tab);
+        }
     }
 }
 
@@ -1172,7 +1178,6 @@ MultiWin *multi_win_new_for_tab(const char *display_name, int x, int y,
     const char *title_template = win->title_template;
     gboolean show_menubar = win->show_menu_bar;
 
-    g_debug("Creating new window for tab with tab_pos %d", win->tab_pos);
     gtk_window_get_size(gwin, &w, &h);
     multi_win_get_disable_menu_shortcuts(tab->user_data,
             &disable_menu_shortcuts, &disable_tab_shortcuts);
