@@ -46,6 +46,12 @@
                           may need to change the background opacity setting (now
                           found in the Appearance section of your profile) when
                           upgrading from an earlier version.</span></li>
+                      <li><span>mscript.py now uses python3 by default, but is
+                          backwards compatible with python2. python3-lockfile is
+                          relatively new so you may need to explicitly run
+                          mscript.py in python2. To do this when building a
+                          Debian package edit debian/rules and change the
+                          dependencies in debian/control.</span></li>
 					</ul>
 				</div>
 
