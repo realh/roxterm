@@ -55,7 +55,11 @@ gboolean rtdbus_start_service(const char *name, const char *object_path,
 /* Call before any other D-BUS functions. May be called more than once */
 gboolean rtdbus_init(void);
 
-/* Adds a match rule and signal filter */
+/* Adds a match rule and filter */
+gboolean rtdbus_add_rule_and_filter(const char *match_rule,
+        DBusHandleMessageFunction filter_fn, void *user_data);
+
+/* Constructs a match rule for the given signal and adds a filter for it */
 gboolean rtdbus_add_signal_rule_and_filter(
 		const char *path, const char *interface,
 		DBusHandleMessageFunction);

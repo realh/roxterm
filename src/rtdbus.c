@@ -160,30 +160,37 @@ gboolean rtdbus_init(void)
     return status = TRUE;
 }
 
-gboolean rtdbus_add_signal_rule_and_filter(
-        const char *path, const char *interface,
-        DBusHandleMessageFunction filter_fn)
+gboolean rtdbus_add_rule_and_filter(const char *match_rule,
+        DBusHandleMessageFunction filter_fn, void *user_data)
 {
     DBusError derror;
-    char *match_rule;
 
     dbus_error_init(&derror);
-    match_rule = g_strdup_printf(
-            "type='signal',path='%s',interface='%s'",
-            path, interface);
     dbus_bus_add_match(rtdbus_connection, match_rule, &derror);
     if (dbus_error_is_set(&derror))
     {
-        rtdbus_whinge(&derror, _("Unable to add D-BUS signal match rule"));
+        rtdbus_whinge(&derror, _("Unable to add D-BUS match rule"));
         return FALSE;
     }
     if (!dbus_connection_add_filter(rtdbus_connection,
-            filter_fn, NULL, NULL))
+            filter_fn, user_data, NULL))
     {
         rtdbus_whinge(&derror, _("Unable to install D-BUS message filter"));
         return FALSE;
     }
     return TRUE;
+}
+
+gboolean rtdbus_add_signal_rule_and_filter(
+        const char *path, const char *interface,
+        DBusHandleMessageFunction filter_fn)
+{
+    char *match_rule = g_strdup_printf(
+            "type='signal',path='%s',interface='%s'",
+            path, interface);
+    gboolean result = rtdbus_add_rule_and_filter(match_rule, filter_fn, NULL);
+    g_free(match_rule);
+    return result;
 }
 
 DBusMessage *rtdbus_append_args(DBusMessage *message, int first_arg_type, ...)

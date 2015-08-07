@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: roxterm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-12 14:02+0100\n"
+"POT-Creation-Date: 2015-08-07 15:12+0100\n"
 "PO-Revision-Date: 2013-05-23 15:18+0000\n"
 "Last-Translator: Tony Houghton <h@realh.co.uk>\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/roxterm/language/"
@@ -422,17 +422,17 @@ msgstr ""
 msgid "Child failed to signal parent for --fork: %s"
 msgstr ""
 
-#: ../src/main.c:280
+#: ../src/main.c:299
 #, c-format
 msgid "Unable to open pipe to implement --fork: %s"
 msgstr ""
 
-#: ../src/main.c:296
+#: ../src/main.c:315
 #, c-format
 msgid "Unable to fork to implement --fork: %s"
 msgstr ""
 
-#: ../src/main.c:362
+#: ../src/main.c:381
 msgid "Missing command after -e/--execute option"
 msgstr ""
 
@@ -1231,39 +1231,39 @@ msgstr ""
 msgid "Error connecting to dbus: %s"
 msgstr ""
 
-#: ../src/rtdbus.c:177
-msgid "Unable to add D-BUS signal match rule"
+#: ../src/rtdbus.c:172
+msgid "Unable to add D-BUS match rule"
 msgstr ""
 
-#: ../src/rtdbus.c:183
+#: ../src/rtdbus.c:178
 msgid "Unable to install D-BUS message filter"
 msgstr ""
 
-#: ../src/rtdbus.c:210
+#: ../src/rtdbus.c:217
 msgid "Unable to append arguments to D-BUS message"
 msgstr ""
 
-#: ../src/rtdbus.c:236
+#: ../src/rtdbus.c:243
 msgid "Unable to create D-BUS signal message"
 msgstr ""
 
-#: ../src/rtdbus.c:264
+#: ../src/rtdbus.c:271
 msgid "Unable to create D-BUS method call message"
 msgstr ""
 
-#: ../src/rtdbus.c:284
+#: ../src/rtdbus.c:291
 #, c-format
 msgid "Invalid argument type ('%c') in NewTerminal D-BUS method"
 msgstr ""
 
-#: ../src/rtdbus.c:314
+#: ../src/rtdbus.c:321
 #, c-format
 msgid ""
 "Invalid first argument type ('%c') in NewTerminal D-BUS method; expected "
 "array"
 msgstr ""
 
-#: ../src/rtdbus.c:320
+#: ../src/rtdbus.c:327
 #, c-format
 msgid ""
 "Invalid array element type ('%c') in NewTerminal D-BUS method; expected "

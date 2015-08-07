@@ -246,10 +246,6 @@ static int roxterm_exit(int pipe_w, char exit_code)
         }
         close(pipe_w);
     }
-    else
-    {
-        SLOG("Not forking, roxterm_exit doing nothing");
-    }
     return exit_code;
 }
 
@@ -257,6 +253,28 @@ static gboolean roxterm_idle_ok(gpointer ppipe)
 {
     roxterm_exit(*(int *) ppipe, 0);
     return FALSE;
+}
+
+static DBusHandlerResult
+roxterm_dbus_service_ready(DBusConnection * connection,
+        DBusMessage * message, void *user_data)
+{
+    const char *service_name = NULL;
+    DBusError derror;
+
+    (void) connection;
+
+    dbus_error_init(&derror);
+    dbus_message_get_args(message, &derror,
+            DBUS_TYPE_STRING, &service_name,
+            DBUS_TYPE_INVALID);
+    if (!strcmp(service_name, "net.sf.roxterm.term"))
+    {
+        //g_debug("We acquired service name '%s'", service_name);
+        //g_debug("dbus service ready, sending OK down pipe
+        roxterm_idle_ok(user_data);
+    }
+    return DBUS_HANDLER_RESULT_HANDLED;
 }
 
 int main(int argc, char **argv)
@@ -270,6 +288,7 @@ int main(int argc, char **argv)
     gboolean dbus_ok;
     pid_t fork_result = 0;
     static int fork_pipe[2] = { -1, -1};
+    gboolean defer_pipe = FALSE;
 
     global_options_init_appdir(argc, argv);
     global_options_init_bindir(argv[0]);
@@ -373,6 +392,17 @@ int main(int argc, char **argv)
     dbus_ok = rtdbus_ok = rtdbus_init();
     if (dbus_ok)
     {
+        if (global_options_fork)
+        {
+            rtdbus_add_rule_and_filter("type='signal',"
+                    "interface='org.freedesktop.DBus',"
+                    "member='NameAcquired',"
+                    "path='/org/freedesktop/DBus',"
+                    "sender='org.freedesktop.DBus'",
+                roxterm_dbus_service_ready,
+                &fork_pipe[1]);
+            defer_pipe = TRUE;
+        }
 #if ENABLE_SM
         if (global_options_disable_sm ||
                 (!global_options_restart_session_id &&
@@ -445,7 +475,11 @@ int main(int argc, char **argv)
     }
 #endif
 
-    g_idle_add(roxterm_idle_ok, &fork_pipe[1]);
+    /* Usually this should be deferred to NameAcquired signal handler */
+    if (!defer_pipe)
+    {
+        g_idle_add(roxterm_idle_ok, &fork_pipe[1]);
+    }
 
     SLOG("Entering main loop with %d windows", g_list_length(multi_win_all));
     gtk_main();
