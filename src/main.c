@@ -268,7 +268,7 @@ roxterm_dbus_service_ready(DBusConnection * connection,
     dbus_message_get_args(message, &derror,
             DBUS_TYPE_STRING, &service_name,
             DBUS_TYPE_INVALID);
-    if (!strcmp(service_name, "net.sf.roxterm.term"))
+    if (!strcmp(service_name, ROXTERM_DBUS_NAME))
     {
         //g_debug("We acquired service name '%s'", service_name);
         //g_debug("dbus service ready, sending OK down pipe
