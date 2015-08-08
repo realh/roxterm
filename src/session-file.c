@@ -21,12 +21,11 @@
 #include "defns.h"
 #endif
 
+#include <errno.h>
+
 #include "multitab.h"
 #include "roxterm.h"
 #include "session-file.h"
-
-int session_argc;
-char **session_argv;
 
 /*
 #include <stdarg.h>
@@ -51,6 +50,28 @@ roxterm_sm_log(const char *format, ...)
     fflush(fp);
 }
 */
+
+char *session_get_filename(const char *leafname, const char *subdir,
+        gboolean create_dir)
+{
+    char *dir = g_build_filename(g_get_user_config_dir(), ROXTERM_LEAF_DIR,
+            subdir, NULL);
+    char *pathname;
+
+    if (create_dir && !g_file_test(dir, G_FILE_TEST_IS_DIR))
+    {
+        if (g_mkdir_with_parents(dir, 0755))
+        {
+            g_warning(_("Unable to create Sessions directory '%s': %s"),
+                    dir, strerror(errno));
+            g_free(dir);
+            return NULL;
+        }
+    }
+    pathname = g_build_filename(dir, leafname, NULL);
+    g_free(dir);
+    return pathname;
+}
 
 static void save_tab_to_fp(MultiTab *tab, gpointer handle)
 {
@@ -140,7 +161,7 @@ static gboolean save_session_to_fp(FILE *fp, const char *session_id)
                 "      title='%s' role='%s'\n"
                 "      shortcut_scheme='%s' show_menubar='%d'\n"
                 "      always_show_tabs='%d' tab_pos='%d'\n"
-                "      show_add_tab_btn='%d'"
+                "      show_add_tab_btn='%d'\n"
                 "      disable_menu_shortcuts='%d' disable_tab_shortcuts='%d'\n"
                 "      maximised='%d' fullscreen='%d' zoom='%f'>\n",
                 disp, w, h, x, y,

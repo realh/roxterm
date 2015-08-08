@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: roxterm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-08 15:55+0100\n"
+"POT-Creation-Date: 2015-08-08 17:54+0100\n"
 "PO-Revision-Date: 2013-05-23 15:18+0000\n"
 "Last-Translator: Tony Houghton <h@realh.co.uk>\n"
 "Language-Team: Ukrainian (http://www.transifex.com/projects/p/roxterm/"
@@ -243,7 +243,8 @@ msgstr ""
 msgid "URI list dropped on widget had wrong format (%d) or length (%d)"
 msgstr ""
 
-#: ../src/getname.c:77 ../src/multitab.c:1281 ../src/multitab.c:1327
+#: ../src/getname.c:77 ../src/multitab.c:1289 ../src/multitab.c:1332
+#: ../src/multitab.c:1398
 msgid "_Cancel"
 msgstr ""
 
@@ -574,152 +575,179 @@ msgstr ""
 msgid "_Close Window"
 msgstr ""
 
-#: ../src/menutree.c:524 ../src/menutree.c:533
+#: ../src/menutree.c:518
+msgid "_Save Session..."
+msgstr ""
+
+#: ../src/menutree.c:526 ../src/menutree.c:535
 msgid "Profiles"
 msgstr ""
 
-#: ../src/menutree.c:543
+#: ../src/menutree.c:545
 msgid "_Set Window Title..."
 msgstr ""
 
-#: ../src/menutree.c:546
+#: ../src/menutree.c:548
 msgid "Res_tart command"
 msgstr ""
 
-#: ../src/menutree.c:554
+#: ../src/menutree.c:556
 msgid "_Always Show Tab Bar"
 msgstr ""
 
-#: ../src/menutree.c:555
+#: ../src/menutree.c:557
 msgid "_Full Screen"
 msgstr ""
 
-#: ../src/menutree.c:557
+#: ../src/menutree.c:559
 msgid "Zoom _In"
 msgstr ""
 
-#: ../src/menutree.c:558
+#: ../src/menutree.c:560
 msgid "Zoom _Out"
 msgstr ""
 
-#: ../src/menutree.c:559
+#: ../src/menutree.c:561
 msgid "_Normal Size"
 msgstr ""
 
-#: ../src/menutree.c:561
+#: ../src/menutree.c:563
 msgid "Scroll _Up One Line"
 msgstr ""
 
-#: ../src/menutree.c:562
+#: ../src/menutree.c:564
 msgid "Scroll _Down One Line"
 msgstr ""
 
-#: ../src/menutree.c:563
+#: ../src/menutree.c:565
 msgid "Scroll Up One _Page"
 msgstr ""
 
-#: ../src/menutree.c:564
+#: ../src/menutree.c:566
 msgid "Scroll Do_wn One Page"
 msgstr ""
 
-#: ../src/menutree.c:565
+#: ../src/menutree.c:567
 msgid "Scroll Up One _Half Page"
 msgstr ""
 
-#: ../src/menutree.c:566
+#: ../src/menutree.c:568
 msgid "Scroll Down One Hal_f Page"
 msgstr ""
 
-#: ../src/menutree.c:567
+#: ../src/menutree.c:569
 msgid "Scroll To _Top"
 msgstr ""
 
-#: ../src/menutree.c:568
+#: ../src/menutree.c:570
 msgid "Scroll To _Bottom"
 msgstr ""
 
-#: ../src/menutree.c:575
+#: ../src/menutree.c:577
 msgid "_Find..."
 msgstr ""
 
-#: ../src/menutree.c:576
+#: ../src/menutree.c:578
 msgid "Find _Next"
 msgstr ""
 
-#: ../src/menutree.c:577
+#: ../src/menutree.c:579
 msgid "Find _Previous"
 msgstr ""
 
-#: ../src/menutree.c:585
+#: ../src/menutree.c:587
 msgid "Edi_t Current Shortcuts Scheme"
 msgstr ""
 
-#: ../src/menutree.c:593
+#: ../src/menutree.c:595
 msgid "_Detach Tab"
 msgstr ""
 
-#: ../src/menutree.c:594
+#: ../src/menutree.c:596
 msgid "_Close Tab"
 msgstr ""
 
-#: ../src/menutree.c:595
+#: ../src/menutree.c:597
 msgid "Close _Other Tabs"
 msgstr ""
 
-#: ../src/menutree.c:596
+#: ../src/menutree.c:598
 msgid "Na_me Tab..."
 msgstr ""
 
-#: ../src/menutree.c:598
+#: ../src/menutree.c:600
 msgid "_Previous Tab"
 msgstr ""
 
-#: ../src/menutree.c:599
+#: ../src/menutree.c:601
 msgid "_Next Tab"
 msgstr ""
 
-#: ../src/menutree.c:601
+#: ../src/menutree.c:603
 msgid "Move Tab _Left"
 msgstr ""
 
-#: ../src/menutree.c:602
+#: ../src/menutree.c:604
 msgid "Move Tab _Right"
 msgstr ""
 
-#: ../src/menutree.c:609
+#: ../src/menutree.c:611
 msgid "Show _Manual"
 msgstr ""
 
-#: ../src/menutree.c:610
+#: ../src/menutree.c:612
 msgid "_About ROXTerm"
 msgstr ""
 
-#: ../src/menutree.c:847
+#: ../src/menutree.c:849
 msgid "Move Tab _Up"
 msgstr ""
 
-#: ../src/menutree.c:849
+#: ../src/menutree.c:851
 msgid "Move Tab _Down"
 msgstr ""
 
-#: ../src/multitab.c:413
+#: ../src/multitab.c:421
 #, c-format
 msgid "'%s' contains invalid %% sequences for a title template"
 msgstr ""
 
-#: ../src/multitab.c:1278
+#: ../src/multitab.c:1286
 msgid "Name Tab"
 msgstr ""
 
-#: ../src/multitab.c:1282 ../src/multitab.c:1328
+#: ../src/multitab.c:1290 ../src/multitab.c:1399
 msgid "_Apply"
 msgstr ""
 
-#: ../src/multitab.c:1324
+#: ../src/multitab.c:1329
+msgid "Save Session"
+msgstr ""
+
+#: ../src/multitab.c:1333
+msgid "_Save"
+msgstr ""
+
+#: ../src/multitab.c:1340
+msgid ""
+"The current session will be saved in $XDG_CONFIG_HOME/roxterm.sourceforge."
+"net/UserSessions/ with the given leafname (XDG_CONFIG_HOME defaults to ~/."
+"config). A session saves the state of current windows and tabs but not the "
+"terminals' text content. A session can be restored with roxterm's --session "
+"command-line option, or will be restored automatically if named 'Default'. "
+"Leaving the field blank is equivalent to 'Default'."
+msgstr ""
+
+#: ../src/multitab.c:1381
+#, c-format
+msgid "Unable to save session to file '%s': %s"
+msgstr ""
+
+#: ../src/multitab.c:1395
 msgid "Set Window Title"
 msgstr ""
 
-#: ../src/multitab.c:1335
+#: ../src/multitab.c:1406
 msgid ""
 "The title string may include '%s' which is substituted with the title set by "
 "the child command (usually the current directory for shells). No other % "
@@ -834,7 +862,7 @@ msgstr ""
 msgid "Unable to copy profile/scheme: %s"
 msgstr ""
 
-#: ../src/optsfile.c:425 ../src/roxterm.c:847 ../src/session.c:350
+#: ../src/optsfile.c:425 ../src/roxterm.c:847 ../src/session.c:332
 #: ../src/shortcuts.c:202
 msgid "unknown reason"
 msgstr ""
@@ -1363,25 +1391,20 @@ msgid ""
 "beginning or end is reached."
 msgstr ""
 
-#: ../src/session.c:63
-#, c-format
-msgid "Unable to create Sessions directory '%s': %s"
-msgstr ""
-
-#: ../src/session.c:84
+#: ../src/session.c:66
 msgid "Error processing ICE (session management) messages"
 msgstr ""
 
-#: ../src/session.c:287
+#: ../src/session.c:269
 #, c-format
 msgid "Failed to save session state to '%s': %s"
 msgstr ""
 
-#: ../src/session.c:337
+#: ../src/session.c:319
 msgid "Unable to initialise ICE for session management"
 msgstr ""
 
-#: ../src/session.c:349
+#: ../src/session.c:331
 #, c-format
 msgid "Failed to connect to session manager: %s"
 msgstr ""

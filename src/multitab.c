@@ -17,6 +17,14 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+#ifndef DEFNS_H
+#include "defns.h"
+#endif
+
+#include <errno.h>
+
+#include <gdk/gdkx.h>
+
 #include "boxcompat.h"
 #include "dlg.h"
 #include "display.h"
@@ -25,8 +33,8 @@
 #include "multitab.h"
 #include "multitab-close-button.h"
 #include "multitab-label.h"
+#include "session-file.h"
 #include "shortcuts.h"
-#include <gdk/gdkx.h>
 #include "x11support.h"
 
 #define HORIZ_TAB_WIDTH_CHARS 16
@@ -1316,6 +1324,69 @@ static void multi_win_name_tab_action(MultiWin * win)
     if (tab->postponed_free)
         g_free(tab);
 }
+static void multi_win_save_session_action(MultiWin * win)
+{
+    GtkWidget *dialog_w = gtk_dialog_new_with_buttons(_("Save Session"),
+            GTK_WINDOW(win->gtkwin),
+            GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+            _("_Cancel"), GTK_RESPONSE_CANCEL,
+            _("_Save"), GTK_RESPONSE_OK,
+            NULL);
+    GtkDialog *dialog = GTK_DIALOG(dialog_w);
+    GtkWidget *title_w = gtk_entry_new();
+    GtkEntry *title_e = GTK_ENTRY(title_w);
+    GtkWidget *img = gtk_image_new_from_icon_name("dialog-information",
+            GTK_ICON_SIZE_DIALOG);
+    GtkWidget *tip_label = gtk_label_new(_("The current session will be saved "
+                "in $XDG_CONFIG_HOME/roxterm.sourceforge.net/UserSessions/ "
+                "with the given leafname (XDG_CONFIG_HOME defaults to "
+                "~/.config). A session saves the state of current windows "
+                "and tabs but not the terminals' text content. A session "
+                "can be restored with roxterm's --session command-line "
+                "option, or will be restored automatically if named "
+                "'Default'. Leaving the field blank is equivalent to "
+                "'Default'."));
+    int response;
+    const char *name;
+    char *filename;
+    GtkWidget *content_area = gtk_dialog_get_content_area(dialog);
+    GtkWidget *hbox = gtk_grid_new();
+
+    gtk_dialog_set_default_response(dialog, GTK_RESPONSE_APPLY);
+    box_compat_packv(content_area, title_w, FALSE, 8);
+    box_compat_packh(hbox, img, FALSE, 8);
+    gtk_label_set_line_wrap(GTK_LABEL(tip_label), TRUE);
+    gtk_label_set_width_chars(GTK_LABEL(tip_label), 30);
+    gtk_label_set_max_width_chars(GTK_LABEL(tip_label), 50);
+    box_compat_packh(hbox, tip_label, FALSE, 8);
+    box_compat_packv(content_area, hbox, FALSE, 8);
+    gtk_entry_set_activates_default(title_e, TRUE);
+    gtk_entry_set_text(title_e, "Default");
+    gtk_widget_show_all(dialog_w);
+    response = gtk_dialog_run(dialog);
+    switch (response)
+    {
+        case GTK_RESPONSE_DELETE_EVENT:
+        case GTK_RESPONSE_NONE:
+            /* Don't destroy */
+            break;
+        case GTK_RESPONSE_OK:
+            name = gtk_entry_get_text(title_e);
+            if (!name || !name[0])
+                name = "Default";
+            filename = session_get_filename(name, "UserSessions", TRUE);
+            if (!save_session_to_file(filename, name))
+            {
+                dlg_critical(GTK_WINDOW(win->gtkwin),
+                        _("Unable to save session to file '%s': %s"),
+                        filename, strerror(errno));
+            }
+            /* Fall through to destroy */
+        default:
+            gtk_widget_destroy(dialog_w);
+            break;
+    }
+}
 
 static void multi_win_set_window_title_action(MultiWin * win)
 {
@@ -1613,6 +1684,8 @@ static void multi_win_connect_actions(MultiWin * win)
         (multi_win_new_tab_action), win, NULL, NULL, NULL);
     multi_win_menu_connect_swapped(win, MENUTREE_FILE_CLOSE_TAB, G_CALLBACK
         (multi_win_close_tab_action), win, NULL, NULL, NULL);
+    multi_win_menu_connect_swapped(win, MENUTREE_FILE_SAVE_SESSION, G_CALLBACK
+        (multi_win_save_session_action), win, NULL, NULL, NULL);
     multi_win_menu_connect_swapped(win, MENUTREE_TABS_DETACH_TAB, G_CALLBACK
         (multi_win_detach_tab_action), win, NULL, NULL, NULL);
     menutree_signal_connect_swapped(win->popup_menu,

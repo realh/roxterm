@@ -25,9 +25,8 @@
 #include "defns.h"
 #endif
 
-/* Copy from argc/argv in main() before letting GTK process args */
-extern int session_argc;
-extern char **session_argv;
+char *session_get_filename(const char *leafname, const char *dir,
+        gboolean create_dir);
 
 gboolean save_session_to_file(const char *filename, const char *client_id);
 

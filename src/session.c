@@ -48,28 +48,10 @@ typedef struct {
     gboolean init_done;
 } SessionData;
 
+int session_argc;
+char **session_argv;
+
 static SessionData session_data;
-
-static char *session_get_filename(const char *client_id, gboolean create_dir)
-{
-    char *dir = g_build_filename(g_get_user_config_dir(), ROXTERM_LEAF_DIR,
-            "Sessions", NULL);
-    char *pathname;
-
-    if (create_dir && !g_file_test(dir, G_FILE_TEST_IS_DIR))
-    {
-        if (g_mkdir_with_parents(dir, 0755))
-        {
-            g_warning(_("Unable to create Sessions directory '%s': %s"),
-                    dir, strerror(errno));
-            g_free(dir);
-            return NULL;
-        }
-    }
-    pathname = g_build_filename(dir, client_id, NULL);
-    g_free(dir);
-    return pathname;
-}
 
 static gboolean ioc_watch_callback(GIOChannel *source,
         GIOCondition cond, gpointer handle)
@@ -272,7 +254,7 @@ static void session_save_yourself_callback(SmcConn smc_conn, SmPointer handle,
     }
     else
     {
-        char *filename = session_get_filename(sd->client_id, TRUE);
+        char *filename = session_get_filename(sd->client_id, "Sessions", TRUE);
 
         SLOG("Implementing SaveYourself for %s", sd->client_id);
         if (filename)
@@ -356,6 +338,7 @@ void session_init(const char *client_id)
 
 gboolean session_load(const char *client_id)
 {
-    return load_session_from_file(session_get_filename(client_id, FALSE),
+    return load_session_from_file(
+            session_get_filename(client_id, "Sessions", FALSE),
             client_id);
 }

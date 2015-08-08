@@ -25,26 +25,13 @@
 #include "defns.h"
 #endif
 
-#if ENABLE_SM
+/* Copy from argc/argv in main() before letting GTK process args */
+extern int session_argc;
+extern char **session_argv;
 
 void session_init(const char *client_id);
 
 gboolean session_load(const char *client_id);
-
-#else
-
-inline static void session_init(const char *client_id)
-{
-    (void) client_id;
-}
-
-inline static gboolean session_load(const char *client_id)
-{
-    (void) client_id;
-    return TRUE;
-}
-
-#endif
 
 #endif /* SESSION_H */
 
