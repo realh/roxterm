@@ -36,6 +36,7 @@ char *global_options_bindir = NULL;
 char *global_options_directory = NULL;
 char *global_options_restart_session_id = NULL;
 char *global_options_clone_session_id = NULL;
+char *global_options_user_session_id = NULL;
 gboolean global_options_disable_sm = FALSE;
 gboolean global_options_replace = FALSE;
 gboolean global_options_fullscreen = FALSE;
@@ -85,7 +86,8 @@ static gboolean global_options_show_usage(const gchar *option_name,
     (void) value;
     (void) option_name;
     puts("roxterm [-?|--help] [--usage] [--geometry=GEOMETRY] [--appdir=DIR]\n"
-      "    [--profile=PROFILE|-p PROFILE] \n"
+      "    [--session=SESSION]\n"
+      "    [--profile=PROFILE|-p PROFILE]\n"
       "    [--colour-scheme=SCHEME|--color-scheme=SCHEME|-c SCHEME]\n"
       "    [--shortcut-scheme=SCHEME|-s SCHEME]\n"
       "    [--fullscreen|-f] [--maximise|--maximize|-m] [--zoom=ZOOM|-z ZOOM]\n"
@@ -291,6 +293,9 @@ static GOptionEntry global_g_options[] = {
     { "role", 0, G_OPTION_FLAG_IN_MAIN,
         G_OPTION_ARG_CALLBACK, global_options_set_string,
         N_("Set X window system 'role' hint"), N_("NAME") },
+    { "session", 0, G_OPTION_FLAG_IN_MAIN,
+        G_OPTION_ARG_STRING, &global_options_user_session_id,
+        N_("Restore the named user session"), N_("SESSION") },
     { "restart-session-id", 0, G_OPTION_FLAG_HIDDEN,
         G_OPTION_ARG_STRING, &global_options_restart_session_id, NULL, NULL },
     { "clone-session-id", 0, G_OPTION_FLAG_HIDDEN,

@@ -63,6 +63,8 @@ extern gboolean global_options_disable_sm;
 extern char *global_options_restart_session_id;
 extern char *global_options_clone_session_id;
 
+extern char *global_options_user_session_id;
+
 /* Call after argv has been processed by gtk_init; may be called more than once
  * but repeat invocations have no effect on appdir/bindir and argv/argc are
  * altered. Bear in mind that --help/--usage args will cause exit.

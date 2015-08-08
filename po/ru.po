@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: roxterm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-08 17:54+0100\n"
+"POT-Creation-Date: 2015-08-08 18:26+0100\n"
 "PO-Revision-Date: 2013-05-23 15:18+0000\n"
 "Last-Translator: Tony Houghton <h@realh.co.uk>\n"
 "Language-Team: Russian (http://www.transifex.com/projects/p/roxterm/language/"
@@ -253,159 +253,167 @@ msgstr ""
 msgid "An item with that name already exists"
 msgstr ""
 
-#: ../src/globalopts.c:153
+#: ../src/globalopts.c:155
 #, c-format
 msgid "Invalid directory '%s'"
 msgstr ""
 
-#: ../src/globalopts.c:210
+#: ../src/globalopts.c:212
 msgid "Show brief usage message"
 msgstr ""
 
-#: ../src/globalopts.c:213
+#: ../src/globalopts.c:215
 msgid "Set the terminal's working directory"
 msgstr ""
 
-#: ../src/globalopts.c:213 ../src/globalopts.c:224
+#: ../src/globalopts.c:215 ../src/globalopts.c:226
 msgid "DIRECTORY"
 msgstr ""
 
-#: ../src/globalopts.c:216
+#: ../src/globalopts.c:218
 msgid ""
 "Set size and/or position of terminal\n"
 "                                   according to X geometry specification"
 msgstr ""
 
-#: ../src/globalopts.c:219
+#: ../src/globalopts.c:221
 msgid "GEOMETRY"
 msgstr ""
 
-#: ../src/globalopts.c:222
+#: ../src/globalopts.c:224
 msgid ""
 "Application directory when run as a ROX\n"
 "                                   application"
 msgstr ""
 
-#: ../src/globalopts.c:227
+#: ../src/globalopts.c:229
 msgid "Show the menu bar, overriding profile"
 msgstr ""
 
-#: ../src/globalopts.c:230
+#: ../src/globalopts.c:232
 msgid "Hide the menu bar, overriding profile"
 msgstr ""
 
-#: ../src/globalopts.c:233
+#: ../src/globalopts.c:235
 msgid "Use the named profile"
 msgstr ""
 
-#: ../src/globalopts.c:233
+#: ../src/globalopts.c:235
 msgid "PROFILE"
 msgstr ""
 
-#: ../src/globalopts.c:236
+#: ../src/globalopts.c:238
 msgid "Use the named colour scheme"
 msgstr ""
 
-#: ../src/globalopts.c:237 ../src/globalopts.c:242 ../src/globalopts.c:246
+#: ../src/globalopts.c:239 ../src/globalopts.c:244 ../src/globalopts.c:248
 msgid "SCHEME"
 msgstr ""
 
-#: ../src/globalopts.c:240
+#: ../src/globalopts.c:242
 msgid ""
 "Use the named colour scheme\n"
 "                                   (same as --colour-scheme)"
 msgstr ""
 
-#: ../src/globalopts.c:245
+#: ../src/globalopts.c:247
 msgid "Use the named keyboard shortcut scheme"
 msgstr ""
 
-#: ../src/globalopts.c:251
+#: ../src/globalopts.c:253
 msgid "Maximise the window, overriding profile"
 msgstr ""
 
-#: ../src/globalopts.c:254
+#: ../src/globalopts.c:256
 msgid "Synonym for --maximise"
 msgstr ""
 
-#: ../src/globalopts.c:257
+#: ../src/globalopts.c:259
 msgid ""
 "Make the initial terminal take up the whole\n"
 "                                   screen with no window furniture"
 msgstr ""
 
-#: ../src/globalopts.c:262
+#: ../src/globalopts.c:264
 msgid ""
 "Scale factor for terminal's fonts\n"
 "                                   (1.0 is normal)"
 msgstr ""
 
-#: ../src/globalopts.c:264
+#: ../src/globalopts.c:266
 msgid "ZOOM"
 msgstr ""
 
-#: ../src/globalopts.c:267
+#: ../src/globalopts.c:269
 msgid "Use a separate process to run this terminal"
 msgstr ""
 
-#: ../src/globalopts.c:270
+#: ../src/globalopts.c:272
 msgid ""
 "Replace any existing process as ROXTerm's\n"
 "                                   D-BUS service provider"
 msgstr ""
 
-#: ../src/globalopts.c:275
+#: ../src/globalopts.c:277
 msgid "Set window title"
 msgstr ""
 
-#: ../src/globalopts.c:275
+#: ../src/globalopts.c:277
 msgid "TITLE"
 msgstr ""
 
-#: ../src/globalopts.c:278
+#: ../src/globalopts.c:280
 msgid "Set tab name"
 msgstr ""
 
-#: ../src/globalopts.c:278 ../src/globalopts.c:293
+#: ../src/globalopts.c:280 ../src/globalopts.c:295
 msgid "NAME"
 msgstr ""
 
-#: ../src/globalopts.c:281
+#: ../src/globalopts.c:283
 msgid ""
 "Open a tab in an existing window instead of\n"
 "                                   a new window if possible"
 msgstr ""
 
-#: ../src/globalopts.c:286
+#: ../src/globalopts.c:288
 msgid "Fork into the background even if this is the first instance"
 msgstr ""
 
-#: ../src/globalopts.c:290
+#: ../src/globalopts.c:292
 msgid "Disable session management"
 msgstr ""
 
-#: ../src/globalopts.c:293
+#: ../src/globalopts.c:295
 msgid "Set X window system 'role' hint"
 msgstr ""
 
-#: ../src/globalopts.c:300
+#: ../src/globalopts.c:298
+msgid "Restore the named user session"
+msgstr ""
+
+#: ../src/globalopts.c:298
+msgid "SESSION"
+msgstr ""
+
+#: ../src/globalopts.c:305
 msgid ""
 "Don't set window geometry hints. This is a workaround for <https://bugzilla."
 "gnome.org/show_bug.cgi?id=649680>"
 msgstr ""
 
-#: ../src/globalopts.c:304
+#: ../src/globalopts.c:309
 msgid ""
 "Execute remainder of command line inside the\n"
 "                                   terminal. Must be the final option."
 msgstr ""
 
-#: ../src/globalopts.c:394
+#: ../src/globalopts.c:399
 #, c-format
 msgid "Error parsing command line options: %s"
 msgstr ""
 
-#: ../src/globalopts.c:454
+#: ../src/globalopts.c:459
 msgid "Can't find roxterm-config"
 msgstr ""
 
@@ -423,17 +431,17 @@ msgstr ""
 msgid "Child failed to signal parent for --fork: %s"
 msgstr ""
 
-#: ../src/main.c:300
+#: ../src/main.c:302
 #, c-format
 msgid "Unable to open pipe to implement --fork: %s"
 msgstr ""
 
-#: ../src/main.c:316
+#: ../src/main.c:318
 #, c-format
 msgid "Unable to fork to implement --fork: %s"
 msgstr ""
 
-#: ../src/main.c:382
+#: ../src/main.c:384
 msgid "Missing command after -e/--execute option"
 msgstr ""
 

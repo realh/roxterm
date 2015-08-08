@@ -290,6 +290,8 @@ int main(int argc, char **argv)
     pid_t fork_result = 0;
     static int fork_pipe[2] = { -1, -1};
     gboolean defer_pipe = FALSE;
+    const char *session_leafname;
+    char *session_filename;
 
     global_options_init_appdir(argc, argv);
     global_options_init_bindir(argv[0]);
@@ -405,15 +407,15 @@ int main(int argc, char **argv)
             defer_pipe = TRUE;
         }
 #if ENABLE_SM
-        if (global_options_disable_sm ||
+        if (!global_options_user_session_id && (global_options_disable_sm ||
                 (!global_options_restart_session_id &&
-                !global_options_clone_session_id))
+                !global_options_clone_session_id)))
+#else
+        if (!global_options_user_session_id)
+#endif
         {
             message = create_dbus_message(argc, argv, display);
         }
-#else
-        message = create_dbus_message(argc, argv, display);
-#endif
     }
     g_free(display);
 
@@ -427,6 +429,7 @@ int main(int argc, char **argv)
     }
 
     dbus_ok = global_options_lookup_int("separate") <= 0 && dbus_ok
+            && !global_options_user_session_id
 #if ENABLE_SM
             && (global_options_disable_sm ||
                 (!global_options_restart_session_id
@@ -464,6 +467,19 @@ int main(int argc, char **argv)
             launched = session_load(global_options_clone_session_id);
     }
 #endif
+
+    session_leafname = global_options_user_session_id ?
+            global_options_user_session_id : "Default";
+    session_filename = session_get_filename(session_leafname,
+            "UserSessions", FALSE);
+    if (g_file_test(session_filename, G_FILE_TEST_IS_REGULAR))
+    {
+        launched = load_session_from_file(session_filename, session_leafname);
+    }
+    else if (global_options_user_session_id)
+    {
+        g_critical("Session file '%s' not found", session_filename);
+    }
     if (!launched)
     {
         roxterm_launch(dpy_name, environ);
