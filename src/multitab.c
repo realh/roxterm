@@ -136,7 +136,7 @@ static MultiWinDefaultSizeFunc multi_win_default_size_func;
 static MultiTabToNewWindowHandler multi_tab_to_new_window_handler;
 static MultiWinZoomHandler multi_win_zoom_handler;
 MultiWinGetDisableMenuShortcuts multi_win_get_disable_menu_shortcuts;
-static MultiWinInitialTabs multi_win_initial_tabs;
+static MultiWinGetTabPos multi_win_get_config_tab_pos;
 static MultiWinDeleteHandler multi_win_delete_handler;
 static MultiTabGetShowCloseButton multi_tab_get_show_close_button;
 static MultiTabGetNewTabAdjacent multi_tab_get_new_tab_adjacent;
@@ -199,7 +199,7 @@ void multi_tab_init(MultiTabFiller filler, MultiTabDestructor destructor,
     MultiTabToNewWindowHandler tab_to_new_window_handler,
     MultiWinZoomHandler zoom_handler,
     MultiWinGetDisableMenuShortcuts get_disable_menu_shortcuts,
-    MultiWinInitialTabs initial_tabs,
+    MultiWinGetTabPos tab_pos,
     MultiWinDeleteHandler delete_handler,
     MultiTabGetShowCloseButton get_show_close_button,
     MultiTabGetNewTabAdjacent get_new_tab_adjacent
@@ -214,7 +214,7 @@ void multi_tab_init(MultiTabFiller filler, MultiTabDestructor destructor,
     multi_tab_to_new_window_handler = tab_to_new_window_handler;
     multi_win_zoom_handler = zoom_handler;
     multi_win_get_disable_menu_shortcuts = get_disable_menu_shortcuts;
-    multi_win_initial_tabs = initial_tabs;
+    multi_win_get_config_tab_pos = tab_pos;
     multi_win_delete_handler = delete_handler;
     multi_tab_get_show_close_button = get_show_close_button;
     multi_tab_get_new_tab_adjacent = get_new_tab_adjacent;
@@ -1219,19 +1219,17 @@ static void multi_win_close_tab_clicked(GtkWidget *widget, MultiTab *tab)
 MultiWin *multi_win_clone(MultiWin *old,
         gpointer user_data_template, gboolean always_show_tabs)
 {
-    GtkPositionType tab_pos = GTK_POS_TOP;
-    int num_tabs = 1;
     char *geom;
     int width, height;
     MultiWin *result;
+    GtkPositionType tab_pos = multi_win_get_config_tab_pos(user_data_template);
 
-    multi_win_initial_tabs(user_data_template, &tab_pos, &num_tabs);
     multi_win_default_size_func(multi_tab_get_user_data(old->current_tab),
             &width, &height);
     geom = g_strdup_printf("%dx%d", width, height);
     result = multi_win_new_with_geom(old->display_name, old->shortcuts,
             old->zoom_index, user_data_template, geom,
-            num_tabs, tab_pos, always_show_tabs, old->show_add_tab_button);
+            tab_pos, always_show_tabs, old->show_add_tab_button);
     g_free(geom);
     return result;
 }
@@ -2050,13 +2048,12 @@ void multi_win_set_role_prefix(const char *role_prefix)
 
 MultiWin *multi_win_new_full(const char *display_name, Options *shortcuts,
         int zoom_index, gpointer user_data_template, const char *geom,
-        MultiWinSizing sizing, int numtabs, GtkPositionType tab_pos,
+        MultiWinSizing sizing, GtkPositionType tab_pos,
         gboolean always_show_tabs, gboolean add_tab_button)
 {
     gboolean disable_menu_shortcuts, disable_tab_shortcuts;
     MultiWin *win;
     MultiTab *tab;
-    int n;
 
     multi_win_get_disable_menu_shortcuts(user_data_template,
             &disable_menu_shortcuts, &disable_tab_shortcuts);
@@ -2065,8 +2062,7 @@ MultiWin *multi_win_new_full(const char *display_name, Options *shortcuts,
             tab_pos, always_show_tabs, add_tab_button);
     win->user_data_template = user_data_template;
     win->tab_pos = tab_pos;
-    for (n = 0; n < numtabs; ++n)
-        multi_tab_new(win, user_data_template);
+    multi_tab_new(win, user_data_template);
 
     multi_win_shade_menus_for_tabs(win);
 
@@ -2089,8 +2085,7 @@ MultiWin *multi_win_new_full(const char *display_name, Options *shortcuts,
     /* Need to do this after multi_tab_new's initial call of
      * multi_win_select_tab to ensure child widgets are realized
      * and tab selection handler is activated */
-    for (n = numtabs - 1; n >= 0; --n)
-        gtk_notebook_set_current_page(GTK_NOTEBOOK(win->notebook), n);
+    gtk_notebook_set_current_page(GTK_NOTEBOOK(win->notebook), 0);
     tab = win->tabs->data;
     win->tab_selection_handler(tab->user_data, tab);
 

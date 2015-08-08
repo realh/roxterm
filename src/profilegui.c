@@ -425,7 +425,6 @@ static void profilegui_fill_in_dialog(ProfileGUI * pg)
     capplet_set_text_entry(&pg->capp, "term", NULL);
     capplet_set_float_range(&pg->capp, "saturation", 1.0);
     capplet_set_combo(&pg->capp, "tab_pos", 0);
-    capplet_set_spin_button(&pg->capp, "init_tabs", 1);
     capplet_set_boolean_toggle(&pg->capp, "wrap_switch_tab", FALSE);
     capplet_set_boolean_toggle(&pg->capp, "tab_close_btn", TRUE);
     capplet_set_boolean_toggle(&pg->capp, "show_tab_status", FALSE);
@@ -550,7 +549,7 @@ ProfileGUI *profilegui_open(const char *profile_name, GdkScreen *scrn)
     static const char *adj_names[] = {
             "width_adjustment", "height_adjustment",
             "exit_pause_adjustment", "scrollback_lines_adjustment",
-            "init_tabs_adjustment", "saturation_adjustment",
+            "saturation_adjustment",
             NULL };
     static const char *obj_names[] = {
             "Profile_Editor", "ssh_dialog",

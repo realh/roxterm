@@ -4043,13 +4043,6 @@ static gboolean roxterm_get_always_show_tabs(const ROXTermData *roxterm)
             "always_show_tabs", TRUE);
 }
 
-static void roxterm_get_initial_tabs(ROXTermData *roxterm,
-        GtkPositionType *p_pos, int *p_num)
-{
-    *p_pos = roxterm_get_tab_pos(roxterm);
-    *p_num = options_lookup_int_with_default(roxterm->profile, "init_tabs", 1);
-}
-
 /* Takes over ownership of profile and non-const strings;
  * on exit size_on_cli indicates whether dimensions were given in *geom;
  * geom is freed and set to NULL if it's invalid
@@ -4158,7 +4151,6 @@ void roxterm_launch(const char *display_name, char **env)
     Options *shortcuts;
     char *geom = options_lookup_string(global_options, "geometry");
     gboolean size_on_cli = FALSE;
-    int num_tabs;
     char *profile_name =
             global_options_lookup_string_with_default("profile", "Default");
     char *colour_scheme_name =
@@ -4186,7 +4178,7 @@ void roxterm_launch(const char *display_name, char **env)
     {
         roxterm->commandv = global_options_copy_strv(global_options_commandv);
     }
-    roxterm_get_initial_tabs(roxterm, &tab_pos, &num_tabs);
+    tab_pos = roxterm_get_tab_pos(roxterm);
     always_show_tabs = roxterm_get_always_show_tabs(roxterm);
     shortcut_scheme = global_options_lookup_string_with_default
         ("shortcut_scheme", "Default");
@@ -4298,14 +4290,14 @@ void roxterm_launch(const char *display_name, char **env)
         global_options_fullscreen = FALSE;
         win = multi_win_new_fullscreen(display_name, shortcuts,
                 roxterm->zoom_index, roxterm,
-                num_tabs, tab_pos, always_show_tabs, show_add_tab_btn);
+                tab_pos, always_show_tabs, show_add_tab_btn);
     }
     else if (roxterm->maximise)
     {
         global_options_maximise = FALSE;
         win = multi_win_new_maximised(display_name, shortcuts,
                 roxterm->zoom_index, roxterm,
-                num_tabs, tab_pos, always_show_tabs, show_add_tab_btn);
+                tab_pos, always_show_tabs, show_add_tab_btn);
     }
     else
     {
@@ -4327,7 +4319,7 @@ void roxterm_launch(const char *display_name, char **env)
         }
         win = multi_win_new_with_geom(display_name, shortcuts,
                 roxterm->zoom_index, roxterm, geom,
-                num_tabs, tab_pos, always_show_tabs, show_add_tab_btn);
+                tab_pos, always_show_tabs, show_add_tab_btn);
     }
     g_free(geom);
 
@@ -4528,7 +4520,7 @@ void roxterm_init(void)
         roxterm_tab_to_new_window,
         (MultiWinZoomHandler) roxterm_set_zoom_factor,
         (MultiWinGetDisableMenuShortcuts) roxterm_get_disable_menu_shortcuts,
-        (MultiWinInitialTabs) roxterm_get_initial_tabs,
+        (MultiWinGetTabPos) roxterm_get_tab_pos,
         (MultiWinDeleteHandler) roxterm_delete_handler,
         (MultiTabGetShowCloseButton) roxterm_get_show_tab_close_button,
         (MultiTabGetNewTabAdjacent) roxterm_get_new_tab_adjacent
@@ -4571,11 +4563,10 @@ void roxterm_spawn(ROXTermData *roxterm, const char *command,
 {
     GError *error = NULL;
     GtkPositionType tab_pos;
-    int num_tabs;
     char *cwd;
     MultiWin *win = roxterm_get_win(roxterm);
 
-    roxterm_get_initial_tabs(roxterm, &tab_pos, &num_tabs);
+    tab_pos = roxterm_get_tab_pos(roxterm);
     switch (spawn_type)
     {
         case ROXTerm_SpawnNewWindow:
@@ -4583,7 +4574,7 @@ void roxterm_spawn(ROXTermData *roxterm, const char *command,
             roxterm->no_respawn = TRUE;
             multi_win_new(roxterm->display_name,
                     multi_win_get_shortcut_scheme(win),
-                    roxterm->zoom_index, roxterm, num_tabs, tab_pos,
+                    roxterm->zoom_index, roxterm, tab_pos,
                     multi_win_get_always_show_tabs(win),
                     options_lookup_int_with_default(roxterm->profile,
                             "show_add_tab_btn", 1));

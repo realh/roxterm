@@ -86,10 +86,8 @@ typedef void (*MultiWinZoomHandler)(gpointer user_data, double zoom_factor,
 typedef void (*MultiWinGetDisableMenuShortcuts)(gpointer user_data,
     gboolean *general, gboolean *tabs);
 
-/* As number of tabs and tab position can be set by user we need another
- * function to get these values */
-typedef void (*MultiWinInitialTabs)(gpointer user_data,
-        GtkPositionType *p_pos, int *p_num);
+/* As tab position can be set by user we need another function to get this */
+typedef GtkPositionType(*MultiWinGetTabPos)(gpointer user_data);
 
 /* Called when a window or tab is about to be closed. If it's a tab, event is
  * NULL and data is the tab's user_data. If event is non-NULL data is a
@@ -117,7 +115,7 @@ multi_tab_init(MultiTabFiller filler, MultiTabDestructor destructor,
     MultiWinMenuSignalConnector menu_signal_connector,
     MultiWinGeometryFunc, MultiWinSizeFunc, MultiWinDefaultSizeFunc,
     MultiTabToNewWindowHandler,
-    MultiWinZoomHandler, MultiWinGetDisableMenuShortcuts, MultiWinInitialTabs,
+    MultiWinZoomHandler, MultiWinGetDisableMenuShortcuts, MultiWinGetTabPos,
     MultiWinDeleteHandler, MultiTabGetShowCloseButton,
     MultiTabGetNewTabAdjacent
     );
@@ -220,28 +218,28 @@ void multi_win_set_role_prefix(const char *role_prefix);
 MultiWin *multi_win_new_full(const char *display_name,
         Options *shortcuts, int zoom_index,
         gpointer user_data_template, const char *geom,
-        MultiWinSizing sizing, int numtabs, GtkPositionType tab_pos,
+        MultiWinSizing sizing, GtkPositionType tab_pos,
         gboolean always_show_tabs, gboolean add_tab_button);
 
 inline static MultiWin *multi_win_new_with_geom(const char *display_name,
         Options *shortcuts,
         int zoom_index, gpointer user_data_template,
-        const char *geom, int numtabs, GtkPositionType tab_pos,
+        const char *geom, GtkPositionType tab_pos,
         gboolean always_show_tabs, gboolean add_tab_button)
 {
     return multi_win_new_full(display_name, shortcuts, zoom_index,
                   user_data_template, geom, MULTI_WIN_DEFAULT_SIZE,
-                  numtabs, tab_pos, always_show_tabs, add_tab_button);
+                  tab_pos, always_show_tabs, add_tab_button);
 }
 
 inline static MultiWin *multi_win_new(const char *display_name,
         Options *shortcuts, int zoom_index,
-        gpointer user_data_template, int numtabs, GtkPositionType tab_pos,
+        gpointer user_data_template, GtkPositionType tab_pos,
         gboolean always_show_tabs, gboolean add_tab_button)
 {
     return multi_win_new_full(display_name, shortcuts, zoom_index,
                   user_data_template, NULL, MULTI_WIN_DEFAULT_SIZE,
-                  numtabs, tab_pos, always_show_tabs, add_tab_button);
+                  tab_pos, always_show_tabs, add_tab_button);
 }
 
 /* Creates a new window that's the same as the old one except with a different
@@ -253,23 +251,23 @@ MultiWin *multi_win_clone(MultiWin *old,
 inline static MultiWin *multi_win_new_fullscreen(const char *display_name,
         Options *shortcuts,
         int zoom_index, gpointer user_data_template,
-        int numtabs, GtkPositionType tab_pos,
+        GtkPositionType tab_pos,
         gboolean always_show_tabs, gboolean add_tab_button)
 {
     return multi_win_new_full(display_name, shortcuts, zoom_index,
                   user_data_template, NULL, MULTI_WIN_FULL_SCREEN,
-                  numtabs, tab_pos, always_show_tabs, add_tab_button);
+                  tab_pos, always_show_tabs, add_tab_button);
 }
 
 inline static MultiWin *multi_win_new_maximised(const char *display_name,
         Options *shortcuts,
         int zoom_index, gpointer user_data_template,
-        int numtabs, GtkPositionType tab_pos,
+        GtkPositionType tab_pos,
         gboolean always_show_tabs, gboolean add_tab_button)
 {
     return multi_win_new_full(display_name, shortcuts, zoom_index,
                   user_data_template, NULL, MULTI_WIN_MAXIMISED,
-                  numtabs, tab_pos, always_show_tabs, add_tab_button);
+                  tab_pos, always_show_tabs, add_tab_button);
 }
 
 /* Create a new window without a new child tab, ready to have an existing
