@@ -36,29 +36,7 @@
 #include "multitab.h"
 #include "roxterm.h"
 #include "session.h"
-
-
-#include <stdarg.h>
-void
-roxterm_sm_log(const char *format, ...)
-{
-    static FILE *fp = NULL;
-    va_list ap;
-
-    if (!fp)
-    {
-        char *n = g_build_filename(g_get_home_dir(), ".roxterm-sm-log", NULL);
-        fp = fopen(n, "a");
-        g_free(n);
-        g_return_if_fail(fp != NULL);
-        fprintf(fp, "\n*****************\nOpening new log\n");
-    }
-    va_start(ap, format);
-    vfprintf(fp, format, ap);
-    va_end(ap);
-    fputc('\n', fp);
-    fflush(fp);
-}
+#include "session-file.h"
 
 typedef struct {
     SmcConn smc_conn;
@@ -71,9 +49,6 @@ typedef struct {
 } SessionData;
 
 static SessionData session_data;
-
-int session_argc;
-char **session_argv;
 
 static char *session_get_filename(const char *client_id, gboolean create_dir)
 {
@@ -144,127 +119,6 @@ static void ice_watch_callback(IceConn conn, IcePointer handle,
             sd->ioc = NULL;
         }
     }
-}
-
-static void save_tab_to_fp(MultiTab *tab, gpointer handle)
-{
-    FILE *fp = handle;
-    ROXTermData *roxterm = multi_tab_get_user_data(tab);
-    char const * const *commandv = roxterm_get_actual_commandv(roxterm);
-    const char *name = multi_tab_get_window_title_template(tab);
-    const char *title = multi_tab_get_window_title(tab);
-    const char *icon_title = multi_tab_get_icon_title(tab);
-    char *cwd = roxterm_get_cwd(roxterm);
-    char *s = g_markup_printf_escaped("<tab profile='%s'\n"
-            "        colour_scheme='%s' cwd='%s'\n"
-            "        title_template='%s' window_title='%s' icon_title='%s'\n"
-            "        title_template_locked='%d'\n"
-            "        encoding='%s'",
-            roxterm_get_profile_name(roxterm),
-            roxterm_get_colour_scheme_name(roxterm),
-            cwd ? cwd : (cwd = g_get_current_dir()),
-            name ? name : "", title ? title : "", icon_title ? icon_title : "",
-            multi_tab_get_title_template_locked(tab),
-            vte_terminal_get_encoding(roxterm_get_vte_terminal(roxterm)));
-
-    SLOG("Saving tab with window_title '%s', cwd %s", title, cwd);
-    fprintf(fp, "    %s current='%d'%s>\n", s,
-            tab == multi_win_get_current_tab(multi_tab_get_parent(tab)),
-            commandv ? "" : " /");
-    g_free(cwd);
-    g_free(s);
-    if (commandv)
-    {
-        int n;
-
-        for (n = 0; commandv[n]; ++n);
-        fprintf(fp, "      <command argc='%d'>\n", n);
-        for (n = 0; commandv[n]; ++n)
-        {
-            s = g_markup_printf_escaped("        <arg s='%s' />\n",
-                    commandv[n]);
-            fputs(s, fp);
-            g_free(s);
-        }
-        fputs("      </command>\n", fp);
-        fputs("    </tab>\n", fp);
-    }
-}
-
-static gboolean save_session_to_fp(SessionData *sd, FILE *fp)
-{
-    GList *wlink;
-
-    SLOG("Saving session with id %s", sd->client_id);
-    if (fprintf(fp, "<roxterm_session id='%s'>\n", sd->client_id) < 0)
-        return FALSE;
-    for (wlink = multi_win_all; wlink; wlink = g_list_next(wlink))
-    {
-        MultiWin *win = wlink->data;
-        GtkWindow *gwin = GTK_WINDOW(multi_win_get_widget(win));
-        int w, h;
-        int x, y;
-        int result;
-        char *disp = gdk_screen_make_display_name(gtk_window_get_screen(gwin));
-        const char *tt = multi_win_get_title_template(win);
-        const char *title = multi_win_get_title(win);
-        gpointer user_data = multi_win_get_user_data_for_current_tab(win);
-        VteTerminal *vte;
-        char *font_name;
-        gboolean disable_menu_shortcuts, disable_tab_shortcuts;
-        char *s;
-
-        SLOG("Saving window with title '%s'", title);
-        if (!user_data)
-        {
-            g_warning(_("Window with no user data"));
-            continue;
-        }
-        vte = roxterm_get_vte_terminal(user_data);
-        font_name = pango_font_description_to_string(
-                vte_terminal_get_font(vte));
-        multi_win_get_disable_menu_shortcuts(user_data,
-                &disable_menu_shortcuts, &disable_tab_shortcuts);
-        roxterm_get_nonfs_dimensions(user_data, &w, &h);
-        gtk_window_get_position(gwin, &x, &y);
-        s = g_markup_printf_escaped("  <window disp='%s'\n"
-                "      geometry='%dx%d+%d+%d'\n"
-                "      title_template='%s' font='%s'\n"
-                "      title_template_locked='%d'\n"
-                "      title='%s' role='%s'\n"
-                "      shortcut_scheme='%s' show_menubar='%d'\n"
-                "      always_show_tabs='%d' tab_pos='%d'\n"
-                "      show_add_tab_btn='%d'"
-                "      disable_menu_shortcuts='%d' disable_tab_shortcuts='%d'\n"
-                "      maximised='%d' fullscreen='%d' zoom='%f'>\n",
-                disp, w, h, x, y,
-                tt ? tt : "", font_name,
-                multi_win_get_title_template_locked(win),
-                title, gtk_window_get_role(gwin),
-                multi_win_get_shortcuts_scheme_name(win),
-                multi_win_get_show_menu_bar(win),
-                multi_win_get_always_show_tabs(win),
-                multi_win_get_tab_pos(win),
-                multi_win_get_show_add_tab_button(win),
-                disable_menu_shortcuts, disable_tab_shortcuts,
-                multi_win_is_maximised(win),
-                multi_win_is_fullscreen(win),
-                roxterm_get_zoom_factor(user_data));
-        result = fputs(s, fp);
-        g_free(s);
-        g_free(disp);
-        g_free(font_name);
-        SLOG("Saved the window");
-        if (result < 0)
-        {
-            SLOG("But it failed!");
-            return FALSE;
-        }
-        multi_win_foreach_tab(win, save_tab_to_fp, fp);
-        if (fprintf(fp, "  </window>\n") < 0)
-            return FALSE;
-    }
-    return fprintf(fp, "</roxterm_session>\n") > 0;
 }
 
 /* g_strdup uses g_malloc/g_free which are not guaranteed to be compatible with
@@ -423,15 +277,7 @@ static void session_save_yourself_callback(SmcConn smc_conn, SmPointer handle,
         SLOG("Implementing SaveYourself for %s", sd->client_id);
         if (filename)
         {
-            FILE *fp = fopen(filename, "w");
-
-            if (fp)
-            {
-                success = save_session_to_fp(sd, fp);
-                fclose(fp);
-                if (!success)
-                    g_unlink(filename);
-            }
+            success = save_session_to_file(filename, sd->client_id);
             if (success)
             {
                 session_set_props(sd, filename);
@@ -440,6 +286,7 @@ static void session_save_yourself_callback(SmcConn smc_conn, SmPointer handle,
             {
                 g_warning(_("Failed to save session state to '%s': %s"),
                         filename, strerror(errno));
+                g_unlink(filename);
             }
             g_free(filename);
         }
@@ -509,22 +356,6 @@ void session_init(const char *client_id)
 
 gboolean session_load(const char *client_id)
 {
-    GError *err = NULL;
-    char *filename = session_get_filename(client_id, FALSE);
-    char *buf;
-    gsize buflen;
-    gboolean result;
-
-    SLOG("Loading session %s", client_id);
-    if (!g_file_get_contents(filename, &buf, &buflen, &err))
-    {
-        g_warning(_("Unable to load session '%s': %s"), client_id,
-                err->message);
-        SLOG("Unable to load session '%s': %s", client_id, err->message);
-        g_error_free(err);
-        return FALSE;
-    }
-    result = roxterm_load_session(buf, buflen, client_id);
-    g_free(buf);
-    return result;
+    return load_session_from_file(session_get_filename(client_id, FALSE),
+            client_id);
 }

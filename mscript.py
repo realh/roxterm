@@ -16,7 +16,7 @@ ROXTERM_CONFIG_SOURCES = "capplet.c colourgui.c configlet.c getname.c " \
 
 ROXTERM_SOURCES = "about.c main.c multitab.c multitab-close-button.c " \
         "multitab-label.c menutree.c optsdbus.c roxterm.c search.c " \
-        "shortcuts.c uri.c x11support.c"
+        "session-file.c shortcuts.c uri.c x11support.c"
 
 ROXTERM_HTML_BASENAMES = "guide index installation news".split()
 

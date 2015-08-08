@@ -46,6 +46,7 @@
 #if ENABLE_SM
 #include "session.h"
 #endif
+#include "session-file.h"
 #include "shortcuts.h"
 #include "uri.h"
 #include "x11support.h"

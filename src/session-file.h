@@ -1,5 +1,5 @@
-#ifndef SESSION_H
-#define SESSION_H
+#ifndef SESSION_FILE_H
+#define SESSION_FILE_H
 /*
     roxterm - VTE/GTK terminal emulator with tabs
     Copyright (C) 2004-2011 Tony Houghton <h@realh.co.uk>
@@ -19,33 +19,29 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-/* Session management */
+/* Session file management common to named sessions and SM */
 
 #ifndef DEFNS_H
 #include "defns.h"
 #endif
 
-#if ENABLE_SM
+/* Copy from argc/argv in main() before letting GTK process args */
+extern int session_argc;
+extern char **session_argv;
 
-void session_init(const char *client_id);
+gboolean save_session_to_file(const char *filename, const char *client_id);
 
-gboolean session_load(const char *client_id);
+gboolean load_session_from_file(const char *filename, const char *client_id);
 
-#else
+/*
+void
+roxterm_sm_log(const char *format, ...);
 
-inline static void session_init(const char *client_id)
-{
-    (void) client_id;
-}
+#define SLOG roxterm_sm_log
+*/
 
-inline static gboolean session_load(const char *client_id)
-{
-    (void) client_id;
-    return TRUE;
-}
+#define SLOG(f, ...)
 
-#endif
-
-#endif /* SESSION_H */
+#endif /* SESSION_FILE_H */
 
 /* vi:set sw=4 ts=4 et cindent cino= */

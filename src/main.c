@@ -34,6 +34,7 @@
 #if ENABLE_SM
 #include "session.h"
 #endif
+#include "session-file.h"
 #include "x11support.h"
 
 #define ROXTERM_DBUS_NAME RTDBUS_NAME ".term"
