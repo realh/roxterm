@@ -2271,22 +2271,13 @@ static gboolean roxterm_post_child_exit(ROXTermData *roxterm)
     return FALSE;
 }
 
-static void roxterm_child_exited(VteTerminal *vte, ROXTermData *roxterm)
+static void roxterm_child_exited(VteTerminal *vte, int status,
+        ROXTermData *roxterm)
 {
     double delay = 0;
 
-    if (!roxterm)
-    {
-        g_warning("child-exited signal handler called with null "
-                "ROXTermData for vte widget %p", vte);
-        roxterm = g_object_get_data(G_OBJECT(vte), "roxterm");
-    }
-    if (!roxterm)
-    {
-        g_critical("Unable to get ROXTermData from child-exited signal "
-                "for vte widget %p", vte);
-        return;
-    }
+    (void) status;
+
     roxterm->running = FALSE;
     roxterm_show_status(roxterm, "dialog-error");
     if ((options_lookup_int(roxterm->profile, "exit_action") !=
@@ -2819,9 +2810,8 @@ static void roxterm_composited_changed_handler(VteTerminal *vte,
 
 static void roxterm_connect_misc_signals(ROXTermData * roxterm)
 {
-    g_object_set_data(G_OBJECT(roxterm->widget), "roxterm", roxterm);
-    g_signal_connect(roxterm->widget,
-        "child-exited", G_CALLBACK(roxterm_child_exited), roxterm);
+    g_signal_connect(roxterm->widget, "child-exited",
+            G_CALLBACK(roxterm_child_exited), roxterm);
     g_signal_connect(roxterm->widget, "popup-menu",
             G_CALLBACK(roxterm_popup_handler), roxterm);
     g_signal_connect(roxterm->widget, "button-press-event",

@@ -1,8 +1,9 @@
-roxterm (3.0.2-3) UNRELEASED; urgency=medium
+roxterm (3.0.2-4) unstable; urgency=medium
 
   * Make --fork wait until dbus service name has been acquired.
+  * Fixed child-exited signal handler for vte-2.91's new signature.
 
- -- Tony Houghton <h@realh.co.uk>  Fri, 07 Aug 2015 15:21:42 +0100
+ -- Tony Houghton <h@realh.co.uk>  Sat, 08 Aug 2015 15:02:31 +0100
 
 roxterm (3.0.2-1) unstable; urgency=medium
 
