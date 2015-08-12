@@ -77,7 +77,9 @@ Package: roxterm-gtk3-dbg
 Architecture: all
 Section: oldlibs
 Priority: extra
-Depends: roxterm-dbg (>= ${source:Version}), ${misc:Depends}
+Depends: roxterm-dbg (>= ${source:Version}),
+ roxterm-gtk3 (= ${binary:Version}),
+ ${misc:Depends}
 Description: Transitional package to updgrade roxterm-gtk3-dbg to roxterm-dbg
  This is a dummy package to facilitate automatic upgrades from roxterm-gtk3-dbg
  2.x to roxterm-dbg 3.x, due to a change in the packaging structure. It may be
@@ -100,7 +102,9 @@ Package: roxterm-gtk2-dbg
 Architecture: all
 Section: oldlibs
 Priority: extra
-Depends: roxterm-dbg (>= ${source:Version}), ${misc:Depends}
+Depends: roxterm-dbg (>= ${source:Version}),
+ roxterm-gtk2 (= ${binary:Version}),
+ ${misc:Depends}
 Description: Transitional package to updgrade roxterm-gtk2-dbg to roxterm-dbg
  This is a dummy package to facilitate automatic upgrades from roxterm-gtk2-dbg
  2.x to roxterm-dbg 3.x, due to a change in the packaging structure. The GTK2
