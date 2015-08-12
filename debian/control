@@ -67,9 +67,9 @@ Architecture: all
 Section: oldlibs
 Priority: extra
 Depends: roxterm (>= ${source:Version}), ${misc:Depends}
-Description: Multi-tabbed GTK+/VTE terminal emulator - transitional package
- This is a dummy package to facilitate automatic upgrades from ROXTerm version
- 2.x to 3.x, due to a change in the packaging structure. It may be removed
+Description: Transitional package to updgrade roxterm-gtk3 to roxterm
+ This is a dummy package to facilitate automatic upgrades from roxterm-gtk3 2.x
+ to roxterm 3.x, due to a change in the packaging structure. It may be removed
  once the roxterm 3.x package is installed, but consider also explicitly
  installing roxterm to prevent its accidental removal by autoremove.
 
@@ -78,20 +78,21 @@ Architecture: all
 Section: oldlibs
 Priority: extra
 Depends: roxterm-dbg (>= ${source:Version}), ${misc:Depends}
-Description: Multi-tabbed GTK+/VTE terminal emulator - transitional package
- This is a dummy package to facilitate automatic upgrades from ROXTerm version
- 2.x to 3.x, due to a change in the packaging structure. It may be removed
- once the roxterm-dbg 3.x package is installed, but consider also explicitly
- installing roxterm-dbg to prevent its accidental removal by autoremove.
+Description: Transitional package to updgrade roxterm-gtk3-dbg to roxterm-dbg
+ This is a dummy package to facilitate automatic upgrades from roxterm-gtk3-dbg
+ 2.x to roxterm-dbg 3.x, due to a change in the packaging structure. It may be
+ removed once the roxterm-dbg 3.x package is installed, but consider also
+ explicitly installing roxterm-dbg to prevent its accidental removal by
+ autoremove.
 
 Package: roxterm-gtk2
 Architecture: all
 Section: oldlibs
 Priority: extra
 Depends: roxterm (>= ${source:Version}), ${misc:Depends}
-Description: Multi-tabbed GTK+/VTE terminal emulator - transitional package
- This is a dummy package to facilitate automatic upgrades from ROXTerm version
- 2.x to 3.x, due to a change in the packaging structure. The GTK2 build is
+Description: Transitional package to updgrade roxterm-gtk2 to roxterm
+ This is a dummy package to facilitate automatic upgrades from roxterm-gtk2 2.x
+ to roxterm 3.x, due to a change in the packaging structure. The GTK2 build is
  no longer supported, so if you want to continue using that you will have to
  pin an older version.
 
@@ -100,8 +101,8 @@ Architecture: all
 Section: oldlibs
 Priority: extra
 Depends: roxterm-dbg (>= ${source:Version}), ${misc:Depends}
-Description: Multi-tabbed GTK+/VTE terminal emulator - transitional package
- This is a dummy package to facilitate automatic upgrades from ROXTerm version
- 2.x to 3.x, due to a change in the packaging structure. The GTK2 build is
- no longer supported, so if you want to continue using that you will have to
- pin an older version.
+Description: Transitional package to updgrade roxterm-gtk2-dbg to roxterm-dbg
+ This is a dummy package to facilitate automatic upgrades from roxterm-gtk2-dbg
+ 2.x to roxterm-dbg 3.x, due to a change in the packaging structure. The GTK2
+ build is no longer supported, so if you want to continue using that you will
+ have to pin an older version.
