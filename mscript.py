@@ -639,6 +639,7 @@ elif ctx.mode == 'pristine' or ctx.mode == 'clean':
              "${TOP_DIR}/.ycm_extra_conf.pyc"] + \
             ctx.glob("*.po~", "${TOP_DIR}", "po") + \
             ctx.glob("*.po~", "${TOP_DIR}", "po4a") + \
+            ctx.glob("*.old", "${TOP_DIR}", "po4a") + \
             ctx.glob("*.po~", "${TOP_DIR}", "poxml")
 
     if ctx.mode == 'pristine':
