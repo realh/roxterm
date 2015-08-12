@@ -33,7 +33,8 @@ Recommends: dbus-x11, openssh-client, roxterm
 Description: Multi-tabbed GTK+/VTE terminal emulator - data files
  ROXTerm is a terminal emulator based on the VTE library. It was originally
  intended to be a lightweight alternative to gnome-terminal, but its role has
- shifted to providing a richer range of features for power users.
+ shifted to providing a richer range of features for power users. This package
+ contains ROXTerm's data files.
 
 Package: roxterm
 Architecture: any
@@ -48,7 +49,8 @@ Provides: x-terminal-emulator
 Description: Multi-tabbed GTK+/VTE terminal emulator - binaries
  ROXTerm is a terminal emulator based on the VTE library. It was originally
  intended to be a lightweight alternative to gnome-terminal, but its role has
- shifted to providing a richer range of features for power users.
+ shifted to providing a richer range of features for power users. This package
+ contains the compiled programs for ROXTerm.
 
 Package: roxterm-dbg
 Architecture: any
@@ -60,7 +62,8 @@ Priority: extra
 Description: Debugging symbols for roxterm
  ROXTerm is a terminal emulator based on the VTE library. It was originally
  intended to be a lightweight alternative to gnome-terminal, but its role has
- shifted to providing a richer range of features for power users.
+ shifted to providing a richer range of features for power users. This package
+ contains the debugging symbols for ROXTerm.
 
 Package: roxterm-gtk3
 Architecture: all
