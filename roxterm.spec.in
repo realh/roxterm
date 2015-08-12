@@ -23,7 +23,7 @@ Group: Application/Misc
 #Packager: Tony Houghton h@realh.co.uk
 
 # source + patches
-Source: %{name}-%{version}.tar.gz
+Source: %{name}-%{version}.tar.xz
 #Source1:
 #Patch:
 #Patch1:
@@ -42,8 +42,8 @@ Summary: GTK+ 3.0 terminal emulator with tabs
 %description
 GTK+ 3.0 terminal emulator with tabs
 @configure_input@
-Please edit roxterm.spec.in to add several more lines of description
-here if appropriate, and to delete these instructions.
+ROXTerm is aimed at users who require more configurability and flexibility
+than gnome-terminal provides.
 
 %prep
 %setup -q

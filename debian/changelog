@@ -1,15 +1,16 @@
-roxterm (3.1.3-1) unstable; urgency=medium
+roxterm (3.1.4-1) unstable; urgency=medium
 
   * Make --fork wait until dbus service name has been acquired.
   * Fixed child-exited signal handler for vte-2.91's new signature.
   * Support named user sessions.
   * Removed profile option for initial number of tabs.
-  * Updated SVG icon's licence and copyright (Closes: #795217).
-  * debian/control: Changed descriptions and dependencies of dummy packages to
-    prevent lintian warnings.
+  * Updated roxterm.svg's and roxterm.appdata.xml.in's licence and
+    copyright (Closes: #795217).
+  * debian/control: Changed descriptions and dependencies of dummy
+    packages to prevent lintian warnings.
   * Added lintian overrides for warnings about dummy dbg packages.
 
- -- Tony Houghton <h@realh.co.uk>  Wed, 12 Aug 2015 18:13:04 +0100
+ -- Tony Houghton <h@realh.co.uk>  Wed, 12 Aug 2015 19:54:53 +0100
 
 roxterm (3.0.2-1) unstable; urgency=medium
 
