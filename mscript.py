@@ -100,7 +100,7 @@ if ctx.mode == 'configure':
             ctx.find_prog_env("convert")
             ctx.find_prog_env("composite")
             try:
-                ctx.find_prog_env("rsvg-convert")
+                ctx.find_prog_env("rsvg-convert", "RSVG")
             except:
                 ctx.find_prog_env("rsvg")
         except:
@@ -346,11 +346,12 @@ elif ctx.mode == 'build':
 
     # Graphics
     if ctx.env['CONVERT']:
-        ctx.add_rule(Rule(rule = "${CONVERT} -background #0000 " \
-                "${SRC} -geometry 64x64 ${TGT}",
-                targets = LOGO_PNG,
-                sources = "roxterm.svg",
-                where = TOP))
+        if ctx.env['RSVG']:
+            ctx.add_rule(Rule( \
+                    rule = "${RSVG} -w 64 -h 64 -f png -o ${TGT} ${SRC}",
+                    targets = LOGO_PNG,
+                    sources = "roxterm.svg",
+                    where = TOP))
 
         # Note 'where' is NOWHERE for following two rules because sources
         # already start with ${TOP_DIR}.
