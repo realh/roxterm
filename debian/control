@@ -70,7 +70,7 @@ Architecture: all
 Section: oldlibs
 Priority: extra
 Depends: roxterm (>= ${source:Version}), ${misc:Depends}
-Description: Transitional package to updgrade roxterm-gtk3 to roxterm
+Description: Transitional package to upgrade roxterm-gtk3 to roxterm
  This is a dummy package to facilitate automatic upgrades from roxterm-gtk3 2.x
  to roxterm 3.x, due to a change in the packaging structure. It may be removed
  once the roxterm 3.x package is installed, but consider also explicitly
@@ -83,7 +83,7 @@ Priority: extra
 Depends: roxterm-dbg (>= ${source:Version}),
  roxterm-gtk3 (= ${binary:Version}),
  ${misc:Depends}
-Description: Transitional package to updgrade roxterm-gtk3-dbg to roxterm-dbg
+Description: Transitional package to upgrade roxterm-gtk3-dbg to roxterm-dbg
  This is a dummy package to facilitate automatic upgrades from roxterm-gtk3-dbg
  2.x to roxterm-dbg 3.x, due to a change in the packaging structure. It may be
  removed once the roxterm-dbg 3.x package is installed, but consider also
@@ -95,7 +95,7 @@ Architecture: all
 Section: oldlibs
 Priority: extra
 Depends: roxterm (>= ${source:Version}), ${misc:Depends}
-Description: Transitional package to updgrade roxterm-gtk2 to roxterm
+Description: Transitional package to upgrade roxterm-gtk2 to roxterm
  This is a dummy package to facilitate automatic upgrades from roxterm-gtk2 2.x
  to roxterm 3.x, due to a change in the packaging structure. The GTK2 build is
  no longer supported, so if you want to continue using that you will have to
@@ -108,7 +108,7 @@ Priority: extra
 Depends: roxterm-dbg (>= ${source:Version}),
  roxterm-gtk2 (= ${binary:Version}),
  ${misc:Depends}
-Description: Transitional package to updgrade roxterm-gtk2-dbg to roxterm-dbg
+Description: Transitional package to upgrade roxterm-gtk2-dbg to roxterm-dbg
  This is a dummy package to facilitate automatic upgrades from roxterm-gtk2-dbg
  2.x to roxterm-dbg 3.x, due to a change in the packaging structure. The GTK2
  build is no longer supported, so if you want to continue using that you will
