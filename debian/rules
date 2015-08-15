@@ -41,7 +41,7 @@ override_dh_auto_install:
 
 override_dh_install:
 	dh_install
-	dh_install debian/roxterm.xpm usr/share/pixmaps/
+	dh_install -proxterm-data debian/roxterm.xpm usr/share/pixmaps/
 
 override_dh_auto_test:
 
