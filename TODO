@@ -1,6 +1,5 @@
-Make sure not to create debian/Help by accident.
+usr/share/man should belong to dh_installmanpages
+
+Use "New upstream release" in dch in future.
 
 Make index.php choose language based on browser settings.
-
-maitch should be able to satisfy dependencies where the file depended on is
-referred to with or without ${BUILD_DIR} or abs path in different places.
