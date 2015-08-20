@@ -39,6 +39,14 @@ void rtdbus_whinge(DBusError * pderror, const char *s)
         dbus_error_free(pderror);
 }
 
+void rtdbus_warn(DBusError * pderror, const char *s)
+{
+    g_warning("%s: %s", s,
+        dbus_error_is_set(pderror) ? pderror->message : _("<unknown>"));
+    if (dbus_error_is_set(pderror))
+        dbus_error_free(pderror);
+}
+
 static void rtdbus_shutdown(void)
 {
     if (rtdbus_connection)

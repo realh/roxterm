@@ -39,8 +39,12 @@ extern DBusGConnection *rtdbus_g_connection;
 
 extern gboolean rtdbus_ok;
 
-/* Report a D-BUS error, prepending message 's', then free the error data */
+/* Report a D-BUS error in a dialog, prepending message 's',
+ * then free the error data */
 void rtdbus_whinge(DBusError *pderror, const char *s);
+
+/* As above but print it on the console with g_warning */
+void rtdbus_warn(DBusError *pderror, const char *s);
 
 /* Unrefs message after sending */
 gboolean rtdbus_send_message(DBusMessage *message);

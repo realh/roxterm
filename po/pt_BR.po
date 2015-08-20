@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: roxterm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-08 18:51+0100\n"
+"POT-Creation-Date: 2015-08-20 16:15+0100\n"
 "PO-Revision-Date: 2013-05-26 04:27+0000\n"
 "Last-Translator: salmora8 <shorterfire@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/"
@@ -457,17 +457,17 @@ msgstr "Falha pai ao ler sinal filho do --fork: %s"
 msgid "Child failed to signal parent for --fork: %s"
 msgstr "Falha no sinal filho, pai para --fork: %s"
 
-#: ../src/main.c:302
+#: ../src/main.c:309
 #, c-format
 msgid "Unable to open pipe to implement --fork: %s"
 msgstr "Não foi possível abrir pipe para implementar --fork: %s"
 
-#: ../src/main.c:318
+#: ../src/main.c:325
 #, c-format
 msgid "Unable to fork to implement --fork: %s"
 msgstr "Não foi possível deslocar para implementar --fork: %s"
 
-#: ../src/main.c:384
+#: ../src/main.c:391
 msgid "Missing command after -e/--execute option"
 msgstr "Procurando comando depois -e/--execute opção"
 
@@ -1284,62 +1284,62 @@ msgstr "Fechando elemento desconhecido </%s>"
 msgid "Unable to parse data for session '%s': %s"
 msgstr "Não foi possível analisar dados para sessão '%s: %s"
 
-#: ../src/rtdbus.c:37
+#: ../src/rtdbus.c:37 ../src/rtdbus.c:45
 msgid "<unknown>"
 msgstr "<desconhecido>"
 
-#: ../src/rtdbus.c:58
+#: ../src/rtdbus.c:66
 msgid "Unable to send D-BUS message"
 msgstr "Não foi possível enviar mensagem D-BUS"
 
-#: ../src/rtdbus.c:79
+#: ../src/rtdbus.c:87
 msgid "Unable to send/get reply to D-BUS message"
 msgstr "Não foi possível enviar/obter resposta para mensagem D-BUS"
 
-#: ../src/rtdbus.c:85
+#: ../src/rtdbus.c:93
 msgid "Unable to get D-BUS reply message"
 msgstr "Não foi possível responder mensagem D-BUS"
 
-#: ../src/rtdbus.c:115
+#: ../src/rtdbus.c:123
 msgid "Unable to start D-BUS service"
 msgstr "Não foi possível inciar um serviço D-BUS"
 
-#: ../src/rtdbus.c:130
+#: ../src/rtdbus.c:138
 msgid "Unable to listen for D-BUS method calls"
 msgstr "Não foi possível ouvir chamadas de método D-BUS"
 
-#: ../src/rtdbus.c:151
+#: ../src/rtdbus.c:159
 #, c-format
 msgid "Error connecting to dbus: %s"
 msgstr "Erro ao conectar para dbus: %s"
 
-#: ../src/rtdbus.c:172
+#: ../src/rtdbus.c:180
 #, fuzzy
 msgid "Unable to add D-BUS match rule"
 msgstr "Não é possível adicionar regra de correspondência de sinal D -BUS"
 
-#: ../src/rtdbus.c:178
+#: ../src/rtdbus.c:186
 msgid "Unable to install D-BUS message filter"
 msgstr "Não foi possível instalar filtro de mensagem D-BUS"
 
-#: ../src/rtdbus.c:217
+#: ../src/rtdbus.c:225
 msgid "Unable to append arguments to D-BUS message"
 msgstr "Não foi possível anexar argumentos a mensagem D-BUS"
 
-#: ../src/rtdbus.c:243
+#: ../src/rtdbus.c:251
 msgid "Unable to create D-BUS signal message"
 msgstr "Não foi possível criar mensagem de sinal D-BUS"
 
-#: ../src/rtdbus.c:271
+#: ../src/rtdbus.c:279
 msgid "Unable to create D-BUS method call message"
 msgstr "Não foi possível criar método de mensagem de chamada D-BUS"
 
-#: ../src/rtdbus.c:291
+#: ../src/rtdbus.c:299
 #, c-format
 msgid "Invalid argument type ('%c') in NewTerminal D-BUS method"
 msgstr "Tipo de argumento inválido ('%c') em Novo Terminal do método D-BUS"
 
-#: ../src/rtdbus.c:321
+#: ../src/rtdbus.c:329
 #, c-format
 msgid ""
 "Invalid first argument type ('%c') in NewTerminal D-BUS method; expected "
@@ -1348,7 +1348,7 @@ msgstr ""
 "Tipo de primeiro argumento inválido ('%c') em Novo Terminal do método D-BUS, "
 "esperado conjunto"
 
-#: ../src/rtdbus.c:327
+#: ../src/rtdbus.c:335
 #, c-format
 msgid ""
 "Invalid array element type ('%c') in NewTerminal D-BUS method; expected "
