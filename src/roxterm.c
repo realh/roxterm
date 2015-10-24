@@ -51,17 +51,6 @@
 #include "uri.h"
 #include "x11support.h"
 
-/* vte_terminal_set_word_chars was removed from vte 0.38 but reinstated
- * in 0.40. Hopefully this will allow the option to be ignored in 0.38
- * but work in 0.40 without recompiling roxterm.
- */
-void __attribute__((weak))
-vte_terminal_set_word_chars(VteTerminal *vte, const char *chars)
-{
-    (void) vte;
-    (void) chars;
-}
-
 typedef enum {
     ROXTerm_Match_Invalid,
     ROXTerm_Match_Complete,
@@ -2853,12 +2842,12 @@ static void roxterm_connect_misc_signals(ROXTermData * roxterm)
 }
 
 inline static void
-roxterm_set_select_by_word_chars(ROXTermData * roxterm, VteTerminal * vte)
+roxterm_set_word_chars(ROXTermData * roxterm, VteTerminal * vte)
 {
     char *wchars = options_lookup_string_with_default
-        (roxterm->profile, "sel_by_word", "-A-Za-z0-9,./?%&#:_=+@~");
+        (roxterm->profile, "word_chars", "-,./?%&#:_=+@~");
 
-    vte_terminal_set_word_chars(vte, wchars);
+    vte_terminal_set_word_char_exceptions(vte, wchars);
     if (wchars)
         g_free(wchars);
 }
@@ -3098,7 +3087,7 @@ static void roxterm_apply_show_add_tab_btn(ROXTermData *roxterm)
 static void roxterm_apply_profile(ROXTermData *roxterm, VteTerminal *vte,
         gboolean update_geometry)
 {
-    roxterm_set_select_by_word_chars(roxterm, vte);
+    roxterm_set_word_chars(roxterm, vte);
     roxterm_update_audible_bell(roxterm, vte);
     roxterm_update_allow_bold(roxterm, vte);
     roxterm_update_autowrap(roxterm, vte);
@@ -3443,9 +3432,9 @@ static void roxterm_reflect_profile_change(Options * profile, const char *key)
         {
             roxterm_update_mouse_autohide(roxterm, vte);
         }
-        else if (!strcmp(key, "sel_by_word"))
+        else if (!strcmp(key, "word_chars"))
         {
-            roxterm_set_select_by_word_chars(roxterm, vte);
+            roxterm_set_word_chars(roxterm, vte);
         }
         else if (!strcmp(key, "width") || !strcmp(key, "height"))
         {

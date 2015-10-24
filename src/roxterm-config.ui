@@ -2301,12 +2301,12 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkLabel" id="sel_by_word_label">
+                              <object class="GtkLabel" id="word_chars_label">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="label" translatable="yes">_Select-by-word characters:</property>
+                                <property name="label" translatable="yes">_Word characters:</property>
                                 <property name="use_underline">True</property>
-                                <property name="mnemonic_widget">sel_by_word</property>
+                                <property name="mnemonic_widget">word_chars</property>
                                 <property name="xalign">0</property>
                               </object>
                               <packing>
@@ -2316,12 +2316,12 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkEntry" id="sel_by_word">
+                              <object class="GtkEntry" id="word_chars">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="has_tooltip">True</property>
-                                <property name="tooltip_markup">Words can be selected by double-clicking. Characters not in this list count as the start or end of a word</property>
-                                <property name="tooltip_text" translatable="yes">Words can be selected by double-clicking. Characters not in this list count as the start or end of a word</property>
+                                <property name="tooltip_markup">Words can be selected by double-clicking. Characters in this list, in addition to alphanumerics, are considered part of a word. Do not add 0-9A-Za-z etc here. If including a minus sign it must come first.</property>
+                                <property name="tooltip_text" translatable="yes">Words can be selected by double-clicking. Characters in this list, in addition to alphanumerics, are considered part of a word. Do not add 0-9A-Za-z etc here. If including a minus sign it must come first.</property>
                                 <property name="invisible_char">•</property>
                                 <property name="primary_icon_activatable">False</property>
                                 <property name="secondary_icon_activatable">False</property>
@@ -2475,7 +2475,7 @@
                             </child>
                             <child>
                               <object class="GtkCheckButton" id="autowrap">
-                                <property name="label" translatable="yes">Re_wrap text when terminal width changes</property>
+                                <property name="label" translatable="yes">_Rewrap text when terminal width changes</property>
                                 <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
