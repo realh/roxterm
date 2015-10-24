@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # Maxim Orlov <uubboo@gmail.com>, 2012
 # sergmarkov1960 <sergmarkov1960@gmail.com>, 2012
@@ -12,12 +12,15 @@ msgstr ""
 "POT-Creation-Date: 2015-10-24 18:56+0100\n"
 "PO-Revision-Date: 2015-10-24 18:50+0000\n"
 "Last-Translator: Tony Houghton <h@realh.co.uk>\n"
-"Language-Team: Russian (http://www.transifex.com/realh/roxterm/language/ru/)\n"
+"Language-Team: Russian (http://www.transifex.com/realh/roxterm/language/"
+"ru/)\n"
+"Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ru\n"
-"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
+"%100>=11 && n%100<=14)? 2 : 3);\n"
 
 #: ../src/about.c:55
 #, c-format
@@ -396,8 +399,8 @@ msgstr ""
 
 #: ../src/globalopts.c:305
 msgid ""
-"Don't set window geometry hints. This is a workaround for "
-"<https://bugzilla.gnome.org/show_bug.cgi?id=649680>"
+"Don't set window geometry hints. This is a workaround for <https://bugzilla."
+"gnome.org/show_bug.cgi?id=649680>"
 msgstr ""
 
 #: ../src/globalopts.c:309
@@ -737,13 +740,12 @@ msgstr ""
 
 #: ../src/multitab.c:1338
 msgid ""
-"The current session will be saved in "
-"$XDG_CONFIG_HOME/roxterm.sourceforge.net/UserSessions/ with the given "
-"leafname (XDG_CONFIG_HOME defaults to ~/.config). A session saves the state "
-"of current windows and tabs but not the terminals' text content. A session "
-"can be restored with roxterm's --session command-line option, or will be "
-"restored automatically if named 'Default'. Leaving the field blank is "
-"equivalent to 'Default'."
+"The current session will be saved in $XDG_CONFIG_HOME/roxterm.sourceforge."
+"net/UserSessions/ with the given leafname (XDG_CONFIG_HOME defaults to ~/."
+"config). A session saves the state of current windows and tabs but not the "
+"terminals' text content. A session can be restored with roxterm's --session "
+"command-line option, or will be restored automatically if named 'Default'. "
+"Leaving the field blank is equivalent to 'Default'."
 msgstr ""
 
 #: ../src/multitab.c:1379
@@ -757,8 +759,8 @@ msgstr ""
 
 #: ../src/multitab.c:1404
 msgid ""
-"The title string may include '%s' which is substituted with the title set by"
-" the child command (usually the current directory for shells). No other % "
+"The title string may include '%s' which is substituted with the title set by "
+"the child command (usually the current directory for shells). No other % "
 "characters or sequences are permitted except '%%' which is displayed as a "
 "single %. Apply an empty string here to use the profile's title string."
 msgstr ""
@@ -996,8 +998,8 @@ msgstr ""
 
 #: ../src/roxterm.c:2222
 msgid ""
-"The command in this terminal has terminated. What do you want to do with the"
-" terminal now?"
+"The command in this terminal has terminated. What do you want to do with the "
+"terminal now?"
 msgstr ""
 
 #: ../src/roxterm.c:2227
@@ -1494,7 +1496,9 @@ msgstr "Использовать палитру"
 
 #: ../src/roxterm-config.ui:208 ../src/roxterm-config.ui:209
 msgid "Whether to set the terminal's colours from the table below"
-msgstr "Игнорировать системные настройки и использовать для терминала цвета указанные в палитре"
+msgstr ""
+"Игнорировать системные настройки и использовать для терминала цвета "
+"указанные в палитре"
 
 #: ../src/roxterm-config.ui:224
 msgid "_Get text and background colours from palette"
@@ -1529,8 +1533,8 @@ msgstr ""
 #: ../src/roxterm-config.ui:770
 msgid ""
 "Select a row to choose which profile the buttons below apply to. Select a "
-"radio button to set the profile used when roxterm is run without a --profile"
-" option."
+"radio button to set the profile used when roxterm is run without a --profile "
+"option."
 msgstr ""
 
 #: ../src/roxterm-config.ui:787 ../src/roxterm-config.ui:1003
@@ -1553,9 +1557,10 @@ msgstr "Нажмите для удаления выбранного профил
 
 #: ../src/roxterm-config.ui:835
 msgid ""
-"Click to create a new profile with settings copied from the current "
-"selection"
-msgstr "Нажмите для создания нового профиля с настройками скопированными из выбранного в данный момент"
+"Click to create a new profile with settings copied from the current selection"
+msgstr ""
+"Нажмите для создания нового профиля с настройками скопированными из "
+"выбранного в данный момент"
 
 #: ../src/roxterm-config.ui:855
 msgid "Click to edit the selected profile"
@@ -1584,7 +1589,9 @@ msgstr "Нажмите для изменения выбранной цветов
 msgid ""
 "Click to create a new colour scheme with settings copied from the current "
 "selection"
-msgstr "Нажмите для создания новой цветовой схемы с настройками скопированными из выбранной в данный момент"
+msgstr ""
+"Нажмите для создания новой цветовой схемы с настройками скопированными из "
+"выбранной в данный момент"
 
 #: ../src/roxterm-config.ui:991
 msgid "Click to delete the selected colour scheme"
@@ -1778,7 +1785,9 @@ msgstr "Всегда показывать панель вкладок"
 msgid ""
 "If this option is enabled the tabs at the top of each terminal are always "
 "shown, even in windows which only contain one tab"
-msgstr "Если эта опция включена, вкладки в верхней части каждого терминала отображаются всегда, даже когда содержат только одну вкладку"
+msgstr ""
+"Если эта опция включена, вкладки в верхней части каждого терминала "
+"отображаются всегда, даже когда содержат только одну вкладку"
 
 #: ../src/roxterm-config.ui:1921
 msgid "Show a_dd tab button"
@@ -1886,8 +1895,8 @@ msgstr ""
 #: ../src/roxterm-config.ui:2324
 msgid ""
 "Words can be selected by double-clicking. Characters in this list, in "
-"addition to alphanumerics, are considered part of a word. Do not add 0-9A-"
-"Za-z etc here. If including a minus sign it must come first."
+"addition to alphanumerics, are considered part of a word. Do not add 0-9A-Za-"
+"z etc here. If including a minus sign it must come first."
 msgstr ""
 
 #: ../src/roxterm-config.ui:2341
@@ -1920,8 +1929,8 @@ msgstr ""
 
 #: ../src/roxterm-config.ui:2464
 msgid ""
-"If the \"bell rings\" in a terminal while it isn't the active tab or window,"
-" its tab label will flash and/or its window will be marked \"urgent\"."
+"If the \"bell rings\" in a terminal while it isn't the active tab or window, "
+"its tab label will flash and/or its window will be marked \"urgent\"."
 msgstr ""
 
 #: ../src/roxterm-config.ui:2478
@@ -2198,9 +2207,11 @@ msgstr "Следовать за выводом"
 
 #: ../src/roxterm-config.ui:3562
 msgid ""
-"Whether to make the scrollbar jump to the bottom when new text is printed in"
-" the terminal"
-msgstr "Независимо от положения полосы прокрутки она будет всё время стремиться вниз пока новые сообщения выводятся в терминале"
+"Whether to make the scrollbar jump to the bottom when new text is printed in "
+"the terminal"
+msgstr ""
+"Независимо от положения полосы прокрутки она будет всё время стремиться вниз "
+"пока новые сообщения выводятся в терминале"
 
 #: ../src/roxterm-config.ui:3575
 msgid "Scroll on _keystroke"
@@ -2210,17 +2221,23 @@ msgstr "Следовать за вводом"
 msgid ""
 "Whether to make the scrollbar jump to the bottom when text is typed into a "
 "terminal"
-msgstr "Независимо от положения полосы прокрутки она будет стремиться вниз когда в терминале вводится текст"
+msgstr ""
+"Независимо от положения полосы прокрутки она будет стремиться вниз когда в "
+"терминале вводится текст"
 
 #: ../src/roxterm-config.ui:3615
 msgid "Changes to the scrollbar position only take effect in new windows."
-msgstr "Изменения позиции полосы прокрутки вступят в силу только во вновь открытых окнах."
+msgstr ""
+"Изменения позиции полосы прокрутки вступят в силу только во вновь открытых "
+"окнах."
 
 #: ../src/roxterm-config.ui:3641
 msgid ""
 "Number of lines of output text to retain in the buffer so that they can "
 "still be viewed by scrolling up"
-msgstr "Количество строк вывода текста сохраняемых в буфере, которые могут быть просмотрены с помощью прокрутки вверх"
+msgstr ""
+"Количество строк вывода текста сохраняемых в буфере, которые могут быть "
+"просмотрены с помощью прокрутки вверх"
 
 #: ../src/roxterm-config.ui:3644
 msgid "1000"
@@ -2290,8 +2307,8 @@ msgstr ""
 
 #: ../src/roxterm-config.ui:3853
 msgid ""
-"This option disables the underlined shortcut keys in the menus (eg Alt+F for"
-" the File menu)."
+"This option disables the underlined shortcut keys in the menus (eg Alt+F for "
+"the File menu)."
 msgstr ""
 
 #: ../src/roxterm-config.ui:3867
@@ -2300,8 +2317,8 @@ msgstr ""
 
 #: ../src/roxterm-config.ui:3874
 msgid ""
-"This option disables the shortcut keys for switching tabs (Alt+1-9 and Alt+0"
-" by default)"
+"This option disables the shortcut keys for switching tabs (Alt+1-9 and Alt+0 "
+"by default)"
 msgstr ""
 
 #: ../src/roxterm-config.ui:3894
@@ -2314,8 +2331,8 @@ msgstr ""
 
 #: ../src/roxterm-config.ui:3954
 msgid ""
-"The title string may include '%s' which is substituted with the title set by"
-" the child command (usually the current directory for shells). No other % "
+"The title string may include '%s' which is substituted with the title set by "
+"the child command (usually the current directory for shells). No other % "
 "characters or sequences are permitted except '%%' which is displayed as a "
 "single %."
 msgstr ""

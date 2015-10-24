@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: roxterm\n"
 "Report-Msgid-Bugs-To: http://sourceforge.net/tracker/?group_id=124080\n"
-"POT-Creation-Date: 2015-08-11 17:28+0100\n"
+"POT-Creation-Date: 2015-10-24 20:01+0100\n"
 "PO-Revision-Date: 2014-05-06 19:06+0000\n"
 "Last-Translator: Tony Houghton <h@realh.co.uk>\n"
 "Language-Team: Russian (http://www.transifex.com/projects/p/roxterm/language/"
@@ -149,13 +149,22 @@ msgid ""
 "inconsistencies, but this is configurable."
 msgstr ""
 
-#. type: Content of: <html><body><div><div><div><h2>
+#. type: Content of: <html><body><div><div><div><p>
 #: ../Help/en/guide.html:59
+msgid ""
+"If you experience a problem with tab labels shrinking after dragging tabs so "
+"that they only have room to display '...', try making sure the pointer is "
+"over the body of a terminal when you drop a dragged tab, not over the tab "
+"bar area."
+msgstr ""
+
+#. type: Content of: <html><body><div><div><div><h2>
+#: ../Help/en/guide.html:63
 msgid "Menus <a class=\"pageAnchor\" name=\"Menus\">:</a>"
 msgstr "Меню <a class=\"pageAnchor\" name=\"Menus\">:</a>"
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/guide.html:61
+#: ../Help/en/guide.html:65
 msgid ""
 "When the menu bar is hidden the popup menu duplicates the same items as in "
 "the menu bar; this gives you full access to all the functions with the menu "
@@ -166,19 +175,19 @@ msgid ""
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/guide.html:66
+#: ../Help/en/guide.html:70
 msgid ""
 "The popup menu also allows email and web addresses to be opened in external "
 "applications if such an address is highlighted by the pointer being over it."
 msgstr "<a id=\"MainNav_Home\" href=\"index.html\">На главную</a>"
 
 #. type: Content of: <html><body><div><div><div><h2>
-#: ../Help/en/guide.html:69
+#: ../Help/en/guide.html:73
 msgid "URI Highlighting <a class=\"pageAnchor\" name=\"URIHighlighting\">:</a>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/guide.html:71
+#: ../Help/en/guide.html:75
 msgid ""
 "When the pointer is over an address that ROXTerm recognises as a URI "
 "(typically a web URL or email address) it is highlighted by underlining and "
@@ -192,7 +201,7 @@ msgid ""
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/guide.html:78
+#: ../Help/en/guide.html:82
 msgid ""
 "Note that if the pointer is over the server address portion of a URL it only "
 "highlights the address, omitting the filename; move the pointer over the "
@@ -201,7 +210,7 @@ msgid ""
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/guide.html:82
+#: ../Help/en/guide.html:86
 msgid ""
 "As of version 2.9.1 ssh URI and hostname matching is supported. URIs "
 "including a path name can only be copied to the clipboard; in the absence of "
@@ -213,12 +222,12 @@ msgid ""
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><h2>
-#: ../Help/en/guide.html:88
+#: ../Help/en/guide.html:92
 msgid "Drag &amp; Drop <a class=\"pageAnchor\" name=\"DragAndDrop\">:</a>"
 msgstr "Drag &amp; Drop <a class=\"pageAnchor\" name=\"DragAndDrop\">:</a>"
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/guide.html:90
+#: ../Help/en/guide.html:94
 msgid ""
 "You can now drag items onto terminal windows. Text objects are fed to the "
 "terminal as if typed. Files and URIs have their location (filename or URI) "
@@ -229,7 +238,7 @@ msgid ""
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/guide.html:95
+#: ../Help/en/guide.html:99
 msgid ""
 "You can now drag tabs by their labels to reorder them within a window or to "
 "move them to another ROXTerm window or, by dropping them outside a ROXTerm "
@@ -240,14 +249,14 @@ msgid ""
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><h2>
-#: ../Help/en/guide.html:100
+#: ../Help/en/guide.html:104
 #, fuzzy
 #| msgid "Menus <a class=\"pageAnchor\" name=\"Menus\">:</a>"
 msgid "Named User Sessions <a class=\"pageAnchor\" name=\"Sessions\">:</a>"
 msgstr "Меню <a class=\"pageAnchor\" name=\"Menus\">:</a>"
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/guide.html:102
+#: ../Help/en/guide.html:106
 msgid ""
 "New in version 3.1.1 is the ability to save named user sessions. Click Save "
 "Session... in the File menu to name your session and save it. A session "
@@ -258,12 +267,12 @@ msgid ""
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><h2>
-#: ../Help/en/guide.html:111
+#: ../Help/en/guide.html:115
 msgid "Configuration <a class=\"pageAnchor\" name=\"Configuration\">:</a>"
 msgstr "Настройка <a class=\"pageAnchor\" name=\"Configuration\">:</a>"
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/guide.html:113
+#: ../Help/en/guide.html:117
 msgid ""
 "Configuration is based on named profiles so you can save different sets of "
 "options and switch between them quickly. There are profiles for general "
@@ -276,7 +285,7 @@ msgid ""
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/guide.html:119
+#: ../Help/en/guide.html:123
 msgid ""
 "Prior to version 1.15.1 all tabs had to share the same Profile, but this has "
 "been changed. In consequence a profile's font and other settings which "
@@ -285,7 +294,7 @@ msgid ""
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/guide.html:123
+#: ../Help/en/guide.html:127
 msgid ""
 "The Preferences menu allows you to select the current profile etc (this "
 "setting will not be remembered; use the configuration manager to set the "
@@ -298,14 +307,14 @@ msgid ""
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><h2>
-#: ../Help/en/guide.html:129
+#: ../Help/en/guide.html:133
 msgid ""
 "Keyboard Shortcuts <a class=\"pageAnchor\" name=\"KeyboardShortcuts\">:</a>"
 msgstr ""
 "Сочетания клавиш <a class=\"pageAnchor\" name=\"KeyboardShortcuts\">:</a>"
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/guide.html:131
+#: ../Help/en/guide.html:135
 msgid ""
 "There is no editor for keyboard shortcuts; instead, prior to GTK+ 3.10 they "
 "can be changed by pressing keys while the mouse is hovering over a menu item "
@@ -319,7 +328,7 @@ msgid ""
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/guide.html:138
+#: ../Help/en/guide.html:142
 msgid ""
 "The above method for editing shortcuts has been disabled from GTK+ 3.10 "
 "onwards. Instead ROXTerm 2.9.1 onwards allows the shortcuts profiles to be "
@@ -331,7 +340,7 @@ msgid ""
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/guide.html:144
+#: ../Help/en/guide.html:148
 msgid ""
 "If you have GTK+ 3.10 or newer, but can't upgrade from an older ROXTerm you "
 "will have to open the config files in a text editor yourself, then restart "
@@ -343,14 +352,14 @@ msgid ""
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><h2>
-#: ../Help/en/guide.html:149
+#: ../Help/en/guide.html:153
 msgid ""
 "Configuration Management <a class=\"pageAnchor\" name="
 "\"ConfigurationManagement\">:</a>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/guide.html:151
+#: ../Help/en/guide.html:155
 msgid ""
 "You can also run the configuration manager by selecting \"Configure...\" in "
 "ROX's menu for the ROXTerm application or by running roxterm-config if "
@@ -358,7 +367,7 @@ msgid ""
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/guide.html:154
+#: ../Help/en/guide.html:158
 msgid ""
 "Configuration files can easily be swapped with other users. Each profile, "
 "colour scheme and keyboard shortcut scheme has a single file associated with "
@@ -367,28 +376,28 @@ msgid ""
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/guide.html:158
+#: ../Help/en/guide.html:162
 msgid ""
 "The directory locations for these configuration files follow the XDG Base "
 "Directory specification. In descending order of priority they are:"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><ol><li>
-#: ../Help/en/guide.html:162
+#: ../Help/en/guide.html:166
 msgid ""
 "<span>${XDG_CONFIG_HOME}/roxterm.sourceforge.net defaulting to ~/.config/"
 "roxterm.sourceforge.net</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><ol><li>
-#: ../Help/en/guide.html:163
+#: ../Help/en/guide.html:167
 msgid ""
 "<span>${XDG_CONFIG_DIRS}/roxtem.sourceforge.net defaulting to /etc/xdg/"
 "roxtem.sourceforge.net</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><ol><li>
-#: ../Help/en/guide.html:164
+#: ../Help/en/guide.html:168
 msgid ""
 "<span>ROXTerm/Config for ROX users, or ${datadir}/roxterm/Config for others; "
 "${datadir} is usually /usr/share for packages or /usr/local/share when "
@@ -396,7 +405,7 @@ msgid ""
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/guide.html:168
+#: ../Help/en/guide.html:172
 msgid ""
 "Files will be loaded from any and all the above locations; files in high "
 "priority locations shadow ones with the same name in lower priority "
@@ -404,7 +413,7 @@ msgid ""
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/guide.html:171
+#: ../Help/en/guide.html:175
 msgid ""
 "Within any or each of those locations, profiles are saved in a \"Profiles\" "
 "subdirectory, colour schemes in \"Colours\" and keyboard shortcut schemes in "
@@ -414,7 +423,7 @@ msgid ""
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><h2>
-#: ../Help/en/guide.html:175
+#: ../Help/en/guide.html:179
 msgid ""
 "Command-line Options <a class=\"pageAnchor\" name=\"CommandlineOptions\">:</"
 "a>"
@@ -423,22 +432,22 @@ msgstr ""
 "\">:</a>"
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/guide.html:177
+#: ../Help/en/guide.html:181
 msgid "ROXTerm accepts a number of command-line options. Run:"
 msgstr "ROXTerm принимает ряд параметров командной строки. Выполните:"
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/guide.html:179
+#: ../Help/en/guide.html:183
 msgid "roxterm --help"
 msgstr "roxterm --help"
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/guide.html:181
+#: ../Help/en/guide.html:185
 msgid "for a full list."
 msgstr "для полного списка команд."
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/guide.html:183
+#: ../Help/en/guide.html:187
 msgid ""
 "From version 1.1.0 ROXTerm defaults to using only one process for all "
 "terminals so that you can drag tabs between windows. If you run the command "
@@ -448,7 +457,7 @@ msgid ""
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/guide.html:188
+#: ../Help/en/guide.html:192
 msgid ""
 "Note that the --colour_scheme and --shortcut_scheme options have been "
 "replaced by --colour-scheme and --shortcut-scheme respectively in 1.7.0 "
@@ -457,13 +466,13 @@ msgid ""
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><h2>
-#: ../Help/en/guide.html:193
+#: ../Help/en/guide.html:197
 msgid ""
 "Advanced D-Bus Usage <a class=\"pageAnchor\" name=\"AdvancedDbusUsage\">:</a>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/guide.html:195
+#: ../Help/en/guide.html:199
 msgid ""
 "From version 1.14.0 advanced users can use D-Bus to configure terminals from "
 "other applications and scripts.  There are three D-Bus methods especially "
@@ -475,12 +484,12 @@ msgid ""
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/guide.html:201
+#: ../Help/en/guide.html:205
 msgid "SetProfile(\"id\", \"profile_name\")"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/guide.html:202
+#: ../Help/en/guide.html:206
 msgid ""
 "Ask the terminal to use the named profile. Note that any other tabs in the "
 "same window will be updated to the same new profile. All tabs in one window "
@@ -489,43 +498,43 @@ msgid ""
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/guide.html:206
+#: ../Help/en/guide.html:210
 msgid "SetColourScheme(\"id\", \"scheme_name\")"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/guide.html:207
+#: ../Help/en/guide.html:211
 msgid ""
 "Ask the terminal to use the named colour scheme. Tabs sharing the same "
 "window may have different colour schemes from each other."
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/guide.html:210
+#: ../Help/en/guide.html:214
 msgid "SetShortcutScheme(\"id\", \"scheme_name\")"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/guide.html:211
+#: ../Help/en/guide.html:215
 msgid ""
 "Ask the terminal to use the named keyboard shortcut scheme. Tabs sharing the "
 "same window must also share the same shortcut scheme."
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/guide.html:214 ../Help/en/guide.html:234
+#: ../Help/en/guide.html:218 ../Help/en/guide.html:238
 msgid "Example using dbus-send in a shell script:"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/guide.html:217
+#: ../Help/en/guide.html:221
 msgid ""
 "<span>dbus-send --session /net/sf/roxterm/Options \\</span> <span>net.sf."
 "roxterm.Options.SetColourScheme string:$ROXTERM_ID string:GTK</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/guide.html:221
+#: ../Help/en/guide.html:225
 msgid ""
 "You may also send D-Bus signals to change individual options within a named "
 "profile or colour scheme using the methods StringOption, IntOption (also "
@@ -535,31 +544,31 @@ msgid ""
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><ul><li>
-#: ../Help/en/guide.html:227
+#: ../Help/en/guide.html:231
 msgid ""
 "<span>Full profile name, including a prefix of \"Profiles/\" or \"Colours/"
 "\"</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><ul><li>
-#: ../Help/en/guide.html:228
+#: ../Help/en/guide.html:232
 msgid "<span>Option name</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><ul><li>
-#: ../Help/en/guide.html:229
+#: ../Help/en/guide.html:233
 msgid "<span>Value</span>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/guide.html:232
+#: ../Help/en/guide.html:236
 msgid ""
 "To see which option names you can use, check the config files, from which "
 "the types can be deduced."
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/guide.html:237
+#: ../Help/en/guide.html:241
 msgid ""
 "<span>dbus-send --session /net/sf/roxterm/Options \\</span> <span>net.sf."
 "roxterm.Options.StringOption \\</span> <span>string:Colours/GTK string:"
@@ -567,7 +576,7 @@ msgid ""
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/guide.html:242
+#: ../Help/en/guide.html:246
 msgid ""
 "A third possible use is to notify roxterm that a profile, colour scheme or "
 "shortcuts scheme has been changed by an external program and all terminals "
@@ -575,19 +584,19 @@ msgid ""
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/guide.html:245
+#: ../Help/en/guide.html:249
 msgid "OptionsChanged(\"family_name\", \"profile_name\")"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/guide.html:246
+#: ../Help/en/guide.html:250
 msgid ""
 "where family_name is one of \"Profiles\", \"Colours\" or \"Shortcuts\". For "
 "example:"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/guide.html:249
+#: ../Help/en/guide.html:253
 msgid ""
 "<span>dbus-send --session /net/sf/roxterm/Options \\</span> <span>net.sf."
 "roxterm.Options.OptionsChanged \\</span> <span>string:Profiles string:"
@@ -595,14 +604,14 @@ msgid ""
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div>
-#: ../Help/en/guide.html:258
+#: ../Help/en/guide.html:262
 msgid ""
 "<a id=\"SourceforgeLink\" href=\"http://sourceforge.net/projects/roxterm\" "
 "title=\"RoxTerm Sourceforge\"> roxterm @ sourceforge </a>"
 msgstr ""
 
 #. type: Content of: <html><body><div><div><div>
-#: ../Help/en/guide.html:264
+#: ../Help/en/guide.html:268
 msgid ""
 "<a id=\"DonationLink\" class=\"spriteLink\" href=\"http://sourceforge.net/"
 "donate/index.php?group_id=124080\">Donate</a> <a id=\"ValidMarkupLink\" "
@@ -615,7 +624,7 @@ msgstr ""
 "\">Valid XHTML</a>"
 
 #. type: Content of: <html><body><div><div><p>
-#: ../Help/en/guide.html:268
+#: ../Help/en/guide.html:272
 msgid ""
 "ROXTerm is licensed under the <a href=\"http://www.gnu.org/licenses/gpl-3.0-"
 "standalone.html\">GPL</a> | Site design by Adrian Sampson"
