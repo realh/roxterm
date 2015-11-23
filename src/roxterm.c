@@ -1527,16 +1527,12 @@ static gboolean roxterm_popup_handler(GtkWidget * widget, ROXTermData * roxterm)
 /* Checks whether a button event position is over a matched expression; if so
  * roxterm->matched_url is set and the result is TRUE */
 static gboolean roxterm_check_match(ROXTermData *roxterm, VteTerminal *vte,
-        int event_x, int event_y)
+        GdkEvent *event)
 {
-    int xpad, ypad;
     int tag;
 
-    roxterm_get_vte_padding(roxterm, &xpad, &ypad);
     g_free(roxterm->matched_url);
-    roxterm->matched_url = vte_terminal_match_check(vte,
-        (event_x - ypad) / vte_terminal_get_char_width(vte),
-        (event_y - ypad) / vte_terminal_get_char_height(vte), &tag);
+    roxterm->matched_url = vte_terminal_match_check_event(vte, event, &tag);
     if (roxterm->matched_url)
         roxterm->match_type = roxterm_get_match_type(roxterm, tag);
     return roxterm->matched_url != NULL;
@@ -1673,9 +1669,9 @@ static gboolean roxterm_click_handler(GtkWidget *widget,
     VteTerminal *vte = VTE_TERMINAL(roxterm->widget);
 
     (void) widget;
-
+    
     roxterm_clear_drag_url(roxterm);
-    roxterm_check_match(roxterm, vte, event->x, event->y);
+    roxterm_check_match(roxterm, vte, (GdkEvent *) event);
     if (event->button == 3 && !(event->state & (GDK_SHIFT_MASK |
                 GDK_CONTROL_MASK | GDK_MOD1_MASK)))
     {
