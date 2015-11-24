@@ -24,6 +24,9 @@ PREFIX="--prefix=/usr/local/stow/roxterm"
 DEBUGGER=""
 
 case $1 in
+    --verbose) shift
+        DBGENV='G_MESSAGES_DEBUG=all'
+        ;;
     --debug) shift
         DEBUGGER="gdb --args"
         DBGENV='G_MESSAGES_DEBUG=all'
