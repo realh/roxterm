@@ -2565,12 +2565,9 @@ static gboolean roxterm_key_press_handler(GtkWidget *widget,
 }
 
 static void roxterm_resize_window_handler(VteTerminal *vte,
-        guint width, guint height, ROXTermData *roxterm)
+        guint columns, guint rows, ROXTermData *roxterm)
 {
     MultiWin *win = roxterm_get_win(roxterm);
-    int pad_w, pad_h;
-    GtkAllocation alloc;
-    int columns, rows;
 
     /* Can't compute size if not realized */
     if (!gtk_widget_get_realized(roxterm->widget))
@@ -2578,18 +2575,14 @@ static void roxterm_resize_window_handler(VteTerminal *vte,
     /* Ignore if maximised or full screen */
     if (win && (multi_win_is_maximised(win) || multi_win_is_fullscreen(win)))
         return;
+
     /* May already be desired size */
-    gtk_widget_get_allocation(roxterm->widget, &alloc);
-    if (alloc.width == (int) width && alloc.height == (int) height)
-        return;
-    /* Compute nearest grid size */
-    roxterm_get_vte_padding(roxterm, &pad_w, &pad_h);
-    columns = (int) (0.5 +
-            (double) (width - pad_w) /
-            (double) vte_terminal_get_char_width(vte));
-    rows = (int) (0.5 +
-            (double) (height - pad_h) /
-            (double) vte_terminal_get_char_height(vte));
+    // The following code was broken, needs to convert to pixels
+    //GtkAllocation alloc;
+    //gtk_widget_get_allocation(roxterm->widget, &alloc);
+    //if (alloc.width == (int) width && alloc.height == (int) height)
+    //    return;
+
     /* Only resize window now if this is current tab */
     if (roxterm->tab == multi_win_get_current_tab(win))
         roxterm_set_vte_size(roxterm, vte, columns, rows);

@@ -1,9 +1,10 @@
-roxterm (3.2.2-1) UNRELEASED; urgency=medium
+roxterm (3.2.2-1) unstable; urgency=medium
 
   * New upstream version:
     + Use new vte API for checking URL matches.
+    + Don't recalculate size in "window-resize" handler.
 
- -- Tony Houghton <h@realh.co.uk>  Tue, 24 Nov 2015 14:50:52 +0000
+ -- Tony Houghton <h@realh.co.uk>  Tue, 24 Nov 2015 15:22:44 +0000
 
 roxterm (3.2.1-1) unstable; urgency=medium
 
