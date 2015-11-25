@@ -1,10 +1,12 @@
-roxterm (3.2.2-1) unstable; urgency=medium
+roxterm (3.3.0-1) UNRELEASED; urgency=medium
 
   * New upstream version:
     + Use new vte API for checking URL matches.
     + Don't recalculate size in "window-resize" handler.
+    + Fixed colour palette radio widget grouping.
+    + Only warn about closing running shells if they have child processes.
 
- -- Tony Houghton <h@realh.co.uk>  Tue, 24 Nov 2015 15:22:44 +0000
+ -- Tony Houghton <h@realh.co.uk>  Wed, 25 Nov 2015 17:51:50 +0000
 
 roxterm (3.2.1-1) unstable; urgency=medium
 

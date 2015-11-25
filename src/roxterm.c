@@ -20,6 +20,8 @@
 #include "defns.h"
 
 #include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/fcntl.h>
 #include <ctype.h>
 #include <errno.h>
 #include <pwd.h>
@@ -115,6 +117,7 @@ struct ROXTermData {
     gboolean from_session;
     GtkStyleContext *style_context;
     int padding_w, padding_h;
+    gboolean is_shell;
 };
 
 #define PROFILE_NAME_KEY "roxterm_profile_name"
@@ -756,6 +759,7 @@ static void roxterm_run_command(ROXTermData *roxterm, VteTerminal *vte)
     env = roxterm_get_environment(roxterm, term);
     roxterm->running = TRUE;
     roxterm_show_status(roxterm, "window-close");
+    roxterm->is_shell = FALSE;
     if (roxterm->special_command)
     {
         /* Use special_command, currently single string */
@@ -811,6 +815,7 @@ static void roxterm_run_command(ROXTermData *roxterm, VteTerminal *vte)
         if (!command || !command[0])
         {
             command = get_default_command(roxterm);
+            roxterm->is_shell = TRUE;
         }
         else
         {
@@ -4381,14 +4386,43 @@ static void only_running_toggled(GtkToggleButton *button, DontShowData *d)
     options_file_save(global_options->kf, "Global");
 }
 
+static gboolean check_pid_has_children(pid_t pid)
+{
+    int fd = 0;
+    ssize_t count = -1;
+    char *buf = g_strdup_printf("/proc/%d/task/%d/children", pid, pid);
+    size_t l = strlen(buf);
+
+    fd = open(buf, O_RDONLY);
+    if (fd == -1)
+    {
+        g_warning("Failed to open %s\n", buf);
+        g_free(buf);
+    }
+    else
+    {
+        memset(buf, 0, l);
+        count = read(fd, buf, l);
+        if (count == -1)
+            g_warning("Failed to read %s\n", buf);
+        close(fd);
+    }
+    return count > 0;
+}
+
+static gboolean roxterm_check_is_running(ROXTermData *roxterm)
+{
+    if (roxterm && roxterm->running)
+    {
+        return roxterm->is_shell ? check_pid_has_children(roxterm->pid) : TRUE;
+    }
+    return FALSE;
+}
+
 static void check_each_tab_running(MultiTab *tab, void *data)
 {
-    if (((ROXTermData *) multi_tab_get_user_data(tab))->running)
-    {
-        gboolean *prunning = data;
-
-        *prunning = TRUE;
-    }
+    if (roxterm_check_is_running((ROXTermData *) multi_tab_get_user_data(tab)))
+        *((gboolean *) data) = TRUE;
 }
 
 static gboolean roxterm_delete_handler(GtkWindow *gtkwin, GdkEvent *event,
@@ -4403,6 +4437,8 @@ static gboolean roxterm_delete_handler(GtkWindow *gtkwin, GdkEvent *event,
     MultiWin *win = event ? data : NULL;
     ROXTermData *roxterm = event ? NULL : data;
     GtkWidget *ca_box;
+    gboolean running = FALSE;
+
 
     d.warn = global_options_lookup_int_with_default("warn_close", 3);
     d.only_running = global_options_lookup_int_with_default("only_warn_running",
@@ -4414,15 +4450,14 @@ static gboolean roxterm_delete_handler(GtkWindow *gtkwin, GdkEvent *event,
     {
         if (win)
         {
-            gboolean running = FALSE;
-
             multi_win_foreach_tab(win, check_each_tab_running, &running);
             if (!running)
                 return FALSE;
         }
-        else if (!roxterm->running)
+        else
         {
-            return FALSE;
+            if (!roxterm_check_is_running(roxterm))
+                return FALSE;
         }
     }
 
@@ -4447,6 +4482,7 @@ static gboolean roxterm_delete_handler(GtkWindow *gtkwin, GdkEvent *event,
             GTK_MESSAGE_WARNING, GTK_BUTTONS_YES_NO,
             "%s", msg);
     gtk_window_set_title(GTK_WINDOW(dialog), _("ROXTerm: Confirm close"));
+    gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_NO);
 
     ca_box = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
 
