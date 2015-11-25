@@ -503,7 +503,7 @@ elif ctx.mode == 'build':
                     "${SED} -i 's/SOME DESCRIPTIVE TITLE/" \
                             "Translations for roxterm docs/' ${TGT}",
                     "${SED} -i 's/Copyright (C) YEAR/" + \
-                            "Copyright (C) 2010-2014/' " \
+                            "Copyright (C) 2010-2015/' " \
                             "${TGT}",
                     "${SED} -i 's/FIRST AUTHOR <EMAIL@ADDRESS>, YEAR/"
                             "Tony Houghton <h@realh.co.uk>, 2014/' ${TGT}"],

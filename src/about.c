@@ -1,6 +1,6 @@
 /*
     roxterm - VTE/GTK terminal emulator with tabs
-    Copyright (C) 2004-2011 Tony Houghton <h@realh.co.uk>
+    Copyright (C) 2004-2015 Tony Houghton <h@realh.co.uk>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -73,7 +73,7 @@ static GtkWidget *about_dialog_create(void)
 
     gtk_about_dialog_set_program_name(ad, "ROXTerm");
     gtk_about_dialog_set_version(ad, VERSION);
-    gtk_about_dialog_set_copyright(ad, _("(c) 2005-2014 Tony Houghton"));
+    gtk_about_dialog_set_copyright(ad, _("(c) 2005-2015 Tony Houghton"));
     gtk_about_dialog_set_website(ad, "http://roxterm.sourceforge.net");
     gtk_about_dialog_set_authors(ad, authors);
     if (logo)
