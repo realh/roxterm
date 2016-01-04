@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.19.0 -->
+<!-- Generated with glade 3.18.3 -->
 <interface>
   <requires lib="gtk+" version="3.10"/>
   <object class="GtkDialog" id="Colour_Scheme_Editor">
@@ -1564,6 +1564,12 @@
   <object class="GtkAdjustment" id="scrollback_lines_adjustment">
     <property name="upper">100000</property>
     <property name="value">1000</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="ssh_port_adjustment">
+    <property name="upper">65535</property>
+    <property name="value">22</property>
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
@@ -4390,6 +4396,7 @@
                 <property name="tooltip_text" translatable="yes">Ssh server address.</property>
                 <property name="hexpand">True</property>
                 <property name="invisible_char">•</property>
+                <property name="max_width_chars">5</property>
                 <property name="primary_icon_activatable">False</property>
                 <property name="secondary_icon_activatable">False</property>
                 <signal name="activate" handler="on_ssh_entry_activate" swapped="no"/>
@@ -4453,11 +4460,18 @@
                 <property name="tooltip_text" translatable="yes">Ssh server port.</property>
                 <property name="hexpand">True</property>
                 <property name="invisible_char">•</property>
+                <property name="width_chars">5</property>
                 <property name="truncate_multiline">True</property>
+                <property name="shadow_type">etched-in</property>
                 <property name="caps_lock_warning">False</property>
                 <property name="primary_icon_activatable">False</property>
                 <property name="secondary_icon_activatable">False</property>
+                <property name="input_purpose">digits</property>
+                <property name="adjustment">ssh_port_adjustment</property>
+                <property name="climb_rate">10</property>
+                <property name="numeric">True</property>
                 <property name="update_policy">if-valid</property>
+                <property name="value">22</property>
                 <signal name="changed" handler="on_spin_button_changed" swapped="no"/>
               </object>
               <packing>
