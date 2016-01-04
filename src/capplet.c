@@ -262,6 +262,8 @@ void on_spin_button_changed(GtkSpinButton * button, CappletData *capp)
     name = gtk_buildable_get_name(GTK_BUILDABLE(button));
     if (name)
     {
+        g_debug("spin_button %s changed to %d", name,
+                gtk_spin_button_get_value_as_int(button));
         capplet_set_int(capp->options, name,
                 gtk_spin_button_get_value_as_int(button));
     }

@@ -21,6 +21,7 @@
 #include "defns.h"
 
 #include <stdarg.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "capplet.h"
@@ -163,6 +164,13 @@ void on_editable_changed(GtkEditable * editable, ProfileGUI *pg)
     else PG_IF_CHANGED(ssh_user);
     else PG_IF_CHANGED(ssh_options);
     else PG_IF_CHANGED(win_title);
+    else if (!strcmp(n, "ssh_port"))
+    {
+        GtkAdjustment *adj = gtk_spin_button_get_adjustment(
+                GTK_SPIN_BUTTON(editable));
+        gtk_adjustment_set_value(adj,
+                atoi(gtk_entry_get_text(GTK_ENTRY(editable))));
+    }
 }
 
 void on_ssh_entry_activate(GtkEntry * entry, ProfileGUI * pg)

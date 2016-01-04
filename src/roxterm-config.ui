@@ -4460,6 +4460,7 @@
                 <property name="tooltip_text" translatable="yes">Ssh server port.</property>
                 <property name="hexpand">True</property>
                 <property name="invisible_char">•</property>
+                <property name="activates_default">True</property>
                 <property name="width_chars">5</property>
                 <property name="truncate_multiline">True</property>
                 <property name="shadow_type">etched-in</property>
@@ -4472,7 +4473,9 @@
                 <property name="numeric">True</property>
                 <property name="update_policy">if-valid</property>
                 <property name="value">22</property>
-                <signal name="changed" handler="on_spin_button_changed" swapped="no"/>
+                <signal name="activate" handler="on_ssh_entry_activate" swapped="no"/>
+                <signal name="changed" handler="on_editable_changed" swapped="no"/>
+                <signal name="value-changed" handler="on_spin_button_changed" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">1</property>

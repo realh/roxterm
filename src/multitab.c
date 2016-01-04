@@ -1080,8 +1080,6 @@ static GtkWidget *make_tab_label(MultiTab *tab, GtkPositionType tab_pos)
     {
         multi_tab_add_close_button(tab);
     }
-    gtk_notebook_set_tab_label(GTK_NOTEBOOK(tab->parent->notebook),
-        tab->widget, tab->label_box);
     gtk_widget_show_all(tab->label_box);
 
     return tab->label_box;
