@@ -118,7 +118,9 @@ if ctx.mode == 'configure':
 
     ctx.setenv('BUG_TRACKER', "http://sourceforge.net/tracker/?group_id=124080")
 
-    trans = ctx.env['ENABLE_TRANSLATIONS'] and ctx.env['ENABLE_NLS']
+    trans = (ctx.env['ENABLE_NLS'] == False) or \
+            (ctx.env['ENABLE_TRANSLATIONS'] == False)
+    trans = not trans
     if trans != False:
         try:
             ctx.find_prog_env("xgettext")
