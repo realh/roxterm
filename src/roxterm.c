@@ -2685,6 +2685,25 @@ static void build_new_term_with_profile_submenu(MenuTree *mtree,
     }
 }
 
+static void rebuild_new_term_with_profile_submenu(MenuTree *mtree,
+        GCallback callback, GtkMenuShell *mshell, char **items)
+{
+    GList *children = gtk_container_get_children(GTK_CONTAINER(mshell));
+    GList *child;
+    int n;
+
+    for (n = 0, child = children; child; child = g_list_next(child), ++n)
+    {
+        /* First two items are header and separator */
+        if (n >= 2)
+        {
+            gtk_container_remove(GTK_CONTAINER(mshell),
+                    GTK_WIDGET(child->data));
+        }
+    }
+    build_new_term_with_profile_submenu(mtree, callback, mshell, items);
+}
+
 static void roxterm_build_pair_of_profile_submenus(MultiWin *win)
 {
     char **items = dynamic_options_list_sorted(dynamic_options_get("Profiles"));
@@ -3749,8 +3768,27 @@ static void stuff_changed_do_menu(MenuTree *mtree,
 
     if (!strcmp(family_name, "Profiles"))
     {
+        char **items = dynamic_options_list_sorted(
+                dynamic_options_get("Profiles"));
+
+        char *s = (char *) "Current profiles:";
+        for (char **it = items; *it; ++it)
+        {
+            s = g_strdup_printf("%s %s", s, *it);
+        }
+
         id = MENUTREE_PREFERENCES_SELECT_PROFILE;
         handler = G_CALLBACK(roxterm_profile_selected);
+
+        menu = menutree_submenu_from_id(mtree,
+                MENUTREE_FILE_NEW_WINDOW_WITH_PROFILE);
+        rebuild_new_term_with_profile_submenu(mtree,
+            G_CALLBACK(roxterm_new_window_with_profile),
+            GTK_MENU_SHELL(mtree->new_win_profiles_menu), items);
+        rebuild_new_term_with_profile_submenu(mtree,
+            G_CALLBACK(roxterm_new_tab_with_profile),
+            GTK_MENU_SHELL(mtree->new_tab_profiles_menu), items);
+        g_strfreev(items);
     }
     else if (!strcmp(family_name, "Colours"))
     {
