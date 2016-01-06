@@ -414,15 +414,12 @@ elif ctx.mode == 'build':
                         **args)
         for r in trans_rules:
             ctx.add_rule(r)
-        # xgettext's glade support is broken so need to generate glade.pot
-        # with po4a. Temporary workaround, because it adds a lot of cruft
-        # to the .pot.
-        #ctx.add_rule(PotRule(ctx,
-        #        sources = '../src/roxterm-config.ui',
-        #        targets = glade_pot,
-        #        deps = podir,
-        #        xgettext_opts = '-L Glade',
-        #        dir = "${ABS_TOP_DIR}/po"))
+        ctx.add_rule(PotRule(ctx,
+                sources = '../src/roxterm-config.ui',
+                targets = glade_pot,
+                deps = podir,
+                xgettext_opts = '-L Glade',
+                dir = "${ABS_TOP_DIR}/po"))
         if ctx.env['HAVE_PO4A']:
             sources = [code_pot, glade_pot]
         else:
@@ -543,20 +540,6 @@ elif ctx.mode == 'build':
                         where = NOWHERE,
                         dir = "${PO4ADIR}",
                         use_shell = True))
-
-        # Workaround for xgettext glade bug
-        if ctx.env['HAVE_GETTEXT']:
-            ctx.add_rule(Rule(rule = ["${PO4A_GETTEXTIZE} ${PO4AOPTS} " \
-                        "-f xml -m ${SRC} -p ${TGT}",
-                    charset_rule],
-                    sources = '../src/roxterm-config.ui',
-                    targets = glade_pot,
-                    deps = podir,
-                    dir = "${ABS_TOP_DIR}/po",
-                    where = NOWHERE,
-                    diffpat = gettext_diffpat,
-                    use_shell = True))
-
 
     # Translations (itstool)
     if ctx.env['HAVE_ITSTOOL']:
