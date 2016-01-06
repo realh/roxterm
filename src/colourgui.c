@@ -147,7 +147,11 @@ static void colourgui_set_fgbg_shading(GtkBuilder *builder)
     gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(builder,
                 "foreground_colour")), sensitive);
     gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(builder,
+                "text_colour_label")), sensitive);
+    gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(builder,
                 "background_colour")), sensitive);
+    gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(builder,
+                "background_colour_label")), sensitive);
 }
 
 static void colourgui_set_fgbg_track_shading(GtkBuilder *builder)

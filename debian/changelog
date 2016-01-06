@@ -1,4 +1,4 @@
-roxterm (3.3.2-1pre12) unstable; urgency=medium
+roxterm (3.3.2-1pre13) unstable; urgency=medium
 
   * Removed debian/dirs to prevent creation of now empty /usr/share/pixmaps.
   * Build-Depends avoids buggy version of gettext (Closes: #809570).
@@ -8,8 +8,10 @@ roxterm (3.3.2-1pre12) unstable; urgency=medium
     + Fixed configure --disable-nls.
     + Update New Window/Tab With Profile submenus when profiles change
       (upstream #121).
+    + Fade text and background colour labels along with buttons
+      (Closes: #810016).
 
- -- Tony Houghton <h@realh.co.uk>  Wed, 06 Jan 2016 16:32:52 +0000
+ -- Tony Houghton <h@realh.co.uk>  Wed, 06 Jan 2016 16:59:30 +0000
 
 roxterm (3.3.1-1) unstable; urgency=medium
 
