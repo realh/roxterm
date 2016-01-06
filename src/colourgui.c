@@ -88,7 +88,7 @@ static void colourgui_set_all_palette_widgets(GtkBuilder *builder,
     GdkRGBA *palette = colour_scheme_get_palette(colour_scheme);
 
     g_return_if_fail(palette);
-    for (n = 0; n < 24; ++n)
+    for (n = 0; n < 16; ++n)
     {
         char widget_name[20];
 
@@ -125,10 +125,9 @@ static void colourgui_set_palette_shading(GtkBuilder *builder)
         size_radio = capplet_which_radio_is_selected(
                 GTK_WIDGET(gtk_builder_get_object(builder, "palette_size0")));
     }
-    colourgui_shade_row(builder, 2, size_radio == 2);
     colourgui_shade_row(builder, 1, size_radio >= 1);
     colourgui_shade_row(builder, 0, size_radio >= 0);
-    for (row = 0; row < 3; ++row)
+    for (row = 0; row < 2; ++row)
     {
         sprintf(widget_name, "palette_size%d", row);
         gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(builder,
@@ -243,8 +242,6 @@ static void colourgui_set_palette_toggles(GtkBuilder *builder,
             break;
         case 8:
         case 16:
-        case 24:
-            /* Treat as 0 */
             gtk_toggle_button_set_active(ucp, TRUE);
             capplet_set_radio_by_index(builder, "palette_size", ps / 8 - 1);
             /* This will clear ignore_changes, but doesn't matter */

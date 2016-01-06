@@ -30,7 +30,7 @@ gboolean colour_scheme_unref(Options * opts);
 
 int colour_scheme_get_palette_size(Options * opts);
 
-/* A palette always has 24 valid entries even if logical palette size is
+/* A palette always has 16 valid entries even if logical palette size is
  * smaller */
 GdkRGBA *colour_scheme_get_palette(Options * opts);
 

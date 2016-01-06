@@ -84,13 +84,11 @@ gboolean colour_scheme_unref(Options * opts)
 
 static const char *colour_scheme_choose_default(int palette_entry)
 {
-    static const char *default_colours[24] = {
+    static const char *default_colours[16] = {
         "#2c2c2c", "#c00000", "#00c000", "#c0c000",
             "#5555ff", "#aa00aa", "#00aaaa", "#e8e8e8",
         "#000000", "#ff0000", "#00ff00", "#ffff00",
-            "#2666ff", "#ff00ff", "#00ffff", "#ffffff",
-        "#4c4c4c", "#a83030", "#208820", "#a88800",
-            "#555598", "#883088", "#308888", "#d8d8d8"
+            "#2666ff", "#ff00ff", "#00ffff", "#ffffff"
     };
 
     return default_colours[palette_entry];
@@ -139,7 +137,7 @@ colour_scheme_parse_palette_range(Options * opts, ColourScheme * scheme,
 {
     int n;
 
-    for (n = start; n < 24; ++n)
+    for (n = start; n < 16; ++n)
     {
         char key[8];
         sprintf(key, "%d", n);
@@ -152,14 +150,17 @@ colour_scheme_parse_palette_range(Options * opts, ColourScheme * scheme,
 static void colour_scheme_parse_palette(Options * opts, ColourScheme * scheme)
 {
     if (!scheme->palette)
-        scheme->palette = g_new0(GdkRGBA, 24);
+        scheme->palette = g_new0(GdkRGBA, 16);
     scheme->palette_size = options_lookup_int(opts, "palette_size");
     switch (scheme->palette_size)
     {
         case 8:
         case 16:
-        case 24:
             /* No problem */
+            break;
+        case 24:
+            /* No longer supported, use 16 */
+            scheme->palette_size = 16;
             break;
         case -1:
             /* Not given, probably fine */
@@ -287,7 +288,7 @@ void colour_scheme_set_palette_entry(Options * opts, int index,
 
     g_return_if_fail(opts);
     g_return_if_fail(colour_name);
-    g_return_if_fail(index >= 0 && index < 24);
+    g_return_if_fail(index >= 0 && index < 16);
     scheme = options_get_data(opts);
     g_return_if_fail(scheme);
     colour = &scheme->palette[index];
