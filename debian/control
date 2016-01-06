@@ -5,7 +5,7 @@ Maintainer: Tony Houghton <h@realh.co.uk>
 Build-Depends:
  debhelper (>= 9),
  docbook-xsl,
- gettext,
+ gettext (>= 0.19.7-2) | gettext (<< 0.19.7),
  imagemagick,
  itstool,
  libdbus-glib-1-dev,

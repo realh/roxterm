@@ -12,7 +12,7 @@ LDFLAGS = $(shell dpkg-buildflags --get LDFLAGS) -Wl,--as-needed
 CONFIGURE_GDA_PATH = /usr/share/gnome-control-center/default-apps
 CONFIGURE_GDA = --with-gnome-default-applications=$(CONFIGURE_GDA_PATH)
 CONFIGURE_DIRS = PREFIX=/usr
-CONFIGURE_TRANS = --enable-translations
+CONFIGURE_TRANS = --enable-nls
 CONFIGURE_MISC = $(CONFIGURE_DIRS) $(CONFIGURE_TRANS) $(CONFIGURE_GIT)
 CONFIGURE_COMMON = $(CONFIGURE_GDA) $(CONFIGURE_LDFLAGS) $(CONFIGURE_MISC)
 MSCRIPT_OPTS = --lock-top
