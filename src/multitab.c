@@ -60,6 +60,8 @@ struct MultiTab {
     gboolean old_win_destroyed;
     gboolean title_template_locked;
     int middle_click_action;
+    gboolean restore_pending;
+    int restore_width, restore_height;
 };
 
 struct MultiWin {
@@ -158,11 +160,57 @@ static void multi_win_set_icon_title(MultiWin *win, const char *title);
 
 static void multi_win_close_tab_clicked(GtkWidget *widget, MultiTab *tab);
 
-static void multi_win_restore_size(MultiWin *win)
+static gboolean multi_tab_do_restore_size(MultiTab *tab)
+{
+    gtk_window_resize(GTK_WINDOW(tab->parent->gtkwin),
+            tab->restore_width, tab->restore_height);
+    return FALSE;
+}
+
+static void multi_tab_size_allocate(GtkWidget *widget, GdkRectangle *alloc,
+        MultiTab *tab)
+{
+    (void) widget;
+
+    if (tab->restore_pending && (alloc->width != tab->restore_width
+                || alloc->height != tab->restore_height))
+    {
+        GtkWindow *win = GTK_WINDOW(tab->parent->gtkwin);
+        int ww, wh;
+
+        g_debug("size-allocate of %dx%d, want to restore %dx%d",
+                alloc->width, alloc->height,
+                tab->restore_width, tab->restore_height);
+        gtk_window_get_size(win, &ww, &wh);
+        tab->restore_pending = FALSE;
+        g_debug("Resizing window from %dx%d to %dx%d", ww, wh,
+                ww - alloc->width + tab->restore_width,
+                wh - alloc->height + tab->restore_height);
+        tab->restore_width += ww - alloc->width;
+        tab->restore_height += wh - alloc->height;
+        /* Calling gtk_window_resize from a size-allocate handler doesn't seem
+         * to work, which is probably quite a sensible precaution by GTK, but it
+         * means we have to make another deferment.
+         */
+        g_idle_add((GSourceFunc) multi_tab_do_restore_size, tab);
+    }
+    else
+    {
+        g_debug("Ignoring size-allocate of %dx%d", alloc->width, alloc->height);
+    }
+}
+
+/* After adding/removing menu bars etc we want to resize the window to preserve
+ * the terminal's geometry. But when the packing change unwantedly resizes the
+ * terminal widget the only way to reliably read its new size is during/after a
+ * size-allocate. This function caches the current size of the terminal's
+ * viewport (which we want to keep). The size-allocate handler then works out
+ * the difference between the window size and the new viewport size, then adds
+ * this to the old viewport size to get the new window size.
+ */
+static void multi_win_request_size_restore(MultiWin *win)
 {
     MultiTab *tab = win->current_tab;
-    int w = -1;
-    int h = -1;
 
     if (!tab || !tab->active_widget ||
             !gtk_widget_get_realized(tab->active_widget))
@@ -171,8 +219,9 @@ static void multi_win_restore_size(MultiWin *win)
     }
     if (multi_win_is_maximised(win) || multi_win_is_fullscreen(win))
         return;
-    multi_win_size_func(tab->user_data, TRUE, &w, &h);
-    gtk_window_resize(GTK_WINDOW(win->gtkwin), w, h);
+    tab->restore_width = gtk_widget_get_allocated_width(tab->widget);
+    tab->restore_height = gtk_widget_get_allocated_height(tab->widget);
+    tab->restore_pending = TRUE;
 }
 
 MultiTab *multi_tab_get_from_widget(GtkWidget *widget)
@@ -230,6 +279,8 @@ MultiTab *multi_tab_new(MultiWin * parent, gpointer user_data_template)
     tab->show_number = TRUE;
     tab->widget = multi_tab_filler(parent, tab, user_data_template,
         &tab->user_data, &tab->active_widget, &tab->adjustment);
+    g_signal_connect(tab->widget, "size-allocate",
+            G_CALLBACK(multi_tab_size_allocate), tab);
     g_object_set_data(G_OBJECT(tab->widget), "roxterm_tab", tab);
 
     if (parent->current_tab &&
@@ -927,6 +978,7 @@ void multi_win_set_show_menu_bar(MultiWin * win, gboolean show)
 {
     if (win->menu_bar_set == show)
         return;
+    multi_win_request_size_restore(win);
     win->menu_bar_set = show;
     if (show)
         add_menu_bar(win);
@@ -935,7 +987,6 @@ void multi_win_set_show_menu_bar(MultiWin * win, gboolean show)
     menutree_set_show_menu_bar_active(win->menu_bar, show);
     menutree_set_show_menu_bar_active(win->popup_menu, show);
     menutree_set_show_menu_bar_active(win->short_popup, show);
-    multi_win_restore_size(win);
 }
 
 gboolean multi_win_get_show_menu_bar(MultiWin * win)
@@ -2222,8 +2273,8 @@ static gboolean multi_win_notify_tab_removed(MultiWin * win, MultiTab * tab)
             /*multi_tab_set_single_size(tab);*/
             if (!win->always_show_tabs)
             {
+                multi_win_request_size_restore(win);
                 multi_win_hide_tabs(win);
-                multi_win_restore_size(win);
             }
         }
     }
@@ -2231,39 +2282,29 @@ static gboolean multi_win_notify_tab_removed(MultiWin * win, MultiTab * tab)
     return FALSE;
 }
 
+/* Adding or removeing close buttons could cause unwanted resizes, but might
+ * not, safer to not try to do anything about it.
+ */
+
 void multi_tab_add_close_button(MultiTab *tab)
 {
-    MultiWin *win;
-
     if (tab->close_button)
         return;
 
-    win = tab->parent;
     tab->close_button = multitab_close_button_new(tab->status_icon_name);
     gtk_box_pack_start(GTK_BOX(tab->label_box), tab->close_button,
             FALSE, FALSE, 0);
     g_signal_connect(tab->close_button, "clicked",
             G_CALLBACK(multi_win_close_tab_clicked), tab);
     gtk_widget_show(tab->close_button);
-    if (win)
-    {
-        multi_win_restore_size(win);
-    }
 }
 
 void multi_tab_remove_close_button(MultiTab *tab)
 {
     if (tab->close_button)
     {
-        MultiWin *win;
-
-        win = tab->parent;
         gtk_widget_destroy(tab->close_button);
         tab->close_button = NULL;
-        if (win)
-        {
-            multi_win_restore_size(win);
-        }
     }
 }
 
@@ -2368,8 +2409,8 @@ static void multi_win_add_tab(MultiWin * win, MultiTab * tab, int position,
     ++win->ntabs;
     if (win->ntabs == 2 && !win->always_show_tabs)
     {
+        multi_win_request_size_restore(win);
         multi_win_show_tabs(win);
-        multi_win_restore_size(win);
     }
     multi_tab_add_menutree_items(win, tab, position);
     if (!notify_only)
@@ -2578,11 +2619,11 @@ void multi_win_set_always_show_tabs(MultiWin *win, gboolean show)
         MultiTab *tab = win->current_tab;
 
         g_return_if_fail(tab != NULL);
+        multi_win_request_size_restore(win);
         if (show)
             multi_win_show_tabs(win);
         else
             multi_win_hide_tabs(win);
-        multi_win_restore_size(win);
     }
 }
 
