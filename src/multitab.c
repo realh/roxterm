@@ -171,8 +171,8 @@ static void multi_win_restore_size(MultiWin *win)
     }
     if (multi_win_is_maximised(win) || multi_win_is_fullscreen(win))
         return;
-    multi_win_size_func(tab->user_data, FALSE, &w, &h);
-    gtk_window_resize_to_geometry(GTK_WINDOW(win->gtkwin), w, h);
+    multi_win_size_func(tab->user_data, TRUE, &w, &h);
+    gtk_window_resize(GTK_WINDOW(win->gtkwin), w, h);
 }
 
 MultiTab *multi_tab_get_from_widget(GtkWidget *widget)
@@ -245,6 +245,9 @@ MultiTab *multi_tab_new(MultiWin * parent, gpointer user_data_template)
     }
     multi_win_add_tab(parent, tab, pos, FALSE);
     multi_win_select_tab(parent, tab);
+
+    g_debug("call roxterm_force_resize_now from line %d", __LINE__);
+    roxterm_force_resize_now(parent);
 
     return tab;
 }
@@ -322,6 +325,34 @@ static gboolean multi_win_clear_geometry_hints(GtkWindow *w)
 void multi_win_set_geometry_hints(MultiWin *win, GtkWidget *child,
     GdkGeometry *geometry, GdkWindowHints geom_mask)
 {
+    GtkAllocation child_alloc, toplevel_alloc;
+    gint chrome_width, chrome_height;
+    gint decorator_width, decorator_height;
+
+    void roxterm_get_current_chrome_dimensions(MultiWin *win,
+        int *chrome_width, int *chrome_height);
+    roxterm_get_current_chrome_dimensions(win, &chrome_width, &chrome_height);
+
+    gtk_widget_get_allocation(child, &child_alloc);
+    gtk_widget_get_allocation(GTK_WIDGET(win->gtkwin), &toplevel_alloc);
+    decorator_width = toplevel_alloc.width - child_alloc.width;
+    decorator_height = toplevel_alloc.height - child_alloc.height;
+
+    g_debug(_("allocated to top level: %d x %d"), toplevel_alloc.width, toplevel_alloc.height);
+    g_debug(_("allocated to child: %d x %d"), child_alloc.width, child_alloc.height);
+    g_debug(_("base geometry is %d x %d"), geometry->base_width, geometry->base_height);
+    g_debug(_("min geometry is %d x %d"), geometry->min_width, geometry->min_height);
+    g_debug(_("decorator size is %d x %d"), decorator_width, decorator_height);
+    g_debug(_("chrome geometry is %d x %d"), chrome_width, chrome_height);
+
+    geometry->base_width = decorator_width + chrome_width;
+    geometry->base_height = decorator_height + chrome_height;
+
+    g_debug(_("requesting %d x %d"), geometry->base_width, geometry->base_height);
+
+    gtk_window_set_geometry_hints(GTK_WINDOW(win->gtkwin), NULL,
+        geometry, geom_mask);
+
     gtk_window_set_geometry_hints(GTK_WINDOW(win->gtkwin), child,
         geometry, geom_mask);
     if (global_options_lookup_int_with_default("no-geometry", FALSE))
@@ -1768,6 +1799,9 @@ void multi_win_show(MultiWin *win)
     gtk_widget_show(win->gtkwin);
     g_object_set_data(G_OBJECT(gtk_widget_get_window(win->gtkwin)),
             "ROXTermWin", win);
+
+    //g_debug("call roxterm_force_resize_now from line %d", __LINE__);
+    //roxterm_force_resize_now(win);
 }
 
 void multi_win_set_colormap(MultiWin *win)

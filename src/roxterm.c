@@ -1171,43 +1171,6 @@ static const GdkRGBA *extrapolate_colours(const GdkRGBA *bg,
     return &ext;
 }
 
-static void roxterm_get_vte_padding(ROXTermData *roxterm,
-        int *pad_w, int *pad_h)
-{
-    if (!roxterm->style_context)
-    {
-        roxterm->style_context =
-            gtk_widget_get_style_context(roxterm->widget);
-        if (roxterm->style_context)
-        {
-            GtkBorder border;
-            GtkStateFlags state = gtk_widget_get_state_flags(roxterm->widget);
-            gtk_style_context_get_padding(roxterm->style_context,
-                    state, &border);
-            roxterm->padding_w = border.left + border.right;
-            roxterm->padding_h = border.top + border.bottom;
-            gtk_style_context_get_border(roxterm->style_context,
-                    state, &border);
-            roxterm->padding_w += border.left + border.right;
-            roxterm->padding_h += border.top + border.bottom;
-            gtk_style_context_get_margin(roxterm->style_context,
-                    state, &border);
-            roxterm->padding_w += border.left + border.right;
-            roxterm->padding_h += border.top + border.bottom;
-        }
-        else
-        {
-            g_warning("Unable to get VTE widget's style context");
-            /* I think default is 1 pixel each side */
-            roxterm->padding_w = roxterm->padding_h = 2;
-        }
-    }
-    if (pad_w)
-        *pad_w = roxterm->padding_w;
-    if (pad_h)
-        *pad_h = roxterm->padding_h;
-}
-
 static const GdkRGBA *roxterm_get_background_colour_with_transparency(
         ROXTermData * roxterm)
 {
@@ -1262,43 +1225,66 @@ roxterm_apply_colour_scheme(ROXTermData *roxterm, VteTerminal *vte)
     roxterm_force_redraw(roxterm);
 }
 
+static gboolean roxterm_is_parented(ROXTermData *roxterm)
+{
+    GtkWindow *top = roxterm_get_toplevel(roxterm);
+    return top && gtk_widget_get_realized(GTK_WIDGET(top)) &&
+        gtk_widget_get_realized(roxterm->widget);
+}
+
 static void
 roxterm_set_vte_size(ROXTermData *roxterm, VteTerminal *vte,
         int columns, int rows)
 {
-    /* First get current size of vte and parent window so we know difference */
-    int cw, ch, ww, wh;
-    GtkWidget *vw = GTK_WIDGET(vte);
-    GdkWindow *drbl = gtk_widget_get_window(vw);
-    MultiWin *win = roxterm_get_win(roxterm);
-    GtkWidget *pw = win ? multi_win_get_widget(win) : NULL;
-    GdkWindow *pd = pw ? gtk_widget_get_window(pw) : NULL;
+    g_debug(_("calling roxterm_set_vte_size, cols=%d, rows=%d..."),
+            columns, rows);
+    GtkWindow *top = roxterm_get_toplevel(roxterm);
+    GtkWidget *vte_wg = GTK_WIDGET(vte);
+    gboolean parented = roxterm_is_parented(roxterm);
+    int dw, dh; // Difference in size between VTE and top-level window (padding)
+    int _, vw, vh, ww, wh;
 
-    if (drbl && pd)
+    if (parented)
     {
-        cw = gdk_window_get_width(drbl);
-        ch = gdk_window_get_height(drbl);
-        gtk_window_get_size(GTK_WINDOW(pw), &ww, &wh);
+        gtk_widget_get_preferred_width(vte_wg, &_, &vw);
+        gtk_widget_get_preferred_height(vte_wg, &_, &vh);
+        gtk_window_get_size(top, &ww, &wh);
+        dw = ww - vw;
+        dh = wh - vh;
     }
+
     vte_terminal_set_size(vte, columns, rows);
+
     /* If we're in a realized window, resize it as required, otherwise the
      * vte's size request won't be honoured.
      */
-    if (drbl && pd)
+    if (parented)
     {
-        int px, py;
-        int req_w, req_h;
-
-        roxterm_get_vte_padding(roxterm, &px, &py);
-        req_w = vte_terminal_get_char_width(vte) * columns + px;
-        req_h = vte_terminal_get_char_height(vte) * rows + py;
-        /*
-        g_debug("Child was %dx%d, window bigger by %dx%d; "
-                "resizing for child calc %dx%d",
-                cw, ch, ww - cw, wh - ch, req_w, req_h);
-        */
-        gtk_window_resize(GTK_WINDOW(pw), req_w + ww - cw, req_h + wh - ch);
+        gtk_widget_get_preferred_width(vte_wg, &_, &vw);
+        gtk_widget_get_preferred_height(vte_wg, &_, &vh);
+        gtk_window_resize(top, vw + dw, vh + dh);
     }
+}
+
+/* Gets the total size of all chrome etc between the text and the window */
+static void
+roxterm_get_padding(ROXTermData *roxterm, int *width, int *height)
+{
+    GtkWindow *top = roxterm_get_toplevel(roxterm);
+    VteTerminal *vte = VTE_TERMINAL(roxterm->widget);
+    int ww, wh;
+
+    if (!roxterm_is_parented(roxterm))
+    {
+        g_warning("Can't get padding of unparented terminal widget");
+        *height = *width = 0;
+        return;
+    }
+    gtk_window_get_size(top, &ww, &wh);
+    *width = ww - vte_terminal_get_char_width(vte) *
+        vte_terminal_get_column_count(vte);
+    *height = wh - vte_terminal_get_char_height(vte) *
+        vte_terminal_get_row_count(vte);
 }
 
 static void roxterm_geometry_func(ROXTermData *roxterm,
@@ -1306,7 +1292,7 @@ static void roxterm_geometry_func(ROXTermData *roxterm,
 {
     VteTerminal *vte = VTE_TERMINAL(roxterm->widget);
 
-    roxterm_get_vte_padding(roxterm, &geom->base_width, &geom->base_height);
+    roxterm_get_padding(roxterm, &geom->base_width, &geom->base_height);
     geom->width_inc = vte_terminal_get_char_width(vte);
     geom->height_inc = vte_terminal_get_char_height(vte);
     geom->min_width = geom->base_width + 4 * geom->width_inc;
@@ -1327,7 +1313,7 @@ static void roxterm_size_func(ROXTermData *roxterm, gboolean pixels,
     {
         int px, py;
 
-        roxterm_get_vte_padding(roxterm, &px, &py);
+        roxterm_get_padding(roxterm, &px, &py);
         *pwidth = *pwidth * vte_terminal_get_char_width(vte) + px;
         *pheight = *pheight * vte_terminal_get_char_height(vte) + py;
     }
@@ -1338,17 +1324,6 @@ static void roxterm_default_size_func(ROXTermData *roxterm,
 {
     *pwidth = options_lookup_int_with_default(roxterm->profile, "width", 80);
     *pheight = options_lookup_int_with_default(roxterm->profile, "height", 24);
-}
-
-static void roxterm_update_size(ROXTermData * roxterm, VteTerminal * vte)
-{
-    if (multi_win_get_current_tab(roxterm_get_win(roxterm)) == roxterm->tab)
-    {
-        int w, h;
-
-        roxterm_default_size_func(roxterm, &w, &h);
-        roxterm_set_vte_size(roxterm, vte, w, h);
-    }
 }
 
 static void roxterm_update_geometry(ROXTermData * roxterm, VteTerminal * vte)
@@ -1362,6 +1337,20 @@ static void roxterm_update_geometry(ROXTermData * roxterm, VteTerminal * vte)
         roxterm_geometry_func(roxterm, &geom, &hints);
         multi_win_set_geometry_hints(roxterm_get_win(roxterm), roxterm->widget,
             &geom, hints);
+    }
+}
+
+static void roxterm_update_size(ROXTermData * roxterm, VteTerminal * vte)
+{
+    if (multi_win_get_current_tab(roxterm_get_win(roxterm)) == roxterm->tab)
+    {
+        int w, h;
+
+        roxterm_default_size_func(roxterm, &w, &h);
+        g_debug("call roxterm_set_vte_size from line %d", __LINE__);
+        roxterm_set_vte_size(roxterm, vte, w, h);
+
+        //roxterm_update_geometry(roxterm, vte);
     }
 }
 
@@ -1432,6 +1421,7 @@ roxterm_apply_profile_font(ROXTermData *roxterm, VteTerminal *vte,
     roxterm->current_zoom_factor = roxterm->target_zoom_factor;
     if (update_geometry)
     {
+        g_debug("call roxterm_set_vte_size from line %d", __LINE__);
         roxterm_set_vte_size(roxterm, vte, w, h);
         roxterm_update_geometry(roxterm, vte);
     }
@@ -1461,6 +1451,7 @@ roxterm_update_font(ROXTermData *roxterm, VteTerminal *vte,
     roxterm->current_zoom_factor = roxterm->target_zoom_factor;
     if (update_geometry)
     {
+        g_debug("call roxterm_set_vte_size from line %d", __LINE__);
         roxterm_set_vte_size(roxterm, vte, w, h);
         roxterm_update_geometry(roxterm, vte);
     }
@@ -1500,6 +1491,7 @@ static void roxterm_match_text_size(ROXTermData *roxterm, ROXTermData *other)
     if (vte_terminal_get_column_count(vte) != width ||
             vte_terminal_get_row_count(vte) != height)
     {
+        g_debug("call roxterm_set_vte_size from line %d", __LINE__);
         roxterm_set_vte_size(roxterm, VTE_TERMINAL(roxterm->widget),
                 width, height);
     }
@@ -2589,8 +2581,10 @@ static void roxterm_resize_window_handler(VteTerminal *vte,
     //    return;
 
     /* Only resize window now if this is current tab */
-    if (roxterm->tab == multi_win_get_current_tab(win))
+    if (roxterm->tab == multi_win_get_current_tab(win)) {
+        g_debug("call roxterm_set_vte_size from line %d", __LINE__);
         roxterm_set_vte_size(roxterm, vte, columns, rows);
+    }
     else
         vte_terminal_set_size(vte, columns, rows);
 }
@@ -3325,6 +3319,7 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
     title_orig = vte_terminal_get_window_title(vte);
     multi_tab_set_window_title(tab, title_orig ? title_orig : _("ROXTerm"));
 
+    g_debug("call roxterm_set_vte_size from line %d", __LINE__);
     roxterm_set_vte_size(roxterm, vte, roxterm->columns, roxterm->rows);
 
     roxterm_connect_misc_signals(roxterm);
@@ -3340,6 +3335,42 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
     g_idle_add((GSourceFunc) run_child_when_idle, roxterm);
 
     return scrollbar_pos ? roxterm->hbox : roxterm->widget;
+}
+
+VteTerminal *roxterm_get_current_vte_ptr(MultiWin *win) {
+    ROXTermData *roxterm = multi_win_get_user_data_for_current_tab(win);
+    VteTerminal *vte = VTE_TERMINAL(roxterm->widget);
+    return vte;
+}
+
+void roxterm_get_current_chrome_dimensions(MultiWin *win,
+    int *chrome_width, int *chrome_height) {
+
+#if GTK_CHECK_VERSION(3, 0, 0)
+    ROXTermData *roxterm = multi_win_get_user_data_for_current_tab(win);
+    VteTerminal *vte = roxterm_get_current_vte_ptr(win);
+    int w = roxterm->columns;//vte_terminal_get_column_count(vte);
+    int h = roxterm->rows;//vte_terminal_get_row_count(vte);
+    GtkRequisition vte_request;
+
+    gtk_widget_get_preferred_size(
+        multi_win_get_widget(win), NULL, &vte_request);
+    *chrome_width = vte_request.width - (vte_terminal_get_char_width(vte) * w);
+    *chrome_height = vte_request.height - (vte_terminal_get_char_height(vte) * h);
+#else
+    *chrome_width = 0;
+    *chrome_height = 0;
+#endif
+}
+
+void roxterm_force_resize_now(MultiWin *win) {
+    ROXTermData *roxterm = multi_win_get_user_data_for_current_tab(win);
+    VteTerminal *vte = VTE_TERMINAL(roxterm->widget);
+
+    int w = roxterm->columns;//vte_terminal_get_column_count(vte);
+    int h = roxterm->rows;//vte_terminal_get_row_count(vte);
+    roxterm_set_vte_size(roxterm, vte, w, h);
+    roxterm_update_geometry(roxterm, vte);
 }
 
 static void roxterm_multi_tab_destructor(ROXTermData * roxterm)
@@ -4348,6 +4379,9 @@ void roxterm_launch(const char *display_name, char **env)
     g_free(shortcut_scheme);
     g_free(colour_scheme_name);
     g_free(profile_name);
+
+    g_debug("call roxterm_force_resize_now from %s:%d", __FILE__, __LINE__);
+    roxterm_force_resize_now(win);
 }
 
 static void roxterm_tab_to_new_window(MultiWin *win, MultiTab *tab,
