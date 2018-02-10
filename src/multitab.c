@@ -406,8 +406,6 @@ void multi_win_set_geometry_hints(MultiWin *win, GtkWidget *child,
     gtk_window_set_geometry_hints(GTK_WINDOW(win->gtkwin), NULL,
         geometry, geom_mask);
 
-    gtk_window_set_geometry_hints(GTK_WINDOW(win->gtkwin), child,
-        geometry, geom_mask);
     if (global_options_lookup_int_with_default("no-geometry", FALSE))
         g_idle_add((GSourceFunc) multi_win_clear_geometry_hints, win->gtkwin);
 }
