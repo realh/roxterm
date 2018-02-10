@@ -307,8 +307,6 @@ int main(int argc, char **argv)
     gboolean persist = FALSE;
     gboolean open_configlet = FALSE;
     gboolean dbus_ok;
-    GdkScreen *scrn;
-    char *disp_name;
 
     g_set_application_name(_("roxterm-config"));
 
@@ -322,8 +320,6 @@ int main(int argc, char **argv)
 #endif    
 
     gtk_init(&argc, &argv);
-    scrn = gdk_screen_get_default();
-    disp_name = gdk_screen_make_display_name(scrn);
 
     logo_filename = logo_find();
     gtk_window_set_default_icon_from_file(logo_filename, NULL);
@@ -351,20 +347,19 @@ int main(int argc, char **argv)
         /* Defer to another instance */
         if (profile)
         {
-            if (optsdbus_send_edit_profile_message(profile, disp_name))
+            if (optsdbus_send_edit_profile_message(profile))
                 profile = NULL;
         }
         if (colour_scheme)
         {
-            if (optsdbus_send_edit_colour_scheme_message(colour_scheme,
-                    disp_name))
+            if (optsdbus_send_edit_colour_scheme_message(colour_scheme))
             {
                 colour_scheme = NULL;
             }
         }
         if (open_configlet)
         {
-            if (optsdbus_send_edit_opts_message("Configlet", "", disp_name))
+            if (optsdbus_send_edit_opts_message("Configlet", ""))
             {
                 open_configlet = FALSE;
             }
@@ -373,25 +368,23 @@ int main(int argc, char **argv)
 
     if (profile)
     {
-        profilegui_open(profile, scrn);
+        profilegui_open(profile);
         persist = TRUE;
     }
     if (colour_scheme)
     {
-        colourgui_open(colour_scheme, scrn);
+        colourgui_open(colour_scheme);
         persist = TRUE;
     }
     if (open_configlet)
     {
-        if (configlet_open(scrn))
+        if (configlet_open())
             persist = TRUE;
     }
 
     if (dbus_ok && listen)
         persist = TRUE;
 
-    g_free(disp_name);
-    
     if (persist)
         gtk_main();
 

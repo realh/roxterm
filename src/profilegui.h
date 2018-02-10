@@ -30,7 +30,7 @@ typedef struct _ProfileGUI ProfileGUI;
 
 /* Loads a Profile and creates a working dialog box for it.
  * Creates new profile if it doesn't already exist */
-ProfileGUI *profilegui_open(const char *profile_name, GdkScreen *scrn);
+ProfileGUI *profilegui_open(const char *profile_name);
 
 void profilegui_delete(ProfileGUI *);
 

@@ -30,7 +30,7 @@
 typedef struct _ConfigletList ConfigletList;
 typedef struct _ConfigletData ConfigletData;
 
-gboolean configlet_open(GdkScreen *scrn);
+gboolean configlet_open();
 
 /* Lock when editing a profile etc and unlock when editing is complete. This is
  * done with reference counting */

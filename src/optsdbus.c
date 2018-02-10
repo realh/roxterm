@@ -18,7 +18,6 @@
 */
 
 
-#include "display.h"
 #include "dlg.h"
 #include "globalopts.h"
 #include "optsdbus.h"
@@ -49,16 +48,13 @@
 
 #ifdef ROXTERM_CAPPLET
 
-static gboolean optsdbus_read_args(DBusMessage *message,
-        char const **arg, char const **display,
+static gboolean optsdbus_read_args(DBusMessage *message, char const **arg,
         DBusError *perror, DBusMessage **preply_error)
 {
     gboolean result = arg ? dbus_message_get_args(message, perror,
                 DBUS_TYPE_STRING, arg,
-                DBUS_TYPE_STRING, display,
                 DBUS_TYPE_INVALID) :
                 dbus_message_get_args(message, perror,
-                DBUS_TYPE_STRING, display,
                 DBUS_TYPE_INVALID);
     if (!result)
     {
@@ -85,9 +81,7 @@ static DBusHandlerResult optsdbus_method_handler(DBusConnection *connection,
         OpenConfiglet
     } action = Unknown;
     const char *profile_name = NULL;
-    const char *display_name = NULL;
     char const **parg = NULL;
-    GdkScreen *scrn = NULL;
     (void) connection;
     (void) user_data;
 
@@ -114,24 +108,21 @@ static DBusHandlerResult optsdbus_method_handler(DBusConnection *connection,
         case EditProfile:
         case EditColourScheme:
         case OpenConfiglet:
-            if (!optsdbus_read_args(message, parg, &display_name,
-                    &derror, &reply))
+            if (!optsdbus_read_args(message, parg, &derror, &reply))
             {
                 break;
             }
-            if (display_name && display_name[0])
-                scrn = display_get_screen_for_name(display_name);
             /* Fall-through */
             switch (action)
             {
                 case EditProfile:
-                    profilegui_open(profile_name, scrn);
+                    profilegui_open(profile_name);
                     break;
                 case EditColourScheme:
-                    colourgui_open(profile_name, scrn);
+                    colourgui_open(profile_name);
                     break;
                 case OpenConfiglet:
-                    configlet_open(scrn);
+                    configlet_open();
                     break;
                 default:
                     break;
@@ -141,8 +132,6 @@ static DBusHandlerResult optsdbus_method_handler(DBusConnection *connection,
 #if ROXTERM_DBUS_OLD_ARGS_SEMANTICS
             if (profile_name)
                 dbus_free(profile_name);
-            if (display_name)
-                dbus_free(display_name);
 #endif
             break;
         default:
@@ -272,17 +261,13 @@ gboolean optsdbus_send_stuff_changed_signal(const char *what_happened,
     return FALSE;
 }
 
-gboolean optsdbus_send_edit_opts_message(const char *method, const char *arg,
-        const char *display_name)
+gboolean optsdbus_send_edit_opts_message(const char *method, const char *arg)
 {
     DBusMessage * message;
 
-    if (!display_name)
-        display_name = "";
     message = rtdbus_method_new(OPTSDBUS_NAME,
             OPTSDBUS_OBJECT_PATH, OPTSDBUS_INTERFACE, method,
             DBUS_TYPE_STRING, &arg,
-            DBUS_TYPE_STRING, &display_name,
             DBUS_TYPE_INVALID);
 
     if (!message)
@@ -539,8 +524,7 @@ void optsdbus_listen_for_set_shortcut_scheme_signals(
     optsdbus_set_shortcut_scheme_handler = handler;
 }
 
-gboolean optsdbus_send_edit_opts_message(const char *method, const char *arg,
-        const char *display_name)
+gboolean optsdbus_send_edit_opts_message(const char *method, const char *arg)
 {
     GError *error = NULL;
     char *appdir = global_options_appdir && global_options_appdir[0] ?
@@ -548,17 +532,13 @@ gboolean optsdbus_send_edit_opts_message(const char *method, const char *arg,
     char *bindir = global_options_bindir ?
         g_strdup_printf("%s%c", global_options_bindir, G_DIR_SEPARATOR) :
         NULL;
-    char *disp = display_name ? g_strconcat("--display=", display_name, NULL) :
-            NULL;
     char *param = arg ? g_strdup_printf("--%s=%s", method, arg) :
             g_strdup(method);
-    char *command =  g_strdup_printf("%sroxterm-config %s %s '%s'",
-                bindir ? bindir : "", appdir ? appdir : "",
-                disp ? disp : "", param);
+    char *command =  g_strdup_printf("%sroxterm-config %s '%s'",
+                bindir ? bindir : "", appdir ? appdir : "", param);
 
     g_free(bindir);
     g_free(appdir);
-    g_free(disp);
     g_free(param);
     if (!g_spawn_command_line_async(command, &error))
     {

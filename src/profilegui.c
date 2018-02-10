@@ -288,9 +288,8 @@ void on_edit_colour_scheme_clicked(GtkButton *button, ProfileGUI *pg)
 {
     (void) button;
     GtkWidget *combo = capplet_lookup_widget(&pg->capp, "colour_scheme");
-    char *name;
-    name = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(combo));
-    colourgui_open(name, gtk_widget_get_screen(combo));
+    char *name = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(combo));
+    colourgui_open(name);
 }
 
 static void exit_action_changed(GtkComboBox *combo, ProfileGUI *pg)
@@ -549,7 +548,7 @@ static void profilegui_setup_list_store(ProfileGUI *pg)
 }
 
 /* Loads a Profile and creates a working dialog box for it */
-ProfileGUI *profilegui_open(const char *profile_name, GdkScreen *scrn)
+ProfileGUI *profilegui_open(const char *profile_name)
 {
     static DynamicOptions *profiles = NULL;
     ProfileGUI *pg;
@@ -573,8 +572,6 @@ ProfileGUI *profilegui_open(const char *profile_name, GdkScreen *scrn)
     pg = g_hash_table_lookup(profilegui_being_edited, profile_name);
     if (pg)
     {
-        if (scrn)
-            gtk_window_set_screen(GTK_WINDOW(pg->dialog), scrn);
         gtk_window_present(GTK_WINDOW(pg->dialog));
         return pg;
     }
@@ -597,9 +594,6 @@ ProfileGUI *profilegui_open(const char *profile_name, GdkScreen *scrn)
     }
     pg->dialog = profilegui_widget(pg, "Profile_Editor");
     pg->ssh_dialog = profilegui_widget(pg, "ssh_dialog");
-
-    if (scrn)
-        gtk_window_set_screen(GTK_WINDOW(pg->dialog), scrn);
 
     title = g_strdup_printf(_("ROXTerm Profile \"%s\""), profile_name);
     gtk_window_set_title(GTK_WINDOW(pg->dialog), title);

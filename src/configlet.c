@@ -664,15 +664,13 @@ static void configlet_rename(ConfigletList *cl,
 
 static void edit_thing_by_name(ConfigletList *cl, const char *name)
 {
-    GdkScreen *scrn = gtk_widget_get_screen(cl->cg->widget);
-
     if (!strcmp(cl->family, "Profiles"))
     {
-        profilegui_open(name, scrn);
+        profilegui_open(name);
     }
     else if (!strcmp(cl->family, "Colours"))
     {
-        colourgui_open(name, scrn);
+        colourgui_open(name);
     }
     else if (!strcmp(cl->family, "Shortcuts"))
     {
@@ -1036,13 +1034,11 @@ static void configlet_setup_family(ConfigletData *cg, ConfigletList *cl,
     }
 }
 
-gboolean configlet_open(GdkScreen *scrn)
+gboolean configlet_open()
 {
 
     if (configlet_data)
     {
-        if (scrn)
-            gtk_window_set_screen(GTK_WINDOW(configlet_data->widget), scrn);
         gtk_window_present(GTK_WINDOW(configlet_data->widget));
     }
     else
@@ -1070,8 +1066,6 @@ gboolean configlet_open(GdkScreen *scrn)
             configlet_delete(cg);
             return FALSE;
         }
-        if (scrn)
-            gtk_window_set_screen(GTK_WINDOW(cg->widget), scrn);
 
         /* GtkBuilder doesn't seem to load size group. Bug? If the size group
          * does load after all we probably don't need to do anything further,

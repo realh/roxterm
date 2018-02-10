@@ -641,7 +641,7 @@ void on_palette_size_toggled(GtkToggleButton *button, ColourGUI *cg)
 /***********************************************************/
 
 
-ColourGUI *colourgui_open(const char *scheme_name, GdkScreen *scrn)
+ColourGUI *colourgui_open(const char *scheme_name)
 {
     ColourGUI *cg;
     char *title;
@@ -657,8 +657,6 @@ ColourGUI *colourgui_open(const char *scheme_name, GdkScreen *scrn)
     cg = g_hash_table_lookup(colourgui_being_edited, scheme_name);
     if (cg)
     {
-        if (scrn)
-            gtk_window_set_screen(GTK_WINDOW(cg->widget), scrn);
         gtk_window_present(GTK_WINDOW(cg->widget));
         return cg;
     }
@@ -678,8 +676,6 @@ ColourGUI *colourgui_open(const char *scheme_name, GdkScreen *scrn)
     }
     cg->widget = GTK_WIDGET(gtk_builder_get_object(cg->capp.builder,
             "Colour_Scheme_Editor"));
-    if (scrn)
-        gtk_window_set_screen(GTK_WINDOW(cg->widget), scrn);
     title = g_strdup_printf(_("ROXTerm Colour Scheme \"%s\""), scheme_name);
     gtk_window_set_title(GTK_WINDOW(cg->widget), title);
     g_free(title);

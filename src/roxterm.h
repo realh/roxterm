@@ -36,11 +36,10 @@ typedef struct ROXTermData ROXTermData;
  */
 void roxterm_init(void);
 
-/* Launch a new terminal in response to a D-BUS message or for first
- * time; display_name may be NULL for default display.
+/* Launch a new terminal in response to a D-BUS message or for first time.
  * env is copied without being altered.
  */
-void roxterm_launch(const char *display_name, char **env);
+void roxterm_launch(char **env);
 
 /* Ways of spawning a command */
 typedef enum {
@@ -54,7 +53,7 @@ typedef enum {
 void roxterm_spawn(ROXTermData *, const char *command, ROXTerm_SpawnType);
 
 gboolean roxterm_spawn_command_line(const gchar *command_line,
-        const char *display_name, const char *cwd, char **env, GError **error);
+        const char *cwd, char **env, GError **error);
 
 VteTerminal *roxterm_get_vte_terminal(ROXTermData *roxterm);
 

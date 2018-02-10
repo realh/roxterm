@@ -96,23 +96,18 @@ void optsdbus_listen_for_set_shortcut_scheme_signals(OptsDBusSetProfileHandler);
 /* In capplet this sends a D-BUS message to another instance; in terminal
  * it starts a new instance of the capplet which will either forward the
  * message to a previous instance or handle it itself. */
-gboolean optsdbus_send_edit_opts_message(const char *method, const char *arg,
-        const char *display_name);
+gboolean optsdbus_send_edit_opts_message(const char *method, const char *arg);
 
 inline static gboolean
-optsdbus_send_edit_profile_message(const char *profile_name,
-        const char *display_name)
+optsdbus_send_edit_profile_message(const char *profile_name)
 {
-	return optsdbus_send_edit_opts_message("EditProfile", profile_name,
-	        display_name);
+	return optsdbus_send_edit_opts_message("EditProfile", profile_name);
 }
 
 inline static gboolean
-optsdbus_send_edit_colour_scheme_message(const char *profile_name,
-        const char *display_name)
+optsdbus_send_edit_colour_scheme_message(const char *profile_name)
 {
-	return optsdbus_send_edit_opts_message("EditColourScheme", profile_name,
-	        display_name);
+	return optsdbus_send_edit_opts_message("EditColourScheme", profile_name);
 }
 
 #endif /* OPTSDBUS_H */

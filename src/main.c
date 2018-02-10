@@ -44,8 +44,7 @@
 
 extern char **environ;
 
-static DBusMessage *create_dbus_message(int argc, char **argv,
-        const char *display)
+static DBusMessage *create_dbus_message(int argc, char **argv)
 {
     DBusMessage *message;
     int n;
@@ -93,12 +92,6 @@ static DBusMessage *create_dbus_message(int argc, char **argv,
                 DBUS_TYPE_INVALID);
         if (tmp)
             g_free(tmp);
-    }
-    if (display)
-    {
-        message = rtdbus_append_args(message,
-                DBUS_TYPE_STRING, &display,
-                DBUS_TYPE_INVALID);
     }
     return message;
 }
@@ -168,7 +161,6 @@ static DBusHandlerResult new_term_listener(DBusConnection *connection,
     char **env;
     char **argv;
     int argc;
-    const char *display = NULL;
     DBusMessageIter iter;
 
     (void) connection;
@@ -184,19 +176,12 @@ static DBusHandlerResult new_term_listener(DBusConnection *connection,
     dbus_message_iter_init(message, &iter);
     env = rtdbus_get_message_arg_string_array(&iter);
     argv = rtdbus_get_message_args_as_strings(&iter);
-    for (argc = 0; argv && argv[argc]; ++argc)
-    {
-        if (g_str_has_prefix(argv[argc], "--display="))
-            display = argv[argc] + 10;
-        else if (!strcmp(argv[argc], "--display") && argv[argc + 1])
-            display = argv[argc + 1];
-    }
-    if (argc)
+    if (argv[0])
     {
         global_options_preparse_argv_for_execute(&argc, argv, TRUE);
         global_options_init(&argc, &argv, FALSE);
     }
-    roxterm_launch(display, env);
+    roxterm_launch(env);
 
     g_strfreev(argv);
     g_strfreev(env);
@@ -289,8 +274,6 @@ int main(int argc, char **argv)
 {
     gboolean preparse_ok;
     DBusMessage *message = NULL;
-    char *display = NULL;
-    const char *dpy_name = NULL;
     int n;
     gboolean launched = FALSE;
     gboolean dbus_ok;
@@ -367,35 +350,12 @@ int main(int argc, char **argv)
     textdomain(PACKAGE);
 #endif
 
-    /* Get --display option before GTK removes it */
-    for (n = 1; n < argc; ++n)
-    {
-        if (strlen(argv[n]) > 10 && g_str_has_prefix(argv[n], "--display="))
-        {
-            display = g_strdup(argv[n]);
-            dpy_name = display + 10;
-            break;
-        }
-        else if (n < argc - 1 && !strcmp(argv[n], "--display"))
-        {
-            display = g_strdup_printf("--display=%s", argv[n + 1]);
-            dpy_name = display + 10;
-            break;
-        }
-    }
-
     gtk_init(&argc, &argv);
     if (!preparse_ok)
     {
         /* Only one possible reason for failure */
         dlg_critical(NULL, _("Missing command after -e/--execute option"));
         return 1;
-    }
-
-    if (!display)
-    {
-        dpy_name = gdk_display_get_name(gdk_display_get_default());
-        display = g_strdup_printf("--display=%s", dpy_name);
     }
 
     /* Have to create message with args from argv before parsing them */
@@ -421,10 +381,9 @@ int main(int argc, char **argv)
         if (!global_options_user_session_id)
 #endif
         {
-            message = create_dbus_message(argc, argv, display);
+            message = create_dbus_message(argc, argv);
         }
     }
-    g_free(display);
 
     global_options_init(&argc, &argv, TRUE);
     global_options_apply_dark_theme();
@@ -489,7 +448,7 @@ int main(int argc, char **argv)
     }
     if (!launched)
     {
-        roxterm_launch(dpy_name, environ);
+        roxterm_launch(environ);
     }
 
 #if ENABLE_SM

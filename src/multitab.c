@@ -27,7 +27,6 @@
 
 #include "boxcompat.h"
 #include "dlg.h"
-#include "display.h"
 #include "globalopts.h"
 #include "menutree.h"
 #include "multitab.h"
@@ -98,7 +97,6 @@ struct MultiWin {
     char *title_template;
     char *child_title;
     gboolean composite;
-    char *display_name;
     gboolean title_template_locked;
     gboolean clear_demands_attention;
     int best_tab_width;
@@ -360,11 +358,6 @@ void multi_tab_delete(MultiTab * tab)
 GtkWidget *multi_tab_get_widget(MultiTab * tab)
 {
     return tab->widget;
-}
-
-const char *multi_tab_get_display_name(MultiTab *tab)
-{
-    return tab->parent ? tab->parent->display_name : NULL;
 }
 
 static gboolean multi_win_clear_geometry_hints(GtkWindow *w)
@@ -1250,14 +1243,13 @@ static GtkNotebook *multi_win_notebook_creation_hook(GtkNotebook *source,
     g_return_val_if_fail(tab, NULL);
     /* Need to set !expand in advance */
     multi_tab_pack_for_single(tab, GTK_CONTAINER(tab->parent->notebook));
-    win = multi_win_new_for_tab(tab->parent->display_name, x, y, tab);
+    win = multi_win_new_for_tab(x, y, tab);
     /* Defer showing till page_added_callback because we can't set size
      * correctly until the tab has been added to the notebook */
     return GTK_NOTEBOOK(win->notebook);
 }
 
-MultiWin *multi_win_new_for_tab(const char *display_name, int x, int y,
-        MultiTab *tab)
+MultiWin *multi_win_new_for_tab(int x, int y, MultiTab *tab)
 {
     gboolean disable_menu_shortcuts, disable_tab_shortcuts;
     MultiWin *win = tab->parent;
@@ -1269,9 +1261,8 @@ MultiWin *multi_win_new_for_tab(const char *display_name, int x, int y,
     gtk_window_get_size(gwin, &w, &h);
     multi_win_get_disable_menu_shortcuts(tab->user_data,
             &disable_menu_shortcuts, &disable_tab_shortcuts);
-    win = multi_win_new_blank(display_name,
-                multi_win_get_shortcut_scheme(win), win->zoom_index,
-                disable_menu_shortcuts, disable_tab_shortcuts,
+    win = multi_win_new_blank(multi_win_get_shortcut_scheme(win),
+            win->zoom_index, disable_menu_shortcuts, disable_tab_shortcuts,
                 win->tab_pos, win->always_show_tabs,
                 win->show_add_tab_button);
     multi_win_set_show_menu_bar(win, show_menubar);
@@ -1307,7 +1298,7 @@ MultiWin *multi_win_clone(MultiWin *old,
     multi_win_default_size_func(multi_tab_get_user_data(old->current_tab),
             &width, &height);
     geom = g_strdup_printf("%dx%d", width, height);
-    result = multi_win_new_with_geom(old->display_name, old->shortcuts,
+    result = multi_win_new_with_geom(old->shortcuts,
             old->zoom_index, user_data_template, geom,
             tab_pos, always_show_tabs, old->show_add_tab_button);
     g_free(geom);
@@ -1332,7 +1323,7 @@ static void multi_win_detach_tab_action(MultiWin * win)
 {
     MultiTab *tab = win->current_tab;
 
-    win = multi_win_new_for_tab(win->display_name, -1, -1, tab);
+    win = multi_win_new_for_tab(-1, -1, tab);
     multi_tab_move_to_new_window(win, tab, -1);
     gtk_widget_show_all(win->gtkwin);
 }
@@ -1962,7 +1953,7 @@ multi_win_draw(GtkWidget *widget, cairo_t *cr, void *handle)
 }
 #endif
 
-MultiWin *multi_win_new_blank(const char *display_name, Options *shortcuts,
+MultiWin *multi_win_new_blank(Options *shortcuts,
         int zoom_index,
         gboolean disable_menu_shortcuts, gboolean disable_tab_shortcuts,
         GtkPositionType tab_pos, gboolean always_show_tabs,
@@ -1985,15 +1976,6 @@ MultiWin *multi_win_new_blank(const char *display_name, Options *shortcuts,
 
     win->gtkwin = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 
-    if (display_name)
-    {
-        GdkScreen *scr;
-
-        win->display_name = g_strdup(display_name);
-        scr = display_get_screen_for_name(display_name);
-        if (scr)
-            gtk_window_set_screen(GTK_WINDOW(win->gtkwin), scr);
-    }
     role = global_options_lookup_string("role");
     if (role)
     {
@@ -2129,7 +2111,7 @@ void multi_win_set_role_prefix(const char *role_prefix)
     multi_win_role_prefix = g_strdup(role_prefix);
 }
 
-MultiWin *multi_win_new_full(const char *display_name, Options *shortcuts,
+MultiWin *multi_win_new_full(Options *shortcuts,
         int zoom_index, gpointer user_data_template, const char *geom,
         MultiWinSizing sizing, GtkPositionType tab_pos,
         gboolean always_show_tabs, gboolean add_tab_button)
@@ -2140,7 +2122,7 @@ MultiWin *multi_win_new_full(const char *display_name, Options *shortcuts,
 
     multi_win_get_disable_menu_shortcuts(user_data_template,
             &disable_menu_shortcuts, &disable_tab_shortcuts);
-    win = multi_win_new_blank(display_name, shortcuts, zoom_index,
+    win = multi_win_new_blank(shortcuts, zoom_index,
             disable_menu_shortcuts, disable_tab_shortcuts,
             tab_pos, always_show_tabs, add_tab_button);
     win->user_data_template = user_data_template;
@@ -2225,7 +2207,6 @@ static void multi_win_destructor(MultiWin *win, gboolean destroy_widgets)
         win->gtkwin = NULL;
     }
     UNREF_LOG(options_unref(win->shortcuts));
-    g_free(win->display_name);
     g_free(win->title_template);
     g_free(win->child_title);
     g_free(win);
@@ -2675,11 +2656,6 @@ const char *multi_win_get_title(MultiWin *win)
 gboolean multi_win_composite(MultiWin *win)
 {
     return gdk_screen_is_composited(gtk_widget_get_screen(win->gtkwin));
-}
-
-const char *multi_win_get_display_name(MultiWin *win)
-{
-    return win->display_name;
 }
 
 const char *multi_win_get_shortcuts_scheme_name(MultiWin *win)

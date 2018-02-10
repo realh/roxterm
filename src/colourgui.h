@@ -30,7 +30,7 @@ typedef struct _ColourGUI ColourGUI;
 
 /* Loads a Colour and creates a working dialog box for it.
  * Creates new colour scheme if it doesn't already exist */
-ColourGUI *colourgui_open(const char *colour_scheme_name, GdkScreen *scrn);
+ColourGUI *colourgui_open(const char *colour_scheme_name);
 
 void colourgui_delete(ColourGUI *);
 
