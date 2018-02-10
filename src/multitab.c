@@ -1863,56 +1863,6 @@ void multi_win_set_colormap(MultiWin *win)
         win->composite = FALSE;
     }
 }
-static void multi_win_composited_changed(GtkWidget *widget, MultiWin *win)
-{
-    gboolean composited =
-            gdk_screen_is_composited(gtk_widget_get_screen(widget));
-
-    if (composited != win->composite)
-    {
-        if (gtk_widget_get_realized(win->gtkwin))
-        {
-            /* This section mostly copied from gnome-terminal */
-            guint32 user_time;
-            gboolean have_desktop;
-            guint32 desktop = 0;
-            gboolean was_minimized;
-            int x, y;
-            GdkWindow *dwin = gtk_widget_get_window(win->gtkwin);
-
-            user_time = gdk_x11_display_get_user_time(
-                    gtk_widget_get_display (widget));
-
-            /* If compositing changed, re-realize the window. Bug #563561 */
-
-            gtk_window_get_position(GTK_WINDOW(win->gtkwin), &x, &y);
-            was_minimized = x11support_window_is_minimized(dwin);
-            have_desktop = x11support_get_wm_desktop(dwin,
-                    &desktop);
-            gtk_widget_hide (widget);
-            gtk_widget_unrealize (widget);
-
-            multi_win_set_colormap(win);
-
-            gtk_window_move(GTK_WINDOW(win->gtkwin), x, y);
-            gtk_widget_realize(win->gtkwin);
-            dwin = gtk_widget_get_window(win->gtkwin);
-            gdk_x11_window_set_user_time(dwin, user_time);
-            if (was_minimized)
-                gtk_window_iconify(GTK_WINDOW(win->gtkwin));
-            else
-                gtk_window_deiconify(GTK_WINDOW(win->gtkwin));
-            gtk_widget_show(widget);
-            if (have_desktop)
-                x11support_set_wm_desktop(dwin, desktop);
-            win->clear_demands_attention = TRUE;
-        }
-        else
-        {
-            multi_win_set_colormap(win);
-        }
-    }
-}
 
 static gboolean multi_win_map_event_handler(GtkWidget *widget,
         GdkEvent *event, MultiWin *win)
@@ -2002,8 +1952,6 @@ MultiWin *multi_win_new_blank(Options *shortcuts,
     }
 
     multi_win_set_colormap(win);
-    g_signal_connect(win->gtkwin, "composited-changed",
-            G_CALLBACK(multi_win_composited_changed), win);
     g_signal_connect(win->gtkwin, "map-event",
             G_CALLBACK(multi_win_map_event_handler), win);
 
