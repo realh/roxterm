@@ -195,7 +195,7 @@ if ctx.mode == 'configure':
         gda = ""
     ctx.setenv("WITH_GNOME_DEFAULT_APPLICATIONS", gda)
 
-    ctx.pkg_config('gtk+-3.0', 'GTK', '3.10')
+    ctx.pkg_config('gtk+-3.0', 'GTK', '3.20')
     ctx.pkg_config('vte-2.91', 'VTE', '0.46')
     ctx.pkg_config('libpcre2-8', 'PCRE')
     #vte_version = ctx.prog_output("${PKG_CONFIG} --modversion vte-2.91")[0]
