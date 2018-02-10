@@ -132,7 +132,6 @@ static gboolean save_session_to_fp(FILE *fp, const char *session_id)
         int w, h;
         int x, y;
         int result;
-        char *disp = gdk_screen_make_display_name(gtk_window_get_screen(gwin));
         const char *tt = multi_win_get_title_template(win);
         const char *title = multi_win_get_title(win);
         gpointer user_data = multi_win_get_user_data_for_current_tab(win);
@@ -154,8 +153,7 @@ static gboolean save_session_to_fp(FILE *fp, const char *session_id)
                 &disable_menu_shortcuts, &disable_tab_shortcuts);
         roxterm_get_nonfs_dimensions(user_data, &w, &h);
         gtk_window_get_position(gwin, &x, &y);
-        s = g_markup_printf_escaped("  <window disp='%s'\n"
-                "      geometry='%dx%d+%d+%d'\n"
+        s = g_markup_printf_escaped("  <window geometry='%dx%d+%d+%d'\n"
                 "      title_template='%s' font='%s'\n"
                 "      title_template_locked='%d'\n"
                 "      title='%s' role='%s'\n"
@@ -164,7 +162,7 @@ static gboolean save_session_to_fp(FILE *fp, const char *session_id)
                 "      show_add_tab_btn='%d'\n"
                 "      disable_menu_shortcuts='%d' disable_tab_shortcuts='%d'\n"
                 "      maximised='%d' fullscreen='%d' zoom='%f'>\n",
-                disp, w, h, x, y,
+                w, h, x, y,
                 tt ? tt : "", font_name,
                 multi_win_get_title_template_locked(win),
                 title, gtk_window_get_role(gwin),
@@ -179,7 +177,6 @@ static gboolean save_session_to_fp(FILE *fp, const char *session_id)
                 roxterm_get_zoom_factor(user_data));
         result = fputs(s, fp);
         g_free(s);
-        g_free(disp);
         g_free(font_name);
         SLOG("Saved the window");
         if (result < 0)

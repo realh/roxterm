@@ -8,7 +8,7 @@ ctx = Context(PACKAGE = "roxterm", SRC_DIR = "${TOP_DIR}/src",
         MCFLAGS = "${CPPFLAGS} -I. -I${SRC_DIR} -D_GNU_SOURCE -DHAVE_CONFIG_H")
 
 
-MINILIB_SOURCES = "colourscheme.c dlg.c display.c dragrcv.c dynopts.c " \
+MINILIB_SOURCES = "colourscheme.c dlg.c dragrcv.c dynopts.c " \
         "encodings.c globalopts.c logo.c options.c optsfile.c rtdbus.c"
 
 ROXTERM_CONFIG_SOURCES = "capplet.c colourgui.c configlet.c getname.c " \
