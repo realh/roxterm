@@ -225,17 +225,28 @@ MultiTab *multi_tab_get_from_widget(GtkWidget *widget)
     return g_object_get_data(G_OBJECT(widget), "roxterm_tab");
 }
 
-
-void multi_tab_popup_menu(MultiTab * tab, guint button, guint32 event_time)
+void multi_tab_popup_menu_at_pointer(MultiTab * tab)
 {
     GtkMenu *menu = GTK_MENU(menutree_get_top_level_widget
             (tab->parent->show_menu_bar ? tab->parent->short_popup :
             tab->parent->popup_menu));
 
     gtk_menu_set_screen(menu, gtk_widget_get_screen(tab->widget));
-    gtk_menu_popup(menu, NULL, NULL, NULL, NULL, button, event_time);
+    gtk_menu_popup_at_pointer(menu, NULL);
 }
 
+/*
+void multi_tab_popup_menu_over_widget(MultiTab * tab)
+{
+    GtkMenu *menu = GTK_MENU(menutree_get_top_level_widget
+            (tab->parent->show_menu_bar ? tab->parent->short_popup :
+            tab->parent->popup_menu));
+
+    gtk_menu_set_screen(menu, gtk_widget_get_screen(tab->widget));
+    gtk_menu_popup_at_widget(menu, tab->active_widget,
+            GDK_GRAVITY_NORTH_WEST, GDK_GRAVITY_NORTH_WEST, NULL);
+}
+*/
 
 void multi_tab_init(MultiTabFiller filler, MultiTabDestructor destructor,
     MultiWinMenuSignalConnector menu_signal_connector,
@@ -1081,15 +1092,15 @@ static gboolean multi_win_focus_in(GtkWidget *widget, GdkEventFocus *event,
     return FALSE;
 }
 
-static void popup_tabs_menu(MultiWin *win, GdkEventButton *event)
+static void popup_tabs_menu(MultiWin *win, GdkEvent *event)
 {
     GtkMenuItem *mparent;
 
     g_return_if_fail(win->popup_menu != NULL);
     mparent = GTK_MENU_ITEM(
             menutree_get_widget_for_id(win->popup_menu, MENUTREE_TABS));
-    gtk_menu_popup(GTK_MENU(gtk_menu_item_get_submenu(mparent)),
-            NULL, NULL, NULL, NULL, event->button, event->time);
+    gtk_menu_popup_at_pointer(GTK_MENU(gtk_menu_item_get_submenu(mparent)),
+            event);
 }
 
 static gboolean tab_clicked_handler(GtkWidget *widget,
@@ -1118,7 +1129,7 @@ static gboolean tab_clicked_handler(GtkWidget *widget,
             return TRUE;
         case 3:
             multi_win_select_tab(tab->parent, tab);
-            popup_tabs_menu(tab->parent, event);
+            popup_tabs_menu(tab->parent, (GdkEvent *) event);
             return TRUE;
         default:
             break;
@@ -1738,7 +1749,7 @@ static void multi_win_close_window_action(MultiWin *win)
 
 static void multi_win_popup_new_term_with_profile(GtkMenu *menu)
 {
-    gtk_menu_popup(menu, NULL, NULL, NULL, NULL, 0, GDK_CURRENT_TIME);
+    gtk_menu_popup_at_pointer(menu, NULL);
 }
 
 static void multi_win_connect_actions(MultiWin * win)

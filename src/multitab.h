@@ -154,7 +154,7 @@ const char *multi_tab_get_window_title(MultiTab *);
 
 const char *multi_tab_get_icon_title(MultiTab *);
 
-void multi_tab_popup_menu(MultiTab * tab, guint button, guint32 event_time);
+void multi_tab_popup_menu_at_pointer(MultiTab * tab);
 
 gpointer multi_tab_get_user_data(MultiTab *);
 

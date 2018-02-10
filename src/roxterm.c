@@ -1512,7 +1512,7 @@ static gboolean roxterm_popup_handler(GtkWidget * widget, ROXTermData * roxterm)
 {
     (void) widget;
     roxterm_set_show_uri_menu_items(roxterm, ROXTerm_DontShowURIMenuItems);
-    multi_tab_popup_menu(roxterm->tab, 0, gtk_get_current_event_time());
+    multi_tab_popup_menu_at_pointer(roxterm->tab);
     return TRUE;
 }
 
@@ -1691,7 +1691,7 @@ static gboolean roxterm_click_handler(GtkWidget *widget,
                 }
         }
         roxterm_set_show_uri_menu_items(roxterm, show_type);
-        multi_tab_popup_menu(roxterm->tab, event->button, event->time);
+        multi_tab_popup_menu_at_pointer(roxterm->tab);
         return TRUE;
     }
     else if ((event->state & GDK_CONTROL_MASK) && event->button == 1
