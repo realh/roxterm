@@ -378,6 +378,7 @@ static gboolean multi_win_clear_geometry_hints(GtkWindow *w)
 void multi_win_set_geometry_hints(MultiWin *win, GtkWidget *child,
     GdkGeometry *geometry, GdkWindowHints geom_mask)
 {
+#if GTK_CHECK_VERSION (3, 19, 5)
     GtkAllocation child_alloc, toplevel_alloc;
     gint chrome_width, chrome_height;
     gint decorator_width, decorator_height;
@@ -405,9 +406,11 @@ void multi_win_set_geometry_hints(MultiWin *win, GtkWidget *child,
 
     gtk_window_set_geometry_hints(GTK_WINDOW(win->gtkwin), NULL,
         geometry, geom_mask);
-
+#else  // GTK 2 and GTK 3 earlier than 3.19.5
     gtk_window_set_geometry_hints(GTK_WINDOW(win->gtkwin), child,
         geometry, geom_mask);
+#endif
+
     if (global_options_lookup_int_with_default("no-geometry", FALSE))
         g_idle_add((GSourceFunc) multi_win_clear_geometry_hints, win->gtkwin);
 }
