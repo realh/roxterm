@@ -230,7 +230,7 @@ void on_Profile_Editor_close(GtkWidget * widget, ProfileGUI * pg)
 void on_font_set(GtkFontButton * fontbutton, ProfileGUI * pg)
 {
     capplet_set_string(pg->capp.options,
-        "font", gtk_font_button_get_font_name(fontbutton));
+        "font", gtk_font_chooser_get_font(GTK_FONT_CHOOSER(fontbutton)));
 }
 
 void on_entry_activate(GtkEntry * entry, ProfileGUI * pg)
@@ -407,8 +407,8 @@ static void profilegui_fill_in_dialog(ProfileGUI * pg)
     {
         capplet_set_toggle(&pg->capp, "cell_size", TRUE);
     }
-    gtk_font_button_set_font_name(
-            GTK_FONT_BUTTON(profilegui_widget(pg, "font_button")),
+    gtk_font_chooser_set_font(
+            GTK_FONT_CHOOSER(profilegui_widget(pg, "font_button")),
             val = options_lookup_string_with_default(profile,
                 "font", "Monospace 10"));
     g_free(val);
