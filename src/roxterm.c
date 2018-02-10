@@ -199,12 +199,18 @@ static int roxterm_match_add(ROXTermData *roxterm, VteTerminal *vte,
         const char *match, ROXTerm_MatchType type)
 {
     ROXTerm_MatchMap map;
+    VteRegex *regex;
+    GError *err = NULL;
 
+    regex = vte_regex_new_for_match(match, -1, ROXTERM_REGEX_FLAGS, &err);
+    if (!regex || err)
+    {
+        g_warning("Failed to compile regex '%s': %s",
+                match, err ? err->message : "");
+        return -1;
+    }
     map.type = type;
-    map.tag = vte_terminal_match_add_regex(vte,
-            vte_regex_new_for_match(match, ROXTERM_REGEX_FLAGS,
-                0, NULL),
-            ROXTERM_REGEX_FLAGS);
+    map.tag = vte_terminal_match_add_regex(vte, regex, ROXTERM_REGEX_FLAGS);
     vte_terminal_match_set_cursor_type(vte, map.tag, GDK_HAND2);
     g_array_append_val(roxterm->match_map, map);
     return map.tag;
