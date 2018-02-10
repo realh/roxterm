@@ -1933,7 +1933,12 @@ static void roxterm_copy_clipboard_action(MultiWin * win)
     ROXTermData *roxterm = multi_win_get_user_data_for_current_tab(win);
 
     g_return_if_fail(roxterm);
+#if VTE_CHECK_VERSION(0,50,0)
+    vte_terminal_copy_clipboard_format(VTE_TERMINAL(roxterm->widget),
+            VTE_FORMAT_TEXT);
+#else
     vte_terminal_copy_clipboard(VTE_TERMINAL(roxterm->widget));
+#endif
 }
 
 static void roxterm_paste_clipboard_action(MultiWin * win)
@@ -1949,7 +1954,12 @@ static void roxterm_copy_and_paste_action(MultiWin * win)
     ROXTermData *roxterm = multi_win_get_user_data_for_current_tab(win);
 
     g_return_if_fail(roxterm);
+#if VTE_CHECK_VERSION(0,50,0)
+    vte_terminal_copy_clipboard_format(VTE_TERMINAL(roxterm->widget),
+            VTE_FORMAT_TEXT);
+#else
     vte_terminal_copy_clipboard(VTE_TERMINAL(roxterm->widget));
+#endif
     vte_terminal_paste_clipboard(VTE_TERMINAL(roxterm->widget));
 }
 
@@ -2144,8 +2154,9 @@ static void roxterm_show_manual(MultiWin * win)
     g_free(dir);
 }
 
-static void roxterm_open_config_manager(MultiWin * win)
+static void roxterm_open_config_manager(void *ignored)
 {
+    (void) ignored;
     optsdbus_send_edit_opts_message("Configlet", NULL);
 }
 
@@ -2764,8 +2775,8 @@ static void roxterm_connect_menu_signals(MultiWin * win)
     multi_win_menu_connect_swapped(win, MENUTREE_HELP_SHOW_MANUAL,
         G_CALLBACK(roxterm_show_manual), win, NULL, NULL, NULL);
 
-    multi_win_menu_connect_swapped(win, MENUTREE_PREFERENCES_CONFIG_MANAGER,
-        G_CALLBACK(roxterm_open_config_manager), win, NULL, NULL, NULL);
+    multi_win_menu_connect(win, MENUTREE_PREFERENCES_CONFIG_MANAGER,
+        G_CALLBACK(roxterm_open_config_manager), NULL, NULL, NULL, NULL);
 
     multi_win_menu_connect_swapped(win, MENUTREE_OPEN_IN_BROWSER,
         G_CALLBACK(roxterm_browser_action), win, NULL, NULL, NULL);
