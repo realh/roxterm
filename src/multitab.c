@@ -34,7 +34,6 @@
 #include "multitab-label.h"
 #include "session-file.h"
 #include "shortcuts.h"
-#include "x11support.h"
 
 #define HORIZ_TAB_WIDTH_CHARS 16
 
@@ -98,7 +97,6 @@ struct MultiWin {
     char *child_title;
     gboolean composite;
     gboolean title_template_locked;
-    gboolean clear_demands_attention;
     int best_tab_width;
     GtkWidget *add_tab_button;
     gboolean show_add_tab_button;
@@ -1864,18 +1862,6 @@ void multi_win_set_colormap(MultiWin *win)
     }
 }
 
-static gboolean multi_win_map_event_handler(GtkWidget *widget,
-        GdkEvent *event, MultiWin *win)
-{
-    (void) event;
-    if (win->clear_demands_attention)
-    {
-        x11support_clear_demands_attention(gtk_widget_get_window(widget));
-        win->clear_demands_attention = FALSE;
-    }
-    return FALSE;
-}
-
 /* Close window explicitly instead of allowing system to close it by returning
  * FALSE from delete-event handler. This cures
  * https://sourceforge.net/p/roxterm/bugs/89/
@@ -1952,8 +1938,6 @@ MultiWin *multi_win_new_blank(Options *shortcuts,
     }
 
     multi_win_set_colormap(win);
-    g_signal_connect(win->gtkwin, "map-event",
-            G_CALLBACK(multi_win_map_event_handler), win);
 
 #if NEED_TRANSPARENCY_FIX
     g_signal_connect(win->gtkwin, "draw", G_CALLBACK(multi_win_draw), win);

@@ -54,7 +54,6 @@
 #include "session-file.h"
 #include "shortcuts.h"
 #include "uri.h"
-#include "x11support.h"
 
 typedef enum {
     ROXTerm_Match_Invalid,
@@ -4226,14 +4225,12 @@ void roxterm_launch(char **env)
         ROXTermData *partner;
         char *wtitle = global_options_lookup_string("title");
         MultiWin *best_inactive = NULL;
-        MultiWin *best_in_other_ws = NULL;
         GList *link;
 
         win = NULL;
         for (link = multi_win_all; link; link = g_list_next(link))
         {
             GtkWidget *w;
-            guint32 workspace;
             gboolean title_ok;
 
             win = link->data;
@@ -4244,45 +4241,14 @@ void roxterm_launch(char **env)
             {
                 break;
             }
-            if (title_ok)
-            {
-                if (x11support_get_wm_desktop(gtk_widget_get_window(w),
-                    &workspace))
-                {
-                    if (workspace == global_options_workspace ||
-                        workspace == WORKSPACE_ALL)
-                    {
-                        if (!best_inactive)
-                            best_inactive = win;
-                    }
-                    else if (wtitle)
-                    {
-                        /* Titles match but window is on wrong workspace */
-                        if (!best_in_other_ws)
-                            best_in_other_ws = win;
-                    }
-                }
-                else
-                {
-                    /* There is a window but it hasn't made it onto workspace
-                     * yet. This should only happen in things like start-up
-                     * scripts so we should treat it as a workspace match. See
-       * https://sourceforge.net/p/roxterm/discussion/422639/thread/09ff8e98/
-                     * and
-       * https://sourceforge.net/p/roxterm/discussion/422638/thread/2cc9a9aa/
-                     */
-                    if (!best_in_other_ws)
-                        best_in_other_ws = win;
-                }
-            }
+            if (title_ok && !best_inactive)
+                best_inactive = win;
             win = NULL;
         }
         if (!win)
         {
             if (best_inactive)
                 win = best_inactive;
-            else if (best_in_other_ws)
-                win = best_in_other_ws;
         }
         partner = win ? multi_win_get_user_data_for_current_tab(win) : NULL;
         if (partner)

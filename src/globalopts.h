@@ -51,10 +51,6 @@ extern gboolean global_options_maximise;
 /* Whether to try to open new terminal in an existing window */
 extern gboolean global_options_tab;
 
-extern guint32 global_options_workspace;
-#define WORKSPACE_ALL 0xffffffff
-#define WORKSPACE_UNDEFINED 0xfffffffe
-
 /* Fork first instance */
 extern gboolean global_options_fork;
 

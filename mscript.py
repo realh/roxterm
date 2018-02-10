@@ -16,7 +16,7 @@ ROXTERM_CONFIG_SOURCES = "capplet.c colourgui.c configlet.c getname.c " \
 
 ROXTERM_SOURCES = "about.c main.c multitab.c multitab-close-button.c " \
         "multitab-label.c menutree.c optsdbus.c roxterm.c search.c " \
-        "session-file.c shortcuts.c uri.c x11support.c"
+        "session-file.c shortcuts.c uri.c"
 
 ROXTERM_HTML_BASENAMES = "guide index installation news".split()
 
@@ -217,7 +217,6 @@ if ctx.mode == 'configure':
     ctx.pkg_config('dbus-1', 'DBUS', '1.0')
     ctx.pkg_config('dbus-glib-1', 'DBUS', '0.22')
     ctx.pkg_config('gmodule-export-2.0', 'GMODULE')
-    ctx.pkg_config('x11')
 
     for f in ["get_current_dir_name"]:
         ctx.check_func(f, "${CFLAGS} ${MCFLAGS} ${LIBS}")
@@ -242,7 +241,7 @@ if ctx.mode == 'configure':
             " ${SM_CFLAGS} ${DBUS_CFLAGS}")
     # VTE_LIBS includes PCRE_LIBS
     ctx.setenv('ROXTERM_LIBS',
-            "${LIBS} ${VTE_LIBS} ${SM_LIBS} ${DBUS_LIBS} ${X11_LIBS}")
+            "${LIBS} ${VTE_LIBS} ${SM_LIBS} ${DBUS_LIBS}")
     ctx.setenv('ROXTERM_CONFIG_CFLAGS',
             "${CFLAGS} ${MCFLAGS} ${GTK_CFLAGS} ${DBUS_CFLAGS} " \
             "${GMODULE_CFLAGS} -DROXTERM_CAPPLET")
