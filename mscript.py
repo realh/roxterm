@@ -196,7 +196,8 @@ if ctx.mode == 'configure':
     ctx.setenv("WITH_GNOME_DEFAULT_APPLICATIONS", gda)
 
     ctx.pkg_config('gtk+-3.0', 'GTK', '3.10')
-    ctx.pkg_config('vte-2.91', 'VTE', '0.40')
+    ctx.pkg_config('vte-2.91', 'VTE', '0.46')
+    ctx.pkg_config('libpcre2-8', 'PCRE')
     #vte_version = ctx.prog_output("${PKG_CONFIG} --modversion vte-2.91")[0]
     #ctx.setenv('NEED_TRANSPARENCY_FIX', vte_version >= "0.34.8")
     ctx.setenv('NEED_TRANSPARENCY_FIX', True)
@@ -237,7 +238,9 @@ if ctx.mode == 'configure':
     ctx.setenv('CORE_LIBS',
             "${LIBS} ${GTK_LIBS} ${DBUS_LIBS}")
     ctx.setenv('ROXTERM_CFLAGS',
-            "${CFLAGS} ${MCFLAGS} ${VTE_CFLAGS} ${SM_CFLAGS} ${DBUS_CFLAGS}")
+            "${CFLAGS} ${MCFLAGS} ${VTE_CFLAGS} ${PCRE_CFLAGS}" \
+            " ${SM_CFLAGS} ${DBUS_CFLAGS}")
+    # VTE_LIBS includes PCRE_LIBS
     ctx.setenv('ROXTERM_LIBS',
             "${LIBS} ${VTE_LIBS} ${SM_LIBS} ${DBUS_LIBS} ${X11_LIBS}")
     ctx.setenv('ROXTERM_CONFIG_CFLAGS',

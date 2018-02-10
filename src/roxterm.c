@@ -31,6 +31,9 @@
 
 #include <gdk/gdkx.h>
 
+#define PCRE2_CODE_UNIT_WIDTH 8
+#include <pcre2.h>
+
 #include "about.h"
 #include "boxcompat.h"
 #include "colourscheme.h"
@@ -190,16 +193,19 @@ static void roxterm_encodings_changed(MenuTree *mtree,
 
 /*********************** URI handling ***********************/
 
+#define ROXTERM_REGEX_FLAGS (VTE_REGEX_FLAGS_DEFAULT | \
+        PCRE2_MULTILINE | PCRE2_NEWLINE_CRLF)
+
 static int roxterm_match_add(ROXTermData *roxterm, VteTerminal *vte,
         const char *match, ROXTerm_MatchType type)
 {
     ROXTerm_MatchMap map;
 
     map.type = type;
-    map.tag = vte_terminal_match_add_gregex(vte,
-            g_regex_new(match, G_REGEX_MULTILINE | G_REGEX_NEWLINE_CRLF,
+    map.tag = vte_terminal_match_add_regex(vte,
+            vte_regex_new_for_match(match, ROXTERM_REGEX_FLAGS,
                 0, NULL),
-            0);
+            ROXTERM_REGEX_FLAGS);
     vte_terminal_match_set_cursor_type(vte, map.tag, GDK_HAND2);
     g_array_append_val(roxterm->match_map, map);
     return map.tag;
@@ -1811,7 +1817,7 @@ inline static void roxterm_shade_mtree_search_items(MenuTree *mtree,
 static void roxterm_shade_search_menu_items(ROXTermData *roxterm)
 {
     MultiWin *win = roxterm_get_win(roxterm);
-    gboolean shade = vte_terminal_search_get_gregex(
+    gboolean shade = vte_terminal_search_get_regex(
             VTE_TERMINAL(roxterm->widget)) == NULL;
 
     roxterm_shade_mtree_search_items(multi_win_get_menu_bar(win), shade);
@@ -5336,7 +5342,7 @@ VteTerminal *roxterm_get_vte(ROXTermData *roxterm)
 gboolean roxterm_set_search(ROXTermData *roxterm,
         const char *pattern, guint flags, GError **error)
 {
-    GRegex *regex = NULL;
+    VteRegex *regex = NULL;
     char *cooked_pattern = NULL;
 
     roxterm->search_flags = flags;
@@ -5364,17 +5370,16 @@ gboolean roxterm_set_search(ROXTermData *roxterm,
             g_free(tmp);
         }
 
-        regex = g_regex_new(pattern,
-                ((flags & ROXTERM_SEARCH_MATCH_CASE) ? 0 : G_REGEX_CASELESS) |
-                        G_REGEX_OPTIMIZE,
-                G_REGEX_MATCH_NOTEMPTY,
+        regex = vte_regex_new_for_search(pattern, -1,
+                ((flags & ROXTERM_SEARCH_MATCH_CASE) ? 0 : PCRE2_CASELESS) |
+                PCRE2_NOTEMPTY,
                 error);
         g_free(cooked_pattern);
         if (!regex)
             return FALSE;
     }
 
-    vte_terminal_search_set_gregex(VTE_TERMINAL(roxterm->widget), regex, 0);
+    vte_terminal_search_set_regex(VTE_TERMINAL(roxterm->widget), regex, 0);
     vte_terminal_search_set_wrap_around(VTE_TERMINAL(roxterm->widget),
             flags & ROXTERM_SEARCH_WRAP);
     roxterm_shade_search_menu_items(roxterm);
