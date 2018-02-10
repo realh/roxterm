@@ -131,7 +131,6 @@ static DBusHandlerResult new_term_listener(DBusConnection *connection,
     DBusError derror;
     char **env;
     char **argv;
-    int argc;
     DBusMessageIter iter;
 
     (void) connection;
@@ -149,6 +148,8 @@ static DBusHandlerResult new_term_listener(DBusConnection *connection,
     argv = rtdbus_get_message_args_as_strings(&iter);
     if (argv[0])
     {
+        int argc;
+        for (argc = 0; argv[argc]; ++argc);
         global_options_preparse_argv_for_execute(&argc, argv, TRUE);
         global_options_init(&argc, &argv, FALSE);
     }
