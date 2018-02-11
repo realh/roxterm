@@ -4705,7 +4705,6 @@ typedef struct {
     char *window_title_template;
     double zoom_factor;
     char *title;
-    char *role;
     char **commandv;
     int argc;
     int argn;
@@ -4725,7 +4724,6 @@ static void parse_open_win(_ROXTermParseContext *rctx,
 {
     int n;
     const char *geom = NULL;
-    const char *role = NULL;
     const char *font = NULL;
     const char *shortcuts_name = NULL;
     const char *title_template = NULL;
@@ -4761,13 +4759,6 @@ static void parse_open_win(_ROXTermParseContext *rctx,
             font = v;
         else if (!strcmp(a, "title"))
             title = v;
-        else if (!strcmp(a, "role"))
-            role = v;
-        /* xclass and xname are obsolete in <window> so silently ignore */
-        else if (!strcmp(a, "xclass"))
-            continue;
-        else if (!strcmp(a, "xname"))
-            continue;
         else if (!strcmp(a, "shortcut_scheme"))
             shortcuts_name = v;
         else if (!strcmp(a, "show_menubar"))
@@ -4807,14 +4798,6 @@ static void parse_open_win(_ROXTermParseContext *rctx,
             show_add_tab_btn);
     shortcuts_unref(shortcuts);
     gwin = GTK_WINDOW(multi_win_get_widget(rctx->win));
-    /* Set role and title before and after adding tabs because docs are quite
-     * vague about how these are used for restoring the session.
-     */
-    if (role && role[0])
-    {
-        rctx->role = g_strdup(role);
-        gtk_window_set_role(gwin, role);
-    }
     if (title_template && title_template[0])
     {
         rctx->window_title_template = g_strdup(title_template);
@@ -4869,8 +4852,6 @@ static void close_win_tag(_ROXTermParseContext *rctx)
             multi_win_set_title_template(rctx->win,
                     rctx->window_title_template);
         }
-        if (rctx->role)
-            gtk_window_set_role(gwin, rctx->role);
         if (rctx->window_title)
             multi_win_set_title(rctx->win, rctx->window_title);
         multi_win_set_title_template_locked(rctx->win,
@@ -4887,8 +4868,6 @@ static void close_win_tag(_ROXTermParseContext *rctx)
         }
     }
     rctx->win = NULL;
-    g_free(rctx->role);
-    rctx->role = NULL;
     g_free(rctx->window_title);
     rctx->window_title = NULL;
     g_free(rctx->window_title_template);

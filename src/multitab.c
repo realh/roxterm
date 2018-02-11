@@ -122,9 +122,6 @@ static double multi_win_zoom_factors[] = {
 #define MULTI_WIN_NORMAL_ZOOM_INDEX 7
 #define MULTI_WIN_N_ZOOM_FACTORS 15
 
-static char *multi_win_role_prefix = NULL;
-static int multi_win_role_index = 0;
-
 static MultiTabFiller multi_tab_filler;
 static MultiTabDestructor multi_tab_destructor;
 static MultiWinMenuSignalConnector multi_win_menu_signal_connector;
@@ -1906,7 +1903,6 @@ MultiWin *multi_win_new_blank(Options *shortcuts,
 {
     MultiWin *win = g_new0(MultiWin, 1);
     GtkNotebook *notebook;
-    char *role = NULL;
 
     win->best_tab_width = G_MAXINT;
     win->tab_pos = tab_pos;
@@ -1921,21 +1917,6 @@ MultiWin *multi_win_new_blank(Options *shortcuts,
 
     win->gtkwin = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 
-    role = global_options_lookup_string("role");
-    if (role)
-    {
-        global_options_reset_string("role");
-    }
-    else if (multi_win_role_prefix)
-    {
-        role = g_strdup_printf("%s-%d-%x-%d", multi_win_role_prefix,
-                getpid(), g_random_int(), ++multi_win_role_index);
-    }
-    if (role)
-    {
-        gtk_window_set_role(GTK_WINDOW(win->gtkwin), role);
-        g_free(role);
-    }
     g_signal_connect(win->gtkwin, "realize",
             G_CALLBACK(multi_win_realize_handler), win);
     win->destroy_handler = g_signal_connect(win->gtkwin, "destroy",
@@ -2044,12 +2025,6 @@ MultiWin *multi_win_new_blank(Options *shortcuts,
     multi_win_all = g_list_append(multi_win_all, win);
 
     return win;
-}
-
-void multi_win_set_role_prefix(const char *role_prefix)
-{
-    g_free(multi_win_role_prefix);
-    multi_win_role_prefix = g_strdup(role_prefix);
 }
 
 MultiWin *multi_win_new_full(Options *shortcuts,

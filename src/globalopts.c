@@ -89,7 +89,6 @@ static gboolean global_options_show_usage(const gchar *option_name,
       "    [--directory=DIRECTORY|-d DIRECTORY]\n"
       "    [--show-menubar] [--hide-menubar]\n"
       "    [--fork]\n"
-      "    [--role=ROLE]\n"
       "    [--no-geometry]\n"
       "    [-e|--execute COMMAND]\n");
     exit(0);
@@ -266,9 +265,6 @@ static GOptionEntry global_g_options[] = {
         G_OPTION_ARG_NONE, &global_options_fork,
         N_("Fork into the background even if this is the first instance"),
         NULL },
-    { "role", 0, G_OPTION_FLAG_IN_MAIN,
-        G_OPTION_ARG_CALLBACK, global_options_set_string,
-        N_("Set X window system 'role' hint"), N_("NAME") },
     { "session", 0, G_OPTION_FLAG_IN_MAIN,
         G_OPTION_ARG_STRING, &global_options_user_session_id,
         N_("Restore the named user session"), N_("SESSION") },

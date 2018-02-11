@@ -209,9 +209,6 @@ typedef enum {
     MULTI_WIN_MAXIMISED
 } MultiWinSizing;
 
-/* If this is set all windows will be given a unique role based on it */
-void multi_win_set_role_prefix(const char *role_prefix);
-
 /* Create a new window with default settings, adding it to main list */
 MultiWin *multi_win_new_full(Options *shortcuts, int zoom_index,
         gpointer user_data_template, const char *geom,

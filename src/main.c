@@ -351,7 +351,6 @@ int main(int argc, char **argv)
 
 
     roxterm_init();
-    multi_win_set_role_prefix("roxterm");
 
     session_leafname = global_options_user_session_id ?
             global_options_user_session_id : "Default";
