@@ -136,10 +136,10 @@ static gboolean global_options_set_directory(const gchar *option_name,
     }
     else
     {
-        char *cwd = GET_CURRENT_DIR();
+        char *cwd = g_get_current_dir();
 
         global_options_directory = g_build_filename(cwd, value, NULL);
-        FREE_CURRENT_DIR(cwd);
+        g_free(cwd);
     }
     if (!g_file_test(global_options_directory, G_FILE_TEST_IS_DIR))
     {
@@ -408,10 +408,10 @@ void global_options_init_bindir(const char *argv0)
         else if (g_file_test("roxterm-config", G_FILE_TEST_IS_EXECUTABLE))
         {
             /* Paranoia in case g_free() != free() */
-            char *bindir = GET_CURRENT_DIR();
+            char *bindir = g_get_current_dir();
 
             global_options_bindir = g_strdup(bindir);
-            FREE_CURRENT_DIR(bindir);
+            g_free(bindir);
         }
         else
         {
@@ -431,10 +431,10 @@ void global_options_init_bindir(const char *argv0)
     else if (!g_path_is_absolute(global_options_bindir))
     {
         /* Partial path, must be relative to current dir */
-        char *cur = GET_CURRENT_DIR();
+        char *cur = g_get_current_dir();
         char *full = g_build_filename(cur, global_options_bindir, NULL);
 
-        FREE_CURRENT_DIR(cur);
+        g_free(cur);
         g_free(global_options_bindir);
         global_options_bindir = full;
     }

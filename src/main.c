@@ -76,7 +76,7 @@ static int run_via_dbus(DBusMessage *message)
      * from original instance */
     if (!result && !global_options_directory)
     {
-        char *cwd = GET_CURRENT_DIR();
+        char *cwd = g_get_current_dir();
         const char *d = "-d";
 
         message = rtdbus_append_args(message,
@@ -85,7 +85,7 @@ static int run_via_dbus(DBusMessage *message)
                 DBUS_TYPE_INVALID);
         if (!message)
             result = -1;
-        FREE_CURRENT_DIR(cwd);
+        g_free(cwd);
     }
     if (!result && global_options_commandv)
     {

@@ -109,16 +109,6 @@ void global_options_init_bindir(const char *argv0);
 /* Deep copy a NULL-terminated array of NULL-terminated strings */
 char **global_options_copy_strv(char **ps);
 
-#if HAVE_GET_CURRENT_DIR_NAME
-#include <stdlib.h>
-#include <unistd.h>
-#define GET_CURRENT_DIR get_current_dir_name
-#define FREE_CURRENT_DIR free
-#else
-#define GET_CURRENT_DIR g_get_current_dir
-#define FREE_CURRENT_DIR g_free
-#endif
-
 void global_options_apply_dark_theme(void);
 
 #endif /* GLOBALOPTS_H */
