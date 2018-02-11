@@ -12,3 +12,20 @@ configure_file(input: 'version.h.in',
     output: 'version.h',
     configuration: version_data)
 
+common_deps = [gtkdep, dbusdep, gdbusdep]
+
+rtlib = static_library('roxterm', ['colourscheme.c', 'dlg.c', 'dragrcv.c',
+    'dynopts.c', 'encodings.c', 'globalopts.c', 'logo.c', 'options.c',
+    'optsfile.c', 'rtdbus.c'],
+    dependencies: common_deps)
+
+rtconfig = executable('roxterm-config', ['capplet.c', 'colourgui.c',
+    'configlet.c', 'getname.c', 'optsdbus.c', 'profilegui.c', 'shortcuts.c'],
+    dependencies: common_deps,
+    link_with: rtlib, c_args: '-DROXTERM_CAPPLET')
+
+roxterm = executable('roxterm', ['about.c', 'main.c', 'multitab.c',
+    'multitab-close-button.c', 'multitab-label.c', 'menutree.c', 'optsdbus.c',
+    'roxterm.c', 'search.c', 'session-file.c', 'shortcuts.c', 'uri.c'],
+    dependencies: common_deps + [vtedep, pcredep],
+    link_with: rtlib)

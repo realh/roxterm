@@ -10,7 +10,6 @@ else
 endif
 dbusdep = dependency('dbus-1', version: '>=1.0')
 gdbusdep = dependency('dbus-glib-1', version: '>=0.22')
-gmoddep = dependency('dbus-glib-1', version: '>=0.22')
 
 version = run_command('./version.sh').stdout()
 
