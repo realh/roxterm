@@ -54,10 +54,10 @@ case $1 in
         fi
         echo "Compiling $APP_DIR... please wait..." >&2
         cd "$APP_DIR"
-        python ./mscript.py configure "$PREFIX" \
-            LDFLAGS="$DEV_LDFLAGS" SRC_DIR='${TOP_DIR}/src' "$@" \
-            --enable-rox-locales && \
-        python ./mscript.py build SRC_DIR='${TOP_DIR}/src' && \
+        if [ ! -f "build/build.ninja" ] ; then
+            meson . build
+        fi
+        ninja -C build && \
         echo Done >&2 && exit 0
         echo Compile failed >&2
         echo Press Return... >&2
@@ -68,7 +68,7 @@ esac
 exitcode=1
 
 if [ -d "${APP_DIR}/src" ] ; then
-    BIN="${APP_DIR}/build/$PROG"
+    BIN="${APP_DIR}/build/src/$PROG"
     if [ ! -x "$BIN" ]; then
         echo "ERROR from $APPRUN:" >&2
         echo "I cannot find an executable file." >&2
