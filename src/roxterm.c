@@ -4693,8 +4693,6 @@ char const * const *roxterm_get_actual_commandv(ROXTermData *roxterm)
     return (char const * const *) roxterm->actual_commandv;
 }
 
-#if ENABLE_SM
-
 typedef struct {
     const char *client_id;
     gboolean session_tag_open;
@@ -5310,7 +5308,6 @@ gboolean roxterm_load_session(const char *xml, gssize len,
     SLOG("Session loaded, result %d", result);
     return result;
 }
-#endif /* ENABLE_SM */
 
 MultiWin *roxterm_get_multi_win(ROXTermData *roxterm)
 {
