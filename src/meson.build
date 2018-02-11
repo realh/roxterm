@@ -21,7 +21,7 @@ rtlib = static_library('roxterm', ['colourscheme.c', 'dlg.c', 'dragrcv.c',
 
 rtconfig = executable('roxterm-config', ['capplet.c', 'colourgui.c',
     'configlet.c', 'getname.c', 'optsdbus.c', 'profilegui.c', 'shortcuts.c'],
-    dependencies: common_deps,
+    dependencies: common_deps + [gmoddep],
     link_with: rtlib, c_args: '-DROXTERM_CAPPLET')
 
 roxterm = executable('roxterm', ['about.c', 'main.c', 'multitab.c',

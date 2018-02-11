@@ -10,6 +10,8 @@ else
 endif
 dbusdep = dependency('dbus-1', version: '>=1.0')
 gdbusdep = dependency('dbus-glib-1', version: '>=0.22')
+# glade needs this:
+gmoddep = dependency('gmodule-export-2.0')
 
 version = run_command('./version.sh').stdout()
 
