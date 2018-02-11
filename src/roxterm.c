@@ -48,9 +48,6 @@
 #include "roxterm.h"
 #include "multitab.h"
 #include "search.h"
-#if ENABLE_SM
-#include "session.h"
-#endif
 #include "session-file.h"
 #include "shortcuts.h"
 #include "uri.h"

@@ -34,10 +34,6 @@ char **global_options_commandv = NULL;
 char *global_options_appdir = NULL;
 char *global_options_bindir = NULL;
 char *global_options_directory = NULL;
-char *global_options_restart_session_id = NULL;
-char *global_options_clone_session_id = NULL;
-char *global_options_user_session_id = NULL;
-gboolean global_options_disable_sm = FALSE;
 gboolean global_options_replace = FALSE;
 gboolean global_options_fullscreen = FALSE;
 gboolean global_options_maximise = FALSE;
@@ -69,7 +65,6 @@ static void global_options_reset(void)
     global_options_replace = FALSE;
     global_options_fullscreen = FALSE;
     global_options_tab = FALSE;
-    global_options_disable_sm = FALSE;
     options_reload_keyfile(global_options);
     correct_schemes();
 }
@@ -91,7 +86,7 @@ static gboolean global_options_show_usage(const gchar *option_name,
       "    [--fullscreen|-f] [--maximise|--maximize|-m] [--zoom=ZOOM|-z ZOOM]\n"
       "    [--title=TITLE|-T TITLE] [--tab-name=NAME|-n NAME]\n"
       "    [--separate] [--replace] [--tab]\n"
-      "    [--directory=DIRECTORY|-d DIRECTORY] [--disable-sm]\n"
+      "    [--directory=DIRECTORY|-d DIRECTORY]\n"
       "    [--show-menubar] [--hide-menubar]\n"
       "    [--fork]\n"
       "    [--role=ROLE]\n"
@@ -271,19 +266,12 @@ static GOptionEntry global_g_options[] = {
         G_OPTION_ARG_NONE, &global_options_fork,
         N_("Fork into the background even if this is the first instance"),
         NULL },
-    { "disable-sm", 0, G_OPTION_FLAG_IN_MAIN,
-        G_OPTION_ARG_NONE, &global_options_disable_sm,
-        N_("Disable session management"), NULL },
     { "role", 0, G_OPTION_FLAG_IN_MAIN,
         G_OPTION_ARG_CALLBACK, global_options_set_string,
         N_("Set X window system 'role' hint"), N_("NAME") },
     { "session", 0, G_OPTION_FLAG_IN_MAIN,
         G_OPTION_ARG_STRING, &global_options_user_session_id,
         N_("Restore the named user session"), N_("SESSION") },
-    { "restart-session-id", 0, G_OPTION_FLAG_HIDDEN,
-        G_OPTION_ARG_STRING, &global_options_restart_session_id, NULL, NULL },
-    { "clone-session-id", 0, G_OPTION_FLAG_HIDDEN,
-        G_OPTION_ARG_STRING, &global_options_clone_session_id, NULL, NULL },
     { "no-geometry", 0, G_OPTION_FLAG_IN_MAIN | G_OPTION_FLAG_NO_ARG,
         G_OPTION_ARG_CALLBACK, global_options_set_bool,
         N_("Don't set window geometry hints. This is a workaround for "

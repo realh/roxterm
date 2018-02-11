@@ -31,9 +31,6 @@
 #include "multitab.h"
 #include "roxterm.h"
 #include "rtdbus.h"
-#if ENABLE_SM
-#include "session.h"
-#endif
 #include "session-file.h"
 
 #define ROXTERM_DBUS_NAME RTDBUS_NAME ".term"
@@ -281,35 +278,6 @@ int main(int argc, char **argv)
                     strerror(errno));
         }
     }
-#if ENABLE_SM
-    if (!global_options_disable_sm)
-    {
-        session_argc = argc;
-        session_argv = g_new(char *, argc + 1);
-        if (global_options_appdir)
-        {
-            session_argv[0] = g_build_filename(global_options_appdir,
-                    "AppRun", NULL);
-            if (!g_file_test(session_argv[0], G_FILE_TEST_IS_EXECUTABLE))
-            {
-                g_free(session_argv[0]);
-                session_argv[0] = abs_bin(argv[0]);
-            }
-        }
-        else
-        {
-            session_argv[0] = abs_bin(argv[0]);
-        }
-        for (n = 1; n < argc; ++n)
-        {
-            session_argv[n] = g_strdup(argv[n]);
-        }
-        /* FIXME: NULL terminator (and argc + 1 above) only necessary if
-         * debugging
-         */
-        session_argv[n] = NULL;
-    }
-#endif
     g_set_application_name(PACKAGE);
     preparse_ok = global_options_preparse_argv_for_execute(&argc, argv, FALSE);
 
@@ -345,13 +313,7 @@ int main(int argc, char **argv)
                 &fork_pipe[1]);
             defer_pipe = TRUE;
         }
-#if ENABLE_SM
-        if (!global_options_user_session_id && (global_options_disable_sm ||
-                (!global_options_restart_session_id &&
-                !global_options_clone_session_id)))
-#else
         if (!global_options_user_session_id)
-#endif
         {
             message = create_dbus_message(argc, argv);
         }
@@ -367,13 +329,7 @@ int main(int argc, char **argv)
     }
 
     dbus_ok = global_options_lookup_int("separate") <= 0 && dbus_ok
-            && !global_options_user_session_id
-#if ENABLE_SM
-            && (global_options_disable_sm ||
-                (!global_options_restart_session_id
-                && !global_options_clone_session_id))
-#endif
-            ;
+            && !global_options_user_session_id;
 
     if (dbus_ok)
     {
@@ -396,15 +352,6 @@ int main(int argc, char **argv)
 
     roxterm_init();
     multi_win_set_role_prefix("roxterm");
-#if ENABLE_SM
-    if (!global_options_disable_sm)
-    {
-        if (global_options_restart_session_id)
-            launched = session_load(global_options_restart_session_id);
-        if (!launched && global_options_clone_session_id)
-            launched = session_load(global_options_clone_session_id);
-    }
-#endif
 
     session_leafname = global_options_user_session_id ?
             global_options_user_session_id : "Default";
@@ -422,13 +369,6 @@ int main(int argc, char **argv)
     {
         roxterm_launch(environ);
     }
-
-#if ENABLE_SM
-    if (!global_options_disable_sm)
-    {
-        session_init(global_options_restart_session_id);
-    }
-#endif
 
     /* Usually this should be deferred to NameAcquired signal handler */
     if (!defer_pipe)

@@ -35,7 +35,6 @@ if ctx.mode == 'configure' or ctx.mode == 'help':
     ctx.arg_with('gnome-default-applications',
             "Where to install GNOME Default Applications file",
             default = None)
-    ctx.arg_disable('sm', "Don't enable session management")
     ctx.arg_disable('nls', "Disable all translations",
             default = None)
     ctx.arg_disable('translations',
@@ -202,18 +201,6 @@ if ctx.mode == 'configure':
     #ctx.setenv('NEED_TRANSPARENCY_FIX', vte_version >= "0.34.8")
     ctx.setenv('NEED_TRANSPARENCY_FIX', True)
 
-    sm = ctx.env['ENABLE_SM']
-    if sm != False:
-        try:
-            ctx.pkg_config('sm ice', 'SM')
-        except MaitchChildError:
-            if sm == True:
-                raise
-            sm = False
-        else:
-            sm = True
-    ctx.define('ENABLE_SM', sm)
-
     ctx.pkg_config('dbus-1', 'DBUS', '1.0')
     ctx.pkg_config('dbus-glib-1', 'DBUS', '0.22')
     ctx.pkg_config('gmodule-export-2.0', 'GMODULE')
@@ -237,11 +224,9 @@ if ctx.mode == 'configure':
     ctx.setenv('CORE_LIBS',
             "${LIBS} ${GTK_LIBS} ${DBUS_LIBS}")
     ctx.setenv('ROXTERM_CFLAGS',
-            "${CFLAGS} ${MCFLAGS} ${VTE_CFLAGS} ${PCRE_CFLAGS}" \
-            " ${SM_CFLAGS} ${DBUS_CFLAGS}")
+            "${CFLAGS} ${MCFLAGS} ${VTE_CFLAGS} ${PCRE_CFLAGS} ${DBUS_CFLAGS}")
     # VTE_LIBS includes PCRE_LIBS
-    ctx.setenv('ROXTERM_LIBS',
-            "${LIBS} ${VTE_LIBS} ${SM_LIBS} ${DBUS_LIBS}")
+    ctx.setenv('ROXTERM_LIBS', "${LIBS} ${VTE_LIBS} ${DBUS_LIBS}")
     ctx.setenv('ROXTERM_CONFIG_CFLAGS',
             "${CFLAGS} ${MCFLAGS} ${GTK_CFLAGS} ${DBUS_CFLAGS} " \
             "${GMODULE_CFLAGS} -DROXTERM_CAPPLET")
@@ -314,8 +299,6 @@ elif ctx.mode == 'build':
             quiet = True))
 
     # roxterm
-    if bool(ctx.env['ENABLE_SM']):
-        ROXTERM_SOURCES += " session.c"
     for c in ROXTERM_SOURCES.split():
         ctx.add_rule(LibtoolCRule(
                 sources = c,

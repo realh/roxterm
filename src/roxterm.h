@@ -74,10 +74,8 @@ void roxterm_stuff_changed_handler(const char *what_happened,
         const char *family_name, const char *current_name,
         const char *new_name);
 
-#if ENABLE_SM
 gboolean roxterm_load_session(const char *xml, gssize len,
         const char *client_id);
-#endif
 
 MultiWin *roxterm_get_multi_win(ROXTermData *roxterm);
 
