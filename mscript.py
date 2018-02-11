@@ -197,9 +197,6 @@ if ctx.mode == 'configure':
     ctx.pkg_config('gtk+-3.0', 'GTK', '3.20')
     ctx.pkg_config('vte-2.91', 'VTE', '0.46')
     ctx.pkg_config('libpcre2-8', 'PCRE')
-    #vte_version = ctx.prog_output("${PKG_CONFIG} --modversion vte-2.91")[0]
-    #ctx.setenv('NEED_TRANSPARENCY_FIX', vte_version >= "0.34.8")
-    ctx.setenv('NEED_TRANSPARENCY_FIX', True)
 
     ctx.pkg_config('dbus-1', 'DBUS', '1.0')
     ctx.pkg_config('dbus-glib-1', 'DBUS', '0.22')
@@ -249,8 +246,6 @@ if ctx.mode == 'configure':
     else:
         ctx.define('ENABLE_NLS', None)
     ctx.define_from_var('LOCALEDIR')
-
-    ctx.define_from_var('NEED_TRANSPARENCY_FIX')
 
     ctx.subst_file("${TOP_DIR}/roxterm.1.xml.in",
             "${BUILD_DIR}/roxterm.1.xml", True)
