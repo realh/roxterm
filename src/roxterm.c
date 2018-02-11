@@ -536,13 +536,13 @@ static char **roxterm_get_environment(ROXTermData *roxterm, const char *term)
         "ROXTERM_PID", NULL,
         NULL, NULL,
         NULL, NULL,
-        NULL, NULL,
+        /*NULL, NULL,*/
         NULL };
     enum {
-        EnvWindowId,
         EnvRoxtermId,
         EnvRoxtermNum,
-        EnvRoxtermPid
+        EnvRoxtermPid,
+        /*EnvWindowId,*/
     };
     GList *link;
     int n;
@@ -553,8 +553,10 @@ static char **roxterm_get_environment(ROXTermData *roxterm, const char *term)
      */
     if (!gtk_widget_get_realized(roxterm->widget))
         gtk_widget_realize(roxterm->widget);
+    /*
     new_env[EnvWindowId * 2 + 1] = g_strdup_printf("%ld",
             GDK_WINDOW_XID(gtk_widget_get_window(roxterm->widget)));
+    */
     new_env[EnvRoxtermId * 2 + 1] = g_strdup_printf("%p", roxterm);
     for (n = 0, link = roxterm_terms; link; ++n, link = g_list_next(link))
     {
@@ -580,10 +582,10 @@ static char **roxterm_get_environment(ROXTermData *roxterm, const char *term)
     }
     result = roxterm_modify_environment((char const * const *) roxterm->env,
             new_env);
-    g_free((char *) new_env[EnvWindowId * 2 + 1]);
     g_free((char *) new_env[EnvRoxtermId * 2 + 1]);
     g_free((char *) new_env[EnvRoxtermNum * 2 + 1]);
     g_free((char *) new_env[EnvRoxtermPid * 2 + 1]);
+    /*g_free((char *) new_env[EnvWindowId * 2 + 1]);*/
     return result;
 }
 
