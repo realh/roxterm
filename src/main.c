@@ -165,15 +165,6 @@ gboolean listen_for_new_term(void)
             new_term_listener, global_options_lookup_int("replace") > 0);
 }
 
-static char *abs_bin(const char *filename)
-{
-    if (g_path_is_absolute(filename))
-    {
-        return g_strdup(filename);
-    }
-    return g_build_filename(global_options_bindir, "roxterm", NULL);
-}
-
 static int wait_for_child(int pipe_r)
 {
     char result;
@@ -243,7 +234,6 @@ int main(int argc, char **argv)
 {
     gboolean preparse_ok;
     DBusMessage *message = NULL;
-    int n;
     gboolean launched = FALSE;
     gboolean dbus_ok;
     pid_t fork_result = 0;
