@@ -34,6 +34,7 @@ char **global_options_commandv = NULL;
 char *global_options_appdir = NULL;
 char *global_options_bindir = NULL;
 char *global_options_directory = NULL;
+char *global_options_user_session_id = NULL;
 gboolean global_options_replace = FALSE;
 gboolean global_options_fullscreen = FALSE;
 gboolean global_options_maximise = FALSE;
