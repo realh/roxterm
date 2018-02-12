@@ -52,6 +52,9 @@ typedef void (*MultiWinMenuSignalConnector) (MultiWin * win);
 
 /* Called when a window wants to know what geometry hints to use for a child
  * widget; the user_data is the data returned by MultiTabFiller's new_user_data.
+ * The geom should be filled in with the values for the active widget only;
+ * the caling code will work out what it has to add for the notebook, scrollbar
+ * and window decorations etc.
  */
 typedef void (*MultiWinGeometryFunc) (gpointer user_data, GdkGeometry * geom,
     GdkWindowHints * hints);
@@ -106,6 +109,9 @@ MultiWinGetDisableMenuShortcuts multi_win_get_disable_menu_shortcuts;
 /* Whether to open a new tab adjacent to current one */
 typedef gboolean (*MultiTabGetNewTabAdjacent)(gpointer user_data);
 
+/* Connects signals after a new tab has been shown */
+typedef void (*MultiTabConnectMiscSignals)(gpointer user_data);
+
 /* Call to set up function hooks. See MultiTabFiller etc above.
  * menu_signal_connector is called each time a new window is created to give
  * the client a chance to connect its signal handlers; each handler will
@@ -117,8 +123,7 @@ multi_tab_init(MultiTabFiller filler, MultiTabDestructor destructor,
     MultiTabToNewWindowHandler,
     MultiWinZoomHandler, MultiWinGetDisableMenuShortcuts, MultiWinGetTabPos,
     MultiWinDeleteHandler, MultiTabGetShowCloseButton,
-    MultiTabGetNewTabAdjacent
-    );
+    MultiTabGetNewTabAdjacent, MultiTabConnectMiscSignals);
 
 /* Register a MultiTabSelectionHandler (see above) */
 void
@@ -410,6 +415,17 @@ gboolean multi_win_composite(MultiWin *win);
 const char *multi_win_get_shortcuts_scheme_name(MultiWin *win);
 
 guint multi_win_get_num_tabs(MultiWin *win);
+
+/* Parses a geometry string and returns TRUE if successful. If sizes
+ * aren't given their respective outputs are set to 0. xy is updated to indicate
+ * whether x and y were present.
+ */
+gboolean multi_win_parse_geometry(const char *geom,
+        int *width, int *height, int *x, int *y, gboolean *xy);
+
+/* tab may be NULL to use the currently active tab */
+void multi_win_set_initial_geometry(MultiWin *win, const char *geom,
+        MultiTab *tab);
 
 #endif /* MULTITAB_H */
 

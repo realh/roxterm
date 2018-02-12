@@ -21,6 +21,7 @@
 #include "defns.h"
 #endif
 
+#include <ctype.h>
 #include <errno.h>
 
 #include <gdk/gdkx.h>
@@ -135,6 +136,7 @@ static MultiWinGetTabPos multi_win_get_config_tab_pos;
 static MultiWinDeleteHandler multi_win_delete_handler;
 static MultiTabGetShowCloseButton multi_tab_get_show_close_button;
 static MultiTabGetNewTabAdjacent multi_tab_get_new_tab_adjacent;
+static MultiTabConnectMiscSignals multi_tab_connect_misc_signals ;
 
 static gboolean multi_win_notify_tab_removed(MultiWin *, MultiTab *);
 
@@ -255,7 +257,8 @@ void multi_tab_init(MultiTabFiller filler, MultiTabDestructor destructor,
     MultiWinGetTabPos tab_pos,
     MultiWinDeleteHandler delete_handler,
     MultiTabGetShowCloseButton get_show_close_button,
-    MultiTabGetNewTabAdjacent get_new_tab_adjacent
+    MultiTabGetNewTabAdjacent get_new_tab_adjacent,
+    MultiTabConnectMiscSignals connect_misc_signals
     )
 {
     multi_tab_filler = filler;
@@ -271,6 +274,7 @@ void multi_tab_init(MultiTabFiller filler, MultiTabDestructor destructor,
     multi_win_delete_handler = delete_handler;
     multi_tab_get_show_close_button = get_show_close_button;
     multi_tab_get_new_tab_adjacent = get_new_tab_adjacent;
+    multi_tab_connect_misc_signals = connect_misc_signals;
 }
 
 MultiTab *multi_tab_new(MultiWin * parent, gpointer user_data_template)
@@ -301,8 +305,8 @@ MultiTab *multi_tab_new(MultiWin * parent, gpointer user_data_template)
     multi_win_add_tab(parent, tab, pos, FALSE);
     multi_win_select_tab(parent, tab);
 
-    g_debug("call roxterm_force_resize_now from line %d", __LINE__);
-    roxterm_force_resize_now(parent);
+    //g_debug("call roxterm_force_resize_now from line %d", __LINE__);
+    //roxterm_force_resize_now(parent);
 
     return tab;
 }
@@ -1319,8 +1323,9 @@ static void multi_win_new_window_action(MultiWin * win)
 
 static void multi_win_new_tab_action(MultiWin * win)
 {
-    multi_tab_new(win, win->current_tab ? win->current_tab->user_data :
-        win->user_data_template);
+    MultiTab *tab = multi_tab_new(win, win->current_tab ?
+            win->current_tab->user_data : win->user_data_template);
+    multi_tab_connect_misc_signals(tab->user_data);
 }
 
 static void multi_win_detach_tab_action(MultiWin * win)
@@ -2030,17 +2035,19 @@ MultiWin *multi_win_new_full(Options *shortcuts,
             tab_pos, always_show_tabs, add_tab_button);
     win->user_data_template = user_data_template;
     win->tab_pos = tab_pos;
-    multi_tab_new(win, user_data_template);
+    tab = multi_tab_new(win, user_data_template);
 
     multi_win_shade_menus_for_tabs(win);
 
     if (geom)
     {
         /* Need to show children before parsing geom */
+        gtk_widget_realize(win->gtkwin);
+        gtk_widget_realize(win->vbox);
         gtk_widget_show_all(win->vbox);
-        gtk_window_parse_geometry(GTK_WINDOW(win->gtkwin), geom);
+        multi_win_set_initial_geometry(win, geom, tab);
     }
-    else if (sizing == MULTI_WIN_FULL_SCREEN)
+    if (sizing == MULTI_WIN_FULL_SCREEN)
     {
         multi_win_set_fullscreen(win, TRUE);
     }
@@ -2056,7 +2063,7 @@ MultiWin *multi_win_new_full(Options *shortcuts,
     gtk_notebook_set_current_page(GTK_NOTEBOOK(win->notebook), 0);
     tab = win->tabs->data;
     win->tab_selection_handler(tab->user_data, tab);
-
+    multi_tab_connect_misc_signals(tab->user_data);
     return win;
 }
 
@@ -2571,6 +2578,135 @@ const char *multi_win_get_shortcuts_scheme_name(MultiWin *win)
 guint multi_win_get_num_tabs(MultiWin *win)
 {
     return g_list_length(win->tabs);
+}
+
+/* Parses a number from a geometry string which must be terminated by NULL or
+ * one of chars from trmntrs immediately after digits. Returns pointer to that
+ * terminator or NULL if invalid. */
+static const char *parse_geom_n(const char *g, int *n, const char *trmntrs)
+{
+    const char *g2 = g;
+    size_t l;
+    gboolean neg = (*g == '-');
+
+    if (*g == '-' || *g == '+')
+        ++g2;
+    if (!isdigit(*g2))
+        return NULL;
+    l = strspn(g2, "0123456789");
+    /* Check we've reached end of string or one of trmntrs */
+    if (g2[l] && (!trmntrs || !strchr(trmntrs, g2[l])))
+        return NULL;
+    if (n && sscanf(g, "%d", n) != 1)
+        return NULL;
+    if (neg)
+        *n = -*n;
+    return g2 + l;
+}
+
+/* Returns NULL if invalid */
+static const char *parse_geom_offsets(const char *g, int *x, int *y)
+{
+    if ((g = parse_geom_n(g, x, "+-")) == NULL)
+    {
+        return NULL;
+    }
+    if ((*g != '+' && *g != '-')
+        || (g = parse_geom_n(g, y, NULL)) == NULL)
+    {
+        return NULL;
+    }
+    return g;
+}
+
+gboolean multi_win_parse_geometry(const char *geom,
+        int *width, int *height, int *x, int *y, gboolean *pxy)
+{
+    gboolean xy;
+
+    if (!pxy)
+        pxy = &xy;
+    *pxy = FALSE;
+    if (!geom || !*geom)
+        return FALSE;
+    if (*geom == '+' || *geom == '-')
+    {
+        geom = parse_geom_offsets(geom, x, y);
+        if (!geom)
+            return FALSE;
+        *pxy = TRUE;
+    }
+    geom = parse_geom_n(geom, width, "x");
+    if (geom && *geom == 'x')
+    {
+        ++geom;
+        geom = parse_geom_n(geom, height, "+-");
+        if (*geom && (*pxy || !parse_geom_offsets(geom, x, y)))
+            return FALSE;
+    }
+    return TRUE;
+}
+
+static void multi_win_process_geometry(MultiWin *win,
+        MultiTab *tab, int columns, int rows, int *width, int *height)
+{
+    GdkGeometry geom;
+    GdkWindowHints hints;
+    int ww, wh;
+    int gw, gh;
+    int ignored;
+
+    if (!tab)
+        tab = win->current_tab;
+    if (!gtk_widget_get_realized(win->gtkwin))
+    {
+        g_warning("multi_win_process_geometry: Window not realized");
+    }
+    if (!gtk_widget_get_realized(win->vbox))
+    {
+        g_warning("multi_win_process_geometry: vbox not realized");
+    }
+    if (!gtk_widget_get_realized(tab->active_widget))
+    {
+        g_warning("multi_win_process_geometry: vte not realized");
+    }
+    multi_win_geometry_func(tab->user_data, &geom, &hints);
+    g_debug("VTE cell size %dx%d, padding %dx%d",
+            geom.width_inc, geom.height_inc,
+            geom.base_width, geom.base_height);
+
+    /* Get difference in size between toplevel window and the geometry
+     * widget. Allocations aren't valid yet, but preferred sizes are.
+     */
+    gtk_widget_get_preferred_width(tab->active_widget, &ignored, &gw);
+    gtk_widget_get_preferred_height(tab->active_widget, &ignored, &gh);
+    gtk_widget_get_preferred_width(win->gtkwin, &ignored, &ww);
+    gtk_widget_get_preferred_height(win->gtkwin, &ignored, &wh);
+    g_debug("Preferred terminal size %dx%d, window size %dx%d", gw, gh, ww, wh);
+
+    geom.base_width += ww - gw;
+    geom.base_height += wh - gh;
+    g_debug("Additional padding %dx%d, total %dx%d", ww - gw, wh - gh,
+            geom.base_width, geom.base_height);
+    gtk_window_set_geometry_hints(GTK_WINDOW(win->gtkwin), NULL, &geom, hints);
+    *width = columns * geom.width_inc + geom.base_width;
+    *height = rows * geom.height_inc + geom.base_height;
+}
+
+void multi_win_set_initial_geometry(MultiWin *win, const char *geom,
+        MultiTab *tab)
+{
+    int columns, rows, x, y, width, height;
+    gboolean xy;
+
+    width = height = -1;
+    if (multi_win_parse_geometry(geom, &columns, &rows, &x, &y, &xy))
+    {
+        multi_win_process_geometry(win, tab, columns, rows, &width, &height);
+        if (width != -1 && height != -1)
+            gtk_window_set_default_size(GTK_WINDOW(win->gtkwin), width, height);
+        /* Ignore position, it's deprecated */
+    }
 }
 
 /* This is maintained in order of most recently focused */

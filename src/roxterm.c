@@ -1266,25 +1266,16 @@ roxterm_set_vte_size(ROXTermData *roxterm, VteTerminal *vte,
     }
 }
 
-/* Gets the total size of all chrome etc between the text and the window */
+/* Gets the total size of the terminal widget without its containers */
 static void
 roxterm_get_padding(ROXTermData *roxterm, int *width, int *height)
 {
-    GtkWindow *top = roxterm_get_toplevel(roxterm);
-    VteTerminal *vte = VTE_TERMINAL(roxterm->widget);
-    int ww, wh;
+    GtkBorder padding;
 
-    if (!roxterm_is_parented(roxterm))
-    {
-        g_warning("Can't get padding of unparented terminal widget");
-        *height = *width = 0;
-        return;
-    }
-    gtk_window_get_size(top, &ww, &wh);
-    *width = ww - vte_terminal_get_char_width(vte) *
-        vte_terminal_get_column_count(vte);
-    *height = wh - vte_terminal_get_char_height(vte) *
-        vte_terminal_get_row_count(vte);
+    gtk_style_context_get_padding(gtk_widget_get_style_context(roxterm->widget),
+            gtk_widget_get_state_flags(roxterm->widget), &padding);
+    *width = padding.left + padding.right;
+    *height = padding.top + padding.bottom;
 }
 
 static void roxterm_geometry_func(ROXTermData *roxterm,
@@ -1297,7 +1288,8 @@ static void roxterm_geometry_func(ROXTermData *roxterm,
     geom->height_inc = vte_terminal_get_char_height(vte);
     geom->min_width = geom->base_width + 4 * geom->width_inc;
     geom->min_height = geom->base_height + 4 * geom->height_inc;
-    *hints = GDK_HINT_RESIZE_INC | GDK_HINT_BASE_SIZE | GDK_HINT_MIN_SIZE;
+    if (hints)
+        *hints = GDK_HINT_RESIZE_INC | GDK_HINT_BASE_SIZE | GDK_HINT_MIN_SIZE;
 }
 
 static void roxterm_size_func(ROXTermData *roxterm, gboolean pixels,
@@ -3261,6 +3253,8 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
     *roxterm_out = roxterm;
 
     roxterm->widget = vte_terminal_new();
+    vte_terminal_set_size(VTE_TERMINAL(roxterm->widget),
+            roxterm->columns, roxterm->rows);
     gtk_widget_grab_focus(roxterm->widget);
     vte = VTE_TERMINAL(roxterm->widget);
     if (vte_widget)
@@ -3323,10 +3317,9 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
     title_orig = vte_terminal_get_window_title(vte);
     multi_tab_set_window_title(tab, title_orig ? title_orig : _("ROXTerm"));
 
-    g_debug("call roxterm_set_vte_size from line %d", __LINE__);
-    roxterm_set_vte_size(roxterm, vte, roxterm->columns, roxterm->rows);
+    //g_debug("call roxterm_set_vte_size from line %d", __LINE__);
+    //roxterm_set_vte_size(roxterm, vte, roxterm->columns, roxterm->rows);
 
-    roxterm_connect_misc_signals(roxterm);
     multi_tab_connect_tab_selection_handler(win,
         (MultiTabSelectionHandler) roxterm_tab_selection_handler);
     roxterm->drd = drag_receive_setup_dest_widget(roxterm->widget,
@@ -4032,43 +4025,6 @@ static void roxterm_set_shortcut_scheme_handler(ROXTermData *roxterm,
     shortcuts_unref(shortcuts);
 }
 
-/* Parses a number from a geometry string which must be terminated by NULL or
- * one of chars from trmntrs immediately after digits. Returns pointer to that
- * terminator or NULL if invalid. */
-static char *parse_geom_n(char *g, int *n, const char *trmntrs)
-{
-    char *g2 = g;
-    size_t l;
-
-    if (*g == '-' || *g == '+')
-        ++g2;
-    if (!isdigit(*g2))
-        return NULL;
-    l = strspn(g2, "0123456789");
-    /* Check we've reached end of string or one of trmntrs */
-    if (g2[l] && (!trmntrs || !strchr(trmntrs, g2[l])))
-        return NULL;
-    if (n && sscanf(g, "%d", n) != 1)
-        return NULL;
-    return g2 + l;
-}
-
-/* This just checks whether the rest of the string is a valid pair of
- * geometry offsets */
-static gboolean check_geom_offsets(char *g)
-{
-    if ((g = parse_geom_n(g, NULL, "+-")) == NULL)
-    {
-        return FALSE;
-    }
-    if ((*g != '+' && *g != '-')
-        || (g = parse_geom_n(g, NULL, NULL)) == NULL)
-    {
-        return FALSE;
-    }
-    return TRUE;
-}
-
 static GtkPositionType get_profile_tab_pos(Options *profile)
 {
     switch (options_lookup_int_with_default(profile, "tab_pos", 0))
@@ -4109,6 +4065,7 @@ static ROXTermData *roxterm_data_new(double zoom_factor, const char *directory,
         char **geom, gboolean *size_on_cli, char **env)
 {
     ROXTermData *roxterm = g_new0(ROXTermData, 1);
+    int width, height, x, y;
     (void) profile_name;
 
     roxterm->status_icon_name = NULL;
@@ -4128,53 +4085,19 @@ static ROXTermData *roxterm_data_new(double zoom_factor, const char *directory,
     roxterm->profile = profile;
     if (size_on_cli)
         *size_on_cli = FALSE;
-    if (geom && *geom)
+    if (*geom)
     {
-        /* Can't rely on gtk_window_parse_geometry alone because we want to
-         * know width and height before creating the window */
-        char *g = *geom;
-
-        if (*g == '+' || *g == '-')
+        if (multi_win_parse_geometry(*geom, &width, &height, &x, &y, NULL))
         {
-            /* Offsets first (and only); we don't actually want to know them
-             * here; just check validity of string */
-            if (!check_geom_offsets(g))
-            {
-                g_free(*geom);
-                *geom = NULL;
-            }
+            roxterm->columns = width;
+            roxterm->rows = height;
+            if (size_on_cli)
+                *size_on_cli = TRUE;
         }
         else
         {
-            int width, height;
-
-            g = parse_geom_n(g, &width, "x");
-            if (g && *g == 'x')
-            {
-                ++g;
-                g = parse_geom_n(g, &height, "+-");
-                if (*g && !check_geom_offsets(g))
-                {
-                    g_free(*geom);
-                    *geom = NULL;
-                }
-            }
-            else
-            {
-                g_free(*geom);
-                *geom = NULL;
-            }
-            if (*geom)
-            {
-                roxterm->columns = width;
-                roxterm->rows = height;
-                if (size_on_cli)
-                    *size_on_cli = TRUE;
-            }
-        }
-        if (!geom)
-        {
             dlg_warning(NULL, _("Invalid geometry specification"));
+            *geom = NULL;
         }
     }
     roxterm->maximise = maximise;
@@ -4348,8 +4271,8 @@ void roxterm_launch(char **env)
     g_free(colour_scheme_name);
     g_free(profile_name);
 
-    g_debug("call roxterm_force_resize_now from %s:%d", __FILE__, __LINE__);
-    roxterm_force_resize_now(win);
+    //g_debug("call roxterm_force_resize_now from %s:%d", __FILE__, __LINE__);
+    //roxterm_force_resize_now(win);
 }
 
 static void roxterm_tab_to_new_window(MultiWin *win, MultiTab *tab,
@@ -4577,7 +4500,8 @@ void roxterm_init(void)
         (MultiWinGetTabPos) roxterm_get_tab_pos,
         (MultiWinDeleteHandler) roxterm_delete_handler,
         (MultiTabGetShowCloseButton) roxterm_get_show_tab_close_button,
-        (MultiTabGetNewTabAdjacent) roxterm_get_new_tab_adjacent
+        (MultiTabGetNewTabAdjacent) roxterm_get_new_tab_adjacent,
+        (MultiTabConnectMiscSignals) roxterm_connect_misc_signals
         );
 }
 
@@ -4610,6 +4534,7 @@ void roxterm_spawn(ROXTermData *roxterm, const char *command,
     GtkPositionType tab_pos;
     char *cwd;
     MultiWin *win = roxterm_get_win(roxterm);
+    MultiTab *tab;
 
     tab_pos = roxterm_get_tab_pos(roxterm);
     switch (spawn_type)
@@ -4626,7 +4551,8 @@ void roxterm_spawn(ROXTermData *roxterm, const char *command,
         case ROXTerm_SpawnNewTab:
             roxterm->special_command = g_strdup(command);
             roxterm->no_respawn = TRUE;
-            multi_tab_new(win, roxterm);
+            tab = multi_tab_new(win, roxterm);
+            roxterm_connect_misc_signals(multi_tab_get_user_data(tab));
             break;
         default:
             cwd = roxterm_get_cwd(roxterm);
@@ -4737,7 +4663,6 @@ static void parse_open_win(_ROXTermParseContext *rctx,
     gboolean disable_tab_shortcuts = FALSE;
     GtkPositionType tab_pos = GTK_POS_TOP;
     MultiWin *win;
-    GtkWindow *gwin;
     Options *shortcuts;
 
     rctx->fullscreen = FALSE;
@@ -4799,7 +4724,6 @@ static void parse_open_win(_ROXTermParseContext *rctx,
             disable_menu_shortcuts, disable_tab_shortcuts, tab_pos, show_tabs,
             show_add_tab_btn);
     shortcuts_unref(shortcuts);
-    gwin = GTK_WINDOW(multi_win_get_widget(rctx->win));
     if (title_template && title_template[0])
     {
         rctx->window_title_template = g_strdup(title_template);
@@ -4824,6 +4748,12 @@ static void parse_open_win(_ROXTermParseContext *rctx,
         rctx->window_title = g_strdup(title);
 }
 
+static void roxterm_connect_each_tabs_signals(MultiTab *tab, void *handle)
+{
+    roxterm_connect_misc_signals(multi_tab_get_user_data(tab));
+    (void) handle;
+}
+
 static void close_win_tag(_ROXTermParseContext *rctx)
 {
     if (!multi_win_get_num_tabs(rctx->win))
@@ -4835,6 +4765,14 @@ static void close_win_tag(_ROXTermParseContext *rctx)
     {
         GtkWindow *gwin = GTK_WINDOW(multi_win_get_widget(rctx->win));
 
+        if (rctx->geom)
+        {
+            /* Need to show children before parsing geom */
+            gtk_widget_realize(gtk_bin_get_child(GTK_BIN(gwin)));
+            gtk_widget_show_all(gtk_bin_get_child(GTK_BIN(gwin)));
+            multi_win_set_initial_geometry(rctx->win, rctx->geom,
+                    rctx->active_tab);
+        }
         if (rctx->fullscreen)
         {
             multi_win_set_fullscreen(rctx->win, TRUE);
@@ -4842,12 +4780,6 @@ static void close_win_tag(_ROXTermParseContext *rctx)
         else if (rctx->maximised)
         {
             gtk_window_maximize(gwin);
-        }
-        else if (rctx->geom)
-        {
-            /* Need to show children before parsing geom */
-            gtk_widget_show_all(gtk_bin_get_child(GTK_BIN(gwin)));
-            gtk_window_parse_geometry(gwin, rctx->geom);
         }
         if (rctx->window_title_template)
         {
@@ -4859,6 +4791,8 @@ static void close_win_tag(_ROXTermParseContext *rctx)
         multi_win_set_title_template_locked(rctx->win,
                 rctx->win_title_template_locked);
         multi_win_show(rctx->win);
+        multi_win_foreach_tab(rctx->win, roxterm_connect_each_tabs_signals,
+                NULL);
         if (rctx->active_tab)
         {
             multi_win_select_tab(rctx->win, rctx->active_tab);
