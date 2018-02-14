@@ -173,7 +173,7 @@ static void multi_tab_size_allocate(GtkWidget *widget, GdkRectangle *alloc,
         GtkWindow *win = GTK_WINDOW(tab->parent->gtkwin);
         int ww, wh;
 
-        g_debug("size-allocate of %dx%d, want to restore %dx%d",
+        g_debug("hbox size-allocate of %dx%d, want to restore %dx%d",
                 alloc->width, alloc->height,
                 tab->restore_width, tab->restore_height);
         gtk_window_get_size(win, &ww, &wh);
@@ -191,7 +191,11 @@ static void multi_tab_size_allocate(GtkWidget *widget, GdkRectangle *alloc,
     }
     else
     {
-        g_debug("Ignoring size-allocate of %dx%d", alloc->width, alloc->height);
+        g_debug("Ignoring hbox size-allocate of %dx%d",
+                alloc->width, alloc->height);
+        g_debug("Terminal allocation is %dx%d",
+                gtk_widget_get_allocated_width(tab->active_widget),
+                gtk_widget_get_allocated_height(tab->active_widget));
     }
 }
 
@@ -379,6 +383,7 @@ static gboolean multi_win_clear_geometry_hints(GtkWindow *w)
 void multi_win_set_geometry_hints(MultiWin *win, GtkWidget *child,
     GdkGeometry *geometry, GdkWindowHints geom_mask)
 {
+    return;
     GtkAllocation child_alloc, toplevel_alloc;
     gint chrome_width, chrome_height;
     gint decorator_width, decorator_height;
@@ -2039,12 +2044,14 @@ MultiWin *multi_win_new_full(Options *shortcuts,
 
     multi_win_shade_menus_for_tabs(win);
 
+    /* Showing everything except top-level, then realizing top-level, seems to
+     * be the key to getting some sensible size allocations so we can work out
+     * how much size the "chrome" needs.
+     */
+    gtk_widget_show_all(win->vbox);
+    gtk_widget_realize(win->gtkwin);
     if (geom)
     {
-        /* Need to show children before parsing geom */
-        gtk_widget_realize(win->gtkwin);
-        gtk_widget_realize(win->vbox);
-        gtk_widget_show_all(win->vbox);
         multi_win_set_initial_geometry(win, geom, tab);
     }
     if (sizing == MULTI_WIN_FULL_SCREEN)
@@ -2652,45 +2659,51 @@ static void multi_win_process_geometry(MultiWin *win,
 {
     GdkGeometry geom;
     GdkWindowHints hints;
-    int ww, wh;
+    int bw, bh;
     int gw, gh;
-    int ignored;
+    int ww, wh;
 
     if (!tab)
         tab = win->current_tab;
-    if (!gtk_widget_get_realized(win->gtkwin))
-    {
-        g_warning("multi_win_process_geometry: Window not realized");
-    }
-    if (!gtk_widget_get_realized(win->vbox))
-    {
-        g_warning("multi_win_process_geometry: vbox not realized");
-    }
-    if (!gtk_widget_get_realized(tab->active_widget))
-    {
-        g_warning("multi_win_process_geometry: vte not realized");
-    }
     multi_win_geometry_func(tab->user_data, &geom, &hints);
     g_debug("VTE cell size %dx%d, padding %dx%d",
             geom.width_inc, geom.height_inc,
             geom.base_width, geom.base_height);
 
     /* Get difference in size between toplevel window and the geometry
-     * widget. Allocations aren't valid yet, but preferred sizes are.
+     * widget.
      */
-    gtk_widget_get_preferred_width(tab->active_widget, &ignored, &gw);
-    gtk_widget_get_preferred_height(tab->active_widget, &ignored, &gh);
-    gtk_widget_get_preferred_width(win->gtkwin, &ignored, &ww);
-    gtk_widget_get_preferred_height(win->gtkwin, &ignored, &wh);
-    g_debug("Preferred terminal size %dx%d, window size %dx%d", gw, gh, ww, wh);
+    gw = gtk_widget_get_allocated_width(tab->active_widget);
+    gh = gtk_widget_get_allocated_height(tab->active_widget);
+    /* Setting the size of a window excludes its decorations, so get the
+     * "chrome" size from the vbox.
+     */
+    bw = gtk_widget_get_allocated_width(win->vbox);
+    bh = gtk_widget_get_allocated_height(win->vbox);
+    g_debug("Terminal allocation %dx%d, undecorated window allocation %dx%d",
+            gw, gh, bw, bh);
+    g_debug("Want to allocate %dx%d to terminal", 
+            columns * geom.width_inc + geom.base_width,
+            rows * geom.height_inc + geom.base_height);
 
-    geom.base_width += ww - gw;
-    geom.base_height += wh - gh;
-    g_debug("Additional padding %dx%d, total %dx%d", ww - gw, wh - gh,
+    geom.base_width += bw - gw;
+    geom.base_height += bh - gh;
+    g_debug("Additional padding %dx%d, total %dx%d", bw - gw, bh - gh,
             geom.base_width, geom.base_height);
-    gtk_window_set_geometry_hints(GTK_WINDOW(win->gtkwin), NULL, &geom, hints);
     *width = columns * geom.width_inc + geom.base_width;
     *height = rows * geom.height_inc + geom.base_height;
+    g_debug("Desired size including chrome but not CSD: %dx%d",
+            *width, *height);
+    /* gnome-terminal includes CSD in its geometry hints. Doing this fixes it!
+     */
+    ww = gtk_widget_get_allocated_width(win->gtkwin);
+    wh = gtk_widget_get_allocated_height(win->gtkwin);
+    g_debug("Window allocation %dx%d, CSD %dx%d", ww, wh, ww - bw, wh - bh);
+    geom.min_width += ww - gw;
+    geom.min_height += wh - gh;
+    geom.base_width += ww - bw;
+    geom.base_height += wh - bh;
+    gtk_window_set_geometry_hints(GTK_WINDOW(win->gtkwin), NULL, &geom, hints);
 }
 
 void multi_win_set_initial_geometry(MultiWin *win, const char *geom,

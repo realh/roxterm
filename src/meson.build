@@ -29,3 +29,6 @@ roxterm = executable('roxterm', ['about.c', 'main.c', 'multitab.c',
     'roxterm.c', 'search.c', 'session-file.c', 'shortcuts.c', 'uri.c'],
     dependencies: common_deps + [vtedep, pcredep],
     link_with: rtlib)
+
+#roxterm4 = executable('roxterm4', ['roxterm4.1.c'],
+#    dependencies: common_deps + [vtedep, pcredep])
