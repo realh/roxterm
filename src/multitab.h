@@ -283,10 +283,6 @@ void multi_win_show(MultiWin *win);
  * windows are destroyed it calls gtk_main_quit() */
 void multi_win_delete(MultiWin *);
 
-void
-multi_win_set_geometry_hints(MultiWin * win, GtkWidget * child,
-    GdkGeometry * geometry, GdkWindowHints geom_mask);
-
 void multi_win_set_fullscreen(MultiWin *win, gboolean fullscreen);
 
 GtkWidget *multi_win_get_widget(MultiWin * win);
@@ -425,6 +421,10 @@ gboolean multi_win_parse_geometry(const char *geom,
 
 /* tab may be NULL to use the currently active tab */
 void multi_win_set_initial_geometry(MultiWin *win, const char *geom,
+        MultiTab *tab);
+
+/* tab may be NULL to use the currently active tab */
+void multi_win_apply_new_geometry(MultiWin *win, int columns, int rows,
         MultiTab *tab);
 
 #endif /* MULTITAB_H */

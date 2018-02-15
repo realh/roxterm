@@ -378,39 +378,7 @@ GtkWidget *multi_tab_get_widget(MultiTab * tab)
     return tab->widget;
 }
 
-void multi_win_set_geometry_hints(MultiWin *win, GtkWidget *child,
-    GdkGeometry *geometry, GdkWindowHints geom_mask)
-{
-    return;
-    GtkAllocation child_alloc, toplevel_alloc;
-    gint chrome_width, chrome_height;
-    gint decorator_width, decorator_height;
-
-    void roxterm_get_current_chrome_dimensions(MultiWin *win,
-        int *chrome_width, int *chrome_height);
-    roxterm_get_current_chrome_dimensions(win, &chrome_width, &chrome_height);
-
-    gtk_widget_get_allocation(child, &child_alloc);
-    gtk_widget_get_allocation(GTK_WIDGET(win->gtkwin), &toplevel_alloc);
-    decorator_width = toplevel_alloc.width - child_alloc.width;
-    decorator_height = toplevel_alloc.height - child_alloc.height;
-
-    g_debug(_("allocated to top level: %d x %d"), toplevel_alloc.width, toplevel_alloc.height);
-    g_debug(_("allocated to child: %d x %d"), child_alloc.width, child_alloc.height);
-    g_debug(_("base geometry is %d x %d"), geometry->base_width, geometry->base_height);
-    g_debug(_("min geometry is %d x %d"), geometry->min_width, geometry->min_height);
-    g_debug(_("decorator size is %d x %d"), decorator_width, decorator_height);
-    g_debug(_("chrome geometry is %d x %d"), chrome_width, chrome_height);
-
-    geometry->base_width = decorator_width + chrome_width;
-    geometry->base_height = decorator_height + chrome_height;
-
-    g_debug(_("requesting %d x %d"), geometry->base_width, geometry->base_height);
-
-    gtk_window_set_geometry_hints(GTK_WINDOW(win->gtkwin), NULL,
-        geometry, geom_mask);
-}
-
+/*
 static void multi_win_set_geometry_hints_for_tab(MultiWin * win, MultiTab * tab)
 {
     GdkGeometry geom;
@@ -422,6 +390,7 @@ static void multi_win_set_geometry_hints_for_tab(MultiWin * win, MultiTab * tab)
         multi_win_set_geometry_hints(win, tab->active_widget, &geom, hints);
     }
 }
+*/
 
 static char *make_title(const char *template, const char *title)
 {
@@ -797,7 +766,7 @@ void multi_tab_move_to_new_window(MultiWin *win, MultiTab *tab, int position)
     old_win_destroyed = old_win && old_win->ntabs <= 1;
     multi_tab_remove_from_parent(tab, FALSE);
     multi_win_add_tab(win, tab, position, FALSE);
-    multi_win_set_geometry_hints_for_tab(win, tab);
+    //multi_win_set_geometry_hints_for_tab(win, tab);
     if (multi_tab_to_new_window_handler)
     {
         multi_tab_to_new_window_handler(win, tab,
@@ -939,7 +908,6 @@ void multi_win_select_tab(MultiWin * win, MultiTab * tab)
         {
             if (win->tab_selection_handler)
                 win->tab_selection_handler(tab->user_data, tab);
-            multi_win_set_geometry_hints_for_tab(win, tab);
         }
     }
     multi_win_shade_for_next_and_previous_tab(win);
@@ -1274,7 +1242,6 @@ MultiWin *multi_win_new_for_tab(int x, int y, MultiTab *tab)
                 win->tab_pos, win->always_show_tabs,
                 win->show_add_tab_button);
     multi_win_set_show_menu_bar(win, show_menubar);
-    multi_win_set_geometry_hints_for_tab(win, tab);
     multi_win_set_title_template(win, title_template);
     gwin = GTK_WINDOW(win->gtkwin);
     gtk_window_set_default_size(gwin, w, h);
@@ -2659,6 +2626,7 @@ static gboolean multi_win_process_geometry(MultiWin *win,
     int gw, gh;
     int ww, wh;
 
+    g_debug("Processing geometry %dx%d", columns, rows);
     if (!tab)
         tab = win->current_tab;
     multi_win_geometry_func(tab->user_data, &geom, &hints);
@@ -2708,11 +2676,13 @@ static gboolean multi_win_process_geometry(MultiWin *win,
         geom.width_inc != win->geom_hints.width_inc ||
         geom.height_inc != win->geom_hints.height_inc)
     {
+        g_debug("Updating geometry");
         gtk_window_set_geometry_hints(GTK_WINDOW(win->gtkwin), NULL,
                 &geom, hints);
         win->geom_hints = geom;
         return TRUE;
     }
+    g_debug("Geometry unchanged");
     return FALSE;
 }
 
@@ -2722,14 +2692,39 @@ void multi_win_set_initial_geometry(MultiWin *win, const char *geom,
     int columns, rows, x, y, width, height;
     gboolean xy;
 
-    width = height = -1;
     if (multi_win_parse_geometry(geom, &columns, &rows, &x, &y, &xy))
     {
         multi_win_process_geometry(win, tab, columns, rows, &width, &height);
-        if (width != -1 && height != -1)
-            gtk_window_set_default_size(GTK_WINDOW(win->gtkwin), width, height);
+        gtk_window_set_default_size(GTK_WINDOW(win->gtkwin), width, height);
         /* Ignore position, it's deprecated */
     }
+}
+
+void multi_win_apply_new_geometry(MultiWin *win, int columns, int rows,
+        MultiTab *tab)
+{
+    int width, height;
+    int old_width, old_height;
+    GdkWindowState state = gdk_window_get_state(
+            gtk_widget_get_window(win->gtkwin));
+
+    if (state & (GDK_WINDOW_STATE_MAXIMIZED | GDK_WINDOW_STATE_FULLSCREEN | 
+#if GTK_CHECK_VERSION(3,22,23)
+            GDK_WINDOW_STATE_TOP_TILED | GDK_WINDOW_STATE_BOTTOM_TILED | 
+            GDK_WINDOW_STATE_LEFT_TILED | GDK_WINDOW_STATE_RIGHT_TILED
+#else
+            GDK_WINDOW_STATE_TILED
+#endif
+            ))
+    {
+        g_debug("Ignoring geometry change for maximized or similar state");
+        return;
+    }
+
+    multi_win_process_geometry(win, tab, columns, rows, &width, &height);
+    gtk_window_get_size(GTK_WINDOW(win->gtkwin), &old_width, &old_height);
+    if (width != old_width && height != old_height)
+        gtk_window_resize(GTK_WINDOW(win->gtkwin), width, height);
 }
 
 /* This is maintained in order of most recently focused */
