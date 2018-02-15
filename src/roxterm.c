@@ -1240,6 +1240,7 @@ roxterm_set_vte_size(ROXTermData *roxterm, VteTerminal *vte,
 {
     MultiWin *win = roxterm_get_win(roxterm);
 
+    g_debug("Setting terminal size %dx%d", columns, rows);
     vte_terminal_set_size(vte, columns, rows);
     if (roxterm_is_parented(roxterm) &&
             multi_win_get_current_tab(win) == roxterm->tab)
@@ -1255,8 +1256,11 @@ roxterm_get_padding(ROXTermData *roxterm, int *width, int *height)
 
     gtk_style_context_get_padding(gtk_widget_get_style_context(roxterm->widget),
             gtk_widget_get_state_flags(roxterm->widget), &padding);
-    *width = padding.left + padding.right;
-    *height = padding.top + padding.bottom;
+    /* The +2 is a fudge otherwise the window shrinks by one cell each time
+     * it's maximized and then unmaximized.
+     */
+    *width = padding.left + padding.right + 2;
+    *height = padding.top + padding.bottom + 2;
 }
 
 static void roxterm_geometry_func(ROXTermData *roxterm,
@@ -1301,27 +1305,21 @@ static void roxterm_default_size_func(ROXTermData *roxterm,
 
 static void roxterm_update_geometry(ROXTermData * roxterm, VteTerminal * vte)
 {
+    int columns, rows;
     (void) vte;
-    if (multi_win_get_current_tab(roxterm_get_win(roxterm)) == roxterm->tab)
-    {
-        multi_win_apply_new_geometry(roxterm_get_win(roxterm),
-                vte_terminal_get_column_count(vte),
-                vte_terminal_get_row_count(vte),
-                roxterm->tab);
-    }
+
+    columns = vte_terminal_get_column_count(vte);
+    rows = vte_terminal_get_row_count(vte);
+    roxterm_set_vte_size(roxterm, vte, columns, rows);
 }
 
 static void roxterm_update_size(ROXTermData * roxterm, VteTerminal * vte)
 {
-    if (multi_win_get_current_tab(roxterm_get_win(roxterm)) == roxterm->tab)
-    {
-        int w, h;
+    int w, h;
 
-        roxterm_default_size_func(roxterm, &w, &h);
-        roxterm_set_vte_size(roxterm, vte, w, h);
-
-        //roxterm_update_geometry(roxterm, vte);
-    }
+    roxterm_default_size_func(roxterm, &w, &h);
+    roxterm_set_vte_size(roxterm, vte, w, h);
+    roxterm_update_geometry(roxterm, vte);
 }
 
 static void resize_pango_for_zoom(PangoFontDescription *pango_desc,
@@ -1454,13 +1452,8 @@ static void roxterm_match_text_size(ROXTermData *roxterm, ROXTermData *other)
     {
         vte_terminal_set_font(vte, fd);
     }
-    if (vte_terminal_get_column_count(vte) != width ||
-            vte_terminal_get_row_count(vte) != height)
-    {
-        roxterm_set_vte_size(roxterm, VTE_TERMINAL(roxterm->widget),
-                width, height);
-    }
-    roxterm_update_geometry(roxterm, vte);
+    roxterm_set_vte_size(roxterm, VTE_TERMINAL(roxterm->widget),
+            width, height);
 }
 
 static gboolean roxterm_about_uri_hook(GtkAboutDialog *about,
@@ -2549,7 +2542,6 @@ static void roxterm_resize_window_handler(VteTerminal *vte,
     //if (alloc.width == (int) width && alloc.height == (int) height)
     //    return;
 
-    /* Only resize window now if this is current tab */
     roxterm_set_vte_size(roxterm, vte, columns, rows);
 }
 
