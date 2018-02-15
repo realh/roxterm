@@ -90,7 +90,6 @@ static gboolean global_options_show_usage(const gchar *option_name,
       "    [--directory=DIRECTORY|-d DIRECTORY]\n"
       "    [--show-menubar] [--hide-menubar]\n"
       "    [--fork]\n"
-      "    [--no-geometry]\n"
       "    [-e|--execute COMMAND]\n");
     exit(0);
     return TRUE;
@@ -269,10 +268,6 @@ static GOptionEntry global_g_options[] = {
     { "session", 0, G_OPTION_FLAG_IN_MAIN,
         G_OPTION_ARG_STRING, &global_options_user_session_id,
         N_("Restore the named user session"), N_("SESSION") },
-    { "no-geometry", 0, G_OPTION_FLAG_IN_MAIN | G_OPTION_FLAG_NO_ARG,
-        G_OPTION_ARG_CALLBACK, global_options_set_bool,
-        N_("Don't set window geometry hints. This is a workaround for "
-        "<https://bugzilla.gnome.org/show_bug.cgi?id=649680>"), NULL },
     { "execute", 'e', G_OPTION_FLAG_IN_MAIN | G_OPTION_FLAG_NO_ARG,
         G_OPTION_ARG_CALLBACK, global_options_swallow_execute,
         N_("Execute remainder of command line inside the\n"
