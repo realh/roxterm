@@ -24,7 +24,6 @@
 #include <ctype.h>
 #include <errno.h>
 
-#include "boxcompat.h"
 #include "dlg.h"
 #include "globalopts.h"
 #include "menutree.h"
@@ -924,7 +923,8 @@ static void add_menu_bar(MultiWin *win)
     if (win->show_menu_bar)
         return;
     menu_bar = menutree_get_top_level_widget(win->menu_bar);
-    gtk_grid_attach(GTK_GRID(win->vbox), menu_bar, 0, -1, 1, 1);
+    gtk_box_pack_start(GTK_BOX(win->vbox), menu_bar, FALSE, FALSE, 0);
+    gtk_box_reorder_child(GTK_BOX(win->vbox), menu_bar, 0);
     gtk_widget_show(menu_bar);
     win->show_menu_bar = TRUE;
 }
@@ -1111,15 +1111,6 @@ static GtkWidget *make_tab_label(MultiTab *tab, GtkPositionType tab_pos)
             &tab->parent->best_tab_width);
     multi_tab_set_full_window_title(tab, tab->window_title_template,
             tab->window_title);
-    /* TODO: GtkBox will be replaced by GtkGrid one day, but at the moment it
-     * doesn't work properly because GtkNotebook has no homogeneous option
-     * and GtkGrid doesn't have pack_end to right-align close button.
-     */
-     /*
-    tab->label_box = gtk_grid_new();
-    gtk_orientable_set_orientation(GTK_ORIENTABLE(tab->label_box),
-            GTK_ORIENTATION_HORIZONTAL);
-    */
     tab->label_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
     gtk_box_set_homogeneous(GTK_BOX(tab->label_box), FALSE);
     gtk_box_pack_start(GTK_BOX(tab->label_box), tab->label, TRUE, TRUE, 0);
@@ -1340,7 +1331,8 @@ static void multi_win_name_tab_action(MultiWin * win)
 
     tab->rename_dialog = dialog_w;
     gtk_dialog_set_default_response(dialog, GTK_RESPONSE_APPLY);
-    box_compat_packv(gtk_dialog_get_content_area(dialog), name_w, TRUE, 8);
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(dialog)),
+            name_w, TRUE, TRUE, 8);
     gtk_entry_set_activates_default(name_e, TRUE);
     gtk_entry_set_text(name_e, name ? name : "");
     gtk_widget_show_all(dialog_w);
@@ -1393,16 +1385,16 @@ static void multi_win_save_session_action(MultiWin * win)
     const char *name;
     char *filename;
     GtkWidget *content_area = gtk_dialog_get_content_area(dialog);
-    GtkWidget *hbox = gtk_grid_new();
+    GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 
     gtk_dialog_set_default_response(dialog, GTK_RESPONSE_APPLY);
-    box_compat_packv(content_area, title_w, FALSE, 8);
-    box_compat_packh(hbox, img, FALSE, 8);
+    gtk_box_pack_start(GTK_BOX(content_area), title_w, FALSE, FALSE, 8);
+    gtk_box_pack_start(GTK_BOX(hbox), img, FALSE, FALSE, 8);
     gtk_label_set_line_wrap(GTK_LABEL(tip_label), TRUE);
     gtk_label_set_width_chars(GTK_LABEL(tip_label), 30);
     gtk_label_set_max_width_chars(GTK_LABEL(tip_label), 50);
-    box_compat_packh(hbox, tip_label, FALSE, 8);
-    box_compat_packv(content_area, hbox, FALSE, 8);
+    gtk_box_pack_start(GTK_BOX(hbox), tip_label, FALSE, FALSE, 8);
+    gtk_box_pack_start(GTK_BOX(content_area), hbox, FALSE, FALSE, 8);
     gtk_entry_set_activates_default(title_e, TRUE);
     gtk_entry_set_text(title_e, "Default");
     gtk_widget_show_all(dialog_w);
@@ -1455,16 +1447,16 @@ static void multi_win_set_window_title_action(MultiWin * win)
     int response;
     const char *title;
     GtkWidget *content_area = gtk_dialog_get_content_area(dialog);
-    GtkWidget *hbox = gtk_grid_new();
+    GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 
     gtk_dialog_set_default_response(dialog, GTK_RESPONSE_APPLY);
-    box_compat_packv(content_area, title_w, FALSE, 8);
-    box_compat_packh(hbox, img, FALSE, 8);
+    gtk_box_pack_start(GTK_BOX(content_area), title_w, FALSE, FALSE, 8);
+    gtk_box_pack_start(GTK_BOX(hbox), img, FALSE, FALSE, 8);
     gtk_label_set_line_wrap(GTK_LABEL(tip_label), TRUE);
     gtk_label_set_width_chars(GTK_LABEL(tip_label), 30);
     gtk_label_set_max_width_chars(GTK_LABEL(tip_label), 50);
-    box_compat_packh(hbox, tip_label, FALSE, 8);
-    box_compat_packv(content_area, hbox, FALSE, 8);
+    gtk_box_pack_start(GTK_BOX(hbox), tip_label, FALSE, FALSE, 8);
+    gtk_box_pack_start(GTK_BOX(content_area), hbox, FALSE, FALSE, 8);
     gtk_entry_set_activates_default(title_e, TRUE);
     gtk_entry_set_text(title_e, win->title_template ? win->title_template : "");
     gtk_widget_show_all(dialog_w);
@@ -1891,9 +1883,7 @@ MultiWin *multi_win_new_blank(Options *shortcuts,
      */
     gtk_widget_set_app_paintable(win->gtkwin, TRUE);
 
-    win->vbox = gtk_grid_new();
-    gtk_orientable_set_orientation(GTK_ORIENTABLE(win->vbox),
-            GTK_ORIENTATION_VERTICAL);
+    win->vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_container_add(GTK_CONTAINER(win->gtkwin), win->vbox);
 
     options_ref(shortcuts);
@@ -1966,7 +1956,7 @@ MultiWin *multi_win_new_blank(Options *shortcuts,
     if (add_tab_button)
         gtk_widget_show_all(win->add_tab_button);
     win->show_add_tab_button = add_tab_button;
-    box_compat_packv(win->vbox, win->notebook, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(win->vbox), win->notebook, TRUE, TRUE, 0);
     g_signal_connect(win->notebook, "switch-page",
         G_CALLBACK(multi_win_page_switched), win);
     g_signal_connect(win->gtkwin, "focus-in-event",

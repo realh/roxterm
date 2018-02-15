@@ -37,7 +37,6 @@
 #endif
 
 #include "about.h"
-#include "boxcompat.h"
 #include "colourscheme.h"
 #include "dlg.h"
 #include "dragrcv.h"
@@ -4384,7 +4383,7 @@ static gboolean roxterm_delete_handler(GtkWindow *gtkwin, GdkEvent *event,
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(noshow), FALSE);
     g_signal_connect(noshow, "toggled",
             G_CALLBACK(dont_show_again_toggled), &d);
-    box_compat_packv(ca_box, noshow, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(ca_box), noshow, FALSE, FALSE, 0);
     gtk_widget_show(noshow);
 
     only_running = gtk_check_button_new_with_mnemonic(
@@ -4393,7 +4392,7 @@ static gboolean roxterm_delete_handler(GtkWindow *gtkwin, GdkEvent *event,
             d.only_running);
     g_signal_connect(only_running, "toggled",
             G_CALLBACK(only_running_toggled), &d);
-    box_compat_packv(ca_box, only_running, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(ca_box), only_running, FALSE, FALSE, 0);
     gtk_widget_show(only_running);
 
     response = gtk_dialog_run(GTK_DIALOG(dialog)) != GTK_RESPONSE_YES;
