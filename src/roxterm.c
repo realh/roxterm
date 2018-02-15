@@ -3227,25 +3227,26 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
             "scrollbar_pos", MultiWinScrollBar_Right));
     if (scrollbar_pos)
     {
-        GtkGrid *grid = GTK_GRID(roxterm->hbox = gtk_grid_new());
+        /* Previous versions used a GtkGrid here instead of GtkBox (someone
+         * started a rumour that GtkBox was due for deprecation), but that
+         * seemed to cause problems with the scrollbar not matching up with the
+         * vte properly, so I've changed back to GtkBox. But that causes
+         * warnings about a size being allocated to the scrollbar without
+         * calling get_preferred_size when maximizing, so I'll try a 
+         * GtkScrolledWindow.
+         */
+        GtkBox *box = GTK_BOX(roxterm->hbox =
+                gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0));
+        void (*pack)(GtkBox *, GtkWidget *, gboolean, gboolean, guint) =
+            (scrollbar_pos == MultiWinScrollBar_Left) ?
+            gtk_box_pack_end : gtk_box_pack_start;
 
         roxterm->scrollbar =
                 gtk_scrollbar_new(GTK_ORIENTATION_VERTICAL,
                         roxterm_get_vte_adjustment(vte));
-        if (scrollbar_pos == MultiWinScrollBar_Left)
-        {
-            gtk_grid_attach(grid, roxterm->scrollbar, 0, 0, 1, 1);
-            gtk_grid_attach(grid, roxterm->widget, 1, 0, 1, 1);
-        }
-        else
-        {
-            gtk_grid_attach(grid, roxterm->widget, 0, 0, 1, 1);
-            gtk_grid_attach(grid, roxterm->scrollbar, 1, 0, 1, 1);
-        }
-        g_object_set(roxterm->widget, "hexpand", TRUE,
-                "vexpand", TRUE, NULL);
-        g_object_set(roxterm->scrollbar, "hexpand", FALSE,
-                "vexpand", TRUE, NULL);
+        pack(box, roxterm->widget, TRUE, TRUE, 0);
+        pack(box, roxterm->scrollbar, FALSE, FALSE, 0);
+        gtk_widget_get_preferred_size(roxterm->scrollbar, NULL, NULL);
         gtk_widget_show_all(roxterm->hbox);
     }
     else
