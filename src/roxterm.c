@@ -29,10 +29,12 @@
 #include <string.h>
 #include <unistd.h>
 
-#include <gdk/gdkx.h>
+#include <vte/vte.h>
 
+#if VTE_CHECK_VERSION(0,50,0)
 #define PCRE2_CODE_UNIT_WIDTH 8
 #include <pcre2.h>
+#endif
 
 #include "about.h"
 #include "boxcompat.h"

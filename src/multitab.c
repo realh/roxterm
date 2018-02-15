@@ -24,8 +24,6 @@
 #include <ctype.h>
 #include <errno.h>
 
-#include <gdk/gdkx.h>
-
 #include "boxcompat.h"
 #include "dlg.h"
 #include "globalopts.h"
