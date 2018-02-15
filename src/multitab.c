@@ -2675,8 +2675,14 @@ static gboolean multi_win_process_geometry(MultiWin *win,
         geom.height_inc != win->geom_hints.height_inc)
     {
         g_debug("Updating geometry");
-        //gtk_window_set_geometry_hints(GTK_WINDOW(win->gtkwin), NULL,
-        //        &geom, hints);
+        /* Don't actually apply geometry, it causes window to shrink by one
+         * cell horizontally and vertically when unmaximizing.
+         * https://gitlab.gnome.org/GNOME/gtk/issues/34
+         */
+        /*
+        gtk_window_set_geometry_hints(GTK_WINDOW(win->gtkwin), NULL,
+                &geom, hints);
+        */
         win->geom_hints = geom;
         return TRUE;
     }
