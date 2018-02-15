@@ -101,6 +101,7 @@ struct MultiWin {
     int best_tab_width;
     GtkWidget *add_tab_button;
     gboolean show_add_tab_button;
+    GdkGeometry geom_hints;
 };
 
 static double multi_win_zoom_factors[] = {
@@ -154,6 +155,9 @@ static void multi_win_destructor(MultiWin *win, gboolean destroy_widgets);
 static void multi_win_set_icon_title(MultiWin *win, const char *title);
 
 static void multi_win_close_tab_clicked(GtkWidget *widget, MultiTab *tab);
+
+static gboolean multi_win_process_geometry(MultiWin *win,
+        MultiTab *tab, int columns, int rows, int *width, int *height);
 
 static gboolean multi_tab_do_restore_size(MultiTab *tab)
 {
@@ -2654,7 +2658,8 @@ gboolean multi_win_parse_geometry(const char *geom,
     return TRUE;
 }
 
-static void multi_win_process_geometry(MultiWin *win,
+/* Returns TRUE if the geometry hints have changed. */
+static gboolean multi_win_process_geometry(MultiWin *win,
         MultiTab *tab, int columns, int rows, int *width, int *height)
 {
     GdkGeometry geom;
@@ -2694,7 +2699,9 @@ static void multi_win_process_geometry(MultiWin *win,
     *height = rows * geom.height_inc + geom.base_height;
     g_debug("Desired size including chrome but not CSD: %dx%d",
             *width, *height);
-    /* gnome-terminal includes CSD in its geometry hints. Doing this fixes it!
+    /* From gnome-terminal's code I deduced that gtk_window_set_default_size
+     * etc should exclude the window decorations, but the geometry hints should
+     * include them. This seems to fix roxterm's sizing :).
      */
     ww = gtk_widget_get_allocated_width(win->gtkwin);
     wh = gtk_widget_get_allocated_height(win->gtkwin);
@@ -2703,7 +2710,19 @@ static void multi_win_process_geometry(MultiWin *win,
     geom.min_height += wh - gh;
     geom.base_width += ww - bw;
     geom.base_height += wh - bh;
-    gtk_window_set_geometry_hints(GTK_WINDOW(win->gtkwin), NULL, &geom, hints);
+    if (geom.min_width != win->geom_hints.min_width ||
+        geom.min_height != win->geom_hints.min_height ||
+        geom.base_width != win->geom_hints.base_width ||
+        geom.base_height != win->geom_hints.base_height ||
+        geom.width_inc != win->geom_hints.width_inc ||
+        geom.height_inc != win->geom_hints.height_inc)
+    {
+        gtk_window_set_geometry_hints(GTK_WINDOW(win->gtkwin), NULL,
+                &geom, hints);
+        win->geom_hints = geom;
+        return TRUE;
+    }
+    return FALSE;
 }
 
 void multi_win_set_initial_geometry(MultiWin *win, const char *geom,
