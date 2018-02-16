@@ -69,7 +69,7 @@ enum {
 /* Whether to try to prevent tabs from being too wide to unmaximize correctly.
  * <http://mail.gnome.org/archives/gtk-devel-list/2011-September/msg00214.html
  */
-#define MULTITAB_LABEL_GTK3_SIZE_KLUDGE TRUE
+#define MULTITAB_LABEL_GTK3_SIZE_KLUDGE FALSE
 
 #endif /* DEFNS_H */
 
