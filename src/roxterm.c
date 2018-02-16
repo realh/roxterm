@@ -73,8 +73,6 @@ struct ROXTermData {
     /* We do not own references to tab or widget */
     MultiTab *tab;
     GtkWidget *widget;            /* VteTerminal */
-    GtkWidget *hbox;
-    GtkWidget *scrollbar;
     pid_t pid;
     /* We own a reference to colour_scheme */
     Options *colour_scheme;
@@ -2120,19 +2118,22 @@ static void roxterm_open_config_manager(void *ignored)
     optsdbus_send_edit_opts_message("Configlet", NULL);
 }
 
+/* The "style-updated" signal gets heavily spammed, including when GTK is
+ * playing silly buggers with size allocation, so we don't have much choice
+ * but to ignore it altogether.
+ */
+/*
 static void
 roxterm_style_change_handler(GtkWidget * widget, ROXTermData * roxterm)
 {
     (void) widget;
-    /* The "style-updated" signal gets heavily spammed, and gets called before
-     * the vte has a valid allocation, so we need to filter out the latter.
-     */
     if (gtk_widget_get_allocated_width(roxterm->widget) > 1 &&
         gtk_widget_get_allocated_height(roxterm->widget) > 1)
     {
         roxterm_update_geometry(roxterm, VTE_TERMINAL(roxterm->widget));
     }
 }
+*/
 
 static void
 roxterm_char_size_changed(GtkSettings * settings, guint arg1, guint arg2,
@@ -2778,8 +2779,8 @@ static void roxterm_connect_misc_signals(ROXTermData * roxterm)
         G_CALLBACK(roxterm_icon_title_handler), roxterm);
     g_signal_connect(roxterm->widget, "window-title-changed",
         G_CALLBACK(roxterm_window_title_handler), roxterm);
-    g_signal_connect(roxterm->widget, "style-updated",
-        G_CALLBACK(roxterm_style_change_handler), roxterm);
+    //g_signal_connect(roxterm->widget, "style-updated",
+        //G_CALLBACK(roxterm_style_change_handler), roxterm);
     g_signal_connect(roxterm->widget, "char-size-changed",
         G_CALLBACK(roxterm_char_size_changed), roxterm);
     g_signal_connect(roxterm->widget, "drag-end",
@@ -3177,7 +3178,12 @@ roxterm_tab_received(GtkWidget *rcvd_widget, ROXTermData *roxterm)
     }
 }
 
-inline static GtkAdjustment *roxterm_get_vte_adjustment(VteTerminal *vte)
+inline static GtkAdjustment *roxterm_get_vte_hadjustment(VteTerminal *vte)
+{
+    return gtk_scrollable_get_hadjustment(GTK_SCROLLABLE(vte));
+}
+
+inline static GtkAdjustment *roxterm_get_vte_vadjustment(VteTerminal *vte)
 {
     return gtk_scrollable_get_vadjustment(GTK_SCROLLABLE(vte));
 }
@@ -3194,6 +3200,7 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
     char *tab_name;
     gboolean custom_tab_name = FALSE;
     MultiWin *template_win = roxterm_get_win(roxterm_template);
+    GtkWidget *viewport = NULL;
 
     roxterm_terms = g_list_append(roxterm_terms, roxterm);
 
@@ -3223,34 +3230,25 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
     if (vte_widget)
         *vte_widget = roxterm->widget;
     if (adjustment)
-        *adjustment = roxterm_get_vte_adjustment(vte);
+        *adjustment = roxterm_get_vte_vadjustment(vte);
 
     scrollbar_pos = multi_win_set_scroll_bar_position(win,
         options_lookup_int_with_default(roxterm_template->profile,
             "scrollbar_pos", MultiWinScrollBar_Right));
     if (scrollbar_pos)
     {
-        /* Previous versions used a GtkGrid here instead of GtkBox (someone
-         * started a rumour that GtkBox was due for deprecation), but that
-         * seemed to cause problems with the scrollbar not matching up with the
-         * vte properly, so I've changed back to GtkBox. But that causes
-         * warnings about a size being allocated to the scrollbar without
-         * calling get_preferred_size when maximizing, so I'll try a 
-         * GtkScrolledWindow.
+        /* gnome-terminal packs a separate scrollbar and vte into an HBox, but
+         * doing the same here causes warnings about the scrollbar getting 
+         * allocated a size without calling get_preferred_*. Hopefully using
+         * a GtkScrolledWindow will fix that, and also has the advantage of
+         * enabling the use of overlay scrollbars.
          */
-        GtkBox *box = GTK_BOX(roxterm->hbox =
-                gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0));
-        void (*pack)(GtkBox *, GtkWidget *, gboolean, gboolean, guint) =
-            (scrollbar_pos == MultiWinScrollBar_Left) ?
-            gtk_box_pack_end : gtk_box_pack_start;
-
-        roxterm->scrollbar =
-                gtk_scrollbar_new(GTK_ORIENTATION_VERTICAL,
-                        roxterm_get_vte_adjustment(vte));
-        pack(box, roxterm->widget, TRUE, TRUE, 0);
-        pack(box, roxterm->scrollbar, FALSE, FALSE, 0);
-        gtk_widget_get_preferred_size(roxterm->scrollbar, NULL, NULL);
-        gtk_widget_show_all(roxterm->hbox);
+        viewport = gtk_scrolled_window_new(roxterm_get_vte_hadjustment(vte),
+                        roxterm_get_vte_vadjustment(vte));
+        gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(viewport),
+                GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
+        gtk_container_add(GTK_CONTAINER(viewport), roxterm->widget);
+        gtk_widget_show_all(viewport);
     }
     else
     {
@@ -3295,7 +3293,7 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
 
     g_idle_add((GSourceFunc) run_child_when_idle, roxterm);
 
-    return scrollbar_pos ? roxterm->hbox : roxterm->widget;
+    return viewport ? viewport : roxterm->widget;
 }
 
 VteTerminal *roxterm_get_current_vte_ptr(MultiWin *win) {
