@@ -99,6 +99,7 @@ struct MultiWin {
     GtkWidget *add_tab_button;
     gboolean show_add_tab_button;
     GdkGeometry geom_hints;
+    guint draw_signal_tag;
 };
 
 static double multi_win_zoom_factors[] = {
@@ -916,12 +917,31 @@ void multi_win_select_tab(MultiWin * win, MultiTab * tab)
     win->ignore_toggles = FALSE;
 }
 
+/* The top-level needs to be transparent as a whole to support the transparency
+ * option, but the menu bar is also transparent, so we need to manually fill in
+ * its background.
+ */
+static gboolean
+multi_win_draw_menubar_bg(GtkWidget *widget, cairo_t *cr, MultiWin *win)
+{
+    GtkStyleContext *context = gtk_widget_get_style_context(widget);
+    GtkAllocation alloc;
+
+    gtk_widget_get_allocation(menutree_get_top_level_widget(win->menu_bar),
+            &alloc);
+    gtk_render_background(context, cr,
+            alloc.x, alloc.y, alloc.width, alloc.height);
+    return FALSE;
+}
+
 static void add_menu_bar(MultiWin *win)
 {
     GtkWidget *menu_bar;
 
     if (win->show_menu_bar)
         return;
+    win->draw_signal_tag = g_signal_connect(win->gtkwin, "draw",
+            G_CALLBACK(multi_win_draw_menubar_bg), win);
     menu_bar = menutree_get_top_level_widget(win->menu_bar);
     gtk_box_pack_start(GTK_BOX(win->vbox), menu_bar, FALSE, FALSE, 0);
     gtk_box_reorder_child(GTK_BOX(win->vbox), menu_bar, 0);
@@ -935,6 +955,8 @@ static void remove_menu_bar(MultiWin *win)
 
     if (!win->show_menu_bar)
         return;
+    g_signal_handler_disconnect(win->gtkwin, win->draw_signal_tag);
+    win->draw_signal_tag = 0;
     menu_bar = menutree_get_top_level_widget(win->menu_bar);
     gtk_widget_hide(menu_bar);
     gtk_container_remove(GTK_CONTAINER(win->vbox), menu_bar);
