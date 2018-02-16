@@ -27,7 +27,6 @@
             <child>
               <object class="GtkButton" id="revert">
                 <property name="label" translatable="yes">_Revert</property>
-                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -43,7 +42,6 @@
             <child>
               <object class="GtkButton" id="closebutton1">
                 <property name="label">Close</property>
-                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>
@@ -73,7 +71,6 @@
             <child>
               <object class="GtkCheckButton" id="set_fgbg">
                 <property name="label" translatable="yes">_Set text and background colours</property>
-                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
@@ -81,7 +78,6 @@
                 <property name="tooltip_text" translatable="yes">Whether to set terminals' text and background colours using the fields below</property>
                 <property name="halign">start</property>
                 <property name="use_underline">True</property>
-                <property name="xalign">0.5</property>
                 <property name="draw_indicator">True</property>
                 <signal name="toggled" handler="on_set_fgbg_toggled" swapped="no"/>
               </object>
