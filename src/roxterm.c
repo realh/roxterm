@@ -3247,6 +3247,9 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
                         roxterm_get_vte_vadjustment(vte));
         gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(viewport),
                 GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
+        gtk_scrolled_window_set_overlay_scrolling(GTK_SCROLLED_WINDOW(viewport),
+            options_lookup_int_with_default(roxterm_template->profile,
+                "overlay_scrollbar", TRUE));
         gtk_container_add(GTK_CONTAINER(viewport), roxterm->widget);
         gtk_widget_show_all(viewport);
     }

@@ -135,6 +135,13 @@ static void profilegui_set_close_buttons_shading(ProfileGUI *pg)
             GTK_TOGGLE_BUTTON(profilegui_widget(pg, "tab_close_btn"))));
 }
 
+static void profilegui_set_scrollbar_shading(ProfileGUI *pg)
+{
+    gtk_widget_set_sensitive(profilegui_widget(pg, "overlay_scrollbar"),
+            !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(
+                    profilegui_widget(pg, "scrollbar_pos0"))));
+}
+
 static void profilegui_check_ssh_entries_for_changes(ProfileGUI * pg)
 {
     PG_UPDATE_IF(ssh_address)
@@ -266,6 +273,12 @@ void on_cell_size_toggled(GtkToggleButton *button, ProfileGUI *pg)
 
     gtk_widget_set_sensitive(profilegui_widget(pg, "width"), state);
     gtk_widget_set_sensitive(profilegui_widget(pg, "height"), state);
+}
+
+void on_scrollbar_pos_toggled(GtkRadioButton *button, ProfileGUI *pg)
+{
+    (void) button;
+    profilegui_set_scrollbar_shading(pg);
 }
 
 #define DEFAULT_BACKSPACE_BINDING 0
@@ -457,7 +470,9 @@ static void profilegui_fill_in_dialog(ProfileGUI * pg)
     capplet_set_spin_button(&pg->capp, "height", 24);
     on_cell_size_toggled(GTK_TOGGLE_BUTTON(profilegui_widget(pg, "cell_size")),
             pg);
+    capplet_set_boolean_toggle(&pg->capp, "overlay_scrollbar", TRUE);
     capplet_set_radio(&pg->capp, "scrollbar_pos", 1);
+    profilegui_set_scrollbar_shading(pg);
     capplet_set_boolean_toggle(&pg->capp, "limit_scrollback", FALSE);
     capplet_set_spin_button(&pg->capp, "scrollback_lines", 1000);
     capplet_set_boolean_toggle(&pg->capp, "scroll_on_output", FALSE);
