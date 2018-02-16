@@ -114,7 +114,6 @@ struct ROXTermData {
     guint search_flags;
     int file_match_tag[2];
     gboolean from_session;
-    GtkStyleContext *style_context;
     int padding_w, padding_h;
     gboolean is_shell;
 };
@@ -467,8 +466,6 @@ static ROXTermData *roxterm_data_clone(ROXTermData *old_gt)
         new_gt->rows = vte_terminal_get_row_count(vte);
     }
     new_gt->file_match_tag[0] = new_gt->file_match_tag[1] = -1;
-
-    new_gt->style_context = NULL;
 
     return new_gt;
 }
@@ -1309,6 +1306,7 @@ static void roxterm_update_geometry(ROXTermData * roxterm, VteTerminal * vte)
 
     columns = vte_terminal_get_column_count(vte);
     rows = vte_terminal_get_row_count(vte);
+    g_debug("roxterm_update_geometry %dx%d", columns, rows);
     roxterm_set_vte_size(roxterm, vte, columns, rows);
 }
 
@@ -2126,8 +2124,14 @@ static void
 roxterm_style_change_handler(GtkWidget * widget, ROXTermData * roxterm)
 {
     (void) widget;
-    roxterm->style_context = NULL;
-    roxterm_update_geometry(roxterm, VTE_TERMINAL(roxterm->widget));
+    /* The "style-updated" signal gets heavily spammed, and gets called before
+     * the vte has a valid allocation, so we need to filter out the latter.
+     */
+    if (gtk_widget_get_allocated_width(roxterm->widget) > 1 &&
+        gtk_widget_get_allocated_height(roxterm->widget) > 1)
+    {
+        roxterm_update_geometry(roxterm, VTE_TERMINAL(roxterm->widget));
+    }
 }
 
 static void
@@ -4045,7 +4049,6 @@ static ROXTermData *roxterm_data_new(double zoom_factor, const char *directory,
     roxterm->pid = -1;
     roxterm->env = global_options_copy_strv(env);
     roxterm->file_match_tag[0] = roxterm->file_match_tag[1] = -1;
-    roxterm->style_context = NULL;
     return roxterm;
 }
 

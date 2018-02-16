@@ -191,6 +191,7 @@ static void multi_tab_size_allocate(GtkWidget *widget, GdkRectangle *alloc,
          */
         g_idle_add((GSourceFunc) multi_tab_do_restore_size, tab);
     }
+    /*
     else
     {
         g_debug("Ignoring hbox size-allocate of %dx%d",
@@ -199,6 +200,7 @@ static void multi_tab_size_allocate(GtkWidget *widget, GdkRectangle *alloc,
                 gtk_widget_get_allocated_width(tab->active_widget),
                 gtk_widget_get_allocated_height(tab->active_widget));
     }
+    */
 }
 
 /* After adding/removing menu bars etc we want to resize the window to preserve
@@ -2626,6 +2628,11 @@ gboolean multi_win_parse_geometry(const char *geom,
     return TRUE;
 }
 
+static void bad_alloc(int w, int h)
+{
+    g_debug("Bad allocation %dx%d", w, h);
+}
+
 /* Returns TRUE if the geometry hints have changed. */
 static gboolean multi_win_process_geometry(MultiWin *win,
         MultiTab *tab, int columns, int rows, int *width, int *height)
@@ -2656,6 +2663,11 @@ static gboolean multi_win_process_geometry(MultiWin *win,
     bh = gtk_widget_get_allocated_height(win->vbox);
     g_debug("Terminal allocation %dx%d, undecorated window allocation %dx%d",
             gw, gh, bw, bh);
+    if (gw <= 1 || gh <= 1)
+    {
+        bad_alloc(gw, gh);
+        return FALSE;
+    }
     g_debug("Want to allocate %dx%d to terminal", 
             columns * geom.width_inc + geom.base_width,
             rows * geom.height_inc + geom.base_height);
