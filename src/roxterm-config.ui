@@ -1208,13 +1208,14 @@
                       <object class="GtkGrid" id="grid9">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="row_spacing">8</property>
                         <child>
                           <object class="GtkRadioButton" id="warn_close0">
                             <property name="label" translatable="yes">No warnings when closing windows/tabs</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
-                            <property name="xalign">0.5</property>
+                            <property name="halign">start</property>
                             <property name="active">True</property>
                             <property name="draw_indicator">True</property>
                             <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
@@ -1230,7 +1231,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
-                            <property name="xalign">0.5</property>
+                            <property name="halign">start</property>
                             <property name="active">True</property>
                             <property name="draw_indicator">True</property>
                             <property name="group">warn_close0</property>
@@ -1247,7 +1248,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
-                            <property name="xalign">0.5</property>
+                            <property name="halign">start</property>
                             <property name="active">True</property>
                             <property name="draw_indicator">True</property>
                             <property name="group">warn_close0</property>
@@ -1264,7 +1265,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
-                            <property name="xalign">0.5</property>
+                            <property name="halign">start</property>
                             <property name="active">True</property>
                             <property name="draw_indicator">True</property>
                             <property name="group">warn_close0</property>
@@ -1281,7 +1282,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
-                            <property name="xalign">0.5</property>
+                            <property name="halign">start</property>
                             <property name="draw_indicator">True</property>
                             <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                           </object>
@@ -1299,8 +1300,8 @@
                             <property name="has_tooltip">True</property>
                             <property name="tooltip_markup">This option applies to terminal windows' menus and borders etc; terminal colours are handled separately. It does not apply to the configuration applet.</property>
                             <property name="tooltip_text" translatable="yes">This option applies to terminal windows' menus and borders etc; terminal colours are handled separately. It does not apply to the configuration applet.</property>
+                            <property name="halign">start</property>
                             <property name="margin_top">8</property>
-                            <property name="xalign">0.5</property>
                             <property name="draw_indicator">True</property>
                             <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                           </object>
@@ -1568,7 +1569,6 @@
                                     <property name="has_tooltip">True</property>
                                     <property name="tooltip_text" translatable="yes">Set the terminal's size in characters from the adjacent values.</property>
                                     <property name="use_underline">True</property>
-                                    <property name="xalign">0.5</property>
                                     <property name="active">True</property>
                                     <property name="draw_indicator">True</property>
                                     <signal name="toggled" handler="on_cell_size_toggled" swapped="no"/>
@@ -1678,9 +1678,9 @@
                                     <property name="has_tooltip">True</property>
                                     <property name="tooltip_markup">Use a maximised window.</property>
                                     <property name="tooltip_text" translatable="yes">Use a maximised window.</property>
+                                    <property name="halign">start</property>
                                     <property name="margin_bottom">4</property>
                                     <property name="use_underline">True</property>
-                                    <property name="xalign">0.5</property>
                                     <property name="draw_indicator">True</property>
                                     <property name="group">cell_size</property>
                                     <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
@@ -1700,9 +1700,9 @@
                                     <property name="has_tooltip">True</property>
                                     <property name="tooltip_markup">Make the terminal take up the whole screen with no window borders.</property>
                                     <property name="tooltip_text" translatable="yes">Make the terminal take up the whole screen with no window borders.</property>
+                                    <property name="halign">start</property>
                                     <property name="margin_bottom">4</property>
                                     <property name="use_underline">True</property>
-                                    <property name="xalign">0.5</property>
                                     <property name="draw_indicator">True</property>
                                     <property name="group">cell_size</property>
                                     <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
@@ -1722,8 +1722,8 @@
                                     <property name="has_tooltip">True</property>
                                     <property name="tooltip_markup">Whether new windows with this profile will have a menu bar. You can also turn the menu bar on and off from terminal menus.</property>
                                     <property name="tooltip_text" translatable="yes">Whether new windows with this profile will have a menu bar. You can also turn the menu bar on and off from terminal menus.</property>
+                                    <property name="halign">start</property>
                                     <property name="use_underline">True</property>
-                                    <property name="xalign">0.5</property>
                                     <property name="draw_indicator">True</property>
                                     <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                                   </object>
@@ -1743,8 +1743,8 @@
                                     <property name="has_tooltip">True</property>
                                     <property name="tooltip_markup">If this option is enabled the tabs at the top of each terminal are always shown, even in windows which only contain one tab</property>
                                     <property name="tooltip_text" translatable="yes">If this option is enabled the tabs at the top of each terminal are always shown, even in windows which only contain one tab</property>
+                                    <property name="halign">start</property>
                                     <property name="use_underline">True</property>
-                                    <property name="xalign">0.5</property>
                                     <property name="draw_indicator">True</property>
                                     <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                                   </object>
@@ -1764,8 +1764,8 @@
                                     <property name="has_tooltip">True</property>
                                     <property name="tooltip_markup">Enables a button in the tab bar which adds a new tab when clicked.</property>
                                     <property name="tooltip_text" translatable="yes">Enables a button in the tab bar which adds a new tab when clicked.</property>
+                                    <property name="halign">start</property>
                                     <property name="use_underline">True</property>
-                                    <property name="xalign">0.5</property>
                                     <property name="draw_indicator">True</property>
                                     <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                                   </object>
@@ -1986,7 +1986,7 @@
                           <object class="GtkGrid" id="grid16">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="row_spacing">4</property>
+                            <property name="row_spacing">8</property>
                             <property name="column_spacing">4</property>
                             <child>
                               <object class="GtkLabel" id="cursor_blink_mode_label">
@@ -2008,8 +2008,8 @@
                                 <property name="receives_default">False</property>
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_text" translatable="yes">Whether the terminal cursor blinks depends on the GTK system setting.</property>
+                                <property name="halign">start</property>
                                 <property name="use_underline">True</property>
-                                <property name="xalign">0.5</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
@@ -2027,8 +2027,8 @@
                                 <property name="receives_default">False</property>
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_text" translatable="yes">The terminal cursor blinks.</property>
+                                <property name="halign">start</property>
                                 <property name="use_underline">True</property>
-                                <property name="xalign">0.5</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">cursor_blink_mode0</property>
@@ -2047,8 +2047,8 @@
                                 <property name="receives_default">False</property>
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_text" translatable="yes">The terminal cursor doesn't blink.</property>
+                                <property name="halign">start</property>
                                 <property name="use_underline">True</property>
-                                <property name="xalign">0.5</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">cursor_blink_mode0</property>
@@ -2079,8 +2079,8 @@
                                 <property name="receives_default">False</property>
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_text" translatable="yes">The cursor is a rectangle taking up the whole of a character space.</property>
+                                <property name="halign">start</property>
                                 <property name="use_underline">True</property>
-                                <property name="xalign">0</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
@@ -2098,8 +2098,8 @@
                                 <property name="receives_default">False</property>
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_text" translatable="yes">The cursor is a vertical line at the left of each character.</property>
+                                <property name="halign">start</property>
                                 <property name="use_underline">True</property>
-                                <property name="xalign">0</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">cursor_shape0</property>
@@ -2118,8 +2118,8 @@
                                 <property name="receives_default">False</property>
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_text" translatable="yes">The cursor is a horizontal line at the bottom of each character.</property>
+                                <property name="halign">start</property>
                                 <property name="use_underline">True</property>
-                                <property name="xalign">0.5</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">cursor_shape0</property>
@@ -2232,8 +2232,8 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
+                                <property name="halign">start</property>
                                 <property name="use_underline">True</property>
-                                <property name="xalign">0.5</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                                 <accelerator key="b" signal="clicked" modifiers="GDK_MOD1_MASK"/>
@@ -2250,8 +2250,8 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
+                                <property name="halign">start</property>
                                 <property name="use_underline">True</property>
-                                <property name="xalign">0.5</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                               </object>
@@ -2269,8 +2269,8 @@
                                 <property name="receives_default">False</property>
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_text" translatable="yes">If selected, "printing" an ASCII bell character will cause a beep.</property>
+                                <property name="halign">start</property>
                                 <property name="use_underline">True</property>
-                                <property name="xalign">0.5</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                               </object>
@@ -2288,8 +2288,8 @@
                                 <property name="receives_default">False</property>
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_text" translatable="yes">If the "bell rings" in a terminal while it isn't the active tab or window, its tab label will flash and/or its window will be marked "urgent".</property>
+                                <property name="halign">start</property>
                                 <property name="use_underline">True</property>
-                                <property name="xalign">0.5</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                               </object>
@@ -2306,8 +2306,8 @@
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
                                 <property name="tooltip_text" translatable="yes">Enabling this option causes existing text to be rerwapped when the terminal's width (number of columns) changes.</property>
+                                <property name="halign">start</property>
                                 <property name="use_underline">True</property>
-                                <property name="xalign">0.5</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                                 <accelerator key="w" signal="clicked" modifiers="GDK_MOD1_MASK"/>
@@ -2371,8 +2371,8 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
+                                <property name="halign">start</property>
                                 <property name="use_underline">True</property>
-                                <property name="xalign">0.5</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_command_toggled" swapped="no"/>
@@ -2390,8 +2390,8 @@
                                 <property name="receives_default">False</property>
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_text" translatable="yes">Whether shells running in the terminal are login shells</property>
+                                <property name="halign">start</property>
                                 <property name="use_underline">True</property>
-                                <property name="xalign">0.5</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                               </object>
@@ -2408,8 +2408,8 @@
                                 <property name="receives_default">False</property>
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_text" translatable="yes">Whether to log sessions to login records (utmp/wtmp/utmpx/wtmpx)</property>
+                                <property name="halign">start</property>
                                 <property name="use_underline">True</property>
-                                <property name="xalign">0.5</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                               </object>
@@ -2427,8 +2427,8 @@
                                 <property name="receives_default">False</property>
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_text" translatable="yes">Enable the adjacent custom command for this profile.</property>
+                                <property name="halign">start</property>
                                 <property name="use_underline">True</property>
-                                <property name="xalign">0.5</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">use_default_shell</property>
@@ -2467,8 +2467,8 @@
                                 <property name="receives_default">False</property>
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_text" translatable="yes">Connect to a ssh (secure shell) with this profile.</property>
+                                <property name="halign">start</property>
                                 <property name="use_underline">True</property>
-                                <property name="xalign">0.5</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">use_default_shell</property>
@@ -2696,10 +2696,10 @@
                         <property name="has_tooltip">True</property>
                         <property name="tooltip_markup">Run the browser without a terminal.</property>
                         <property name="tooltip_text" translatable="yes">Run the browser without a terminal.</property>
+                        <property name="halign">start</property>
                         <property name="margin_start">12</property>
                         <property name="relief">none</property>
                         <property name="use_underline">True</property>
-                        <property name="xalign">0.5</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
                         <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
@@ -2717,8 +2717,8 @@
                         <property name="receives_default">False</property>
                         <property name="has_tooltip">True</property>
                         <property name="tooltip_text" translatable="yes">Run the browser in a new ROXTerm window.</property>
+                        <property name="halign">start</property>
                         <property name="use_underline">True</property>
-                        <property name="xalign">0.5</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
                         <property name="group">browser_spawn_type0</property>
@@ -2737,8 +2737,8 @@
                         <property name="receives_default">False</property>
                         <property name="has_tooltip">True</property>
                         <property name="tooltip_text" translatable="yes">Run the browser in a new ROXTerm tab.</property>
+                        <property name="halign">start</property>
                         <property name="use_underline">True</property>
-                        <property name="xalign">0.5</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
                         <property name="group">browser_spawn_type0</property>
@@ -2806,9 +2806,9 @@
                         <property name="has_tooltip">True</property>
                         <property name="tooltip_markup">Run the mailer without a terminal.</property>
                         <property name="tooltip_text" translatable="yes">Run the mailer without a terminal.</property>
+                        <property name="halign">start</property>
                         <property name="margin_start">12</property>
                         <property name="use_underline">True</property>
-                        <property name="xalign">0.5</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
                         <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
@@ -2827,8 +2827,8 @@
                         <property name="has_tooltip">True</property>
                         <property name="tooltip_markup">Run the mailer in a new ROXTerm window.</property>
                         <property name="tooltip_text" translatable="yes">Run the mailer in a new ROXTerm window.</property>
+                        <property name="halign">start</property>
                         <property name="use_underline">True</property>
-                        <property name="xalign">0.5</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
                         <property name="group">mailer_spawn_type0</property>
@@ -2848,8 +2848,8 @@
                         <property name="has_tooltip">True</property>
                         <property name="tooltip_markup">Run the mailer in a new ROXTerm tab.</property>
                         <property name="tooltip_text" translatable="yes">Run the mailer in a new ROXTerm tab.</property>
+                        <property name="halign">start</property>
                         <property name="use_underline">True</property>
-                        <property name="xalign">0.5</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
                         <property name="group">mailer_spawn_type0</property>
@@ -2920,9 +2920,9 @@
                         <property name="has_tooltip">True</property>
                         <property name="tooltip_markup">Run the SSH command without a terminal.</property>
                         <property name="tooltip_text" translatable="yes">Run the SSH command without a terminal.</property>
+                        <property name="halign">start</property>
                         <property name="margin_start">12</property>
                         <property name="use_underline">True</property>
-                        <property name="xalign">0.5</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
                         <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
@@ -2941,8 +2941,8 @@
                         <property name="has_tooltip">True</property>
                         <property name="tooltip_markup">Run the SSH command in a new ROXTerm window.</property>
                         <property name="tooltip_text" translatable="yes">Run the SSH command in a new ROXTerm window.</property>
+                        <property name="halign">start</property>
                         <property name="use_underline">True</property>
-                        <property name="xalign">0.5</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
                         <property name="group">ssh_spawn_type0</property>
@@ -2962,8 +2962,8 @@
                         <property name="has_tooltip">True</property>
                         <property name="tooltip_markup">Run the SSH command in a new ROXTerm tab.</property>
                         <property name="tooltip_text" translatable="yes">Run the SSH command in a new ROXTerm tab.</property>
+                        <property name="halign">start</property>
                         <property name="use_underline">True</property>
-                        <property name="xalign">0.5</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
                         <property name="group">ssh_spawn_type0</property>
@@ -3058,9 +3058,9 @@
                         <property name="has_tooltip">True</property>
                         <property name="tooltip_markup">Run the filer without a terminal.</property>
                         <property name="tooltip_text" translatable="yes">Run the filer without a terminal.</property>
+                        <property name="halign">start</property>
                         <property name="margin_start">7</property>
                         <property name="use_underline">True</property>
-                        <property name="xalign">0.5</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
                         <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
@@ -3079,8 +3079,8 @@
                         <property name="has_tooltip">True</property>
                         <property name="tooltip_markup">Run the filer in a new ROXTerm window.</property>
                         <property name="tooltip_text" translatable="yes">Run the filer in a new ROXTerm window.</property>
+                        <property name="halign">start</property>
                         <property name="use_underline">True</property>
-                        <property name="xalign">0.5</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
                         <property name="group">dir_spawn_type0</property>
@@ -3100,8 +3100,8 @@
                         <property name="has_tooltip">True</property>
                         <property name="tooltip_markup">Run the filer in a new ROXTerm tab.</property>
                         <property name="tooltip_text" translatable="yes">Run the filer in a new ROXTerm tab.</property>
+                        <property name="halign">start</property>
                         <property name="use_underline">True</property>
-                        <property name="xalign">0.5</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
                         <property name="group">dir_spawn_type0</property>
@@ -3172,9 +3172,9 @@
                         <property name="has_tooltip">True</property>
                         <property name="tooltip_markup">Run the filer without a terminal.</property>
                         <property name="tooltip_text" translatable="yes">Run the filer without a terminal.</property>
+                        <property name="halign">start</property>
                         <property name="margin_start">8</property>
                         <property name="use_underline">True</property>
-                        <property name="xalign">0.5</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
                         <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
@@ -3193,8 +3193,8 @@
                         <property name="has_tooltip">True</property>
                         <property name="tooltip_markup">Run the filer in a new ROXTerm window.</property>
                         <property name="tooltip_text" translatable="yes">Run the filer in a new ROXTerm window.</property>
+                        <property name="halign">start</property>
                         <property name="use_underline">True</property>
-                        <property name="xalign">0.5</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
                         <property name="group">filer_spawn_type0</property>
@@ -3213,8 +3213,8 @@
                         <property name="has_tooltip">True</property>
                         <property name="tooltip_markup">Run the filer in a new ROXTerm tab.</property>
                         <property name="tooltip_text" translatable="yes">Run the filer in a new ROXTerm tab.</property>
+                        <property name="halign">start</property>
                         <property name="use_underline">True</property>
-                        <property name="xalign">0.5</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
                         <property name="group">filer_spawn_type0</property>
@@ -3233,9 +3233,9 @@
                         <property name="receives_default">False</property>
                         <property name="tooltip_markup">If set open the file's parent directory instead of the file.</property>
                         <property name="tooltip_text" translatable="yes">If set open the file's parent directory instead of the file.</property>
+                        <property name="halign">start</property>
                         <property name="margin_start">8</property>
                         <property name="use_underline">True</property>
-                        <property name="xalign">0.5</property>
                         <property name="draw_indicator">True</property>
                         <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                       </object>
@@ -3252,9 +3252,9 @@
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
                         <property name="tooltip_text" translatable="yes">If enabled, patterns which look like filenames will be highlighted even if they lack a file:// URI prefix.</property>
+                        <property name="halign">start</property>
                         <property name="margin_top">8</property>
                         <property name="use_underline">True</property>
-                        <property name="xalign">0.5</property>
                         <property name="draw_indicator">True</property>
                         <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                       </object>
@@ -3305,8 +3305,8 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
+                                <property name="halign">start</property>
                                 <property name="use_underline">True</property>
-                                <property name="xalign">0.5</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
@@ -3323,8 +3323,8 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
+                                <property name="halign">start</property>
                                 <property name="use_underline">True</property>
-                                <property name="xalign">0.5</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">scrollbar_pos0</property>
                                 <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
@@ -3342,8 +3342,8 @@
                                 <property name="receives_default">False</property>
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_text" translatable="yes">Whether to make the scrollbar jump to the bottom when new text is printed in the terminal</property>
+                                <property name="halign">start</property>
                                 <property name="use_underline">True</property>
-                                <property name="xalign">0.5</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                               </object>
@@ -3360,8 +3360,8 @@
                                 <property name="receives_default">False</property>
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_text" translatable="yes">Whether to make the scrollbar jump to the bottom when text is typed into a terminal</property>
+                                <property name="halign">start</property>
                                 <property name="use_underline">True</property>
-                                <property name="xalign">0.5</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                               </object>
@@ -3422,8 +3422,8 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
+                                    <property name="halign">start</property>
                                     <property name="use_underline">True</property>
-                                    <property name="xalign">0</property>
                                     <property name="draw_indicator">True</property>
                                     <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                                   </object>
@@ -3483,8 +3483,8 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
+                                <property name="halign">start</property>
                                 <property name="use_underline">True</property>
-                                <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">scrollbar_pos0</property>
                                 <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
@@ -3555,7 +3555,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="margin_top">4</property>
-                            <property name="row_spacing">8</property>
+                            <property name="row_spacing">12</property>
                             <property name="column_spacing">8</property>
                             <child>
                               <object class="GtkLabel" id="backspace_binding_label">
@@ -3646,8 +3646,8 @@
                                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_text" translatable="yes">This option disables the keyboard shortcut for opening the first menu. The default shortcut is F10.</property>
+                                <property name="halign">start</property>
                                 <property name="use_underline">True</property>
-                                <property name="xalign">0.5</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                               </object>
@@ -3666,8 +3666,8 @@
                                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_text" translatable="yes">This option disables the underlined shortcut keys in the menus (eg Alt+F for the File menu).</property>
+                                <property name="halign">start</property>
                                 <property name="use_underline">True</property>
-                                <property name="xalign">0.5</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                               </object>
@@ -3686,8 +3686,8 @@
                                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                                 <property name="has_tooltip">True</property>
                                 <property name="tooltip_text" translatable="yes">This option disables the shortcut keys for switching tabs (Alt+1-9 and Alt+0 by default)</property>
+                                <property name="halign">start</property>
                                 <property name="use_underline">True</property>
-                                <property name="xalign">0.5</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                               </object>
@@ -3742,7 +3742,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="margin_top">4</property>
-                            <property name="row_spacing">8</property>
+                            <property name="row_spacing">12</property>
                             <child>
                               <object class="GtkGrid" id="grid24">
                                 <property name="visible">True</property>
@@ -3785,8 +3785,8 @@
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
                                     <property name="tooltip_text" translatable="yes">This option causes the tab number to be shown at the start of the title.</property>
+                                    <property name="halign">start</property>
                                     <property name="use_underline">True</property>
-                                    <property name="xalign">0.5</property>
                                     <property name="draw_indicator">True</property>
                                     <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                                   </object>
@@ -3806,6 +3806,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="margin_top">8</property>
+                                <property name="row_spacing">8</property>
                                 <property name="column_spacing">20</property>
                                 <child>
                                   <object class="GtkLabel" id="label5">
@@ -3827,8 +3828,8 @@
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
                                     <property name="tooltip_markup">Nothing happens if the tab label is middle-clicked.</property>
+                                    <property name="halign">start</property>
                                     <property name="use_underline">True</property>
-                                    <property name="xalign">0.5</property>
                                     <property name="active">True</property>
                                     <property name="draw_indicator">True</property>
                                     <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
@@ -3845,8 +3846,8 @@
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
                                     <property name="tooltip_markup">If the tab label is middle-clicked the tab is closed.</property>
+                                    <property name="halign">start</property>
                                     <property name="use_underline">True</property>
-                                    <property name="xalign">0.5</property>
                                     <property name="draw_indicator">True</property>
                                     <property name="group">middle_click_tab0</property>
                                     <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
@@ -3863,8 +3864,8 @@
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
                                     <property name="tooltip_markup">If the tab label is middle-clicked the tab's name is pasted from the clipboard.</property>
+                                    <property name="halign">start</property>
                                     <property name="use_underline">True</property>
-                                    <property name="xalign">0.5</property>
                                     <property name="draw_indicator">True</property>
                                     <property name="group">middle_click_tab0</property>
                                     <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
@@ -3884,8 +3885,8 @@
                                     <property name="has_tooltip">True</property>
                                     <property name="tooltip_markup">This option makes the Next and Previous Tab operations respectively wrap around from the first and last tab to the opposite end of the row; the move tab left/right/up/down menu items are affected similarly.</property>
                                     <property name="tooltip_text" translatable="yes">This option makes the Next and Previous Tab operations respectively wrap around from the first and last tab to the opposite end of the row; the move tab left/right/up/down menu items are affected similarly.</property>
+                                    <property name="halign">start</property>
                                     <property name="use_underline">True</property>
-                                    <property name="xalign">0</property>
                                     <property name="draw_indicator">True</property>
                                     <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                                   </object>
@@ -3904,8 +3905,8 @@
                                     <property name="has_tooltip">True</property>
                                     <property name="tooltip_markup">If this option is enabled close buttons are shown at the top of tabs.</property>
                                     <property name="tooltip_text" translatable="yes">If this option is enabled close buttons are shown at the top of tabs.</property>
+                                    <property name="halign">start</property>
                                     <property name="use_underline">True</property>
-                                    <property name="xalign">0</property>
                                     <property name="draw_indicator">True</property>
                                     <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                                     <signal name="toggled" handler="on_close_buttons_toggled" swapped="no"/>
@@ -3925,8 +3926,8 @@
                                     <property name="has_tooltip">True</property>
                                     <property name="tooltip_markup">If this option is enabled the icons in close buttons may be changed in inactive tabs to reflect the status of their terminals.</property>
                                     <property name="tooltip_text" translatable="yes">If this option is enabled the icons in close buttons may be changed in inactive tabs to reflect the status of their terminals.</property>
+                                    <property name="halign">start</property>
                                     <property name="use_underline">True</property>
-                                    <property name="xalign">0</property>
                                     <property name="draw_indicator">True</property>
                                     <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
                                   </object>
@@ -3944,8 +3945,8 @@
                                     <property name="has_tooltip">True</property>
                                     <property name="tooltip_markup">Whether to open new tabs adjacent to the current tab in a window, otherwise append them.</property>
                                     <property name="tooltip_text" translatable="yes">Whether to open new tabs adjacent to the current tab in a window, otherwise append them.</property>
+                                    <property name="halign">start</property>
                                     <property name="use_underline">True</property>
-                                    <property name="xalign">0</property>
                                     <property name="image_position">bottom</property>
                                     <property name="draw_indicator">True</property>
                                     <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
