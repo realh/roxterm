@@ -99,6 +99,7 @@ struct MultiWin {
     GtkWidget *add_tab_button;
     gboolean show_add_tab_button;
     GdkGeometry geom_hints;
+    GdkWindowHints geom_hint_mask;
     guint draw_signal_tag;
 };
 
@@ -766,7 +767,7 @@ void multi_tab_move_to_new_window(MultiWin *win, MultiTab *tab, int position)
     old_win_destroyed = old_win && old_win->ntabs <= 1;
     multi_tab_remove_from_parent(tab, FALSE);
     multi_win_add_tab(win, tab, position, FALSE);
-    //multi_win_set_geometry_hints_for_tab(win, tab);
+    /* multi_win_set_geometry_hints_for_tab(win, tab); */
     if (multi_tab_to_new_window_handler)
     {
         multi_tab_to_new_window_handler(win, tab,
@@ -1000,10 +1001,43 @@ void multi_win_set_fullscreen(MultiWin *win, gboolean fullscreen)
     win->fullscreen = fullscreen;
 }
 
+#if GTK_CHECK_VERSION(3,22,23)
+#define WIN_STATE_TILED \
+            (GDK_WINDOW_STATE_TOP_TILED | GDK_WINDOW_STATE_BOTTOM_TILED | \
+            GDK_WINDOW_STATE_LEFT_TILED | GDK_WINDOW_STATE_RIGHT_TILED)
+#else
+#define WIN_STATE_TILED GDK_WINDOW_STATE_TILED
+#endif
+
+#define WIN_STATE_SNAPPED (GDK_WINDOW_STATE_MAXIMIZED | \
+        GDK_WINDOW_STATE_FULLSCREEN | WIN_STATE_TILED)
+
+inline static void multi_win_apply_geometry_hints(MultiWin *win)
+{
+    gtk_window_set_geometry_hints(GTK_WINDOW(win->gtkwin), NULL,
+            &win->geom_hints, win->geom_hint_mask);
+}
+
 static gboolean multi_win_state_event_handler(GtkWidget *widget,
         GdkEventWindowState *event, MultiWin *win)
 {
-    (void) widget;
+    /* Having geometry hints set causes window to shrink by one
+     * character width and height when unmaximizing.
+     * <https://gitlab.gnome.org/GNOME/gtk/issues/34>
+     * This is a workaround.
+     */
+    if (event->changed_mask & WIN_STATE_SNAPPED)
+    {
+        if (event->new_window_state & WIN_STATE_SNAPPED)
+        {
+            gtk_window_set_geometry_hints(GTK_WINDOW(widget), NULL, NULL, 0);
+        }
+        else
+        {
+            multi_win_apply_geometry_hints(win);
+        }
+    }
+
     if (event->changed_mask & GDK_WINDOW_STATE_FULLSCREEN)
     {
         win->fullscreen =
@@ -2628,17 +2662,12 @@ gboolean multi_win_parse_geometry(const char *geom,
     return TRUE;
 }
 
-static void bad_alloc(int w, int h)
-{
-    g_debug("Bad allocation %dx%d", w, h);
-}
-
 /* Returns TRUE if the geometry hints have changed. */
 static gboolean multi_win_process_geometry(MultiWin *win,
         MultiTab *tab, int columns, int rows, int *width, int *height)
 {
     GdkGeometry geom;
-    GdkWindowHints hints;
+    GdkWindowHints hint_mask;
     int bw, bh;
     int gw, gh;
     int ww, wh;
@@ -2646,7 +2675,7 @@ static gboolean multi_win_process_geometry(MultiWin *win,
     g_debug("Processing geometry %dx%d", columns, rows);
     if (!tab)
         tab = win->current_tab;
-    multi_win_geometry_func(tab->user_data, &geom, &hints);
+    multi_win_geometry_func(tab->user_data, &geom, &hint_mask);
     g_debug("VTE cell size %dx%d, padding %dx%d",
             geom.width_inc, geom.height_inc,
             geom.base_width, geom.base_height);
@@ -2665,7 +2694,6 @@ static gboolean multi_win_process_geometry(MultiWin *win,
             gw, gh, bw, bh);
     if (gw <= 1 || gh <= 1)
     {
-        bad_alloc(gw, gh);
         return FALSE;
     }
     g_debug("Want to allocate %dx%d to terminal", 
@@ -2699,15 +2727,9 @@ static gboolean multi_win_process_geometry(MultiWin *win,
         geom.height_inc != win->geom_hints.height_inc)
     {
         g_debug("Updating geometry");
-        /* Don't actually apply geometry, it causes window to shrink by one
-         * cell horizontally and vertically when unmaximizing.
-         * https://gitlab.gnome.org/GNOME/gtk/issues/34
-         */
-        /*
-        gtk_window_set_geometry_hints(GTK_WINDOW(win->gtkwin), NULL,
-                &geom, hints);
-        */
         win->geom_hints = geom;
+        win->geom_hint_mask = hint_mask;
+        multi_win_apply_geometry_hints(win);
         return TRUE;
     }
     g_debug("Geometry unchanged");
@@ -2736,14 +2758,7 @@ void multi_win_apply_new_geometry(MultiWin *win, int columns, int rows,
     GdkWindowState state = gdk_window_get_state(
             gtk_widget_get_window(win->gtkwin));
 
-    if (state & (GDK_WINDOW_STATE_MAXIMIZED | GDK_WINDOW_STATE_FULLSCREEN | 
-#if GTK_CHECK_VERSION(3,22,23)
-            GDK_WINDOW_STATE_TOP_TILED | GDK_WINDOW_STATE_BOTTOM_TILED | 
-            GDK_WINDOW_STATE_LEFT_TILED | GDK_WINDOW_STATE_RIGHT_TILED
-#else
-            GDK_WINDOW_STATE_TILED
-#endif
-            ))
+    if (state & WIN_STATE_SNAPPED)
     {
         g_debug("Ignoring geometry change for maximized or similar state");
         return;
