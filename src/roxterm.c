@@ -3250,6 +3250,9 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
         gtk_scrolled_window_set_overlay_scrolling(GTK_SCROLLED_WINDOW(viewport),
             options_lookup_int_with_default(roxterm_template->profile,
                 "overlay_scrollbar", TRUE));
+        gtk_scrolled_window_set_placement(GTK_SCROLLED_WINDOW(viewport),
+                (scrollbar_pos == MultiWinScrollBar_Left) ?
+                GTK_CORNER_TOP_RIGHT : GTK_CORNER_TOP_LEFT);
         gtk_container_add(GTK_CONTAINER(viewport), roxterm->widget);
         gtk_widget_show_all(viewport);
     }
