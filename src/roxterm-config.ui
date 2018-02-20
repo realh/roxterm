@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.20.2 -->
+<!-- Generated with glade 3.20.3 -->
 <interface>
   <requires lib="gtk+" version="3.10"/>
   <object class="GtkDialog" id="Colour_Scheme_Editor">
@@ -2409,24 +2409,6 @@
                               <packing>
                                 <property name="left_attach">1</property>
                                 <property name="top_attach">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkCheckButton" id="update_records">
-                                <property name="label" translatable="yes">_Update login records</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">False</property>
-                                <property name="has_tooltip">True</property>
-                                <property name="tooltip_text" translatable="yes">Whether to log sessions to login records (utmp/wtmp/utmpx/wtmpx)</property>
-                                <property name="halign">start</property>
-                                <property name="use_underline">True</property>
-                                <property name="draw_indicator">True</property>
-                                <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
-                              </object>
-                              <packing>
-                                <property name="left_attach">2</property>
-                                <property name="top_attach">0</property>
                                 <property name="width">2</property>
                               </packing>
                             </child>
@@ -2467,7 +2449,7 @@
                               <packing>
                                 <property name="left_attach">1</property>
                                 <property name="top_attach">1</property>
-                                <property name="width">3</property>
+                                <property name="width">2</property>
                               </packing>
                             </child>
                             <child>
@@ -2505,7 +2487,6 @@
                               <packing>
                                 <property name="left_attach">1</property>
                                 <property name="top_attach">2</property>
-                                <property name="width">2</property>
                               </packing>
                             </child>
                             <child>
@@ -2539,7 +2520,7 @@
                               <packing>
                                 <property name="left_attach">1</property>
                                 <property name="top_attach">3</property>
-                                <property name="width">3</property>
+                                <property name="width">2</property>
                               </packing>
                             </child>
                             <child>
@@ -2591,7 +2572,7 @@
                                 <signal name="clicked" handler="on_edit_ssh_clicked" swapped="no"/>
                               </object>
                               <packing>
-                                <property name="left_attach">3</property>
+                                <property name="left_attach">2</property>
                                 <property name="top_attach">2</property>
                               </packing>
                             </child>
@@ -2607,7 +2588,6 @@
                               <packing>
                                 <property name="left_attach">2</property>
                                 <property name="top_attach">4</property>
-                                <property name="width">2</property>
                               </packing>
                             </child>
                           </object>

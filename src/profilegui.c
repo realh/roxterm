@@ -495,7 +495,6 @@ static void profilegui_fill_in_dialog(ProfileGUI * pg)
     capplet_ignore_changes = FALSE;
     capplet_set_boolean_toggle(&pg->capp, "use_ssh", FALSE);
     capplet_set_boolean_toggle(&pg->capp, "login_shell", FALSE);
-    capplet_set_boolean_toggle(&pg->capp, "update_records", TRUE);
     capplet_set_boolean_toggle(&pg->capp, "use_custom_command", FALSE);
     capplet_set_text_entry(&pg->capp, "command", NULL);
     capplet_set_combo(&pg->capp, "exit_action", 0);

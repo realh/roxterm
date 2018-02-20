@@ -664,7 +664,7 @@ static const char *roxterm_check_cwd(const char *cwd)
 static char *roxterm_fork_command(VteTerminal *vte,
         char **argv, char **envv,
         const char *working_directory,
-        gboolean login, gboolean utmp, gboolean wtmp, pid_t *pid)
+        gboolean login, pid_t *pid)
 {
     GPid *ppid = (GPid *) pid;
     GError *error = NULL;
@@ -696,11 +696,7 @@ static char *roxterm_fork_command(VteTerminal *vte,
         argv = new_argv;
     }
 
-    pty = vte_terminal_pty_new_sync(vte,
-            (login ? 0 : VTE_PTY_NO_LASTLOG) |
-            (utmp ? 0 : VTE_PTY_NO_UTMP) |
-            (wtmp ? 0 : VTE_PTY_NO_WTMP),
-            NULL, &error);
+    pty = vte_terminal_pty_new_sync(vte, VTE_PTY_DEFAULT, NULL, &error);
     if (pty)
     {
         vte_terminal_set_pty(vte, pty);
@@ -852,11 +848,8 @@ static void roxterm_run_command(ROXTermData *roxterm, VteTerminal *vte)
 
     if (commandv && commandv[0])
     {
-        gboolean xtmplog = options_lookup_int_with_default(roxterm->profile,
-                "update_records", 1);
-
         reply = roxterm_fork_command(vte, commandv, env,
-                roxterm->directory, login, xtmplog, xtmplog, &roxterm->pid);
+                roxterm->directory, login, &roxterm->pid);
     }
     else
     {
