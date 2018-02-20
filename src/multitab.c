@@ -734,8 +734,7 @@ gboolean multi_tab_remove_from_parent(MultiTab *tab, gboolean notify_only)
     {
         g_object_ref(tab->widget);
         tab->label = NULL;
-        gtk_notebook_remove_page(GTK_NOTEBOOK(win->notebook),
-                multi_tab_get_page_num(tab));
+        gtk_notebook_detach_tab(GTK_NOTEBOOK(win->notebook), tab->widget);
         tab->close_button = NULL;
     }
     multi_tab_remove_menutree_items(win, tab);
