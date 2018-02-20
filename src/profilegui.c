@@ -43,7 +43,6 @@ struct _ProfileGUI {
     gboolean ignore_destroy;
     struct {
         guint word_chars : 1;
-        guint color_term : 1;
         guint term : 1;
         guint browser : 1;
         guint mailer : 1;
@@ -102,7 +101,6 @@ static void profilegui_update_from_entry(ProfileGUI * pg, const char *name)
 void profilegui_check_entries_for_changes(ProfileGUI * pg)
 {
     PG_UPDATE_IF(word_chars)
-    PG_UPDATE_IF(color_term)
     PG_UPDATE_IF(term)
     PG_UPDATE_IF(browser)
     PG_UPDATE_IF(mailer)
@@ -158,7 +156,6 @@ void on_editable_changed(GtkEditable * editable, ProfileGUI *pg)
 #define PG_IF_CHANGED(s) if (!strcmp(n, #s)) PG_MEMBER(pg->changed, s) = 1
 
     PG_IF_CHANGED(word_chars);
-    else PG_IF_CHANGED(color_term);
     else PG_IF_CHANGED(term);
     else PG_IF_CHANGED(browser);
     else PG_IF_CHANGED(mailer);
@@ -441,7 +438,6 @@ static void profilegui_fill_in_dialog(ProfileGUI * pg)
     capplet_set_boolean_toggle(&pg->capp, "hide_mouse", TRUE);
     capplet_set_boolean_toggle(&pg->capp, "autowrap", TRUE);
     capplet_set_text_entry(&pg->capp, "word_chars", "-,./?%&#_");
-    capplet_set_text_entry(&pg->capp, "color_term", NULL);
     capplet_set_text_entry(&pg->capp, "term", NULL);
     capplet_set_float_range(&pg->capp, "saturation", 1.0);
     capplet_set_combo(&pg->capp, "tab_pos", 0);

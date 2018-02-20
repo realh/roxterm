@@ -526,7 +526,6 @@ static char **roxterm_get_environment(ROXTermData *roxterm, const char *term)
      */
     char **result;
     char const *new_env[] = {
-        "WINDOWID", NULL,
         "ROXTERM_ID", NULL,
         "ROXTERM_NUM", NULL,
         "ROXTERM_PID", NULL,
@@ -542,7 +541,6 @@ static char **roxterm_get_environment(ROXTermData *roxterm, const char *term)
     };
     GList *link;
     int n;
-    const char *cterm;
 
     /* Despite called when idle after showing, widget's GdkWindow can still
      * be NULL at this point (for hidden tabs?) so need to check it's realized.
@@ -567,14 +565,7 @@ static char **roxterm_get_environment(ROXTermData *roxterm, const char *term)
     {
         new_env[n * 2] = "TERM";
         new_env[n * 2 + 1] = term;
-        ++n;
-    }
-    cterm = options_lookup_string(roxterm->profile, "color_term");
-    if (cterm)
-    {
-        new_env[n * 2] = "COLORTERM";
-        new_env[n * 2 + 1] = cterm;
-        ++n;
+        n += 2;
     }
     result = roxterm_modify_environment((char const * const *) roxterm->env,
             new_env);

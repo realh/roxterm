@@ -2176,68 +2176,6 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkLabel" id="label43">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="label" translatable="yes">_COLORTERM environment variable:</property>
-                                <property name="use_underline">True</property>
-                                <property name="mnemonic_widget">color_term</property>
-                                <property name="xalign">0</property>
-                              </object>
-                              <packing>
-                                <property name="left_attach">0</property>
-                                <property name="top_attach">6</property>
-                                <property name="width">2</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkEntry" id="color_term">
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="invisible_char">•</property>
-                                <property name="primary_icon_activatable">False</property>
-                                <property name="secondary_icon_activatable">False</property>
-                                <signal name="activate" handler="on_entry_activate" swapped="no"/>
-                                <signal name="changed" handler="on_editable_changed" swapped="no"/>
-                              </object>
-                              <packing>
-                                <property name="left_attach">2</property>
-                                <property name="top_attach">6</property>
-                                <property name="width">2</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkLabel" id="label42">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="label" translatable="yes">_TERM environment variable:</property>
-                                <property name="use_underline">True</property>
-                                <property name="mnemonic_widget">term</property>
-                                <property name="xalign">0</property>
-                              </object>
-                              <packing>
-                                <property name="left_attach">0</property>
-                                <property name="top_attach">7</property>
-                                <property name="width">2</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkEntry" id="term">
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="invisible_char">•</property>
-                                <property name="primary_icon_activatable">False</property>
-                                <property name="secondary_icon_activatable">False</property>
-                                <signal name="activate" handler="on_entry_activate" swapped="no"/>
-                                <signal name="changed" handler="on_editable_changed" swapped="no"/>
-                              </object>
-                              <packing>
-                                <property name="left_attach">2</property>
-                                <property name="top_attach">7</property>
-                                <property name="width">2</property>
-                              </packing>
-                            </child>
-                            <child>
                               <object class="GtkCheckButton" id="allow_bold">
                                 <property name="label" translatable="yes">Allow _bold text</property>
                                 <property name="visible">True</property>
@@ -2327,6 +2265,37 @@
                                 <property name="left_attach">0</property>
                                 <property name="top_attach">2</property>
                                 <property name="width">4</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="label42">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="label" translatable="yes">_TERM environment variable:</property>
+                                <property name="use_underline">True</property>
+                                <property name="mnemonic_widget">term</property>
+                                <property name="xalign">0</property>
+                              </object>
+                              <packing>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">6</property>
+                                <property name="width">2</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkEntry" id="term">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="invisible_char">•</property>
+                                <property name="primary_icon_activatable">False</property>
+                                <property name="secondary_icon_activatable">False</property>
+                                <signal name="activate" handler="on_entry_activate" swapped="no"/>
+                                <signal name="changed" handler="on_editable_changed" swapped="no"/>
+                              </object>
+                              <packing>
+                                <property name="left_attach">2</property>
+                                <property name="top_attach">6</property>
+                                <property name="width">2</property>
                               </packing>
                             </child>
                           </object>
