@@ -613,10 +613,9 @@ static void roxterm_report_launch_error_async(ROXTermData *roxterm,
     roxterm->reply = g_strdup_printf("%s: %s",
             msg, error ? error->message : "?");
     g_idle_add((GSourceFunc) roxterm_command_failed, roxterm);
-    if (error)
-        g_error_free(error);
 }
 
+/* Mustn't free this error: https://bugzilla.gnome.org/show_bug.cgi?id=793675 */
 static void roxterm_fork_callback(VteTerminal *vte,
         GPid pid, GError *error, gpointer user_data)
 {
@@ -779,6 +778,8 @@ static void roxterm_run_command(ROXTermData *roxterm, VteTerminal *vte)
                     command);
             roxterm_report_launch_error_async(roxterm, msg, error);
             g_free(msg);
+            if (error)
+                g_error_free(error);
             if (commandv)
                 g_strfreev(commandv);
             commandv = NULL;
@@ -4428,7 +4429,6 @@ void roxterm_spawn(ROXTermData *roxterm, const char *command,
                 dlg_warning(roxterm_get_toplevel(roxterm),
                         _("Unable to spawn command %s: %s"),
                     command, error->message);
-                g_error_free(error);
             }
             g_free(cwd);
             break;
