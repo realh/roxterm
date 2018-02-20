@@ -468,112 +468,67 @@ static ROXTermData *roxterm_data_clone(ROXTermData *old_gt)
     return new_gt;
 }
 
-/* A new env is allocated and returned; the old one is not freed. replace
- * is a flat array of NAME, value, ..., NULL. Variables in replace replace
- * existing ones in env with the same name or are appended.
- */
-static char **roxterm_modify_environment(char const * const *env,
-        char const * const *replace)
+static GHashTable *roxterm_hash_env(char **env)
 {
-    int env_len, replace_len;
-    int i, j, k;
-    char **equals;
-    char **result;
+    int n;
+    GHashTable *env_table = g_hash_table_new_full(g_str_hash, g_str_equal,
+            g_free, g_free);
 
-    for (env_len = 0; env[env_len]; ++env_len);
-    for (replace_len = 0; replace[replace_len]; ++replace_len);
-    replace_len /= 2;
-    equals = g_new(char *, replace_len + 1);
-    equals[replace_len] = NULL;
-    for (i = 0; i < replace_len; ++i)
+    for (n = 0; env[n]; ++n)
     {
-        equals[i] = g_strconcat(replace[i * 2], "=", NULL);
+        const char *eq = strchr(env[n], '=');
+        
+        g_hash_table_replace(env_table, eq ?
+                g_strndup(env[n], eq - env[n]) : g_strdup(env[n]),
+                eq ? g_strdup(eq + 1) : NULL);
     }
-    result = g_new(char *, replace_len + env_len + 1);
-    k = 0;
-    for (j = 0; j < env_len; ++j)
-    {
-        gboolean skip = FALSE;
+    return env_table;
+}
 
-        for (i = 0; i < replace_len; ++i)
-        {
-            if (g_str_has_prefix(env[j], equals[i]))
-            {
-                skip = TRUE;
-                break;
-            }
-        }
-        if (!skip)
-        {
-            result[k++] = g_strdup(env[j]);
-        }
-    }
-    g_strfreev(equals);
-    for (j = 0; j < replace_len; ++j)
+static char **roxterm_envv_from_hash(GHashTable *hash)
+{
+    GHashTableIter it;
+    gsize len = g_hash_table_size(hash);
+    char **env = g_new(char *, len + 1);
+    char *key, *val;
+    int n = 0;
+
+    g_hash_table_iter_init(&it, hash);
+    while (g_hash_table_iter_next(&it, (gpointer *) &key, (gpointer *) &val))
     {
-        result[k++] = g_strconcat(replace[j * 2], "=", replace[j * 2 + 1],
-                NULL);
+        env[n++] = g_strdup_printf("%s=%s", key, val);
     }
-    result[k] = NULL;
-    return result;
+    env[n] = NULL;
+    return env;
 }
 
 static char **roxterm_get_environment(ROXTermData *roxterm, const char *term)
 {
-    /* We still set TERM even though vte is supposed to override it because
-     * earlier versions added an additional TERM instead of replacing it, and
-     * the one we add should take priority.
-     */
-    char **result;
-    char const *new_env[] = {
-        "ROXTERM_ID", NULL,
-        "ROXTERM_NUM", NULL,
-        "ROXTERM_PID", NULL,
-        NULL, NULL,
-        NULL, NULL,
-        /*NULL, NULL,*/
-        NULL };
-    enum {
-        EnvRoxtermId,
-        EnvRoxtermNum,
-        EnvRoxtermPid,
-        /*EnvWindowId,*/
-    };
-    GList *link;
-    int n;
+    GHashTable *env = roxterm_hash_env(roxterm->env);
+    char **envv;
 
-    /* Despite called when idle after showing, widget's GdkWindow can still
-     * be NULL at this point (for hidden tabs?) so need to check it's realized.
-     */
-    if (!gtk_widget_get_realized(roxterm->widget))
-        gtk_widget_realize(roxterm->widget);
-    /*
-    new_env[EnvWindowId * 2 + 1] = g_strdup_printf("%ld",
-            GDK_WINDOW_XID(gtk_widget_get_window(roxterm->widget)));
-    */
-    new_env[EnvRoxtermId * 2 + 1] = g_strdup_printf("%p", roxterm);
-    for (n = 0, link = roxterm_terms; link; ++n, link = g_list_next(link))
-    {
-        ++n;
-        if (link->data == roxterm)
-            break;
-    }
-    new_env[EnvRoxtermNum * 2 + 1] = g_strdup_printf("%d", n);
-    new_env[EnvRoxtermPid * 2 + 1] = g_strdup_printf("%d", (int) getpid());
-    n = EnvRoxtermPid + 1;
     if (term)
-    {
-        new_env[n * 2] = "TERM";
-        new_env[n * 2 + 1] = term;
-        n += 2;
-    }
-    result = roxterm_modify_environment((char const * const *) roxterm->env,
-            new_env);
-    g_free((char *) new_env[EnvRoxtermId * 2 + 1]);
-    g_free((char *) new_env[EnvRoxtermNum * 2 + 1]);
-    g_free((char *) new_env[EnvRoxtermPid * 2 + 1]);
-    /*g_free((char *) new_env[EnvWindowId * 2 + 1]);*/
-    return result;
+        g_hash_table_replace(env, g_strdup("TERM"), g_strdup(term));
+    else
+        g_hash_table_remove(env, "TERM");
+    g_hash_table_replace(env, g_strdup("ROXTERM_ID"),
+            g_strdup_printf("%p", roxterm));
+    g_hash_table_replace(env, g_strdup("ROXTERM_NUM"),
+            g_strdup_printf("%d", g_list_length(roxterm_terms)));
+    g_hash_table_replace(env, g_strdup("ROXTERM_PID"),
+            g_strdup_printf("%d", (int) getpid()));
+
+    g_hash_table_remove(env, "COLORTERM");
+    g_hash_table_remove(env, "COLUMNS");
+    g_hash_table_remove(env, "LINES");
+    g_hash_table_remove(env, "VTE_VERSION");
+    /* gnome-terminal also removes GNOME_DESKTOP_ICON, probably best not to do
+     * the same without knowing why. */
+    /* g_hash_table_remove(env, "GNOME_DESKTOP_ICON"); */
+
+    envv = roxterm_envv_from_hash(env);
+    g_hash_table_unref(env);
+    return envv;
 }
 
 static GtkWindow *roxterm_get_toplevel(ROXTermData *roxterm)
@@ -652,17 +607,39 @@ static const char *roxterm_check_cwd(const char *cwd)
     return check_cwd(cwd) ? cwd : check_cwd(g_get_home_dir());
 }
 
-static char *roxterm_fork_command(VteTerminal *vte,
+static void roxterm_report_launch_error_async(ROXTermData *roxterm,
+        const char *msg, GError *error)
+{
+    roxterm->reply = g_strdup_printf("%s: %s",
+            msg, error ? error->message : "?");
+    g_idle_add((GSourceFunc) roxterm_command_failed, roxterm);
+    if (error)
+        g_error_free(error);
+}
+
+static void roxterm_fork_callback(VteTerminal *vte,
+        GPid pid, GError *error, gpointer user_data)
+{
+    ROXTermData *roxterm = user_data;
+    (void) vte;
+
+    roxterm->pid = pid;
+    if (!vte)
+        roxterm->widget = NULL;
+    if (pid == -1)
+    {
+        roxterm_report_launch_error_async(roxterm,
+                _("Failed to run command"), error);
+    }
+}
+
+static void roxterm_fork_command(ROXTermData *roxterm, VteTerminal *vte,
         char **argv, char **envv,
         const char *working_directory,
-        gboolean login, pid_t *pid)
+        gboolean login)
 {
-    GPid *ppid = (GPid *) pid;
-    GError *error = NULL;
-    VtePty *pty;
     char *filename = argv[0];
     char **new_argv = NULL;
-    char *reply = NULL;
 
     working_directory = roxterm_check_cwd(working_directory);
     if (login)
@@ -687,45 +664,23 @@ static char *roxterm_fork_command(VteTerminal *vte,
         argv = new_argv;
     }
 
-    pty = vte_terminal_pty_new_sync(vte, VTE_PTY_DEFAULT, NULL, &error);
-    if (pty)
-    {
-        vte_terminal_set_pty(vte, pty);
-        if (g_spawn_async(working_directory, argv, envv,
-                G_SPAWN_DO_NOT_REAP_CHILD |
-                    (login ? G_SPAWN_FILE_AND_ARGV_ZERO : G_SPAWN_SEARCH_PATH),
-                (GSpawnChildSetupFunc) vte_pty_child_setup, pty,
-                ppid, &error))
-        {
-            vte_terminal_watch_child(vte, *ppid);
-        }
-        else
-        {
-            reply = g_strdup_printf(
-                    _("The new terminal's command failed to run: %s"),
-                    error->message);
-        }
-        /* The VteTerminal and we both own a reference, so drop our ref to
-         * ensure pty is destroyed with terminal.
-         */
-        g_object_unref(pty);
-    }
-    else
-    {
-        reply = g_strdup_printf(_("Failed to create pty: %s"), error->message);
-    }
-    if (error)
-        g_error_free(error);
-
+    /* VTE_SPAWN_NO_PARENT_ENVV is undocumented; looking at VTE's source it
+     * appears to prevent our process' env from being merged into the envv we're
+     * passing in here, which is behaviour we want.
+     */
+    vte_terminal_spawn_async(vte, VTE_PTY_DEFAULT,
+            working_directory, argv, envv, 
+            G_SPAWN_DO_NOT_REAP_CHILD |
+            (login ? G_SPAWN_FILE_AND_ARGV_ZERO : G_SPAWN_SEARCH_PATH) |
+            VTE_SPAWN_NO_PARENT_ENVV,
+            NULL, NULL, NULL,
+            -1, NULL,
+            roxterm_fork_callback, roxterm);
     if (new_argv)
     {
         g_free(new_argv[1]);
         g_free(new_argv);
     }
-
-    if (reply)
-        *pid = -1;
-    return reply;
 }
 
 static void roxterm_run_command(ROXTermData *roxterm, VteTerminal *vte)
@@ -736,7 +691,6 @@ static void roxterm_run_command(ROXTermData *roxterm, VteTerminal *vte)
     gboolean login = FALSE;
     const char *term = options_lookup_string(roxterm->profile, "term");
     char **env;
-    char *reply = NULL;
 
     if (!term)
         term = "xterm";
@@ -821,14 +775,18 @@ static void roxterm_run_command(ROXTermData *roxterm, VteTerminal *vte)
         commandv = NULL;
         if (!g_shell_parse_argv(command, &argc, &commandv, &error))
         {
-            reply = g_strdup_printf(_("Unable to parse command %s: %s"),
-                    command, error ? error->message : _("unknown reason"));
-            g_error_free(error);
+            char *msg = g_strdup_printf(_("Unable to parse command '%s'"),
+                    command);
+            roxterm_report_launch_error_async(roxterm, msg, error);
+            g_free(msg);
             if (commandv)
                 g_strfreev(commandv);
+            commandv = NULL;
+            /*
             commandv = g_new(char *, 2);
             commandv[0] = get_default_command(roxterm);
             commandv[1] = NULL;
+            */
         }
     }
     if (!special && options_lookup_int_with_default(roxterm->profile,
@@ -839,12 +797,8 @@ static void roxterm_run_command(ROXTermData *roxterm, VteTerminal *vte)
 
     if (commandv && commandv[0])
     {
-        reply = roxterm_fork_command(vte, commandv, env,
-                roxterm->directory, login, &roxterm->pid);
-    }
-    else
-    {
-        reply = g_strdup(_("Trying to run NULL command in new terminal"));
+        roxterm_fork_command(roxterm, vte, commandv, env,
+                roxterm->directory, login);
     }
 
     roxterm->special_command = NULL;
@@ -852,15 +806,6 @@ static void roxterm_run_command(ROXTermData *roxterm, VteTerminal *vte)
     g_free(command);
     roxterm->actual_commandv = commandv;
     g_strfreev(env);
-    if (reply && strcmp(reply, "OK"))
-    {
-        roxterm->reply = reply;
-        g_idle_add((GSourceFunc) roxterm_command_failed, roxterm);
-    }
-    else
-    {
-        g_free(reply);
-    }
 }
 
 static char *roxterm_lookup_uri_handler(ROXTermData *roxterm, const char *tag)
