@@ -924,13 +924,12 @@ void multi_win_select_tab(MultiWin * win, MultiTab * tab)
  * its background.
  */
 static gboolean
-multi_win_draw_menubar_bg(GtkWidget *widget, cairo_t *cr, MultiWin *win)
+multi_win_draw_chrome_bg(GtkWidget *widget, cairo_t *cr, MultiWin *win)
 {
     GtkStyleContext *context = gtk_widget_get_style_context(widget);
     GtkAllocation alloc;
 
-    gtk_widget_get_allocation(menutree_get_top_level_widget(win->menu_bar),
-            &alloc);
+    gtk_widget_get_allocation(win->vbox, &alloc);
     gtk_render_background(context, cr,
             alloc.x, alloc.y, alloc.width, alloc.height);
     return FALSE;
@@ -943,7 +942,7 @@ static void add_menu_bar(MultiWin *win)
     if (win->show_menu_bar)
         return;
     win->draw_signal_tag = g_signal_connect(win->gtkwin, "draw",
-            G_CALLBACK(multi_win_draw_menubar_bg), win);
+            G_CALLBACK(multi_win_draw_chrome_bg), win);
     menu_bar = menutree_get_top_level_widget(win->menu_bar);
     gtk_box_pack_start(GTK_BOX(win->vbox), menu_bar, FALSE, FALSE, 0);
     gtk_box_reorder_child(GTK_BOX(win->vbox), menu_bar, 0);
