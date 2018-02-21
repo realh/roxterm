@@ -41,18 +41,6 @@ multitab_close_button_style_updated (GtkWidget *self)
 static void
 multitab_close_button_class_init(MultitabCloseButtonClass *klass)
 {
-    static const char *button_style =
-            "* {\n"
-              "border: 0px none;\n"
-              "margin: 0px;\n"
-              "padding: 0px;\n"
-              "outline: 0px none;\n"
-              "outline-offset: 0px;\n"
-            "}";
-
-    klass->style_provider = gtk_css_provider_new ();
-    gtk_css_provider_load_from_data (klass->style_provider,
-            button_style, -1, NULL);
     GTK_WIDGET_CLASS (klass)->style_updated =
             multitab_close_button_style_updated;
 }
@@ -60,16 +48,9 @@ multitab_close_button_class_init(MultitabCloseButtonClass *klass)
 static void
 multitab_close_button_init(MultitabCloseButton *self)
 {
-    GtkButton *parent = GTK_BUTTON(self);
     GtkWidget *image = gtk_image_new ();
     GtkWidget *w = GTK_WIDGET(self);
 
-    gtk_button_set_relief(parent, GTK_RELIEF_NONE);
-    gtk_widget_set_focus_on_click(w, FALSE);
-    gtk_style_context_add_provider (gtk_widget_get_style_context (w),
-            GTK_STYLE_PROVIDER (MULTITAB_CLOSE_BUTTON_GET_CLASS
-                    (self)->style_provider),
-            GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
     gtk_widget_set_name (w, "multitab-close-button");
     self->image = GTK_IMAGE (image);
     gtk_widget_show (image);
@@ -80,7 +61,10 @@ GtkWidget *
 multitab_close_button_new(const char *image_name)
 {
     MultitabCloseButton *self = (MultitabCloseButton *)
-            g_object_new (MULTITAB_TYPE_CLOSE_BUTTON, NULL);
+            g_object_new (MULTITAB_TYPE_CLOSE_BUTTON,
+                    "relief", GTK_RELIEF_NONE,
+                    "focus-on-click", FALSE,
+                    NULL);
 
     multitab_close_button_set_image (self, image_name);
     return GTK_WIDGET (self);
