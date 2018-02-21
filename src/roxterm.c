@@ -691,8 +691,8 @@ static void roxterm_run_command(ROXTermData *roxterm, VteTerminal *vte)
     const char *term = options_lookup_string(roxterm->profile, "term");
     char **env;
 
-    if (!term)
-        term = "xterm";
+    if (term && !term[0])
+        term = NULL;
     env = roxterm_get_environment(roxterm, term);
     roxterm->running = TRUE;
     roxterm_show_status(roxterm, "window-close");
@@ -1552,10 +1552,22 @@ static gboolean roxterm_click_handler(GtkWidget *widget,
     
     roxterm_clear_drag_url(roxterm);
     roxterm_check_match(roxterm, vte, (GdkEvent *) event);
-    if (event->button == 3 && !(event->state & (GDK_SHIFT_MASK |
-                GDK_CONTROL_MASK | GDK_MOD1_MASK)))
+    if (event->button == 3)
     {
         ROXTerm_URIMenuItemsShowType show_type = ROXTerm_DontShowURIMenuItems;
+
+        /* If user right-clicks with no modifiers give the child app a chance
+         * to handle the event first.
+         */
+        if (!(event->state & (GDK_SHIFT_MASK |
+                GDK_CONTROL_MASK | GDK_MOD1_MASK)))
+        {
+            if (GTK_WIDGET_CLASS(VTE_TERMINAL_GET_CLASS(widget))->
+                    button_press_event(widget, event))
+            {
+                return TRUE;
+            }
+        }
 
         if (roxterm->matched_url)
         {

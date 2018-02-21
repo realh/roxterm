@@ -1610,8 +1610,6 @@
                                     <property name="tooltip_text" translatable="yes">New windows with this profile will open at this size.</property>
                                     <property name="invisible_char">•</property>
                                     <property name="text" translatable="yes">80</property>
-                                    <property name="primary_icon_activatable">False</property>
-                                    <property name="secondary_icon_activatable">False</property>
                                     <property name="adjustment">width_adjustment</property>
                                     <property name="climb_rate">1</property>
                                     <property name="numeric">True</property>
@@ -1656,8 +1654,6 @@
                                     <property name="tooltip_text" translatable="yes">New windows with this profile will open at this size.</property>
                                     <property name="invisible_char">•</property>
                                     <property name="text" translatable="yes">32</property>
-                                    <property name="primary_icon_activatable">False</property>
-                                    <property name="secondary_icon_activatable">False</property>
                                     <property name="adjustment">height_adjustment</property>
                                     <property name="climb_rate">1</property>
                                     <property name="numeric">True</property>
@@ -1834,8 +1830,6 @@
                                     <property name="tooltip_text" translatable="yes">The title string may include '%s' which is substituted with the contents of the current tab's label. No other % characters or sequences are permitted except '%%' which is displayed as a single %.</property>
                                     <property name="hexpand">True</property>
                                     <property name="invisible_char">●</property>
-                                    <property name="primary_icon_activatable">False</property>
-                                    <property name="secondary_icon_activatable">False</property>
                                     <signal name="activate" handler="on_entry_activate" swapped="no"/>
                                     <signal name="changed" handler="on_editable_changed" swapped="no"/>
                                   </object>
@@ -2164,8 +2158,6 @@
                                 <property name="tooltip_markup">Words can be selected by double-clicking. Characters in this list, in addition to alphanumerics, are considered part of a word. Do not add 0-9A-Za-z etc here. If including a minus sign it must come first.</property>
                                 <property name="tooltip_text" translatable="yes">Words can be selected by double-clicking. Characters in this list, in addition to alphanumerics, are considered part of a word. Do not add 0-9A-Za-z etc here. If including a minus sign it must come first.</property>
                                 <property name="invisible_char">•</property>
-                                <property name="primary_icon_activatable">False</property>
-                                <property name="secondary_icon_activatable">False</property>
                                 <signal name="activate" handler="on_entry_activate" swapped="no"/>
                                 <signal name="changed" handler="on_editable_changed" swapped="no"/>
                               </object>
@@ -2287,8 +2279,6 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="invisible_char">•</property>
-                                <property name="primary_icon_activatable">False</property>
-                                <property name="secondary_icon_activatable">False</property>
                                 <signal name="activate" handler="on_entry_activate" swapped="no"/>
                                 <signal name="changed" handler="on_editable_changed" swapped="no"/>
                               </object>
@@ -2409,8 +2399,6 @@
                                 <property name="tooltip_text" translatable="yes">Command to run in place of a shell</property>
                                 <property name="hexpand">True</property>
                                 <property name="invisible_char">•</property>
-                                <property name="primary_icon_activatable">False</property>
-                                <property name="secondary_icon_activatable">False</property>
                                 <signal name="activate" handler="on_entry_activate" swapped="no"/>
                                 <signal name="changed" handler="on_editable_changed" swapped="no"/>
                                 <accelerator key="m" signal="grab_focus" modifiers="GDK_MOD1_MASK"/>
@@ -2450,8 +2438,6 @@
                                 <property name="hexpand">True</property>
                                 <property name="editable">False</property>
                                 <property name="invisible_char">•</property>
-                                <property name="primary_icon_activatable">False</property>
-                                <property name="secondary_icon_activatable">False</property>
                               </object>
                               <packing>
                                 <property name="left_attach">1</property>
@@ -2517,8 +2503,6 @@
                                 <property name="editable">False</property>
                                 <property name="invisible_char">•</property>
                                 <property name="text" translatable="yes">0.0</property>
-                                <property name="primary_icon_activatable">False</property>
-                                <property name="secondary_icon_activatable">False</property>
                                 <property name="adjustment">exit_pause_adjustment</property>
                                 <property name="digits">1</property>
                                 <signal name="value-changed" handler="on_float_spin_button_changed" swapped="no"/>
@@ -2636,8 +2620,6 @@
                         <property name="can_focus">True</property>
                         <property name="tooltip_text" translatable="yes">Web browser to use when a link is opened</property>
                         <property name="invisible_char">•</property>
-                        <property name="primary_icon_activatable">False</property>
-                        <property name="secondary_icon_activatable">False</property>
                         <signal name="activate" handler="on_entry_activate" swapped="no"/>
                         <signal name="changed" handler="on_editable_changed" swapped="no"/>
                       </object>
@@ -2746,8 +2728,6 @@
                         <property name="can_focus">True</property>
                         <property name="tooltip_text" translatable="yes">EMail program to use when an email address is opened</property>
                         <property name="invisible_char">•</property>
-                        <property name="primary_icon_activatable">False</property>
-                        <property name="secondary_icon_activatable">False</property>
                         <signal name="activate" handler="on_entry_activate" swapped="no"/>
                         <signal name="changed" handler="on_editable_changed" swapped="no"/>
                       </object>
@@ -2860,8 +2840,6 @@
                         <property name="tooltip_markup" translatable="yes">SSH program to use when a host name is opened</property>
                         <property name="tooltip_text" translatable="yes">SSH program to use when a host name is opened</property>
                         <property name="invisible_char">•</property>
-                        <property name="primary_icon_activatable">False</property>
-                        <property name="secondary_icon_activatable">False</property>
                         <signal name="activate" handler="on_entry_activate" swapped="no"/>
                         <signal name="changed" handler="on_editable_changed" swapped="no"/>
                       </object>
@@ -2998,8 +2976,6 @@
                         <property name="tooltip_markup">File manager to use when a directory URI is opened.</property>
                         <property name="tooltip_text" translatable="yes">File manager to use when a directory URI is opened.</property>
                         <property name="invisible_char">•</property>
-                        <property name="primary_icon_activatable">False</property>
-                        <property name="secondary_icon_activatable">False</property>
                         <signal name="activate" handler="on_entry_activate" swapped="no"/>
                         <signal name="changed" handler="on_editable_changed" swapped="no"/>
                       </object>
@@ -3112,8 +3088,6 @@
                         <property name="tooltip_markup">File manager to use when a file URI is opened.</property>
                         <property name="tooltip_text" translatable="yes">File manager to use when a file URI is opened.</property>
                         <property name="invisible_char">•</property>
-                        <property name="primary_icon_activatable">False</property>
-                        <property name="secondary_icon_activatable">False</property>
                         <signal name="activate" handler="on_entry_activate" swapped="no"/>
                         <signal name="changed" handler="on_editable_changed" swapped="no"/>
                       </object>
@@ -3401,8 +3375,6 @@
                                     <property name="hexpand">True</property>
                                     <property name="invisible_char">•</property>
                                     <property name="text" translatable="yes">1000</property>
-                                    <property name="primary_icon_activatable">False</property>
-                                    <property name="secondary_icon_activatable">False</property>
                                     <property name="adjustment">scrollback_lines_adjustment</property>
                                     <property name="climb_rate">1</property>
                                     <property name="value">1000</property>
@@ -3728,8 +3700,6 @@
                                     <property name="tooltip_text" translatable="yes">The title string may include '%s' which is substituted with the title set by the child command (usually the current directory for shells). No other % characters or sequences are permitted except '%%' which is displayed as a single %.</property>
                                     <property name="hexpand">True</property>
                                     <property name="invisible_char">●</property>
-                                    <property name="primary_icon_activatable">False</property>
-                                    <property name="secondary_icon_activatable">False</property>
                                     <signal name="activate" handler="on_entry_activate" swapped="no"/>
                                     <signal name="changed" handler="on_editable_changed" swapped="no"/>
                                   </object>
@@ -4158,8 +4128,6 @@
                 <property name="hexpand">True</property>
                 <property name="invisible_char">•</property>
                 <property name="max_width_chars">5</property>
-                <property name="primary_icon_activatable">False</property>
-                <property name="secondary_icon_activatable">False</property>
                 <signal name="activate" handler="on_ssh_entry_activate" swapped="no"/>
                 <signal name="changed" handler="on_editable_changed" swapped="no"/>
                 <signal name="changed" handler="on_ssh_host_changed" swapped="no"/>
@@ -4190,8 +4158,6 @@
                 <property name="tooltip_text" translatable="yes">Remote username.</property>
                 <property name="hexpand">True</property>
                 <property name="invisible_char">•</property>
-                <property name="primary_icon_activatable">False</property>
-                <property name="secondary_icon_activatable">False</property>
                 <signal name="activate" handler="on_ssh_entry_activate" swapped="no"/>
                 <signal name="changed" handler="on_editable_changed" swapped="no"/>
               </object>
@@ -4226,8 +4192,6 @@
                 <property name="truncate_multiline">True</property>
                 <property name="shadow_type">etched-in</property>
                 <property name="caps_lock_warning">False</property>
-                <property name="primary_icon_activatable">False</property>
-                <property name="secondary_icon_activatable">False</property>
                 <property name="input_purpose">digits</property>
                 <property name="adjustment">ssh_port_adjustment</property>
                 <property name="climb_rate">10</property>
@@ -4264,8 +4228,6 @@
                 <property name="tooltip_text" translatable="yes">Miscellaneous options to add to the ssh command line.</property>
                 <property name="hexpand">True</property>
                 <property name="invisible_char">•</property>
-                <property name="primary_icon_activatable">False</property>
-                <property name="secondary_icon_activatable">False</property>
                 <signal name="activate" handler="on_ssh_entry_activate" swapped="no"/>
                 <signal name="changed" handler="on_editable_changed" swapped="no"/>
               </object>
