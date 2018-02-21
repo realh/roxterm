@@ -2002,7 +2002,7 @@ MultiWin *multi_win_new_blank(Options *shortcuts,
         multi_win_set_show_tabs_menu_items(win, FALSE);
         multi_win_hide_tabs(win);
     }
-    win->add_tab_button = multitab_close_button_new("list-add");
+    win->add_tab_button = multitab_close_button_new("tab-new-symbolic");
     g_signal_connect_swapped(win->add_tab_button, "clicked",
             G_CALLBACK(multi_win_new_tab_action), win);
     gtk_notebook_set_action_widget(notebook, win->add_tab_button, GTK_PACK_END);
