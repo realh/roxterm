@@ -100,7 +100,6 @@ struct MultiWin {
     gboolean show_add_tab_button;
     GdkGeometry geom_hints;
     GdkWindowHints geom_hint_mask;
-    guint draw_signal_tag;
 };
 
 static double multi_win_zoom_factors[] = {
@@ -941,8 +940,6 @@ static void add_menu_bar(MultiWin *win)
 
     if (win->show_menu_bar)
         return;
-    win->draw_signal_tag = g_signal_connect(win->gtkwin, "draw",
-            G_CALLBACK(multi_win_draw_chrome_bg), win);
     menu_bar = menutree_get_top_level_widget(win->menu_bar);
     gtk_box_pack_start(GTK_BOX(win->vbox), menu_bar, FALSE, FALSE, 0);
     gtk_box_reorder_child(GTK_BOX(win->vbox), menu_bar, 0);
@@ -956,8 +953,6 @@ static void remove_menu_bar(MultiWin *win)
 
     if (!win->show_menu_bar)
         return;
-    g_signal_handler_disconnect(win->gtkwin, win->draw_signal_tag);
-    win->draw_signal_tag = 0;
     menu_bar = menutree_get_top_level_widget(win->menu_bar);
     gtk_widget_hide(menu_bar);
     gtk_container_remove(GTK_CONTAINER(win->vbox), menu_bar);
@@ -1930,6 +1925,8 @@ MultiWin *multi_win_new_blank(Options *shortcuts,
         g_signal_connect(win->gtkwin, "delete-event",
                 G_CALLBACK(multi_win_delete_event_cb), win);
     }
+    g_signal_connect(win->gtkwin, "draw",
+            G_CALLBACK(multi_win_draw_chrome_bg), win);
 
     multi_win_set_colormap(win);
 
