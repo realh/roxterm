@@ -424,7 +424,6 @@ static void profilegui_fill_in_dialog(ProfileGUI * pg)
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(profilegui_widget(pg,
                 "show_menubar")), !options_lookup_int_with_default(profile,
             "hide_menubar", FALSE));
-    capplet_set_boolean_toggle(&pg->capp, "allow_bold", TRUE);
     capplet_set_boolean_toggle(&pg->capp, "audible_bell", TRUE);
     capplet_set_boolean_toggle(&pg->capp, "bell_highlights_tab", TRUE);
     {

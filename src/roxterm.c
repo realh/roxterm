@@ -2775,13 +2775,6 @@ roxterm_update_autowrap(ROXTermData * roxterm, VteTerminal * vte)
         (roxterm->profile, "autowrap", TRUE) != FALSE);
 }
 
-inline static void
-roxterm_update_allow_bold(ROXTermData * roxterm, VteTerminal * vte)
-{
-    vte_terminal_set_allow_bold(vte, options_lookup_int
-        (roxterm->profile, "allow_bold") != 0);
-}
-
 static void
 roxterm_update_cursor_blink_mode(ROXTermData * roxterm, VteTerminal * vte)
 {
@@ -2998,7 +2991,6 @@ static void roxterm_apply_profile(ROXTermData *roxterm, VteTerminal *vte,
 {
     roxterm_set_word_chars(roxterm, vte);
     roxterm_update_audible_bell(roxterm, vte);
-    roxterm_update_allow_bold(roxterm, vte);
     roxterm_update_autowrap(roxterm, vte);
     roxterm_update_cursor_blink_mode(roxterm, vte);
     roxterm_update_cursor_shape(roxterm, vte);
@@ -3322,10 +3314,6 @@ static void roxterm_reflect_profile_change(Options * profile, const char *key)
         {
             roxterm_apply_profile_font(roxterm, vte, TRUE);
             apply_to_win = TRUE;
-        }
-        else if (!strcmp(key, "allow_bold"))
-        {
-            roxterm_update_allow_bold(roxterm, vte);
         }
         else if (!strcmp(key, "hide_menubar") &&
             multi_win_get_current_tab(win) == roxterm->tab)
