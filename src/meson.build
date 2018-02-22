@@ -17,7 +17,8 @@ common_deps = [gtkdep, dbusdep, gdbusdep]
 rtlib = static_library('roxterm', ['colourscheme.c', 'dlg.c', 'dragrcv.c',
     'dynopts.c', 'encodings.c', 'globalopts.c', 'logo.c', 'options.c',
     'optsfile.c', 'rtdbus.c'],
-    dependencies: common_deps)
+    dependencies: common_deps,
+    install: false)
 
 rtconfig = executable('roxterm-config', ['capplet.c', 'colourgui.c',
     'configlet.c', 'getname.c', 'optsdbus.c', 'profilegui.c', 'shortcuts.c'],
@@ -29,6 +30,8 @@ roxterm = executable('roxterm', ['about.c', 'main.c', 'multitab.c',
     'roxterm.c', 'search.c', 'session-file.c', 'shortcuts.c', 'uri.c'],
     dependencies: common_deps + [vtedep, pcredep],
     link_with: rtlib)
+
+install_data('roxterm-config.ui', '@prefix@/@datadir@/roxterm')
 
 #roxterm4 = executable('roxterm4', ['roxterm4.1.c'],
 #    dependencies: common_deps + [vtedep, pcredep])
