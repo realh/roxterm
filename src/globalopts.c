@@ -193,10 +193,8 @@ static GOptionEntry global_g_options[] = {
         N_("Set the terminal's working directory"), N_("DIRECTORY") },
     { "geometry", 0, G_OPTION_FLAG_IN_MAIN,
         G_OPTION_ARG_CALLBACK, global_options_set_string,
-        N_("Set size and/or position of terminal\n"
-        "                                   according to X geometry "
-        "specification"),
-        N_("GEOMETRY") },
+        N_("Set size of terminal"),
+        N_("COLUMNSxROWS") },
     { "appdir", 0,  G_OPTION_FLAG_IN_MAIN,
         G_OPTION_ARG_CALLBACK, global_options_set_string,
         N_("Application directory when run as a ROX\n"
@@ -263,7 +261,8 @@ static GOptionEntry global_g_options[] = {
         NULL },
     { "fork", 0, G_OPTION_FLAG_IN_MAIN,
         G_OPTION_ARG_NONE, &global_options_fork,
-        N_("Fork into the background even if this is the first instance"),
+        N_("Fork into the background even if this is the\n"
+        "                                   first instance"),
         NULL },
     { "session", 0, G_OPTION_FLAG_IN_MAIN,
         G_OPTION_ARG_STRING, &global_options_user_session_id,
