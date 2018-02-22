@@ -57,7 +57,7 @@ struct MultiTab {
     gboolean title_template_locked;
     int middle_click_action;
     gboolean restore_pending;
-    int restore_width, restore_height;
+    int restore_rows, restore_columns;
 };
 
 struct MultiWin {
@@ -159,8 +159,11 @@ static gboolean multi_win_process_geometry(MultiWin *win,
 
 static gboolean multi_tab_do_restore_size(MultiTab *tab)
 {
-    gtk_window_resize(GTK_WINDOW(tab->parent->gtkwin),
-            tab->restore_width, tab->restore_height);
+    int width, height;
+
+    multi_win_process_geometry(tab->parent, tab,
+            tab->restore_columns, tab->restore_rows, &width, &height);
+    gtk_window_resize(GTK_WINDOW(tab->parent->gtkwin), width, height);
     return FALSE;
 }
 
@@ -168,39 +171,17 @@ static void multi_tab_size_allocate(GtkWidget *widget, GdkRectangle *alloc,
         MultiTab *tab)
 {
     (void) widget;
+    (void) alloc;
 
-    if (tab->restore_pending && (alloc->width != tab->restore_width
-                || alloc->height != tab->restore_height))
+    if (tab->restore_pending)
     {
-        GtkWindow *win = GTK_WINDOW(tab->parent->gtkwin);
-        int ww, wh;
-
-        g_debug("hbox size-allocate of %dx%d, want to restore %dx%d",
-                alloc->width, alloc->height,
-                tab->restore_width, tab->restore_height);
-        gtk_window_get_size(win, &ww, &wh);
         tab->restore_pending = FALSE;
-        g_debug("Resizing window from %dx%d to %dx%d", ww, wh,
-                ww - alloc->width + tab->restore_width,
-                wh - alloc->height + tab->restore_height);
-        tab->restore_width += ww - alloc->width;
-        tab->restore_height += wh - alloc->height;
         /* Calling gtk_window_resize from a size-allocate handler doesn't seem
          * to work, which is probably quite a sensible precaution by GTK, but it
          * means we have to make another deferment.
          */
         g_idle_add((GSourceFunc) multi_tab_do_restore_size, tab);
     }
-    /*
-    else
-    {
-        g_debug("Ignoring hbox size-allocate of %dx%d",
-                alloc->width, alloc->height);
-        g_debug("Terminal allocation is %dx%d",
-                gtk_widget_get_allocated_width(tab->active_widget),
-                gtk_widget_get_allocated_height(tab->active_widget));
-    }
-    */
 }
 
 /* After adding/removing menu bars etc we want to resize the window to preserve
@@ -222,8 +203,10 @@ static void multi_win_request_size_restore(MultiWin *win)
     }
     if (multi_win_is_maximised(win) || multi_win_is_fullscreen(win))
         return;
-    tab->restore_width = gtk_widget_get_allocated_width(tab->widget);
-    tab->restore_height = gtk_widget_get_allocated_height(tab->widget);
+    tab->restore_rows = -1;
+    tab->restore_columns = -1;
+    multi_win_size_func(tab->user_data, FALSE,
+            &tab->restore_columns, &tab->restore_rows);
     tab->restore_pending = TRUE;
 }
 
