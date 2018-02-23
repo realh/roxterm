@@ -53,11 +53,10 @@ case $1 in
             exit 1
         fi
         echo "Compiling $APP_DIR... please wait..." >&2
-        cd "$APP_DIR"
-        if [ ! -f "build/build.ninja" ] ; then
-            meson . build
-        fi
-        ninja -C build && \
+        mkdir -p "$APP_DIR/build"
+        cd "$APP_DIR/build"
+        cmake -DCMAKE_BUILD_TYPE=RELWITHDEBINFO .. &&
+        make && \
         echo Done >&2 && exit 0
         echo Compile failed >&2
         echo Press Return... >&2
