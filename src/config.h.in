@@ -20,22 +20,22 @@
 #ifndef ROXTERM__CONFIG_H
 #define ROXTERM__CONFIG_H
 
-#define BIN_DIR "@prefix@/@bindir@"
+#define BIN_DIR "@CMAKE_INSTALL_FULL_BINDIR@"
 
-#define DATA_DIR "@prefix@/@datadir@"
+#define DATA_DIR "@CMAKE_INSTALL_FULL_DATADIR@"
 
 #undef ENABLE_NLS
 
-#define HTML_DIR DATA_DIR "/doc/roxterm"
+#define HTML_DIR "@CMAKE_INSTALL_FULL_DOCDIR"
 
-#define ICON_DIR DATA_DIR "/icons/hicolor/scalable/apps"
+#define ICON_DIR "@CMAKE_INSTALL_FULL_DATADIR@/icons/hicolor/scalable/apps"
 
-#define LOCALEDIR "@prefix@/@localedir@"
+#define LOCALEDIR "@CMAKE_INSTALL_FULL_LOCALEDIR@"
 
 #define PACKAGE "roxterm"
 
-#define PKG_DATA_DIR DATA_DIR "/roxterm"
+#define PKG_DATA_DIR "@CMAKE_INSTALL_FULL_DATADIR@/roxterm"
 
-#define SYS_CONF_DIR "/@sysconfdir@"
+#define SYS_CONF_DIR "@CMAKE_INSTALL_FULL_SYSCONFDIR@"
 
 #endif /* ROXTERM__CONFIG_H */
