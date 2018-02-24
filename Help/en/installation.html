@@ -44,37 +44,35 @@
 
 				<h2>Download <a class="pageAnchor" name="Download">:</a></h2>
 
-				<p>Visit the <a href="http://sourceforge.net/projects/roxterm">SourceForge project page</a> to download release
-				files or use other Sourceforge tools. If you want to get developmental versions ahead of releases, use git.
-				For versions prior to 1.19.0 use svn (subversion). The actual command you will probably want to use to check out a
-				snapshot is:</p>
-
-				<p class="snippet">
-					<span>git clone git://git.code.sf.net/p/roxterm/code roxterm</span>
-				</p>
+                <p>Visit the <a href="http://github.com/realh/roxterm">github project page</a> to
+                download snapshots.  For a stable version use the latest numerical tag. If you are
+                using an old LTS distro with a GTK3 version lower than 3.20 you should use roxterm
+                3.3.1, preferably from your distro's package manager.  In case your distro is really
+                old, roxterm 2.x supports GTK2.</p>
 
 				<h2>Requirements <a class="pageAnchor" name="Requirements">:</a></h2>
 
-				<p>You need the libraries for GTK+2 which is pretty much
-				standard on all free Unix derivatives these days, and/or GTK+3.
-				It needs at least version 2.16 of glib and GTK+ 2.18. You will
-				also need vte/libvte (at least version 0.20), a Gnome component;
-				most distros package separate versions for GTK+2 and GTK+3.
-				D-BUS is also required (see below).</p>
+                <p>You need the libraries for GTK+3 which is pretty much standard on all free Unix
+                derivatives these days.  It needs at least version 2.16 of glib and GTK+ 3.20. You
+                will also need vte/libvte (at least version 0.48 of vte-2.91), a GNOME component.
+                D-BUS is also required (see below).</p>
 
-				<p>To compile ROXTerm you will need the header files for the
-				above libraries. In packaging systems they usually come in
-				packages whose names end in "-dev" or "-devel".</p>
+                <p>To compile ROXTerm you will need the header files for the above libraries. In
+                packaging systems they usually come in packages whose names end in "-dev" or
+                "-devel".</p>
 
-				<p>ROXTerm uses a new, bespoke build system called maitch. This
-				requires python and the python 'lockfile' module.</p>
+				<p>Prior to 3.5.0 ROXTerm used a bespoke build system called maitch. This
+				requires python and the python 'lockfile' module. 3.5.0 uses the more conventional
+                <a href="https://cmake.org/">CMake</a>.</p>
 
                 <h3>D-Bus</h3>
 
-				<p>D-Bus is a messaging system which ROXTerm uses to connect terminals with its configure tool. ROXTerm uses the
-				"session" bus, which should be started along with your desktop environment. Current versions of ROX, GNOME and KDE
-				session managers all launch D-Bus. If you use some other session/desktop/window manager which doesn't launch D-Bus
-				you can start it by inserting something like this near the start of your .xinitrc or .xsession:</p>
+                <p>D-Bus is a messaging system which ROXTerm uses to connect terminals with its
+                configure tool. ROXTerm uses the "session" bus, which should be started along with
+                your desktop environment. Current versions of ROX, GNOME and KDE/Plasma session
+                managers all launch D-Bus. If you use some other session/desktop/window manager
+                which doesn't launch D-Bus you can start it by inserting something like this near
+                the start of your .xinitrc or .xsession:</p>
 
 				<p class="snippet">
 					<span>if test -z "$DBUS_SESSION_BUS_ADDRESS" ; then</span>
@@ -83,64 +81,49 @@
 					<span>fi</span>
 				</p>
 
-				<p>The reason for using a bespoke configuration messaging system over D-Bus instead of gconf is because gconf
-				doesn't provide a way to map an arbitrary number of profiles onto configuration filenames.</p>
+                <p>The reason for using a bespoke configuration messaging system over D-Bus instead
+                of gconf is because gconf doesn't provide a way to map an arbitrary number of
+                profiles onto configuration filenames.</p>
 
 				<h2>Installing <a class="pageAnchor" name="Installing">:</a></h2>
 
-				<p>To install ROXTerm for ROX all you need to do is unpack the
-				tarball in your Apps directory and run it from there, but you
-				will probably want to rename the folder to ROXTerm. For other
-				systems ROXTerm may be installed in a similar way to an
-				autoconf-based source package, but using maitch's analogues:</p>
+                <p>To install ROXTerm for ROX all you need to do is check it out or unpack it into
+                your Apps directory and run it from there, but you will probably want to rename the
+                folder to ROXTerm. For other systems ROXTerm may be installed in the typical CMake
+                way:</p>
 
 				<p class="snippet">
-					<span>python ./mscript.py configure</span>
-					<span>python ./mscript.py build</span>
-					<span>python ./mscript.py install</span>
+					<span>mkdir build</span>
+					<span>cd build</span>
+					<span>cmake ..</span>
+					<span>make -j 4</span>
+					<span>sudo make install</span>
 				</p>
 
-				<p>Various options are available, run
+                <p>The <code>-j 4</code> is optional, to accelerate the build by using multiple
+                processing threads. Replace the 4 with the number of "threads" or cores your CPU
+                has.</p>
+
+				<p>Various other options are available, run
 				<p class="snippet">
-					<span>python ./mscript.py help</span>
+					<span>cmake --help</span>
 				</p>
 				for details.</p>
 
-				<p>Autoconf builds are no longer supported.</p>
-
 				<h3>Debian &amp; Ubuntu</h3>
 
-				<p>Up-to-date official Debian packages are now available. See <a
-				href="http://packages.debian.org/roxterm">http://packages.debian.org/roxterm</a>.</p>
+                <p>Up-to-date official Debian packages are not currently available, but packages
+                from the <a href="https://launchpad.net/~h-realh/+archive/roxterm">Ubuntu PPA</a>
+                may  be compatible, or you can take advantage of the debian build files provided.</p>
 
-				<p>Ubuntu also has official roxterm packages, but due to
-				Ubuntu's release cycle these may lag behind the latest upstream
-				releases. Therefore I have set up a
-				<a href="https://launchpad.net/~h-realh/+archive/roxterm">PPA</a>
-                to provide the most recent releases of ROXTerm for Ubuntu's
-                current release when appropriate.</p>
-
-				<p>For those that want to build their own debian packages, the debian packaging files are no
-				longer included in release tarballs, but they are included in git's master branch.
-				<a href="Download">See above</a> for details of how to fetch roxterm from git.</p>
-
-				<p>If you want to build a particular version:</p>
-				<p><code>git checkout</code> <i>version</i></p>
-
-				<p>For older distros which do not include packages of GTK3 etc:</p>
-				<p><code>git fetch origin lucid:lucid<br/>
-				git checkout lucid</code></p>
-
-				<p>You can use <code>sudo apt-get build-dep</code> at this point, but depending on the version
-				already in your distro the set of packages may be out-of-date, so be prepared for dependency
-				errors later and install the necessary packages at that point. You should install imagemagick
-				and librsvg2-bin at this point, but these are bugged in Ubuntu Lucid (and earlier?), so before
-				building you will have to copy these files from <code>Help/lib</code> in a tarball:
-				<code>roxterm_logo.png favicon.ico logo_text.png</code>.</p>
+                <p>You can use <code>sudo apt-get build-dep roxterm</code> at this point, but
+                depending on the version already in your distro the set of packages may be
+                out-of-date, so be prepared for dependency errors later and install the necessary
+                packages at that point.</p>
 
 			    <p>If not using a release snapshot it's a good idead to use <code>dch</code> to ensure the
 			    newest version number in <code>debian/changelog</code> has an appropriate version number eg
-			    what <code>./mscript.py configure</code> generates in the file <code>version</code>, based on
+			    what <code>./version.sh</code> generates in the file <code>version</code>, based on
 			    the output of <code>git describe</code>. Now you can build the packages eg with
 			    <code>debuild -b -uc -us</code>. Note the <code>-b</code>:- only binary packages can be
 			    built in the absence of an orig tarball.</p>
