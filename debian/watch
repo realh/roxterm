@@ -1,2 +1,5 @@
 version=3
-opts="pgpsigurlmangle=s/$/.sign/" http://sf.net/roxterm/roxterm-(.*)\.tar\.(?:gz|bz2|xz)
+opts=filenamemangle=s/.+\/v?(\d\S+)\.tar\.gz/roxterm-$1\.tar\.gz/ \
+  https://github.com/realh/roxterm/tags .*/v?(\d\S+)\.tar\.gz,
+  pgpsigurlmangle=s/archive\/(\d\S+)\.tar\.gz/releases\/download\/$1\/$1\.tar\.gz\.asc/ \
+  https://github.com/realh/roxterm/releases .*/(\d\S+)\.tar\.gz
