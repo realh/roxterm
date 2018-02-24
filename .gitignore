@@ -23,6 +23,7 @@ locale/
 ltmain.sh
 m4/
 missing
+obj-x86_64-linux-gnu/
 *.1
 *.1.xml
 *.spec
@@ -38,7 +39,6 @@ Help/gl
 Help/pt_BR
 Help/ru
 Help/uk
-debian/deletable.files
 *.mo
 *.gmo
 *.pot
@@ -81,6 +81,8 @@ version
 .ycm_extra_conf.py
 .pc
 debian/build-*
+debian/deletable.files
+debian/debhelper-build-stamp
 debian/files
 debian/*.log
 debian/*.debhelper
