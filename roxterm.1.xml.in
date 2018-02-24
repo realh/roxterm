@@ -163,11 +163,10 @@ and docbook-xsl in your Build-Depends control field.
         </listitem>
       </varlistentry>
       <varlistentry>
-        <term><option>--geometry=<replaceable>GEOMETRY</replaceable></option>
+        <term><option>--geometry=<replaceable>COLUMNSxROWS</replaceable></option>
         </term>
         <listitem>
-          <para>Set size and/or position of terminal according to X geometry
-            specification.</para>
+          <para>Set size of terminal.</para>
         </listitem>
       </varlistentry>
       <varlistentry>
@@ -194,11 +193,6 @@ and docbook-xsl in your Build-Depends control field.
           <para>Make initial terminal window take up the whole screen with
             no window furniture.</para>
         </listitem>
-      </varlistentry>
-      <varlistentry>
-        <term><option>--disable-sm</option>
-        </term>
-        <listitem><para>Disable session management.</para></listitem>
       </varlistentry>
       <varlistentry>
         <term><option>--tab</option>
@@ -290,15 +284,6 @@ and docbook-xsl in your Build-Depends control field.
         <listitem>
           <para>Replace any existing instance as ROXTerm D-BUS service
             provider.</para>
-        </listitem>
-      </varlistentry>
-      <varlistentry>
-        <term><option>--role=<replaceable>ROLE</replaceable></option>
-        </term>
-        <listitem>
-          <para>Sets the X window system "role" hint for the window
-            being created.
-          </para>
         </listitem>
       </varlistentry>
       <varlistentry>
