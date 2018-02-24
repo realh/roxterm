@@ -581,7 +581,7 @@ void on_use_custom_colours_toggled(GtkToggleButton *button, ColourGUI *cg)
             val = options_lookup_string(cg->capp.options, key);
             if (!val)
             {
-                char widget_name[20];
+                char widget_name[24];
                 const char *colour_name;
 
                 sprintf(widget_name, "palette%d_%d", n / 8, n % 8);
