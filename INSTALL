@@ -1,25 +1,37 @@
 Installation Instructions
 *************************
 
-ROXTerm now uses a new bespoke build system called maitch, aimed at reducing the
-time spent bootstrapping and running the configure script etc. autoconf is no
-longer supported.
+ROXTerm now uses CMake to build and install.
 
 Requirements
 ************
 
-The maitch build system requires python and the lockfile module
-(python-lockfile), libtool, pkg-config and install. ROXTerm additionally needs
-xsltproc + docbook-xsl, and everything else required to compile an application
-linked with vte. If building from a git checkout instead of a release tarball
-which incudes the pixmaps derived from the SVG file, image-magick with SVG
-support (eg the librsvg2-bin package in Debian and derivatives) is also needed.
+ROXTerm additionally needs xsltproc (and docbook-xsl if building without net
+access), and everything else required to compile an application linked with
+vte.
 
-Using maitch
-************
+Building with CMake
+*******************
 
-maitch is invoked via a script, usually called mscript.py. Its first argument
-specifies which mode of operation to use. In normal use you will use configure,
-build and then install which are analogous to ./configure, make and
-make install. For more details run "./mscript.py help" or
-"python mscript.py help".
+Using a separate build directory is recommended:
+
+mkdir build
+cd build
+
+To see available build options etc:
+
+cmake --help ..
+
+To configure make:
+
+cmake .. [OPTIONS]
+
+Build step:
+
+make -j 4
+
+(the -j 4 is optional, but recommended for quad core CPUs).
+
+Install:
+
+sudo make install
