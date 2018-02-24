@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 cd `dirname "$0"`
 if [ -d ".git" ] ; then
     v=`git describe --match '[0-9]*'`
