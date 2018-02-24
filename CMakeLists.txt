@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.0)
 
+project(roxterm C)
+
 include(FindPkgConfig)
 include(GNUInstallDirs)
-
-project(ROXTerm)
 
 execute_process(COMMAND ${PROJECT_SOURCE_DIR}/version.sh
     OUTPUT_VARIABLE ROXTERM_VERSION)
