@@ -187,9 +187,6 @@ static void roxterm_encodings_changed(MenuTree *mtree,
 
 /*********************** URI handling ***********************/
 
-#define ROXTERM_REGEX_FLAGS (VTE_REGEX_FLAGS_DEFAULT | \
-        PCRE2_MULTILINE | PCRE2_NEWLINE_CRLF)
-
 static int roxterm_match_add(ROXTermData *roxterm, VteTerminal *vte,
         const char *match, ROXTerm_MatchType type)
 {
@@ -197,7 +194,7 @@ static int roxterm_match_add(ROXTermData *roxterm, VteTerminal *vte,
     VteRegex *regex;
     GError *err = NULL;
 
-    regex = vte_regex_new_for_match(match, -1, ROXTERM_REGEX_FLAGS, &err);
+    regex = vte_regex_new_for_match(match, -1, PCRE2_MULTILINE, &err);
     if (!regex || err)
     {
         g_warning("Failed to compile regex '%s': %s",
@@ -205,7 +202,7 @@ static int roxterm_match_add(ROXTermData *roxterm, VteTerminal *vte,
         return -1;
     }
     map.type = type;
-    map.tag = vte_terminal_match_add_regex(vte, regex, ROXTERM_REGEX_FLAGS);
+    map.tag = vte_terminal_match_add_regex(vte, regex, 0);
     vte_terminal_match_set_cursor_type(vte, map.tag, GDK_HAND2);
     g_array_append_val(roxterm->match_map, map);
     return map.tag;
