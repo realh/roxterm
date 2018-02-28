@@ -20,21 +20,14 @@
 #include "roxterm-regex.h"
 
 /* Keeping this as a separate file unchanged from gnome-terminal will make it
- * easier to keep track of any upstream changes.
+ * easier to keep track of any upstream changes. Only include it here though,
+ * it contains several macros with generic names.
  */
 #include "terminal-regex.h"
 
-#define SCHEME_WITH_PATH "(?ix: https? | ftps? | sftp )"
-#define REGEX_FULL_URL_NO_PATH  DEFS SCHEME_WITH_PATH "://" \
-    USERPASS URL_HOST PORT
-#define REGEX_URL_NO_SCHEME_NO_PATH DEFS \
-    "(?<!(?:" HOSTNAMESEGMENTCHARS_CLASS "|[.]))(?=(?i:www|ftp))" \
-    HOSTNAME1 PORT
 #define REGEX_SSH DEFS "(?i:ssh:)" USERPASS URL_HOST PORT
 
 ROXTerm_RegexAndType roxterm_regexes[] = {
-    { REGEX_FULL_URL_NO_PATH, ROXTerm_Match_FullURI },
-    { REGEX_URL_NO_SCHEME_NO_PATH, ROXTerm_Match_URINoScheme },
     { REGEX_URL_AS_IS, ROXTerm_Match_FullURI },
     { REGEX_URL_HTTP, ROXTerm_Match_URINoScheme },
     { REGEX_NEWS_MAN, ROXTerm_Match_FullURI },
