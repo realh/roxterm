@@ -778,85 +778,6 @@ char *preparse_url(const char *url)
     return g_string_free(s, FALSE);
 }
 
-static void roxterm_launch_browser(ROXTermData *roxterm, const char *url)
-{
-    char *url2 = preparse_url(url);
-    char *browser_o = roxterm_lookup_uri_handler(roxterm, "browser");
-    char *browse = uri_get_browser_command(url2, browser_o);
-
-    if (browser_o)
-        g_free(browser_o);
-    if (browse)
-    {
-        roxterm_spawn(roxterm, browse, options_lookup_int_with_default
-            (roxterm->profile, "browser_spawn_type", 0));
-        g_free(browse);
-    }
-    g_free(url2);
-}
-
-static void roxterm_launch_email(ROXTermData *roxterm, const char *uri)
-{
-    char *mailer_o = roxterm_lookup_uri_handler(roxterm, "mailer");
-    char *mailer = uri_get_mailer_command(uri, mailer_o);
-
-    if (mailer_o)
-        g_free(mailer_o);
-    if (mailer)
-    {
-        roxterm_spawn(roxterm, mailer, options_lookup_int_with_default
-            (roxterm->profile, "mailer_spawn_type", 0));
-        g_free(mailer);
-    }
-}
-
-static void roxterm_launch_filer(ROXTermData *roxterm, const char *uri)
-{
-    gboolean is_dir;
-    char *dir = NULL;
-    char *expu = NULL;
-    char *filer_o;
-    char *filer;
-
-    if (g_str_has_prefix(uri, "file://"))
-        uri += 7;
-    if (uri[0] == '~')
-    {
-        expu = g_build_filename(g_get_home_dir(), uri + 2, NULL);
-        uri = expu;
-    }
-    is_dir = g_file_test(uri, G_FILE_TEST_IS_DIR);
-    if (!is_dir && options_lookup_int_with_default(roxterm->profile,
-                "file_as_dir", TRUE))
-    {
-        dir = g_path_get_dirname(uri);
-        uri = dir;
-        is_dir = TRUE;
-    }
-    if (is_dir)
-    {
-        filer_o = roxterm_lookup_uri_handler(roxterm, "dir_filer");
-        filer = uri_get_directory_command(uri, filer_o);
-    }
-    else
-    {
-        filer_o = roxterm_lookup_uri_handler(roxterm, "filer");
-        filer = uri_get_file_command(uri, filer_o);
-    }
-    if (filer_o)
-        g_free(filer_o);
-    if (filer)
-    {
-        roxterm_spawn(roxterm, filer,
-            options_lookup_int_with_default(roxterm->profile,
-                is_dir ? "dir_spawn_type" : "filer_spawn_type",
-                0));
-        g_free(filer);
-    }
-    g_free(dir);
-    g_free(expu);
-}
-
 static void roxterm_launch_ssh(ROXTermData *roxterm, const char *uri)
 {
     char *ssh_o = roxterm_lookup_uri_handler(roxterm, "ssh");
@@ -1962,7 +1883,7 @@ static void roxterm_show_manual(MultiWin * win)
         lang = "en";
     uri = roxterm_get_help_uri(dir, lang);
 
-    roxterm_launch_browser(roxterm, uri);
+    roxterm_launch_uri(roxterm, uri, gtk_get_current_event_time());
     g_free(uri);
     g_free(dir);
 }

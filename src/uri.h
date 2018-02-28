@@ -26,17 +26,6 @@
 #include "defns.h"
 #endif
 
-/* Returns a command for launching a URL in the given browser, which may
- * contain '%s for URL substitution, otherwise the URL is appended. If browser
- * is null, it tries to find one. Result should be freed after use. */
-char *uri_get_browser_command(const char *url, const char *browser);
-
-char *uri_get_mailer_command(const char *address, const char *mailer);
-
-char *uri_get_directory_command(const char *dirname, const char *filer);
-
-char *uri_get_file_command(const char *filename, const char *filer);
-
 char *uri_get_ssh_command(const char *uri, const char *ssh);
 
 #endif /* URI_H */
