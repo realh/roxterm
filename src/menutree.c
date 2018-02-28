@@ -113,9 +113,10 @@ static void menutree_build_shell(MenuTree *menu_tree, GtkMenuShell * shell, ...)
 
 #define URI_MENU_ITEMS \
         _("_SSH to host"), MENUTREE_SSH_HOST, \
-        _("_Open URL in browser"), MENUTREE_OPEN_IN_BROWSER, \
-        _("_Send email"), MENUTREE_OPEN_IN_MAILER, \
+        _("_Open link"), MENUTREE_OPEN_IN_BROWSER, \
+        _("Send e_mail"), MENUTREE_OPEN_IN_MAILER, \
         _("_Open file/directory in filer"), MENUTREE_OPEN_IN_FILER, \
+        _("_Call"), MENUTREE_VOIP_CALL, \
         _("_Copy address to clipboard"), MENUTREE_COPY_URI, \
         _("_"), MENUTREE_URI_SEPARATOR
 

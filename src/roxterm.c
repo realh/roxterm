@@ -1,6 +1,6 @@
 /*
     roxterm - VTE/GTK terminal emulator with tabs
-    Copyright (C) 2004-2015 Tony Houghton <h@realh.co.uk>
+    Copyright (C) 2004-2018 Tony Houghton <h@realh.co.uk>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -48,21 +48,11 @@
 #include "optsdbus.h"
 #include "roxterm.h"
 #include "multitab.h"
+#include "roxterm-regex.h"
 #include "search.h"
 #include "session-file.h"
 #include "shortcuts.h"
 #include "uri.h"
-
-typedef enum {
-    ROXTerm_Match_Invalid,
-    ROXTerm_Match_Complete,
-    ROXTerm_Match_WWW,
-    ROXTerm_Match_FTP,
-    ROXTerm_Match_MailTo,
-    ROXTerm_Match_File,
-    ROXTerm_Match_SSH_Host,
-    ROXTerm_Match_Misc_URI,
-} ROXTerm_MatchType;
 
 typedef struct {
     int tag;
@@ -110,7 +100,7 @@ struct ROXTermData {
     char **env;
     char *search_pattern;
     guint search_flags;
-    int file_match_tag[2];
+    /*int file_match_tag[2];*/
     gboolean from_session;
     int padding_w, padding_h;
     gboolean is_shell;
@@ -208,6 +198,7 @@ static int roxterm_match_add(ROXTermData *roxterm, VteTerminal *vte,
     return map.tag;
 }
 
+/*
 static void roxterm_match_remove(ROXTermData *roxterm, VteTerminal *vte,
         int tag)
 {
@@ -223,85 +214,20 @@ static void roxterm_match_remove(ROXTermData *roxterm, VteTerminal *vte,
         }
     }
 }
-
-#define URLSTART "\\b"
-
-#define URLMSGIDSET "[-A-Z\\^_a-z{|}~!\"#$%&'()*+,./0-9;:=?`]"
-#define URLEND "[^].}<> \t\r\n,\\\"]"
-#define URLPARTHOST "[A-Za-z0-9]+(-[A-Za-z0-9]+)*"
-#define URLFQDN URLPARTHOST "(\\." URLPARTHOST ")+"
-#define URLHOST URLPARTHOST "(\\." URLPARTHOST ")*"
-#define URLUSERCHARS "-A-Za-z0-9!#$%&'*+/=?^_`{|}~"
-#define URLUSER "[" URLUSERCHARS "]+(\\.[" URLUSERCHARS "]+)*"
-#define URLEXTHOST "(" URLUSER "(:[^@]+)?@)?" URLHOST "(:[0-9]+)?"
-#define URLFQDNTAIL "\\." URLHOST
-#define URLSCHEME "(telnet:|nntp:|https?:|ftps?:|webcal:)"
-#define URLPATHCHARS "-A-Za-z0-9_$.+!(),;@&=?/~#%"
-#define URLPATH "[/?][" URLPATHCHARS ":'*]*" URLEND
-#define URLNEWS URLSTART "news:" URLMSGIDSET "+@" URLHOST
-
-static const char *full_urls[] = {
-    URLSTART URLSCHEME "//" URLEXTHOST,
-    URLSTART URLSCHEME "//" URLEXTHOST URLPATH
-};
-
-static const char *web_urls[] = {
-    URLSTART "www[0-9-]*" URLFQDNTAIL,
-    URLSTART "www[0-9-]*" URLFQDNTAIL URLPATH
-};
-
-static const char *ftp_urls[] = {
-    URLSTART "ftp[0-9-]*" URLFQDNTAIL,
-    URLSTART "ftp[0-9-]*" URLFQDNTAIL URLPATH
-};
-
-static const char *ssh_urls[] = {
-    URLSTART "ssh://" URLEXTHOST,
-    URLSTART "ssh[0-9-]*" URLFQDNTAIL,
-    URLSTART URLHOST "\\.l(ocal|an)"
-};
-
-static const char *misc_urls[] = {
-    URLSTART "((git\\+)?ssh|svn|bzr|hg)://" URLEXTHOST URLPATH,
-};
-
-static const char *mailto_urls[] = {
-    URLSTART URLUSER "@" URLHOST,
-    URLSTART "mailto:" URLUSER "@" URLHOST "\\?[A-Za-z]+=" URLMSGIDSET "+"
-};
-
-/* FIXME: Could support ~user but glib doesn't provide a convenience func.
- * Should also be able to support spaces if escaped or in quotes, but
- * would complicate expression(s).
- */
-#define URLFILEBODY "(\\.|\\.\\.|~)?/[" URLPATHCHARS "]*"
-#define URLFILE "\\bfile://" URLFILEBODY
-
-static const char *file_urls[] = {
-    "\\s" URLFILEBODY,
-    "^" URLFILEBODY
-};
+*/
 
 static void roxterm_add_matches(ROXTermData *roxterm, VteTerminal *vte)
 {
-    guint n;
+    int n;
 
-    for (n = 0; n < G_N_ELEMENTS(full_urls); ++n)
-        roxterm_match_add(roxterm, vte, full_urls[n], ROXTerm_Match_Complete);
-    for (n = 0; n < G_N_ELEMENTS(web_urls); ++n)
-        roxterm_match_add(roxterm, vte, web_urls[n], ROXTerm_Match_WWW);
-    for (n = 0; n < G_N_ELEMENTS(ftp_urls); ++n)
-        roxterm_match_add(roxterm, vte, ftp_urls[n], ROXTerm_Match_FTP);
-    for (n = 0; n < G_N_ELEMENTS(mailto_urls); ++n)
-        roxterm_match_add(roxterm, vte, mailto_urls[n], ROXTerm_Match_MailTo);
-    for (n = 0; n < G_N_ELEMENTS(ssh_urls); ++n)
-        roxterm_match_add(roxterm, vte, ssh_urls[n], ROXTerm_Match_SSH_Host);
-    for (n = 0; n < G_N_ELEMENTS(misc_urls); ++n)
-        roxterm_match_add(roxterm, vte, misc_urls[n], ROXTerm_Match_Misc_URI);
-    roxterm_match_add(roxterm, vte, URLFILE, ROXTerm_Match_File);
-    roxterm_match_add(roxterm, vte, URLNEWS, ROXTerm_Match_Complete);
+    for (n = 0; roxterm_regexes[n].regex; ++n)
+    {
+        roxterm_match_add(roxterm, vte, roxterm_regexes[n].regex,
+                roxterm_regexes[n].match_type);
+    }
 }
 
+/*
 static void roxterm_add_file_matches(ROXTermData *roxterm, VteTerminal *vte)
 {
     int n;
@@ -323,6 +249,7 @@ static void roxterm_remove_file_matches(ROXTermData *roxterm, VteTerminal *vte)
         roxterm->file_match_tag[n] = -1;
     }
 }
+*/
 
 static ROXTerm_MatchType roxterm_get_match_type(ROXTermData *roxterm, int tag)
 {
@@ -460,7 +387,7 @@ static ROXTermData *roxterm_data_clone(ROXTermData *old_gt)
         new_gt->columns = vte_terminal_get_column_count(vte);
         new_gt->rows = vte_terminal_get_row_count(vte);
     }
-    new_gt->file_match_tag[0] = new_gt->file_match_tag[1] = -1;
+    /*new_gt->file_match_tag[0] = new_gt->file_match_tag[1] = -1;*/
 
     return new_gt;
 }
@@ -945,23 +872,58 @@ static void roxterm_launch_ssh(ROXTermData *roxterm, const char *uri)
     }
 }
 
-static void roxterm_launch_uri(ROXTermData *roxterm)
+static char *roxterm_get_modified_uri(ROXTermData *roxterm)
 {
+    const char *m = roxterm->matched_url;
+
     switch (roxterm->match_type)
     {
         case ROXTerm_Match_MailTo:
-            roxterm_launch_email(roxterm, roxterm->matched_url);
+            if (!g_str_has_prefix(m, "mailto:"))
+                return g_strdup_printf("mailto:%s", m);
             break;
-        case ROXTerm_Match_File:
-            roxterm_launch_filer(roxterm, roxterm->matched_url);
-            break;
+        case ROXTerm_Match_URINoScheme:
+            if (g_str_has_prefix(m, "ftp"))
+                return g_strdup_printf("ftp://%s", m);
+            else
+                return g_strdup_printf("http://%s", m);
         case ROXTerm_Match_SSH_Host:
-            roxterm_launch_ssh(roxterm, roxterm->matched_url);
+            if (!g_str_has_prefix(m, "ssh:"))
+                return g_strdup_printf("ssh://%s", m);
             break;
         default:
-            roxterm_launch_browser(roxterm, roxterm->matched_url);
             break;
     }
+    return NULL;
+}
+
+static void roxterm_launch_uri(ROXTermData *roxterm, guint32 timestamp)
+{
+    const char *m = roxterm->matched_url;
+    char *mod = NULL;
+    GError *error = NULL;
+    gboolean result;
+
+    if (roxterm->match_type == ROXTerm_Match_SSH_Host)
+    {
+        roxterm_launch_ssh(roxterm, roxterm->matched_url);
+        return;
+    }
+    mod = roxterm_get_modified_uri(roxterm);
+#if GTK_CHECK_VERSION(3,22,0)
+    result = gtk_show_uri_on_window(roxterm_get_toplevel(roxterm),
+            mod ? mod : m, timestamp, &error);
+#else
+    result = gtk_show_uri(gtk_window_get_screen(roxterm_get_toplevel(roxterm)),
+            mod ? mod : m, timestamp, &error);
+#endif
+    if (!result)
+    {
+        dlg_warning(roxterm_get_toplevel(roxterm),
+                _("Unable to open URI %s: %s"), mod ? mod : m, error->message);
+        g_error_free(error);
+    }
+    g_free(mod);
 }
 
 static void roxterm_data_delete(ROXTermData *roxterm)
@@ -1015,7 +977,7 @@ typedef enum {
     ROXTerm_ShowMailURIMenuItems,
     ROXTerm_ShowFileURIMenuItems,
     ROXTerm_ShowSSHHostMenuItems,
-    ROXTerm_ShowMiscURIMenuItems,
+    ROXTerm_ShowVOIPURIMenuItems,
 } ROXTerm_URIMenuItemsShowType;
 
 static void
@@ -1032,6 +994,8 @@ set_show_uri_menu_items(MenuTree *tree, ROXTerm_URIMenuItemsShowType show_type)
         show_type != ROXTerm_DontShowURIMenuItems);
     menutree_set_show_item(tree, MENUTREE_SSH_HOST,
         show_type == ROXTerm_ShowSSHHostMenuItems);
+    menutree_set_show_item(tree, MENUTREE_VOIP_CALL,
+        show_type == ROXTerm_ShowVOIPURIMenuItems);
     menutree_set_show_item(tree, MENUTREE_URI_SEPARATOR,
         show_type != ROXTerm_DontShowURIMenuItems);
 }
@@ -1481,30 +1445,9 @@ static void roxterm_uri_drag_data_get(GtkWidget *widget,
 
     if (info == ROXTERM_DRAG_TARGET_URI_LIST)
     {
-        if (roxterm->match_type == ROXTerm_Match_WWW)
-        {
-            uri_list[0] = g_strdup_printf("http://%s", utf8);
-        }
-        else if (roxterm->match_type == ROXTerm_Match_FTP)
-        {
-            uri_list[0] = g_strdup_printf("ftp://%s", utf8);
-        }
-        else if (roxterm->match_type == ROXTerm_Match_MailTo
-                && strncmp(utf8, "mailto:", 7))
-        {
-            uri_list[0] = g_strdup_printf("mailto:%s", utf8);
-        }
-        else if (roxterm->match_type == ROXTerm_Match_SSH_Host)
-        {
-            if (g_str_has_prefix(utf8, "ssh://"))
-                uri_list[0] = g_strdup(utf8);
-            else
-                uri_list[0] = g_strdup_printf("ssh://%s", utf8);
-        }
-        else
-        {
+        uri_list[0] = roxterm_get_modified_uri(roxterm);
+        if (!uri_list[0])
             uri_list[0] = g_strdup(utf8);
-        }
         uri_list[1] = NULL;
         gtk_selection_data_set_uris(selection, uri_list);
         g_free(uri_list[0]);
@@ -1573,11 +1516,11 @@ static gboolean roxterm_click_handler(GtkWidget *widget,
                 case ROXTerm_Match_SSH_Host:
                     show_type = ROXTerm_ShowSSHHostMenuItems;
                     break;
-                case ROXTerm_Match_Misc_URI:
-                    show_type = ROXTerm_ShowMiscURIMenuItems;
-                    break;
                 case ROXTerm_Match_MailTo:
                     show_type = ROXTerm_ShowMailURIMenuItems;
+                    break;
+                case ROXTerm_Match_VOIP:
+                    show_type = ROXTerm_ShowVOIPURIMenuItems;
                     break;
                 case ROXTerm_Match_File:
                     show_type = ROXTerm_ShowFileURIMenuItems;
@@ -1614,7 +1557,7 @@ static gboolean roxterm_release_handler(GtkWidget *widget,
     if ((event->state & GDK_CONTROL_MASK) && event->button == 1
             && roxterm->hold_over_uri && roxterm->matched_url)
     {
-        roxterm_launch_uri(roxterm);
+        roxterm_launch_uri(roxterm, event->time);
         result = TRUE;
     }
     roxterm_clear_hold_over_uri(roxterm);
@@ -1767,31 +1710,13 @@ static gboolean run_child_when_idle(ROXTermData *roxterm)
     return FALSE;
 }
 
-static void roxterm_browser_action(MultiWin * win)
+static void roxterm_launch_uri_action(MultiWin * win)
 {
     ROXTermData *roxterm = multi_win_get_user_data_for_current_tab(win);
 
     g_return_if_fail(roxterm);
     if (roxterm->matched_url)
-        roxterm_launch_browser(roxterm, roxterm->matched_url);
-}
-
-static void roxterm_mailto_action(MultiWin * win)
-{
-    ROXTermData *roxterm = multi_win_get_user_data_for_current_tab(win);
-
-    g_return_if_fail(roxterm);
-    if (roxterm->matched_url)
-        roxterm_launch_email(roxterm, roxterm->matched_url);
-}
-
-static void roxterm_open_in_filer_action(MultiWin * win)
-{
-    ROXTermData *roxterm = multi_win_get_user_data_for_current_tab(win);
-
-    g_return_if_fail(roxterm);
-    if (roxterm->matched_url)
-        roxterm_launch_filer(roxterm, roxterm->matched_url);
+        roxterm_launch_uri(roxterm, gtk_get_current_event_time());
 }
 
 static void roxterm_copy_url_action(MultiWin * win)
@@ -1806,15 +1731,6 @@ static void roxterm_copy_url_action(MultiWin * win)
         gtk_clipboard_set_text(gtk_clipboard_get(GDK_SELECTION_CLIPBOARD),
             roxterm->matched_url, -1);
     }
-}
-
-static void roxterm_ssh_host_action(MultiWin * win)
-{
-    ROXTermData *roxterm = multi_win_get_user_data_for_current_tab(win);
-
-    g_return_if_fail(roxterm);
-    if (roxterm->matched_url)
-        roxterm_launch_ssh(roxterm, roxterm->matched_url);
 }
 
 static void roxterm_select_all_action(MultiWin * win)
@@ -2679,15 +2595,15 @@ static void roxterm_connect_menu_signals(MultiWin * win)
         G_CALLBACK(roxterm_open_config_manager), NULL, NULL, NULL, NULL);
 
     multi_win_menu_connect_swapped(win, MENUTREE_OPEN_IN_BROWSER,
-        G_CALLBACK(roxterm_browser_action), win, NULL, NULL, NULL);
+        G_CALLBACK(roxterm_launch_uri_action), win, NULL, NULL, NULL);
     multi_win_menu_connect_swapped(win, MENUTREE_OPEN_IN_MAILER,
-        G_CALLBACK(roxterm_mailto_action), win, NULL, NULL, NULL);
+        G_CALLBACK(roxterm_launch_uri_action), win, NULL, NULL, NULL);
     multi_win_menu_connect_swapped(win, MENUTREE_OPEN_IN_FILER,
-        G_CALLBACK(roxterm_open_in_filer_action), win, NULL, NULL, NULL);
+        G_CALLBACK(roxterm_launch_uri_action), win, NULL, NULL, NULL);
     multi_win_menu_connect_swapped(win, MENUTREE_COPY_URI,
         G_CALLBACK(roxterm_copy_url_action), win, NULL, NULL, NULL);
     multi_win_menu_connect_swapped(win, MENUTREE_SSH_HOST,
-        G_CALLBACK(roxterm_ssh_host_action), win, NULL, NULL, NULL);
+        G_CALLBACK(roxterm_launch_uri_action), win, NULL, NULL, NULL);
     multi_win_menu_connect_swapped(win, MENUTREE_SEARCH_FIND,
         G_CALLBACK(roxterm_open_search_action), win, NULL, NULL, NULL);
     multi_win_menu_connect_swapped(win, MENUTREE_SEARCH_FIND_NEXT,
@@ -2939,6 +2855,7 @@ static void roxterm_apply_show_tab_number(ROXTermData *roxterm)
                     "show_tab_num", TRUE));
 }
 
+/*
 static void roxterm_apply_match_files(ROXTermData *roxterm, VteTerminal *vte)
 {
     if (options_lookup_int_with_default(roxterm->profile,
@@ -2954,6 +2871,7 @@ static void roxterm_apply_match_files(ROXTermData *roxterm, VteTerminal *vte)
     }
 
 }
+*/
 
 inline static void roxterm_apply_middle_click_tab(ROXTermData *roxterm)
 {
@@ -3013,7 +2931,7 @@ static void roxterm_apply_profile(ROXTermData *roxterm, VteTerminal *vte,
     roxterm_apply_title_template(roxterm);
     roxterm_apply_show_tab_number(roxterm);
     roxterm_apply_show_tab_status(roxterm);
-    roxterm_apply_match_files(roxterm, vte);
+    /*roxterm_apply_match_files(roxterm, vte);*/
     roxterm_apply_middle_click_tab(roxterm);
 
     roxterm_apply_colour_scheme_from_profile(roxterm);
@@ -3462,10 +3380,12 @@ static void roxterm_reflect_profile_change(Options * profile, const char *key)
         {
             roxterm_apply_show_tab_status(roxterm);
         }
+        /*
         else if (!strcmp(key, "match_plain_files"))
         {
             roxterm_apply_match_files(roxterm, vte);
         }
+        */
         else if (!strcmp(key, "middle_click_tab"))
         {
             roxterm_apply_middle_click_tab(roxterm);
@@ -3979,7 +3899,7 @@ static ROXTermData *roxterm_data_new(double zoom_factor, const char *directory,
     }
     roxterm->pid = -1;
     roxterm->env = global_options_copy_strv(env);
-    roxterm->file_match_tag[0] = roxterm->file_match_tag[1] = -1;
+    /*roxterm->file_match_tag[0] = roxterm->file_match_tag[1] = -1;*/
     return roxterm;
 }
 
