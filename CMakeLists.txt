@@ -31,7 +31,7 @@ install(FILES roxterm.svg
 install(DIRECTORY Config
     DESTINATION ${CMAKE_INSTALL_DATADIR}/roxterm)
 
-install(DIRECTORY Help/
+install(DIRECTORY docs/
     DESTINATION ${CMAKE_INSTALL_DOCDIR})
 
 find_program(XSLTPROC xsltproc)
