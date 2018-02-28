@@ -1,4 +1,4 @@
-roxterm (3.5.0-1) artful; urgency=medium
+roxterm (3.5.0-2) artful; urgency=medium
 
   * New upstream version:
     + Migrated to github.
@@ -6,9 +6,10 @@ roxterm (3.5.0-1) artful; urgency=medium
     + Fixed the geometry bug introduced by GTK 3.20.0.
     + Removed X11-specific code and options for improved Wayland support.
     + Minimum version requirements are now GTK 3.20 and vte 0.48.
+    + URI regexes based on gnome-terminal's with simplified launch options.
     + Numerous other fixes and updates.
 
- -- Tony Houghton <h@realh.co.uk>  Sat, 24 Feb 2018 17:03:50 +0000
+ -- Tony Houghton <h@realh.co.uk>  Wed, 28 Feb 2018 21:00:00 +0000
 
 roxterm (3.3.2-1pre14) unstable; urgency=medium
 
