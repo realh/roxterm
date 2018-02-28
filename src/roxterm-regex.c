@@ -33,10 +33,10 @@
 #define REGEX_SSH DEFS "(?i:ssh:)" USERPASS URL_HOST PORT
 
 ROXTerm_RegexAndType roxterm_regexes[] = {
-    { REGEX_URL_AS_IS, ROXTerm_Match_FullURI },
     { REGEX_FULL_URL_NO_PATH, ROXTerm_Match_FullURI },
-    { REGEX_URL_HTTP, ROXTerm_Match_URINoScheme },
     { REGEX_URL_NO_SCHEME_NO_PATH, ROXTerm_Match_URINoScheme },
+    { REGEX_URL_AS_IS, ROXTerm_Match_FullURI },
+    { REGEX_URL_HTTP, ROXTerm_Match_URINoScheme },
     { REGEX_NEWS_MAN, ROXTerm_Match_FullURI },
     { REGEX_SSH, ROXTerm_Match_SSH_Host },
     { REGEX_EMAIL, ROXTerm_Match_SSH_Host },
