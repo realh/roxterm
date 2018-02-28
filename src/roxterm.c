@@ -897,12 +897,31 @@ static char *roxterm_get_modified_uri(ROXTermData *roxterm)
     return NULL;
 }
 
-static void roxterm_launch_uri(ROXTermData *roxterm, guint32 timestamp)
+static void roxterm_launch_uri(ROXTermData *roxterm,
+        const char *uri, guint32 timestamp)
+{
+    GError *error = NULL;
+    gboolean result;
+
+#if GTK_CHECK_VERSION(3,22,0)
+    result = gtk_show_uri_on_window(roxterm_get_toplevel(roxterm),
+            uri, timestamp, &error);
+#else
+    result = gtk_show_uri(gtk_window_get_screen(roxterm_get_toplevel(roxterm)),
+            uri, timestamp, &error);
+#endif
+    if (!result)
+    {
+        dlg_warning(roxterm_get_toplevel(roxterm),
+                _("Unable to open URI %s: %s"), uri, error->message);
+        g_error_free(error);
+    }
+}
+
+static void roxterm_launch_matched_uri(ROXTermData *roxterm, guint32 timestamp)
 {
     const char *m = roxterm->matched_url;
     char *mod = NULL;
-    GError *error = NULL;
-    gboolean result;
 
     if (roxterm->match_type == ROXTerm_Match_SSH_Host)
     {
@@ -910,19 +929,7 @@ static void roxterm_launch_uri(ROXTermData *roxterm, guint32 timestamp)
         return;
     }
     mod = roxterm_get_modified_uri(roxterm);
-#if GTK_CHECK_VERSION(3,22,0)
-    result = gtk_show_uri_on_window(roxterm_get_toplevel(roxterm),
-            mod ? mod : m, timestamp, &error);
-#else
-    result = gtk_show_uri(gtk_window_get_screen(roxterm_get_toplevel(roxterm)),
-            mod ? mod : m, timestamp, &error);
-#endif
-    if (!result)
-    {
-        dlg_warning(roxterm_get_toplevel(roxterm),
-                _("Unable to open URI %s: %s"), mod ? mod : m, error->message);
-        g_error_free(error);
-    }
+    roxterm_launch_uri(roxterm, mod ? mod : m, timestamp);
     g_free(mod);
 }
 
@@ -1346,14 +1353,7 @@ static gboolean roxterm_about_uri_hook(GtkAboutDialog *about,
         gchar *link, gpointer data)
 {
     (void) about;
-    if (g_str_has_prefix(link, "mailto:"))
-    {
-        roxterm_launch_email(data, link + 7);
-    }
-    else
-    {
-        roxterm_launch_browser(data, link);
-    }
+    roxterm_launch_uri(data, link, gtk_get_current_event_time());
     return TRUE;
 }
 
@@ -1557,7 +1557,7 @@ static gboolean roxterm_release_handler(GtkWidget *widget,
     if ((event->state & GDK_CONTROL_MASK) && event->button == 1
             && roxterm->hold_over_uri && roxterm->matched_url)
     {
-        roxterm_launch_uri(roxterm, event->time);
+        roxterm_launch_matched_uri(roxterm, event->time);
         result = TRUE;
     }
     roxterm_clear_hold_over_uri(roxterm);
@@ -1716,7 +1716,7 @@ static void roxterm_launch_uri_action(MultiWin * win)
 
     g_return_if_fail(roxterm);
     if (roxterm->matched_url)
-        roxterm_launch_uri(roxterm, gtk_get_current_event_time());
+        roxterm_launch_matched_uri(roxterm, gtk_get_current_event_time());
 }
 
 static void roxterm_copy_url_action(MultiWin * win)
