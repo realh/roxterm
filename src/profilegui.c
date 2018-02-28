@@ -449,18 +449,8 @@ static void profilegui_fill_in_dialog(ProfileGUI * pg)
     capplet_set_boolean_toggle(&pg->capp, "show_tab_num", TRUE);
     capplet_set_radio(&pg->capp, "middle_click_tab", 0);
     profilegui_set_close_buttons_shading(pg);
-    capplet_set_text_entry(&pg->capp, "browser", NULL);
-    capplet_set_radio(&pg->capp, "browser_spawn_type", 0);
-    capplet_set_text_entry(&pg->capp, "mailer", NULL);
-    capplet_set_radio(&pg->capp, "mailer_spawn_type", 0);
     capplet_set_text_entry(&pg->capp, "ssh", NULL);
-    capplet_set_radio(&pg->capp, "ssh_spawn_type", 2);
-    capplet_set_text_entry(&pg->capp, "filer", NULL);
-    capplet_set_radio(&pg->capp, "filer_spawn_type", 0);
-    capplet_set_text_entry(&pg->capp, "dir_filer", NULL);
-    capplet_set_radio(&pg->capp, "dir_spawn_type", 0);
-    capplet_set_boolean_toggle(&pg->capp, "file_as_dir", TRUE);
-    capplet_set_boolean_toggle(&pg->capp, "match_plain_files", FALSE);
+    /*capplet_set_boolean_toggle(&pg->capp, "match_plain_files", FALSE);*/
     capplet_set_spin_button(&pg->capp, "width", 80);
     capplet_set_spin_button(&pg->capp, "height", 24);
     on_cell_size_toggled(GTK_TOGGLE_BUTTON(profilegui_widget(pg, "cell_size")),
@@ -524,7 +514,6 @@ static void profilegui_setup_list_store(ProfileGUI *pg)
 {
     static char const *labels[] = {
             N_("Appearance"), N_("General"), N_("Command"),
-            N_("Net URIs"), N_("File URIs"),
             N_("Scrolling"), N_("Keyboard"), N_("Tabs")
     };
     GtkTreeIter iter;
