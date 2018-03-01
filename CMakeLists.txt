@@ -70,7 +70,8 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/roxterm.appdata.xml
 # any of the -- options needed here.
 set(ROXTERM_PACKAGE_NAME "${CMAKE_PROJECT_NAME}-${ROXTERM_VERSION}")
 set(TARBALL_NAME "${ROXTERM_PACKAGE_NAME}.tar.xz")
-add_custom_command(${TARBALL_NAME} COMMAND tar cfJ
+add_custom_command(OUTPUT "${TARBALL_NAME}"
+    COMMAND tar cfJ
     "${TARBALL_NAME}"
     "--directory=${PROJECT_SOURCE_DIR}"
     "--transform=s,^,${CMAKE_PROJECT_NAME}-${ROXTERM_VERSION}/,"
