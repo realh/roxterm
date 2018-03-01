@@ -54,6 +54,18 @@
 #include "shortcuts.h"
 #include "uri.h"
 
+#if VTE_CHECK_VERSION(0,50,0)
+/* EK says hyperlinks can cause segfaults in 0.50.0 */
+inline static gboolean roxterm_enable_hyperlinks()
+{
+    return vte_get_major_version() > 0 || vte_get_minor_version() > 50 ||
+        vte_get_micro_version() >= 1;
+    /* Note no need to check minor_version == 50 in final clause because this
+     * has already been checked by #if.
+     */
+}
+#endif
+
 typedef struct {
     int tag;
     ROXTerm_MatchType type;
@@ -219,6 +231,10 @@ static void roxterm_match_remove(ROXTermData *roxterm, VteTerminal *vte,
 static void roxterm_add_matches(ROXTermData *roxterm, VteTerminal *vte)
 {
     int n;
+
+#if VTE_CHECK_VERSION(0,50,0)
+    vte_terminal_set_allow_hyperlink(vte, roxterm_enable_hyperlinks());
+#endif
 
     for (n = 0; roxterm_regexes[n].regex; ++n)
     {
@@ -1292,11 +1308,30 @@ static gboolean roxterm_check_match(ROXTermData *roxterm, VteTerminal *vte,
         GdkEvent *event)
 {
     int tag;
+#if VTE_CHECK_VERSION(0,50,0)
+    char *hyper = roxterm_enable_hyperlinks() ?
+        vte_terminal_hyperlink_check_event(vte, event) : NULL;
+#endif
 
     g_free(roxterm->matched_url);
+    /* If we're over a hyperlink we should also have a pattern match; be lazy
+     * and use that to work out the type of link */
     roxterm->matched_url = vte_terminal_match_check_event(vte, event, &tag);
     if (roxterm->matched_url)
+    {
         roxterm->match_type = roxterm_get_match_type(roxterm, tag);
+    }
+#if VTE_CHECK_VERSION(0,50,0)
+    else if (hyper)
+    {
+        roxterm->match_type = ROXTerm_Match_FullURI;
+    }
+    if (hyper)
+    {
+        g_free(roxterm->matched_url);
+        roxterm->matched_url = hyper;
+    }
+#endif
     return roxterm->matched_url != NULL;
 }
 
