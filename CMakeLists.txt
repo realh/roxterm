@@ -35,7 +35,6 @@ install(DIRECTORY docs/
     DESTINATION ${CMAKE_INSTALL_DOCDIR})
 
 find_program(XSLTPROC xsltproc)
-message(INFO "xsltproc ${XSLTPROC}")
 if (NOT "${XSLTPROC}" EQUAL "XSLTPROC-NOTFOUND")
     set(XSLTPROC_OPTIONS --novalid --param man.charmap.use.subset 0
         http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl)
@@ -65,3 +64,38 @@ install(FILES roxterm.desktop
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/roxterm.appdata.xml
     DESTINATION ${CMAKE_INSTALL_DATADIR}/appdata)
+
+
+# It would be nice if we could use cmake -E tar here, but it doesn't support
+# any of the -- options needed here.
+add_custom_target(dist COMMAND tar cfvJ
+    "${CMAKE_PROJECT_NAME}-${ROXTERM_VERSION}.tar.xz"
+    "--directory=${PROJECT_SOURCE_DIR}"
+    "--transform=s,^,${CMAKE_PROJECT_NAME}-${ROXTERM_VERSION}/,"
+    "--exclude=*~"
+    AppInfo.xml.in
+    AppRun
+    AUTHORS
+    CMakeLists.txt
+    Config
+    COPYING
+    COPYING-LGPL
+    docs
+    INSTALL
+    INSTALL.Debian
+    mkycmflags
+    NEWS
+    README
+    README.md
+    README.translations
+    roxterm.1.xml.in
+    roxterm.appdata.xml.in
+    roxterm-config.1.xml.in
+    roxterm.desktop
+    roxterm.lsm.in
+    roxterm.spec.in
+    roxterm.svg
+    roxterm.xml
+    src
+    version
+    version.sh)
