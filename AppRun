@@ -6,6 +6,8 @@ APP_DIR=`dirname "$0"`
 APP_DIR=`cd "$APP_DIR";pwd`; export APP_DIR
 APPRUN="${APP_DIR}/AppRun"
 
+[ -d "${APP_DIR}/Help" ] || ln -nfs "docs" "${APP_DIR}/Help"
+
 for f in AUTHORS COPYING NEWS README ; do
     [ -f "$APP_DIR/Help/$f" ] || ln -nfs ../$f "$APP_DIR/Help/$f"
 done
