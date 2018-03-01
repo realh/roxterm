@@ -73,6 +73,7 @@ add_custom_target(dist COMMAND tar cfvJ
     "--directory=${PROJECT_SOURCE_DIR}"
     "--transform=s,^,${CMAKE_PROJECT_NAME}-${ROXTERM_VERSION}/,"
     "--exclude=*~"
+    AppInfo.xml
     AppInfo.xml.in
     AppRun
     AUTHORS
@@ -93,6 +94,7 @@ add_custom_target(dist COMMAND tar cfvJ
     roxterm-config.1.xml.in
     roxterm.desktop
     roxterm.lsm.in
+    roxterm.spec
     roxterm.spec.in
     roxterm.svg
     roxterm.xml
