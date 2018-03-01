@@ -68,8 +68,10 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/roxterm.appdata.xml
 
 # It would be nice if we could use cmake -E tar here, but it doesn't support
 # any of the -- options needed here.
-add_custom_target(dist COMMAND tar cfvJ
-    "${CMAKE_PROJECT_NAME}-${ROXTERM_VERSION}.tar.xz"
+set(ROXTERM_PACKAGE_NAME "${CMAKE_PROJECT_NAME}-${ROXTERM_VERSION}")
+set(TARBALL_NAME "${ROXTERM_PACKAGE_NAME}.tar.xz")
+add_custom_command(${TARBALL_NAME} COMMAND tar cfJ
+    "${TARBALL_NAME}"
     "--directory=${PROJECT_SOURCE_DIR}"
     "--transform=s,^,${CMAKE_PROJECT_NAME}-${ROXTERM_VERSION}/,"
     "--exclude=*~"
@@ -101,3 +103,4 @@ add_custom_target(dist COMMAND tar cfvJ
     src
     version
     version.sh)
+add_custom_target(dist DEPENDS "${TARBALL_NAME}")
