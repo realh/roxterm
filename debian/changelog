@@ -1,4 +1,15 @@
-roxterm (3.5.2-1ppa1) artful; urgency=medium
+roxterm (3.6.1-1ppa1bionic1) bionic; urgency=medium
+
+  * New upstream version with new options:
+    + Bold is bright option.
+    + Supports blinking text (optional).
+    + Line spacing and horizontal spacing options.
+    + Tweaked icon to make top bezel look better.
+  * Now requires vte >= 0.52
+
+ -- Tony Houghton <h@realh.co.uk>  Sun, 06 May 2018 22:04:41 +0100
+
+roxterm (3.5.2-1) artful; urgency=medium
 
   * New upstream version:
     + Migrated to github.
@@ -10,7 +21,7 @@ roxterm (3.5.2-1ppa1) artful; urgency=medium
     + Support explicit hyperlinks.
     + Numerous other fixes and updates.
 
- -- Tony Houghton <h@realh.co.uk>  Thu, 01 Mar 2018 18:32:36 +0000
+ -- Tony Houghton <h@realh.co.uk>  Fri, 02 Mar 2018 19:17:20 +0000
 
 roxterm (3.3.2-1pre14) unstable; urgency=medium
 
