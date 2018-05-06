@@ -1571,7 +1571,7 @@
                               <object class="GtkLabel">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="label" translatable="yes">_Line spacing:</property>
+                                <property name="label" translatable="yes">_Line spacing %:</property>
                                 <property name="use_underline">True</property>
                                 <property name="mnemonic_widget">vspacing</property>
                                 <property name="xalign">1</property>
@@ -1586,7 +1586,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="max_length">3</property>
-                                <property name="primary_icon_tooltip_text" translatable="yes">Extra space between lines as a fraction of the font's line height.</property>
+                                <property name="primary_icon_tooltip_text" translatable="yes">Extra space between lines as a percentage of the font's line height.</property>
                                 <property name="secondary_icon_tooltip_text" translatable="yes">Extra spacing between lines as a fraction of the font's line height</property>
                                 <property name="input_purpose">digits</property>
                                 <property name="adjustment">vspacing_adjustment</property>
@@ -1602,7 +1602,7 @@
                               <object class="GtkLabel">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="label" translatable="yes">_Horizontal spacing:</property>
+                                <property name="label" translatable="yes">_Horizontal spacing %:</property>
                                 <property name="use_underline">True</property>
                                 <property name="mnemonic_widget">vspacing</property>
                                 <property name="xalign">1</property>
@@ -1618,7 +1618,7 @@
                                 <property name="can_focus">True</property>
                                 <property name="max_length">3</property>
                                 <property name="text" translatable="yes">0</property>
-                                <property name="primary_icon_tooltip_text" translatable="yes">Extra horizontal space between characters as a fraction of 1 em.</property>
+                                <property name="primary_icon_tooltip_text" translatable="yes">Extra horizontal space between characters as a percentage of 1 em.</property>
                                 <property name="input_purpose">digits</property>
                                 <property name="adjustment">hspacing_adjustment</property>
                                 <property name="update_policy">if-valid</property>
