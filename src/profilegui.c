@@ -404,6 +404,11 @@ static void profilegui_fill_in_dialog(ProfileGUI * pg)
     Options *profile = pg->capp.options;
     char *val;
 
+    capplet_set_spin_button(&pg->capp, "vspacing", 0);
+    capplet_set_spin_button(&pg->capp, "hspacing", 0);
+    capplet_set_toggle(&pg->capp, "bold_is_bright", FALSE);
+    capplet_set_radio(&pg->capp, "text_blink_mode", 0);
+
     if (options_lookup_int_with_default(profile, "full_screen", 0))
     {
         capplet_set_toggle(&pg->capp, "full_screen", TRUE);
