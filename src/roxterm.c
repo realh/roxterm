@@ -2897,6 +2897,30 @@ static void roxterm_apply_show_add_tab_btn(ROXTermData *roxterm)
     }
 }
 
+static void
+roxterm_apply_bold_is_bright(ROXTermData *roxterm, VteTerminal *vte)
+{
+    vte_terminal_set_bold_is_bright(vte,
+            options_lookup_int_with_default(roxterm->profile, "bold_is_bright",
+                FALSE));
+}
+
+static void
+roxterm_apply_text_blink_mode(ROXTermData *roxterm, VteTerminal *vte)
+{
+    static VteTextBlinkMode modes[] = { VTE_TEXT_BLINK_NEVER,
+        VTE_TEXT_BLINK_FOCUSED, VTE_TEXT_BLINK_UNFOCUSED, 
+        VTE_TEXT_BLINK_ALWAYS };
+    int i = options_lookup_int_with_default(roxterm->profile,
+            "text_blink_mode", 0);
+    if (i < 0 || i >= (int) G_N_ELEMENTS(modes))
+    {
+        g_warning("Value %d out of range for 'text_blink_mode' option", i);
+        i = 0;
+    }
+    vte_terminal_set_text_blink_mode(vte, modes[i]);
+}
+
 static void roxterm_apply_profile(ROXTermData *roxterm, VteTerminal *vte,
         gboolean update_geometry)
 {
@@ -2909,6 +2933,9 @@ static void roxterm_apply_profile(ROXTermData *roxterm, VteTerminal *vte,
     roxterm_apply_colour_scheme(roxterm, vte);
 
     roxterm_update_font(roxterm, vte, update_geometry);
+
+    roxterm_apply_bold_is_bright(roxterm, vte);
+    roxterm_apply_text_blink_mode(roxterm, vte);
 
     roxterm_set_scrollback_lines(roxterm, vte);
     roxterm_set_scroll_on_output(roxterm, vte);
@@ -3235,6 +3262,14 @@ static void roxterm_reflect_profile_change(Options * profile, const char *key)
         {
             roxterm_apply_hspacing(roxterm, vte, TRUE);
             apply_to_win = TRUE;
+        }
+        else if (!strcmp(key, "bold_is_bright"))
+        {
+            roxterm_apply_bold_is_bright(roxterm, vte);
+        }
+        else if (!strcmp(key, "text_blink_mode"))
+        {
+            roxterm_apply_text_blink_mode(roxterm, vte);
         }
         else if (!strcmp(key, "hide_menubar") &&
             multi_win_get_current_tab(win) == roxterm->tab)
