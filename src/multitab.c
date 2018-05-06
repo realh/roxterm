@@ -2650,13 +2650,15 @@ static gboolean multi_win_process_geometry(MultiWin *win,
     int gw, gh;
     int ww, wh;
 
-    g_debug("Processing geometry %dx%d", columns, rows);
+    //g_debug("Processing geometry %dx%d", columns, rows);
     if (!tab)
         tab = win->current_tab;
     multi_win_geometry_func(tab->user_data, &geom, &hint_mask);
+    /*
     g_debug("VTE cell size %dx%d, padding %dx%d",
             geom.width_inc, geom.height_inc,
             geom.base_width, geom.base_height);
+    */
 
     /* Get difference in size between toplevel window and the geometry
      * widget.
@@ -2668,31 +2670,33 @@ static gboolean multi_win_process_geometry(MultiWin *win,
      */
     bw = gtk_widget_get_allocated_width(win->vbox);
     bh = gtk_widget_get_allocated_height(win->vbox);
-    g_debug("Terminal allocation %dx%d, undecorated window allocation %dx%d",
-            gw, gh, bw, bh);
+    //g_debug("Terminal allocation %dx%d, undecorated window allocation %dx%d",
+    //        gw, gh, bw, bh);
     if (gw <= 1 || gh <= 1)
     {
         return FALSE;
     }
+    /*
     g_debug("Want to allocate %dx%d to terminal", 
             columns * geom.width_inc + geom.base_width,
             rows * geom.height_inc + geom.base_height);
+    */
 
     geom.base_width += bw - gw;
     geom.base_height += bh - gh;
-    g_debug("Additional padding %dx%d, total %dx%d", bw - gw, bh - gh,
-            geom.base_width, geom.base_height);
+    //g_debug("Additional padding %dx%d, total %dx%d", bw - gw, bh - gh,
+    //        geom.base_width, geom.base_height);
     *width = columns * geom.width_inc + geom.base_width;
     *height = rows * geom.height_inc + geom.base_height;
-    g_debug("Desired size including chrome but not CSD: %dx%d",
-            *width, *height);
+    //g_debug("Desired size including chrome but not CSD: %dx%d",
+    //        *width, *height);
     /* From gnome-terminal's code I deduced that gtk_window_set_default_size
      * etc should exclude the window decorations, but the geometry hints should
      * include them. This seems to fix roxterm's sizing :).
      */
     ww = gtk_widget_get_allocated_width(win->gtkwin);
     wh = gtk_widget_get_allocated_height(win->gtkwin);
-    g_debug("Window allocation %dx%d, CSD %dx%d", ww, wh, ww - bw, wh - bh);
+    //g_debug("Window allocation %dx%d, CSD %dx%d", ww, wh, ww - bw, wh - bh);
     geom.min_width += ww - gw;
     geom.min_height += wh - gh;
     geom.base_width += ww - bw;
@@ -2704,13 +2708,12 @@ static gboolean multi_win_process_geometry(MultiWin *win,
         geom.width_inc != win->geom_hints.width_inc ||
         geom.height_inc != win->geom_hints.height_inc)
     {
-        g_debug("Updating geometry");
+        //g_debug("Updating geometry");
         win->geom_hints = geom;
         win->geom_hint_mask = hint_mask;
-        multi_win_apply_geometry_hints(win);
         return TRUE;
     }
-    g_debug("Geometry unchanged");
+    //g_debug("Geometry unchanged");
     return FALSE;
 }
 
@@ -2723,6 +2726,7 @@ void multi_win_set_initial_geometry(MultiWin *win, const char *geom,
     if (multi_win_parse_geometry(geom, &columns, &rows, &x, &y, &xy))
     {
         multi_win_process_geometry(win, tab, columns, rows, &width, &height);
+        multi_win_apply_geometry_hints(win);
         gtk_window_set_default_size(GTK_WINDOW(win->gtkwin), width, height);
         /* Ignore position, it's deprecated */
     }
@@ -2738,14 +2742,22 @@ void multi_win_apply_new_geometry(MultiWin *win, int columns, int rows,
 
     if (state & WIN_STATE_SNAPPED)
     {
-        g_debug("Ignoring geometry change for maximized or similar state");
+        //g_debug("Ignoring geometry change for maximized or similar state");
         return;
     }
 
+    //g_debug("Processing new geometry for %dx%d columns and rows",
+    //        columns, rows);
     multi_win_process_geometry(win, tab, columns, rows, &width, &height);
     gtk_window_get_size(GTK_WINDOW(win->gtkwin), &old_width, &old_height);
-    if (width != old_width && height != old_height)
+    //g_debug("Desired window size %dx%d, currently %dx%d",
+    //        width, height, old_width, old_height);
+    if (width != old_width || height != old_height)
+    {
+        gtk_window_set_geometry_hints(GTK_WINDOW(win->gtkwin), NULL, NULL, 0);
         gtk_window_resize(GTK_WINDOW(win->gtkwin), width, height);
+        multi_win_apply_geometry_hints(win);
+    }
 }
 
 /* This is maintained in order of most recently focused */

@@ -1067,7 +1067,6 @@ roxterm_set_vte_size(ROXTermData *roxterm, VteTerminal *vte,
 {
     MultiWin *win = roxterm_get_win(roxterm);
 
-    g_debug("Setting terminal size %dx%d", columns, rows);
     vte_terminal_set_size(vte, columns, rows);
     if (roxterm_is_parented(roxterm) &&
             multi_win_get_current_tab(win) == roxterm->tab)
@@ -1139,7 +1138,6 @@ static void roxterm_update_geometry(ROXTermData * roxterm, VteTerminal * vte)
 
     columns = vte_terminal_get_column_count(vte);
     rows = vte_terminal_get_row_count(vte);
-    g_debug("roxterm_update_geometry %dx%d", columns, rows);
     roxterm_set_vte_size(roxterm, vte, columns, rows);
 }
 
@@ -1172,40 +1170,25 @@ static void resize_pango_for_zoom(PangoFontDescription *pango_desc,
         pango_font_description_set_size(pango_desc, size);
 }
 
+/* The spacing apply functions don't need to explicitly resize the window
+ * because VTE triggers the apropriate signal.
+ */
 static void
-roxterm_apply_vspacing(ROXTermData *roxterm, VteTerminal *vte,
-    gboolean update_geometry)
+roxterm_apply_vspacing(ROXTermData *roxterm, VteTerminal *vte)
 {
-    int w, h;
     double spacing = (double) options_lookup_int_with_default(roxterm->profile,
             "vspacing", 0) / 100.0;
 
-    if (update_geometry)
-    {
-        w = vte_terminal_get_column_count(vte);
-        h = vte_terminal_get_row_count(vte);
-    }
     vte_terminal_set_cell_height_scale(vte, CLAMP(spacing, 0.0, 1.0) + 1.0);
-    if (update_geometry)
-        roxterm_set_vte_size(roxterm, vte, w, h);
 }
 
 static void
-roxterm_apply_hspacing(ROXTermData *roxterm, VteTerminal *vte,
-    gboolean update_geometry)
+roxterm_apply_hspacing(ROXTermData *roxterm, VteTerminal *vte)
 {
-    int w, h;
     double spacing = (double) options_lookup_int_with_default(roxterm->profile,
             "hspacing", 0) / 100.0;
 
-    if (update_geometry)
-    {
-        w = vte_terminal_get_column_count(vte);
-        h = vte_terminal_get_row_count(vte);
-    }
     vte_terminal_set_cell_width_scale(vte, CLAMP(spacing, 0.0, 1.0) + 1.0);
-    if (update_geometry)
-        roxterm_set_vte_size(roxterm, vte, w, h);
 }
 
 static void
@@ -1253,8 +1236,8 @@ roxterm_apply_profile_font(ROXTermData *roxterm, VteTerminal *vte,
     roxterm->pango_desc = pango_desc;
     g_free(fdesc);
     roxterm->current_zoom_factor = roxterm->target_zoom_factor;
-    roxterm_apply_vspacing(roxterm, vte, FALSE);
-    roxterm_apply_hspacing(roxterm, vte, FALSE);
+    roxterm_apply_vspacing(roxterm, vte);
+    roxterm_apply_hspacing(roxterm, vte);
     if (update_geometry)
     {
         roxterm_set_vte_size(roxterm, vte, w, h);
@@ -1283,8 +1266,8 @@ roxterm_update_font(ROXTermData *roxterm, VteTerminal *vte,
     resize_pango_for_zoom(pango_desc, zf);
     vte_terminal_set_font(vte, pango_desc);
     roxterm->current_zoom_factor = roxterm->target_zoom_factor;
-    roxterm_apply_vspacing(roxterm, vte, FALSE);
-    roxterm_apply_hspacing(roxterm, vte, FALSE);
+    roxterm_apply_vspacing(roxterm, vte);
+    roxterm_apply_hspacing(roxterm, vte);
     if (update_geometry)
     {
         roxterm_set_vte_size(roxterm, vte, w, h);
@@ -3255,12 +3238,12 @@ static void roxterm_reflect_profile_change(Options * profile, const char *key)
         }
         else if (!strcmp(key, "vspacing"))
         {
-            roxterm_apply_vspacing(roxterm, vte, TRUE);
+            roxterm_apply_vspacing(roxterm, vte);
             apply_to_win = TRUE;
         }
         else if (!strcmp(key, "hspacing"))
         {
-            roxterm_apply_hspacing(roxterm, vte, TRUE);
+            roxterm_apply_hspacing(roxterm, vte);
             apply_to_win = TRUE;
         }
         else if (!strcmp(key, "bold_is_bright"))
