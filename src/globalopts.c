@@ -90,6 +90,7 @@ static gboolean global_options_show_usage(const gchar *option_name,
       "    [--directory=DIRECTORY|-d DIRECTORY]\n"
       "    [--show-menubar] [--hide-menubar]\n"
       "    [--fork]\n"
+      "    [--role=ROLE]\n"
       "    [-e|--execute COMMAND]\n");
     exit(0);
     return TRUE;
@@ -267,6 +268,9 @@ static GOptionEntry global_g_options[] = {
     { "session", 0, G_OPTION_FLAG_IN_MAIN,
         G_OPTION_ARG_STRING, &global_options_user_session_id,
         N_("Restore the named user session"), N_("SESSION") },
+    { "role", 0, G_OPTION_FLAG_IN_MAIN,
+        G_OPTION_ARG_CALLBACK, global_options_set_string,
+        N_("Set X window system 'role' hint"), N_("NAME") },
     { "execute", 'e', G_OPTION_FLAG_IN_MAIN | G_OPTION_FLAG_NO_ARG,
         G_OPTION_ARG_CALLBACK, global_options_swallow_execute,
         N_("Execute remainder of command line inside the\n"

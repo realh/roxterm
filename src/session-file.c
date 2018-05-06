@@ -155,7 +155,8 @@ static gboolean save_session_to_fp(FILE *fp, const char *session_id)
         gtk_window_get_position(gwin, &x, &y);
         s = g_markup_printf_escaped("  <window geometry='%dx%d+%d+%d'\n"
                 "      title_template='%s' font='%s'\n"
-                "      title_template_locked='%d'\n title='%s'\n"
+                "      title_template_locked='%d'\n"
+                "      title='%s' role='%s'\n"
                 "      shortcut_scheme='%s' show_menubar='%d'\n"
                 "      always_show_tabs='%d' tab_pos='%d'\n"
                 "      show_add_tab_btn='%d'\n"
@@ -163,7 +164,8 @@ static gboolean save_session_to_fp(FILE *fp, const char *session_id)
                 "      maximised='%d' fullscreen='%d' zoom='%f'>\n",
                 w, h, x, y,
                 tt ? tt : "", font_name,
-                multi_win_get_title_template_locked(win), title,
+                multi_win_get_title_template_locked(win),
+                title, gtk_window_get_role(gwin),
                 multi_win_get_shortcuts_scheme_name(win),
                 multi_win_get_show_menu_bar(win),
                 multi_win_get_always_show_tabs(win),
