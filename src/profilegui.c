@@ -560,6 +560,7 @@ ProfileGUI *profilegui_open(const char *profile_name)
             "width_adjustment", "height_adjustment",
             "exit_pause_adjustment", "scrollback_lines_adjustment",
             "saturation_adjustment", "ssh_port_adjustment",
+            "hspacing_adjustment", "vspacing_adjustment",
             NULL };
     static const char *obj_names[] = {
             "Profile_Editor", "ssh_dialog",
