@@ -113,6 +113,9 @@ multitab_label_destroy (GtkWidget *w)
     GTK_WIDGET_CLASS (multitab_label_parent_class)->destroy (w);
 }
 
+/* The following functions are now unnecessary due to single mode being disabled
+ */
+#if 0
 static void
 multitab_modify_width (MultitabLabel *self,
         gint *minimum_width, gint *natural_width)
@@ -177,6 +180,7 @@ multitab_label_get_preferred_width_for_height (GtkWidget *widget,
                     (widget, height, minimum_width, natural_width);
     multitab_modify_width (self, minimum_width, natural_width);
 }
+#endif
 
 static void
 multitab_label_class_init(MultitabLabelClass *klass)
@@ -212,9 +216,11 @@ multitab_label_class_init(MultitabLabelClass *klass)
             G_PARAM_READWRITE);
     g_object_class_install_property (oclass, PROP_ATTENTION_COLOR, pspec);
 
+#if 0
     wclass->get_preferred_width = multitab_label_get_preferred_width;
     wclass->get_preferred_width_for_height =
             multitab_label_get_preferred_width_for_height;
+#endif
 }
 
 static void
@@ -321,17 +327,23 @@ multitab_label_get_attention_color (MultitabLabel *self)
 void
 multitab_label_set_single (MultitabLabel *self, gboolean single)
 {
+    (void) self;
+    (void) single;
+/*
+    single mode is disabled because it was only needed when the tab bar's
+    expand property was FALSE. It's now always TRUE to prevent the size bugging
+    when unmaximising.
+
     if (single != self->single)
     {
         self->single = single;
-/*
 #if GTK_CHECK_VERSION(3, 0, 0)
         if (self->label)
             g_object_set(self->label, "hexpand", !single, NULL);
 #endif
-*/
         gtk_widget_queue_resize (GTK_WIDGET (self));
     }
+*/
 }
 
 void

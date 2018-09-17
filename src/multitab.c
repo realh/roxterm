@@ -781,8 +781,12 @@ static void multi_tab_pack_for_horizontal(MultiTab *tab, GtkContainer *nb)
 
 static void multi_tab_pack_for_single(MultiTab *tab, GtkContainer *nb)
 {
+    /* tab-expand is now always TRUE to prevent the window width bugging when
+     * unmaximising. It doesn't look too ugly now that we have the new tab
+     * icon at the end of the bar.
+     */
     gtk_container_child_set(nb, tab->widget,
-            "tab-expand", FALSE, "tab-fill", TRUE, NULL);
+            "tab-expand", TRUE, "tab-fill", TRUE, NULL);
     multitab_label_set_single(MULTITAB_LABEL(tab->label), TRUE);
     multitab_label_set_fixed_width(MULTITAB_LABEL(tab->label), -1);
 }
