@@ -146,7 +146,7 @@ static int roxterm_match_add(ROXTermData *roxterm, VteTerminal *vte,
     }
     map.type = type;
     map.tag = vte_terminal_match_add_regex(vte, regex, 0);
-    vte_terminal_match_set_cursor_type(vte, map.tag, GDK_HAND2);
+    vte_terminal_match_set_cursor_name(vte, map.tag, "pointer");
     g_array_append_val(roxterm->match_map, map);
     return map.tag;
 }
