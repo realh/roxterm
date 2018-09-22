@@ -136,8 +136,6 @@ void multi_tab_delete(MultiTab *);
 
 GtkWidget *multi_tab_get_widget(MultiTab *);
 
-void multi_tab_set_icon_title(MultiTab *, const char *);
-
 /* Sets the title which is used to build the actual title from title_template.
  */
 void multi_tab_set_window_title(MultiTab *, const char *);
@@ -156,8 +154,6 @@ void multi_tab_set_title_template_locked(MultiTab *, gboolean);
 
 /* Not the full title */
 const char *multi_tab_get_window_title(MultiTab *);
-
-const char *multi_tab_get_icon_title(MultiTab *);
 
 void multi_tab_popup_menu_at_pointer(MultiTab * tab);
 

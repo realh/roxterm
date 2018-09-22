@@ -1476,12 +1476,6 @@ static void roxterm_window_title_handler(VteTerminal *vte,
     multi_tab_set_window_title(roxterm->tab, t ? t : _("ROXTerm"));
 }
 
-static void roxterm_icon_title_handler(VteTerminal *vte,
-        ROXTermData *roxterm)
-{
-    multi_tab_set_icon_title(roxterm->tab, vte_terminal_get_icon_title(vte));
-}
-
 /* data is cast to char const **pname - indirect pointer to name to check for -
  * if a match is found, *pname is set to NULL */
 static void check_if_name_matches_property(GtkWidget *widget, gpointer data)
@@ -2515,8 +2509,6 @@ static void roxterm_connect_misc_signals(ROXTermData * roxterm)
             G_CALLBACK (roxterm_click_handler), roxterm);
     g_signal_connect(roxterm->widget, "button-release-event",
             G_CALLBACK (roxterm_release_handler), roxterm);
-    g_signal_connect(roxterm->widget, "icon-title-changed",
-        G_CALLBACK(roxterm_icon_title_handler), roxterm);
     g_signal_connect(roxterm->widget, "window-title-changed",
         G_CALLBACK(roxterm_window_title_handler), roxterm);
     //g_signal_connect(roxterm->widget, "style-updated",
@@ -4330,7 +4322,6 @@ typedef struct {
     char *tab_name;
     char *tab_title_template;
     char *tab_title;
-    char *icon_title;
     gboolean win_title_template_locked;
     gboolean tab_title_template_locked;
     gboolean current;
@@ -4528,8 +4519,7 @@ static void close_win_tag(_ROXTermParseContext *rctx)
 extern char **environ;
 
 static void parse_open_tab(_ROXTermParseContext *rctx,
-        const char **attribute_names, const char **attribute_values,
-        GError **error)
+        const char **attribute_names, const char **attribute_values)
 {
     const char *profile_name = "Default";
     const char *colours_name = "GTK";
@@ -4555,12 +4545,11 @@ static void parse_open_tab(_ROXTermParseContext *rctx,
             rctx->tab_title_template = g_strdup(v);
         else if (!strcmp(a, "window_title"))
             rctx->tab_title = g_strdup(v);
-        else if (!strcmp(a, "icon_title"))
-            rctx->icon_title = g_strdup(v);
         else if (!strcmp(a, "current"))
             rctx->current = (strcmp(v, "0") != 0);
         else if (!strcmp(a, "title_template_locked"))
             rctx->tab_title_template_locked = atoi(v);
+        /* Ignore unknown tags, probably caused by deprecated settings
         else
         {
             *error = g_error_new(G_MARKUP_ERROR,
@@ -4568,8 +4557,8 @@ static void parse_open_tab(_ROXTermParseContext *rctx,
                     _("Unknown <tab> attribute '%s'"), a);
             return;
         }
+        */
     }
-    SLOG("Loading tab with icon_title %s, cwd %s", rctx->icon_title, cwd);
 
     profile = dynamic_options_lookup_and_ref(roxterm_get_profiles(),
             profile_name, "roxterm profile");
@@ -4610,16 +4599,12 @@ static void close_tab_tag(_ROXTermParseContext *rctx)
     }
     if (rctx->tab_title && rctx->tab_title[0])
         multi_tab_set_window_title(rctx->tab, rctx->tab_title);
-    if (rctx->icon_title && rctx->icon_title[0])
-        multi_tab_set_icon_title(rctx->tab, rctx->icon_title);
     multi_tab_set_title_template_locked(rctx->tab,
             rctx->tab_title_template_locked);
     g_free(rctx->tab_title_template);
     rctx->tab_title_template = NULL;
     g_free(rctx->tab_title);
     rctx->tab_title = NULL;
-    g_free(rctx->icon_title);
-    rctx->icon_title = NULL;
     roxterm_data_delete(roxterm);
     /*
     roxterm = multi_tab_get_user_data(rctx->tab);
@@ -4780,7 +4765,7 @@ static void parse_start_element(GMarkupParseContext *context,
         }
         else
         {
-            parse_open_tab(rctx, attribute_names, attribute_values, error);
+            parse_open_tab(rctx, attribute_names, attribute_values);
         }
     }
     else if (!strcmp(element_name, "command"))

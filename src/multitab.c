@@ -41,7 +41,6 @@ struct MultiTab {
     char *window_title;
     char *window_title_template;
     gboolean show_number;
-    char *icon_title;
     GtkWidget *popup_menu_item, *menu_bar_item;
     GtkWidget *active_widget;
     gpointer user_data;
@@ -152,8 +151,6 @@ static void multi_win_select_tab_action(GtkCheckMenuItem *widget,
         MultiTab * tab);
 
 static void multi_win_destructor(MultiWin *win, gboolean destroy_widgets);
-
-static void multi_win_set_icon_title(MultiWin *win, const char *title);
 
 static void multi_win_close_tab_clicked(GtkWidget *widget, MultiTab *tab);
 
@@ -324,8 +321,6 @@ static void multi_tab_delete_without_notifying_parent(MultiTab * tab,
     tab->window_title = NULL;
     g_free(tab->window_title_template);
     tab->window_title_template = NULL;
-    g_free(tab->icon_title);
-    tab->icon_title = NULL;
     if (destroy_widgets && tab->widget)
     {
         gtk_widget_destroy(tab->widget);
@@ -394,18 +389,6 @@ static char *make_title(const char *template, const char *title)
         }
     }
     return title0;
-}
-
-void multi_tab_set_icon_title(MultiTab * tab, const char *title)
-{
-    MultiWin *win = tab->parent;
-
-    g_free(tab->icon_title);
-    tab->icon_title = title ? g_strdup(title) : NULL;
-    if (win->current_tab == tab)
-    {
-        multi_win_set_icon_title(win, tab->icon_title);
-    }
 }
 
 static gboolean check_title_template(const char *tt)
@@ -562,11 +545,6 @@ const char *multi_tab_get_window_title_template(MultiTab * tab)
 static char *multi_tab_get_full_window_title(MultiTab * tab)
 {
     return make_title(tab->window_title_template, tab->window_title);
-}
-
-const char *multi_tab_get_icon_title(MultiTab * tab)
-{
-    return tab->icon_title;
 }
 
 gpointer multi_tab_get_user_data(MultiTab * tab)
@@ -841,13 +819,6 @@ void multi_win_set_title(MultiWin *win, const char *title)
     multi_win_set_full_title(win, win->title_template, title);
 }
 
-static void multi_win_set_icon_title(MultiWin *win, const char *title)
-{
-    GdkWindow *w = gtk_widget_get_window(win->gtkwin);
-    if (w)
-        gdk_window_set_icon_name(w, title);
-}
-
 static void multi_win_highlight_selected_tab(MultiWin *win)
 {
     GList *link;
@@ -890,7 +861,6 @@ void multi_win_select_tab(MultiWin * win, MultiTab * tab)
         gtk_widget_grab_focus(tab->active_widget);
         multi_win_set_title(win, title);
         g_free(title);
-        multi_win_set_icon_title(win, tab->icon_title);
         menutree_select_tab(win->popup_menu, tab->popup_menu_item);
         menutree_select_tab(win->menu_bar, tab->menu_bar_item);
         if (gtk_widget_get_realized(tab->active_widget))
