@@ -144,9 +144,6 @@ static void menutree_build_shell(MenuTree *menu_tree, GtkMenuShell * shell, ...)
 #define SHOW_MENU_BAR_ITEM \
         _("Show Menu_bar"), MENUTREE_VIEW_SHOW_MENUBAR
 
-#define ENC_INPUT_ITEMS \
-        _("C_haracter Encoding"), MENUTREE_PREFERENCES_CHARACTER_ENCODING
-
 #define PREFS_ITEMS1 \
         _("Select _Profile"), MENUTREE_PREFERENCES_SELECT_PROFILE, \
         _("Select _Colour Scheme"), MENUTREE_PREFERENCES_SELECT_COLOUR_SCHEME, \
@@ -160,7 +157,6 @@ static void menutree_build_shell(MenuTree *menu_tree, GtkMenuShell * shell, ...)
         "_", MENUTREE_NULL_ID, \
         _("Configuration _Manager"), MENUTREE_PREFERENCES_CONFIG_MANAGER, \
         "_", MENUTREE_NULL_ID, \
-        ENC_INPUT_ITEMS, \
         NULL
 
 GtkMenu *menutree_submenu_from_id(MenuTree *mtree, MenuTreeID id)
@@ -300,181 +296,6 @@ void menutree_apply_shortcuts(MenuTree *tree, Options *shortcuts)
     menutree_set_accel_path_for_submenu(tree, MENUTREE_HELP, "Help");
     menutree_apply_tab_shortcuts(tree);
     shortcuts_enable_signal_handler(TRUE);
-}
-
-#define MENUTREE_ENCODING_KEY "Encoding"
-#define MENUTREE_ENCODING_NULL "NULL"
-
-static GtkWidget *create_encoding_item(MenuTree *mtree,
-        const char *encoding_label, const char *encoding_data,
-        MenuTreeToggledHandler handler)
-{
-    GtkWidget *item = gtk_radio_menu_item_new_with_label(mtree->encodings_group,
-            encoding_label);
-
-    g_object_set_data_full(G_OBJECT(item), MENUTREE_ENCODING_KEY,
-                g_strdup(encoding_data), g_free);
-    g_signal_connect(item, "toggled", G_CALLBACK(handler), mtree->user_data);
-    gtk_widget_show(item);
-    return item;
-}
-
-static GtkWidget *add_encoding(MenuTree *mtree, const char *encoding_label,
-        const char *encoding_data, MenuTreeToggledHandler handler)
-{
-    GtkWidget *item = create_encoding_item(mtree,
-            encoding_label, encoding_data, handler);
-
-    gtk_menu_shell_append(GTK_MENU_SHELL(mtree->encodings), item);
-    mtree->encodings_group =
-        gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(item));
-    ++mtree->n_encodings;
-    return item;
-}
-
-static void create_encodings_menu(MenuTree *mtree,
-        MenuTreeToggledHandler handler)
-{
-    GtkWidget *item;
-
-    mtree->encodings = gtk_menu_new();
-    item = add_encoding(mtree, _("Default"), MENUTREE_ENCODING_NULL,
-            handler);
-    mtree->n_encodings = 0;    /* "Default" doesn't count */
-    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(item), TRUE);
-    item = gtk_separator_menu_item_new();
-    gtk_menu_shell_append(GTK_MENU_SHELL(mtree->encodings), item);
-    gtk_widget_show(item);
-    gtk_widget_set_sensitive(mtree->item_widgets
-                [MENUTREE_PREFERENCES_CHARACTER_ENCODING], TRUE);
-    gtk_menu_item_set_submenu(GTK_MENU_ITEM(mtree->item_widgets
-                [MENUTREE_PREFERENCES_CHARACTER_ENCODING]),
-            mtree->encodings);
-}
-
-void menutree_build_encodings_menu(MenuTree *mtree, char const **encodings,
-        MenuTreeToggledHandler handler)
-{
-    /* We skip first item in list, "Default" */
-    if (encodings && encodings[1])
-    {
-        int n;
-
-        create_encodings_menu(mtree, handler);
-        for (n = 1; encodings[n]; ++n)
-        {
-            add_encoding(mtree, encodings[n], encodings[n], handler);
-        }
-    }
-    else
-    {
-        gtk_widget_set_sensitive(mtree->item_widgets
-                    [MENUTREE_PREFERENCES_CHARACTER_ENCODING], FALSE);
-    }
-}
-
-const char *menutree_encoding_from_widget(GtkCheckMenuItem *item)
-{
-    const char *encoding = g_object_get_data(G_OBJECT(item),
-            MENUTREE_ENCODING_KEY);
-
-    if (!strcmp(encoding, MENUTREE_ENCODING_NULL))
-        return NULL;
-    return encoding;
-}
-
-void menutree_add_encoding(MenuTree *mtree, const char *encoding,
-        MenuTreeToggledHandler handler)
-{
-    if (!mtree->encodings)
-    {
-        create_encodings_menu(mtree, handler);
-    }
-    add_encoding(mtree, encoding, encoding, handler);
-}
-
-static GtkWidget *menutree_find_encoding(MenuTree *mtree,
-        const char *encoding, int *position)
-{
-    GList *link;
-    int n = 0;
-
-    if (!position)
-        position = &n;
-    if (!mtree->encodings)
-    {
-        *position = -1;
-        return NULL;
-    }
-    link = gtk_container_get_children(GTK_CONTAINER(mtree->encodings));
-    if (!encoding)
-    {
-        if (mtree->encodings)
-        {
-            *position = 0;
-            return link->data;
-        }
-    }
-    while (++n, (link = g_list_next(link)) != NULL)
-    {
-        if (n == 1) continue; /* Skip separator */
-        if (!strcmp(menutree_encoding_from_widget(link->data), encoding))
-        {
-            *position = n;
-            return link->data;
-        }
-    }
-    g_critical(_("Encoding '%s' not found in menu"), encoding);
-    *position = -1;
-    return NULL;
-}
-
-void menutree_remove_encoding(MenuTree *mtree, const char *encoding)
-{
-    GtkWidget *item = menutree_find_encoding(mtree, encoding, NULL);
-
-    if (item)
-    {
-        gtk_widget_destroy(item);
-        if (!--mtree->n_encodings)
-        {
-            gtk_widget_destroy(mtree->encodings);
-            mtree->encodings = NULL;
-            mtree->encodings_group = NULL;
-            gtk_widget_set_sensitive(mtree->item_widgets
-                        [MENUTREE_PREFERENCES_CHARACTER_ENCODING], FALSE);
-        }
-        /* else... we never destroy first item in group, so it should be safe
-         * to leave encodings_group unchanged */
-    }
-}
-
-void menutree_change_encoding(MenuTree *mtree, const char *old_encoding,
-        const char *new_encoding, MenuTreeToggledHandler handler)
-{
-    int position;
-    GtkWidget *item = menutree_find_encoding(mtree, old_encoding, &position);
-
-    if (item)
-    {
-        gboolean state =
-            gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(item));
-
-        gtk_widget_destroy(item);
-        item = create_encoding_item(mtree, new_encoding, new_encoding, handler);
-        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(item), state);
-        gtk_menu_shell_insert(GTK_MENU_SHELL(mtree->encodings), item, position);
-    }
-}
-
-void menutree_select_encoding(MenuTree *mtree, const char *encoding)
-{
-    GtkWidget *item = menutree_find_encoding(mtree, encoding, NULL);
-
-    if (item)
-    {
-        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(item), TRUE);
-    }
 }
 
 /*
@@ -626,7 +447,6 @@ static void menutree_build_short_popup(MenuTree *menu_tree, Options *shortcuts,
         COPY_PASTE_MENU_ITEMS,
         RESET_MENU_ITEMS,
         SHOW_MENU_BAR_ITEM,
-        ENC_INPUT_ITEMS,
         NULL);
     menutree_apply_shortcuts(menu_tree, shortcuts);
 }

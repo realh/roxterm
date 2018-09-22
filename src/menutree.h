@@ -92,7 +92,6 @@ typedef enum {
     MENUTREE_PREFERENCES_EDIT_CURRENT_COLOUR_SCHEME,
     MENUTREE_PREFERENCES_EDIT_CURRENT_SHORTCUTS_SCHEME,
     MENUTREE_PREFERENCES_CONFIG_MANAGER,
-    MENUTREE_PREFERENCES_CHARACTER_ENCODING,
 
     MENUTREE_TABS_DETACH_TAB,
     MENUTREE_TABS_CLOSE_TAB,
@@ -129,9 +128,6 @@ struct MenuTree {
     GList *tabs;    /* List of GtkMenuItem widgets */
     int ntabs;
     Options *shortcuts;
-    GtkWidget *encodings;    /* Encodings submenu */
-    GSList *encodings_group;
-    int n_encodings;
     gboolean disable_shortcuts;
     gboolean disable_tab_shortcuts;
     GtkWidget *new_win_profiles_menu;
@@ -152,28 +148,6 @@ MenuTree *menutree_new(Options *shortcuts, GtkAccelGroup * accel_group,
 MenuTree *menutree_new_short_popup(Options *shortcuts,
         GtkAccelGroup *accel_group, gboolean disable_shortcuts,
         gpointer user_data);
-
-/* A "raw" handler for "toggled" signals on encodings items. The user_data
- * argument will be as passed to menutree_new. The client should work out
- * whether the widget is being toggled on or off and use
- * menutree_encoding_from_widget to get the encoding name. */
-typedef void (*MenuTreeToggledHandler)(GtkCheckMenuItem *, gpointer);
-
-void menutree_build_encodings_menu(MenuTree *, char const **encodings,
-        MenuTreeToggledHandler);
-
-const char *menutree_encoding_from_widget(GtkCheckMenuItem *);
-
-void menutree_add_encoding(MenuTree *, const char *encoding,
-        MenuTreeToggledHandler);
-
-void menutree_remove_encoding(MenuTree *, const char *encoding);
-
-void menutree_change_encoding(MenuTree *, const char *old_encoding,
-        const char *new_encoding, MenuTreeToggledHandler);
-
-void menutree_select_encoding(MenuTree *, const char *encoding);
-
 
 void menutree_delete(MenuTree *);
 

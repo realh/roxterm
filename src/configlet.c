@@ -23,7 +23,6 @@
 #include "configlet.h"
 #include "dlg.h"
 #include "dynopts.h"
-#include "encodings.h"
 #include "getname.h"
 #include "optsdbus.h"
 #include "optsfile.h"
@@ -44,14 +43,12 @@ extern gboolean g_file_set_contents(const gchar * filename,
 static int profile_lock = 0;
 static int colours_lock = 0;
 static int shortcuts_lock = 0;
-static int encodings_lock = 0;
 
 struct _ConfigletList {
     const char *family;
     GtkTreeView *tvwidget;
     GtkListStore *list;
     gpointer foreach_data;
-    Encodings *encodings;
     ConfigletData *cg;
 };
 
@@ -63,7 +60,6 @@ struct _ConfigletData {
     ConfigletList profile;
     ConfigletList colours;
     ConfigletList shortcuts;
-    ConfigletList encodings;
 };
 
 enum {
@@ -105,10 +101,6 @@ static const char *full_name_from_family(const char *family)
     {
         return _("Keyboard Shortcuts Scheme");
     }
-    else if (!strcmp(family, "encodings"))
-    {
-        return _("Character Encodings");
-    }
     else
     {
         g_critical(_("Full name for family '%s' not known"), family);
@@ -147,10 +139,6 @@ static void configlet_set_sensitive(const char *wbasename, gboolean sensitive)
     {
         lock = shortcuts_lock;
     }
-    else if (!strcmp(wbasename, "encodings"))
-    {
-        lock = encodings_lock;
-    }
     else
     {
         g_critical(_("Bad options family basename '%s'"), wbasename);
@@ -162,23 +150,16 @@ static void configlet_set_sensitive(const char *wbasename, gboolean sensitive)
 
 static gboolean is_in_user_dir(const char *family, const char *profile_name)
 {
-    if (!strcmp(family, "encodings"))
-    {
-        return strcmp(profile_name, "Default") != 0;
-    }
-    else
-    {
-        char *pathname = options_file_build_filename(family, profile_name,
-                NULL);
-        char *savename = options_file_filename_for_saving(family,
-                profile_name, NULL);
-        gboolean result = (pathname != NULL) && !strcmp(savename, pathname);
+    char *pathname = options_file_build_filename(family, profile_name,
+            NULL);
+    char *savename = options_file_filename_for_saving(family,
+            profile_name, NULL);
+    gboolean result = (pathname != NULL) && !strcmp(savename, pathname);
 
-        g_free(savename);
-        g_free(pathname);
+    g_free(savename);
+    g_free(pathname);
 
-        return result;
-    }
+    return result;
 }
 
 static void shade_actions_for_name(ConfigletList *cl, const char *name)
@@ -215,8 +196,6 @@ static const char *family_name_to_opt_key(const char *family)
         return "colour_scheme";
     else if (!strcmp(family, "Shortcuts"))
         return "shortcut_scheme";
-    else if (!strcmp(family, "encodings"))
-        return "encoding";
     return NULL;
 }
 
@@ -235,15 +214,8 @@ static void configlet_list_build(ConfigletList *cl)
     char const **pitem;
     char *selected_name = configlet_get_configured_name(cl);
 
-    if (cl->encodings)
-    {
-        item_list = encodings_list(cl->encodings);
-    }
-    else
-    {
-        item_list = (char const **) dynamic_options_list_sorted(
-                dynamic_options_get(cl->family));
-    }
+    item_list = (char const **) dynamic_options_list_sorted(
+            dynamic_options_get(cl->family));
 
     if (cl->list)
     {
@@ -265,10 +237,7 @@ static void configlet_list_build(ConfigletList *cl)
                 cfColumn_Name, *pitem,
                 -1);
     }
-    if (cl->encodings)
-        g_free(item_list);
-    else
-        g_strfreev((char **) item_list);
+    g_strfreev((char **) item_list);
     g_free(selected_name);
 }
 
@@ -545,25 +514,22 @@ static void add_name_to_list(ConfigletList *cl, const char *new_name)
 static gboolean remove_name_from_list(ConfigletList *cl, const char *old_name)
 {
     gboolean remove = TRUE;
-
-    if (!cl->encodings)
-    {
         char **name_list =
             dynamic_options_list(dynamic_options_get(cl->family));
-        char **pname;
+    char **pname;
 
-        for (pname = name_list; *pname; ++pname)
+    for (pname = name_list; *pname; ++pname)
+    {
+        if (!strcmp(old_name, *pname))
         {
-            if (!strcmp(old_name, *pname))
-            {
-                remove = FALSE;
-                dlg_message(GTK_WINDOW(cl->cg->widget),
-                        _("'%s' will now refer to a %s provided by the system"),
-                        old_name, full_name_from_family(cl->family));
-            }
+            remove = FALSE;
+            dlg_message(GTK_WINDOW(cl->cg->widget),
+                    _("'%s' will now refer to a %s provided by the system"),
+                    old_name, full_name_from_family(cl->family));
         }
-        g_strfreev(name_list);
     }
+    g_strfreev(name_list);
+
     if (remove)
     {
         GtkTreeIter iter;
@@ -576,27 +542,16 @@ static gboolean remove_name_from_list(ConfigletList *cl, const char *old_name)
     return remove;
 }
 
-/* This is Add for Encodings */
 static void configlet_copy(ConfigletList *cl,
         const char *old_leaf, const char *new_leaf)
 {
     gboolean success = FALSE;
+    char *old_path = options_file_build_filename(cl->family, old_leaf,
+            NULL);
 
-    if (cl->encodings)
-    {
-        encodings_add(cl->encodings, new_leaf);
-        encodings_save(cl->encodings);
-        success = TRUE;
-    }
-    else
-    {
-        char *old_path = options_file_build_filename(cl->family, old_leaf,
-                NULL);
-
-        success = options_file_copy_to_user_dir(GTK_WINDOW(cl->cg->widget),
-                old_path, cl->family, new_leaf);
-        g_free(old_path);
-    }
+    success = options_file_copy_to_user_dir(GTK_WINDOW(cl->cg->widget),
+            old_path, cl->family, new_leaf);
+    g_free(old_path);
     if (success)
     {
         add_name_to_list(cl, new_leaf);
@@ -605,31 +560,18 @@ static void configlet_copy(ConfigletList *cl,
     }
 }
 
-/* This is Edit for Encodings */
 static void configlet_rename(ConfigletList *cl,
         const char *old_leaf, const char *new_leaf)
 {
     gboolean success = FALSE;
+    char *old_path = options_file_build_filename(cl->family, old_leaf,
+            NULL);
+    char *new_path = options_file_filename_for_saving(cl->family,
+        new_leaf, NULL);
 
-    if (cl->encodings)
-    {
-        int n = get_selected_index(cl);
-
-        encodings_change(cl->encodings, n - 1, new_leaf);
-        encodings_save(cl->encodings);
-        success = TRUE;
-    }
-    else
-    {
-        char *old_path = options_file_build_filename(cl->family, old_leaf,
-                NULL);
-        char *new_path = options_file_filename_for_saving(cl->family,
-            new_leaf, NULL);
-
-        success = (g_rename(old_path, new_path) == 0);
-        g_free(new_path);
-        g_free(old_path);
-    }
+    success = (g_rename(old_path, new_path) == 0);
+    g_free(new_path);
+    g_free(old_path);
     if (success)
     {
         GtkTreeModel *model;
@@ -675,11 +617,6 @@ static void edit_thing_by_name(ConfigletList *cl, const char *name)
     else if (!strcmp(cl->family, "Shortcuts"))
     {
         shortcuts_edit(GTK_WINDOW(cl->cg->widget), name);
-    }
-    else if (cl->encodings)
-    {
-        dlg_message(GTK_WINDOW(cl->cg->widget),
-                _("Encoding names have no properties"));
     }
     else
     {
@@ -754,34 +691,22 @@ static void on_tree_selection_changed(GtkTreeSelection *selection,
     }
 }
 
-/* This is Add for Encodings */
 static void on_copy_clicked(ConfigletList *cl)
 {
     char *old_name = get_selected_name(cl);
     char *title = NULL;
     const char *button_label = NULL;
     const char **existing = NULL;
+    DynamicOptions *dynopts = dynamic_options_get(cl->family);
 
-    if (cl->encodings)
-    {
-        title = g_strdup_printf(_("Add Encoding"));
-        button_label = _("_Add");
-        existing = encodings_list(cl->encodings);
-    }
-    else
-    {
-        DynamicOptions *dynopts = dynamic_options_get(cl->family);
-
-        title = g_strdup_printf(_("Copy %s"),
-            full_name_from_family(cl->family));
-        button_label = _("_Copy");
-        existing = (char const **) dynamic_options_list(dynopts);
-    }
-    if (old_name || cl->encodings)
+    title = g_strdup_printf(_("Copy %s"),
+        full_name_from_family(cl->family));
+    button_label = _("_Copy");
+    existing = (char const **) dynamic_options_list(dynopts);
+    if (old_name)
     {
         char *new_name = getname_run_dialog(GTK_WINDOW(cl->cg->widget),
-                old_name, existing, title, button_label, NULL,
-                cl->encodings == NULL);
+                old_name, existing, title, button_label, NULL, TRUE);
 
         if (new_name)
         {
@@ -794,10 +719,7 @@ static void on_copy_clicked(ConfigletList *cl)
     {
         g_warning(_("No selection to copy"));
     }
-    if (cl->encodings)
-        g_free(existing);
-    else
-        g_strfreev((char **) existing);
+    g_strfreev((char **) existing);
     g_free(title);
 }
 
@@ -817,12 +739,6 @@ void on_shortcuts_copy_clicked(GtkButton *button, ConfigletData *cg)
 {
     (void) button;
     on_copy_clicked(&cg->shortcuts);
-}
-
-void on_encodings_copy_clicked(GtkButton *button, ConfigletData *cg)
-{
-    (void) button;
-    on_copy_clicked(&cg->encodings);
 }
 
 static void on_delete_clicked(ConfigletList *cl)
@@ -851,28 +767,16 @@ static void on_delete_clicked(ConfigletList *cl)
     else
     {
         gboolean remove = TRUE;
+        char *filename = options_file_build_filename(cl->family,
+                name, NULL);
 
-        if (cl->encodings)
+        if (g_unlink(filename))
         {
-            int n = get_selected_index(cl);
-
-            g_return_if_fail(n > 0);
-            encodings_remove(cl->encodings, n - 1);
-            encodings_save(cl->encodings);
+            dlg_warning(GTK_WINDOW(cl->cg->widget),
+                    _("Unable to delete '%s'"), filename);
+            remove = FALSE;
         }
-        else
-        {
-            char *filename = options_file_build_filename(cl->family,
-                    name, NULL);
-
-            if (g_unlink(filename))
-            {
-                dlg_warning(GTK_WINDOW(cl->cg->widget),
-                        _("Unable to delete '%s'"), filename);
-                remove = FALSE;
-            }
-            g_free(filename);
-        }
+        g_free(filename);
         if (remove)
         {
             if (remove_name_from_list(cl, name))
@@ -909,37 +813,20 @@ void on_shortcuts_edit_clicked(GtkButton *button, ConfigletData *cg)
     edit_selected_thing(&cg->shortcuts);
 }
 
-void on_encodings_delete_clicked(GtkButton *button, ConfigletData *cg)
-{
-    (void) button;
-    on_delete_clicked(&cg->encodings);
-}
-
-/* This is Edit for Encodings */
 void on_rename_clicked(ConfigletList *cl)
 {
     char *title = NULL;
     char const **existing = NULL;
     char *old_name = get_selected_name(cl);
+    DynamicOptions *dynopts = dynamic_options_get(cl->family);
 
-    if (cl->encodings)
-    {
-        title = g_strdup_printf(_("Edit Encoding"));
-        existing = encodings_list(cl->encodings);
-    }
-    else
-    {
-        DynamicOptions *dynopts = dynamic_options_get(cl->family);
-
-        title = g_strdup_printf(_("Rename %s"),
-            full_name_from_family(cl->family));
-        existing = (char const **) dynamic_options_list(dynopts);
-    }
-    if (old_name || cl->encodings)
+    title = g_strdup_printf(_("Rename %s"),
+        full_name_from_family(cl->family));
+    existing = (char const **) dynamic_options_list(dynopts);
+    if (old_name)
     {
         char *new_name = getname_run_dialog(GTK_WINDOW(cl->cg->widget),
-                old_name, existing, title, _("Apply"), NULL,
-                cl->encodings == NULL);
+                old_name, existing, title, _("Apply"), NULL, TRUE);
 
         if (new_name)
         {
@@ -952,10 +839,7 @@ void on_rename_clicked(ConfigletList *cl)
     {
         g_warning(_("No selection to copy"));
     }
-    if (cl->encodings)
-        g_free(existing);
-    else
-        g_strfreev((char **) existing);
+    g_strfreev((char **) existing);
     g_free(title);
 }
 
@@ -977,12 +861,6 @@ void on_shortcuts_rename_clicked(GtkButton *button, ConfigletData *cg)
     on_rename_clicked(&cg->shortcuts);
 }
 
-void on_encodings_rename_clicked(GtkButton *button, ConfigletData *cg)
-{
-    (void) button;
-    on_rename_clicked(&cg->encodings);
-}
-
 /********************************************************************/
 
 static void configlet_add_button_to_size_group(ConfigletData *cg,
@@ -1002,10 +880,7 @@ static void configlet_add_family_to_size_group(ConfigletData *cg,
     configlet_add_button_to_size_group(cg, f2, "copy");
     configlet_add_button_to_size_group(cg, f2, "rename");
     configlet_add_button_to_size_group(cg, f2, "delete");
-    if (strcmp(f2, "encodings"))
-    {
-        configlet_add_button_to_size_group(cg, f2, "edit");
-    }
+    configlet_add_button_to_size_group(cg, f2, "edit");
 }
 
 static void configlet_setup_family(ConfigletData *cg, ConfigletList *cl,
@@ -1078,14 +953,11 @@ gboolean configlet_open()
 
         cg->capp.options = options_open("Global", "roxterm options");
 
-        cg->encodings.encodings = encodings_load();
-
         gtk_builder_connect_signals(cg->capp.builder, cg);
 
         configlet_setup_family(cg, &cg->profile, "Profiles");
         configlet_setup_family(cg, &cg->colours, "Colours");
         configlet_setup_family(cg, &cg->shortcuts, "Shortcuts");
-        configlet_setup_family(cg, &cg->encodings, "encodings");
 
         capplet_set_radio(&cg->capp, "warn_close", 3);
         capplet_set_boolean_toggle(&cg->capp, "only_warn_running", FALSE);
@@ -1164,24 +1036,6 @@ void configlet_unlock_shortcuts(void)
     }
     if (configlet_data)
         set_sensitive_for_list(&configlet_data->shortcuts);
-}
-
-void configlet_lock_encodings(void)
-{
-    ++encodings_lock;
-    if (configlet_data)
-        set_sensitive_for_list(&configlet_data->encodings);
-}
-
-void configlet_unlock_encodings(void)
-{
-    if (--encodings_lock < 0)
-    {
-        g_critical(_("Trying to decrease encodings_lock below 0"));
-        encodings_lock = 0;
-    }
-    if (configlet_data)
-        set_sensitive_for_list(&configlet_data->encodings);
 }
 
 /* vi:set sw=4 ts=4 noet cindent cino= */

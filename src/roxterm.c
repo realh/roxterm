@@ -39,7 +39,6 @@
 #include "dlg.h"
 #include "dragrcv.h"
 #include "dynopts.h"
-#include "encodings.h"
 #include "globalopts.h"
 #include "logo.h"
 #include "optsfile.h"
@@ -94,7 +93,6 @@ struct ROXTermData {
                                 */
     double hold_x, hold_y;     /* Position of event above */
     gulong hold_handler_id;    /* Signal handler id for the above event */
-    char *encoding;
     double target_zoom_factor, current_zoom_factor;
     int zoom_index;
     gboolean post_exit_tag;
@@ -129,61 +127,6 @@ inline static MultiWin *roxterm_get_win(ROXTermData *roxterm)
 {
     return roxterm->tab ? multi_tab_get_parent(roxterm->tab) : NULL;
 }
-
-/********************** Encodings ***************************/
-
-static Encodings *roxterm_encodings = NULL;
-
-inline static char const **roxterm_list_encodings(void)
-{
-    return encodings_list(roxterm_encodings);
-}
-
-static void roxterm_apply_encoding(ROXTermData *roxterm, VteTerminal *vte)
-{
-    vte_terminal_set_encoding(vte, roxterm->encoding, NULL);
-}
-
-void roxterm_encoding_toggled(GtkCheckMenuItem *item, gpointer win)
-{
-    if (gtk_check_menu_item_get_active(item)
-            && !multi_win_get_ignore_toggles(win))
-    {
-        ROXTermData *roxterm =
-            multi_tab_get_user_data(multi_win_get_current_tab(win));
-        const char *encoding = menutree_encoding_from_widget(item);
-
-        g_free(roxterm->encoding);
-        roxterm->encoding = encoding ? g_strdup(encoding) : NULL;
-        roxterm_apply_encoding(roxterm, VTE_TERMINAL(roxterm->widget));
-    }
-}
-
-static void roxterm_encodings_changed(MenuTree *mtree,
-        const char *what_happened,
-        const char *current_name, const char *new_name)
-{
-    if (!strcmp(what_happened, OPTSDBUS_DELETED))
-    {
-        menutree_remove_encoding(mtree, current_name);
-    }
-    else if (!strcmp(what_happened, OPTSDBUS_ADDED))
-    {
-        menutree_add_encoding(mtree, current_name, roxterm_encoding_toggled);
-    }
-    else if (!strcmp(what_happened, OPTSDBUS_RENAMED))
-    {
-        menutree_change_encoding(mtree, current_name, new_name,
-                roxterm_encoding_toggled);
-    }
-    else
-    {
-        g_critical(_("Action '%s' not recognised for encodings"),
-                what_happened);
-    }
-}
-
-/******************** End Encodings *************************/
 
 /*********************** URI handling ***********************/
 
@@ -383,9 +326,6 @@ static ROXTermData *roxterm_data_clone(ROXTermData *old_gt)
     {
         new_gt->directory = g_strdup(old_gt->directory);
     }
-
-    if (old_gt->encoding)
-        new_gt->encoding = g_strdup(old_gt->encoding);
 
     new_gt->match_map = g_array_new(FALSE, FALSE, sizeof(ROXTerm_MatchMap));
     new_gt->matched_url = NULL;
@@ -898,7 +838,6 @@ static void roxterm_data_delete(ROXTermData *roxterm)
     if (roxterm->commandv)
         g_strfreev(roxterm->commandv);
     g_free(roxterm->directory);
-    g_free(roxterm->encoding);
     g_strfreev(roxterm->env);
     if (roxterm->pango_desc)
         pango_font_description_free(roxterm->pango_desc);
@@ -1402,48 +1341,26 @@ static void roxterm_uri_drag_data_get(GtkWidget *widget,
         GdkDragContext *drag_context, GtkSelectionData *selection,
         guint info, guint time, ROXTermData *roxterm)
 {
-    const char *encoding;
     char *uri_list[2];
-    char *utf8 = NULL;
     (void) widget;
     (void) drag_context;
     (void) time;
 
     g_return_if_fail(roxterm->matched_url);
 
-    encoding = vte_terminal_get_encoding(VTE_TERMINAL(roxterm->widget));
-    if (g_ascii_strcasecmp(encoding, "utf-8"))
-    {
-        GError *err = NULL;
-
-        utf8 = g_convert(roxterm->matched_url, -1, "UTF-8", encoding,
-                NULL, NULL, &err);
-        if (err)
-        {
-            dlg_warning(roxterm_get_toplevel(roxterm),
-                    _("Unable to convert dragged URI to UTF-8: %s"),
-                    err->message);
-            g_free(utf8);
-            utf8 = NULL;
-        }
-    }
-    if (!utf8)
-        utf8 = g_strdup(roxterm->matched_url);
-
     if (info == ROXTERM_DRAG_TARGET_URI_LIST)
     {
         uri_list[0] = roxterm_get_modified_uri(roxterm);
         if (!uri_list[0])
-            uri_list[0] = g_strdup(utf8);
+            uri_list[0] = g_strdup(roxterm->matched_url);
         uri_list[1] = NULL;
         gtk_selection_data_set_uris(selection, uri_list);
         g_free(uri_list[0]);
     }
     else
     {
-        gtk_selection_data_set_text(selection, utf8, -1);
+        gtk_selection_data_set_text(selection, roxterm->matched_url, -1);
     }
-    g_free(utf8);
 }
 
 /* Starts drag & drop process if user tries to drag a URL */
@@ -1653,9 +1570,6 @@ static void roxterm_shade_search_menu_items(ROXTermData *roxterm)
 static void roxterm_tab_selection_handler(ROXTermData * roxterm, MultiTab * tab)
 {
     MultiWin *win = roxterm_get_win(roxterm);
-    MenuTree *menu_bar = multi_win_get_menu_bar(win);
-    MenuTree *popup_menu = multi_win_get_popup_menu(win);
-    MenuTree *short_popup = multi_win_get_short_popup_menu(win);
     (void) tab;
 
     roxterm->status_icon_name = NULL;
@@ -1671,22 +1585,6 @@ static void roxterm_tab_selection_handler(ROXTermData * roxterm, MultiTab * tab)
     roxterm_shade_search_menu_items(roxterm);
 
     multi_win_set_ignore_toggles(win, TRUE);
-    if (!popup_menu->encodings)
-    {
-        char const **encodings = roxterm_list_encodings();
-
-        menutree_build_encodings_menu(popup_menu,
-                encodings, roxterm_encoding_toggled);
-        menutree_build_encodings_menu(menu_bar,
-                encodings, roxterm_encoding_toggled);
-        menutree_build_encodings_menu(short_popup,
-                encodings, roxterm_encoding_toggled);
-        if (encodings)
-            g_free(encodings);
-    }
-    menutree_select_encoding(popup_menu, roxterm->encoding);
-    menutree_select_encoding(menu_bar, roxterm->encoding);
-    menutree_select_encoding(short_popup, roxterm->encoding);
     multi_win_set_ignore_toggles(win, FALSE);
 }
 
@@ -2936,7 +2834,6 @@ static void roxterm_apply_profile(ROXTermData *roxterm, VteTerminal *vte,
     roxterm_set_delete_binding(roxterm, vte);
 
     roxterm_update_mouse_autohide(roxterm, vte);
-    roxterm_apply_encoding(roxterm, vte);
 
     roxterm_apply_wrap_switch_tab(roxterm);
 
@@ -3342,15 +3239,6 @@ static void roxterm_reflect_profile_change(Options * profile, const char *key)
         {
             roxterm_set_delete_binding(roxterm, vte);
         }
-        else if (!strcmp(key, "encoding"))
-        {
-            char *encoding =
-                options_lookup_string(roxterm->profile, "encoding");
-
-            vte_terminal_set_encoding(vte, encoding, NULL);
-            if (encoding)
-                g_free(encoding);
-        }
         else if (!strcmp(key, "wrap_switch_tab"))
         {
             roxterm_apply_wrap_switch_tab(roxterm);
@@ -3652,11 +3540,6 @@ static void stuff_changed_do_menu(MenuTree *mtree,
         id = MENUTREE_PREFERENCES_SELECT_SHORTCUTS;
         handler = G_CALLBACK(roxterm_shortcuts_selected);
     }
-    else if (!strcmp(family_name, "encodings"))
-    {
-        roxterm_encodings_changed(mtree, what_happened, current_name, new_name);
-        return;
-    }
     else
     {
         g_warning(_("Changed options family '%s' not known"), family_name);
@@ -3737,12 +3620,6 @@ void roxterm_stuff_changed_handler(const char *what_happened,
             }
         }
         return;
-    }
-
-    if (strcmp(family_name, "encodings"))
-    {
-        dynopts = dynamic_options_get(family_name);
-        options = dynamic_options_lookup(dynopts, current_name);
     }
 
     if (!strcmp(what_happened, OPTSDBUS_DELETED))
@@ -3885,7 +3762,7 @@ static gboolean roxterm_get_always_show_tabs(const ROXTermData *roxterm)
  */
 static ROXTermData *roxterm_data_new(double zoom_factor, const char *directory,
         char *profile_name, Options *profile, gboolean maximise,
-        const char *colour_scheme_name, char *encoding,
+        const char *colour_scheme_name,
         char **geom, gboolean *size_on_cli, char **env)
 {
     ROXTermData *roxterm = g_new0(ROXTermData, 1);
@@ -3930,12 +3807,6 @@ static ROXTermData *roxterm_data_new(double zoom_factor, const char *directory,
         roxterm->colour_scheme = colour_scheme_lookup_and_ref
             (colour_scheme_name);
     }
-    roxterm->encoding = encoding;
-    if (encoding && !strcmp(encoding, "Default"))
-    {
-        g_free(encoding);
-        roxterm->encoding = NULL;
-    }
     roxterm->pid = -1;
     roxterm->env = global_options_copy_strv(env);
     /*roxterm->file_match_tag[0] = roxterm->file_match_tag[1] = -1;*/
@@ -3965,7 +3836,6 @@ void roxterm_launch(char **env)
                     options_lookup_int_with_default(profile,
                             "maximise", 0),
             colour_scheme_name,
-            global_options_lookup_string("encoding"),
             &geom, &size_on_cli, env);
     int show_add_tab_btn;
 
@@ -4299,8 +4169,6 @@ void roxterm_init(void)
 
     gtk_window_set_default_icon_from_file(logo_filename, NULL);
     g_free(logo_filename);
-
-    roxterm_encodings = encodings_load();
 
     optsdbus_listen_for_opt_signals(roxterm_opt_signal_handler);
     optsdbus_listen_for_stuff_changed_signals(roxterm_stuff_changed_handler);
@@ -4666,7 +4534,6 @@ static void parse_open_tab(_ROXTermParseContext *rctx,
     const char *profile_name = "Default";
     const char *colours_name = "GTK";
     const char *cwd = NULL;
-    const char *encoding = NULL;
     int n;
     ROXTermData *roxterm;
     Options *profile;
@@ -4690,8 +4557,6 @@ static void parse_open_tab(_ROXTermParseContext *rctx,
             rctx->tab_title = g_strdup(v);
         else if (!strcmp(a, "icon_title"))
             rctx->icon_title = g_strdup(v);
-        else if (!strcmp(a, "encoding"))
-            encoding = v;
         else if (!strcmp(a, "current"))
             rctx->current = (strcmp(v, "0") != 0);
         else if (!strcmp(a, "title_template_locked"))
@@ -4710,14 +4575,12 @@ static void parse_open_tab(_ROXTermParseContext *rctx,
             profile_name, "roxterm profile");
     roxterm = roxterm_data_new(rctx->zoom_factor, cwd,
             g_strdup(profile_name), profile,
-            rctx->maximised, colours_name, g_strdup(encoding),
+            rctx->maximised, colours_name,
             &rctx->geom, NULL, environ);
     roxterm->from_session = TRUE;
     roxterm->dont_lookup_dimensions = TRUE;
     if (rctx->fdesc)
         roxterm->pango_desc = pango_font_description_copy(rctx->fdesc);
-    if (encoding && encoding[0])
-        roxterm->encoding = g_strdup(encoding);
     rctx->roxterm = roxterm;
 }
 

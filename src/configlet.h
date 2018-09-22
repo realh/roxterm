@@ -40,8 +40,6 @@ void configlet_lock_colour_schemes(void);
 void configlet_unlock_colour_schemes(void);
 void configlet_lock_shortcuts(void);
 void configlet_unlock_shortcuts(void);
-void configlet_lock_encodings(void);
-void configlet_unlock_encodings(void);
 
 /* These handlers aren't referred to elsewhere in the code but are used by
  * GtkBuilder. */
@@ -55,15 +53,12 @@ void on_row_activated(GtkTreeView *tvwidget, GtkTreePath *path,
 void on_profile_copy_clicked(GtkButton *button, ConfigletData *cg);
 void on_colours_copy_clicked(GtkButton *button, ConfigletData *cg);
 void on_shortcuts_copy_clicked(GtkButton *button, ConfigletData *cg);
-void on_encodings_copy_clicked(GtkButton *button, ConfigletData *cg);
 void on_profile_delete_clicked(GtkButton *button, ConfigletData *cg);
 void on_colours_delete_clicked(GtkButton *button, ConfigletData *cg);
 void on_shortcuts_delete_clicked(GtkButton *button, ConfigletData *cg);
-void on_encodings_delete_clicked(GtkButton *button, ConfigletData *cg);
 void on_profile_rename_clicked(GtkButton *button, ConfigletData *cg);
 void on_colours_rename_clicked(GtkButton *button, ConfigletData *cg);
 void on_shortcuts_rename_clicked(GtkButton *button, ConfigletData *cg);
-void on_encodings_rename_clicked(GtkButton *button, ConfigletData *cg);
 
 #endif /* CONFIGLET_H */
 

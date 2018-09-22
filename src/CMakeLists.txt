@@ -16,7 +16,7 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/version.h.in
     ${CMAKE_CURRENT_BINARY_DIR}/version.h)
 
 add_library(rtlib OBJECT
-    colourscheme.c dlg.c dragrcv.c dynopts.c encodings.c
+    colourscheme.c dlg.c dragrcv.c dynopts.c 
     globalopts.c logo.c options.c optsfile.c rtdbus.c)
 target_include_directories(rtlib PRIVATE
     ${RTCOMMON_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})
