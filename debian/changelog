@@ -1,3 +1,13 @@
+roxterm (3.7.1-1ppa1bionic1) bionic; urgency=medium
+
+  * New upstream version:
+    + Added cursor foreground colour option.
+    + Added Nocturne colour scheme.
+    + Removed encoding settings support (deprecated by vte).
+    + Removed a few other minor deprecated features.
+
+ -- Tony Houghton <h@realh.co.uk>  Sat, 22 Sep 2018 21:02:37 +0100
+
 roxterm (3.6.2-1ppa1bionic1) bionic; urgency=medium
 
   * Tabs always expand to fill their bar; this fixes a bug causing the window
