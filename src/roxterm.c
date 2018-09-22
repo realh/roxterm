@@ -973,6 +973,13 @@ roxterm_update_cursor_colour(ROXTermData * roxterm, VteTerminal * vte)
 }
 
 static void
+roxterm_update_cursorfg_colour(ROXTermData * roxterm, VteTerminal * vte)
+{
+    vte_terminal_set_color_cursor_foreground(vte,
+            colour_scheme_get_cursorfg_colour(roxterm->colour_scheme, TRUE));
+}
+
+static void
 roxterm_update_bold_colour(ROXTermData * roxterm, VteTerminal * vte)
 {
     vte_terminal_set_color_bold(vte,
@@ -1051,6 +1058,7 @@ roxterm_apply_colour_scheme(ROXTermData *roxterm, VteTerminal *vte)
     if (bd || !bold)
         vte_terminal_set_color_bold(vte, bd);
     roxterm_update_cursor_colour(roxterm, vte);
+    roxterm_update_cursorfg_colour(roxterm, vte);
     roxterm_force_redraw(roxterm);
 }
 
@@ -3453,6 +3461,11 @@ static gboolean roxterm_update_colour_option(Options *scheme, const char *key,
         old_colour = colour_scheme_get_cursor_colour(scheme, TRUE);
         setter = colour_scheme_set_cursor_colour;
     }
+    else if (!strcmp(key, "cursorfg"))
+    {
+        old_colour = colour_scheme_get_cursorfg_colour(scheme, TRUE);
+        setter = colour_scheme_set_cursorfg_colour;
+    }
     else if (!strcmp(key, "bold"))
     {
         old_colour = colour_scheme_get_bold_colour(scheme, TRUE);
@@ -3497,6 +3510,8 @@ static void roxterm_reflect_colour_change(Options *scheme, const char *key)
 
         if (!strcmp(key, "cursor"))
             roxterm_update_cursor_colour(roxterm, vte);
+        else if (!strcmp(key, "cursorfg"))
+            roxterm_update_cursorfg_colour(roxterm, vte);
         else if (!strcmp(key, "bold"))
             roxterm_update_bold_colour(roxterm, vte);
         else

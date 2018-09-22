@@ -74,6 +74,13 @@ static void colourgui_set_cursor_colour_widget(GtkBuilder *builder,
             colour_scheme_get_cursor_colour(colour_scheme, FALSE), ignore);
 }
 
+static void colourgui_set_cursorfg_colour_widget(GtkBuilder *builder,
+        Options *colour_scheme, gboolean ignore)
+{
+    colourgui_set_colour_widget(builder, "cursorfg_colour",
+            colour_scheme_get_cursorfg_colour(colour_scheme, FALSE), ignore);
+}
+
 static void colourgui_set_bold_colour_widget(GtkBuilder *builder,
         Options *colour_scheme, gboolean ignore)
 {
@@ -165,10 +172,14 @@ static void colourgui_set_fgbg_track_shading(GtkBuilder *builder)
 
 static void colourgui_set_cursor_shading(GtkBuilder *builder)
 {
+    gboolean state = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(
+                    gtk_builder_get_object(builder, "set_cursor_colour")));
     gtk_widget_set_sensitive(
             GTK_WIDGET(gtk_builder_get_object(builder, "cursor_colour")),
-            gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(
-                    gtk_builder_get_object(builder, "set_cursor_colour"))));
+            state);
+    gtk_widget_set_sensitive(
+            GTK_WIDGET(gtk_builder_get_object(builder, "cursorfg_colour")),
+            state);
 }
 
 static void colourgui_set_bold_shading(GtkBuilder *builder)
@@ -313,6 +324,7 @@ static void colourgui_fill_in_dialog(ColourGUI * cg, gboolean ignore)
     colourgui_set_all_palette_widgets(builder, colour_scheme, ignore);
     colourgui_set_fgbg_colour_widgets(builder, colour_scheme, ignore);
     colourgui_set_cursor_colour_widget(builder, colour_scheme, ignore);
+    colourgui_set_cursorfg_colour_widget(builder, colour_scheme, ignore);
     colourgui_set_bold_colour_widget(builder, colour_scheme, ignore);
 }
 
@@ -434,6 +446,11 @@ void on_color_set(GtkColorButton *button, ColourGUI * cg)
     {
         option_name = "cursor";
         colour_scheme_set_cursor_colour(opts, colour_name);
+    }
+    else if (!strcmp(widget_name, "cursorfg_colour"))
+    {
+        option_name = "cursorfg";
+        colour_scheme_set_cursorfg_colour(opts, colour_name);
     }
     else if (!strcmp(widget_name, "bold_colour"))
     {
@@ -609,9 +626,15 @@ void on_set_cursor_colour_toggled(GtkToggleButton *button, ColourGUI *cg)
     colourgui_set_cursor_shading(cg->capp.builder);
     state = gtk_toggle_button_get_active(button);
     if (state)
+    {
         COLOURGUI_SET_COLOUR_OPTION_FROM_WIDGET(cg, cursor);
+        COLOURGUI_SET_COLOUR_OPTION_FROM_WIDGET(cg, cursorfg);
+    }
     else
+    {
         COLOURGUI_SET_COLOUR_OPTION(cg->capp.options, cursor, NULL);
+        COLOURGUI_SET_COLOUR_OPTION(cg->capp.options, cursorfg, NULL);
+    }
 }
 
 void on_set_bold_colour_toggled(GtkToggleButton *button, ColourGUI *cg)

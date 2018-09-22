@@ -25,7 +25,7 @@
 #define COLOURSCHEME_GROUP "roxterm colour scheme"
 
 typedef struct {
-    GdkRGBA *foreground, *background, *cursor, *bold, *dim;
+    GdkRGBA *foreground, *background, *cursor, *cursorfg, *bold, *dim;
     GdkRGBA *palette;
     int palette_size;
 } ColourScheme;
@@ -234,6 +234,13 @@ GdkRGBA *colour_scheme_get_cursor_colour(Options *opts,
             offsetof(ColourScheme, cursor), allow_null);
 }
 
+GdkRGBA *colour_scheme_get_cursorfg_colour(Options * opts,
+        gboolean allow_null)
+{
+    return colour_scheme_get_named_colour(opts, "cursorfg", "#000",
+            offsetof(ColourScheme, cursorfg), allow_null);
+}
+
 GdkRGBA *colour_scheme_get_foreground_colour(Options * opts,
             gboolean allow_null)
 {
@@ -315,6 +322,12 @@ void colour_scheme_set_cursor_colour(Options * opts, const char *colour_name)
 {
     colour_scheme_set_named_colour(opts, "cursor", colour_name,
             offsetof(ColourScheme, cursor));
+}
+
+void colour_scheme_set_cursorfg_colour(Options * opts, const char *colour_name)
+{
+    colour_scheme_set_named_colour(opts, "cursorfg", colour_name,
+            offsetof(ColourScheme, cursorfg));
 }
 
 void colour_scheme_set_foreground_colour(Options * opts,
