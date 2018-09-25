@@ -95,7 +95,7 @@ struct ROXTermData {
     gulong hold_handler_id;    /* Signal handler id for the above event */
     double target_zoom_factor, current_zoom_factor;
     int zoom_index;
-    guint post_exit_tag;
+    gulong post_exit_tag;
     const char *status_icon_name;
     gboolean maximise;
     gulong win_state_changed_tag;
@@ -112,7 +112,7 @@ struct ROXTermData {
     gboolean from_session;
     int padding_w, padding_h;
     gboolean is_shell;
-    guint child_exited_tag;
+    gulong child_exited_tag;
 };
 
 #define PROFILE_NAME_KEY "roxterm_profile_name"
@@ -821,7 +821,8 @@ static void roxterm_data_delete(ROXTermData *roxterm)
     g_return_if_fail(roxterm);
 
     /* Fix for https://github.com/realh/roxterm/issues/197 */
-    g_signal_handler_disconnect(roxterm->widget, roxterm->child_exited_tag);
+    if (roxterm->widget && roxterm->child_exited_tag)
+        g_signal_handler_disconnect(roxterm->widget, roxterm->child_exited_tag);
     gwin = roxterm_get_toplevel(roxterm);
     if (gwin && roxterm->win_state_changed_tag)
     {
