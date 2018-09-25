@@ -95,7 +95,7 @@ struct ROXTermData {
     gulong hold_handler_id;    /* Signal handler id for the above event */
     double target_zoom_factor, current_zoom_factor;
     int zoom_index;
-    gboolean post_exit_tag;
+    guint post_exit_tag;
     const char *status_icon_name;
     gboolean maximise;
     gulong win_state_changed_tag;
@@ -112,6 +112,7 @@ struct ROXTermData {
     gboolean from_session;
     int padding_w, padding_h;
     gboolean is_shell;
+    guint child_exited_tag;
 };
 
 #define PROFILE_NAME_KEY "roxterm_profile_name"
@@ -297,6 +298,9 @@ static ROXTermData *roxterm_data_clone(ROXTermData *old_gt)
     new_gt->dont_lookup_dimensions = FALSE;
     new_gt->actual_commandv = NULL;
     new_gt->env = roxterm_strv_copy(old_gt->env);
+    new_gt->child_exited_tag = 0;
+    new_gt->post_exit_tag = 0;
+    new_gt->win_state_changed_tag = 0;
 
     if (old_gt->colour_scheme)
     {
@@ -816,6 +820,8 @@ static void roxterm_data_delete(ROXTermData *roxterm)
 
     g_return_if_fail(roxterm);
 
+    /* Fix for https://github.com/realh/roxterm/issues/197 */
+    g_signal_handler_disconnect(roxterm->widget, roxterm->child_exited_tag);
     gwin = roxterm_get_toplevel(roxterm);
     if (gwin && roxterm->win_state_changed_tag)
     {
@@ -2501,8 +2507,8 @@ static void roxterm_composited_changed_handler(VteTerminal *vte,
 
 static void roxterm_connect_misc_signals(ROXTermData * roxterm)
 {
-    g_signal_connect(roxterm->widget, "child-exited",
-            G_CALLBACK(roxterm_child_exited), roxterm);
+    roxterm->child_exited_tag = g_signal_connect(roxterm->widget,
+            "child-exited", G_CALLBACK(roxterm_child_exited), roxterm);
     g_signal_connect(roxterm->widget, "popup-menu",
             G_CALLBACK(roxterm_popup_handler), roxterm);
     g_signal_connect(roxterm->widget, "button-press-event",
