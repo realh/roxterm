@@ -71,8 +71,6 @@ Options *dynamic_options_lookup_and_ref(DynamicOptions * dynopts,
     {
         options_ref(options);
     }
-    g_debug("dynamic_options_lookup_and_ref: '%s' now has ref count %d",
-            profile_name, options->ref);
     return options;
 }
 
@@ -102,8 +100,6 @@ dynamic_options_unref(DynamicOptions * dynopts, const char *profile_name)
         g_hash_table_remove(dynopts->profiles, profile_name);
         g_free(key);
     }
-    g_debug("dynamic_options_unref: '%s' now has ref count %d",
-            profile_name, ((Options *) options)->ref - 1);
     return options_unref(options);
 }
 
