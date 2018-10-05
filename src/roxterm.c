@@ -309,6 +309,7 @@ static ROXTermData *roxterm_data_clone(ROXTermData *old_gt)
     }
     if (old_gt->profile)
     {
+        g_debug("roxterm_data_clone copying profile %s", old_gt->profile->name);
         new_gt->profile = dynamic_options_lookup_and_ref(roxterm_profiles,
             options_get_leafname(old_gt->profile), "roxterm profile");
     }
@@ -2079,9 +2080,14 @@ static void roxterm_new_term_with_profile(GtkMenuItem *mitem,
         return;
     }
     roxterm->profile = new_profile;
+    g_debug("roxterm_new_term_with_profile: old %p '%s' %d, new %p '%s' %d",
+            old_profile, old_profile->name, old_profile->ref,
+            new_profile, new_profile->name, new_profile->ref);
     if (just_tab)
     {
         multi_tab_new(win, roxterm);
+        g_debug("roxterm_new_term_with_profile after multi_tab_new, "
+                "new_profile ref %d", new_profile->ref);
     }
     else
     {
@@ -2089,6 +2095,7 @@ static void roxterm_new_term_with_profile(GtkMenuItem *mitem,
                 options_lookup_int_with_default(new_profile,
                         "always_show_tabs", TRUE));
     }
+    g_debug("roxterm_new_term_with_profile unrefing %s", profile_name);
     dynamic_options_unref(roxterm_profiles, profile_name);
     roxterm->profile = old_profile;
     /* All tabs in the same window must have same size */
@@ -4242,7 +4249,6 @@ void roxterm_spawn(ROXTermData *roxterm, const char *command,
             roxterm->special_command = g_strdup(command);
             roxterm->no_respawn = TRUE;
             tab = multi_tab_new(win, roxterm);
-            roxterm_connect_misc_signals(multi_tab_get_user_data(tab));
             break;
         default:
             cwd = roxterm_get_cwd(roxterm);

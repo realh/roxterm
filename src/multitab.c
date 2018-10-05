@@ -137,7 +137,7 @@ static MultiWinGetTabPos multi_win_get_config_tab_pos;
 static MultiWinDeleteHandler multi_win_delete_handler;
 static MultiTabGetShowCloseButton multi_tab_get_show_close_button;
 static MultiTabGetNewTabAdjacent multi_tab_get_new_tab_adjacent;
-static MultiTabConnectMiscSignals multi_tab_connect_misc_signals ;
+static MultiTabConnectMiscSignals multi_tab_connect_misc_signals;
 
 static gboolean multi_win_notify_tab_removed(MultiWin *, MultiTab *);
 
@@ -268,7 +268,9 @@ void multi_tab_init(MultiTabFiller filler, MultiTabDestructor destructor,
     multi_tab_connect_misc_signals = connect_misc_signals;
 }
 
-MultiTab *multi_tab_new(MultiWin * parent, gpointer user_data_template)
+// Doesn't connect client's signal handlers
+MultiTab *multi_tab_new_defer_connect(MultiWin * parent,
+        gpointer user_data_template)
 {
     MultiTab *tab = g_new0(MultiTab, 1);
     guint pos;
@@ -299,6 +301,13 @@ MultiTab *multi_tab_new(MultiWin * parent, gpointer user_data_template)
     //g_debug("call roxterm_force_resize_now from line %d", __LINE__);
     //roxterm_force_resize_now(parent);
 
+    return tab;
+}
+
+MultiTab *multi_tab_new(MultiWin * parent, gpointer user_data_template)
+{
+    MultiTab *tab = multi_tab_new_defer_connect(parent, user_data_template);
+    multi_tab_connect_misc_signals(tab->user_data);
     return tab;
 }
 
@@ -1290,9 +1299,8 @@ static void multi_win_new_window_action(MultiWin * win)
 
 static void multi_win_new_tab_action(MultiWin * win)
 {
-    MultiTab *tab = multi_tab_new(win, win->current_tab ?
+    multi_tab_new(win, win->current_tab ?
             win->current_tab->user_data : win->user_data_template);
-    multi_tab_connect_misc_signals(tab->user_data);
 }
 
 static void multi_win_detach_tab_action(MultiWin * win)
@@ -2026,7 +2034,7 @@ MultiWin *multi_win_new_full(Options *shortcuts,
             tab_pos, always_show_tabs, add_tab_button);
     win->user_data_template = user_data_template;
     win->tab_pos = tab_pos;
-    tab = multi_tab_new(win, user_data_template);
+    tab = multi_tab_new_defer_connect(win, user_data_template);
 
     multi_win_shade_menus_for_tabs(win);
 
