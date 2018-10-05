@@ -1,3 +1,10 @@
+roxterm (3.7.3-1ppa1bionic1) bionic; urgency=medium
+
+  * Ensure consistent connection of signal handlers to new tabs. Fixes
+    upstream issue <https://github.com/realh/roxterm/issues/198>.
+
+ -- Tony Houghton <h@realh.co.uk>  Fri, 5 Oct 2018 18:08:40 +0100
+
 roxterm (3.7.2-1ppa1bionic1) bionic; urgency=high
 
   * Fixes serious crashing bug <https://github.com/realh/roxterm/issues/197>.
