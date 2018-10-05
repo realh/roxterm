@@ -348,6 +348,8 @@ static void menutree_build(MenuTree *menu_tree, Options *shortcuts,
             _("Profiles"), MENUTREE_FILE_NEW_WINDOW_WITH_PROFILE_HEADER,
             "_", MENUTREE_NULL_ID,
             NULL);
+    gtk_widget_set_sensitive(menutree_get_widget_for_id(menu_tree,
+                MENUTREE_FILE_NEW_WINDOW_WITH_PROFILE_HEADER), FALSE);
     gtk_menu_item_set_submenu(GTK_MENU_ITEM(menu_tree->item_widgets
             [MENUTREE_FILE_NEW_WINDOW_WITH_PROFILE]),
             menu_tree->new_win_profiles_menu);
@@ -357,6 +359,8 @@ static void menutree_build(MenuTree *menu_tree, Options *shortcuts,
             _("Profiles"), MENUTREE_FILE_NEW_TAB_WITH_PROFILE_HEADER,
             "_", MENUTREE_NULL_ID,
             NULL);
+    gtk_widget_set_sensitive(menutree_get_widget_for_id(menu_tree,
+                MENUTREE_FILE_NEW_TAB_WITH_PROFILE_HEADER), FALSE);
     gtk_menu_item_set_submenu(GTK_MENU_ITEM(menu_tree->item_widgets
             [MENUTREE_FILE_NEW_TAB_WITH_PROFILE]),
             menu_tree->new_tab_profiles_menu);
