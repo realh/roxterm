@@ -15,7 +15,7 @@ target_include_directories(roxterm PRIVATE
     ${ROXTERM_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})
 target_compile_options(roxterm PRIVATE ${ROXTERM_CFLAGS_OTHER})
 target_link_libraries(roxterm
-    ${ROXTERM_LDFLAGS_OTHER} ${ROXTERM_LIBRARIES})
+    ${ROXTERM_LDFLAGS_OTHER} ${ROXTERM_LINK_LIBRARIES})
 
 install(TARGETS roxterm RUNTIME DESTINATION bin)
 #install(FILES roxterm-config.ui DESTINATION share/roxterm)

@@ -67,13 +67,14 @@ static void roxterm_window_get_property(GObject *obj, guint prop_id,
 static void roxterm_window_class_init(RoxtermWindowClass *klass)
 {
     GObjectClass *oklass = G_OBJECT_CLASS(klass);
+    // Accessors must be set before installing properties
+    oklass->set_property = roxterm_window_set_property;
+    oklass->get_property = roxterm_window_get_property;
     roxterm_window_props[PROP_APPLICATION] =
             g_param_spec_object("application", "application",
             "RoxtermApplication", ROXTERM_TYPE_APPLICATION,
             G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE);
     g_object_class_install_properties(oklass, N_PROPS, roxterm_window_props);
-    oklass->set_property = roxterm_window_set_property;
-    oklass->get_property = roxterm_window_get_property;
 }
 
 static void roxterm_window_init(RoxtermWindow *self)

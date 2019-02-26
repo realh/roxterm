@@ -25,7 +25,7 @@
 #include "roxterm-window.h"
 
 #define ROXTERM_TYPE_APPLICATION roxterm_application_get_type()
-G_DECLARE_FINAL_TYPE(RoxtermApplication, roxterm_applcation,
+G_DECLARE_FINAL_TYPE(RoxtermApplication, roxterm_application,
         ROXTERM, APPLICATION, GtkApplication);
 
 RoxtermApplication *roxterm_application_new(void);

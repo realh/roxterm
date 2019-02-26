@@ -26,6 +26,8 @@
 G_DECLARE_FINAL_TYPE(RoxtermWindow, roxterm_window,
         ROXTERM, WINDOW, GtkApplicationWindow);
 
+struct _RoxtermApplication;
+
 RoxtermWindow *roxterm_window_new(struct _RoxtermApplication *app);
 
 struct _RoxtermApplication *roxterm_window_get_application(RoxtermWindow *win);

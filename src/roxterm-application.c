@@ -36,10 +36,20 @@ static void roxterm_application_window_removed(GtkApplication *app,
         g_application_quit(G_APPLICATION(app));
 }
 
+static gint roxterm_application_command_line(GApplication *gapp,
+        GApplicationCommandLine *cmd_line)
+{
+    RoxtermApplication *self = ROXTERM_APPLICATION(gapp);
+    roxterm_application_new_window(self);
+    return 0;
+}
+
 static void roxterm_application_class_init(RoxtermApplicationClass *klass)
 {
-    GtkApplicationClass *gapp_klass = GTK_APPLICATION_CLASS(klass);
-    gapp_klass->window_removed = roxterm_application_window_removed;
+    GtkApplicationClass *gtkapp_klass = GTK_APPLICATION_CLASS(klass);
+    gtkapp_klass->window_removed = roxterm_application_window_removed;
+    GApplicationClass *gapp_klass = G_APPLICATION_CLASS(klass);
+    gapp_klass->command_line = roxterm_application_command_line;
 }
 
 static void roxterm_application_init(RoxtermApplication *self)
@@ -61,4 +71,13 @@ RoxtermWindow *roxterm_application_new_window(RoxtermApplication *app)
 {
     RoxtermWindow *win = roxterm_window_new(app);
     gtk_application_add_window(GTK_APPLICATION(app), GTK_WINDOW(win));
+    return win;
+}
+
+int main(int argc, char **argv)
+{
+    RoxtermApplication *app = roxterm_application_new();
+    int result = g_application_run(G_APPLICATION(app), argc, argv);
+    g_object_unref(app);
+    return result;
 }
