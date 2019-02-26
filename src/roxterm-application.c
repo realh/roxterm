@@ -70,7 +70,10 @@ RoxtermApplication *roxterm_application_new(void)
 RoxtermWindow *roxterm_application_new_window(RoxtermApplication *app)
 {
     RoxtermWindow *win = roxterm_window_new(app);
-    gtk_application_add_window(GTK_APPLICATION(app), GTK_WINDOW(win));
+    GtkWindow *gwin = GTK_WINDOW(win);
+    gtk_application_add_window(GTK_APPLICATION(app), gwin);
+    gtk_widget_show_all(GTK_WIDGET(win));
+    gtk_window_present(gwin);
     return win;
 }
 

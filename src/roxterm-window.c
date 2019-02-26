@@ -21,7 +21,7 @@
 #include "roxterm-window.h"
 
 struct _RoxtermWindow {
-    GtkWindow parent_instance;
+    GtkApplicationWindow parent_instance;
     RoxtermApplication *app;
 };
 
