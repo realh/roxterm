@@ -5,6 +5,8 @@ project(roxterm C)
 include(FindPkgConfig)
 include(GNUInstallDirs)
 
+option(ENABLE_VIM "Enable neovim integration" AUTO)
+
 execute_process(COMMAND ${PROJECT_SOURCE_DIR}/version.sh
     OUTPUT_VARIABLE ROXTERM_VERSION)
 execute_process(COMMAND date "+%Y-%m-%d"
