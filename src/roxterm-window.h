@@ -30,6 +30,4 @@ struct _RoxtermApplication;
 
 RoxtermWindow *roxterm_window_new(struct _RoxtermApplication *app);
 
-struct _RoxtermApplication *roxterm_window_get_application(RoxtermWindow *win);
-
 #endif /* __ROXTERM_WINDOW_H */
