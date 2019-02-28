@@ -17,30 +17,9 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#ifndef __ROXTERM_CONFIG_H
-#define __ROXTERM_CONFIG_H
+#ifndef __ROXTERM_VERSION_H
+#define __ROXTERM_VERSION_H
 
-#define BIN_DIR "@CMAKE_INSTALL_FULL_BINDIR@"
+#define ROXTERM_VERSION ""
 
-#define DATA_DIR "@CMAKE_INSTALL_FULL_DATADIR@"
-
-#undef ENABLE_NLS
-
-#define HTML_DIR "@CMAKE_INSTALL_FULL_DOCDIR"
-
-#define ICON_DIR "@CMAKE_INSTALL_FULL_DATADIR@/icons/hicolor/scalable/apps"
-
-#define LOCALEDIR "@CMAKE_INSTALL_FULL_LOCALEDIR@"
-
-#define PACKAGE "roxterm"
-
-#define PKG_DATA_DIR "@CMAKE_INSTALL_FULL_DATADIR@/roxterm"
-
-#define SYS_CONF_DIR "@CMAKE_INSTALL_FULL_SYSCONFDIR@"
-
-#define ENABLE_VIM @ENABLE_VIM@
-
-#define _(s) s
-#define N_(s) s
-
-#endif /* __ROXTERM_CONFIG_H */
+#endif /* __ROXTERM_VERSION_H */

@@ -19,13 +19,17 @@
 #ifndef __ROXTERM_LAUNCH_PARAMS_H
 #define __ROXTERM_LAUNCH_PARAMS_H
 
+#include "config.h"
+
 #include <glib.h>
 
 typedef struct {
     char *profile_name;
     char *tab_title;
     char *directory;
+#if ENABLE_VIM
     gboolean vim;
+#endif
 } RoxtermTabLaunchParams;
 
 RoxtermTabLaunchParams *roxterm_tab_launch_params_new(void);
@@ -36,9 +40,13 @@ typedef struct {
     GList *tabs;        // element-type: RoxtermTabLaunchParams 
     char *window_title;
     char *role;
-    char *geometry;
+    char *geometry_str;
     char *zoom_str;
     gdouble zoom; 
+    int columns, rows;
+#if ENABLE_VIM
+    char *vim_cmd;
+#endif
     gboolean maximized;
     gboolean fullscreen;
     gboolean implicit;  // means --tab was specified and tabs should be added
@@ -53,7 +61,7 @@ typedef struct {
     GList *windows;     // element-type: RoxtermWindowLaunchParams 
     int argc;
     char **argv;
-    const gchar * const *env;
+    char **env;
 } RoxtermLaunchParams;
 
 RoxtermLaunchParams *roxterm_launch_params_new(void);
