@@ -1,0 +1,57 @@
+#!/usr/bin/env python3
+
+import os
+import subprocess
+import sys
+
+packages = ("gtk+-3.0", "vte-2.91", "msgpack")
+lang = "c"
+std = "c99"
+localincs = ("build/src",)
+
+here = os.path.abspath(os.path.dirname(sys.argv[0]))
+output = os.path.join(here, ".ycm_extra_conf.py")
+
+flags = []
+
+subprocess.call( \
+        "clang -E -x" + lang + " -std=" + std + \
+        " -v - < /dev/null >/dev/null 2>" + \
+        output,
+        shell = True)
+        
+fp = open(output, 'r')
+inc = False
+for l in fp.readlines():
+    l = l.strip()
+    if inc:
+        if l.startswith("End"):
+            break
+        else:
+            flags.extend(["-isystem", l])
+    elif l.startswith("#include <"):
+        inc = True
+fp.close()
+
+os.unlink(output)
+subprocess.call("pkg-config --cflags " + " ".join(packages) +
+        " > " + output, shell = True)
+fp = open(output, 'r')
+flags.extend(fp.read().strip().split())
+fp.close()
+
+for d in localincs:
+    flags.append("-I" + os.path.join(here, d))
+
+flags.extend(["-I.", "-Wall", "-Wextra", "-x"+lang, "-std="+std])
+
+os.unlink(output)
+fp = open(output, 'w')
+fp.write( \
+"""def FlagsForFile(filename, **Kwargs):
+    return {
+        "flags": """ + str(flags) + """,
+        "do_cache": True
+    }
+""")
+fp.close()
