@@ -20,13 +20,13 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/version.h.in
     ${CMAKE_CURRENT_BINARY_DIR}/version.h)
 
-add_executable(roxterm
+add_executable(roxterm4
     roxterm-application.c roxterm-window.c)
-target_include_directories(roxterm PRIVATE
+target_include_directories(roxterm4 PRIVATE
     ${ROXTERM_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})
-target_compile_options(roxterm PRIVATE ${ROXTERM_CFLAGS_OTHER})
-target_link_libraries(roxterm
+target_compile_options(roxterm4 PRIVATE ${ROXTERM_CFLAGS_OTHER})
+target_link_libraries(roxterm4
     ${ROXTERM_LDFLAGS_OTHER} ${ROXTERM_LINK_LIBRARIES})
 
-install(TARGETS roxterm RUNTIME DESTINATION bin)
+install(TARGETS roxterm4 RUNTIME DESTINATION bin)
 #install(FILES roxterm-config.ui DESTINATION share/roxterm)

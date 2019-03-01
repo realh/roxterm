@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
 
-project(roxterm C)
+project(roxterm4 C)
 
 include(FindPkgConfig)
 include(GNUInstallDirs)

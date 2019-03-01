@@ -19,7 +19,7 @@
 
 #include "roxterm-application.h"
 
-#define ROXTERM_APPLICATION_ID "uk.co.realh.roxterm"
+#define ROXTERM_APPLICATION_ID "uk.co.realh.roxterm4"
 
 struct _RoxtermApplication {
     GtkApplication parent_instance;
@@ -39,6 +39,7 @@ static void roxterm_application_window_removed(GtkApplication *app,
 static gint roxterm_application_command_line(GApplication *gapp,
         GApplicationCommandLine *cmd_line)
 {
+    (void) cmd_line;
     RoxtermApplication *self = ROXTERM_APPLICATION(gapp);
     roxterm_application_new_window(self);
     return 0;
