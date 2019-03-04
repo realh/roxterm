@@ -24,7 +24,7 @@ struct _RoxtermWindow {
     GtkApplicationWindow parent_instance;
 };
 
-G_DEFINE_TYPE(RoxtermWindow, roxterm_window, GTK_TYPE_APPLICATION_WINDOW);
+G_DEFINE_TYPE(RoxtermWindow, roxterm_window, MULTITEXT_TYPE_WINDOW);
 
 // GtkWindow has an "application" property so we do not need properties here
 // (yet)
@@ -79,6 +79,7 @@ static void roxterm_window_class_init(RoxtermWindowClass *klass)
     g_object_class_install_properties(oklass, N_PROPS, roxterm_window_props);
 }
 #endif
+
 static void roxterm_window_class_init(RoxtermWindowClass *klass)
 {
     (void) klass;

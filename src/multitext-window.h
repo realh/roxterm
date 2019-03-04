@@ -16,21 +16,36 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-#ifndef __ROXTERM_WINDOW_H
-#define __ROXTERM_WINDOW_H
+#ifndef __MULTITEXT_WINDOW_H
+#define __MULTITEXT_WINDOW_H
 
-#include "multitext-window.h"
+#include "multitext-geometry-provider.h"
 
 G_BEGIN_DECLS
 
-#define ROXTERM_TYPE_WINDOW roxterm_window_get_type()
-G_DECLARE_FINAL_TYPE(RoxtermWindow, roxterm_window,
-        ROXTERM, WINDOW, MultitextWindow);
+#define MULTITEXT_TYPE_WINDOW multitext_window_get_type()
+G_DECLARE_DERIVABLE_TYPE(MultitextWindow, multitext_window,
+        MULTITEXT, WINDOW, GtkApplicationWindow);
 
-struct _RoxtermApplication;
+/**
+ * MultitextWindow:
+ *
+ * A GtkApplicationWindow whose size is determined by a widget containing a grid
+ * of text in a fixed-width font. It overrides gtk_container_add etc to
+ * determine whether a child widget is a MultitextGeometryProvider
+ */
+struct _MultitextWindowClass {
+    GtkApplicationWindowClass parent_class;
+};
 
-RoxtermWindow *roxterm_window_new(struct _RoxtermApplication *app);
+/**
+ * multitext_window_get_geometry_provider:
+ *
+ * Returns: (transfer none): The child widget which is the geometry provider
+ */
+MultitextGeometryProvider *
+multitext_window_get_geometry_provider(MultitextWindow *self);
 
 G_END_DECLS
 
-#endif /* __ROXTERM_WINDOW_H */
+#endif /* __MULTITEXT_WINDOW_H */
