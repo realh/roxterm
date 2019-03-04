@@ -23,6 +23,8 @@
 
 #include <gio/gio.h>
 
+G_BEGIN_DECLS
+
 typedef struct {
     char *profile_name;
     char *tab_title;
@@ -78,5 +80,7 @@ gboolean roxterm_launch_params_preparse_argv_execute(RoxtermLaunchParams *lp,
         int *argc, char ***pargv, GError **error);
 
 GOptionContext *roxterm_launch_params_get_option_context(gpointer handle);
+
+G_END_DECLS
 
 #endif /* __ROXTERM_LAUNCH_PARAMS_H */

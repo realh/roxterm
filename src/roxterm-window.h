@@ -22,6 +22,8 @@
 #include <glib-object.h>
 #include <gtk/gtk.h>
 
+G_BEGIN_DECLS
+
 #define ROXTERM_TYPE_WINDOW roxterm_window_get_type()
 G_DECLARE_FINAL_TYPE(RoxtermWindow, roxterm_window,
         ROXTERM, WINDOW, GtkApplicationWindow);
@@ -29,5 +31,7 @@ G_DECLARE_FINAL_TYPE(RoxtermWindow, roxterm_window,
 struct _RoxtermApplication;
 
 RoxtermWindow *roxterm_window_new(struct _RoxtermApplication *app);
+
+G_END_DECLS
 
 #endif /* __ROXTERM_WINDOW_H */
