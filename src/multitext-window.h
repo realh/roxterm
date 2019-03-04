@@ -41,7 +41,8 @@ struct _MultitextWindowClass {
 /**
  * multitext_window_get_geometry_provider:
  *
- * Returns: (transfer none): The child widget which is the geometry provider
+ * Returns: (transfer none) (nullable): The child widget which is the geometry
+ *          provider
  */
 MultitextGeometryProvider *
 multitext_window_get_geometry_provider(MultitextWindow *self);
