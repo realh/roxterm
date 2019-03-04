@@ -414,7 +414,7 @@ static GOptionEntry roxterm_launch_params_cli_options[] = {
         N_("Set X window system 'role' hint"), N_("NAME") },
     { "vim-cmd", 0, G_OPTION_FLAG_IN_MAIN,
         G_OPTION_ARG_CALLBACK, roxterm_launch_params_parse_window_str_option,
-        N_("Command for window's vim instance"), N_("VIM_COMMAND") },
+        N_("Command for window's vim instance"), N_("'VIM_COMMAND'") },
     { "execute", 'e', G_OPTION_FLAG_IN_MAIN,
         G_OPTION_ARG_NONE, NULL,
         N_("Execute remainder of command line inside the\n"
