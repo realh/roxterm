@@ -18,6 +18,9 @@
 */
 
 #include "roxterm-application.h"
+#include "roxterm-launch-params.h"
+
+#include <string.h>
 
 #define ROXTERM_APPLICATION_ID "uk.co.realh.roxterm4"
 
@@ -78,8 +81,57 @@ RoxtermWindow *roxterm_application_new_window(RoxtermApplication *app)
     return win;
 }
 
+static int roxterm_application_parse_options_early(int argc, char **argv)
+{
+    // Not sure if it's safe to manipulate argv as passed to main, so make
+    // copy to be on the safe side
+    char **orig_argv = argv;
+    argv = g_new(char *, argc + 1);
+    for (int n = 0; n < argc; ++n)
+        argv[n] = g_strdup(orig_argv[n]);
+    argv[argc] = NULL;
+    GError *error = NULL;
+    if (!roxterm_launch_params_preparse_argv_execute(NULL,
+            &argc, &argv, &error))
+    {
+        g_error("%s", error->message);
+        g_error_free(error);
+        g_strfreev(argv);
+        return 1;
+    }
+    GOptionContext *octx = roxterm_launch_params_get_option_context(NULL);
+    gboolean result = g_option_context_parse(octx, &argc, &argv, &error);
+    if (!result)
+    {
+        g_error("Option parsing error: %s", error->message);
+        g_error_free(error);
+    }
+    g_option_group_unref(g_option_context_get_main_group(octx));
+    g_option_context_free(octx);
+    g_strfreev(argv);
+    return result;
+}
+
 int main(int argc, char **argv)
 {
+    // First check whether args contain --help or similar and, if so, process
+    // them now and exit, so we respond to --help etc correctly in the local
+    // instance. Otherwise all options are passed to primary instance, because
+    // we now have repeatable options which is too sophisticated for
+    // GApplication to handle the conventional way.
+    for (int n = 1; n < argc; ++n)
+    {
+        const char *s = argv[n];
+        if (!strcmp(s, "-h") || !strcmp(s, "-?")
+                || g_str_has_prefix(s, "--help"))
+        {
+            return roxterm_application_parse_options_early(argc, argv);
+        }
+        else if (!strcmp(s, "--execute") || !strcmp(s, "-e"))
+        {
+            break;
+        }
+    }
     RoxtermApplication *app = roxterm_application_new();
     int result = g_application_run(G_APPLICATION(app), argc, argv);
     g_object_unref(app);

@@ -187,6 +187,8 @@ static gboolean roxterm_launch_params_parse_tab_option(const gchar *option,
         const gchar *value, gpointer data, GError **error)
 {
     RoxtermLaunchParams *lp = data;
+    if (!lp)
+        return TRUE;
     if (!value)
         return roxterm_launch_value_error(option, error);
     RoxtermTabLaunchParams *tp = roxterm_launch_params_current_tab(lp);
@@ -212,12 +214,12 @@ static gboolean roxterm_launch_params_parse_geometry(const char *geometry,
         x = strchr(geometry, 'X');
     if (x)
     {
-        char *cols = g_strdup(geometry);
-        cols[x - geometry] = 0;
-        const char *r = columns + (x - geometry + 1);
-        if (sscanf(cols, "%d", columns) == 1)
+        char *g2 = g_strdup(geometry);
+        g2[x - geometry] = 0;
+        const char *r = g2 + (x - geometry + 1);
+        if (sscanf(g2, "%d", columns) == 1)
             result = (sscanf(r, "%d", rows) == 1);
-        g_free(cols);
+        g_free(g2);
     }
     if (!result && error)
     {
@@ -235,6 +237,8 @@ roxterm_launch_params_parse_window_str_option(const gchar *option,
     if (!value)
         return roxterm_launch_value_error(option, error);
     RoxtermLaunchParams *lp = data;
+    if (!lp)
+        return TRUE;
     RoxtermWindowLaunchParams *wp = roxterm_launch_params_current_window(lp);
     if (!strcmp(option, "window-title"))
         roxterm_launch_params_set_string(option, &wp->window_title, value);
@@ -269,6 +273,8 @@ roxterm_launch_params_parse_window_bool_option(const gchar *option,
     if (value)
         return roxterm_launch_bool_error(option, error);
     RoxtermLaunchParams *lp = data;
+    if (!lp)
+        return TRUE;
     RoxtermWindowLaunchParams *wp = roxterm_launch_params_current_window(lp);
     if (!strcmp(option, "maximize") || !strcmp(option, "maximise"))
         roxterm_launch_params_set_boolean(option, &wp->maximized);
@@ -284,6 +290,8 @@ roxterm_launch_params_new_tab_or_window(const gchar *option,
     if (value)
         return roxterm_launch_bool_error(option, error);
     RoxtermLaunchParams *lp = data;
+    if (!lp)
+        return TRUE;
     if (!strcmp(option, "tab"))
     {
         gboolean implicit = lp->windows == NULL;
@@ -296,15 +304,14 @@ roxterm_launch_params_new_tab_or_window(const gchar *option,
     {
         roxterm_launch_params_new_window(lp);
     }
+    return TRUE;
 }
 
-// Separate args pre- and post- --execute 
-static gboolean
-roxterm_launch_params_preparse_argv_execute(RoxtermLaunchParams *lp,
+gboolean roxterm_launch_params_preparse_argv_execute(RoxtermLaunchParams *lp,
         int *argc, char ***pargv, GError **error)
 {
     char **argv = *pargv;
-    for (int n = 0; n < argc; ++n)
+    for (int n = 1; n < *argc; ++n)
     {
         if (!strcmp(argv[n], "--execute") || !strcmp(argv[n], "-e"))
         {
@@ -315,26 +322,43 @@ roxterm_launch_params_preparse_argv_execute(RoxtermLaunchParams *lp,
                     *error = g_error_new(G_OPTION_ERROR,
                             G_OPTION_ERROR_FAILED,
                             "No arguments following %s", argv[n]);
-                    roxterm_launch_params_free(lp);
-                    return NULL;
+                    if (lp)
+                        roxterm_launch_params_free(lp);
+                    return FALSE;
                 }
             }
             argv[n] = NULL;
-            lp->argv = g_new(gchar *, *argc - n);
-            int m = 0;
-            ++n;
-            for (; n < *argc; ++n)
+            int orig_argc = *argc;
+            *argc = n;
+            if (lp)
             {
-                // Steal from original argv, lp->argv takes ownership
-                lp->argv[m++] = argv[n];
-                argv[n] = NULL;
+                lp->argv = g_new(gchar *, orig_argc - n);
+                int m = 0;
+                ++n;
+                for (; n < orig_argc; ++n)
+                {
+                    // Steal from original argv, lp->argv takes ownership
+                    lp->argv[m++] = argv[n];
+                    argv[n] = NULL;
+                }
+                lp->argv[m] = NULL;
+                lp->argc = m;
             }
-            lp->argv[m] = NULL;
-            lp->argc = m;
+            else
+            {
+                for (; n < orig_argc; ++n)
+                {
+                    g_free(argv[n]);
+                    argv[n] = NULL;
+                }
+            }
             break;
         }
     }
+    return TRUE;
 }
+
+#define PADDING "                                "
 
 static GOptionEntry roxterm_launch_params_cli_options[] = {
     /*
@@ -364,12 +388,12 @@ static GOptionEntry roxterm_launch_params_cli_options[] = {
     { "fullscreen", 'f', G_OPTION_FLAG_IN_MAIN,
         G_OPTION_ARG_CALLBACK, roxterm_launch_params_parse_window_bool_option,
         N_("Take up the whole screen with no\n"
-        "                                   window furniture"),
+        PADDING "window furniture"),
         NULL },
     { "zoom", 'z', G_OPTION_FLAG_IN_MAIN,
         G_OPTION_ARG_CALLBACK, roxterm_launch_params_parse_window_str_option,
         N_("Scale factor for terminal's font\n"
-        "                                   (1.0 is normal)"),
+        PADDING "(1.0 is normal)"),
         N_("ZOOM") },
     { "window-title", 'T', G_OPTION_FLAG_IN_MAIN,
         G_OPTION_ARG_CALLBACK, roxterm_launch_params_parse_window_str_option,
@@ -391,10 +415,10 @@ static GOptionEntry roxterm_launch_params_cli_options[] = {
     { "vim-cmd", 0, G_OPTION_FLAG_IN_MAIN,
         G_OPTION_ARG_CALLBACK, roxterm_launch_params_parse_window_str_option,
         N_("Command for window's vim instance"), N_("VIM_COMMAND") },
-    { "execute", 'e', G_OPTION_FLAG_IN_MAIN | G_OPTION_FLAG_NO_ARG,
+    { "execute", 'e', G_OPTION_FLAG_IN_MAIN,
         G_OPTION_ARG_NONE, NULL,
         N_("Execute remainder of command line inside the\n"
-        "                                   terminal. "
+        PADDING "terminal. "
         "Must be the final option."),
         NULL },
     { NULL, 0, 0, 0, NULL, NULL, NULL }
@@ -404,7 +428,6 @@ GOptionContext *roxterm_launch_params_get_option_context(gpointer handle)
 {
     GOptionContext *octx = g_option_context_new(NULL);
     GOptionGroup *ogroup = gtk_get_option_group(FALSE);
-    GError *err = NULL;
 
     g_option_context_add_group(octx, ogroup);
     ogroup = g_option_group_new("RoxTerm",
@@ -426,7 +449,7 @@ roxterm_launch_params_new_from_command_line(GApplicationCommandLine *cmd,
     gchar **argv = g_application_command_line_get_arguments(cmd, &argc);
     roxterm_launch_params_preparse_argv_execute(lp, &argc, &argv, error);
     GOptionContext *octx = roxterm_launch_params_get_option_context(lp);
-    if (!g_option_context_parse(octx, argc, argv, error))
+    if (!g_option_context_parse(octx, &argc, &argv, error))
     {
         roxterm_launch_params_free(lp);
         lp = NULL;
@@ -434,12 +457,12 @@ roxterm_launch_params_new_from_command_line(GApplicationCommandLine *cmd,
     else
     {
         const char *dir = g_application_command_line_get_cwd(cmd);
-        lp->env = g_strdupv(g_application_command_line_get_environ(cmd));
-        RoxtermTabLaunchParams *tp = roxterm_launch_params_current_tab(lp);
+        lp->env = g_strdupv(
+                (char **) g_application_command_line_get_environ(cmd));
         for (GList *wlink = lp->windows; wlink; wlink = g_list_next(wlink))
         {
             RoxtermWindowLaunchParams *wp = wlink->data;
-            for (GList *tlink = lp->windows; tlink; tlink = g_list_next(tlink))
+            for (GList *tlink = wp->tabs; tlink; tlink = g_list_next(tlink))
             {
                 RoxtermTabLaunchParams *tp = tlink->data;
                 if (!tp->directory)

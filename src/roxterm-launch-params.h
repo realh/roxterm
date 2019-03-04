@@ -21,7 +21,7 @@
 
 #include "config.h"
 
-#include <glib.h>
+#include <gio/gio.h>
 
 typedef struct {
     char *profile_name;
@@ -71,5 +71,12 @@ roxterm_launch_params_new_from_command_line(GApplicationCommandLine *cmd,
         GError **error);
 
 void roxterm_launch_params_free(RoxtermLaunchParams *lp);
+
+// Separate args pre- and post- --execute; lp can be NULL, in which case
+// everything from --execute is discarded
+gboolean roxterm_launch_params_preparse_argv_execute(RoxtermLaunchParams *lp,
+        int *argc, char ***pargv, GError **error);
+
+GOptionContext *roxterm_launch_params_get_option_context(gpointer handle);
 
 #endif /* __ROXTERM_LAUNCH_PARAMS_H */
