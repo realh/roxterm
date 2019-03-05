@@ -17,13 +17,52 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+#include "multitext-geometry-provider.h"
 #include "roxterm-vte.h"
 
 struct _RoxtermVte {
     VteTerminal parent_instance;
 };
 
-G_DEFINE_TYPE(RoxtermVte, roxterm_vte, VTE_TYPE_TERMINAL);
+static void roxterm_vte_get_current_size(MultitextGeometryProvider *self,
+        int *columns, int *rows)
+{
+    VteTerminal *vte = VTE_TERMINAL(self);
+    if (columns)
+        *columns = vte_terminal_get_column_count(vte);
+    if (rows)
+        *rows = vte_terminal_get_row_count(vte);
+}
+
+static void roxterm_vte_get_initial_size(MultitextGeometryProvider *self,
+        int *columns, int *rows)
+{
+    // FIXME: If this is a newly created terminal it should read the size from
+    // the profile, not the current size
+    roxterm_vte_get_current_size(self, columns, rows);
+}
+
+static void roxterm_vte_get_cell_size(MultitextGeometryProvider *self,
+        int *width, int *height)
+{
+    VteTerminal *vte = VTE_TERMINAL(self);
+    if (width)
+        *width = vte_terminal_get_char_width(vte);
+    if (height)
+        *height = vte_terminal_get_char_height(vte);
+}
+
+static void roxterm_vte_geometry_provider_init(
+        MultitextGeometryProviderInterface *iface)
+{
+    iface->get_initial_size = roxterm_vte_get_initial_size;
+    iface->get_current_size = roxterm_vte_get_current_size;
+    iface->get_cell_size = roxterm_vte_get_cell_size;
+}
+
+G_DEFINE_TYPE_WITH_CODE(RoxtermVte, roxterm_vte, VTE_TYPE_TERMINAL,
+        G_IMPLEMENT_INTERFACE(MULTITEXT_TYPE_GEOMETRY_PROVIDER,
+            roxterm_vte_geometry_provider_init));
 
 static void roxterm_vte_class_init(RoxtermVteClass *klass)
 {
