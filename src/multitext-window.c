@@ -21,37 +21,12 @@
 
 typedef struct {
     MultitextGeometryProvider *gp;
+    gulong anchored_sig_tag;
+    gulong destroy_sig_tag;
 } MultitextWindowPrivate;
 
 G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE(MultitextWindow, multitext_window,
         GTK_TYPE_APPLICATION_WINDOW);
-
-static void multitext_window_add(GtkContainer *self, GtkWidget *child)
-{
-    GTK_CONTAINER_CLASS(multitext_window_parent_class)->add(self, child);
-    MultitextWindowPrivate *priv
-        = multitext_window_get_instance_private(MULTITEXT_WINDOW(self));
-    g_return_if_fail(priv != NULL);
-    if (MULTITEXT_IS_GEOMETRY_PROVIDER(child))
-    {
-        if (priv->gp)
-        {
-            g_warning("MultitextWindow already contains a"
-                    " MultitextGeometryProvider");
-        }
-        priv->gp = MULTITEXT_GEOMETRY_PROVIDER(child);
-    }
-}
-
-static void multitext_window_remove(GtkContainer *self, GtkWidget *child)
-{
-    GTK_CONTAINER_CLASS(multitext_window_parent_class)->add(self, child);
-    MultitextWindowPrivate *priv
-        = multitext_window_get_instance_private(MULTITEXT_WINDOW(self));
-    g_return_if_fail(priv != NULL);
-    if (child == GTK_WIDGET(priv->gp))
-        priv->gp = NULL;
-}
 
 enum {
     PROP_GEOM_PROV = 1,
@@ -76,6 +51,49 @@ static void multitext_window_get_property(GObject *obj, guint prop_id,
     }
 }
 
+static void multitext_window_disconnect_provider_signals(MultitextWindow *self)
+{
+    MultitextWindowPrivate *priv
+        = multitext_window_get_instance_private(self);
+    g_signal_handler_disconnect(priv->gp, priv->anchored_sig_tag);
+    priv->anchored_sig_tag = 0;
+    g_signal_handler_disconnect(priv->gp, priv->destroy_sig_tag);
+    priv->destroy_sig_tag = 0;
+    priv->gp = NULL;
+}
+
+static void multitext_window_geometry_provider_anchored(
+        MultitextGeometryProvider *gp, MultitextWindow *previous_top_level,
+        MultitextWindow *self)
+{
+    MultitextWindowPrivate *priv
+        = multitext_window_get_instance_private(self);
+    if (gp == priv->gp && previous_top_level == self)
+    {
+        multitext_window_disconnect_provider_signals(self);
+    }
+}
+
+static void multitext_window_geometry_provider_destroyed(
+        MultitextGeometryProvider *gp, MultitextWindow *self)
+{
+    MultitextWindowPrivate *priv
+        = multitext_window_get_instance_private(self);
+    if (gp == priv->gp)
+    {
+        multitext_window_disconnect_provider_signals(self);
+    }
+}
+
+static void multitext_window_dispose(GObject *obj)
+{
+    MultitextWindow *self = MULTITEXT_WINDOW(obj);
+    MultitextWindowPrivate *priv
+        = multitext_window_get_instance_private(self);
+    if (priv->gp)
+        multitext_window_disconnect_provider_signals(self);
+}
+
 static void multitext_window_class_init(MultitextWindowClass *klass)
 {
     GObjectClass *oklass = G_OBJECT_CLASS(klass);
@@ -86,9 +104,6 @@ static void multitext_window_class_init(MultitextWindowClass *klass)
             "MultitextGeometryProvider", MULTITEXT_TYPE_GEOMETRY_PROVIDER,
             G_PARAM_READABLE);
     g_object_class_install_properties(oklass, N_PROPS, multitext_window_props);
-    GtkContainerClass *cklass = GTK_CONTAINER_CLASS(klass);
-    cklass->add = multitext_window_add;
-    cklass->remove = multitext_window_remove;
 }
 
 static void multitext_window_init(MultitextWindow *self)
@@ -97,6 +112,7 @@ static void multitext_window_init(MultitextWindow *self)
         = multitext_window_get_instance_private(self);
     g_return_if_fail(priv != NULL);
     priv->gp = NULL;
+    priv->anchored_sig_tag = 0;
 }
 
 MultitextGeometryProvider *
@@ -106,4 +122,24 @@ multitext_window_get_geometry_provider(MultitextWindow *self)
         = multitext_window_get_instance_private(self);
     g_return_val_if_fail(priv != NULL, NULL);
     return priv->gp;
+}
+
+void multitext_window_set_geometry_provider(MultitextWindow *self,
+        MultitextGeometryProvider *gp)
+{
+    MultitextWindowPrivate *priv
+        = multitext_window_get_instance_private(self);
+    g_return_if_fail(priv != NULL);
+    if (priv->gp)
+    {
+        multitext_window_disconnect_provider_signals(self);
+    }
+    if (gp) 
+    {
+        priv->anchored_sig_tag = g_signal_connect(gp, "hierarchy-changed",
+                G_CALLBACK(multitext_window_geometry_provider_anchored), self);
+        priv->destroy_sig_tag = g_signal_connect(gp, "destroy",
+                G_CALLBACK(multitext_window_geometry_provider_destroyed), self);
+    }
+    priv->gp = gp;
 }
