@@ -51,16 +51,6 @@ multitext_geometry_provider_get_current_size(MultitextGeometryProvider *self,
     iface->get_current_size(self, columns, rows);
 }
 
-void multitext_geometry_provider_get_padding(MultitextGeometryProvider *self,
-        int *width, int *height)
-{
-    g_return_if_fail(MULTITEXT_IS_GEOMETRY_PROVIDER(self));
-    MultitextGeometryProviderInterface *iface
-            = MULTITEXT_GEOMETRY_PROVIDER_GET_IFACE(self);
-    g_return_if_fail(iface->get_padding != NULL);
-    iface->get_padding(self, width, height);
-}
-
 void
 multitext_geometry_provider_get_cell_size(MultitextGeometryProvider *self,
         int *width, int *height)

@@ -55,14 +55,6 @@ struct _MultitextGeometryProviderInterface
     void (*get_current_size)(MultitextGeometryProvider *self,
             int *columns, int *rows);
     /**
-     * MultitextGeometryProviderInterface::get_padding:
-     *
-     * @width: (out):
-     * @height: (out):
-     */
-    void (*get_padding)(MultitextGeometryProvider *self,
-            int *width, int *height);
-    /**
      * MultitextGeometryProviderInterface::get_cell_size:
      *
      * @width: (out):
@@ -96,18 +88,6 @@ multitext_geometry_provider_get_initial_size(MultitextGeometryProvider *self,
 void
 multitext_geometry_provider_get_current_size(MultitextGeometryProvider *self,
         int *columns, int *rows);
-
-/**
- * multitext_geometry_provider_get_padding:
- *
- * Get the total size, in pixels, of any additional parts of the widget
- * eg borders
- * 
- * @width: (out):
- * @height: (out):
- */
-void multitext_geometry_provider_get_padding(MultitextGeometryProvider *self,
-        int *width, int *height);
 
 /**
  * multitext_geometry_provider_get_cell_size:
