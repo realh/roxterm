@@ -62,6 +62,12 @@ struct _MultitextGeometryProviderInterface
      */
     void (*get_cell_size)(MultitextGeometryProvider *self,
             int *width, int *height);
+
+    /**
+     * MultitextGeometryProviderInterface::set_active:
+     */
+    void (*set_active)(MultitextGeometryProvider *self,
+            gboolean active);
 };
 
 /**
@@ -101,5 +107,13 @@ void
 multitext_geometry_provider_get_cell_size(MultitextGeometryProvider *self,
         int *width, int *height);
 
+/**
+ * multitext_geometry_provider_set_active:
+ *
+ * When a GeometryProvider is active it means it's the widget that controls
+ * the window's geometry
+ */
+void multitext_geometry_provider_set_active(MultitextGeometryProvider *self,
+        gboolean active);
 
 #endif /* __MULTITEXT_GEOMETRY_PROVIDER_H */

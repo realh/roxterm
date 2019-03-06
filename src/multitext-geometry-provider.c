@@ -61,3 +61,13 @@ multitext_geometry_provider_get_cell_size(MultitextGeometryProvider *self,
     g_return_if_fail(iface->get_cell_size != NULL);
     iface->get_cell_size(self, width, height);
 }
+
+void multitext_geometry_provider_set_active(MultitextGeometryProvider *self,
+        gboolean active)
+{
+    g_return_if_fail(MULTITEXT_IS_GEOMETRY_PROVIDER(self));
+    MultitextGeometryProviderInterface *iface
+            = MULTITEXT_GEOMETRY_PROVIDER_GET_IFACE(self);
+    g_return_if_fail(iface->get_cell_size != NULL);
+    iface->set_active(self, active);
+}
