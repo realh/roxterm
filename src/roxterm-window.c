@@ -95,5 +95,17 @@ RoxtermWindow *roxterm_window_new(RoxtermApplication *app)
     GObject *obj = g_object_new(ROXTERM_TYPE_WINDOW,
             "application", app,
             NULL);
-    return ROXTERM_WINDOW(obj);
+    RoxtermWindow *self = ROXTERM_WINDOW(obj);
+    return self;
+}
+
+RoxtermVte *roxterm_window_new_tab(RoxtermWindow *win,
+        RoxtermTabLaunchParams *tp, int index)
+{
+    (void) tp;
+    RoxtermVte *rvt = roxterm_vte_new();
+    MultitextWindow *mwin = MULTITEXT_WINDOW(win);
+    GtkNotebook *gnb = GTK_NOTEBOOK(multitext_window_get_notebook(mwin));
+    gtk_notebook_insert_page(gnb, GTK_WIDGET(rvt), NULL, index);
+    return rvt;
 }

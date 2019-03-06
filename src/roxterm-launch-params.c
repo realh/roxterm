@@ -93,7 +93,7 @@ static RoxtermWindowLaunchParams *
 roxterm_launch_params_current_window(RoxtermLaunchParams *lp)
 {
     RoxtermWindowLaunchParams *wp;
-    if (!lp->windows)
+    if (lp->windows)
         wp = g_list_first(lp->windows)->data;
     else
         wp = roxterm_launch_params_new_window(lp);
@@ -456,6 +456,8 @@ roxterm_launch_params_new_from_command_line(GApplicationCommandLine *cmd,
     }
     else
     {
+        // Make sure there's a tab in case there were no options
+        roxterm_launch_params_current_tab(lp);
         const char *dir = g_application_command_line_get_cwd(cmd);
         lp->env = g_strdupv(
                 (char **) g_application_command_line_get_environ(cmd));

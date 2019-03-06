@@ -44,7 +44,19 @@ static gint roxterm_application_command_line(GApplication *gapp,
 {
     (void) cmd_line;
     RoxtermApplication *self = ROXTERM_APPLICATION(gapp);
-    roxterm_application_new_window(self);
+    GError *error = NULL;
+    RoxtermLaunchParams *lp
+            = roxterm_launch_params_new_from_command_line(cmd_line, &error);
+    if (!lp)
+    {
+        g_critical("Error parsing command-line options: %s", error->message);
+        g_error_free(error);
+        return 1;
+    }
+    for (GList *link = lp->windows; link; link = g_list_next(link))
+    {
+        roxterm_application_new_window(self, link->data);
+    }
     return 0;
 }
 
@@ -71,10 +83,15 @@ RoxtermApplication *roxterm_application_new(void)
     return ROXTERM_APPLICATION(obj);
 }
 
-RoxtermWindow *roxterm_application_new_window(RoxtermApplication *app)
+RoxtermWindow *roxterm_application_new_window(RoxtermApplication *app,
+        RoxtermWindowLaunchParams *wp)
 {
     RoxtermWindow *win = roxterm_window_new(app);
     GtkWindow *gwin = GTK_WINDOW(win);
+    for (GList *link = wp->tabs; link; link = g_list_next(link))
+    {
+        roxterm_window_new_tab(win, link->data, -1);
+    }
     gtk_application_add_window(GTK_APPLICATION(app), gwin);
     gtk_widget_show_all(GTK_WIDGET(win));
     gtk_window_present(gwin);

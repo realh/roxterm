@@ -20,6 +20,7 @@
 #define __MULTITEXT_WINDOW_H
 
 #include "multitext-geometry-provider.h"
+#include "multitext-notebook.h"
 
 G_BEGIN_DECLS
 
@@ -31,8 +32,7 @@ G_DECLARE_DERIVABLE_TYPE(MultitextWindow, multitext_window,
  * MultitextWindow:
  *
  * A GtkApplicationWindow whose size is determined by a widget containing a grid
- * of text in a fixed-width font. It overrides gtk_container_add etc to
- * determine whether a child widget is a MultitextGeometryProvider
+ * of text in a fixed-width font
  */
 struct _MultitextWindowClass {
     GtkApplicationWindowClass parent_class;
@@ -55,6 +55,8 @@ void multitext_window_set_geometry_provider(MultitextWindow *self,
  */
 MultitextGeometryProvider *
 multitext_window_get_geometry_provider(MultitextWindow *self);
+
+MultitextNotebook *multitext_window_get_notebook(MultitextWindow *win);
 
 G_END_DECLS
 

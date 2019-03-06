@@ -16,46 +16,34 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-#ifndef __ROXTERM_WINDOW_H
-#define __ROXTERM_WINDOW_H
+#ifndef __MULTITEXT_NOTEBOOK_H
+#define __MULTITEXT_NOTEBOOK_H
 
-#include "multitext-window.h"
-#include "roxterm-launch-params.h"
-#include "roxterm-vte.h"
+#include "multitext-geometry-provider.h"
 
 G_BEGIN_DECLS
 
-#define ROXTERM_TYPE_WINDOW roxterm_window_get_type()
-G_DECLARE_FINAL_TYPE(RoxtermWindow, roxterm_window,
-        ROXTERM, WINDOW, MultitextWindow);
-
-struct _RoxtermApplication;
+#define MULTITEXT_TYPE_NOTEBOOK multitext_notebook_get_type()
+G_DECLARE_FINAL_TYPE(MultitextNotebook, multitext_notebook,
+        MULTITEXT, NOTEBOOK, GtkNotebook);
 
 /**
- * roxterm_window_new:
+ * MultitextNotebook:
  *
- * Creates a new window with an empty notebook
- *
- * @app: (transfer none):
- * @wp: (transfer none):
- *
- * Returns: (transfer full):
+ * A GtkNotebook customised for MultitextGeometryProvider child pages and with
+ * some helper functions
  */
-RoxtermWindow *roxterm_window_new(struct _RoxtermApplication *app);
+struct _MultitextNotebookClass {
+    GtkNotebookClass parent_class;
+};
 
 /**
- * roxterm_window_new_tab:
+ * multitext_notebook_new:
  *
- * Creates a new tab in this window
- *
- * @tp: (transfer none):
- * @index: tab position or -1 to append
- *
- * Returns: (transfer full):
+ * Returns: (transfer full) (nullable):
  */
-RoxtermVte *roxterm_window_new_tab(RoxtermWindow *win,
-        RoxtermTabLaunchParams *tp, int index);
+MultitextNotebook *multitext_notebook_new(void);
 
 G_END_DECLS
 
-#endif /* __ROXTERM_WINDOW_H */
+#endif /* __MULTITEXT_NOTEBOOK_H */

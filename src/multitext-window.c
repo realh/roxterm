@@ -23,6 +23,7 @@ typedef struct {
     MultitextGeometryProvider *gp;
     gulong anchored_sig_tag;
     gulong destroy_sig_tag;
+    MultitextNotebook *notebook;
 } MultitextWindowPrivate;
 
 G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE(MultitextWindow, multitext_window,
@@ -111,8 +112,8 @@ static void multitext_window_init(MultitextWindow *self)
     MultitextWindowPrivate *priv
         = multitext_window_get_instance_private(self);
     g_return_if_fail(priv != NULL);
-    priv->gp = NULL;
-    priv->anchored_sig_tag = 0;
+    priv->notebook = multitext_notebook_new();
+    gtk_container_add(GTK_CONTAINER(self), GTK_WIDGET(priv->notebook));
 }
 
 MultitextGeometryProvider *
@@ -142,4 +143,11 @@ void multitext_window_set_geometry_provider(MultitextWindow *self,
                 G_CALLBACK(multitext_window_geometry_provider_destroyed), self);
     }
     priv->gp = gp;
+}
+
+MultitextNotebook *multitext_window_get_notebook(MultitextWindow *self)
+{
+    MultitextWindowPrivate *priv
+        = multitext_window_get_instance_private(self);
+    return priv->notebook;
 }

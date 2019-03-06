@@ -21,8 +21,9 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/version.h.in
     ${CMAKE_CURRENT_BINARY_DIR}/version.h)
 
 add_executable(roxterm4
-    multitext-geometry-provider.c multitext-window.c
-    roxterm-application.c roxterm-launch-params.c roxterm-window.c)
+    multitext-geometry-provider.c multitext-notebook.c multitext-window.c
+    roxterm-application.c roxterm-launch-params.c roxterm-vte.c
+    roxterm-window.c)
 target_include_directories(roxterm4 PRIVATE
     ${ROXTERM_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})
 target_compile_options(roxterm4 PRIVATE ${ROXTERM_CFLAGS_OTHER})

@@ -16,25 +16,27 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-#ifndef __ROXTERM_APPLICATION_H
-#define __ROXTERM_APPLICATION_H
 
-#include <glib-object.h>
-#include <gtk/gtk.h>
+#include "multitext-notebook.h"
 
-#include "roxterm-window.h"
+struct _MultitextNotebook {
+    GtkNotebook parent_instance;
+} ;
 
-G_BEGIN_DECLS
+G_DEFINE_TYPE(MultitextNotebook, multitext_notebook, GTK_TYPE_NOTEBOOK);
 
-#define ROXTERM_TYPE_APPLICATION roxterm_application_get_type()
-G_DECLARE_FINAL_TYPE(RoxtermApplication, roxterm_application,
-        ROXTERM, APPLICATION, GtkApplication);
+static void multitext_notebook_class_init(MultitextNotebookClass *klass)
+{
+    (void) klass;
+}
 
-RoxtermApplication *roxterm_application_new(void);
+static void multitext_notebook_init(MultitextNotebook *self)
+{
+    (void) self;
+}
 
-RoxtermWindow *roxterm_application_new_window(RoxtermApplication *app,
-        RoxtermWindowLaunchParams *wp);
-
-G_END_DECLS
-
-#endif /* __ROXTERM_APPLICATION_H */
+MultitextNotebook *multitext_notebook_new(void)
+{
+    GObject *obj = g_object_new(MULTITEXT_TYPE_NOTEBOOK, NULL);
+    return MULTITEXT_NOTEBOOK(obj);
+}

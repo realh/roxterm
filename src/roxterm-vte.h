@@ -21,6 +21,8 @@
 
 #include <vte/vte.h>
 
+#include "roxterm-launch-params.h"
+
 G_BEGIN_DECLS
 
 #define ROXTERM_TYPE_VTE roxterm_vte_get_type()
