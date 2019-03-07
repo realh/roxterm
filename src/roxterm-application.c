@@ -55,7 +55,7 @@ static gint roxterm_application_command_line(GApplication *gapp,
     }
     for (GList *link = lp->windows; link; link = g_list_next(link))
     {
-        roxterm_application_new_window(self, link->data);
+        roxterm_application_new_window(self, lp, link->data);
     }
     return 0;
 }
@@ -84,10 +84,11 @@ RoxtermApplication *roxterm_application_new(void)
 }
 
 RoxtermWindow *roxterm_application_new_window(RoxtermApplication *app,
-        RoxtermWindowLaunchParams *wp)
+        RoxtermLaunchParams *lp, RoxtermWindowLaunchParams *wp)
 {
     RoxtermWindow *win = roxterm_window_new(app);
     GtkWindow *gwin = GTK_WINDOW(win);
+    roxterm_window_apply_launch_params(win, lp, wp);
     for (GList *link = wp->tabs; link; link = g_list_next(link))
     {
         roxterm_window_new_tab(win, link->data, -1);

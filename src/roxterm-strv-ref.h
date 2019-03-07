@@ -16,26 +16,47 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-#ifndef __ROXTERM_VTE_H
-#define __ROXTERM_VTE_H
+#ifndef __ROXTERM_STRV_REF_H
+#define __ROXTERM_STRV_REF_H
 
-#include <vte/vte.h>
+#include <glib.h>
 
-#include "roxterm-launch-params.h"
+/**
+ * RoxtermStrvRef:
+ *
+ * Provides reference counting for a strv
+ *
+ * @count: The reference count
+ * @strv: The actual strv
+ */
+typedef struct {
+    char **strv;
+    grefcount count;
+} RoxtermStrvRef;
 
-G_BEGIN_DECLS
+inline static RoxtermStrvRef *roxterm_strv_ref_new(char const * const *src)
+{
+    RoxtermStrvRef *rsr = g_new(RoxtermStrvRef, 1);
+    rsr->strv = g_strdupv((char **) src);
+    rsr->count = 1;
+    return rsr;
+}
 
-#define ROXTERM_TYPE_VTE roxterm_vte_get_type()
-G_DECLARE_FINAL_TYPE(RoxtermVte, roxterm_vte, ROXTERM, VTE, VteTerminal);
+inline static RoxtermStrvRef *roxterm_strv_ref(RoxtermStrvRef *rsr)
+{
+    ++rsr->count;
+    return rsr;
+}
 
-RoxtermVte *roxterm_vte_new(void);
+inline static int roxterm_strv_unref(RoxtermStrvRef *rsr)
+{
+    int a = --rsr->count;
+    if (!a)
+    {
+        g_strfreev(rsr->strv);
+        g_free(rsr);
+    }
+    return a;
+}
 
-void roxterm_vte_apply_launch_params(RoxtermVte *vte, RoxtermLaunchParams *lp,
-        RoxtermWindowLaunchParams *wp, RoxtermTabLaunchParams *tp);
-
-void roxterm_vte_spawn(RoxtermVte *self,
-        VteTerminalSpawnAsyncCallback callback, gpointer handle);
-
-G_END_DECLS
-
-#endif /* __ROXTERM_VTE_H */
+#endif /* __ROXTERM_STRV_REF_H */

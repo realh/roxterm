@@ -44,6 +44,15 @@ struct _RoxtermApplication;
 RoxtermWindow *roxterm_window_new(struct _RoxtermApplication *app);
 
 /**
+ * roxterm_window_apply_launch_params:
+ *
+ * @lp: (transfer none):
+ * @wp: (transfer none):
+ */
+void roxterm_window_apply_launch_params(RoxtermWindow *self,
+        RoxtermLaunchParams *lp, RoxtermWindowLaunchParams *wp);
+
+/**
  * roxterm_window_new_tab:
  *
  * Creates a new tab in this window
@@ -55,6 +64,7 @@ RoxtermWindow *roxterm_window_new(struct _RoxtermApplication *app);
  */
 RoxtermVte *roxterm_window_new_tab(RoxtermWindow *win,
         RoxtermTabLaunchParams *tp, int index);
+
 
 G_END_DECLS
 

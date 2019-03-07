@@ -20,12 +20,14 @@
 #define __ROXTERM_LAUNCH_PARAMS_H
 
 #include "config.h"
+#include "roxterm-strv-ref.h"
 
 #include <gio/gio.h>
 
 G_BEGIN_DECLS
 
 typedef struct {
+    grefcount refcount;
     char *profile_name;
     char *tab_title;
     char *directory;
@@ -36,9 +38,17 @@ typedef struct {
 
 RoxtermTabLaunchParams *roxterm_tab_launch_params_new(void);
 
-void roxterm_tab_launch_params_free(RoxtermTabLaunchParams *tp);
+inline static RoxtermTabLaunchParams *
+roxterm_tab_launch_params_ref(RoxtermTabLaunchParams *tp)
+{
+    ++tp->refcount;
+    return tp;
+}
+
+void roxterm_tab_launch_params_unref(RoxtermTabLaunchParams *tp);
 
 typedef struct {
+    grefcount refcount;
     GList *tabs;        // element-type: RoxtermTabLaunchParams 
     char *window_title;
     char *role;
@@ -57,13 +67,22 @@ typedef struct {
 
 RoxtermWindowLaunchParams *roxterm_window_launch_params_new(void);
 
-void roxterm_window_launch_params_free(RoxtermWindowLaunchParams *wp);
+inline static RoxtermWindowLaunchParams *
+roxterm_window_launch_params_ref(RoxtermWindowLaunchParams *wp)
+{
+    ++wp->refcount;
+    return wp;
+}
+
+void roxterm_window_launch_params_unref(RoxtermWindowLaunchParams *wp);
+
 
 typedef struct {
+    grefcount refcount;
     GList *windows;     // element-type: RoxtermWindowLaunchParams 
     int argc;
     char **argv;
-    char **env;
+    RoxtermStrvRef *env;
 } RoxtermLaunchParams;
 
 RoxtermLaunchParams *roxterm_launch_params_new(void);
@@ -72,7 +91,14 @@ RoxtermLaunchParams *
 roxterm_launch_params_new_from_command_line(GApplicationCommandLine *cmd,
         GError **error);
 
-void roxterm_launch_params_free(RoxtermLaunchParams *lp);
+inline static RoxtermLaunchParams *
+roxterm_launch_params_ref(RoxtermLaunchParams *lp)
+{
+    ++lp->refcount;
+    return lp;
+}
+
+void roxterm_launch_params_unref(RoxtermLaunchParams *lp);
 
 // Separate args pre- and post- --execute; lp can be NULL, in which case
 // everything from --execute is discarded

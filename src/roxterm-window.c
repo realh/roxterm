@@ -22,6 +22,8 @@
 
 struct _RoxtermWindow {
     GtkApplicationWindow parent_instance;
+    RoxtermLaunchParams *lp;
+    RoxtermWindowLaunchParams *wp;
 };
 
 G_DEFINE_TYPE(RoxtermWindow, roxterm_window, MULTITEXT_TYPE_WINDOW);
@@ -99,13 +101,42 @@ RoxtermWindow *roxterm_window_new(RoxtermApplication *app)
     return self;
 }
 
-RoxtermVte *roxterm_window_new_tab(RoxtermWindow *win,
+void roxterm_window_apply_launch_params(RoxtermWindow *self,
+        RoxtermLaunchParams *lp, RoxtermWindowLaunchParams *wp)
+{
+    self->lp = roxterm_launch_params_ref(lp);
+    self->wp = roxterm_window_launch_params_ref(wp);
+}
+
+static void roxterm_window_spawn_callback(VteTerminal *vte,
+        GPid pid, GError *error, gpointer handle)
+{
+    //RoxtermWindow *self = handle;
+    MultitextWindow *mwin = handle;
+    if (pid == -1)
+    {
+        // TODO: GUI dialog
+        g_critical("Child command failed to run: %s", error->message);
+        // error is implicitly transfer-none according to vte's gir file
+        gtk_container_remove(
+                GTK_CONTAINER(multitext_window_get_notebook(mwin)),
+                GTK_WIDGET(vte));
+        // TODO: Verify that this also destroys the tab's label
+    }
+}
+
+void roxterm_window_apply_launch_params(RoxtermWindow *self,
+        RoxtermLaunchParams *lp, RoxtermWindowLaunchParams *wp);
+
+RoxtermVte *roxterm_window_new_tab(RoxtermWindow *self,
         RoxtermTabLaunchParams *tp, int index)
 {
     (void) tp;
     RoxtermVte *rvt = roxterm_vte_new();
-    MultitextWindow *mwin = MULTITEXT_WINDOW(win);
+    roxterm_vte_apply_launch_params(rvt, self->lp, self->wp, tp);
+    MultitextWindow *mwin = MULTITEXT_WINDOW(self);
     GtkNotebook *gnb = GTK_NOTEBOOK(multitext_window_get_notebook(mwin));
     gtk_notebook_insert_page(gnb, GTK_WIDGET(rvt), NULL, index);
+    roxterm_vte_spawn(rvt, roxterm_window_spawn_callback, self);
     return rvt;
 }

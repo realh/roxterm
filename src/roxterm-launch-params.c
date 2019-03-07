@@ -26,11 +26,14 @@
 RoxtermTabLaunchParams *roxterm_tab_launch_params_new(void)
 {
     RoxtermTabLaunchParams *tp = g_new0(RoxtermTabLaunchParams, 1);
+    tp->refcount = 1;
     return tp;
 }
 
-void roxterm_tab_launch_params_free(RoxtermTabLaunchParams *tp)
+void roxterm_tab_launch_params_unref(RoxtermTabLaunchParams *tp)
 {
+    if (--tp->refcount)
+        return;
     g_free(tp->profile_name);
     g_free(tp->tab_title);
     g_free(tp->directory);
@@ -41,16 +44,19 @@ void roxterm_tab_launch_params_free(RoxtermTabLaunchParams *tp)
 RoxtermWindowLaunchParams *roxterm_window_launch_params_new(void)
 {
     RoxtermWindowLaunchParams *wp = g_new0(RoxtermWindowLaunchParams, 1);
+    wp->refcount = 1;
     wp->zoom = 1.0;
     return wp;
 }
 
-void roxterm_window_launch_params_free(RoxtermWindowLaunchParams *wp)
+void roxterm_window_launch_params_unref(RoxtermWindowLaunchParams *wp)
 {
+    if (--wp->refcount)
+        return;
     if (wp->tabs)
     {
         g_list_free_full(wp->tabs,
-                (GDestroyNotify) roxterm_tab_launch_params_free);
+                (GDestroyNotify) roxterm_tab_launch_params_unref);
     }
     g_free(wp->window_title);
     g_free(wp->role);
@@ -67,17 +73,19 @@ RoxtermLaunchParams *roxterm_launch_params_new(void)
     return lp;
 }
 
-void roxterm_launch_params_free(RoxtermLaunchParams *lp)
+void roxterm_launch_params_unref(RoxtermLaunchParams *lp)
 {
+    if (--lp->refcount)
+        return;
     if (lp->windows)
     {
         g_list_free_full(lp->windows,
-                (GDestroyNotify) roxterm_window_launch_params_free);
+                (GDestroyNotify) roxterm_window_launch_params_unref);
     }
     if (lp->argv)
         g_strfreev(lp->argv);
     if (lp->env)
-        g_strfreev(lp->env);
+        roxterm_strv_unref(lp->env);
     g_free(lp);
 }
 
@@ -323,7 +331,7 @@ gboolean roxterm_launch_params_preparse_argv_execute(RoxtermLaunchParams *lp,
                             G_OPTION_ERROR_FAILED,
                             "No arguments following %s", argv[n]);
                     if (lp)
-                        roxterm_launch_params_free(lp);
+                        roxterm_launch_params_unref(lp);
                     return FALSE;
                 }
             }
@@ -451,7 +459,7 @@ roxterm_launch_params_new_from_command_line(GApplicationCommandLine *cmd,
     GOptionContext *octx = roxterm_launch_params_get_option_context(lp);
     if (!g_option_context_parse(octx, &argc, &argv, error))
     {
-        roxterm_launch_params_free(lp);
+        roxterm_launch_params_unref(lp);
         lp = NULL;
     }
     else
@@ -459,8 +467,8 @@ roxterm_launch_params_new_from_command_line(GApplicationCommandLine *cmd,
         // Make sure there's a tab in case there were no options
         roxterm_launch_params_current_tab(lp);
         const char *dir = g_application_command_line_get_cwd(cmd);
-        lp->env = g_strdupv(
-                (char **) g_application_command_line_get_environ(cmd));
+        lp->env = roxterm_strv_ref_new(
+                g_application_command_line_get_environ(cmd));
         for (GList *wlink = lp->windows; wlink; wlink = g_list_next(wlink))
         {
             RoxtermWindowLaunchParams *wp = wlink->data;

@@ -33,7 +33,7 @@ G_DECLARE_FINAL_TYPE(RoxtermApplication, roxterm_application,
 RoxtermApplication *roxterm_application_new(void);
 
 RoxtermWindow *roxterm_application_new_window(RoxtermApplication *app,
-        RoxtermWindowLaunchParams *wp);
+        RoxtermLaunchParams *lp, RoxtermWindowLaunchParams *wp);
 
 G_END_DECLS
 

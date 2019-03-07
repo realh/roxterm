@@ -22,6 +22,10 @@
 
 struct _RoxtermVte {
     VteTerminal parent_instance;
+    RoxtermStrvRef *env;
+    char *directory;
+    GCancellable *launch_cancellable;
+    VteTerminalSpawnAsyncCallback launch_callback;
 };
 
 static void roxterm_vte_get_current_size(MultitextGeometryProvider *self,
@@ -60,13 +64,27 @@ static void roxterm_vte_geometry_provider_init(
     iface->get_cell_size = roxterm_vte_get_cell_size;
 }
 
+static void roxterm_vte_dispose(GObject *obj)
+{
+    RoxtermVte *self = ROXTERM_VTE(obj);
+    if (self->env)
+    {
+        roxterm_strv_unref(self->env);
+        self->env = NULL;
+    }
+    g_free(self->directory);
+    self->directory = NULL;
+    g_clear_object(&self->launch_cancellable);
+}
+
 G_DEFINE_TYPE_WITH_CODE(RoxtermVte, roxterm_vte, VTE_TYPE_TERMINAL,
         G_IMPLEMENT_INTERFACE(MULTITEXT_TYPE_GEOMETRY_PROVIDER,
             roxterm_vte_geometry_provider_init));
 
 static void roxterm_vte_class_init(RoxtermVteClass *klass)
 {
-    (void) klass;
+    GObjectClass *oklass = G_OBJECT_CLASS(klass);
+    oklass->dispose = roxterm_vte_dispose;
 }
 
 static void roxterm_vte_init(RoxtermVte *self)
@@ -79,4 +97,44 @@ RoxtermVte *roxterm_vte_new(void)
     GObject *obj = g_object_new(ROXTERM_TYPE_VTE,
             NULL);
     return ROXTERM_VTE(obj);
+}
+
+void roxterm_vte_apply_launch_params(RoxtermVte *self, RoxtermLaunchParams *lp,
+        RoxtermWindowLaunchParams *wp, RoxtermTabLaunchParams *tp)
+{
+    VteTerminal *vte = VTE_TERMINAL(self);
+    self->env = roxterm_strv_ref(lp->env);
+    if (wp->geometry_str)
+    {
+        vte_terminal_set_size(vte, wp->columns, wp->rows);
+    }
+    if (tp->directory)
+        self->directory = g_strdup(tp->directory);
+}
+
+static void roxterm_vte_spawn_callback(VteTerminal *vte,
+        GPid pid, GError *error, gpointer handle)
+{
+    RoxtermVte *self = ROXTERM_VTE(vte);
+    g_clear_object(&self->launch_cancellable);
+    if (self->launch_callback)
+    {
+        self->launch_callback(vte, pid, error, handle);
+    }
+}
+
+void roxterm_vte_spawn(RoxtermVte *self,
+        VteTerminalSpawnAsyncCallback callback, gpointer handle)
+{
+    char *argv[2] = { NULL, NULL };
+    argv[0] = vte_get_user_shell();
+    if (!argv[0])
+        argv[0] = g_strdup("/bin/sh");
+    // Using a cancellable causes an operation not supported error
+    //self->launch_cancellable = g_cancellable_new();
+    self->launch_callback = callback;
+    vte_terminal_spawn_async(VTE_TERMINAL(self), VTE_PTY_DEFAULT,
+            self->directory, argv, self->env ? self->env->strv : NULL,
+            G_SPAWN_DEFAULT, NULL, NULL, NULL, -1, self->launch_cancellable,
+            roxterm_vte_spawn_callback, handle);
 }
