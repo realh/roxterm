@@ -96,17 +96,12 @@ enum {
 
 static guint roxterm_profile_signals[ROXTERM_PROFILE_N_SIGNALS];
 
-#define ROXTERM_PROFILE_CONCAT2(a, b) a ## b
-#define ROXTERM_PROFILE_CONCAT3(a, b, c) a ## b ## c
-
 #define ROXTERM_PROFILE_DEFINE_SIGNAL(ktype, signame, rtype, gtype) \
-    roxterm_profile_signals[ \
-    ROXTERM_PROFILE_CONCAT3(ROXTERM_PROFILE_SIGNAL_, rtype, _CHANGED)] \
-    = g_signal_new(signame "-changed", ktype, \
-        G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS, \
-        0, NULL, NULL, NULL, \
-        G_TYPE_NONE, 2, G_TYPE_STRING, \
-        ROXTERM_PROFILE_CONCAT2(G_TYPE_, gtype));
+    roxterm_profile_signals[ROXTERM_PROFILE_SIGNAL_##rtype##_CHANGED] \
+        = g_signal_new(signame "-changed", ktype, \
+            G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS, \
+            0, NULL, NULL, NULL, \
+            G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_##gtype);
 
 static void roxterm_profile_class_init(RoxtermProfileClass *klass)
 {
