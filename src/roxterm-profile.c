@@ -85,6 +85,29 @@ static void roxterm_profile_get_property(GObject *obj, guint prop_id,
     }
 }
 
+enum {
+    ROXTERM_PROFILE_SIGNAL_STRING_CHANGED,
+    ROXTERM_PROFILE_SIGNAL_INT_CHANGED,
+    ROXTERM_PROFILE_SIGNAL_BOOLEAN_CHANGED,
+    ROXTERM_PROFILE_SIGNAL_FLOAT_CHANGED,
+
+    ROXTERM_PROFILE_N_SIGNALS,
+};
+
+static guint roxterm_profile_signals[ROXTERM_PROFILE_N_SIGNALS];
+
+#define ROXTERM_PROFILE_CONCAT2(a, b) a ## b
+#define ROXTERM_PROFILE_CONCAT3(a, b, c) a ## b ## c
+
+#define ROXTERM_PROFILE_DEFINE_SIGNAL(ktype, signame, rtype, gtype) \
+    roxterm_profile_signals[ \
+    ROXTERM_PROFILE_CONCAT3(ROXTERM_PROFILE_SIGNAL_, rtype, _CHANGED)] \
+    = g_signal_new(signame "-changed", ktype, \
+        G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS, \
+        0, NULL, NULL, NULL, \
+        G_TYPE_NONE, 2, G_TYPE_STRING, \
+        ROXTERM_PROFILE_CONCAT2(G_TYPE_, gtype));
+
 static void roxterm_profile_class_init(RoxtermProfileClass *klass)
 {
     GObjectClass *oklass = G_OBJECT_CLASS(klass);
@@ -96,6 +119,11 @@ static void roxterm_profile_class_init(RoxtermProfileClass *klass)
             "Profile name", "Default",
             G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE);
     g_object_class_install_properties(oklass, N_PROPS, roxterm_profile_props);
+    GType rpt = G_TYPE_FROM_CLASS(oklass);
+    ROXTERM_PROFILE_DEFINE_SIGNAL(rpt, "string", STRING, STRING);
+    ROXTERM_PROFILE_DEFINE_SIGNAL(rpt, "int", INT, INT);
+    ROXTERM_PROFILE_DEFINE_SIGNAL(rpt, "boolean", BOOLEAN, BOOLEAN);
+    ROXTERM_PROFILE_DEFINE_SIGNAL(rpt, "float", FLOAT, DOUBLE);
 }
 
 static void roxterm_profile_init(RoxtermProfile *self)
@@ -210,6 +238,9 @@ void roxterm_profile_set_string(RoxtermProfile *self, const char *key,
     roxterm_profile_load(self);
     g_key_file_set_string(self->key_file, "strings", key, value);
     roxterm_profile_save(self);
+    g_signal_emit(self,
+            roxterm_profile_signals[ROXTERM_PROFILE_SIGNAL_STRING_CHANGED],
+            0, key, value);
 }
 
 int roxterm_profile_get_int(RoxtermProfile *self, const char *key)
@@ -223,6 +254,9 @@ void roxterm_profile_set_int(RoxtermProfile *self, const char *key, int value)
     roxterm_profile_load(self);
     g_key_file_set_integer(self->key_file, "ints", key, value);
     roxterm_profile_save(self);
+    g_signal_emit(self,
+            roxterm_profile_signals[ROXTERM_PROFILE_SIGNAL_INT_CHANGED],
+            0, key, value);
 }
 
 gboolean roxterm_profile_get_boolean(RoxtermProfile *self, const char *key)
@@ -237,6 +271,9 @@ void roxterm_profile_set_boolean(RoxtermProfile *self, const char *key,
     roxterm_profile_load(self);
     g_key_file_set_boolean(self->key_file, "booleans", key, value);
     roxterm_profile_save(self);
+    g_signal_emit(self,
+            roxterm_profile_signals[ROXTERM_PROFILE_SIGNAL_BOOLEAN_CHANGED],
+            0, key, value);
 }
 
 double roxterm_profile_get_float(RoxtermProfile *self, const char *key)
@@ -251,4 +288,7 @@ void roxterm_profile_set_float(RoxtermProfile *self, const char *key,
     roxterm_profile_load(self);
     g_key_file_set_double(self->key_file, "floats", key, value);
     roxterm_profile_save(self);
+    g_signal_emit(self,
+            roxterm_profile_signals[ROXTERM_PROFILE_SIGNAL_FLOAT_CHANGED],
+            0, key, value);
 }
