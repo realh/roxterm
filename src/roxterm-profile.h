@@ -62,7 +62,7 @@ void roxterm_profile_save(RoxtermProfile *self);
  * roxterm_profile_lookup:
  *
  * @name: (nullable): NULL implies "Default"
- * Returns: (transfer full) (nullable):
+ * Returns: (transfer full) (nullable): Callee takes a reference
  */
 RoxtermProfile *roxterm_profile_lookup(const char *name);
 

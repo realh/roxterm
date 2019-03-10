@@ -336,8 +336,9 @@ RoxtermProfile *roxterm_profile_lookup(const char *name)
         roxterm_profiles = g_hash_table_new_full(g_str_hash, g_str_equal,
                 g_free, NULL);
     RoxtermProfile *profile = g_hash_table_lookup(roxterm_profiles, name);
-    if (!profile)
-    {
-    }
+    if (profile)
+        g_object_ref(profile);
+    else
+        profile = roxterm_profile_new(name);
     return profile;
 }
