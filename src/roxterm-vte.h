@@ -36,6 +36,34 @@ void roxterm_vte_apply_launch_params(RoxtermVte *vte, RoxtermLaunchParams *lp,
 void roxterm_vte_spawn(RoxtermVte *self,
         VteTerminalSpawnAsyncCallback callback, gpointer handle);
 
+/**
+ * roxterm_vte_get_font_name:
+ *
+ * @font: A string representation of a PangoFontDescription
+ */
+void roxterm_vte_set_font_name(RoxtermVte *self, const char *font);
+
+/**
+ * roxterm_vte_get_font_name:
+ *
+ * Returns: (transfer full): A string representation of a PangoFontDescription
+ */
+char *roxterm_vte_get_font_name(RoxtermVte *self);
+
+/**
+ * roxterm_vte_set_zoom:
+ *
+ * @zoom: percentage
+ */
+void roxterm_vte_set_zoom(RoxtermVte *self, int zoom);
+
+/**
+ * roxterm_vte_set_zoom:
+ *
+ * Returns: percentage
+ */
+int roxterm_vte_get_zoom(RoxtermVte *self);
+
 G_END_DECLS
 
 #endif /* __ROXTERM_VTE_H */

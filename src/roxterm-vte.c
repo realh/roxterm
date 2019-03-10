@@ -26,6 +26,7 @@ struct _RoxtermVte {
     char *directory;
     GCancellable *launch_cancellable;
     VteTerminalSpawnAsyncCallback launch_callback;
+    int zoom;
 };
 
 static void roxterm_vte_get_current_size(MultitextGeometryProvider *self,
@@ -137,4 +138,65 @@ void roxterm_vte_spawn(RoxtermVte *self,
             self->directory, argv, self->env ? self->env->strv : NULL,
             G_SPAWN_DEFAULT, NULL, NULL, NULL, -1, self->launch_cancellable,
             roxterm_vte_spawn_callback, handle);
+}
+
+inline static void roxterm_vte_apply_pango_zoom(PangoFontDescription *p, int zoom)
+{
+    pango_font_description_set_size(p,
+            pango_font_description_get_size(p) * zoom / 100);
+}
+
+static void roxterm_vte_update_font(RoxtermVte *self, const char *font,
+        int zoom)
+{
+    const PangoFontDescription *orig_pango = 
+                vte_terminal_get_font(&self->parent_instance);
+    PangoFontDescription *pango = font
+        ? pango_font_description_from_string(font)
+        : pango_font_description_copy_static(orig_pango);
+    if (!font)
+        zoom = zoom * 100 / self->zoom;
+    roxterm_vte_apply_pango_zoom(pango, zoom);
+    if (!pango_font_description_equal(pango, orig_pango))
+    {
+        vte_terminal_set_font(&self->parent_instance, pango);
+        // TODO: Recalculate geometry
+    }
+    self->zoom = zoom;
+    pango_font_description_free(pango);
+}
+
+void roxterm_vte_set_font_name(RoxtermVte *self, const char *font)
+{
+    roxterm_vte_update_font(self, font, self->zoom);
+}
+
+char *roxterm_vte_get_font_name(RoxtermVte *self)
+{
+    const PangoFontDescription *orig_pango = 
+                vte_terminal_get_font(&self->parent_instance);
+    char *result;
+    if (self->zoom != 100)
+    {
+        PangoFontDescription *pango
+            = pango_font_description_copy_static(orig_pango);
+        roxterm_vte_apply_pango_zoom(pango, 10000 / self->zoom);
+        result = pango_font_description_to_string(pango);
+        pango_font_description_free(pango);
+    }
+    else
+    {
+        result = pango_font_description_to_string(orig_pango);
+    }
+    return result;
+}
+
+void roxterm_vte_set_zoom(RoxtermVte *self, int zoom)
+{
+    roxterm_vte_update_font(self, NULL, zoom);
+}
+
+int roxterm_vte_get_zoom(RoxtermVte *self)
+{
+    return self->zoom;
 }
