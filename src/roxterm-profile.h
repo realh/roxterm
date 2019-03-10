@@ -58,6 +58,14 @@ void roxterm_profile_load(RoxtermProfile *self);
 
 void roxterm_profile_save(RoxtermProfile *self);
 
+/**
+ * roxterm_profile_lookup:
+ *
+ * @name: (nullable): NULL implies "Default"
+ * Returns: (transfer full) (nullable):
+ */
+RoxtermProfile *roxterm_profile_lookup(const char *name);
+
 G_END_DECLS
 
 #endif /* __ROXTERM_PROFILE_H */

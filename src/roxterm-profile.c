@@ -28,13 +28,26 @@ struct _RoxtermProfile {
     GKeyFile *key_file;
 };
 
-static void roxterm_profile_dispose(GObject *obj)
+GHashTable *roxterm_profiles = NULL;
+
+static void roxterm_profile_weak_ref_notify(gpointer handle, GObject *obj)
+{
+    (void) obj;
+    g_hash_table_remove(roxterm_profiles, handle);
+}
+
+static void roxterm_profile_finalize(GObject *obj)
 {
     RoxtermProfile *self = ROXTERM_PROFILE(obj);
     g_free(self->name);
     self->name = NULL;
     g_free(self->filename);
     self->filename = NULL;
+}
+
+static void roxterm_profile_dispose(GObject *obj)
+{
+    RoxtermProfile *self = ROXTERM_PROFILE(obj);
     if (self->key_file)
     {
         g_key_file_unref(self->key_file);
@@ -51,6 +64,37 @@ enum {
 
 static GParamSpec *roxterm_profile_props[N_PROPS] = {NULL};
 
+static void roxterm_profile_set_name(RoxtermProfile *self, const char *name)
+{
+    if (self->filename)
+    {
+        g_free(self->filename);
+        self->filename = NULL;
+    }
+    gboolean add_to_hash = TRUE;
+    if (self->name)
+    {
+        // If there was already a hash entry for the old name and it doesn't
+        // point to self, this is a copy and we don't want to replace the
+        // old hash entry
+        gpointer hashed = g_hash_table_lookup(roxterm_profiles, name);
+        if (hashed && hashed != self)
+            add_to_hash = FALSE;
+        g_free(self->name);
+    }
+    if (add_to_hash)
+    {
+        // Make another duplicate of the name because docs don't make it clear
+        // at which stage of dispose/finalize the notification is emitted, so
+        // the profile's name field may be invalid by then
+        char *dup_name = g_strdup(name);
+        g_hash_table_insert(roxterm_profiles, dup_name, self);
+        g_object_weak_ref(G_OBJECT(self), roxterm_profile_weak_ref_notify,
+                dup_name);
+    }
+    self->name = g_strdup(name);
+}
+
 static void roxterm_profile_set_property(GObject *obj, guint prop_id,
         const GValue *value, GParamSpec *pspec)
 {
@@ -58,13 +102,7 @@ static void roxterm_profile_set_property(GObject *obj, guint prop_id,
     switch (prop_id)
     {
         case PROP_NAME:
-            if (self->filename)
-            {
-                g_free(self->filename);
-                self->filename = NULL;
-            }
-            g_free(self->name);
-            self->name = g_value_dup_string(value);
+            roxterm_profile_set_name(self, g_value_get_string(value));
             break;
         default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, prop_id, pspec);
@@ -106,6 +144,8 @@ static guint roxterm_profile_signals[ROXTERM_PROFILE_N_SIGNALS];
 static void roxterm_profile_class_init(RoxtermProfileClass *klass)
 {
     GObjectClass *oklass = G_OBJECT_CLASS(klass);
+    oklass->dispose = roxterm_profile_dispose;
+    oklass->finalize = roxterm_profile_finalize;
     // Accessors must be set before installing properties
     oklass->set_property = roxterm_profile_set_property;
     oklass->get_property = roxterm_profile_get_property;
@@ -286,4 +326,18 @@ void roxterm_profile_set_float(RoxtermProfile *self, const char *key,
     g_signal_emit(self,
             roxterm_profile_signals[ROXTERM_PROFILE_SIGNAL_FLOAT_CHANGED],
             0, key, value);
+}
+
+RoxtermProfile *roxterm_profile_lookup(const char *name)
+{
+    if (!name)
+        name = "Default";
+    if (!roxterm_profiles)
+        roxterm_profiles = g_hash_table_new_full(g_str_hash, g_str_equal,
+                g_free, NULL);
+    RoxtermProfile *profile = g_hash_table_lookup(roxterm_profiles, name);
+    if (!profile)
+    {
+    }
+    return profile;
 }
