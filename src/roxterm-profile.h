@@ -79,6 +79,40 @@ gboolean roxterm_profile_has_rgba(RoxtermProfile *self, const char *key);
  */
 RoxtermProfile *roxterm_profile_lookup(const char *name);
 
+/**
+ * roxterm_profile_connect_property_listener:
+ *
+ * Set properties on listener when a value changes
+ *
+ * @listener: (transfer none):
+ * @mapper: (transfer none): Not used currently, may be used to map key names
+ *          to property names in future
+ */
+void roxterm_profile_connect_property_listener(RoxtermProfile *self,
+        GObject *listener, gpointer mapper);
+
+/**
+ * roxterm_profile_disconnect_property_listener:
+ *
+ * Cancel the effect of roxterm_profile_connect_property_listener
+ *
+ * @listener: (transfer none):
+ */
+void roxterm_profile_disconnect_property_listener(RoxtermProfile *self,
+        GObject *listener);
+
+/**
+ * roxterm_profile_apply_as_properties:
+ *
+ * Set properties on target for all keys currently set
+ *
+ * @target: (transfer none):
+ * @mapper: (transfer none): Not used currently, may be used to map key names
+ *          to property names in future
+ */
+void roxterm_profile_apply_as_properties(RoxtermProfile *self,
+        GObject *target, gpointer mapper);
+
 G_END_DECLS
 
 #endif /* __ROXTERM_PROFILE_H */

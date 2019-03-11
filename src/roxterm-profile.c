@@ -397,3 +397,101 @@ gboolean roxterm_profile_has_rgba(RoxtermProfile *self, const char *key)
     roxterm_profile_load(self);
     return g_key_file_has_key(self->key_file, "colours", key, NULL);
 }
+
+#define ROXTERM_PROFILE_LISTENER(rtype) roxterm_profile_on_##rtype##_changed
+
+#define ROXTERM_PROFILE_DEFINE_LISTENER(rtype, gtype) \
+    static void ROXTERM_PROFILE_LISTENER(rtype) (RoxtermProfile *self, \
+        const char *key, gtype value, GObject *listener) \
+{ \
+    (void) self; \
+    g_object_set(listener, key, value, NULL); \
+}
+
+ROXTERM_PROFILE_DEFINE_LISTENER(string, const char *)
+ROXTERM_PROFILE_DEFINE_LISTENER(int, int)
+ROXTERM_PROFILE_DEFINE_LISTENER(boolean, gboolean)
+ROXTERM_PROFILE_DEFINE_LISTENER(float, double)
+ROXTERM_PROFILE_DEFINE_LISTENER(rgba, RoxtermRGBA)
+
+#define ROXTERM_PROFILE_CONNECT_LISTENER(self, rtype, listener) \
+    g_signal_connect(self, #rtype "-changed", \
+            G_CALLBACK(ROXTERM_PROFILE_LISTENER(rtype)), listener)
+
+#define ROXTERM_PROFILE_DISCONNECT_LISTENER(self, rtype, listener) \
+    g_signal_handlers_disconnect_matched(self, \
+            G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA, \
+            0, 0, NULL, ROXTERM_PROFILE_LISTENER(rtype), listener);
+
+void roxterm_profile_connect_property_listener(RoxtermProfile *self,
+        GObject *listener, gpointer mapper)
+{
+    (void) mapper;
+    ROXTERM_PROFILE_CONNECT_LISTENER(self, string, listener);
+    ROXTERM_PROFILE_CONNECT_LISTENER(self, int, listener);
+    ROXTERM_PROFILE_CONNECT_LISTENER(self, boolean, listener);
+    ROXTERM_PROFILE_CONNECT_LISTENER(self, float, listener);
+    ROXTERM_PROFILE_CONNECT_LISTENER(self, rgba, listener);
+}
+
+
+void roxterm_profile_disconnect_property_listener(RoxtermProfile *self,
+        GObject *listener)
+{
+    ROXTERM_PROFILE_DISCONNECT_LISTENER(self, string, listener);
+    ROXTERM_PROFILE_DISCONNECT_LISTENER(self, int, listener);
+    ROXTERM_PROFILE_DISCONNECT_LISTENER(self, boolean, listener);
+    ROXTERM_PROFILE_DISCONNECT_LISTENER(self, float, listener);
+    ROXTERM_PROFILE_DISCONNECT_LISTENER(self, rgba, listener);
+}
+
+#define ROXTERM_PROFILE_APPLICATOR(rtype) roxterm_profile_apply_##rtype
+
+#define ROXTERM_PROFILE_DEFINE_APPLICATOR(rtype) \
+static void ROXTERM_PROFILE_APPLICATOR(rtype) (RoxtermProfile *self, \
+        const char *key, GObject *target) \
+{ \
+    g_object_set(target, key, roxterm_profile_get_##rtype (self, key), NULL); \
+}
+
+static void roxterm_profile_apply_string(RoxtermProfile *self,
+        const char *key, GObject *target)
+{
+    char *value = roxterm_profile_get_string(self, key);
+    g_object_set(target, key, value, NULL);
+    g_free(value);
+}
+
+ROXTERM_PROFILE_DEFINE_APPLICATOR(int)
+ROXTERM_PROFILE_DEFINE_APPLICATOR(boolean)
+ROXTERM_PROFILE_DEFINE_APPLICATOR(float)
+ROXTERM_PROFILE_DEFINE_APPLICATOR(rgba)
+
+static void roxterm_profile_apply_group(RoxtermProfile *self,
+        const char *group,
+        void (*applicator)(RoxtermProfile *, const char *, GObject *),
+        GObject *target)
+{
+    gsize nkeys;
+    char **keys = g_key_file_get_keys(self->key_file, group, &nkeys, NULL);
+    for (gsize n = 0; n < nkeys; ++n)
+        applicator(self, keys[n], target);
+    if (keys)
+        g_strfreev(keys);
+}
+
+#define ROXTERM_PROFILE_APPLY_GROUP(self, rtype, target) \
+    roxterm_profile_apply_group(self, #rtype "s", \
+            ROXTERM_PROFILE_APPLICATOR(rtype), target)
+
+void roxterm_profile_apply_as_properties(RoxtermProfile *self,
+        GObject *target, gpointer mapper)
+{
+    (void) mapper;
+    roxterm_profile_load(self);
+    ROXTERM_PROFILE_APPLY_GROUP(self, string, target);
+    ROXTERM_PROFILE_APPLY_GROUP(self, int, target);
+    ROXTERM_PROFILE_APPLY_GROUP(self, boolean, target);
+    ROXTERM_PROFILE_APPLY_GROUP(self, float, target);
+    ROXTERM_PROFILE_APPLY_GROUP(self, rgba, target);
+}
