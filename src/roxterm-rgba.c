@@ -33,9 +33,10 @@ RoxtermRGBA roxterm_rgba_from_gdk(const GdkRGBA *grgba)
 RoxtermRGBA roxterm_rgba_parse(const char *s)
 {
     GdkRGBA grgba;
-    if (!gdk_rgba_parse(&grgba, s))
+    if (!s || !gdk_rgba_parse(&grgba, s))
     {
-        g_critical("Invalid colour spec '%s'", s);
+        if (s)
+            g_critical("Invalid colour spec '%s'", s);
         // Play safe, don't return uninitialised value even though it's in
         // valid memory
         RoxtermRGBA rrgba;

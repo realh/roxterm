@@ -18,12 +18,14 @@
 */
 
 #include "multitext-geometry-provider.h"
+#include "roxterm-profile.h"
 #include "roxterm-vte.h"
 
 struct _RoxtermVte {
     VteTerminal parent_instance;
     RoxtermStrvRef *env;
     char *directory;
+    RoxtermProfile *profile;
     GCancellable *launch_cancellable;
     VteTerminalSpawnAsyncCallback launch_callback;
     int zoom;
@@ -200,3 +202,7 @@ int roxterm_vte_get_zoom(RoxtermVte *self)
 {
     return self->zoom;
 }
+
+void roxterm_vte_set_profile(RoxtermVte *self, const char *profile);
+
+const char *roxterm_vte_get_profile(RoxtermVte *self);

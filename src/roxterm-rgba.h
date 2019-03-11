@@ -27,6 +27,8 @@ typedef guint32 RoxtermRGBAInt;
 
 typedef guint8 RoxtermRGBAChannel;
 
+#define ROXTERM_TYPE_RGBA G_TYPE_UINT
+
 typedef union {
     RoxtermRGBAInt v;
     struct {
@@ -36,6 +38,11 @@ typedef union {
 
 RoxtermRGBA roxterm_rgba_from_gdk(const GdkRGBA *grgba);
 
+/**
+ * roxterm_rgba_to_gdk:
+ *
+ * @s: (nullable):
+ */
 RoxtermRGBA roxterm_rgba_parse(const char *s);
 
 /**

@@ -64,6 +64,9 @@ void roxterm_vte_set_zoom(RoxtermVte *self, int zoom);
  */
 int roxterm_vte_get_zoom(RoxtermVte *self);
 
+void roxterm_vte_set_profile(RoxtermVte *self, const char *profile);
+const char *roxterm_vte_get_profile(RoxtermVte *self);
+
 G_END_DECLS
 
 #endif /* __ROXTERM_VTE_H */

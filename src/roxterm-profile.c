@@ -128,6 +128,7 @@ enum {
     ROXTERM_PROFILE_SIGNAL_INT_CHANGED,
     ROXTERM_PROFILE_SIGNAL_BOOLEAN_CHANGED,
     ROXTERM_PROFILE_SIGNAL_FLOAT_CHANGED,
+    ROXTERM_PROFILE_SIGNAL_RGBA_CHANGED,
 
     ROXTERM_PROFILE_N_SIGNALS,
 };
@@ -139,7 +140,10 @@ static guint roxterm_profile_signals[ROXTERM_PROFILE_N_SIGNALS];
         = g_signal_new(signame "-changed", ktype, \
             G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS, \
             0, NULL, NULL, NULL, \
-            G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_##gtype);
+            G_TYPE_NONE, 2, G_TYPE_STRING, gtype)
+
+#define ROXTERM_PROFILE_DEFINE_GSIGNAL(ktype, signame, rtype, gtype) \
+    ROXTERM_PROFILE_DEFINE_SIGNAL(ktype, signame, rtype, G_TYPE_##gtype)
 
 static void roxterm_profile_class_init(RoxtermProfileClass *klass)
 {
@@ -155,10 +159,11 @@ static void roxterm_profile_class_init(RoxtermProfileClass *klass)
             G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE);
     g_object_class_install_properties(oklass, N_PROPS, roxterm_profile_props);
     GType rpt = G_TYPE_FROM_CLASS(oklass);
-    ROXTERM_PROFILE_DEFINE_SIGNAL(rpt, "string", STRING, STRING);
-    ROXTERM_PROFILE_DEFINE_SIGNAL(rpt, "int", INT, INT);
-    ROXTERM_PROFILE_DEFINE_SIGNAL(rpt, "boolean", BOOLEAN, BOOLEAN);
-    ROXTERM_PROFILE_DEFINE_SIGNAL(rpt, "float", FLOAT, DOUBLE);
+    ROXTERM_PROFILE_DEFINE_GSIGNAL(rpt, "string", STRING, STRING);
+    ROXTERM_PROFILE_DEFINE_GSIGNAL(rpt, "int", INT, INT);
+    ROXTERM_PROFILE_DEFINE_GSIGNAL(rpt, "boolean", BOOLEAN, BOOLEAN);
+    ROXTERM_PROFILE_DEFINE_GSIGNAL(rpt, "float", FLOAT, DOUBLE);
+    ROXTERM_PROFILE_DEFINE_SIGNAL(rpt, "rgba", RGBA, ROXTERM_TYPE_RGBA);
 }
 
 static void roxterm_profile_init(RoxtermProfile *self)
@@ -325,6 +330,26 @@ void roxterm_profile_set_float(RoxtermProfile *self, const char *key,
     roxterm_profile_save(self);
     g_signal_emit(self,
             roxterm_profile_signals[ROXTERM_PROFILE_SIGNAL_FLOAT_CHANGED],
+            0, key, value);
+}
+
+RoxtermRGBA roxterm_profile_get_rgba(RoxtermProfile *self, const char *key)
+{
+    roxterm_profile_load(self);
+    char *s = g_key_file_get_string(self->key_file, "colours", key, NULL);
+    RoxtermRGBA rrgba = roxterm_rgba_parse(s);
+    g_free(s);
+    return rrgba;
+}
+
+void roxterm_profile_set_rgba(RoxtermProfile *self, const char *key,
+        RoxtermRGBA value)
+{
+    char *s = roxterm_rgba_to_string(value);
+    g_key_file_set_string(self->key_file, "colours", key, s);
+    g_free(s);
+    g_signal_emit(self,
+            roxterm_profile_signals[ROXTERM_PROFILE_SIGNAL_RGBA_CHANGED],
             0, key, value);
 }
 

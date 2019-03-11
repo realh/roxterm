@@ -21,6 +21,8 @@
 
 #include <glib-object.h>
 
+#include "roxterm-rgba.h"
+
 G_BEGIN_DECLS
 
 #define ROXTERM_TYPE_PROFILE roxterm_profile_get_type()
@@ -51,6 +53,11 @@ double roxterm_profile_get_float(RoxtermProfile *self, const char *key);
 
 void roxterm_profile_set_float(RoxtermProfile *self, const char *key,
         double value);
+
+RoxtermRGBA roxterm_profile_get_rgba(RoxtermProfile *self, const char *key);
+
+void roxterm_profile_set_rgba(RoxtermProfile *self, const char *key,
+        RoxtermRGBA value);
 
 const char *roxterm_profile_get_user_directory(void);
 
