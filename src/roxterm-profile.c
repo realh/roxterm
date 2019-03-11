@@ -367,3 +367,33 @@ RoxtermProfile *roxterm_profile_lookup(const char *name)
         profile = roxterm_profile_new(name);
     return profile;
 }
+
+gboolean roxterm_profile_has_string(RoxtermProfile *self, const char *key)
+{
+    roxterm_profile_load(self);
+    return g_key_file_has_key(self->key_file, "strings", key, NULL);
+}
+
+gboolean roxterm_profile_has_int(RoxtermProfile *self, const char *key)
+{
+    roxterm_profile_load(self);
+    return g_key_file_has_key(self->key_file, "ints", key, NULL);
+}
+
+gboolean roxterm_profile_has_boolean(RoxtermProfile *self, const char *key)
+{
+    roxterm_profile_load(self);
+    return g_key_file_has_key(self->key_file, "booleans", key, NULL);
+}
+
+gboolean roxterm_profile_has_float(RoxtermProfile *self, const char *key)
+{
+    roxterm_profile_load(self);
+    return g_key_file_has_key(self->key_file, "floats", key, NULL);
+}
+
+gboolean roxterm_profile_has_rgba(RoxtermProfile *self, const char *key)
+{
+    roxterm_profile_load(self);
+    return g_key_file_has_key(self->key_file, "colours", key, NULL);
+}

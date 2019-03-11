@@ -65,6 +65,12 @@ void roxterm_profile_load(RoxtermProfile *self);
 
 void roxterm_profile_save(RoxtermProfile *self);
 
+gboolean roxterm_profile_has_string(RoxtermProfile *self, const char *key);
+gboolean roxterm_profile_has_int(RoxtermProfile *self, const char *key);
+gboolean roxterm_profile_has_boolean(RoxtermProfile *self, const char *key);
+gboolean roxterm_profile_has_float(RoxtermProfile *self, const char *key);
+gboolean roxterm_profile_has_rgba(RoxtermProfile *self, const char *key);
+
 /**
  * roxterm_profile_lookup:
  *
