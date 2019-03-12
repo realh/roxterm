@@ -477,12 +477,16 @@ static void roxterm_profile_apply_group(RoxtermProfile *self,
         void (*applicator)(RoxtermProfile *, const char *, GObject *),
         GObject *target)
 {
+    if (!g_key_file_has_group(self->key_file, group))
+        return;
     gsize nkeys;
     char **keys = g_key_file_get_keys(self->key_file, group, &nkeys, NULL);
-    for (gsize n = 0; n < nkeys; ++n)
-        applicator(self, keys[n], target);
     if (keys)
+    {
+        for (gsize n = 0; n < nkeys; ++n)
+            applicator(self, keys[n], target);
         g_strfreev(keys);
+    }
 }
 
 #define ROXTERM_PROFILE_APPLY_GROUP(self, rtype, target) \
