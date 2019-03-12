@@ -188,7 +188,10 @@ const char *roxterm_profile_get_user_directory(void)
 {
     static char *user_dir = NULL;
     if (!user_dir)
-        user_dir = g_build_path(g_get_user_config_dir(), PACKAGE, NULL);
+    {
+        user_dir = g_build_filename(g_get_user_config_dir(), PACKAGE, "profiles",
+                NULL);
+    }
     return user_dir;
 }
 
@@ -196,7 +199,7 @@ const char *roxterm_profile_get_user_directory(void)
 static char *roxterm_profile_build_filename(const char *dir, const char *name)
 {
     char *leafname = g_strdup_printf("%s.ini", name);
-    char *filename = g_build_path(dir, PACKAGE, leafname, NULL);
+    char *filename = g_build_filename(dir, PACKAGE, "profiles", leafname, NULL);
     g_free(leafname);
     return filename;
 }
@@ -219,7 +222,7 @@ void roxterm_profile_load(RoxtermProfile *self)
     if (self->key_file)
         return;
     self->key_file = g_key_file_new();
-    const char *dir = g_get_user_config_dir();
+    const char *dir = roxterm_profile_get_user_directory();
     char *filename = self->filename = roxterm_profile_check_directory(dir,
             self->name);
     if (!filename)
