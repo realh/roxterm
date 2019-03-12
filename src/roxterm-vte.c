@@ -29,6 +29,7 @@ struct _RoxtermVte {
     GCancellable *launch_cancellable;
     VteTerminalSpawnAsyncCallback launch_callback;
     int zoom;
+    gboolean accept_properties;
 };
 
 static void roxterm_vte_get_current_size(MultitextGeometryProvider *self,
@@ -84,10 +85,88 @@ G_DEFINE_TYPE_WITH_CODE(RoxtermVte, roxterm_vte, VTE_TYPE_TERMINAL,
         G_IMPLEMENT_INTERFACE(MULTITEXT_TYPE_GEOMETRY_PROVIDER,
             roxterm_vte_geometry_provider_init));
 
+enum {
+    PROP_PROFILE = 1,
+    PROP_FONT,
+    PROP_ZOOM,
+    N_PROPS
+};
+
+static GParamSpec *roxterm_vte_props[N_PROPS] = {NULL};
+
+static void roxterm_vte_set_property(GObject *obj, guint prop_id,
+        const GValue *value, GParamSpec *pspec)
+{
+    RoxtermVte *self = ROXTERM_VTE(obj);
+    // Ignore properties during construction unless they come from a profile
+    if (!self->accept_properties && prop_id != PROP_PROFILE)
+        return;
+    switch (prop_id)
+    {
+        case PROP_PROFILE:
+            roxterm_vte_set_profile(self, g_value_get_string(value));
+            break;
+        case PROP_FONT:
+            roxterm_vte_set_font_name(self, g_value_get_string(value));
+            break;
+        case PROP_ZOOM:
+            roxterm_vte_set_zoom(self, g_value_get_int(value));
+            break;
+        default:
+            G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, prop_id, pspec);
+    }
+}
+
+static void roxterm_vte_get_property(GObject *obj, guint prop_id,
+        GValue *value, GParamSpec *pspec)
+{
+    RoxtermVte *self = ROXTERM_VTE(obj);
+    switch (prop_id)
+    {
+        case PROP_PROFILE:
+            g_value_set_string(value, roxterm_vte_get_profile(self));
+            break;
+        case PROP_FONT:
+            g_value_set_string(value, roxterm_vte_get_font_name(self));
+            break;
+        case PROP_ZOOM:
+            g_value_set_int(value, self->zoom);
+            break;
+        default:
+            G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, prop_id, pspec);
+    }
+}
+
+static void roxterm_vte_constructed(GObject *obj)
+{
+    RoxtermVte *self = ROXTERM_VTE(obj);
+    G_OBJECT_CLASS(roxterm_vte_parent_class)->constructed(obj);
+    self->accept_properties = TRUE;
+    roxterm_profile_apply_as_properties(self->profile, obj, NULL);
+    roxterm_profile_connect_property_listener(self->profile, obj, NULL);
+}
+
 static void roxterm_vte_class_init(RoxtermVteClass *klass)
 {
     GObjectClass *oklass = G_OBJECT_CLASS(klass);
     oklass->dispose = roxterm_vte_dispose;
+    oklass->constructed = roxterm_vte_constructed;
+    // Accessors must be set before installing properties
+    oklass->set_property = roxterm_vte_set_property;
+    oklass->get_property = roxterm_vte_get_property;
+    roxterm_vte_props[PROP_PROFILE] =
+            g_param_spec_string("profile", "profile-name",
+            "Profile name", "Default",
+            G_PARAM_CONSTRUCT | G_PARAM_READWRITE);
+    roxterm_vte_props[PROP_FONT] =
+            g_param_spec_string("font-name", "font-description",
+            "Pango font description string", NULL,
+            G_PARAM_READWRITE);
+    roxterm_vte_props[PROP_ZOOM] =
+            g_param_spec_int("zoom", "text-scale",
+            "Text scaling factor as a percentage", 1, 1000, 100,
+            G_PARAM_READWRITE);
+    g_object_class_install_properties(oklass, N_PROPS, roxterm_vte_props);
 }
 
 static void roxterm_vte_init(RoxtermVte *self)
@@ -214,7 +293,16 @@ void roxterm_vte_set_profile(RoxtermVte *self, const char *profile_name)
         g_object_unref(self->profile);
     }
     self->profile = roxterm_profile_lookup(profile_name);
-    roxterm_profile_connect_property_listener(self->profile, obj, NULL);
+    // During construction defer applying profile until construction is complete
+    // to ensure that profile overrides default properties of superclasses
+    if (self->accept_properties)
+    {
+        roxterm_profile_apply_as_properties(self->profile, obj, NULL);
+        roxterm_profile_connect_property_listener(self->profile, obj, NULL);
+    }
 }
 
-const char *roxterm_vte_get_profile(RoxtermVte *self);
+const char *roxterm_vte_get_profile(RoxtermVte *self)
+{
+    return self->profile ? roxterm_profile_get_name(self->profile) : NULL;
+}
