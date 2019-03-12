@@ -50,20 +50,6 @@ void roxterm_vte_set_font_name(RoxtermVte *self, const char *font);
  */
 char *roxterm_vte_get_font_name(RoxtermVte *self);
 
-/**
- * roxterm_vte_set_zoom:
- *
- * @zoom: percentage
- */
-void roxterm_vte_set_zoom(RoxtermVte *self, int zoom);
-
-/**
- * roxterm_vte_set_zoom:
- *
- * Returns: percentage
- */
-int roxterm_vte_get_zoom(RoxtermVte *self);
-
 void roxterm_vte_set_profile(RoxtermVte *self, const char *profile_name);
 
 const char *roxterm_vte_get_profile(RoxtermVte *self);

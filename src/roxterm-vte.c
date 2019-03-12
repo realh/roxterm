@@ -28,7 +28,6 @@ struct _RoxtermVte {
     RoxtermProfile *profile;
     GCancellable *launch_cancellable;
     VteTerminalSpawnAsyncCallback launch_callback;
-    int zoom;
     gboolean accept_properties;
 };
 
@@ -88,7 +87,6 @@ G_DEFINE_TYPE_WITH_CODE(RoxtermVte, roxterm_vte, VTE_TYPE_TERMINAL,
 enum {
     PROP_PROFILE = 1,
     PROP_FONT,
-    PROP_ZOOM,
     N_PROPS
 };
 
@@ -109,9 +107,6 @@ static void roxterm_vte_set_property(GObject *obj, guint prop_id,
         case PROP_FONT:
             roxterm_vte_set_font_name(self, g_value_get_string(value));
             break;
-        case PROP_ZOOM:
-            roxterm_vte_set_zoom(self, g_value_get_int(value));
-            break;
         default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, prop_id, pspec);
     }
@@ -128,9 +123,6 @@ static void roxterm_vte_get_property(GObject *obj, guint prop_id,
             break;
         case PROP_FONT:
             g_value_set_string(value, roxterm_vte_get_font_name(self));
-            break;
-        case PROP_ZOOM:
-            g_value_set_int(value, self->zoom);
             break;
         default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, prop_id, pspec);
@@ -161,10 +153,6 @@ static void roxterm_vte_class_init(RoxtermVteClass *klass)
     roxterm_vte_props[PROP_FONT] =
             g_param_spec_string("font-name", "font-description",
             "Pango font description string", NULL,
-            G_PARAM_READWRITE);
-    roxterm_vte_props[PROP_ZOOM] =
-            g_param_spec_int("zoom", "text-scale",
-            "Text scaling factor as a percentage", 1, 1000, 100,
             G_PARAM_READWRITE);
     g_object_class_install_properties(oklass, N_PROPS, roxterm_vte_props);
 }
@@ -221,65 +209,21 @@ void roxterm_vte_spawn(RoxtermVte *self,
             roxterm_vte_spawn_callback, handle);
 }
 
-inline static void roxterm_vte_apply_pango_zoom(PangoFontDescription *p, int zoom)
-{
-    pango_font_description_set_size(p,
-            pango_font_description_get_size(p) * zoom / 100);
-}
-
-static void roxterm_vte_update_font(RoxtermVte *self, const char *font,
-        int zoom)
-{
-    const PangoFontDescription *orig_pango = 
-                vte_terminal_get_font(&self->parent_instance);
-    PangoFontDescription *pango = font
-        ? pango_font_description_from_string(font)
-        : pango_font_description_copy_static(orig_pango);
-    if (!font)
-        zoom = zoom * 100 / self->zoom;
-    roxterm_vte_apply_pango_zoom(pango, zoom);
-    if (!pango_font_description_equal(pango, orig_pango))
-    {
-        vte_terminal_set_font(&self->parent_instance, pango);
-        // TODO: Recalculate geometry
-    }
-    self->zoom = zoom;
-    pango_font_description_free(pango);
-}
-
 void roxterm_vte_set_font_name(RoxtermVte *self, const char *font)
 {
-    roxterm_vte_update_font(self, font, self->zoom);
+    PangoFontDescription *pango = font
+        ? pango_font_description_from_string(font) : NULL;
+    vte_terminal_set_font(&self->parent_instance, pango);
+    // TODO: Recalculate geometry
+    if (pango)
+        pango_font_description_free(pango);
 }
 
 char *roxterm_vte_get_font_name(RoxtermVte *self)
 {
-    const PangoFontDescription *orig_pango = 
+    const PangoFontDescription *pango = 
                 vte_terminal_get_font(&self->parent_instance);
-    char *result;
-    if (self->zoom != 100)
-    {
-        PangoFontDescription *pango
-            = pango_font_description_copy_static(orig_pango);
-        roxterm_vte_apply_pango_zoom(pango, 10000 / self->zoom);
-        result = pango_font_description_to_string(pango);
-        pango_font_description_free(pango);
-    }
-    else
-    {
-        result = pango_font_description_to_string(orig_pango);
-    }
-    return result;
-}
-
-void roxterm_vte_set_zoom(RoxtermVte *self, int zoom)
-{
-    roxterm_vte_update_font(self, NULL, zoom);
-}
-
-int roxterm_vte_get_zoom(RoxtermVte *self)
-{
-    return self->zoom;
+    return pango ? pango_font_description_to_string(pango) : NULL;
 }
 
 void roxterm_vte_set_profile(RoxtermVte *self, const char *profile_name)
