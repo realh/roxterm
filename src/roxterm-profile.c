@@ -189,13 +189,14 @@ const char *roxterm_profile_get_user_directory(void)
     static char *user_dir = NULL;
     if (!user_dir)
     {
-        user_dir = g_build_filename(g_get_user_config_dir(), PACKAGE, "profiles",
-                NULL);
+        user_dir = g_build_filename(g_get_user_config_dir(), PACKAGE,
+                "profiles", NULL);
     }
     return user_dir;
 }
 
-// Constructs dir/roxterm4/name.ini where dir is an XDG config base directory
+// Constructs dir/roxterm4/profiles/name.ini where dir is an XDG config base
+// directory
 static char *roxterm_profile_build_filename(const char *dir, const char *name)
 {
     char *leafname = g_strdup_printf("%s.ini", name);
@@ -220,13 +221,17 @@ static char *roxterm_profile_check_directory(const char *dir, const char *name)
 void roxterm_profile_load(RoxtermProfile *self)
 {
     if (self->key_file)
-        return;
-    self->key_file = g_key_file_new();
-    const char *dir = roxterm_profile_get_user_directory();
-    char *filename = self->filename = roxterm_profile_check_directory(dir,
-            self->name);
-    if (!filename)
     {
+        return;
+    }
+    g_debug("Loading profile %s", self->name);
+    self->key_file = g_key_file_new();
+    const char *dir = g_get_user_config_dir();
+    char *filename = self->filename =
+        roxterm_profile_build_filename(dir, self->name);
+    if (!g_file_test(filename, G_FILE_TEST_EXISTS))
+    {
+        filename = NULL;
         char const * const *dirs = g_get_system_config_dirs();
         for (int n = 0; dirs[n]; ++n)
         {
