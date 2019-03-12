@@ -132,7 +132,7 @@ RoxtermVte *roxterm_window_new_tab(RoxtermWindow *self,
         RoxtermTabLaunchParams *tp, int index)
 {
     (void) tp;
-    RoxtermVte *rvt = roxterm_vte_new();
+    RoxtermVte *rvt = roxterm_vte_new(tp->profile_name);
     roxterm_vte_apply_launch_params(rvt, self->lp, self->wp, tp);
     MultitextWindow *mwin = MULTITEXT_WINDOW(self);
     GtkNotebook *gnb = GTK_NOTEBOOK(multitext_window_get_notebook(mwin));

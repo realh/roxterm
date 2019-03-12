@@ -28,7 +28,6 @@ struct _RoxtermVte {
     RoxtermProfile *profile;
     GCancellable *launch_cancellable;
     VteTerminalSpawnAsyncCallback launch_callback;
-    gboolean accept_properties;
 };
 
 static void roxterm_vte_get_current_size(MultitextGeometryProvider *self,
@@ -96,9 +95,6 @@ static void roxterm_vte_set_property(GObject *obj, guint prop_id,
         const GValue *value, GParamSpec *pspec)
 {
     RoxtermVte *self = ROXTERM_VTE(obj);
-    // Ignore properties during construction unless they come from a profile
-    if (!self->accept_properties && prop_id != PROP_PROFILE)
-        return;
     switch (prop_id)
     {
         case PROP_PROFILE:
@@ -129,27 +125,17 @@ static void roxterm_vte_get_property(GObject *obj, guint prop_id,
     }
 }
 
-static void roxterm_vte_constructed(GObject *obj)
-{
-    RoxtermVte *self = ROXTERM_VTE(obj);
-    G_OBJECT_CLASS(roxterm_vte_parent_class)->constructed(obj);
-    self->accept_properties = TRUE;
-    roxterm_profile_apply_as_properties(self->profile, obj, NULL);
-    roxterm_profile_connect_property_listener(self->profile, obj, NULL);
-}
-
 static void roxterm_vte_class_init(RoxtermVteClass *klass)
 {
     GObjectClass *oklass = G_OBJECT_CLASS(klass);
     oklass->dispose = roxterm_vte_dispose;
-    oklass->constructed = roxterm_vte_constructed;
     // Accessors must be set before installing properties
     oklass->set_property = roxterm_vte_set_property;
     oklass->get_property = roxterm_vte_get_property;
     roxterm_vte_props[PROP_PROFILE] =
             g_param_spec_string("profile", "profile-name",
             "Profile name", "Default",
-            G_PARAM_CONSTRUCT | G_PARAM_READWRITE);
+            G_PARAM_READWRITE);
     roxterm_vte_props[PROP_FONT] =
             g_param_spec_string("font-name", "font-description",
             "Pango font description string", NULL,
@@ -180,6 +166,7 @@ void roxterm_vte_apply_launch_params(RoxtermVte *self, RoxtermLaunchParams *lp,
     }
     if (tp->directory)
         self->directory = g_strdup(tp->directory);
+    roxterm_vte_set_profile(self, tp->profile_name);
 }
 
 static void roxterm_vte_spawn_callback(VteTerminal *vte,
@@ -237,13 +224,8 @@ void roxterm_vte_set_profile(RoxtermVte *self, const char *profile_name)
         g_object_unref(self->profile);
     }
     self->profile = roxterm_profile_lookup(profile_name);
-    // During construction defer applying profile until construction is complete
-    // to ensure that profile overrides default properties of superclasses
-    if (self->accept_properties)
-    {
-        roxterm_profile_apply_as_properties(self->profile, obj, NULL);
-        roxterm_profile_connect_property_listener(self->profile, obj, NULL);
-    }
+    roxterm_profile_apply_as_properties(self->profile, obj, NULL);
+    roxterm_profile_connect_property_listener(self->profile, obj, NULL);
 }
 
 const char *roxterm_vte_get_profile(RoxtermVte *self)
