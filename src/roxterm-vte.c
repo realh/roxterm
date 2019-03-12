@@ -28,6 +28,7 @@ struct _RoxtermVte {
     RoxtermProfile *profile;
     GCancellable *launch_cancellable;
     VteTerminalSpawnAsyncCallback launch_callback;
+    gboolean login_shell;
 };
 
 static void roxterm_vte_get_current_size(MultitextGeometryProvider *self,
@@ -86,6 +87,7 @@ G_DEFINE_TYPE_WITH_CODE(RoxtermVte, roxterm_vte, VTE_TYPE_TERMINAL,
 enum {
     PROP_PROFILE = 1,
     PROP_FONT,
+    PROP_LOGIN_SHELL,
     N_PROPS
 };
 
@@ -103,6 +105,9 @@ static void roxterm_vte_set_property(GObject *obj, guint prop_id,
         case PROP_FONT:
             roxterm_vte_set_font_name(self, g_value_get_string(value));
             break;
+        case PROP_LOGIN_SHELL:
+            self->login_shell = g_value_get_boolean(value);
+            break;
         default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, prop_id, pspec);
     }
@@ -119,6 +124,9 @@ static void roxterm_vte_get_property(GObject *obj, guint prop_id,
             break;
         case PROP_FONT:
             g_value_set_string(value, roxterm_vte_get_font_name(self));
+            break;
+        case PROP_LOGIN_SHELL:
+            g_value_set_boolean(value, self->login_shell);
             break;
         default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, prop_id, pspec);
@@ -140,12 +148,16 @@ static void roxterm_vte_class_init(RoxtermVteClass *klass)
             g_param_spec_string("font-name", "font-description",
             "Pango font description string", NULL,
             G_PARAM_READWRITE);
+    roxterm_vte_props[PROP_LOGIN_SHELL] =
+            g_param_spec_boolean("login-shell", "login-shell",
+            "Whether shell is a login shell", TRUE,
+            G_PARAM_READWRITE);
     g_object_class_install_properties(oklass, N_PROPS, roxterm_vte_props);
 }
 
 static void roxterm_vte_init(RoxtermVte *self)
 {
-    (void) self;
+    self->login_shell = TRUE;
 }
 
 RoxtermVte *roxterm_vte_new(void)
@@ -183,10 +195,12 @@ static void roxterm_vte_spawn_callback(VteTerminal *vte,
 void roxterm_vte_spawn(RoxtermVte *self,
         VteTerminalSpawnAsyncCallback callback, gpointer handle)
 {
-    char *argv[2] = { NULL, NULL };
+    char *argv[3] = { NULL, NULL, NULL };
     argv[0] = vte_get_user_shell();
     if (!argv[0])
         argv[0] = g_strdup("/bin/sh");
+    if (self->login_shell)
+        argv[1] = "-l";
     // Using a cancellable causes an operation not supported error
     //self->launch_cancellable = g_cancellable_new();
     self->launch_callback = callback;
@@ -194,6 +208,7 @@ void roxterm_vte_spawn(RoxtermVte *self,
             self->directory, argv, self->env ? self->env->strv : NULL,
             G_SPAWN_DEFAULT, NULL, NULL, NULL, -1, self->launch_cancellable,
             roxterm_vte_spawn_callback, handle);
+    g_free(argv[0]);
 }
 
 void roxterm_vte_set_font_name(RoxtermVte *self, const char *font)
