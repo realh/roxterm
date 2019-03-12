@@ -203,6 +203,18 @@ int roxterm_vte_get_zoom(RoxtermVte *self)
     return self->zoom;
 }
 
-void roxterm_vte_set_profile(RoxtermVte *self, const char *profile);
+void roxterm_vte_set_profile(RoxtermVte *self, const char *profile_name)
+{
+    GObject *obj = G_OBJECT(self);
+    if (self->profile)
+    {
+        if (!strcmp(roxterm_profile_get_name(self->profile), profile_name))
+            return;
+        roxterm_profile_disconnect_property_listener(self->profile, obj);
+        g_object_unref(self->profile);
+    }
+    self->profile = roxterm_profile_lookup(profile_name);
+    roxterm_profile_connect_property_listener(self->profile, obj, NULL);
+}
 
 const char *roxterm_vte_get_profile(RoxtermVte *self);

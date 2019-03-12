@@ -64,7 +64,7 @@ enum {
 
 static GParamSpec *roxterm_profile_props[N_PROPS] = {NULL};
 
-static void roxterm_profile_set_name(RoxtermProfile *self, const char *name)
+void roxterm_profile_set_name(RoxtermProfile *self, const char *name)
 {
     if (self->filename)
     {
@@ -93,6 +93,11 @@ static void roxterm_profile_set_name(RoxtermProfile *self, const char *name)
                 dup_name);
     }
     self->name = g_strdup(name);
+}
+
+const char *roxterm_profile_get_name(RoxtermProfile *self)
+{
+    return self->name;
 }
 
 static void roxterm_profile_set_property(GObject *obj, guint prop_id,

@@ -113,6 +113,10 @@ void roxterm_profile_disconnect_property_listener(RoxtermProfile *self,
 void roxterm_profile_apply_as_properties(RoxtermProfile *self,
         GObject *target, gpointer mapper);
 
+const char *roxterm_profile_get_name(RoxtermProfile *self);
+
+void roxterm_profile_set_name(RoxtermProfile *self, const char *name);
+
 G_END_DECLS
 
 #endif /* __ROXTERM_PROFILE_H */
