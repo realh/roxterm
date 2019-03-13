@@ -37,7 +37,6 @@ struct _RoxtermApplication;
  * Creates a new window with an empty notebook
  *
  * @app: (transfer none):
- * @wp: (transfer none):
  *
  * Returns: (transfer full):
  */

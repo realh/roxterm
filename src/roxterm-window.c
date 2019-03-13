@@ -18,6 +18,7 @@
 */
 
 #include "roxterm-application.h"
+#include "roxterm-header-bar.h"
 #include "roxterm-window.h"
 
 struct _RoxtermWindow {
@@ -89,7 +90,9 @@ static void roxterm_window_class_init(RoxtermWindowClass *klass)
 
 static void roxterm_window_init(RoxtermWindow *self)
 {
-    (void) self;
+    GtkWindow *gwin = GTK_WINDOW(self);
+    RoxtermHeaderBar *header = roxterm_header_bar_new();
+    gtk_window_set_titlebar(gwin, GTK_WIDGET(header));
 }
 
 RoxtermWindow *roxterm_window_new(RoxtermApplication *app)
