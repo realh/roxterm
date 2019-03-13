@@ -95,7 +95,6 @@ RoxtermWindow *roxterm_application_new_window(RoxtermApplication *app,
     }
     gtk_application_add_window(GTK_APPLICATION(app), gwin);
     gtk_widget_show_all(GTK_WIDGET(win));
-    gtk_window_present(gwin);
     return win;
 }
 
