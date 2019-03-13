@@ -35,6 +35,7 @@ static void roxterm_header_bar_init(RoxtermHeaderBar *self)
 {
     GtkHeaderBar *ghdr = GTK_HEADER_BAR(self);
     gtk_header_bar_set_show_close_button(ghdr, TRUE);
+    gtk_header_bar_set_has_subtitle(ghdr, FALSE);
     self->burger = gtk_menu_button_new();
     gtk_menu_button_set_direction(GTK_MENU_BUTTON(self->burger),
             GTK_ARROW_NONE);
