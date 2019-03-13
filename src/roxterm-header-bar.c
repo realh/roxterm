@@ -22,7 +22,6 @@
 struct _RoxtermHeaderBar {
     GtkHeaderBar parent_instance;
     GtkWidget *burger;
-    GtkWidget *term_menu_btn;
 };
 
 G_DEFINE_TYPE(RoxtermHeaderBar, roxterm_header_bar, GTK_TYPE_HEADER_BAR);
@@ -40,11 +39,6 @@ static void roxterm_header_bar_init(RoxtermHeaderBar *self)
     gtk_menu_button_set_direction(GTK_MENU_BUTTON(self->burger),
             GTK_ARROW_NONE);
     gtk_header_bar_pack_end(ghdr, self->burger);
-    self->term_menu_btn = gtk_menu_button_new();
-    GtkWidget *img = gtk_image_new_from_icon_name(
-            "accessories-text-editor-symbolic", GTK_ICON_SIZE_SMALL_TOOLBAR);
-    gtk_container_add(GTK_CONTAINER(self->term_menu_btn), img);
-    gtk_header_bar_pack_end(ghdr, self->term_menu_btn);
 }
 
 RoxtermHeaderBar *roxterm_header_bar_new(void)
