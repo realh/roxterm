@@ -8,6 +8,7 @@ packages = ("gtk+-3.0", "vte-2.91", "msgpack")
 lang = "c"
 std = "c99"
 localincs = ("build/src",)
+warnings = ["-Wall", "-Wextra", "-Wno-missing-field-initializers",]
 
 here = os.path.abspath(os.path.dirname(sys.argv[0]))
 output = os.path.join(here, ".ycm_extra_conf.py")
@@ -43,7 +44,8 @@ fp.close()
 for d in localincs:
     flags.append("-I" + os.path.join(here, d))
 
-flags.extend(["-I.", "-Wall", "-Wextra", "-x"+lang, "-std="+std])
+flags.extend(warnings)
+flags.extend(["-I.", "-x"+lang, "-std="+std])
 
 os.unlink(output)
 fp = open(output, 'w')
