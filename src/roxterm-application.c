@@ -23,12 +23,56 @@
 #include <string.h>
 
 #define ROXTERM_APPLICATION_ID "uk.co.realh.roxterm4"
+#define ROXTERM_RESOURCE_PATH "/uk/co/realh/roxterm4/"
 
 struct _RoxtermApplication {
     GtkApplication parent_instance;
 };
 
 G_DEFINE_TYPE(RoxtermApplication, roxterm_application, GTK_TYPE_APPLICATION);
+
+static void on_app_about(GSimpleAction *action, GVariant *param, gpointer app)
+{
+    (void) action;
+    (void) param;
+    (void) app;
+}
+
+static void on_app_prefs(GSimpleAction *action, GVariant *param, gpointer app)
+{
+    (void) action;
+    (void) param;
+    (void) app;
+}
+
+static void on_app_new_win(GSimpleAction *action, GVariant *param, gpointer app)
+{
+    (void) action;
+    (void) param;
+    (void) app;
+}
+
+static void on_app_new_vim(GSimpleAction *action, GVariant *param, gpointer app)
+{
+    (void) action;
+    (void) param;
+    (void) app;
+}
+
+static void on_app_quit(GSimpleAction *action, GVariant *param, gpointer app)
+{
+    (void) action;
+    (void) param;
+    g_application_quit(G_APPLICATION(app));
+}
+
+static GActionEntry roxterm_app_actions[] = {
+    { "about", on_app_about, NULL, NULL, NULL },
+    { "prefs", on_app_prefs, NULL, NULL, NULL },
+    { "new-win", on_app_new_win, NULL, NULL, NULL },
+    { "new-vim", on_app_new_vim, NULL, NULL, NULL },
+    { "quit", on_app_quit, NULL, NULL, NULL },
+};
 
 static void roxterm_application_window_removed(GtkApplication *app,
         GtkWindow *win)
@@ -37,6 +81,19 @@ static void roxterm_application_window_removed(GtkApplication *app,
             ->window_removed(app, win);
     if (!gtk_application_get_windows(app))
         g_application_quit(G_APPLICATION(app));
+}
+
+static void roxterm_application_startup(GApplication *gapp)
+{
+    GtkApplication *gtkapp = GTK_APPLICATION(gapp);
+    GtkBuilder *builder = gtk_builder_new_from_resource(ROXTERM_RESOURCE_PATH
+            "menus.ui");
+    GMenuModel *app_menu
+        = G_MENU_MODEL(gtk_builder_get_object(builder, "app-menu"));
+    gtk_application_set_app_menu(gtkapp, app_menu);
+    g_action_map_add_action_entries(G_ACTION_MAP(gapp),
+            roxterm_app_actions, G_N_ELEMENTS(roxterm_app_actions), gapp);
+    g_object_unref(builder);
 }
 
 static gint roxterm_application_command_line(GApplication *gapp,

@@ -20,7 +20,15 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/version.h.in
     ${CMAKE_CURRENT_BINARY_DIR}/version.h)
 
-add_executable(roxterm4
+add_custom_command(OUTPUT gresources.c
+    COMMAND glib-compile-resources
+        --target=${CMAKE_CURRENT_BINARY_DIR}/gresources.c --generate-source
+        --c-name=roxterm_resource ${CMAKE_CURRENT_SOURCE_DIR}/gresources.xml
+        --sourcedir=${CMAKE_CURRENT_SOURCE_DIR}
+        MAIN_DEPENDENCY gresources.xml
+        DEPENDS menus.ui)
+
+add_executable(roxterm4 gresources.c
     multitext-geometry-provider.c multitext-notebook.c multitext-window.c
     roxterm-application.c roxterm-header-bar.c roxterm-launch-params.c
     roxterm-profile.c roxterm-rgba.c roxterm-vte.c roxterm-window.c)
