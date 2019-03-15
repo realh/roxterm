@@ -30,9 +30,9 @@ struct _RoxtermProfile {
 
 GHashTable *roxterm_profiles = NULL;
 
-static void roxterm_profile_weak_ref_notify(gpointer handle, GObject *obj)
+static void roxterm_profile_weak_ref_notify(gpointer handle,
+        UNUSED GObject *obj)
 {
-    (void) obj;
     g_hash_table_remove(roxterm_profiles, handle);
 }
 
@@ -171,9 +171,8 @@ static void roxterm_profile_class_init(RoxtermProfileClass *klass)
     ROXTERM_PROFILE_DEFINE_SIGNAL(rpt, "rgba", RGBA, ROXTERM_TYPE_RGBA);
 }
 
-static void roxterm_profile_init(RoxtermProfile *self)
+static void roxterm_profile_init(UNUSED RoxtermProfile *self)
 {
-    (void) self;
 }
 
 RoxtermProfile *roxterm_profile_new(const char *name)
@@ -414,10 +413,9 @@ gboolean roxterm_profile_has_rgba(RoxtermProfile *self, const char *key)
 #define ROXTERM_PROFILE_LISTENER(rtype) roxterm_profile_on_##rtype##_changed
 
 #define ROXTERM_PROFILE_DEFINE_LISTENER(rtype, gtype) \
-    static void ROXTERM_PROFILE_LISTENER(rtype) (RoxtermProfile *self, \
+    static void ROXTERM_PROFILE_LISTENER(rtype) (UNUSED RoxtermProfile *self, \
         const char *key, gtype value, GObject *listener) \
 { \
-    (void) self; \
     g_object_set(listener, key, value, NULL); \
 }
 
@@ -437,9 +435,8 @@ ROXTERM_PROFILE_DEFINE_LISTENER(rgba, RoxtermRGBA)
             0, 0, NULL, ROXTERM_PROFILE_LISTENER(rtype), listener);
 
 void roxterm_profile_connect_property_listener(RoxtermProfile *self,
-        GObject *listener, gpointer mapper)
+        GObject *listener, UNUSED gpointer mapper)
 {
-    (void) mapper;
     ROXTERM_PROFILE_CONNECT_LISTENER(self, string, listener);
     ROXTERM_PROFILE_CONNECT_LISTENER(self, int, listener);
     ROXTERM_PROFILE_CONNECT_LISTENER(self, boolean, listener);
@@ -502,9 +499,8 @@ static void roxterm_profile_apply_group(RoxtermProfile *self,
             ROXTERM_PROFILE_APPLICATOR(rtype), target)
 
 void roxterm_profile_apply_as_properties(RoxtermProfile *self,
-        GObject *target, gpointer mapper)
+        GObject *target, UNUSED gpointer mapper)
 {
-    (void) mapper;
     roxterm_profile_load(self);
     ROXTERM_PROFILE_APPLY_GROUP(self, string, target);
     ROXTERM_PROFILE_APPLY_GROUP(self, int, target);

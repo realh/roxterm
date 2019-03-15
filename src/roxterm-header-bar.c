@@ -17,6 +17,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+#include "config.h"
 #include "roxterm-header-bar.h"
 
 struct _RoxtermHeaderBar {
@@ -26,9 +27,8 @@ struct _RoxtermHeaderBar {
 
 G_DEFINE_TYPE(RoxtermHeaderBar, roxterm_header_bar, GTK_TYPE_HEADER_BAR);
 
-static void roxterm_header_bar_class_init(RoxtermHeaderBarClass *klass)
+static void roxterm_header_bar_class_init(UNUSED RoxtermHeaderBarClass *klass)
 {
-    (void) klass;
 }
 
 static void roxterm_header_bar_init(RoxtermHeaderBar *self)

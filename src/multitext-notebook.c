@@ -17,6 +17,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+#include "config.h"
 #include "multitext-notebook.h"
 
 struct _MultitextNotebook {
@@ -25,14 +26,12 @@ struct _MultitextNotebook {
 
 G_DEFINE_TYPE(MultitextNotebook, multitext_notebook, GTK_TYPE_NOTEBOOK);
 
-static void multitext_notebook_class_init(MultitextNotebookClass *klass)
+static void multitext_notebook_class_init(UNUSED MultitextNotebookClass *klass)
 {
-    (void) klass;
 }
 
-static void multitext_notebook_init(MultitextNotebook *self)
+static void multitext_notebook_init(UNUSED MultitextNotebook *self)
 {
-    (void) self;
 }
 
 MultitextNotebook *multitext_notebook_new(void)

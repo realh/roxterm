@@ -17,6 +17,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+#include "config.h"
 #include "roxterm-application.h"
 #include "roxterm-launch-params.h"
 
@@ -31,38 +32,29 @@ struct _RoxtermApplication {
 
 G_DEFINE_TYPE(RoxtermApplication, roxterm_application, GTK_TYPE_APPLICATION);
 
-static void on_app_about(GSimpleAction *action, GVariant *param, gpointer app)
+static void on_app_about(UNUSED GSimpleAction *action, UNUSED GVariant *param,
+        UNUSED gpointer app)
 {
-    (void) action;
-    (void) param;
-    (void) app;
 }
 
-static void on_app_prefs(GSimpleAction *action, GVariant *param, gpointer app)
+static void on_app_prefs(UNUSED GSimpleAction *action, UNUSED GVariant *param,
+        UNUSED gpointer app)
 {
-    (void) action;
-    (void) param;
-    (void) app;
 }
 
-static void on_app_new_win(GSimpleAction *action, GVariant *param, gpointer app)
+static void on_app_new_win(UNUSED GSimpleAction *action, UNUSED GVariant *param,
+        UNUSED gpointer app)
 {
-    (void) action;
-    (void) param;
-    (void) app;
 }
 
-static void on_app_new_vim(GSimpleAction *action, GVariant *param, gpointer app)
+static void on_app_new_vim(UNUSED GSimpleAction *action, UNUSED GVariant *param,
+        UNUSED gpointer app)
 {
-    (void) action;
-    (void) param;
-    (void) app;
 }
 
-static void on_app_quit(GSimpleAction *action, GVariant *param, gpointer app)
+static void on_app_quit(UNUSED GSimpleAction *action, UNUSED GVariant *param,
+        gpointer app)
 {
-    (void) action;
-    (void) param;
     g_application_quit(G_APPLICATION(app));
 }
 
@@ -97,9 +89,8 @@ static void roxterm_application_startup(GApplication *gapp)
 }
 
 static gint roxterm_application_command_line(GApplication *gapp,
-        GApplicationCommandLine *cmd_line)
+        UNUSED GApplicationCommandLine *cmd_line)
 {
-    (void) cmd_line;
     RoxtermApplication *self = ROXTERM_APPLICATION(gapp);
     GError *error = NULL;
     RoxtermLaunchParams *lp
@@ -125,9 +116,8 @@ static void roxterm_application_class_init(RoxtermApplicationClass *klass)
     gapp_klass->command_line = roxterm_application_command_line;
 }
 
-static void roxterm_application_init(RoxtermApplication *self)
+static void roxterm_application_init(UNUSED RoxtermApplication *self)
 {
-    (void) self;
 }
 
 RoxtermApplication *roxterm_application_new(void)

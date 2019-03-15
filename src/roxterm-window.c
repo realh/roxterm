@@ -83,9 +83,8 @@ static void roxterm_window_class_init(RoxtermWindowClass *klass)
 }
 #endif
 
-static void roxterm_window_class_init(RoxtermWindowClass *klass)
+static void roxterm_window_class_init(UNUSED RoxtermWindowClass *klass)
 {
-    (void) klass;
 }
 
 static void roxterm_window_init(RoxtermWindow *self)
@@ -134,7 +133,6 @@ void roxterm_window_apply_launch_params(RoxtermWindow *self,
 RoxtermVte *roxterm_window_new_tab(RoxtermWindow *self,
         RoxtermTabLaunchParams *tp, int index)
 {
-    (void) tp;
     RoxtermVte *rvt = roxterm_vte_new();
     roxterm_vte_apply_launch_params(rvt, self->lp, self->wp, tp);
     MultitextWindow *mwin = MULTITEXT_WINDOW(self);

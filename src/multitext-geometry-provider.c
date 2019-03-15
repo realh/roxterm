@@ -17,16 +17,16 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+#include "config.h"
 #include "multitext-geometry-provider.h"
 
 G_DEFINE_INTERFACE(MultitextGeometryProvider, multitext_geometry_provider,
         GTK_TYPE_WIDGET);
 
 void
-multitext_geometry_provider_default_init(MultitextGeometryProviderInterface
-        *iface)
+multitext_geometry_provider_default_init(
+        UNUSED MultitextGeometryProviderInterface *iface)
 {
-    (void) iface;
 }
 
 void
