@@ -77,6 +77,7 @@ static void roxterm_application_window_removed(GtkApplication *app,
 
 static void roxterm_application_startup(GApplication *gapp)
 {
+    G_APPLICATION_CLASS(roxterm_application_parent_class)->startup(gapp);
     GtkApplication *gtkapp = GTK_APPLICATION(gapp);
     GtkBuilder *builder = gtk_builder_new_from_resource(ROXTERM_RESOURCE_PATH
             "menus.ui");
@@ -89,8 +90,10 @@ static void roxterm_application_startup(GApplication *gapp)
 }
 
 static gint roxterm_application_command_line(GApplication *gapp,
-        UNUSED GApplicationCommandLine *cmd_line)
+        GApplicationCommandLine *cmd_line)
 {
+    G_APPLICATION_CLASS(roxterm_application_parent_class)->command_line(gapp,
+            cmd_line);
     RoxtermApplication *self = ROXTERM_APPLICATION(gapp);
     GError *error = NULL;
     RoxtermLaunchParams *lp
