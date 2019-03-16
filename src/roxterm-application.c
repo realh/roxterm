@@ -113,6 +113,7 @@ static void roxterm_application_class_init(RoxtermApplicationClass *klass)
     GtkApplicationClass *gtkapp_klass = GTK_APPLICATION_CLASS(klass);
     gtkapp_klass->window_removed = roxterm_application_window_removed;
     GApplicationClass *gapp_klass = G_APPLICATION_CLASS(klass);
+    gapp_klass->startup = roxterm_application_startup;
     gapp_klass->command_line = roxterm_application_command_line;
 }
 
