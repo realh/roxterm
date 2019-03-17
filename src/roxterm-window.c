@@ -29,60 +29,6 @@ struct _RoxtermWindow {
 
 G_DEFINE_TYPE(RoxtermWindow, roxterm_window, MULTITEXT_TYPE_WINDOW);
 
-// GtkWindow has an "application" property so we do not need properties here
-// (yet)
-#if 0
-enum {
-    PROP_APPLICATION = 1,
-    N_PROPS
-};
-
-static GParamSpec *roxterm_window_props[N_PROPS] = {NULL};
-
-static void roxterm_window_set_property(GObject *obj, guint prop_id,
-        const GValue *value, GParamSpec *pspec)
-{
-    RoxtermWindow *self = ROXTERM_WINDOW(obj);
-    switch (prop_id)
-    {
-        case PROP_APPLICATION:
-            // No point in holding a reference
-            self->app = g_value_get_object(value);
-            break;
-        default:
-            G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, prop_id, pspec);
-    }
-}
-
-static void roxterm_window_get_property(GObject *obj, guint prop_id,
-        GValue *value, GParamSpec *pspec)
-{
-    RoxtermWindow *self = ROXTERM_WINDOW(obj);
-    switch (prop_id)
-    {
-        case PROP_APPLICATION:
-            // No point in holding a reference
-            g_value_set_object(value, self->app);
-            break;
-        default:
-            G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, prop_id, pspec);
-    }
-}
-
-static void roxterm_window_class_init(RoxtermWindowClass *klass)
-{
-    GObjectClass *oklass = G_OBJECT_CLASS(klass);
-    // Accessors must be set before installing properties
-    oklass->set_property = roxterm_window_set_property;
-    oklass->get_property = roxterm_window_get_property;
-    roxterm_window_props[PROP_APPLICATION] =
-            g_param_spec_object("application", "application",
-            "RoxtermApplication", ROXTERM_TYPE_APPLICATION,
-            G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE);
-    g_object_class_install_properties(oklass, N_PROPS, roxterm_window_props);
-}
-#endif
-
 static void roxterm_window_dispose(GObject *obj)
 {
     RoxtermWindow *self = ROXTERM_WINDOW(obj);

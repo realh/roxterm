@@ -43,8 +43,9 @@ static void on_app_prefs(UNUSED GSimpleAction *action, UNUSED GVariant *param,
 }
 
 static void on_app_new_win(UNUSED GSimpleAction *action, UNUSED GVariant *param,
-        UNUSED gpointer app)
+        gpointer app)
 {
+    roxterm_application_new_window(app, NULL, NULL);
 }
 
 static void on_app_new_vim(UNUSED GSimpleAction *action, UNUSED GVariant *param,
