@@ -140,9 +140,16 @@ RoxtermWindow *roxterm_application_new_window(RoxtermApplication *app,
     RoxtermWindow *win = roxterm_window_new(app);
     GtkWindow *gwin = GTK_WINDOW(win);
     roxterm_window_apply_launch_params(win, lp, wp);
-    for (GList *link = wp->tabs; link; link = g_list_next(link))
+    if (wp)
     {
-        roxterm_window_new_tab(win, link->data, -1);
+        for (GList *link = wp->tabs; link; link = g_list_next(link))
+        {
+            roxterm_window_new_tab(win, link->data, -1);
+        }
+    }
+    else
+    {
+        roxterm_window_new_tab(win, NULL, -1);
     }
     gtk_application_add_window(GTK_APPLICATION(app), gwin);
     gtk_widget_show_all(GTK_WIDGET(win));

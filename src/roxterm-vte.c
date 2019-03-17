@@ -171,14 +171,14 @@ void roxterm_vte_apply_launch_params(RoxtermVte *self, RoxtermLaunchParams *lp,
         RoxtermWindowLaunchParams *wp, RoxtermTabLaunchParams *tp)
 {
     VteTerminal *vte = VTE_TERMINAL(self);
-    self->env = roxterm_strv_ref(lp->env);
-    if (wp->geometry_str)
+    self->env = lp ? roxterm_strv_ref(lp->env) : NULL;
+    if (wp && wp->geometry_str)
     {
         vte_terminal_set_size(vte, wp->columns, wp->rows);
     }
-    if (tp->directory)
+    if (tp && tp->directory)
         self->directory = g_strdup(tp->directory);
-    roxterm_vte_set_profile(self, tp->profile_name);
+    roxterm_vte_set_profile(self, tp ? tp->profile_name : "Default");
 }
 
 static void roxterm_vte_spawn_callback(VteTerminal *vte,

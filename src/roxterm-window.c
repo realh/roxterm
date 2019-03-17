@@ -83,6 +83,21 @@ static void roxterm_window_class_init(RoxtermWindowClass *klass)
 }
 #endif
 
+static void roxterm_window_dispose(GObject *obj)
+{
+    RoxtermWindow *self = ROXTERM_WINDOW(obj);
+    if (self->wp)
+    {
+        roxterm_window_launch_params_unref(self->wp);
+        self->wp = NULL;
+    }
+    if (self->lp)
+    {
+        roxterm_launch_params_unref(self->lp);
+        self->lp = NULL;
+    }
+}
+
 static void roxterm_window_class_init(UNUSED RoxtermWindowClass *klass)
 {
 }
@@ -106,8 +121,8 @@ RoxtermWindow *roxterm_window_new(RoxtermApplication *app)
 void roxterm_window_apply_launch_params(RoxtermWindow *self,
         RoxtermLaunchParams *lp, RoxtermWindowLaunchParams *wp)
 {
-    self->lp = roxterm_launch_params_ref(lp);
-    self->wp = roxterm_window_launch_params_ref(wp);
+    self->lp = lp ? roxterm_launch_params_ref(lp) : NULL;
+    self->wp = wp ? roxterm_window_launch_params_ref(wp) : NULL;
 }
 
 static void roxterm_window_spawn_callback(VteTerminal *vte,
@@ -126,9 +141,6 @@ static void roxterm_window_spawn_callback(VteTerminal *vte,
         // TODO: Verify that this also destroys the tab's label
     }
 }
-
-void roxterm_window_apply_launch_params(RoxtermWindow *self,
-        RoxtermLaunchParams *lp, RoxtermWindowLaunchParams *wp);
 
 RoxtermVte *roxterm_window_new_tab(RoxtermWindow *self,
         RoxtermTabLaunchParams *tp, int index)
