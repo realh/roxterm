@@ -197,27 +197,25 @@ void multitext_window_set_initial_size(MultitextWindow *self)
     gtk_widget_get_preferred_height(nbw, &min_h, &nat_h);
     // Now we know the minimum size for the notebook
     g_debug("NB min size %dx%d px natural %dx%d px", min_w, min_h, nat_w, nat_h);
-    gtk_widget_get_preferred_width(tlw, &min_w, &nat_w);
-    gtk_widget_get_preferred_height(tlw, &min_h, &nat_h);
-    // Now we know the minimum size for the window
-    g_debug("Win min size %dx%d px natural %dx%d px", min_w, min_h, nat_w, nat_h);
-    GtkAllocation nba, gpa, wa;
+    GtkAllocation nba, gpa;
     nba.width = min_w;
     nba.height = min_h;
     nba.x = nba.y = 0;
-    gtk_widget_size_allocate(tlw, &nba);
+    gtk_widget_size_allocate(nbw, &nba);
     // Allocating the min size to the window gives it and its children valid
     // allocations with correct relative sizes
     gtk_widget_get_allocation(nbw, &nba);
     gtk_widget_get_allocation(gpw, &gpa);
-    gtk_widget_get_allocation(tlw, &wa);
     // Now we can read the difference in size between the notebook and the text
     // widget
     g_debug("GP allocation %dx%d px", gpa.width, gpa.height);
     g_debug("NB allocation %dx%d px", nba.width, nba.height);
-    g_debug("Win allocation %dx%d px", wa.width, wa.height);
     diff_w += nba.width - gpa.width;
     diff_h += nba.height - gpa.height;
+    // This difference plus the border/padding size added to the target size
+    // gives us the final size of the window content. AFAICT
+    // gtk_window_set_default_size sets the size available in the window for
+    // its content; we can ignore the window chrome
     gtk_window_set_default_size(GTK_WINDOW(self), diff_w + target_width,
             diff_h + target_height);
 }
