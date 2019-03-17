@@ -59,12 +59,18 @@ static void roxterm_vte_get_cell_size(MultitextGeometryProvider *self,
         *height = vte_terminal_get_char_height(vte);
 }
 
+static void roxterm_vte_set_active(UNUSED MultitextGeometryProvider *self,
+        UNUSED gboolean active)
+{
+}
+
 static void roxterm_vte_geometry_provider_init(
         MultitextGeometryProviderInterface *iface)
 {
     iface->get_initial_size = roxterm_vte_get_initial_size;
     iface->get_current_size = roxterm_vte_get_current_size;
     iface->get_cell_size = roxterm_vte_get_cell_size;
+    iface->set_active = roxterm_vte_set_active;
 }
 
 static void roxterm_vte_dispose(GObject *obj)

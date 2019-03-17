@@ -68,6 +68,6 @@ void multitext_geometry_provider_set_active(MultitextGeometryProvider *self,
     g_return_if_fail(MULTITEXT_IS_GEOMETRY_PROVIDER(self));
     MultitextGeometryProviderInterface *iface
             = MULTITEXT_GEOMETRY_PROVIDER_GET_IFACE(self);
-    g_return_if_fail(iface->get_cell_size != NULL);
+    g_return_if_fail(iface->set_active != NULL);
     iface->set_active(self, active);
 }

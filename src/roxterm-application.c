@@ -153,6 +153,7 @@ RoxtermWindow *roxterm_application_new_window(RoxtermApplication *app,
         roxterm_window_new_tab(win, NULL, -1);
     }
     gtk_application_add_window(GTK_APPLICATION(app), gwin);
+    multitext_window_set_initial_size(MULTITEXT_WINDOW(win));
     gtk_widget_show_all(GTK_WIDGET(win));
     return win;
 }
