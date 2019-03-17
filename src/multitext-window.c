@@ -175,28 +175,22 @@ void multitext_window_set_initial_size(MultitextWindow *self)
     target_height = cell_height * rows;
     // target_* hold the target size of the body of the text widget, excluding
     // padding, borders etc
-    g_debug("GP wants %dx%d cells: %dx%d px",
-            columns, rows, target_width, target_height);
     multitext_geometry_provider_get_current_size(priv->gp, &columns, &rows);
     current_width = cell_width * columns;
     current_height = cell_height * rows;
     // target_* hold the current size of the body of the text widget, excluding
     // padding, borders etc; this may differ from target_*
-    g_debug("GP currently %dx%d cells: %dx%d px",
-            columns, rows, current_width, current_height);
     GtkWidget *gpw = GTK_WIDGET(priv->gp);
     int min_w, nat_w, min_h, nat_h;
     gtk_widget_get_preferred_width(gpw, &min_w, &nat_w);
     gtk_widget_get_preferred_height(gpw, &min_h, &nat_h);
     int diff_w = nat_w - current_width;
     int diff_h = nat_h - current_height;
-    g_debug("GP min size %dx%d px natural %dx%d px", min_w, min_h, nat_w, nat_h);
     // The difference between natural size and current_size should be the size
     // of padding/border the text widget has when snapped to geometry hints.
     gtk_widget_get_preferred_width(nbw, &min_w, &nat_w);
     gtk_widget_get_preferred_height(nbw, &min_h, &nat_h);
     // Now we know the minimum size for the notebook
-    g_debug("NB min size %dx%d px natural %dx%d px", min_w, min_h, nat_w, nat_h);
     GtkAllocation nba, gpa;
     nba.width = min_w;
     nba.height = min_h;
@@ -208,8 +202,6 @@ void multitext_window_set_initial_size(MultitextWindow *self)
     gtk_widget_get_allocation(gpw, &gpa);
     // Now we can read the difference in size between the notebook and the text
     // widget
-    g_debug("GP allocation %dx%d px", gpa.width, gpa.height);
-    g_debug("NB allocation %dx%d px", nba.width, nba.height);
     diff_w += nba.width - gpa.width;
     diff_h += nba.height - gpa.height;
     // This difference plus the border/padding size added to the target size
