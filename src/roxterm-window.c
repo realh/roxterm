@@ -93,9 +93,18 @@ RoxtermVte *roxterm_window_new_tab(RoxtermWindow *self,
 {
     RoxtermVte *rvt = roxterm_vte_new();
     roxterm_vte_apply_launch_params(rvt, self->lp, self->wp, tp);
+    GtkScrollable *scrollable = GTK_SCROLLABLE(rvt);
+    GtkWidget *vpw = gtk_scrolled_window_new(
+            gtk_scrollable_get_hadjustment(scrollable), 
+            gtk_scrollable_get_vadjustment(scrollable));
+    GtkScrolledWindow *viewport = GTK_SCROLLED_WINDOW(vpw);
+    gtk_scrolled_window_set_policy(viewport, GTK_POLICY_NEVER,
+            GTK_POLICY_ALWAYS);
+    gtk_scrolled_window_set_overlay_scrolling(viewport, TRUE);
+    gtk_container_add(GTK_CONTAINER(vpw), GTK_WIDGET(rvt));
     MultitextWindow *mwin = MULTITEXT_WINDOW(self);
     GtkNotebook *gnb = GTK_NOTEBOOK(multitext_window_get_notebook(mwin));
-    gtk_notebook_insert_page(gnb, GTK_WIDGET(rvt), NULL, index);
+    gtk_notebook_insert_page(gnb, vpw, NULL, index);
     roxterm_vte_spawn(rvt, roxterm_window_spawn_callback, self);
     return rvt;
 }
