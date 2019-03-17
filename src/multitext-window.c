@@ -133,6 +133,7 @@ void multitext_window_set_geometry_provider(MultitextWindow *self,
     g_return_if_fail(priv != NULL);
     if (priv->gp)
     {
+        multitext_geometry_provider_set_active(gp, FALSE);
         multitext_window_disconnect_provider_signals(self);
     }
     if (gp) 
@@ -141,6 +142,7 @@ void multitext_window_set_geometry_provider(MultitextWindow *self,
                 G_CALLBACK(multitext_window_geometry_provider_anchored), self);
         priv->destroy_sig_tag = g_signal_connect(gp, "destroy",
                 G_CALLBACK(multitext_window_geometry_provider_destroyed), self);
+        multitext_geometry_provider_set_active(gp, TRUE);
     }
     priv->gp = gp;
 }
@@ -150,4 +152,23 @@ MultitextNotebook *multitext_window_get_notebook(MultitextWindow *self)
     MultitextWindowPrivate *priv
         = multitext_window_get_instance_private(self);
     return priv->notebook;
+}
+
+void multitext_window_set_initial_size(MultitextWindow *self)
+{
+    MultitextWindowPrivate *priv
+        = multitext_window_get_instance_private(self);
+    int columns, rows;
+    int cell_width, cell_height;
+    int target_width, target_height;
+    int current_width, current_height;
+    multitext_geometry_provider_get_initial_size(priv->gp, &columns, &rows);
+    multitext_geometry_provider_get_cell_size(priv->gp,
+            &cell_width, &cell_height);
+    target_width = cell_width * columns;
+    target_height = cell_height * rows;
+    multitext_geometry_provider_get_current_size(priv->gp, &columns, &rows);
+    current_width = cell_width * columns;
+    current_height = cell_height * rows;
+    // TODO
 }

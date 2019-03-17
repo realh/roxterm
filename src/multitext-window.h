@@ -43,6 +43,9 @@ struct _MultitextWindowClass {
  *
  * @gp: (transfer none) (nullable): The child widget which is the geometry
  *          provider, NULL if the child is being removed
+ *
+ * This calls multitext_geometry_provider_set_active TRUE, FALSE on the new
+ * and old active child respectively
  */
 void multitext_window_set_geometry_provider(MultitextWindow *self,
         MultitextGeometryProvider *gp);
@@ -57,6 +60,13 @@ MultitextGeometryProvider *
 multitext_window_get_geometry_provider(MultitextWindow *self);
 
 MultitextNotebook *multitext_window_get_notebook(MultitextWindow *win);
+
+/**
+ * multitext_window_set_initial_size:
+ *
+ * Sets initial size based on GeometryProvider child
+ */
+void multitext_window_set_initial_size(MultitextWindow *win);
 
 G_END_DECLS
 

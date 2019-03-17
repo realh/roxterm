@@ -105,6 +105,8 @@ RoxtermVte *roxterm_window_new_tab(RoxtermWindow *self,
     MultitextWindow *mwin = MULTITEXT_WINDOW(self);
     GtkNotebook *gnb = GTK_NOTEBOOK(multitext_window_get_notebook(mwin));
     gtk_notebook_insert_page(gnb, vpw, NULL, index);
+    multitext_window_set_geometry_provider(MULTITEXT_WINDOW(self),
+            MULTITEXT_GEOMETRY_PROVIDER(rvt));
     roxterm_vte_spawn(rvt, roxterm_window_spawn_callback, self);
     return rvt;
 }
