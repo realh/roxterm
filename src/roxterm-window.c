@@ -148,6 +148,7 @@ static void roxterm_window_add_tab_bar_buttons(RoxtermWindow *self)
 
 static void roxterm_window_constructed(GObject *obj)
 {
+    G_OBJECT_CLASS(roxterm_window_parent_class)->constructed(obj);
     RoxtermWindow *self = ROXTERM_WINDOW(obj);
     roxterm_window_add_tab_bar_buttons(self);
 }
