@@ -188,38 +188,11 @@ static void roxterm_window_spawn_callback(VteTerminal *vte,
     }
 }
 
-void roxterm_window_diagnose_size(MultitextGeometryProvider *gp)
-{
-    gtk_widget_show_all(GTK_WIDGET(gp));
-    int columns, rows;
-    int cell_width, cell_height;
-    int target_width, target_height;
-    int current_width, current_height;
-    multitext_geometry_provider_get_initial_size(gp, &columns, &rows);
-    multitext_geometry_provider_get_cell_size(gp,
-            &cell_width, &cell_height);
-    target_width = cell_width * columns;
-    target_height = cell_height * rows;
-    g_debug("GP wants %dx%d cells: %dx%d px",
-            columns, rows, target_width, target_height);
-    multitext_geometry_provider_get_current_size(gp, &columns, &rows);
-    current_width = cell_width * columns;
-    current_height = cell_height * rows;
-    g_debug("GP's current size is %dx%d cells: %dx%d px",
-            columns, rows, current_width, current_height);
-    GtkWidget *gpw = GTK_WIDGET(gp);
-    int min_w, nat_w, min_h, nat_h;
-    gtk_widget_get_preferred_width(gpw, &min_w, &nat_w);
-    gtk_widget_get_preferred_height(gpw, &min_h, &nat_h);
-    g_debug("Min size %dx%d px natural %dx%d px", min_w, min_h, nat_w, nat_h);
-}
-
 RoxtermVte *roxterm_window_new_tab(RoxtermWindow *self,
         RoxtermTabLaunchParams *tp, int index)
 {
     RoxtermVte *rvt = roxterm_vte_new();
     roxterm_vte_apply_launch_params(rvt, self->lp, self->wp, tp);
-    //roxterm_window_diagnose_size(MULTITEXT_GEOMETRY_PROVIDER(rvt));
     GtkScrollable *scrollable = GTK_SCROLLABLE(rvt);
     GtkWidget *vpw = gtk_scrolled_window_new(
             gtk_scrollable_get_hadjustment(scrollable), 
