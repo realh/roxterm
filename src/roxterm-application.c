@@ -28,8 +28,9 @@
 
 struct _RoxtermApplication {
     GtkApplication parent_instance;
-    GtkBuilder *builder;
 };
+
+static GtkBuilder *roxterm_app_builder = NULL;
 
 G_DEFINE_TYPE(RoxtermApplication, roxterm_application, GTK_TYPE_APPLICATION);
 
@@ -68,16 +69,6 @@ static GActionEntry roxterm_app_actions[] = {
     { "quit", on_app_quit, NULL, NULL, NULL },
 };
 
-static void roxterm_application_dispose(GObject *obj)
-{
-    RoxtermApplication *self = ROXTERM_APPLICATION(obj);
-    if (self->builder)
-    {
-        g_object_unref(self->builder);
-        self->builder = NULL;
-    }
-}
-
 static void roxterm_application_window_removed(GtkApplication *app,
         GtkWindow *win)
 {
@@ -89,13 +80,11 @@ static void roxterm_application_window_removed(GtkApplication *app,
 
 static void roxterm_application_startup(GApplication *gapp)
 {
-    RoxtermApplication *self = ROXTERM_APPLICATION(gapp);
     G_APPLICATION_CLASS(roxterm_application_parent_class)->startup(gapp);
     GtkApplication *gtkapp = GTK_APPLICATION(gapp);
-    self->builder = gtk_builder_new_from_resource(ROXTERM_RESOURCE_PATH
-            "menus.ui");
+    GtkBuilder *builder = roxterm_application_get_builder();
     GMenuModel *app_menu
-        = G_MENU_MODEL(gtk_builder_get_object(self->builder, "app-menu"));
+        = G_MENU_MODEL(gtk_builder_get_object(builder, "app-menu"));
     gtk_application_set_app_menu(gtkapp, app_menu);
     g_action_map_add_action_entries(G_ACTION_MAP(gapp),
             roxterm_app_actions, G_N_ELEMENTS(roxterm_app_actions), gapp);
@@ -125,11 +114,9 @@ static gint roxterm_application_command_line(GApplication *gapp,
 
 static void roxterm_application_class_init(RoxtermApplicationClass *klass)
 {
-    GObjectClass *oklass = G_OBJECT_CLASS(klass);
     GtkApplicationClass *gtkapp_klass = GTK_APPLICATION_CLASS(klass);
     gtkapp_klass->window_removed = roxterm_application_window_removed;
     GApplicationClass *gapp_klass = G_APPLICATION_CLASS(klass);
-    oklass->dispose = roxterm_application_dispose;
     gapp_klass->startup = roxterm_application_startup;
     gapp_klass->command_line = roxterm_application_command_line;
 }
@@ -151,8 +138,10 @@ RoxtermApplication *roxterm_application_new(void)
 RoxtermWindow *roxterm_application_new_window(RoxtermApplication *app,
         RoxtermLaunchParams *lp, RoxtermWindowLaunchParams *wp)
 {
-    RoxtermWindow *win = roxterm_window_new(app);
+    GtkApplication *gapp = GTK_APPLICATION(app);
+    RoxtermWindow *win = roxterm_window_new();
     GtkWindow *gwin = GTK_WINDOW(win);
+    gtk_window_set_application(gwin, gapp);
     roxterm_window_apply_launch_params(win, lp, wp);
     if (wp)
     {
@@ -165,7 +154,7 @@ RoxtermWindow *roxterm_application_new_window(RoxtermApplication *app,
     {
         roxterm_window_new_tab(win, NULL, -1);
     }
-    gtk_application_add_window(GTK_APPLICATION(app), gwin);
+    gtk_application_add_window(gapp, gwin);
     multitext_window_set_initial_size(MULTITEXT_WINDOW(win));
     gtk_widget_show_all(GTK_WIDGET(win));
     return win;
@@ -202,9 +191,14 @@ static int roxterm_application_parse_options_early(int argc, char **argv)
     return result;
 }
 
-GtkBuilder *roxterm_application_get_builder(RoxtermApplication *app)
+GtkBuilder *roxterm_application_get_builder(void)
 {
-    return app->builder;
+    if (!roxterm_app_builder)
+    {
+        roxterm_app_builder = gtk_builder_new_from_resource(
+                ROXTERM_RESOURCE_PATH "menus.ui");
+    }
+    return roxterm_app_builder;
 }
 
 int main(int argc, char **argv)

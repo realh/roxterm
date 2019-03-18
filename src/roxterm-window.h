@@ -29,18 +29,14 @@ G_BEGIN_DECLS
 G_DECLARE_FINAL_TYPE(RoxtermWindow, roxterm_window,
         ROXTERM, WINDOW, MultitextWindow);
 
-struct _RoxtermApplication;
-
 /**
  * roxterm_window_new:
  *
  * Creates a new window with an empty notebook
  *
- * @app: (transfer none):
- *
  * Returns: (transfer full):
  */
-RoxtermWindow *roxterm_window_new(struct _RoxtermApplication *app);
+RoxtermWindow *roxterm_window_new(void);
 
 /**
  * roxterm_window_apply_launch_params:

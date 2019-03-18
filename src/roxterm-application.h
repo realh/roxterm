@@ -40,7 +40,7 @@ RoxtermWindow *roxterm_application_new_window(RoxtermApplication *app,
  *
  * Returns: (transfer none) (nullable):
  */
-GtkBuilder *roxterm_application_get_builder(RoxtermApplication *app);
+GtkBuilder *roxterm_application_get_builder(void);
 
 G_END_DECLS
 
