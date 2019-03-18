@@ -103,6 +103,8 @@ static void roxterm_window_add_tab_bar_buttons(RoxtermWindow *self)
     gtk_actionable_set_action_name(nt_btn_a, "win.new-tab");
     GtkWidget *box_w = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
     GtkBox *box = GTK_BOX(box_w);
+    g_object_set(nt_btn, "relief", GTK_RELIEF_NONE, NULL);
+    g_object_set(menu_btn, "relief", GTK_RELIEF_NONE, NULL);
     gtk_box_pack_start(box, nt_btn_w, FALSE, FALSE, 0);
     gtk_box_pack_start(box, menu_btn_w, FALSE, FALSE, 0);
     GtkNotebook *nb
