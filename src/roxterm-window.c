@@ -82,6 +82,37 @@ static GActionEntry roxterm_win_actions[] = {
     { "new-vim-tab", on_win_new_vim_tab, NULL, NULL, NULL },
 };
 
+static void roxterm_window_set_tab_button_style(GtkWidget *btn,
+        const char *name)
+{
+    gtk_widget_set_name(btn, name);
+    static GtkCssProvider *provider = NULL;
+    static const char *css =
+        "#new-tab-btn {"
+        "    padding-right: 0px;"
+        "    margin-right: 0px;"
+        "}\n"
+        "#tab-menu-btn {"
+        "    padding-left: 0px;"
+        "    margin-left: 0px;"
+        "}\n";
+    if (!provider)
+    {
+        provider = gtk_css_provider_new();
+        GError *error = NULL;
+        if (!gtk_css_provider_load_from_data(provider,
+                    css, -1, &error))
+        {
+            g_critical("Error in tab button CSS: %s", error->message);
+            g_error_free(error);
+            return;
+        }
+    }
+    GtkStyleContext *ctx = gtk_widget_get_style_context(btn);
+    gtk_style_context_add_provider(ctx, GTK_STYLE_PROVIDER(provider),
+            GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+}
+
 // This has to be called at end of construction because it reads the app
 // which is set as a property
 static void roxterm_window_add_tab_bar_buttons(RoxtermWindow *self)
@@ -104,7 +135,9 @@ static void roxterm_window_add_tab_bar_buttons(RoxtermWindow *self)
     GtkWidget *box_w = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
     GtkBox *box = GTK_BOX(box_w);
     g_object_set(nt_btn, "relief", GTK_RELIEF_NONE, NULL);
+    roxterm_window_set_tab_button_style(nt_btn_w, "new-tab-btn");
     g_object_set(menu_btn, "relief", GTK_RELIEF_NONE, NULL);
+    roxterm_window_set_tab_button_style(menu_btn_w, "tab-menu-btn");
     gtk_box_pack_start(box, nt_btn_w, FALSE, FALSE, 0);
     gtk_box_pack_start(box, menu_btn_w, FALSE, FALSE, 0);
     GtkNotebook *nb
