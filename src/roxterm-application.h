@@ -35,6 +35,13 @@ RoxtermApplication *roxterm_application_new(void);
 RoxtermWindow *roxterm_application_new_window(RoxtermApplication *app,
         RoxtermLaunchParams *lp, RoxtermWindowLaunchParams *wp);
 
+/**
+ * roxterm_application_get_builder:
+ *
+ * Returns: (transfer none) (nullable):
+ */
+GtkBuilder *roxterm_application_get_builder(RoxtermApplication *app);
+
 G_END_DECLS
 
 #endif /* __ROXTERM_APPLICATION_H */

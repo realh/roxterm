@@ -223,7 +223,6 @@ void roxterm_profile_load(RoxtermProfile *self)
     {
         return;
     }
-    g_debug("Loading profile %s", self->name);
     self->key_file = g_key_file_new();
     const char *dir = g_get_user_config_dir();
     char *filename = self->filename =

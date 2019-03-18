@@ -29,6 +29,94 @@ struct _RoxtermWindow {
 
 G_DEFINE_TYPE(RoxtermWindow, roxterm_window, MULTITEXT_TYPE_WINDOW);
 
+// application is not a property of the parent class, so we need to implement
+// it as one to be able to set it during construction
+enum {
+    PROP_APP = 1,
+    N_PROPS
+};
+
+static GParamSpec *roxterm_window_props[N_PROPS] = {NULL};
+
+static void roxterm_window_set_property(GObject *obj, guint prop_id,
+        const GValue *value, GParamSpec *pspec)
+{
+    GtkWindow *win = GTK_WINDOW(obj);
+    switch (prop_id)
+    {
+        case PROP_APP:
+            gtk_window_set_application(win, g_value_get_object(value));
+            break;
+        default:
+            G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, prop_id, pspec);
+    }
+}
+
+static void roxterm_window_get_property(GObject *obj, guint prop_id,
+        GValue *value, GParamSpec *pspec)
+{
+    GtkWindow *win = GTK_WINDOW(obj);
+    switch (prop_id)
+    {
+        case PROP_APP:
+            g_value_set_object(value, gtk_window_get_application(win));
+            break;
+        default:
+            G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, prop_id, pspec);
+    }
+}
+
+static void on_win_new_tab(UNUSED GSimpleAction *action, UNUSED GVariant *param,
+        gpointer win)
+{
+    roxterm_window_new_tab(win, NULL, -1);
+}
+
+static void on_win_new_vim_tab(UNUSED GSimpleAction *action,
+        UNUSED GVariant *param, UNUSED gpointer app)
+{
+}
+
+static GActionEntry roxterm_win_actions[] = {
+    { "new-tab", on_win_new_tab, NULL, NULL, NULL },
+    { "new-vim-tab", on_win_new_vim_tab, NULL, NULL, NULL },
+};
+
+// This has to be called at end of construction because it reads the app
+// which is set as a property
+static void roxterm_window_add_tab_bar_buttons(RoxtermWindow *self)
+{
+    RoxtermApplication *app
+        = ROXTERM_APPLICATION(gtk_window_get_application(GTK_WINDOW(self)));
+    GtkBuilder *builder = roxterm_application_get_builder(app);
+    GtkWidget *menu_btn_w = gtk_menu_button_new();
+    GtkMenuButton *menu_btn = GTK_MENU_BUTTON(menu_btn_w);
+    GMenuModel *menu
+        = G_MENU_MODEL(gtk_builder_get_object(builder, "tab-bar-menu"));
+    gtk_menu_button_set_menu_model(menu_btn, menu);
+    GtkWidget *nt_btn_w = gtk_button_new();
+    GtkButton *nt_btn = GTK_BUTTON(nt_btn_w);
+    GtkActionable *nt_btn_a = GTK_ACTIONABLE(nt_btn);
+    GtkWidget *img = gtk_image_new_from_icon_name("tab-new-symbolic",
+                GTK_ICON_SIZE_MENU);
+    gtk_button_set_image(nt_btn, img);
+    gtk_actionable_set_action_name(nt_btn_a, "win.new-tab");
+    GtkWidget *box_w = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    GtkBox *box = GTK_BOX(box_w);
+    gtk_box_pack_start(box, nt_btn_w, FALSE, FALSE, 0);
+    gtk_box_pack_start(box, menu_btn_w, FALSE, FALSE, 0);
+    GtkNotebook *nb
+        = GTK_NOTEBOOK(multitext_window_get_notebook(MULTITEXT_WINDOW(self)));
+    gtk_widget_show_all(box_w);
+    gtk_notebook_set_action_widget(nb, box_w, GTK_PACK_END);
+}
+
+static void roxterm_window_constructed(GObject *obj)
+{
+    RoxtermWindow *self = ROXTERM_WINDOW(obj);
+    roxterm_window_add_tab_bar_buttons(self);
+}
+
 static void roxterm_window_dispose(GObject *obj)
 {
     RoxtermWindow *self = ROXTERM_WINDOW(obj);
@@ -44,12 +132,24 @@ static void roxterm_window_dispose(GObject *obj)
     }
 }
 
-static void roxterm_window_class_init(UNUSED RoxtermWindowClass *klass)
+static void roxterm_window_class_init(RoxtermWindowClass *klass)
 {
+    GObjectClass *oklass = G_OBJECT_CLASS(klass);
+    oklass->constructed = roxterm_window_constructed;
+    oklass->dispose = roxterm_window_dispose;
+    oklass->set_property = roxterm_window_set_property;
+    oklass->get_property = roxterm_window_get_property;
+    roxterm_window_props[PROP_APP] =
+            g_param_spec_object("application", "application",
+            "RoxtermApplication", ROXTERM_TYPE_APPLICATION,
+            G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE);
+    g_object_class_install_properties(oklass, N_PROPS, roxterm_window_props);
 }
 
 static void roxterm_window_init(RoxtermWindow *self)
 {
+    g_action_map_add_action_entries(G_ACTION_MAP(self),
+            roxterm_win_actions, G_N_ELEMENTS(roxterm_win_actions), self);
     GtkWindow *gwin = GTK_WINDOW(self);
     RoxtermHeaderBar *header = roxterm_header_bar_new();
     gtk_window_set_titlebar(gwin, GTK_WIDGET(header));

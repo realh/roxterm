@@ -23,7 +23,7 @@
       </item>
       <item>
         <attribute name="label" translatable="yes">New Window With _Profile</attribute>
-        <attribute name="id" translatable="yes">app-new_win-profile</attribute>
+        <attribute name="id" translatable="yes">app-new-win-profile</attribute>
       </item>
     </section>
     <section>
@@ -33,4 +33,20 @@
       </item>
     </section>
   </menu>
+  <menu id="tab-bar-menu">
+    <item>
+      <attribute name="label" translatable="yes">New _Tab</attribute>
+      <attribute name="action">win.new-tab</attribute>
+    </item>
+    <item>
+      <attribute name="label" translatable="yes">New _Vim Tab</attribute>
+      <attribute name="action">win.new-vim-tab</attribute>
+    </item>
+    <item>
+      <attribute name="label" translatable="yes">New Tab With _Profile</attribute>
+      <attribute name="id" translatable="yes">win-new-tab-profile</attribute>
+    </item>
+  </menu>
 </interface>
+<!-- vim: sw=2
+-->
