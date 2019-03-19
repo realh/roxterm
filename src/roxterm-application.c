@@ -28,9 +28,8 @@
 
 struct _RoxtermApplication {
     GtkApplication parent_instance;
+    GtkBuilder *builder;
 };
-
-static GtkBuilder *roxterm_app_builder = NULL;
 
 G_DEFINE_TYPE(RoxtermApplication, roxterm_application, GTK_TYPE_APPLICATION);
 
@@ -82,9 +81,11 @@ static void roxterm_application_startup(GApplication *gapp)
 {
     G_APPLICATION_CLASS(roxterm_application_parent_class)->startup(gapp);
     GtkApplication *gtkapp = GTK_APPLICATION(gapp);
-    GtkBuilder *builder = roxterm_application_get_builder();
+    RoxtermApplication *self = ROXTERM_APPLICATION(gapp);
+    self->builder = gtk_builder_new_from_resource(ROXTERM_RESOURCE_PATH
+             "menus.ui");
     GMenuModel *app_menu
-        = G_MENU_MODEL(gtk_builder_get_object(builder, "app-menu"));
+        = G_MENU_MODEL(gtk_builder_get_object(self->builder, "app-menu"));
     gtk_application_set_app_menu(gtkapp, app_menu);
     g_action_map_add_action_entries(G_ACTION_MAP(gapp),
             roxterm_app_actions, G_N_ELEMENTS(roxterm_app_actions), gapp);
@@ -135,11 +136,11 @@ RoxtermApplication *roxterm_application_new(void)
     return ROXTERM_APPLICATION(obj);
 }
 
-RoxtermWindow *roxterm_application_new_window(RoxtermApplication *app,
+RoxtermWindow *roxterm_application_new_window(RoxtermApplication *self,
         RoxtermLaunchParams *lp, RoxtermWindowLaunchParams *wp)
 {
-    GtkApplication *gapp = GTK_APPLICATION(app);
-    RoxtermWindow *win = roxterm_window_new();
+    GtkApplication *gapp = GTK_APPLICATION(self);
+    RoxtermWindow *win = roxterm_window_new(self->builder);
     GtkWindow *gwin = GTK_WINDOW(win);
     roxterm_window_apply_launch_params(win, lp, wp);
     if (wp)
@@ -190,14 +191,9 @@ static int roxterm_application_parse_options_early(int argc, char **argv)
     return result;
 }
 
-GtkBuilder *roxterm_application_get_builder(void)
+GtkBuilder *roxterm_application_get_builder(RoxtermApplication *self)
 {
-    if (!roxterm_app_builder)
-    {
-        roxterm_app_builder = gtk_builder_new_from_resource(
-                ROXTERM_RESOURCE_PATH "menus.ui");
-    }
-    return roxterm_app_builder;
+    return self->builder;
 }
 
 int main(int argc, char **argv)

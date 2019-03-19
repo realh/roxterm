@@ -34,9 +34,11 @@ G_DECLARE_FINAL_TYPE(RoxtermWindow, roxterm_window,
  *
  * Creates a new window with an empty notebook
  *
+ * @builder: (transfer none): Provides menus, a ref is temporarily added until
+ *          window is fully constructed
  * Returns: (transfer full):
  */
-RoxtermWindow *roxterm_window_new(void);
+RoxtermWindow *roxterm_window_new(GtkBuilder *builder);
 
 /**
  * roxterm_window_apply_launch_params:

@@ -25,9 +25,31 @@ struct _RoxtermWindow {
     GtkApplicationWindow parent_instance;
     RoxtermLaunchParams *lp;
     RoxtermWindowLaunchParams *wp;
+    GtkBuilder *builder;
 };
 
 G_DEFINE_TYPE(RoxtermWindow, roxterm_window, MULTITEXT_TYPE_WINDOW);
+
+enum {
+    PROP_BUILDER = 1,
+    N_PROPS
+};
+
+static GParamSpec *roxterm_window_props[N_PROPS] = {NULL};
+
+static void roxterm_window_set_property(GObject *obj, guint prop_id,
+        const GValue *value, GParamSpec *pspec)
+{
+    RoxtermWindow *self = ROXTERM_WINDOW(obj);
+    switch (prop_id)
+    {
+        case PROP_BUILDER:
+            self->builder = g_value_dup_object(value);
+            break;
+        default:
+            G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, prop_id, pspec);
+    }
+}
 
 static void on_win_new_tab(UNUSED GSimpleAction *action, UNUSED GVariant *param,
         gpointer win)
@@ -78,11 +100,10 @@ static void roxterm_window_set_tab_button_style(GtkWidget *btn,
 
 static void roxterm_window_add_tab_bar_buttons(RoxtermWindow *self)
 {
-    GtkBuilder *builder = roxterm_application_get_builder();
     GtkWidget *menu_btn_w = gtk_menu_button_new();
     GtkMenuButton *menu_btn = GTK_MENU_BUTTON(menu_btn_w);
     GMenuModel *menu
-        = G_MENU_MODEL(gtk_builder_get_object(builder, "tab-bar-menu"));
+        = G_MENU_MODEL(gtk_builder_get_object(self->builder, "tab-bar-menu"));
     gtk_menu_button_set_menu_model(menu_btn, menu);
     GtkWidget *nt_btn_w = gtk_button_new();
     GtkButton *nt_btn = GTK_BUTTON(nt_btn_w);
@@ -115,6 +136,7 @@ static void roxterm_window_constructed(GObject *obj)
     RoxtermHeaderBar *header = roxterm_header_bar_new();
     gtk_window_set_titlebar(gwin, GTK_WIDGET(header));
     roxterm_window_add_tab_bar_buttons(self);
+    g_clear_object(&self->builder);
 }
 
 static void roxterm_window_dispose(GObject *obj)
@@ -130,6 +152,7 @@ static void roxterm_window_dispose(GObject *obj)
         roxterm_launch_params_unref(self->lp);
         self->lp = NULL;
     }
+    g_clear_object(&self->builder);
     G_OBJECT_CLASS(roxterm_window_parent_class)->dispose(obj);
 }
 
@@ -138,15 +161,23 @@ static void roxterm_window_class_init(RoxtermWindowClass *klass)
     GObjectClass *oklass = G_OBJECT_CLASS(klass);
     oklass->constructed = roxterm_window_constructed;
     oklass->dispose = roxterm_window_dispose;
+    oklass->set_property = roxterm_window_set_property;
+    roxterm_window_props[PROP_BUILDER] =
+            g_param_spec_object("builder", "builder",
+            "GtkBuilder", GTK_TYPE_BUILDER,
+            G_PARAM_CONSTRUCT_ONLY | G_PARAM_WRITABLE);
+    g_object_class_install_properties(oklass, N_PROPS, roxterm_window_props);
 }
 
 static void roxterm_window_init(UNUSED RoxtermWindow *self)
 {
 }
 
-RoxtermWindow *roxterm_window_new(void)
+RoxtermWindow *roxterm_window_new(GtkBuilder *builder)
 {
-    GObject *obj = g_object_new(ROXTERM_TYPE_WINDOW, NULL);
+    GObject *obj = g_object_new(ROXTERM_TYPE_WINDOW,
+            "builder", builder,
+            NULL);
     RoxtermWindow *self = ROXTERM_WINDOW(obj);
     return self;
 }
