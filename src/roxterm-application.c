@@ -141,7 +141,6 @@ RoxtermWindow *roxterm_application_new_window(RoxtermApplication *app,
     GtkApplication *gapp = GTK_APPLICATION(app);
     RoxtermWindow *win = roxterm_window_new();
     GtkWindow *gwin = GTK_WINDOW(win);
-    gtk_window_set_application(gwin, gapp);
     roxterm_window_apply_launch_params(win, lp, wp);
     if (wp)
     {

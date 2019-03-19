@@ -109,6 +109,11 @@ static void roxterm_window_constructed(GObject *obj)
 {
     G_OBJECT_CLASS(roxterm_window_parent_class)->constructed(obj);
     RoxtermWindow *self = ROXTERM_WINDOW(obj);
+    g_action_map_add_action_entries(G_ACTION_MAP(self),
+            roxterm_win_actions, G_N_ELEMENTS(roxterm_win_actions), self);
+    GtkWindow *gwin = GTK_WINDOW(self);
+    RoxtermHeaderBar *header = roxterm_header_bar_new();
+    gtk_window_set_titlebar(gwin, GTK_WIDGET(header));
     roxterm_window_add_tab_bar_buttons(self);
 }
 
@@ -134,13 +139,8 @@ static void roxterm_window_class_init(RoxtermWindowClass *klass)
     oklass->dispose = roxterm_window_dispose;
 }
 
-static void roxterm_window_init(RoxtermWindow *self)
+static void roxterm_window_init(UNUSED RoxtermWindow *self)
 {
-    g_action_map_add_action_entries(G_ACTION_MAP(self),
-            roxterm_win_actions, G_N_ELEMENTS(roxterm_win_actions), self);
-    GtkWindow *gwin = GTK_WINDOW(self);
-    RoxtermHeaderBar *header = roxterm_header_bar_new();
-    gtk_window_set_titlebar(gwin, GTK_WIDGET(header));
 }
 
 RoxtermWindow *roxterm_window_new(void)

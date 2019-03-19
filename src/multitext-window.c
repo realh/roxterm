@@ -95,6 +95,65 @@ static void multitext_window_dispose(GObject *obj)
         multitext_window_disconnect_provider_signals(self);
 }
 
+static MultitextGeometryProvider *
+multitext_window_find_geometry_provider(GtkWidget *widget)
+{
+    if (MULTITEXT_IS_GEOMETRY_PROVIDER(widget))
+        return MULTITEXT_GEOMETRY_PROVIDER(widget);
+    if (!GTK_IS_CONTAINER(widget))
+        return NULL;
+    GList *children = gtk_container_get_children(GTK_CONTAINER(widget));
+    for (GList *link = children; link; link = g_list_next(link))
+    {
+        MultitextGeometryProvider *gp =
+            multitext_window_find_geometry_provider(link->data);
+        if (gp)
+            return gp;
+    }
+    return NULL;
+}
+
+
+static gboolean multitext_window_delete_event(GtkWidget *widget,
+        GdkEventAny *event)
+{
+    GtkWidgetClass *wklass = GTK_WIDGET_CLASS(multitext_window_parent_class);
+    g_return_val_if_fail(wklass != NULL, FALSE);
+    // Unexpectedly the delete_event virtual method slot is NULL
+    if (wklass->delete_event && wklass->delete_event(widget, event))
+    {
+        return TRUE;
+    }
+    MultitextWindow *self = MULTITEXT_WINDOW(widget);
+    GtkContainer *nb = GTK_CONTAINER(multitext_window_get_notebook(self));
+    GList *pages = gtk_container_get_children(nb);
+    for (GList *link = pages; link; link = g_list_next(link))
+    {
+        MultitextGeometryProvider *gp
+            = multitext_window_find_geometry_provider(link->data);
+        if (gp && multitext_geometry_provider_confirm_close(gp))
+        {
+            // TODO; Run confirmation dialog
+            return TRUE;
+        }
+    }
+    //gtk_widget_destroy(widget);
+    //g_debug("Window should be closed, ref count %d",
+    //      G_OBJECT(widget)->ref_count);
+    return FALSE;
+}
+
+static void multitext_window_constructed(GObject *obj)
+{
+    G_OBJECT_CLASS(multitext_window_parent_class)->constructed(obj);
+    MultitextWindow *self = MULTITEXT_WINDOW(obj);
+    MultitextWindowPrivate *priv
+        = multitext_window_get_instance_private(self);
+    g_return_if_fail(priv != NULL);
+    priv->notebook = multitext_notebook_new();
+    gtk_container_add(GTK_CONTAINER(self), GTK_WIDGET(priv->notebook));
+}
+
 static void multitext_window_class_init(MultitextWindowClass *klass)
 {
     GObjectClass *oklass = G_OBJECT_CLASS(klass);
@@ -105,6 +164,8 @@ static void multitext_window_class_init(MultitextWindowClass *klass)
             "MultitextGeometryProvider", MULTITEXT_TYPE_GEOMETRY_PROVIDER,
             G_PARAM_READABLE);
     g_object_class_install_properties(oklass, N_PROPS, multitext_window_props);
+    GtkWidgetClass *wklass = GTK_WIDGET_CLASS(klass);
+    wklass->delete_event = multitext_window_delete_event;
 }
 
 static void multitext_window_init(MultitextWindow *self)

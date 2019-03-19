@@ -62,12 +62,15 @@ struct _MultitextGeometryProviderInterface
      */
     void (*get_cell_size)(MultitextGeometryProvider *self,
             int *width, int *height);
-
     /**
      * MultitextGeometryProviderInterface::set_active:
      */
     void (*set_active)(MultitextGeometryProvider *self,
             gboolean active);
+    /**
+     * MultitextGeometryProviderInterface::confirm_close:
+     */
+    gboolean (*confirm_close)(MultitextGeometryProvider *self);
 };
 
 /**
@@ -115,5 +118,14 @@ multitext_geometry_provider_get_cell_size(MultitextGeometryProvider *self,
  */
 void multitext_geometry_provider_set_active(MultitextGeometryProvider *self,
         gboolean active);
+
+/**
+ * multitext_geometry_provider_confirm_close:
+ *
+ * Returns: TRUE if the user should be asked for confirmation before
+ *          closing this page
+ */
+gboolean
+multitext_geometry_provider_confirm_close(MultitextGeometryProvider *self);
 
 #endif /* __MULTITEXT_GEOMETRY_PROVIDER_H */

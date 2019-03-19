@@ -71,3 +71,13 @@ void multitext_geometry_provider_set_active(MultitextGeometryProvider *self,
     g_return_if_fail(iface->set_active != NULL);
     iface->set_active(self, active);
 }
+
+gboolean
+multitext_geometry_provider_confirm_close(MultitextGeometryProvider *self)
+{
+    g_return_val_if_fail(MULTITEXT_IS_GEOMETRY_PROVIDER(self), FALSE);
+    MultitextGeometryProviderInterface *iface
+            = MULTITEXT_GEOMETRY_PROVIDER_GET_IFACE(self);
+    g_return_val_if_fail(iface->confirm_close != NULL, FALSE);
+    return iface->confirm_close(self);
+}

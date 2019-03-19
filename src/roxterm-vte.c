@@ -64,6 +64,11 @@ static void roxterm_vte_set_active(UNUSED MultitextGeometryProvider *self,
 {
 }
 
+static gboolean roxterm_vte_confirm_close(UNUSED MultitextGeometryProvider *gp)
+{
+    return FALSE;
+}
+
 static void roxterm_vte_geometry_provider_init(
         MultitextGeometryProviderInterface *iface)
 {
@@ -71,6 +76,7 @@ static void roxterm_vte_geometry_provider_init(
     iface->get_current_size = roxterm_vte_get_current_size;
     iface->get_cell_size = roxterm_vte_get_cell_size;
     iface->set_active = roxterm_vte_set_active;
+    iface->confirm_close = roxterm_vte_confirm_close;
 }
 
 static void roxterm_vte_dispose(GObject *obj)
