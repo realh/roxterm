@@ -158,7 +158,6 @@ void multitext_window_set_initial_size(MultitextWindow *self)
 {
     MultitextWindowPrivate *priv
         = multitext_window_get_instance_private(self);
-    GtkWidget *tlw = GTK_WIDGET(self);
     GtkWidget *nbw = GTK_WIDGET(priv->notebook);
     // Show everything except the top-level first, otherwise measured sizes
     // tend to be nonsense
