@@ -79,6 +79,10 @@ static void roxterm_vte_geometry_provider_init(
     iface->confirm_close = roxterm_vte_confirm_close;
 }
 
+G_DEFINE_TYPE_WITH_CODE(RoxtermVte, roxterm_vte, VTE_TYPE_TERMINAL,
+        G_IMPLEMENT_INTERFACE(MULTITEXT_TYPE_GEOMETRY_PROVIDER,
+            roxterm_vte_geometry_provider_init));
+
 static void roxterm_vte_dispose(GObject *obj)
 {
     RoxtermVte *self = ROXTERM_VTE(obj);
@@ -90,11 +94,8 @@ static void roxterm_vte_dispose(GObject *obj)
     g_free(self->directory);
     self->directory = NULL;
     g_clear_object(&self->launch_cancellable);
+    G_OBJECT_CLASS(roxterm_vte_parent_class)->dispose(obj);
 }
-
-G_DEFINE_TYPE_WITH_CODE(RoxtermVte, roxterm_vte, VTE_TYPE_TERMINAL,
-        G_IMPLEMENT_INTERFACE(MULTITEXT_TYPE_GEOMETRY_PROVIDER,
-            roxterm_vte_geometry_provider_init));
 
 enum {
     PROP_PROFILE = 1,

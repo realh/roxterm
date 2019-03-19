@@ -36,6 +36,8 @@ static void roxterm_profile_weak_ref_notify(gpointer handle,
     g_hash_table_remove(roxterm_profiles, handle);
 }
 
+G_DEFINE_TYPE(RoxtermProfile, roxterm_profile, G_TYPE_OBJECT);
+
 static void roxterm_profile_finalize(GObject *obj)
 {
     RoxtermProfile *self = ROXTERM_PROFILE(obj);
@@ -43,6 +45,7 @@ static void roxterm_profile_finalize(GObject *obj)
     self->name = NULL;
     g_free(self->filename);
     self->filename = NULL;
+    G_OBJECT_CLASS(roxterm_profile_parent_class)->finalize(obj);
 }
 
 static void roxterm_profile_dispose(GObject *obj)
@@ -53,9 +56,8 @@ static void roxterm_profile_dispose(GObject *obj)
         g_key_file_unref(self->key_file);
         self->key_file = NULL;
     }
+    G_OBJECT_CLASS(roxterm_profile_parent_class)->dispose(obj);
 }
-
-G_DEFINE_TYPE(RoxtermProfile, roxterm_profile, G_TYPE_OBJECT);
 
 enum {
     PROP_NAME = 1,

@@ -130,6 +130,7 @@ static void roxterm_window_dispose(GObject *obj)
         roxterm_launch_params_unref(self->lp);
         self->lp = NULL;
     }
+    G_OBJECT_CLASS(roxterm_window_parent_class)->dispose(obj);
 }
 
 static void roxterm_window_class_init(RoxtermWindowClass *klass)
