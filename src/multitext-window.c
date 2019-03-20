@@ -215,6 +215,20 @@ MultitextNotebook *multitext_window_get_notebook(MultitextWindow *self)
     return priv->notebook;
 }
 
+static void multitext_window_apply_geometry_hints(GtkWindow *window,
+        int base_width, int base_height, int width_inc, int height_inc)
+{
+    GdkGeometry geom;
+    geom.base_width = base_width;
+    geom.base_height = base_height;
+    geom.width_inc = width_inc;
+    geom.height_inc = height_inc;
+    geom.min_width = MIN(300, 10 * width_inc);
+    geom.min_height = MIN(200, 5 * height_inc);
+    gtk_window_set_geometry_hints(window, NULL, &geom,
+            GDK_HINT_RESIZE_INC);
+}
+
 void multitext_window_set_initial_size(MultitextWindow *self)
 {
     MultitextWindowPrivate *priv
@@ -268,6 +282,9 @@ void multitext_window_set_initial_size(MultitextWindow *self)
     // gives us the final size of the window content. AFAICT
     // gtk_window_set_default_size sets the size available in the window for
     // its content; we can ignore the window chrome
-    gtk_window_set_default_size(GTK_WINDOW(self), diff_w + target_width,
+    GtkWindow *gwin = GTK_WINDOW(self);
+    gtk_window_set_default_size(gwin, diff_w + target_width,
             diff_h + target_height);
+    multitext_window_apply_geometry_hints(gwin, diff_w, diff_h,
+            cell_width, cell_height);
 }
