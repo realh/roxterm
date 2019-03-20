@@ -29,7 +29,8 @@ add_custom_command(OUTPUT gresources.c
         DEPENDS menus.ui)
 
 add_executable(roxterm4 gresources.c
-    multitext-geometry-provider.c multitext-notebook.c multitext-window.c
+    multitext-geometry-provider.c multitext-notebook.c multitext-tab_button.c
+    multitext-window.c
     roxterm-application.c roxterm-header-bar.c roxterm-launch-params.c
     roxterm-profile.c roxterm-rgba.c roxterm-vte.c roxterm-window.c)
 target_include_directories(roxterm4 PRIVATE
