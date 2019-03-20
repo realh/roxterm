@@ -26,13 +26,16 @@ add_custom_command(OUTPUT gresources.c
         --c-name=roxterm_resource ${CMAKE_CURRENT_SOURCE_DIR}/gresources.xml
         --sourcedir=${CMAKE_CURRENT_SOURCE_DIR}
         MAIN_DEPENDENCY gresources.xml
-        DEPENDS menus.ui)
+        DEPENDS menus.ui
+            icons/attention.svg icons/busy.svg
+            icons/exited.svg icons/output.svg)
 
 add_executable(roxterm4 gresources.c
-    multitext-geometry-provider.c multitext-notebook.c multitext-tab_button.c
+    multitext-geometry-provider.c multitext-notebook.c multitext-tab-button.c
     multitext-window.c
     roxterm-application.c roxterm-header-bar.c roxterm-launch-params.c
-    roxterm-profile.c roxterm-rgba.c roxterm-vte.c roxterm-window.c)
+    roxterm-profile.c roxterm-rgba.c roxterm-tab-button.c roxterm-vte.c
+    roxterm-window.c)
 target_include_directories(roxterm4 PRIVATE
     ${ROXTERM_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})
 target_compile_options(roxterm4 PRIVATE ${ROXTERM_CFLAGS_OTHER})

@@ -23,9 +23,6 @@
 
 #include <string.h>
 
-#define ROXTERM_APPLICATION_ID "uk.co.realh.roxterm4"
-#define ROXTERM_RESOURCE_PATH "/uk/co/realh/roxterm4/"
-
 struct _RoxtermApplication {
     GtkApplication parent_instance;
     GtkBuilder *builder;

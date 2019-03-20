@@ -37,7 +37,7 @@ inline static gboolean multitext_tab_button_active_state(GtkStateFlags flags)
 inline static void
 multitext_tab_button_show_close_icon_priv(MultitextTabButtonPrivate *priv)
 {
-    gtk_image_set_from_icon_name(priv->image, "window-close_symbolic",
+    gtk_image_set_from_icon_name(priv->image, "window-close-symbolic",
             GTK_ICON_SIZE_MENU);
 }
 
