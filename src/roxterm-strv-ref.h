@@ -1,5 +1,5 @@
 /*
-    roxterm - VTE/GTK terminal emulator with tabs
+    roxterm4 - VTE/GTK terminal emulator with tabs
     Copyright (C) 2019 Tony Houghton <h@realh.co.uk>
 
     This program is free software; you can redistribute it and/or modify
