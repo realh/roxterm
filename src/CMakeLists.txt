@@ -32,7 +32,7 @@ add_custom_command(OUTPUT gresources.c
 
 add_executable(roxterm4 gresources.c
     multitext-geometry-provider.c multitext-notebook.c multitext-tab-button.c
-    multitext-window.c
+    multitext-tab-label.c multitext-window.c
     roxterm-application.c roxterm-header-bar.c roxterm-launch-params.c
     roxterm-profile.c roxterm-rgba.c roxterm-tab-button.c roxterm-vte.c
     roxterm-window.c)
