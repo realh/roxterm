@@ -21,6 +21,7 @@
 
 #include <vte/vte.h>
 
+#include "multitext-tab-label.h"
 #include "roxterm-launch-params.h"
 
 G_BEGIN_DECLS
