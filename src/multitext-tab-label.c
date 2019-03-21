@@ -142,8 +142,7 @@ static void multitext_tab_label_constructed(GObject *obj)
     MultitextTabLabelPrivate *priv
         = multitext_tab_label_get_instance_private(self);
     G_OBJECT_CLASS(multitext_tab_label_parent_class)->constructed(obj);
-    gtk_container_add_with_properties(GTK_CONTAINER(priv->ebox),
-            GTK_WIDGET(priv->label), "hexpand", TRUE, NULL);
+    gtk_container_add(GTK_CONTAINER(priv->ebox), GTK_WIDGET(priv->label));
     MULTITEXT_PACK(box, GTK_WIDGET(priv->ebox),
             TRUE, TRUE, MULTITEXT_TAB_LABEL_PADDING);
     if (priv->button)
