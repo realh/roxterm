@@ -70,6 +70,21 @@ static gboolean roxterm_vte_confirm_close(UNUSED MultitextGeometryProvider *gp)
     return FALSE;
 }
 
+static MultitextTabLabel *
+roxterm_vte_get_tab_label(MultitextGeometryProvider *gp)
+{
+    RoxtermVte *self = ROXTERM_VTE(gp);
+    return self->label;
+}
+
+static void
+roxterm_vte_set_tab_label(MultitextGeometryProvider *gp,
+        MultitextTabLabel *label)
+{
+    RoxtermVte *self = ROXTERM_VTE(gp);
+    self->label = label;
+}
+
 static void roxterm_vte_geometry_provider_init(
         MultitextGeometryProviderInterface *iface)
 {
@@ -78,6 +93,8 @@ static void roxterm_vte_geometry_provider_init(
     iface->get_cell_size = roxterm_vte_get_cell_size;
     iface->set_active = roxterm_vte_set_active;
     iface->confirm_close = roxterm_vte_confirm_close;
+    iface->get_tab_label = roxterm_vte_get_tab_label;
+    iface->set_tab_label = roxterm_vte_set_tab_label;
 }
 
 G_DEFINE_TYPE_WITH_CODE(RoxtermVte, roxterm_vte, VTE_TYPE_TERMINAL,
@@ -102,7 +119,6 @@ enum {
     PROP_PROFILE = 1,
     PROP_FONT,
     PROP_LOGIN_SHELL,
-    PROP_LABEL,
     N_PROPS
 };
 
@@ -123,9 +139,6 @@ static void roxterm_vte_set_property(GObject *obj, guint prop_id,
         case PROP_LOGIN_SHELL:
             self->login_shell = g_value_get_boolean(value);
             break;
-        case PROP_LABEL:
-            self->label = g_value_get_object(value);
-            break;
         default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, prop_id, pspec);
     }
@@ -145,9 +158,6 @@ static void roxterm_vte_get_property(GObject *obj, guint prop_id,
             break;
         case PROP_LOGIN_SHELL:
             g_value_set_boolean(value, self->login_shell);
-            break;
-        case PROP_LABEL:
-            g_value_set_object(value, self->label);
             break;
         default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, prop_id, pspec);
@@ -172,10 +182,6 @@ static void roxterm_vte_class_init(RoxtermVteClass *klass)
     roxterm_vte_props[PROP_LOGIN_SHELL] =
             g_param_spec_boolean("login-shell", "login-shell",
             "Whether shell is a login shell", TRUE,
-            G_PARAM_READWRITE);
-    roxterm_vte_props[PROP_LABEL] =
-            g_param_spec_object("label", "label",
-            "Label widget", MULTITEXT_TYPE_TAB_LABEL,
             G_PARAM_READWRITE);
     g_object_class_install_properties(oklass, N_PROPS, roxterm_vte_props);
 }

@@ -20,8 +20,7 @@
 #ifndef __MULTITEXT_GEOMETRY_PROVIDER_H
 #define __MULTITEXT_GEOMETRY_PROVIDER_H
 
-#include <glib-object.h>
-#include <gtk/gtk.h>
+#include "multitext-tab-label.h"
 
 G_BEGIN_DECLS
 
@@ -71,6 +70,19 @@ struct _MultitextGeometryProviderInterface
      * MultitextGeometryProviderInterface::confirm_close:
      */
     gboolean (*confirm_close)(MultitextGeometryProvider *self);
+    /**
+     * MultitextGeometryProviderInterface::get_tab_label:
+     *
+     * Returns: (nullable) (transfer none):
+     */
+    MultitextTabLabel *(*get_tab_label)(MultitextGeometryProvider *self);
+    /**
+     * MultitextGeometryProviderInterface::set_tab_label:
+     *
+     * @label: (nullable) (transfer none):
+     */
+    void (*set_tab_label)(MultitextGeometryProvider *self,
+            MultitextTabLabel *label);
 };
 
 /**
@@ -127,5 +139,21 @@ void multitext_geometry_provider_set_active(MultitextGeometryProvider *self,
  */
 gboolean
 multitext_geometry_provider_confirm_close(MultitextGeometryProvider *self);
+
+/**
+ * multitext_geometry_get_tab_label:
+ *
+ * Returns: (nullable) (transfer none):
+ */
+MultitextTabLabel *
+multitext_geometry_provider_get_tab_label(MultitextGeometryProvider *self);
+
+/**
+ * multitext_geometry_set_tab_label:
+ *
+ * @label: (nullable) (transfer none):
+ */
+void multitext_geometry_provider_set_tab_label(MultitextGeometryProvider *self,
+        MultitextTabLabel *label);
 
 #endif /* __MULTITEXT_GEOMETRY_PROVIDER_H */

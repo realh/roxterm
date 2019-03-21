@@ -19,6 +19,7 @@
 
 #include "roxterm-application.h"
 #include "roxterm-header-bar.h"
+#include "roxterm-tab-button.h"
 #include "roxterm-window.h"
 
 struct _RoxtermWindow {
@@ -206,6 +207,22 @@ static void roxterm_window_spawn_callback(VteTerminal *vte,
     }
 }
 
+static void roxterm_window_insert_page(RoxtermWindow *self,
+        GtkWidget *child, RoxtermVte *vte, int index)
+{
+    MultitextWindow *mwin = MULTITEXT_WINDOW(self);
+    GtkNotebook *gnb = GTK_NOTEBOOK(multitext_window_get_notebook(mwin));
+    int n_pages = gtk_notebook_get_n_pages(gnb);
+    MultitextTabButton *tab_btn
+        = MULTITEXT_TAB_BUTTON(roxterm_tab_button_new());
+    MultitextTabLabel *tab_label = multitext_tab_label_new(tab_btn,
+            n_pages == 0);
+    MultitextGeometryProvider *gp = MULTITEXT_GEOMETRY_PROVIDER(vte);
+    multitext_geometry_provider_set_tab_label(gp, tab_label);
+    gtk_notebook_insert_page(gnb, child, GTK_WIDGET(tab_label), index);
+    multitext_window_set_geometry_provider(MULTITEXT_WINDOW(self), gp);
+}
+
 RoxtermVte *roxterm_window_new_tab(RoxtermWindow *self,
         RoxtermTabLaunchParams *tp, int index)
 {
@@ -220,11 +237,7 @@ RoxtermVte *roxterm_window_new_tab(RoxtermWindow *self,
             GTK_POLICY_ALWAYS);
     gtk_scrolled_window_set_overlay_scrolling(viewport, TRUE);
     gtk_container_add(GTK_CONTAINER(vpw), GTK_WIDGET(rvt));
-    MultitextWindow *mwin = MULTITEXT_WINDOW(self);
-    GtkNotebook *gnb = GTK_NOTEBOOK(multitext_window_get_notebook(mwin));
-    gtk_notebook_insert_page(gnb, vpw, NULL, index);
-    multitext_window_set_geometry_provider(MULTITEXT_WINDOW(self),
-            MULTITEXT_GEOMETRY_PROVIDER(rvt));
+    roxterm_window_insert_page(self, vpw, rvt, index);
     roxterm_vte_spawn(rvt, roxterm_window_spawn_callback, self);
     return rvt;
 }
