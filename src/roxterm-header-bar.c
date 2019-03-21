@@ -44,8 +44,7 @@ static void roxterm_header_bar_init(RoxtermHeaderBar *self)
 
 RoxtermHeaderBar *roxterm_header_bar_new(void)
 {
-    GObject *obj = g_object_new(ROXTERM_TYPE_HEADER_BAR,
-            NULL);
+    GObject *obj = g_object_new(ROXTERM_TYPE_HEADER_BAR, NULL);
     RoxtermHeaderBar *self = ROXTERM_HEADER_BAR(obj);
     return self;
 }

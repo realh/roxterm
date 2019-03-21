@@ -75,6 +75,7 @@ multitext_tab_button_style_updated (GtkWidget *self)
 static void
 multitext_tab_button_constructed(GObject *obj)
 {
+    g_object_set(obj, "relief", GTK_RELIEF_NONE, "focus-on-click", FALSE, NULL);
     G_OBJECT_CLASS(multitext_tab_button_parent_class)->constructed(obj);
     MultitextTabButton *self = MULTITEXT_TAB_BUTTON(obj);
     MultitextTabButtonPrivate *priv
@@ -117,10 +118,7 @@ GtkWidget *
 multitext_tab_button_new(void)
 {
     MultitextTabButton *self = (MultitextTabButton *)
-            g_object_new (MULTITEXT_TYPE_TAB_BUTTON,
-                    "relief", GTK_RELIEF_NONE,
-                    "focus-on-click", FALSE,
-                    NULL);
+            g_object_new (MULTITEXT_TYPE_TAB_BUTTON, NULL);
     return GTK_WIDGET (self);
 }
 

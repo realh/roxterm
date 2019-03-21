@@ -106,10 +106,7 @@ GtkWidget *
 roxterm_tab_button_new(void)
 {
     RoxtermTabButton *self = (RoxtermTabButton *)
-            g_object_new (ROXTERM_TYPE_TAB_BUTTON,
-                    "relief", GTK_RELIEF_NONE,
-                    "focus-on-click", FALSE,
-                    NULL);
+            g_object_new (ROXTERM_TYPE_TAB_BUTTON, NULL);
     return GTK_WIDGET (self);
 }
 

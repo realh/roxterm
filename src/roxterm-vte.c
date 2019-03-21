@@ -175,8 +175,7 @@ static void roxterm_vte_init(RoxtermVte *self)
 
 RoxtermVte *roxterm_vte_new(void)
 {
-    GObject *obj = g_object_new(ROXTERM_TYPE_VTE,
-            NULL);
+    GObject *obj = g_object_new(ROXTERM_TYPE_VTE, NULL);
     return ROXTERM_VTE(obj);
 }
 
