@@ -133,7 +133,7 @@ multitext_tab_label_get_preferred_width_for_height (GtkWidget *widget,
 #define MULTITEXT_PACK gtk_box_pack_start
 #endif
 
-#define MULTITEXT_TAB_LABEL_PADDING 4
+#define MULTITEXT_TAB_LABEL_PADDING 0
 
 static void multitext_tab_label_constructed(GObject *obj)
 {
