@@ -188,6 +188,8 @@ multitext_tab_label_init(MultitextTabLabel *self)
         = multitext_tab_label_get_instance_private(self);
     priv->ebox = GTK_EVENT_BOX(gtk_event_box_new());
     priv->label = GTK_LABEL(gtk_label_new("Tab label"));
+    gtk_label_set_xalign(priv->label, 0.0);
+    gtk_widget_set_halign(GTK_WIDGET(priv->label), GTK_ALIGN_START);
 }
 
 MultitextTabLabel *
