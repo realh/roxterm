@@ -38,6 +38,7 @@ static const char *roxterm_tab_icon_names[ROXTERM_TAB_N_ICONS] = {
 
 struct _RoxtermTabButton
 {
+    MultitextTabButton parent_instance;
     guint tab_state;
 };
 

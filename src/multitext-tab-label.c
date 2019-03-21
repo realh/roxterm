@@ -90,7 +90,7 @@ multitext_tab_label_get_property(GObject *object, guint prop,
     }
 }
 
-#define MULTITEXT_TAB_LABEL_FIXED_WIDTH 300
+#define MULTITEXT_TAB_LABEL_FIXED_WIDTH 200
 
 static void
 multitext_tab_label_modify_width(MultitextTabLabel *self,
@@ -188,7 +188,7 @@ multitext_tab_label_init(MultitextTabLabel *self)
     MultitextTabLabelPrivate *priv
         = multitext_tab_label_get_instance_private(self);
     priv->ebox = GTK_EVENT_BOX(gtk_event_box_new());
-    priv->label = GTK_LABEL(gtk_label_new(""));
+    priv->label = GTK_LABEL(gtk_label_new("Tab label"));
 }
 
 MultitextTabLabel *

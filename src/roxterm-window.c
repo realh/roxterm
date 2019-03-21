@@ -23,7 +23,7 @@
 #include "roxterm-window.h"
 
 struct _RoxtermWindow {
-    GtkApplicationWindow parent_instance;
+    MultitextWindow parent_instance;
     RoxtermLaunchParams *lp;
     RoxtermWindowLaunchParams *wp;
     GtkBuilder *builder;
@@ -217,6 +217,7 @@ static void roxterm_window_insert_page(RoxtermWindow *self,
         = MULTITEXT_TAB_BUTTON(roxterm_tab_button_new());
     MultitextTabLabel *tab_label = multitext_tab_label_new(tab_btn,
             n_pages == 0);
+    gtk_widget_show_all(GTK_WIDGET(tab_label));
     MultitextGeometryProvider *gp = MULTITEXT_GEOMETRY_PROVIDER(vte);
     multitext_geometry_provider_set_tab_label(gp, tab_label);
     gtk_notebook_insert_page(gnb, child, GTK_WIDGET(tab_label), index);
