@@ -31,6 +31,7 @@ typedef struct {
     char *profile_name;
     char *tab_title;
     char *directory;
+    gboolean custom_command;
 #if ENABLE_VIM
     gboolean vim;
 #endif

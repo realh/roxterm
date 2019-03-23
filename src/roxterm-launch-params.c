@@ -477,6 +477,9 @@ roxterm_launch_params_new_from_command_line(GApplicationCommandLine *cmd,
                 RoxtermTabLaunchParams *tp = tlink->data;
                 if (!tp->directory)
                     tp->directory = g_strdup(dir);
+                // --execute is associated only with the last tab
+                if (!g_list_next(tlink) && lp->argc)
+                    tp->custom_command = TRUE;
             }
         }
     }

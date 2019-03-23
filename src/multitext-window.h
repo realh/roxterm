@@ -68,6 +68,18 @@ MultitextNotebook *multitext_window_get_notebook(MultitextWindow *win);
  */
 void multitext_window_set_initial_size(MultitextWindow *win);
 
+/**
+ * multitext_window_insert_page:
+ *
+ * @child: Usually a container containing gp
+ * @gp: (transfer full):
+ * @label: (transfer full) (nullable):
+ * @index: -1 to append
+ */
+void multitext_window_insert_page(MultitextWindow *self,
+        GtkWidget *child, MultitextGeometryProvider *gp,
+        MultitextTabLabel *label, int index);
+
 G_END_DECLS
 
 #endif /* __MULTITEXT_WINDOW_H */

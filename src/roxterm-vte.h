@@ -55,6 +55,14 @@ void roxterm_vte_set_profile(RoxtermVte *self, const char *profile_name);
 
 const char *roxterm_vte_get_profile(RoxtermVte *self);
 
+/**
+ * roxterm_vte_get_launch_params:
+ *
+ * Returns: (transfer full): This may differ from the original launch params
+ *          in case settings have changed
+ */
+RoxtermTabLaunchParams *roxterm_vte_get_launch_params(RoxtermVte *self);
+
 G_END_DECLS
 
 #endif /* __ROXTERM_VTE_H */

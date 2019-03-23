@@ -29,6 +29,7 @@ struct _RoxtermVte {
     GCancellable *launch_cancellable;
     VteTerminalSpawnAsyncCallback launch_callback;
     MultitextTabLabel *label;
+    char *tab_title;
     gboolean login_shell;
 };
 
@@ -112,6 +113,8 @@ static void roxterm_vte_dispose(GObject *obj)
     g_free(self->directory);
     self->directory = NULL;
     g_clear_object(&self->launch_cancellable);
+    g_free(self->tab_title);
+    self->tab_title = NULL;
     G_OBJECT_CLASS(roxterm_vte_parent_class)->dispose(obj);
 }
 
@@ -207,8 +210,13 @@ void roxterm_vte_apply_launch_params(RoxtermVte *self, RoxtermLaunchParams *lp,
     {
         vte_terminal_set_size(vte, wp->columns, wp->rows);
     }
-    if (tp && tp->directory)
-        self->directory = g_strdup(tp->directory);
+    if (tp)
+    {
+        if (tp->directory)
+            self->directory = g_strdup(tp->directory);
+        if (tp->tab_title)
+            self->tab_title = g_strdup(tp->tab_title);
+    }
     roxterm_vte_set_profile(self, tp ? tp->profile_name : "Default");
 }
 
@@ -277,4 +285,14 @@ void roxterm_vte_set_profile(RoxtermVte *self, const char *profile_name)
 const char *roxterm_vte_get_profile(RoxtermVte *self)
 {
     return self->profile ? roxterm_profile_get_name(self->profile) : NULL;
+}
+
+RoxtermTabLaunchParams *roxterm_vte_get_launch_params(RoxtermVte *self)
+{
+    RoxtermTabLaunchParams *tp = roxterm_tab_launch_params_new();
+    tp->profile_name = g_strdup(roxterm_profile_get_name(self->profile));
+    tp->tab_title = g_strdup(self->tab_title);
+    tp->directory = g_strdup(self->directory);
+    // TODO: vim field
+    return tp;
 }

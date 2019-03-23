@@ -55,7 +55,11 @@ static void roxterm_window_set_property(GObject *obj, guint prop_id,
 static void on_win_new_tab(UNUSED GSimpleAction *action, UNUSED GVariant *param,
         gpointer win)
 {
-    roxterm_window_new_tab(win, NULL, -1);
+    RoxtermVte *vte = ROXTERM_VTE(
+            multitext_window_get_geometry_provider(MULTITEXT_WINDOW(win)));
+    RoxtermTabLaunchParams *tp = roxterm_vte_get_launch_params(vte);
+    // TODO: Make sure it isn't a vim page
+    roxterm_window_new_tab(win, tp, -1);
 }
 
 static void on_win_new_vim_tab(UNUSED GSimpleAction *action,
@@ -217,11 +221,8 @@ static void roxterm_window_insert_page(RoxtermWindow *self,
         = MULTITEXT_TAB_BUTTON(roxterm_tab_button_new());
     MultitextTabLabel *tab_label = multitext_tab_label_new(tab_btn,
             n_pages == 0);
-    gtk_widget_show_all(GTK_WIDGET(tab_label));
     MultitextGeometryProvider *gp = MULTITEXT_GEOMETRY_PROVIDER(vte);
-    multitext_geometry_provider_set_tab_label(gp, tab_label);
-    gtk_notebook_insert_page(gnb, child, GTK_WIDGET(tab_label), index);
-    multitext_window_set_geometry_provider(MULTITEXT_WINDOW(self), gp);
+    multitext_window_insert_page(mwin, child, gp, tab_label, index);
 }
 
 RoxtermVte *roxterm_window_new_tab(RoxtermWindow *self,

@@ -26,8 +26,16 @@ struct _MultitextNotebook {
 
 G_DEFINE_TYPE(MultitextNotebook, multitext_notebook, GTK_TYPE_NOTEBOOK);
 
-static void multitext_notebook_class_init(UNUSED MultitextNotebookClass *klass)
+static void multitext_notebook_constructed(GObject *obj)
 {
+    G_OBJECT_CLASS(multitext_notebook_parent_class)->constructed(obj);
+    gtk_notebook_set_scrollable(GTK_NOTEBOOK(obj), TRUE);
+}
+
+static void multitext_notebook_class_init(MultitextNotebookClass *klass)
+{
+    GObjectClass *oklass = G_OBJECT_CLASS(klass);
+    oklass->constructed = multitext_notebook_constructed;
 }
 
 static void multitext_notebook_init(UNUSED MultitextNotebook *self)
