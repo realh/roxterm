@@ -65,15 +65,6 @@ static GActionEntry roxterm_app_actions[] = {
     { "quit", on_app_quit, NULL, NULL, NULL },
 };
 
-static void roxterm_application_window_removed(GtkApplication *app,
-        GtkWindow *win)
-{
-    GTK_APPLICATION_CLASS(roxterm_application_parent_class)
-            ->window_removed(app, win);
-    if (!gtk_application_get_windows(app))
-        g_application_quit(G_APPLICATION(app));
-}
-
 static void roxterm_application_startup(GApplication *gapp)
 {
     G_APPLICATION_CLASS(roxterm_application_parent_class)->startup(gapp);
@@ -112,8 +103,6 @@ static gint roxterm_application_command_line(GApplication *gapp,
 
 static void roxterm_application_class_init(RoxtermApplicationClass *klass)
 {
-    GtkApplicationClass *gtkapp_klass = GTK_APPLICATION_CLASS(klass);
-    gtkapp_klass->window_removed = roxterm_application_window_removed;
     GApplicationClass *gapp_klass = G_APPLICATION_CLASS(klass);
     gapp_klass->startup = roxterm_application_startup;
     gapp_klass->command_line = roxterm_application_command_line;
