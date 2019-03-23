@@ -47,3 +47,33 @@ MultitextNotebook *multitext_notebook_new(void)
     GObject *obj = g_object_new(MULTITEXT_TYPE_NOTEBOOK, NULL);
     return MULTITEXT_NOTEBOOK(obj);
 }
+
+void multitext_notebook_set_tab_label_homogeneous(MultitextNotebook *self,
+        GtkWidget *page, gboolean homogeneous)
+{
+    gtk_container_child_set(GTK_CONTAINER(self), page,
+            "tab-expand", homogeneous,
+            "tab-fill", TRUE,
+            NULL);
+}
+
+void multitext_notebook_remove_page(MultitextNotebook *self, GtkWidget *page)
+{
+    GtkNotebook *gnb = GTK_NOTEBOOK(self);
+    GtkContainer *cnb = GTK_CONTAINER(self);
+    gtk_container_remove(cnb, page);
+    int n_pages = gtk_notebook_get_n_pages(gnb);
+    if (!n_pages)
+    {
+        gtk_widget_destroy(
+                GTK_WIDGET(gtk_widget_get_toplevel(GTK_WIDGET(self))));
+    }
+    if (n_pages == 1)
+    {
+        GtkWidget *child = gtk_container_get_children(cnb)->data;
+        MultitextTabLabel *label
+            = MULTITEXT_TAB_LABEL(gtk_notebook_get_tab_label(gnb, child));
+        multitext_notebook_set_tab_label_homogeneous(self, child, FALSE);
+        multitext_tab_label_set_single(label, TRUE);
+    }
+}

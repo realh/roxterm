@@ -80,6 +80,17 @@ void multitext_window_insert_page(MultitextWindow *self,
         GtkWidget *child, MultitextGeometryProvider *gp,
         MultitextTabLabel *label, int index);
 
+/**
+ * multitext_window_find_geometry_provider:
+ *
+ * Finds a MultitextGeometryProvider in widget's hierarchy
+ *
+ * @widget: (transfer none):
+ * Returns: (transfer none) (nullable):
+ */
+MultitextGeometryProvider *
+multitext_window_find_geometry_provider(GtkWidget *widget);
+
 G_END_DECLS
 
 #endif /* __MULTITEXT_WINDOW_H */

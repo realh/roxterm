@@ -206,9 +206,20 @@ static void roxterm_window_spawn_callback(VteTerminal *vte,
         // error is implicitly transfer-none according to vte's gir file
         gtk_container_remove(
                 GTK_CONTAINER(multitext_window_get_notebook(mwin)),
-                GTK_WIDGET(vte));
+                gtk_widget_get_parent(GTK_WIDGET(vte)));
         // TODO: Verify that this also destroys the tab's label
     }
+}
+
+static void roxterm_window_tab_button_clicked(UNUSED GtkWidget *button,
+        gpointer handle)
+{
+    // TODO: Check whether child needs confirmation
+    // MultitextGeometryProvider *gp
+    //     = multitext_window_find_geometry_provider(handle);
+    MultitextWindow *mwin = MULTITEXT_WINDOW(gtk_widget_get_toplevel(handle));
+    MultitextNotebook *nb = multitext_window_get_notebook(mwin);
+    multitext_notebook_remove_page(nb, handle);
 }
 
 static void roxterm_window_insert_page(RoxtermWindow *self,
@@ -219,6 +230,8 @@ static void roxterm_window_insert_page(RoxtermWindow *self,
     int n_pages = gtk_notebook_get_n_pages(gnb);
     MultitextTabButton *tab_btn
         = MULTITEXT_TAB_BUTTON(roxterm_tab_button_new());
+    g_signal_connect(tab_btn, "clicked",
+            G_CALLBACK(roxterm_window_tab_button_clicked), child);
     MultitextTabLabel *tab_label = multitext_tab_label_new(tab_btn,
             n_pages == 0);
     MultitextGeometryProvider *gp = MULTITEXT_GEOMETRY_PROVIDER(vte);

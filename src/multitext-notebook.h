@@ -44,6 +44,18 @@ struct _MultitextNotebookClass {
  */
 MultitextNotebook *multitext_notebook_new(void);
 
+void multitext_notebook_set_tab_label_homogeneous(MultitextNotebook *self,
+        GtkWidget *page, gboolean homogeneous);
+
+/**
+ * multitext_notebook_remove_page:
+ *
+ * @page: (transfer full):
+ *
+ * If this was the last page the window is destroyed
+ */
+void multitext_notebook_remove_page(MultitextNotebook *self, GtkWidget *page);
+
 G_END_DECLS
 
 #endif /* __MULTITEXT_NOTEBOOK_H */

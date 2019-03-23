@@ -289,20 +289,12 @@ void multitext_window_set_initial_size(MultitextWindow *self)
             cell_width, cell_height);
 }
 
-inline static void multitext_window_set_tab_label_homogeneous(
-        GtkNotebook *gnb, GtkWidget *page, gboolean homogeneous)
-{
-    gtk_container_child_set(GTK_CONTAINER(gnb), page,
-            "tab-expand", homogeneous,
-            "tab-fill", TRUE,
-            NULL);
-}
-
 void multitext_window_insert_page(MultitextWindow *self,
         GtkWidget *child, MultitextGeometryProvider *gp,
         MultitextTabLabel *label, int index)
 {
-    GtkNotebook *gnb = GTK_NOTEBOOK(multitext_window_get_notebook(self));
+    MultitextNotebook *mnb = multitext_window_get_notebook(self);
+    GtkNotebook *gnb = GTK_NOTEBOOK(mnb);
     GtkWidget *label_w = label ? GTK_WIDGET(label) : NULL;
     int n_pages = gtk_notebook_get_n_pages(gnb);
     if (label)
@@ -311,14 +303,14 @@ void multitext_window_insert_page(MultitextWindow *self,
         multitext_geometry_provider_set_tab_label(gp, label);
     }
     gtk_notebook_insert_page(gnb, child, label_w, index);
-    multitext_window_set_tab_label_homogeneous(gnb, child, n_pages > 0);
+    multitext_notebook_set_tab_label_homogeneous(mnb, child, n_pages > 0);
     if (n_pages == 1)
     {
         // Switch from single tab label size to homogeneous
         GtkWidget *old_page = gtk_notebook_get_nth_page(gnb, 0);
         GtkWidget *old_label = gtk_notebook_get_tab_label(gnb, old_page);
         multitext_tab_label_set_single(MULTITEXT_TAB_LABEL(old_label), FALSE);
-        multitext_window_set_tab_label_homogeneous(gnb, old_page, TRUE);
+        multitext_notebook_set_tab_label_homogeneous(mnb, old_page, TRUE);
     }
     gtk_widget_show_all(child);
     multitext_window_set_geometry_provider(MULTITEXT_WINDOW(self), gp);
