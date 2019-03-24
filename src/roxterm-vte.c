@@ -19,6 +19,7 @@
 
 #include "multitext-geometry-provider.h"
 #include "roxterm-profile.h"
+#include "roxterm-tab-button.h"
 #include "roxterm-vte.h"
 
 struct _RoxtermVte {
@@ -90,7 +91,15 @@ roxterm_vte_set_tab_label(MultitextGeometryProvider *gp,
 static void roxterm_vte_child_exited(VteTerminal *vte, int status)
 {
     RoxtermVte *self = ROXTERM_VTE(vte);
-    if (!self->hold_open_on_child_exit && !status)
+    if (self->hold_open_on_child_exit && !status)
+    {
+        MultitextTabLabel *label = multitext_geometry_provider_get_tab_label(
+                MULTITEXT_GEOMETRY_PROVIDER(self));
+        RoxtermTabButton *button
+            = ROXTERM_TAB_BUTTON(multitext_tab_label_get_button(label));
+        roxterm_tab_button_set_state(button, ROXTERM_TAB_STATE_EXITED);
+    }
+    else
     {
         gtk_widget_destroy(gtk_widget_get_parent(GTK_WIDGET(self)));
     }

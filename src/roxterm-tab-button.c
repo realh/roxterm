@@ -44,6 +44,8 @@ struct _RoxtermTabButton
 
 G_DEFINE_TYPE(RoxtermTabButton, roxterm_tab_button, MULTITEXT_TYPE_TAB_BUTTON);
 
+#define ROXTERM_RESOURCE_ICONS ROXTERM_RESOURCE_PATH "icons/"
+
 static void
 roxterm_tab_button_show_icon(RoxtermTabButton *self, guint state_index)
 {
@@ -58,7 +60,7 @@ roxterm_tab_button_show_icon(RoxtermTabButton *self, guint state_index)
         if (!roxterm_tab_icon_pixbufs[state_index])
         {
             GError *error = NULL;
-            char *path = g_strdup_printf(ROXTERM_RESOURCE_PATH "/icons/%s.svg",
+            char *path = g_strdup_printf(ROXTERM_RESOURCE_ICONS "%s.svg",
                     roxterm_tab_icon_names[state_index]);
             int w, h;
             gtk_icon_size_lookup (GTK_ICON_SIZE_MENU, &w, &h);
@@ -68,7 +70,8 @@ roxterm_tab_button_show_icon(RoxtermTabButton *self, guint state_index)
             if (!roxterm_tab_icon_pixbufs[state_index])
             {
                 multitext_tab_button_show_close_icon(mb);
-                g_critical("Unable to load SVG resource '%s'", path);
+                g_critical("Unable to load SVG resource '%s': %s",
+                        path, error->message);
                 g_free(path);
                 g_error_free(error);
                 return;
