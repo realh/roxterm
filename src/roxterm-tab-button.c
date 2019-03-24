@@ -65,7 +65,7 @@ roxterm_tab_button_show_icon(RoxtermTabButton *self, guint state_index)
             int w, h;
             gtk_icon_size_lookup (GTK_ICON_SIZE_MENU, &w, &h);
             roxterm_tab_icon_pixbufs[state_index] =
-                gdk_pixbuf_new_from_resource_at_scale(path, w, h,
+                gdk_pixbuf_new_from_resource_at_scale(path, w - 2, h - 2,
                         TRUE, &error);
             if (!roxterm_tab_icon_pixbufs[state_index])
             {
