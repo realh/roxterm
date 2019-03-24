@@ -22,7 +22,28 @@
 
 struct _MultitextNotebook {
     GtkNotebook parent_instance;
-} ;
+};
+
+static void multitext_notebook_page_removed(GtkNotebook *gnb,
+        UNUSED GtkWidget *child, UNUSED guint page_num)
+{
+    MultitextNotebook *self = MULTITEXT_NOTEBOOK(gnb);
+    GtkContainer *cnb = GTK_CONTAINER(self);
+    int n_pages = gtk_notebook_get_n_pages(gnb);
+    if (!n_pages)
+    {
+        gtk_widget_destroy(
+                GTK_WIDGET(gtk_widget_get_toplevel(GTK_WIDGET(self))));
+    }
+    if (n_pages == 1)
+    {
+        GtkWidget *child = gtk_container_get_children(cnb)->data;
+        MultitextTabLabel *label
+            = MULTITEXT_TAB_LABEL(gtk_notebook_get_tab_label(gnb, child));
+        multitext_notebook_set_tab_label_homogeneous(self, child, FALSE);
+        multitext_tab_label_set_single(label, TRUE);
+    }
+}
 
 G_DEFINE_TYPE(MultitextNotebook, multitext_notebook, GTK_TYPE_NOTEBOOK);
 
@@ -36,6 +57,8 @@ static void multitext_notebook_class_init(MultitextNotebookClass *klass)
 {
     GObjectClass *oklass = G_OBJECT_CLASS(klass);
     oklass->constructed = multitext_notebook_constructed;
+    GtkNotebookClass *gnklass = GTK_NOTEBOOK_CLASS(klass);
+    gnklass->page_removed = multitext_notebook_page_removed;
 }
 
 static void multitext_notebook_init(UNUSED MultitextNotebook *self)
@@ -59,21 +82,6 @@ void multitext_notebook_set_tab_label_homogeneous(MultitextNotebook *self,
 
 void multitext_notebook_remove_page(MultitextNotebook *self, GtkWidget *page)
 {
-    GtkNotebook *gnb = GTK_NOTEBOOK(self);
     GtkContainer *cnb = GTK_CONTAINER(self);
     gtk_container_remove(cnb, page);
-    int n_pages = gtk_notebook_get_n_pages(gnb);
-    if (!n_pages)
-    {
-        gtk_widget_destroy(
-                GTK_WIDGET(gtk_widget_get_toplevel(GTK_WIDGET(self))));
-    }
-    if (n_pages == 1)
-    {
-        GtkWidget *child = gtk_container_get_children(cnb)->data;
-        MultitextTabLabel *label
-            = MULTITEXT_TAB_LABEL(gtk_notebook_get_tab_label(gnb, child));
-        multitext_notebook_set_tab_label_homogeneous(self, child, FALSE);
-        multitext_tab_label_set_single(label, TRUE);
-    }
 }

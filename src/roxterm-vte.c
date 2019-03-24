@@ -31,6 +31,7 @@ struct _RoxtermVte {
     MultitextTabLabel *label;
     char *tab_title;
     gboolean login_shell;
+    gboolean hold_open_on_child_exit;
 };
 
 static void roxterm_vte_get_current_size(MultitextGeometryProvider *self,
@@ -86,6 +87,15 @@ roxterm_vte_set_tab_label(MultitextGeometryProvider *gp,
     self->label = label;
 }
 
+static void roxterm_vte_child_exited(VteTerminal *vte, int status)
+{
+    RoxtermVte *self = ROXTERM_VTE(vte);
+    if (!self->hold_open_on_child_exit && !status)
+    {
+        gtk_widget_destroy(gtk_widget_get_parent(GTK_WIDGET(self)));
+    }
+}
+
 static void roxterm_vte_geometry_provider_init(
         MultitextGeometryProviderInterface *iface)
 {
@@ -122,6 +132,7 @@ enum {
     PROP_PROFILE = 1,
     PROP_FONT,
     PROP_LOGIN_SHELL,
+    PROP_HOLD_ON_CHILD_EXIT,
     N_PROPS
 };
 
@@ -142,6 +153,9 @@ static void roxterm_vte_set_property(GObject *obj, guint prop_id,
         case PROP_LOGIN_SHELL:
             self->login_shell = g_value_get_boolean(value);
             break;
+        case PROP_HOLD_ON_CHILD_EXIT:
+            self->hold_open_on_child_exit = g_value_get_boolean(value);
+            break;
         default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, prop_id, pspec);
     }
@@ -161,6 +175,9 @@ static void roxterm_vte_get_property(GObject *obj, guint prop_id,
             break;
         case PROP_LOGIN_SHELL:
             g_value_set_boolean(value, self->login_shell);
+            break;
+        case PROP_HOLD_ON_CHILD_EXIT:
+            g_value_set_boolean(value, self->hold_open_on_child_exit);
             break;
         default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, prop_id, pspec);
@@ -186,7 +203,14 @@ static void roxterm_vte_class_init(RoxtermVteClass *klass)
             g_param_spec_boolean("login-shell", "login-shell",
             "Whether shell is a login shell", TRUE,
             G_PARAM_READWRITE);
+    roxterm_vte_props[PROP_HOLD_ON_CHILD_EXIT] =
+            g_param_spec_boolean("hold-open-on-child-exit",
+            "hold-open-on-child-exit",
+            "Whether to keep the terminal open after its command has completed",
+            FALSE, G_PARAM_READWRITE);
     g_object_class_install_properties(oklass, N_PROPS, roxterm_vte_props);
+    VteTerminalClass *vklass = VTE_TERMINAL_CLASS(klass);
+    vklass->child_exited = roxterm_vte_child_exited;
 }
 
 static void roxterm_vte_init(RoxtermVte *self)
