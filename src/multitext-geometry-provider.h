@@ -86,6 +86,15 @@ struct _MultitextGeometryProviderInterface
      */
     void (*set_tab_label)(MultitextGeometryProvider *self,
             MultitextTabLabel *label);
+    /**
+     * MultitextGeometryProviderInterface::set_alloc_for_measurement:
+     *
+     * @afm: Any size-allocate events received while this is TRUE should
+     *       be treated for the purpose of measurement only, they should not
+     *       influence the widget's target size
+     */
+    void (*set_alloc_for_measurement)(MultitextGeometryProvider *self,
+            gboolean afm);
 };
 
 /**
@@ -158,5 +167,15 @@ multitext_geometry_provider_get_tab_label(MultitextGeometryProvider *self);
  */
 void multitext_geometry_provider_set_tab_label(MultitextGeometryProvider *self,
         MultitextTabLabel *label);
+
+/**
+ * multitext_geometry_provider_set_alloc_for_measurement:
+ *
+ * @afm: Any size-allocate events received while this is TRUE should
+ *       be treated for the purpose of measurement only, they should not
+ *       influence the widget's target size
+ */
+void multitext_geometry_provider_set_alloc_for_measurement(
+        MultitextGeometryProvider *self, gboolean afm);
 
 #endif /* __MULTITEXT_GEOMETRY_PROVIDER_H */

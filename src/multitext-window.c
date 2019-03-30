@@ -334,7 +334,9 @@ void multitext_window_update_geometry(MultitextWindow *self,
         nba.width = min_w;
         nba.height = min_h;
         nba.x = nba.y = 0;
+        multitext_geometry_provider_set_alloc_for_measurement(priv->gp, TRUE);
         gtk_widget_size_allocate(nbw, &nba);
+        multitext_geometry_provider_set_alloc_for_measurement(priv->gp, FALSE);
         // Allocating the min size to the notebook gives it and its children
         // valid allocations with correct relative sizes
     }

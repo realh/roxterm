@@ -35,6 +35,7 @@ struct _RoxtermVte {
     gboolean active;
     gboolean login_shell;
     gboolean hold_open_on_child_exit;
+    gboolean alloc_for_measurement;
 };
 
 enum {
@@ -100,6 +101,13 @@ roxterm_vte_set_tab_label(MultitextGeometryProvider *gp,
     self->label = label;
 }
 
+void roxterm_vte_set_alloc_for_measurement(
+        MultitextGeometryProvider *gp, gboolean afm)
+{
+    RoxtermVte *self = ROXTERM_VTE(gp);
+    self->alloc_for_measurement = afm;
+}
+
 static void roxterm_vte_child_exited(VteTerminal *vte, int status)
 {
     RoxtermVte *self = ROXTERM_VTE(vte);
@@ -127,6 +135,7 @@ static void roxterm_vte_geometry_provider_init(
     iface->confirm_close = roxterm_vte_confirm_close;
     iface->get_tab_label = roxterm_vte_get_tab_label;
     iface->set_tab_label = roxterm_vte_set_tab_label;
+    iface->set_alloc_for_measurement = roxterm_vte_set_alloc_for_measurement;
 }
 
 G_DEFINE_TYPE_WITH_CODE(RoxtermVte, roxterm_vte, VTE_TYPE_TERMINAL,
@@ -219,8 +228,15 @@ static void roxterm_vte_size_allocate(GtkWidget *widget, GtkAllocation *alloc)
         (widget, alloc);
     RoxtermVte *self = ROXTERM_VTE(widget);
     VteTerminal *vte = VTE_TERMINAL(widget);
-    self->target_columns = vte_terminal_get_column_count(vte);
-    self->target_rows = vte_terminal_get_row_count(vte);
+    if (!self->alloc_for_measurement)
+    {
+        self->target_columns = vte_terminal_get_column_count(vte);
+        self->target_rows = vte_terminal_get_row_count(vte);
+    }
+    g_debug("size-allocate: %ld x %ld (afm %d)",
+            vte_terminal_get_column_count(vte),
+            vte_terminal_get_row_count(vte),
+            self->alloc_for_measurement);
 }
 
 static void roxterm_vte_class_init(RoxtermVteClass *klass)
@@ -287,6 +303,7 @@ void roxterm_vte_apply_launch_params(RoxtermVte *self, RoxtermLaunchParams *lp,
         self->target_columns = vte_terminal_get_column_count(vte);
         self->target_rows = vte_terminal_get_row_count(vte);
     }
+    g_debug("At construction: %d x %d", self->target_columns, self->target_rows);
     if (tp)
     {
         if (tp->directory)

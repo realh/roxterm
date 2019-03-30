@@ -101,3 +101,13 @@ void multitext_geometry_provider_set_tab_label(MultitextGeometryProvider *self,
     g_return_if_fail(iface->get_tab_label != NULL);
     iface->set_tab_label(self, label);
 }
+
+void multitext_geometry_provider_set_alloc_for_measurement(
+        MultitextGeometryProvider *self, gboolean afm)
+{
+    g_return_if_fail(MULTITEXT_IS_GEOMETRY_PROVIDER(self));
+    MultitextGeometryProviderInterface *iface
+            = MULTITEXT_GEOMETRY_PROVIDER_GET_IFACE(self);
+    g_return_if_fail(iface->set_alloc_for_measurement != NULL);
+    iface->set_alloc_for_measurement(self, afm);
+}
