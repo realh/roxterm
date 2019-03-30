@@ -31,9 +31,19 @@ struct _RoxtermVte {
     VteTerminalSpawnAsyncCallback launch_callback;
     MultitextTabLabel *label;
     char *tab_title;
+    int target_columns, target_rows;
+    gboolean active;
     gboolean login_shell;
     gboolean hold_open_on_child_exit;
 };
+
+enum {
+    ROXTERM_VTE_SIGNAL_GEOMETRY_CHANGED,
+
+    ROXTERM_VTE_N_SIGNALS
+};
+
+static guint roxterm_vte_signals[ROXTERM_VTE_N_SIGNALS];
 
 static void roxterm_vte_get_current_size(MultitextGeometryProvider *self,
         int *columns, int *rows)
@@ -45,12 +55,12 @@ static void roxterm_vte_get_current_size(MultitextGeometryProvider *self,
         *rows = vte_terminal_get_row_count(vte);
 }
 
-static void roxterm_vte_get_initial_size(MultitextGeometryProvider *self,
+static void roxterm_vte_get_target_size(MultitextGeometryProvider *gp,
         int *columns, int *rows)
 {
-    // FIXME: If this is a newly created terminal it should read the size from
-    // the profile, not the current size
-    roxterm_vte_get_current_size(self, columns, rows);
+    RoxtermVte *self = ROXTERM_VTE(gp);
+    *columns = self->target_columns;
+    *rows = self->target_rows;
 }
 
 static void roxterm_vte_get_cell_size(MultitextGeometryProvider *self,
@@ -63,9 +73,11 @@ static void roxterm_vte_get_cell_size(MultitextGeometryProvider *self,
         *height = vte_terminal_get_char_height(vte);
 }
 
-static void roxterm_vte_set_active(UNUSED MultitextGeometryProvider *self,
-        UNUSED gboolean active)
+static void roxterm_vte_set_active(MultitextGeometryProvider *gp,
+        gboolean active)
 {
+    RoxtermVte *self = ROXTERM_VTE(gp);
+    self->active = active;
 }
 
 static gboolean roxterm_vte_confirm_close(UNUSED MultitextGeometryProvider *gp)
@@ -108,7 +120,7 @@ static void roxterm_vte_child_exited(VteTerminal *vte, int status)
 static void roxterm_vte_geometry_provider_init(
         MultitextGeometryProviderInterface *iface)
 {
-    iface->get_initial_size = roxterm_vte_get_initial_size;
+    iface->get_target_size = roxterm_vte_get_target_size;
     iface->get_current_size = roxterm_vte_get_current_size;
     iface->get_cell_size = roxterm_vte_get_cell_size;
     iface->set_active = roxterm_vte_set_active;
@@ -193,6 +205,24 @@ static void roxterm_vte_get_property(GObject *obj, guint prop_id,
     }
 }
 
+static void roxterm_vte_char_size_changed(VteTerminal *vte, guint w, guint h)
+{
+    CHAIN_UP(VTE_TERMINAL_CLASS, roxterm_vte_parent_class, char_size_changed)
+        (vte, w, h);
+    RoxtermVte *self = ROXTERM_VTE(vte);
+    roxterm_vte_geometry_changed_if_active(self);
+}
+
+static void roxterm_vte_size_allocate(GtkWidget *widget, GtkAllocation *alloc)
+{
+    CHAIN_UP(GTK_WIDGET_CLASS, roxterm_vte_parent_class, size_allocate)
+        (widget, alloc);
+    RoxtermVte *self = ROXTERM_VTE(widget);
+    VteTerminal *vte = VTE_TERMINAL(widget);
+    self->target_columns = vte_terminal_get_column_count(vte);
+    self->target_rows = vte_terminal_get_row_count(vte);
+}
+
 static void roxterm_vte_class_init(RoxtermVteClass *klass)
 {
     GObjectClass *oklass = G_OBJECT_CLASS(klass);
@@ -218,8 +248,15 @@ static void roxterm_vte_class_init(RoxtermVteClass *klass)
             "Whether to keep the terminal open after its command has completed",
             FALSE, G_PARAM_READWRITE);
     g_object_class_install_properties(oklass, N_PROPS, roxterm_vte_props);
+    roxterm_vte_signals[ROXTERM_VTE_SIGNAL_GEOMETRY_CHANGED]
+        = g_signal_newv("geometry-changed", ROXTERM_TYPE_VTE,
+                G_SIGNAL_RUN_LAST, NULL, NULL, NULL, NULL,
+                G_TYPE_NONE, 0, NULL);
     VteTerminalClass *vklass = VTE_TERMINAL_CLASS(klass);
     vklass->child_exited = roxterm_vte_child_exited;
+    vklass->char_size_changed = roxterm_vte_char_size_changed;
+    GtkWidgetClass *wklass = GTK_WIDGET_CLASS(klass);
+    wklass->size_allocate = roxterm_vte_size_allocate;
 }
 
 static void roxterm_vte_init(RoxtermVte *self)
@@ -242,6 +279,13 @@ void roxterm_vte_apply_launch_params(RoxtermVte *self, RoxtermLaunchParams *lp,
     if (wp && wp->geometry_str)
     {
         vte_terminal_set_size(vte, wp->columns, wp->rows);
+        self->target_columns = wp->columns;
+        self->target_rows = wp->rows;
+    }
+    else
+    {
+        self->target_columns = vte_terminal_get_column_count(vte);
+        self->target_rows = vte_terminal_get_row_count(vte);
     }
     if (tp)
     {
@@ -328,4 +372,13 @@ RoxtermTabLaunchParams *roxterm_vte_get_launch_params(RoxtermVte *self)
     tp->directory = g_strdup(self->directory);
     // TODO: vim field
     return tp;
+}
+
+void roxterm_vte_geometry_changed_if_active(RoxtermVte *self)
+{
+    if (self->active)
+    {
+        g_signal_emit(self,
+                roxterm_vte_signals[ROXTERM_VTE_SIGNAL_GEOMETRY_CHANGED], 0);
+    }
 }

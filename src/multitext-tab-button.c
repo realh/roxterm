@@ -17,6 +17,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+#include "config.h"
 #include "multitext-tab-button.h"
 
 typedef struct 
@@ -69,7 +70,8 @@ static void
 multitext_tab_button_style_updated (GtkWidget *self)
 {
     multitext_tab_button_set_size (MULTITEXT_TAB_BUTTON (self));
-    GTK_WIDGET_CLASS (multitext_tab_button_parent_class)->style_updated (self);
+    CHAIN_UP(GTK_WIDGET_CLASS, multitext_tab_button_parent_class, style_updated)
+            (self);
 }
 
 static void

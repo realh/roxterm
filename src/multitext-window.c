@@ -17,7 +17,11 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+#include "config.h"
 #include "multitext-window.h"
+
+#define MULTITEXT_WINDOW_STATE_SNAPPED (GDK_WINDOW_STATE_MAXIMIZED | \
+        GDK_WINDOW_STATE_FULLSCREEN | WIN_STATE_TILED)
 
 typedef struct {
     MultitextGeometryProvider *gp;
@@ -117,10 +121,8 @@ multitext_window_find_geometry_provider(GtkWidget *widget)
 static gboolean multitext_window_delete_event(GtkWidget *widget,
         GdkEventAny *event)
 {
-    GtkWidgetClass *wklass = GTK_WIDGET_CLASS(multitext_window_parent_class);
-    g_return_val_if_fail(wklass != NULL, FALSE);
-    // Unexpectedly the delete_event virtual method slot is NULL
-    if (wklass->delete_event && wklass->delete_event(widget, event))
+    if (CHAIN_UP_BOOL(GTK_WIDGET_CLASS, multitext_window_parent_class,
+                delete_event)(widget, event))
     {
         return TRUE;
     }
@@ -143,6 +145,65 @@ static gboolean multitext_window_delete_event(GtkWidget *widget,
     return FALSE;
 }
 
+#if GTK_CHECK_VERSION(3,22,23)
+#define MULTITEXT_WINDOW_STATE_TILED_MASK \
+        (GDK_WINDOW_STATE_TOP_TILED | GDK_WINDOW_STATE_BOTTOM_TILED | \
+        GDK_WINDOW_STATE_LEFT_TILED | GDK_WINDOW_STATE_RIGHT_TILED)
+#else
+#define MULTITEXT_WINDOW_STATE_TILED_MASK GDK_WINDOW_STATE_TILED
+#endif
+#define MULTITEXT_WINDOW_STATE_SNAPPED_MASK (GDK_WINDOW_STATE_MAXIMIZED | \
+        GDK_WINDOW_STATE_FULLSCREEN | MULTITEXT_WINDOW_STATE_TILED_MASK)
+
+inline static gboolean multitext_window_state_is_snapped(GdkWindowState state)
+{
+    return state & MULTITEXT_WINDOW_STATE_SNAPPED_MASK;
+}
+
+inline static gboolean multitext_window_is_snapped(gpointer window)
+{
+    return multitext_window_state_is_snapped(
+            gdk_window_get_state(gtk_widget_get_window(window)));
+}
+
+static gboolean multitext_window_state_event(GtkWidget *widget,
+        GdkEventWindowState *event)
+{
+    MultitextWindow *self = MULTITEXT_WINDOW(widget);
+    if (multitext_window_state_is_snapped(event->changed_mask))
+    {
+        if (multitext_window_state_is_snapped(event->new_window_state))
+        {
+            gtk_window_set_geometry_hints(GTK_WINDOW(widget), NULL, NULL, 0);
+        }
+        else
+        {
+            multitext_window_update_geometry(self, NULL, NULL, FALSE);
+        }
+    }
+    if (CHAIN_UP_BOOL(GTK_WIDGET_CLASS, multitext_window_parent_class,
+                window_state_event)(widget, event))
+    {
+        return TRUE;
+    }
+    return FALSE;
+}
+
+static void multitext_window_child_geometry_changed(
+        UNUSED MultitextGeometryProvider *gp, MultitextWindow *self)
+{
+    int width, height;
+    multitext_window_update_geometry(self, &width, &height, FALSE);
+    gtk_window_resize(GTK_WINDOW(self), width, height);
+}
+
+static void multitext_window_page_removed(UNUSED GtkNotebook *gnb,
+        GtkWidget *child, UNUSED guint page_num, MultitextWindow *self)
+{
+    g_signal_handlers_disconnect_by_func(child,
+            G_CALLBACK(multitext_window_child_geometry_changed), self);
+}
+
 static void multitext_window_constructed(GObject *obj)
 {
     G_OBJECT_CLASS(multitext_window_parent_class)->constructed(obj);
@@ -152,6 +213,8 @@ static void multitext_window_constructed(GObject *obj)
     g_return_if_fail(priv != NULL);
     priv->notebook = multitext_notebook_new();
     gtk_container_add(GTK_CONTAINER(self), GTK_WIDGET(priv->notebook));
+    g_signal_connect(priv->notebook, "page-removed",
+            G_CALLBACK(multitext_window_page_removed), self);
 }
 
 static void multitext_window_class_init(MultitextWindowClass *klass)
@@ -166,6 +229,7 @@ static void multitext_window_class_init(MultitextWindowClass *klass)
     g_object_class_install_properties(oklass, N_PROPS, multitext_window_props);
     GtkWidgetClass *wklass = GTK_WIDGET_CLASS(klass);
     wklass->delete_event = multitext_window_delete_event;
+    wklass->window_state_event = multitext_window_state_event;
 }
 
 static void multitext_window_init(MultitextWindow *self)
@@ -218,6 +282,8 @@ MultitextNotebook *multitext_window_get_notebook(MultitextWindow *self)
 static void multitext_window_apply_geometry_hints(GtkWindow *window,
         int base_width, int base_height, int width_inc, int height_inc)
 {
+    if (multitext_window_is_snapped(window))
+        return;
     GdkGeometry geom;
     geom.base_width = base_width;
     geom.base_height = base_height;
@@ -229,20 +295,17 @@ static void multitext_window_apply_geometry_hints(GtkWindow *window,
             GDK_HINT_RESIZE_INC);
 }
 
-void multitext_window_set_initial_size(MultitextWindow *self)
+void multitext_window_update_geometry(MultitextWindow *self,
+        int *window_width, int *window_height, gboolean initial)
 {
     MultitextWindowPrivate *priv
         = multitext_window_get_instance_private(self);
     GtkWidget *nbw = GTK_WIDGET(priv->notebook);
-    // Show everything except the top-level first, otherwise measured sizes
-    // tend to be nonsense
-    gtk_widget_realize(nbw);
-    gtk_widget_show_all(nbw);
     int columns, rows;
     int cell_width, cell_height;
     int target_width, target_height;
     int current_width, current_height;
-    multitext_geometry_provider_get_initial_size(priv->gp, &columns, &rows);
+    multitext_geometry_provider_get_target_size(priv->gp, &columns, &rows);
     multitext_geometry_provider_get_cell_size(priv->gp,
             &cell_width, &cell_height);
     target_width = cell_width * columns;
@@ -262,31 +325,50 @@ void multitext_window_set_initial_size(MultitextWindow *self)
     int diff_h = nat_h - current_height;
     // The difference between natural size and current_size should be the size
     // of padding/border the text widget has when snapped to geometry hints.
-    gtk_widget_get_preferred_width(nbw, &min_w, &nat_w);
-    gtk_widget_get_preferred_height(nbw, &min_h, &nat_h);
-    // Now we know the minimum size for the notebook
     GtkAllocation nba, gpa;
-    nba.width = min_w;
-    nba.height = min_h;
-    nba.x = nba.y = 0;
-    gtk_widget_size_allocate(nbw, &nba);
-    // Allocating the min size to the window gives it and its children valid
-    // allocations with correct relative sizes
+    if (initial)
+    {
+        gtk_widget_get_preferred_width(nbw, &min_w, &nat_w);
+        gtk_widget_get_preferred_height(nbw, &min_h, &nat_h);
+        // Now we know the minimum size for the notebook
+        nba.width = min_w;
+        nba.height = min_h;
+        nba.x = nba.y = 0;
+        gtk_widget_size_allocate(nbw, &nba);
+        // Allocating the min size to the notebook gives it and its children
+        // valid allocations with correct relative sizes
+    }
     gtk_widget_get_allocation(nbw, &nba);
     gtk_widget_get_allocation(gpw, &gpa);
     // Now we can read the difference in size between the notebook and the text
     // widget
     diff_w += nba.width - gpa.width;
     diff_h += nba.height - gpa.height;
+    GtkWindow *gwin = GTK_WINDOW(self);
+    multitext_window_apply_geometry_hints(gwin, diff_w, diff_h,
+            cell_width, cell_height);
     // This difference plus the border/padding size added to the target size
     // gives us the final size of the window content. AFAICT
     // gtk_window_set_default_size sets the size available in the window for
     // its content; we can ignore the window chrome
-    GtkWindow *gwin = GTK_WINDOW(self);
-    gtk_window_set_default_size(gwin, diff_w + target_width,
-            diff_h + target_height);
-    multitext_window_apply_geometry_hints(gwin, diff_w, diff_h,
-            cell_width, cell_height);
+    if (window_width)
+        *window_width = diff_w + target_width;
+    if (window_height)
+        *window_height = diff_h + target_height;
+}
+
+void multitext_window_set_initial_size(MultitextWindow *self)
+{
+    MultitextWindowPrivate *priv
+        = multitext_window_get_instance_private(self);
+    GtkWidget *nbw = GTK_WIDGET(priv->notebook);
+    // Show everything except the top-level first, otherwise measured sizes
+    // tend to be nonsense
+    gtk_widget_realize(nbw);
+    gtk_widget_show_all(nbw);
+    int width, height;
+    multitext_window_update_geometry(self, &width, &height, TRUE);
+    gtk_window_set_default_size(GTK_WINDOW(self), width, height);
 }
 
 void multitext_window_insert_page(MultitextWindow *self,
@@ -314,6 +396,8 @@ void multitext_window_insert_page(MultitextWindow *self,
     }
     gtk_widget_show_all(child);
     multitext_window_set_geometry_provider(MULTITEXT_WINDOW(self), gp);
-    gtk_notebook_set_current_page(gnb, n_pages);
+    gtk_notebook_set_current_page(gnb, index == -1 ? n_pages : index);
+    g_signal_connect(gp, "geometry-changed",
+            G_CALLBACK(multitext_window_child_geometry_changed), self);
 }
 

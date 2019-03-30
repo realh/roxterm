@@ -63,6 +63,13 @@ const char *roxterm_vte_get_profile(RoxtermVte *self);
  */
 RoxtermTabLaunchParams *roxterm_vte_get_launch_params(RoxtermVte *self);
 
+/**
+ * roxterm_vte_geometry_changed:
+ *
+ * Emit "geometry-changed" signal iff this is the active notebook page.
+ */
+void roxterm_vte_geometry_changed_if_active(RoxtermVte *self);
+
 G_END_DECLS
 
 #endif /* __ROXTERM_VTE_H */

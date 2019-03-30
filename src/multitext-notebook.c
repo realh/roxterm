@@ -24,8 +24,10 @@ struct _MultitextNotebook {
     GtkNotebook parent_instance;
 };
 
+G_DEFINE_TYPE(MultitextNotebook, multitext_notebook, GTK_TYPE_NOTEBOOK);
+
 static void multitext_notebook_page_removed(GtkNotebook *gnb,
-        UNUSED GtkWidget *child, UNUSED guint page_num)
+        GtkWidget *child, guint page_num)
 {
     MultitextNotebook *self = MULTITEXT_NOTEBOOK(gnb);
     GtkContainer *cnb = GTK_CONTAINER(self);
@@ -43,9 +45,9 @@ static void multitext_notebook_page_removed(GtkNotebook *gnb,
         multitext_notebook_set_tab_label_homogeneous(self, child, FALSE);
         multitext_tab_label_set_single(label, TRUE);
     }
+    CHAIN_UP(GTK_NOTEBOOK_CLASS, multitext_notebook_parent_class, page_removed)
+            (gnb, child, page_num);
 }
-
-G_DEFINE_TYPE(MultitextNotebook, multitext_notebook, GTK_TYPE_NOTEBOOK);
 
 static void multitext_notebook_constructed(GObject *obj)
 {

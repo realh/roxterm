@@ -30,14 +30,14 @@ multitext_geometry_provider_default_init(
 }
 
 void
-multitext_geometry_provider_get_initial_size(MultitextGeometryProvider *self,
+multitext_geometry_provider_get_target_size(MultitextGeometryProvider *self,
         int *columns, int *rows)
 {
     g_return_if_fail(MULTITEXT_IS_GEOMETRY_PROVIDER(self));
     MultitextGeometryProviderInterface *iface
             = MULTITEXT_GEOMETRY_PROVIDER_GET_IFACE(self);
-    g_return_if_fail(iface->get_initial_size != NULL);
-    iface->get_initial_size(self, columns, rows);
+    g_return_if_fail(iface->get_target_size != NULL);
+    iface->get_target_size(self, columns, rows);
 }
 
 void

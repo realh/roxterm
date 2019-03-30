@@ -33,17 +33,20 @@ G_DECLARE_INTERFACE (MultitextGeometryProvider, multitext_geometry_provider,
  *
  * A widget containing text with fixed-width characters that determines the
  * size of the window, or a container for such a widget.
+ *
+ * Implementations (must) also provide a "geometry-changed" signal with no
+ * arguments. It should only be emitted on an active page.
  */
 struct _MultitextGeometryProviderInterface
 {
     GTypeInterface parent_iface;
     /**
-     * MultitextGeometryProviderInterface::get_initial_size:
+     * MultitextGeometryProviderInterface::get_target_size:
      *
      * @columns: (out):
      * @rows: (out):
      */
-    void (*get_initial_size)(MultitextGeometryProvider *self,
+    void (*get_target_size)(MultitextGeometryProvider *self,
             int *columns, int *rows);
     /**
      * MultitextGeometryProviderInterface::get_current_size:
@@ -86,7 +89,7 @@ struct _MultitextGeometryProviderInterface
 };
 
 /**
- * multitext_geometry_provider_get_initial_size:
+ * multitext_geometry_provider_get_target_size:
  *
  * Gets the size, in characters, the widget wants to be eg when opening a new
  * window
@@ -95,7 +98,7 @@ struct _MultitextGeometryProviderInterface
  * @rows: (out):
  */
 void
-multitext_geometry_provider_get_initial_size(MultitextGeometryProvider *self,
+multitext_geometry_provider_get_target_size(MultitextGeometryProvider *self,
         int *columns, int *rows);
 
 /**

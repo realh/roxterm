@@ -67,7 +67,8 @@ static GActionEntry roxterm_app_actions[] = {
 
 static void roxterm_application_startup(GApplication *gapp)
 {
-    G_APPLICATION_CLASS(roxterm_application_parent_class)->startup(gapp);
+    CHAIN_UP(G_APPLICATION_CLASS, roxterm_application_parent_class, startup)
+            (gapp);
     GtkApplication *gtkapp = GTK_APPLICATION(gapp);
     RoxtermApplication *self = ROXTERM_APPLICATION(gapp);
     self->builder = gtk_builder_new_from_resource(ROXTERM_RESOURCE_PATH
@@ -82,8 +83,8 @@ static void roxterm_application_startup(GApplication *gapp)
 static gint roxterm_application_command_line(GApplication *gapp,
         GApplicationCommandLine *cmd_line)
 {
-    G_APPLICATION_CLASS(roxterm_application_parent_class)->command_line(gapp,
-            cmd_line);
+    CHAIN_UP(G_APPLICATION_CLASS, roxterm_application_parent_class,
+            command_line)(gapp, cmd_line);
     RoxtermApplication *self = ROXTERM_APPLICATION(gapp);
     GError *error = NULL;
     RoxtermLaunchParams *lp
