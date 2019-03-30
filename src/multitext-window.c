@@ -325,27 +325,28 @@ void multitext_window_update_geometry(MultitextWindow *self,
     int diff_h = nat_h - current_height;
     // The difference between natural size and current_size should be the size
     // of padding/border the text widget has when snapped to geometry hints.
-    GtkAllocation nba, gpa;
+    GtkAllocation wa, gpa;
+    GtkWidget *gw = GTK_WIDGET(self);
     if (initial)
     {
-        gtk_widget_get_preferred_width(nbw, &min_w, &nat_w);
-        gtk_widget_get_preferred_height(nbw, &min_h, &nat_h);
-        // Now we know the minimum size for the notebook
-        nba.width = min_w;
-        nba.height = min_h;
-        nba.x = nba.y = 0;
+        gtk_widget_get_preferred_width(gw, &min_w, &nat_w);
+        gtk_widget_get_preferred_height(gw, &min_h, &nat_h);
+        // Now we know the minimum size for the window
+        wa.width = min_w;
+        wa.height = min_h;
+        wa.x = wa.y = 0;
         multitext_geometry_provider_set_alloc_for_measurement(priv->gp, TRUE);
-        gtk_widget_size_allocate(nbw, &nba);
+        gtk_widget_size_allocate(gw, &wa);
         multitext_geometry_provider_set_alloc_for_measurement(priv->gp, FALSE);
-        // Allocating the min size to the notebook gives it and its children
+        // Allocating the min size to the window gives it and its children
         // valid allocations with correct relative sizes
     }
-    gtk_widget_get_allocation(nbw, &nba);
+    gtk_widget_get_allocation(gw, &wa);
     gtk_widget_get_allocation(gpw, &gpa);
-    // Now we can read the difference in size between the notebook and the text
+    // Now we can read the difference in size between the window and the text
     // widget
-    diff_w += nba.width - gpa.width;
-    diff_h += nba.height - gpa.height;
+    diff_w += wa.width - gpa.width;
+    diff_h += wa.height - gpa.height;
     GtkWindow *gwin = GTK_WINDOW(self);
     multitext_window_apply_geometry_hints(gwin, diff_w, diff_h,
             cell_width, cell_height);
