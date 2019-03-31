@@ -300,7 +300,6 @@ void multitext_window_update_geometry(MultitextWindow *self,
 {
     MultitextWindowPrivate *priv
         = multitext_window_get_instance_private(self);
-    GtkWidget *nbw = GTK_WIDGET(priv->notebook);
     int columns, rows;
     int cell_width, cell_height;
     int target_width, target_height;
@@ -325,7 +324,7 @@ void multitext_window_update_geometry(MultitextWindow *self,
     int diff_h = nat_h - current_height;
     // The difference between natural size and current_size should be the size
     // of padding/border the text widget has when snapped to geometry hints.
-    GtkAllocation wa, gpa;
+    GtkAllocation wa, tlca, gpa;
     GtkWidget *gw = GTK_WIDGET(self);
     if (initial)
     {
@@ -341,23 +340,26 @@ void multitext_window_update_geometry(MultitextWindow *self,
         // Allocating the min size to the window gives it and its children
         // valid allocations with correct relative sizes
     }
+    GtkWidget *tlc = gtk_bin_get_child(GTK_BIN(self));  // top level child
     gtk_widget_get_allocation(gw, &wa);
+    gtk_widget_get_allocation(tlc, &tlca);
     gtk_widget_get_allocation(gpw, &gpa);
-    // Now we can read the difference in size between the window and the text
-    // widget
+    // Now we can read the differences in size between the window, the tlc
+    // and the geometry widget
     diff_w += wa.width - gpa.width;
     diff_h += wa.height - gpa.height;
     GtkWindow *gwin = GTK_WINDOW(self);
-    multitext_window_apply_geometry_hints(gwin, diff_w, diff_h,
-            cell_width, cell_height);
-    // This difference plus the border/padding size added to the target size
-    // gives us the final size of the window content. AFAICT
-    // gtk_window_set_default_size sets the size available in the window for
-    // its content; we can ignore the window chrome
+    multitext_window_apply_geometry_hints(gwin, diff_w + wa.width - gpa.width,
+            diff_h + wa.height - gpa.height, cell_width, cell_height);
+    // The difference between the window's allocation and gp's allocation added
+    // to gp's padding (diff_w/h) gives us the "base" dimensions for the
+    // geometry hints, but the size we're going to pass to
+    // gtk_window_set_default_size() or  gtk_window_resize() should exclude
+    // window chrome
     if (window_width)
-        *window_width = diff_w + target_width;
+        *window_width = diff_w + target_width + tlca.width - gpa.width;
     if (window_height)
-        *window_height = diff_h + target_height;
+        *window_height = diff_h + target_height + tlca.height - gpa.height;
 }
 
 void multitext_window_set_initial_size(MultitextWindow *self)
