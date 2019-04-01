@@ -393,7 +393,7 @@ RoxtermTabLaunchParams *roxterm_vte_get_launch_params(RoxtermVte *self)
 
 void roxterm_vte_geometry_changed_if_active(RoxtermVte *self)
 {
-    if (self->active)
+    if (self->active && !self->alloc_for_measurement)
     {
         g_signal_emit(self,
                 roxterm_vte_signals[ROXTERM_VTE_SIGNAL_GEOMETRY_CHANGED], 0);
