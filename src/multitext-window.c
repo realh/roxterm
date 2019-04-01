@@ -284,6 +284,9 @@ static void multitext_window_apply_geometry_hints(GtkWindow *window,
 {
     if (multitext_window_is_snapped(window))
         return;
+    g_debug("Applying geometry hints %d+%dx, %d+%dy",
+            base_width, width_inc,
+            base_height, height_inc);
     GdkGeometry geom;
     geom.base_width = base_width;
     geom.base_height = base_height;
@@ -372,8 +375,12 @@ void multitext_window_set_initial_size(MultitextWindow *self)
     gtk_widget_realize(nbw);
     gtk_widget_show_all(nbw);
     int width, height;
+    // Tell the geometry widget it isn't active otherwise it may send a
+    // geometry-changed signal and confound the initial size negotiation
+    multitext_geometry_provider_set_active(priv->gp, FALSE);
     multitext_window_update_geometry(self, &width, &height, TRUE);
     gtk_window_set_default_size(GTK_WINDOW(self), width, height);
+    multitext_geometry_provider_set_active(priv->gp, TRUE);
 }
 
 void multitext_window_insert_page(MultitextWindow *self,
