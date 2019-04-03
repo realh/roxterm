@@ -20,6 +20,8 @@
 #include "config.h"
 #include "multitext-window.h"
 
+#include <vte/vte.h>
+
 #define MULTITEXT_WINDOW_STATE_SNAPPED (GDK_WINDOW_STATE_MAXIMIZED | \
         GDK_WINDOW_STATE_FULLSCREEN | WIN_STATE_TILED)
 
@@ -28,6 +30,8 @@ typedef struct {
     gulong anchored_sig_tag;
     gulong destroy_sig_tag;
     MultitextNotebook *notebook;
+    GdkGeometry geom;
+    gboolean have_geom;
 } MultitextWindowPrivate;
 
 G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE(MultitextWindow, multitext_window,
@@ -166,6 +170,122 @@ inline static gboolean multitext_window_is_snapped(gpointer window)
             gdk_window_get_state(gtk_widget_get_window(window)));
 }
 
+static void multitext_window_get_target_size(MultitextWindow *self,
+        int *window_width, int *window_height, gboolean initial)
+{
+    GtkWidget *tlw = GTK_WIDGET(self);
+    if (multitext_window_is_snapped(tlw))
+        return;
+    MultitextWindowPrivate *priv
+        = multitext_window_get_instance_private(self);
+    GdkGeometry *geom = &priv->geom;
+    GtkWidget *tlc = gtk_bin_get_child(GTK_BIN(self));  // top level child
+    // Before size negotiation the geometry provider's natural preferred size
+    // corresponds to the total size the widget should be to show the
+    // configured number of columns and rows.
+    GtkWidget *gp_w = GTK_WIDGET(priv->gp);
+    int gp_nat_w, gp_nat_h;
+    gtk_widget_get_preferred_width(gp_w, &geom->min_width, &gp_nat_w);
+    gtk_widget_get_preferred_height(gp_w, &geom->min_height, &gp_nat_h);
+    // At this point we can also determine how much padding there is in the
+    // gp widget
+    int cols, rows;
+    multitext_geometry_provider_get_current_size(priv->gp, &cols, &rows);
+    multitext_geometry_provider_get_cell_size(priv->gp,
+            &geom->width_inc, &geom->height_inc);
+    geom->base_width = gp_nat_w - geom->width_inc * cols;
+    geom->base_height = gp_nat_h - geom->height_inc * rows;
+    // However, if there hasn't yet been a size allocation we can't reliably
+    // measure how much padding etc is added by the notebook and any other
+    // widgets in the hierarchy, so do a sort of test allocation. Probably
+    // best to do it on the window's immediate child rather than the window
+    // itself in case we break gtk_window_set_default_size
+    GtkAllocation tlc_alloc;
+    if (initial)
+    {
+        multitext_geometry_provider_set_alloc_for_measurement(priv->gp, TRUE);
+        // Might as well make some attempt to get the right size in the first
+        // place, but we can't trust that this will result in gp being
+        // allocated a size that will result in it snapping to correct base_*
+        // dimensions
+        int min_tlc_w, min_tlc_h;
+        gtk_widget_get_preferred_width(tlc, &min_tlc_w, NULL);
+        gtk_widget_get_preferred_height(tlc, &min_tlc_h, NULL);
+        tlc_alloc.x = tlc_alloc.y = 0;
+        tlc_alloc.width = gp_nat_w + MAX(min_tlc_w - geom->min_width, 0);
+        tlc_alloc.height = gp_nat_h + MAX(min_tlc_h - geom->min_height, 0);
+        gtk_widget_size_allocate(tlc, &tlc_alloc);
+        multitext_geometry_provider_set_alloc_for_measurement(priv->gp, FALSE);
+    }
+    // Now we can read how much padding there should be between tlc and gp and
+    // add it to gp's internal padding. That plus its target size gives us the
+    // target window size, which does not include its "chrome"
+    GtkAllocation gp_alloc;
+    gtk_widget_get_allocation(gp_w, &gp_alloc);
+    // Get tlc's actual allocation in case initial was FALSE or initial
+    // allocation request was unable to be satisifed
+    gtk_widget_get_allocation(tlc, &tlc_alloc);
+    int target_w, target_h;
+    multitext_geometry_provider_get_target_size(priv->gp, &target_w, &target_h);
+    int pad_w = tlc_alloc.width - gp_alloc.width;
+    int pad_h = tlc_alloc.height - gp_alloc.height;
+    geom->base_width += pad_w;
+    geom->base_height += pad_h;
+    geom->min_width += pad_w;
+    geom->min_height += pad_h;
+    if (window_width)
+        *window_width = target_w * geom->width_inc + geom->base_width;
+    if (window_height)
+        *window_height = target_h * geom->height_inc + geom->base_height;
+}
+
+static void multitext_window_update_geometry(MultitextWindow *self);
+
+static void multitext_window_apply_geometry(MultitextWindow *self)
+{
+    MultitextWindowPrivate *priv
+        = multitext_window_get_instance_private(self);
+    if (!priv->have_geom)
+    {
+        multitext_window_get_target_size(self, NULL, NULL, FALSE);
+        multitext_window_update_geometry(self);
+    }
+    else
+    {
+        GtkWindow *win = GTK_WINDOW(self);
+        gtk_window_set_geometry_hints(win, NULL, &priv->geom,
+                GDK_HINT_RESIZE_INC | GDK_HINT_BASE_SIZE | GDK_HINT_MIN_SIZE);
+    }
+}
+
+// After getting hints with multitext_window_get_target_size and then
+// allocating a size to the winodw, this adds the window chrome to the hints
+// before applying them
+static void multitext_window_update_geometry(MultitextWindow *self)
+{
+    GtkWindow *win = GTK_WINDOW(self);
+    if (multitext_window_is_snapped(win))
+        return;
+    MultitextWindowPrivate *priv
+        = multitext_window_get_instance_private(self);
+    GtkWidget *tlw = GTK_WIDGET(win);
+    GtkWidget *tlc = gtk_bin_get_child(GTK_BIN(tlw));  // top level child
+    // geom comes from multitext_window_get_target_size so we need to add
+    // top_level's chrome to it
+    GtkAllocation win_alloc, tlc_alloc;
+    gtk_widget_get_allocation(tlw, &win_alloc);
+    gtk_widget_get_allocation(tlc, &tlc_alloc);
+    int pad_w = win_alloc.width - tlc_alloc.width;
+    int pad_h = win_alloc.height - tlc_alloc.height;
+    GdkGeometry *geom = &priv->geom;
+    geom->base_width += pad_w;
+    geom->base_height += pad_h;
+    geom->min_width += pad_w;
+    geom->min_height += pad_h;
+    priv->have_geom = TRUE;
+    multitext_window_apply_geometry(self);
+}
+
 static gboolean multitext_window_state_event(GtkWidget *widget,
         GdkEventWindowState *event)
 {
@@ -178,7 +298,7 @@ static gboolean multitext_window_state_event(GtkWidget *widget,
         }
         else
         {
-            multitext_window_update_geometry(self, NULL, NULL, FALSE);
+            multitext_window_apply_geometry(self);
         }
     }
     if (CHAIN_UP_BOOL(GTK_WIDGET_CLASS, multitext_window_parent_class,
@@ -193,8 +313,9 @@ static void multitext_window_child_geometry_changed(
         UNUSED MultitextGeometryProvider *gp, MultitextWindow *self)
 {
     int width, height;
-    multitext_window_update_geometry(self, &width, &height, FALSE);
+    multitext_window_get_target_size(self, &width, &height, FALSE);
     gtk_window_resize(GTK_WINDOW(self), width, height);
+    multitext_window_update_geometry(self);
 }
 
 static void multitext_window_page_removed(UNUSED GtkNotebook *gnb,
@@ -279,92 +400,6 @@ MultitextNotebook *multitext_window_get_notebook(MultitextWindow *self)
     return priv->notebook;
 }
 
-static void multitext_window_apply_geometry_hints(GtkWindow *window,
-        int base_width, int base_height, int width_inc, int height_inc)
-{
-    if (multitext_window_is_snapped(window))
-        return;
-    g_debug("Applying geometry hints %d+%dx, %d+%dy",
-            base_width, width_inc,
-            base_height, height_inc);
-    GdkGeometry geom;
-    geom.base_width = base_width;
-    geom.base_height = base_height;
-    geom.width_inc = width_inc;
-    geom.height_inc = height_inc;
-    geom.min_width = MIN(300, 10 * width_inc);
-    geom.min_height = MIN(200, 5 * height_inc);
-    gtk_window_set_geometry_hints(window, NULL, &geom,
-            GDK_HINT_RESIZE_INC);
-}
-
-void multitext_window_update_geometry(MultitextWindow *self,
-        int *window_width, int *window_height, gboolean initial)
-{
-    MultitextWindowPrivate *priv
-        = multitext_window_get_instance_private(self);
-    int columns, rows;
-    int cell_width, cell_height;
-    int target_width, target_height;
-    int current_width, current_height;
-    multitext_geometry_provider_get_target_size(priv->gp, &columns, &rows);
-    multitext_geometry_provider_get_cell_size(priv->gp,
-            &cell_width, &cell_height);
-    target_width = cell_width * columns;
-    target_height = cell_height * rows;
-    // target_* hold the target size of the body of the text widget, excluding
-    // padding, borders etc
-    multitext_geometry_provider_get_current_size(priv->gp, &columns, &rows);
-    current_width = cell_width * columns;
-    current_height = cell_height * rows;
-    // target_* hold the current size of the body of the text widget, excluding
-    // padding, borders etc; this may differ from target_*
-    GtkWidget *gpw = GTK_WIDGET(priv->gp);
-    int min_w, nat_w, min_h, nat_h;
-    gtk_widget_get_preferred_width(gpw, &min_w, &nat_w);
-    gtk_widget_get_preferred_height(gpw, &min_h, &nat_h);
-    int diff_w = nat_w - current_width;
-    int diff_h = nat_h - current_height;
-    // The difference between natural size and current_size should be the size
-    // of padding/border the text widget has when snapped to geometry hints.
-    GtkAllocation wa, tlca, gpa;
-    GtkWidget *gw = GTK_WIDGET(self);
-    if (initial)
-    {
-        gtk_widget_get_preferred_width(gw, &min_w, &nat_w);
-        gtk_widget_get_preferred_height(gw, &min_h, &nat_h);
-        // Now we know the minimum size for the window
-        wa.width = min_w;
-        wa.height = min_h;
-        wa.x = wa.y = 0;
-        multitext_geometry_provider_set_alloc_for_measurement(priv->gp, TRUE);
-        gtk_widget_size_allocate(gw, &wa);
-        multitext_geometry_provider_set_alloc_for_measurement(priv->gp, FALSE);
-        // Allocating the min size to the window gives it and its children
-        // valid allocations with correct relative sizes
-    }
-    GtkWidget *tlc = gtk_bin_get_child(GTK_BIN(self));  // top level child
-    gtk_widget_get_allocation(gw, &wa);
-    gtk_widget_get_allocation(tlc, &tlca);
-    gtk_widget_get_allocation(gpw, &gpa);
-    // Now we can read the differences in size between the window, the tlc
-    // and the geometry widget
-    diff_w += wa.width - gpa.width;
-    diff_h += wa.height - gpa.height;
-    GtkWindow *gwin = GTK_WINDOW(self);
-    multitext_window_apply_geometry_hints(gwin, diff_w + wa.width - gpa.width,
-            diff_h + wa.height - gpa.height, cell_width, cell_height);
-    // The difference between the window's allocation and gp's allocation added
-    // to gp's padding (diff_w/h) gives us the "base" dimensions for the
-    // geometry hints, but the size we're going to pass to
-    // gtk_window_set_default_size() or  gtk_window_resize() should exclude
-    // window chrome
-    if (window_width)
-        *window_width = diff_w + target_width + tlca.width - gpa.width;
-    if (window_height)
-        *window_height = diff_h + target_height + tlca.height - gpa.height;
-}
-
 void multitext_window_set_initial_size(MultitextWindow *self)
 {
     MultitextWindowPrivate *priv
@@ -375,8 +410,9 @@ void multitext_window_set_initial_size(MultitextWindow *self)
     gtk_widget_realize(nbw);
     gtk_widget_show_all(nbw);
     int width, height;
-    multitext_window_update_geometry(self, &width, &height, TRUE);
+    multitext_window_get_target_size(self, &width, &height, TRUE);
     gtk_window_set_default_size(GTK_WINDOW(self), width, height);
+    multitext_window_update_geometry(self);
 }
 
 void multitext_window_insert_page(MultitextWindow *self,

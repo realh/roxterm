@@ -62,21 +62,6 @@ multitext_window_get_geometry_provider(MultitextWindow *self);
 MultitextNotebook *multitext_window_get_notebook(MultitextWindow *win);
 
 /**
- * multitext_window_update_geometry:
- *
- * Mostly for internal use.
- *
- * @window_width: (out) (optional): Total target width of window
- *              excluding chrome
- * @window_height: (out) (optional): Total target height of window
- *              excluding chrome
- * @initial: If TRUE the purpose of this call is to find the initial size
- *              of the window
- */
-void multitext_window_update_geometry(MultitextWindow *win,
-        int *window_width, int *window_height, gboolean initial);
-
-/**
  * multitext_window_set_initial_size:
  *
  * Sets initial size based on GeometryProvider child
