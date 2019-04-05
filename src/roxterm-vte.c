@@ -233,7 +233,7 @@ static void roxterm_vte_size_allocate(GtkWidget *widget, GtkAllocation *alloc)
         self->target_columns = vte_terminal_get_column_count(vte);
         self->target_rows = vte_terminal_get_row_count(vte);
     }
-    g_debug("size-allocate: %ld x %ld (afm %d)",
+    g_debug("vte size-allocate: %ld x %ld (afm %d)",
             vte_terminal_get_column_count(vte),
             vte_terminal_get_row_count(vte),
             self->alloc_for_measurement);
