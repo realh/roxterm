@@ -331,7 +331,7 @@ static gboolean multitext_window_state_event(GtkWidget *widget,
         }
         else
         {
-            //multitext_window_apply_geometry(self);
+            multitext_window_apply_geometry(self);
         }
     }
     if (CHAIN_UP_BOOL(GTK_WIDGET_CLASS, multitext_window_parent_class,
