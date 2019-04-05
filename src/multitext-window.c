@@ -309,6 +309,8 @@ static gboolean multitext_window_state_event(GtkWidget *widget,
 {
     // Disable geometry hints early, restore them late
     MultitextWindow *self = MULTITEXT_WINDOW(widget);
+    MultitextWindowPrivate *priv
+        = multitext_window_get_instance_private(self);
     gboolean changed = multitext_window_state_is_snapped(event->changed_mask);
     gboolean snapped =
         multitext_window_state_is_snapped(event->new_window_state);
@@ -320,6 +322,7 @@ static gboolean multitext_window_state_event(GtkWidget *widget,
             multitext_window_parent_class, window_state_event)(widget, event);
     if (changed && !snapped)
     {
+        priv->have_geom = FALSE;
         g_idle_add((GSourceFunc) multitext_window_apply_geometry, self);
     }
     return result;
