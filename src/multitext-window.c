@@ -253,7 +253,8 @@ static void multitext_window_get_target_size(MultitextWindow *self,
 
 static void multitext_window_update_geometry(MultitextWindow *self);
 
-static void multitext_window_apply_geometry(MultitextWindow *self)
+// Always returns FALSE so it can be used directly as an idle callback
+static gboolean multitext_window_apply_geometry(MultitextWindow *self)
 {
     MultitextWindowPrivate *priv
         = multitext_window_get_instance_private(self);
@@ -266,10 +267,14 @@ static void multitext_window_apply_geometry(MultitextWindow *self)
     }
     else
     {
+        g_debug("Applying geometry hints %dx + %d >= %d, %dy + %d >= %d",
+            priv->geom.width_inc, priv->geom.base_width, priv->geom.min_width,
+            priv->geom.height_inc, priv->geom.base_height, priv->geom.min_height);
         GtkWindow *win = GTK_WINDOW(self);
         gtk_window_set_geometry_hints(win, NULL, &priv->geom,
                 GDK_HINT_RESIZE_INC | GDK_HINT_BASE_SIZE | GDK_HINT_MIN_SIZE);
     }
+    return FALSE;
 }
 
 // After getting hints with multitext_window_get_target_size and then
@@ -322,24 +327,25 @@ static void multitext_window_size_allocate(GtkWidget *widget,
 static gboolean multitext_window_state_event(GtkWidget *widget,
         GdkEventWindowState *event)
 {
+    // Disable geometry hints early, restore them late
     MultitextWindow *self = MULTITEXT_WINDOW(widget);
-    if (multitext_window_state_is_snapped(event->changed_mask))
+    MultitextWindowPrivate *priv
+        = multitext_window_get_instance_private(self);
+    gboolean changed = multitext_window_state_is_snapped(event->changed_mask);
+    gboolean snapped =
+        multitext_window_state_is_snapped(event->new_window_state);
+    if (changed && snapped)
     {
-        if (multitext_window_state_is_snapped(event->new_window_state))
-        {
-            gtk_window_set_geometry_hints(GTK_WINDOW(widget), NULL, NULL, 0);
-        }
-        else
-        {
-            multitext_window_apply_geometry(self);
-        }
+        gtk_window_set_geometry_hints(GTK_WINDOW(widget), NULL, NULL, 0);
     }
-    if (CHAIN_UP_BOOL(GTK_WIDGET_CLASS, multitext_window_parent_class,
-                window_state_event)(widget, event))
+    gboolean result = CHAIN_UP_BOOL(GTK_WIDGET_CLASS,
+            multitext_window_parent_class, window_state_event)(widget, event);
+    if (changed && !snapped)
     {
-        return TRUE;
+        //priv->have_geom = FALSE;
+        g_idle_add((GSourceFunc) multitext_window_apply_geometry, self);
     }
-    return FALSE;
+    return result;
 }
 
 static void multitext_window_child_geometry_changed(
