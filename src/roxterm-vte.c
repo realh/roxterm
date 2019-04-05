@@ -233,10 +233,6 @@ static void roxterm_vte_size_allocate(GtkWidget *widget, GtkAllocation *alloc)
         self->target_columns = vte_terminal_get_column_count(vte);
         self->target_rows = vte_terminal_get_row_count(vte);
     }
-    g_debug("vte size-allocate: %ld x %ld (afm %d)",
-            vte_terminal_get_column_count(vte),
-            vte_terminal_get_row_count(vte),
-            self->alloc_for_measurement);
 }
 
 static void roxterm_vte_class_init(RoxtermVteClass *klass)
@@ -303,7 +299,6 @@ void roxterm_vte_apply_launch_params(RoxtermVte *self, RoxtermLaunchParams *lp,
         self->target_columns = vte_terminal_get_column_count(vte);
         self->target_rows = vte_terminal_get_row_count(vte);
     }
-    g_debug("At construction: %d x %d", self->target_columns, self->target_rows);
     if (tp)
     {
         if (tp->directory)

@@ -189,8 +189,6 @@ static void multitext_window_get_target_size(MultitextWindow *self,
     multitext_geometry_provider_set_alloc_for_measurement(priv->gp, TRUE);
     gtk_widget_get_preferred_width(gp_w, &geom->min_width, &gp_nat_w);
     gtk_widget_get_preferred_height(gp_w, &geom->min_height, &gp_nat_h);
-    g_debug("vte preferred size min %dx%d nat %dx%d",
-            geom->min_width, geom->min_height, gp_nat_w, gp_nat_h);
     // At this point we can also determine how much padding there is in the
     // gp widget
     int cols, rows;
@@ -199,7 +197,6 @@ static void multitext_window_get_target_size(MultitextWindow *self,
             &geom->width_inc, &geom->height_inc);
     geom->base_width = gp_nat_w - geom->width_inc * cols;
     geom->base_height = gp_nat_h - geom->height_inc * rows;
-    g_debug("vte padding %dx%d", geom->base_width, geom->base_height);
     // However, if there hasn't yet been a size allocation we can't reliably
     // measure how much padding etc is added by the notebook and any other
     // widgets in the hierarchy, so do a sort of test allocation. Probably
@@ -215,12 +212,9 @@ static void multitext_window_get_target_size(MultitextWindow *self,
         int min_tlc_w, min_tlc_h;
         gtk_widget_get_preferred_width(tlc, &min_tlc_w, &tlc_alloc.width);
         gtk_widget_get_preferred_height(tlc, &min_tlc_h, &tlc_alloc.height);
-        g_debug("tlc preferred size min %dx%d nat %dx%d",
-                min_tlc_w, min_tlc_h, tlc_alloc.width, tlc_alloc.height);
         tlc_alloc.x = tlc_alloc.y = 0;
         //tlc_alloc.width = gp_nat_w + MAX(min_tlc_w - geom->min_width, 0);
         //tlc_alloc.height = gp_nat_h + MAX(min_tlc_h - geom->min_height, 0);
-        g_debug("Allocating %dx%d to tlc", tlc_alloc.width, tlc_alloc.height);
         gtk_widget_size_allocate(tlc, &tlc_alloc);
     }
     multitext_geometry_provider_set_alloc_for_measurement(priv->gp, FALSE);
@@ -232,8 +226,6 @@ static void multitext_window_get_target_size(MultitextWindow *self,
     // Get tlc's actual allocation in case initial was FALSE or initial
     // allocation request was unable to be satisifed
     gtk_widget_get_allocation(tlc, &tlc_alloc);
-    g_debug("%dx%d has been allocated to tlc", tlc_alloc.width, tlc_alloc.height);
-    g_debug("%dx%d has been allocated to gp", gp_alloc.width, gp_alloc.height);
     int target_w, target_h;
     multitext_geometry_provider_get_target_size(priv->gp, &target_w, &target_h);
     int pad_w = tlc_alloc.width - gp_alloc.width;
@@ -242,9 +234,6 @@ static void multitext_window_get_target_size(MultitextWindow *self,
     geom->base_height += pad_h;
     geom->min_width += pad_w;
     geom->min_height += pad_h;
-    g_debug("Window size request %dx%d",
-            target_w * geom->width_inc + geom->base_width,
-            target_h * geom->height_inc + geom->base_height);
     if (window_width)
         *window_width = target_w * geom->width_inc + geom->base_width;
     if (window_height)
@@ -260,16 +249,11 @@ static gboolean multitext_window_apply_geometry(MultitextWindow *self)
         = multitext_window_get_instance_private(self);
     if (!priv->have_geom)
     {
-        g_debug("multitext_window_apply_geometry: "
-                "multitext_window_get_target_size");
         multitext_window_get_target_size(self, NULL, NULL, FALSE);
         multitext_window_update_geometry(self);
     }
     else
     {
-        g_debug("Applying geometry hints %dx + %d >= %d, %dy + %d >= %d",
-            priv->geom.width_inc, priv->geom.base_width, priv->geom.min_width,
-            priv->geom.height_inc, priv->geom.base_height, priv->geom.min_height);
         GtkWindow *win = GTK_WINDOW(self);
         gtk_window_set_geometry_hints(win, NULL, &priv->geom,
                 GDK_HINT_RESIZE_INC | GDK_HINT_BASE_SIZE | GDK_HINT_MIN_SIZE);
@@ -294,10 +278,6 @@ static void multitext_window_update_geometry(MultitextWindow *self)
     GtkAllocation win_alloc, tlc_alloc;
     gtk_widget_get_allocation(tlw, &win_alloc);
     gtk_widget_get_allocation(tlc, &tlc_alloc);
-    g_debug("update_geom: %dx%d has been allocated to win",
-            win_alloc.width, win_alloc.height);
-    g_debug("update_geom: %dx%d has been allocated to tlc",
-            tlc_alloc.width, tlc_alloc.height);
     int pad_w = win_alloc.width - tlc_alloc.width;
     int pad_h = win_alloc.height - tlc_alloc.height;
     GdkGeometry *geom = &priv->geom;
@@ -329,8 +309,6 @@ static gboolean multitext_window_state_event(GtkWidget *widget,
 {
     // Disable geometry hints early, restore them late
     MultitextWindow *self = MULTITEXT_WINDOW(widget);
-    MultitextWindowPrivate *priv
-        = multitext_window_get_instance_private(self);
     gboolean changed = multitext_window_state_is_snapped(event->changed_mask);
     gboolean snapped =
         multitext_window_state_is_snapped(event->new_window_state);
@@ -342,7 +320,6 @@ static gboolean multitext_window_state_event(GtkWidget *widget,
             multitext_window_parent_class, window_state_event)(widget, event);
     if (changed && !snapped)
     {
-        //priv->have_geom = FALSE;
         g_idle_add((GSourceFunc) multitext_window_apply_geometry, self);
     }
     return result;
@@ -352,8 +329,6 @@ static void multitext_window_child_geometry_changed(
         UNUSED MultitextGeometryProvider *gp, MultitextWindow *self)
 {
     int width, height;
-    g_debug("multitext_window_child_geometry_changed: "
-            "multitext_window_get_target_size");
     multitext_window_get_target_size(self, &width, &height, FALSE);
     gtk_window_resize(GTK_WINDOW(self), width, height);
     multitext_window_update_geometry(self);
@@ -452,7 +427,6 @@ void multitext_window_set_initial_size(MultitextWindow *self)
     gtk_widget_realize(nbw);
     gtk_widget_show_all(nbw);
     int width, height;
-    g_debug("multitext_window_set_initial_size: multitext_window_get_target_size");
     multitext_window_get_target_size(self, &width, &height, TRUE);
     gtk_window_set_default_size(GTK_WINDOW(self), width, height);
     // Can't update geometry yet, wait until we get a size allocation
