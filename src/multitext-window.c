@@ -329,9 +329,18 @@ static void multitext_window_child_geometry_changed(
         UNUSED MultitextGeometryProvider *gp, MultitextWindow *self)
 {
     int width, height;
-    multitext_window_get_target_size(self, &width, &height, FALSE);
-    gtk_window_resize(GTK_WINDOW(self), width, height);
-    multitext_window_update_geometry(self);
+    if (multitext_window_is_snapped(self))
+    {
+        MultitextWindowPrivate *priv
+            = multitext_window_get_instance_private(self);
+        priv->have_geom = FALSE;
+    }
+    else
+    {
+        multitext_window_get_target_size(self, &width, &height, FALSE);
+        gtk_window_resize(GTK_WINDOW(self), width, height);
+        multitext_window_update_geometry(self);
+    }
 }
 
 static void multitext_window_page_removed(UNUSED GtkNotebook *gnb,
