@@ -322,8 +322,9 @@ static gboolean multitext_window_state_event(GtkWidget *widget,
             multitext_window_parent_class, window_state_event)(widget, event);
     if (changed && !snapped)
     {
-        priv->have_geom = FALSE;
-        g_idle_add((GSourceFunc) multitext_window_apply_geometry, self);
+        //priv->have_geom = FALSE;
+        //g_idle_add((GSourceFunc) multitext_window_apply_geometry, self);
+        multitext_window_apply_geometry(self);
     }
     return result;
 }
