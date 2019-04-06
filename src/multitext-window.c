@@ -320,7 +320,10 @@ static gboolean multitext_window_state_event(GtkWidget *widget,
             multitext_window_parent_class, window_state_event)(widget, event);
     if (changed && !snapped)
     {
-        multitext_window_apply_geometry(self);
+        MultitextWindowPrivate *priv
+            = multitext_window_get_instance_private(self);
+        priv->have_geom = FALSE;
+        g_idle_add((GSourceFunc) multitext_window_apply_geometry, self);
     }
     return result;
 }
