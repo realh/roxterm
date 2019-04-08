@@ -367,7 +367,13 @@ void roxterm_vte_set_profile(RoxtermVte *self, const char *profile_name)
         g_object_unref(self->profile);
     }
     self->profile = roxterm_profile_lookup(profile_name);
-    roxterm_profile_apply_as_properties(self->profile, obj, NULL);
+    GError *error = NULL;
+    if (!roxterm_profile_load(self->profile, &error)
+            || !roxterm_profile_apply_as_properties(self->profile, obj, NULL,
+                    &error))
+    {
+        // TODO: Report error
+    }
     roxterm_profile_connect_property_listener(self->profile, obj, NULL);
 }
 
