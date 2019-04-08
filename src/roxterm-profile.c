@@ -219,11 +219,12 @@ static char *roxterm_profile_check_directory(const char *dir, const char *name)
     return filename;
 }
 
-void roxterm_profile_load(RoxtermProfile *self)
+gboolean roxterm_profile_load(RoxtermProfile *self, GError **error)
 {
+    gboolean result = TRUE;
     if (self->key_file)
     {
-        return;
+        return TRUE;
     }
     self->key_file = g_key_file_new();
     const char *dir = g_get_user_config_dir();
@@ -242,20 +243,18 @@ void roxterm_profile_load(RoxtermProfile *self)
     }
     if (filename)
     {
-        GError *error = NULL;
         if (!g_key_file_load_from_file(self->key_file, filename,
-                    G_KEY_FILE_KEEP_COMMENTS, &error))
+                    G_KEY_FILE_KEEP_COMMENTS, error))
         {
-            g_critical("Error loading profile from '%s': %s", filename,
-                    error->message);
-            g_error_free(error);
+            result = FALSE;
         }
         if (filename != self->filename)
             g_free(filename);
     }
+    return result;
 }
 
-void roxterm_profile_save(RoxtermProfile *self)
+gboolean roxterm_profile_save(RoxtermProfile *self, GError **error)
 {
     if (!self->filename)
     {
@@ -267,103 +266,124 @@ void roxterm_profile_save(RoxtermProfile *self)
         self->filename = roxterm_profile_build_filename(g_get_user_config_dir(),
                 self->name);
     }
-    GError *error = NULL;
-    if (!g_key_file_save_to_file(self->key_file, self->filename, &error))
-    {
-        // TODO: It would be better to report this in the GUI, but it's
-        // difficult to find the parent window for the dialog unless we
-        // create an ugly GError-pseudo-exception chain
-        g_critical("Error saving profile to '%s': %s", self->filename,
-                error->message);
-        g_error_free(error);
-    }
+    return g_key_file_save_to_file(self->key_file, self->filename, error);
 }
 
-char *roxterm_profile_get_string(RoxtermProfile *self, const char *key)
+char *roxterm_profile_get_string(RoxtermProfile *self, const char *key,
+        GError **error)
 {
-    roxterm_profile_load(self);
-    return g_key_file_get_string(self->key_file, "strings", key, NULL);
+    if (!roxterm_profile_load(self, error))
+        return NULL;
+    return g_key_file_get_string(self->key_file, "strings", key, error);
 }
 
-void roxterm_profile_set_string(RoxtermProfile *self, const char *key,
-        const char *value)
+gboolean roxterm_profile_set_string(RoxtermProfile *self, const char *key,
+        const char *value, GError **error)
 {
-    roxterm_profile_load(self);
+    if (!roxterm_profile_load(self, error))
+        return FALSE;
     g_key_file_set_string(self->key_file, "strings", key, value);
-    roxterm_profile_save(self);
+    gboolean result = roxterm_profile_save(self, error);
     g_signal_emit(self,
             roxterm_profile_signals[ROXTERM_PROFILE_SIGNAL_STRING_CHANGED],
             0, key, value);
+    return result;
 }
 
-int roxterm_profile_get_int(RoxtermProfile *self, const char *key)
+int roxterm_profile_get_int(RoxtermProfile *self, const char *key,
+        GError **error)
 {
-    roxterm_profile_load(self);
-    return g_key_file_get_integer(self->key_file, "ints", key, NULL);
+    if (!roxterm_profile_load(self, error))
+        return 0;
+    return g_key_file_get_integer(self->key_file, "ints", key, error);
 }
 
-void roxterm_profile_set_int(RoxtermProfile *self, const char *key, int value)
+gboolean roxterm_profile_set_int(RoxtermProfile *self, const char *key,
+        int value, GError **error)
 {
-    roxterm_profile_load(self);
+    if (!roxterm_profile_load(self, error))
+        return FALSE;
     g_key_file_set_integer(self->key_file, "ints", key, value);
-    roxterm_profile_save(self);
+    gboolean result = roxterm_profile_save(self, error);
     g_signal_emit(self,
             roxterm_profile_signals[ROXTERM_PROFILE_SIGNAL_INT_CHANGED],
             0, key, value);
+    return result;
 }
 
-gboolean roxterm_profile_get_boolean(RoxtermProfile *self, const char *key)
+gboolean roxterm_profile_get_boolean(RoxtermProfile *self, const char *key,
+        GError **error)
 {
-    roxterm_profile_load(self);
-    return g_key_file_get_boolean(self->key_file, "booleans", key, NULL);
+    if (!roxterm_profile_load(self, error))
+        return FALSE;
+    return g_key_file_get_boolean(self->key_file, "booleans", key, error);
 }
 
-void roxterm_profile_set_boolean(RoxtermProfile *self, const char *key,
-        gboolean value)
+gboolean roxterm_profile_set_boolean(RoxtermProfile *self, const char *key,
+        gboolean value, GError **error)
 {
-    roxterm_profile_load(self);
+    if (!roxterm_profile_load(self, error))
+        return FALSE;
     g_key_file_set_boolean(self->key_file, "booleans", key, value);
-    roxterm_profile_save(self);
+    gboolean result = roxterm_profile_save(self, error);
     g_signal_emit(self,
             roxterm_profile_signals[ROXTERM_PROFILE_SIGNAL_BOOLEAN_CHANGED],
             0, key, value);
+    return result;
 }
 
-double roxterm_profile_get_float(RoxtermProfile *self, const char *key)
+double roxterm_profile_get_float(RoxtermProfile *self, const char *key,
+        GError **error)
 {
-    roxterm_profile_load(self);
-    return g_key_file_get_double(self->key_file, "floats", key, NULL);
+    if (!roxterm_profile_load(self, error))
+        return 0.0;
+    return g_key_file_get_double(self->key_file, "floats", key, error);
 }
 
-void roxterm_profile_set_float(RoxtermProfile *self, const char *key,
-        double value)
+gboolean roxterm_profile_set_float(RoxtermProfile *self, const char *key,
+        double value, GError **error)
 {
-    roxterm_profile_load(self);
+    if (!roxterm_profile_load(self, error))
+        return FALSE;
     g_key_file_set_double(self->key_file, "floats", key, value);
-    roxterm_profile_save(self);
+    gboolean result = roxterm_profile_save(self, error);
     g_signal_emit(self,
             roxterm_profile_signals[ROXTERM_PROFILE_SIGNAL_FLOAT_CHANGED],
             0, key, value);
+    return result;
 }
 
-RoxtermRGBA roxterm_profile_get_rgba(RoxtermProfile *self, const char *key)
+RoxtermRGBA roxterm_profile_get_rgba(RoxtermProfile *self, const char *key,
+        GError **error)
 {
-    roxterm_profile_load(self);
-    char *s = g_key_file_get_string(self->key_file, "colours", key, NULL);
+    char *s = NULL;
+    if (roxterm_profile_load(self, error))
+    {
+        s = g_key_file_get_string(self->key_file, "colours", key, error);
+        if (error && *error && s)
+        {
+            g_free(s);
+            s = NULL;
+        }
+    }
     RoxtermRGBA rrgba = roxterm_rgba_parse(s);
     g_free(s);
     return rrgba;
 }
 
-void roxterm_profile_set_rgba(RoxtermProfile *self, const char *key,
-        RoxtermRGBA value)
+gboolean roxterm_profile_set_rgba(RoxtermProfile *self, const char *key,
+        RoxtermRGBA value, GError **error)
 {
+    if (!roxterm_profile_load(self, error))
+        return FALSE;
     char *s = roxterm_rgba_to_string(value);
     g_key_file_set_string(self->key_file, "colours", key, s);
     g_free(s);
+    gboolean result = roxterm_profile_save(self, error);
     g_signal_emit(self,
             roxterm_profile_signals[ROXTERM_PROFILE_SIGNAL_RGBA_CHANGED],
             0, key, value);
+    return result;
 }
 
 RoxtermProfile *roxterm_profile_lookup(const char *name)
@@ -381,34 +401,44 @@ RoxtermProfile *roxterm_profile_lookup(const char *name)
     return profile;
 }
 
-gboolean roxterm_profile_has_string(RoxtermProfile *self, const char *key)
+gboolean roxterm_profile_has_string(RoxtermProfile *self, const char *key,
+        GError **error)
 {
-    roxterm_profile_load(self);
-    return g_key_file_has_key(self->key_file, "strings", key, NULL);
+    if (!roxterm_profile_load(self, error))
+        return FALSE;
+    return g_key_file_has_key(self->key_file, "strings", key, error);
 }
 
-gboolean roxterm_profile_has_int(RoxtermProfile *self, const char *key)
+gboolean roxterm_profile_has_int(RoxtermProfile *self, const char *key,
+        GError **error)
 {
-    roxterm_profile_load(self);
-    return g_key_file_has_key(self->key_file, "ints", key, NULL);
+    if (!roxterm_profile_load(self, error))
+        return FALSE;
+    return g_key_file_has_key(self->key_file, "ints", key, error);
 }
 
-gboolean roxterm_profile_has_boolean(RoxtermProfile *self, const char *key)
+gboolean roxterm_profile_has_boolean(RoxtermProfile *self, const char *key,
+        GError **error)
 {
-    roxterm_profile_load(self);
-    return g_key_file_has_key(self->key_file, "booleans", key, NULL);
+    if (!roxterm_profile_load(self, error))
+        return FALSE;
+    return g_key_file_has_key(self->key_file, "booleans", key, error);
 }
 
-gboolean roxterm_profile_has_float(RoxtermProfile *self, const char *key)
+gboolean roxterm_profile_has_float(RoxtermProfile *self, const char *key,
+        GError **error)
 {
-    roxterm_profile_load(self);
-    return g_key_file_has_key(self->key_file, "floats", key, NULL);
+    if (!roxterm_profile_load(self, error))
+        return FALSE;
+    return g_key_file_has_key(self->key_file, "floats", key, error);
 }
 
-gboolean roxterm_profile_has_rgba(RoxtermProfile *self, const char *key)
+gboolean roxterm_profile_has_rgba(RoxtermProfile *self, const char *key,
+        GError **error)
 {
-    roxterm_profile_load(self);
-    return g_key_file_has_key(self->key_file, "colours", key, NULL);
+    if (!roxterm_profile_load(self, error))
+        return FALSE;
+    return g_key_file_has_key(self->key_file, "colours", key, error);
 }
 
 #define ROXTERM_PROFILE_LISTENER(rtype) roxterm_profile_on_##rtype##_changed
@@ -458,54 +488,87 @@ void roxterm_profile_disconnect_property_listener(RoxtermProfile *self,
 
 #define ROXTERM_PROFILE_APPLICATOR(rtype) roxterm_profile_apply_##rtype
 
-#define ROXTERM_PROFILE_DEFINE_APPLICATOR(rtype) \
-static void ROXTERM_PROFILE_APPLICATOR(rtype) (RoxtermProfile *self, \
-        const char *key, GObject *target) \
+// error must not be NULL when calling these applicators
+#define ROXTERM_PROFILE_DEFINE_APPLICATOR(rtype, itype) \
+static gboolean ROXTERM_PROFILE_APPLICATOR(rtype) (RoxtermProfile *self, \
+        const char *key, GObject *target, GError **error) \
 { \
-    g_object_set(target, key, roxterm_profile_get_##rtype (self, key), NULL); \
+    itype value = roxterm_profile_get_##rtype (self, key, error); \
+    if (!*error) \
+    { \
+        g_object_set(target, key, value, NULL); \
+        return TRUE; \
+    } \
+    return FALSE; \
 }
 
-static void roxterm_profile_apply_string(RoxtermProfile *self,
-        const char *key, GObject *target)
+static gboolean roxterm_profile_apply_string(RoxtermProfile *self,
+        const char *key, GObject *target, GError **error)
 {
-    char *value = roxterm_profile_get_string(self, key);
-    g_object_set(target, key, value, NULL);
+    char *value = roxterm_profile_get_string(self, key, error);
+    gboolean result = FALSE;
+    if (value || (error && !*error))
+    {
+        g_object_set(target, key, value, NULL);
+        result = TRUE;
+    }
     g_free(value);
+    return result;
 }
 
-ROXTERM_PROFILE_DEFINE_APPLICATOR(int)
-ROXTERM_PROFILE_DEFINE_APPLICATOR(boolean)
-ROXTERM_PROFILE_DEFINE_APPLICATOR(float)
-ROXTERM_PROFILE_DEFINE_APPLICATOR(rgba)
+ROXTERM_PROFILE_DEFINE_APPLICATOR(int, int)
+ROXTERM_PROFILE_DEFINE_APPLICATOR(boolean, gboolean)
+ROXTERM_PROFILE_DEFINE_APPLICATOR(float, double)
+ROXTERM_PROFILE_DEFINE_APPLICATOR(rgba, RoxtermRGBA)
 
-static void roxterm_profile_apply_group(RoxtermProfile *self,
+static gboolean roxterm_profile_apply_group(RoxtermProfile *self,
         const char *group,
-        void (*applicator)(RoxtermProfile *, const char *, GObject *),
-        GObject *target)
+        gboolean (*applicator)(RoxtermProfile *, const char *,
+            GObject *, GError **error),
+        GObject *target,
+        GError **error_out)
 {
     if (!g_key_file_has_group(self->key_file, group))
-        return;
+        return TRUE;
     gsize nkeys;
     char **keys = g_key_file_get_keys(self->key_file, group, &nkeys, NULL);
+    gboolean result = TRUE;
     if (keys)
     {
         for (gsize n = 0; n < nkeys; ++n)
-            applicator(self, keys[n], target);
+        {
+            GError *error = NULL;
+            if (!applicator(self, keys[n], target, &error))
+            {
+                g_critical("Error applying profile option %s/%s: %s",
+                        group, keys[n], error->message);
+                if (error_out && !*error_out)
+                    *error_out = error;
+                else
+                    g_clear_error(&error);
+                result = FALSE;
+            }
+        }
         g_strfreev(keys);
     }
+    return result;
 }
 
-#define ROXTERM_PROFILE_APPLY_GROUP(self, rtype, target) \
+#define ROXTERM_PROFILE_APPLY_GROUP(self, rtype, target, error) \
     roxterm_profile_apply_group(self, #rtype "s", \
-            ROXTERM_PROFILE_APPLICATOR(rtype), target)
+            ROXTERM_PROFILE_APPLICATOR(rtype), target, \
+            (error && *error) ? NULL: error)
 
-void roxterm_profile_apply_as_properties(RoxtermProfile *self,
-        GObject *target, UNUSED gpointer mapper)
+gboolean roxterm_profile_apply_as_properties(RoxtermProfile *self,
+        GObject *target, UNUSED gpointer mapper, GError **error)
 {
-    roxterm_profile_load(self);
-    ROXTERM_PROFILE_APPLY_GROUP(self, string, target);
-    ROXTERM_PROFILE_APPLY_GROUP(self, int, target);
-    ROXTERM_PROFILE_APPLY_GROUP(self, boolean, target);
-    ROXTERM_PROFILE_APPLY_GROUP(self, float, target);
-    ROXTERM_PROFILE_APPLY_GROUP(self, rgba, target);
+    gboolean result = TRUE;
+    if (!roxterm_profile_load(self, error))
+        return FALSE;
+    result &= ROXTERM_PROFILE_APPLY_GROUP(self, string, target, error);
+    result &= ROXTERM_PROFILE_APPLY_GROUP(self, int, target, error);
+    result &= ROXTERM_PROFILE_APPLY_GROUP(self, boolean, target, error);
+    result &= ROXTERM_PROFILE_APPLY_GROUP(self, float, target, error);
+    result &= ROXTERM_PROFILE_APPLY_GROUP(self, rgba, target, error);
+    return result;
 }

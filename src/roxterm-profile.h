@@ -35,41 +35,59 @@ RoxtermProfile *roxterm_profile_new(const char *name);
  * roxterm_profile_get_string:
  * Returns: (transfer full):
  */
-char *roxterm_profile_get_string(RoxtermProfile *self, const char *key);
+char *roxterm_profile_get_string(RoxtermProfile *self, const char *key,
+        GError **error);
 
-void roxterm_profile_set_string(RoxtermProfile *self, const char *key,
-        const char *value);
+gboolean roxterm_profile_set_string(RoxtermProfile *self, const char *key,
+        const char *value, GError **error);
 
-int roxterm_profile_get_int(RoxtermProfile *self, const char *key);
+/**
+ * roxterm_profile_get_int:
+ *
+ * @error: (nullable) (out) (optional): The return value can not be used to
+ *         flag an error so error or *error should always be NULL on entry
+ *         and checked for non-NULL on exit
+ */
+int roxterm_profile_get_int(RoxtermProfile *self, const char *key,
+        GError **error);
 
-void roxterm_profile_set_int(RoxtermProfile *self, const char *key, int value);
+gboolean roxterm_profile_set_int(RoxtermProfile *self, const char *key,
+        int value, GError **error);
 
-gboolean roxterm_profile_get_boolean(RoxtermProfile *self, const char *key);
+gboolean roxterm_profile_get_boolean(RoxtermProfile *self, const char *key,
+        GError **error);
 
-void roxterm_profile_set_boolean(RoxtermProfile *self, const char *key,
-        gboolean value);
+gboolean roxterm_profile_set_boolean(RoxtermProfile *self, const char *key,
+        gboolean value, GError **error);
 
-double roxterm_profile_get_float(RoxtermProfile *self, const char *key);
+double roxterm_profile_get_float(RoxtermProfile *self, const char *key,
+        GError **error);
 
-void roxterm_profile_set_float(RoxtermProfile *self, const char *key,
-        double value);
+gboolean roxterm_profile_set_float(RoxtermProfile *self, const char *key,
+        double value, GError **error);
 
-RoxtermRGBA roxterm_profile_get_rgba(RoxtermProfile *self, const char *key);
+RoxtermRGBA roxterm_profile_get_rgba(RoxtermProfile *self, const char *key,
+        GError **error);
 
-void roxterm_profile_set_rgba(RoxtermProfile *self, const char *key,
-        RoxtermRGBA value);
+gboolean roxterm_profile_set_rgba(RoxtermProfile *self, const char *key,
+        RoxtermRGBA value, GError **error);
 
 const char *roxterm_profile_get_user_directory(void);
 
-void roxterm_profile_load(RoxtermProfile *self);
+gboolean roxterm_profile_load(RoxtermProfile *self, GError **error);
 
-void roxterm_profile_save(RoxtermProfile *self);
+gboolean roxterm_profile_save(RoxtermProfile *self, GError **error);
 
-gboolean roxterm_profile_has_string(RoxtermProfile *self, const char *key);
-gboolean roxterm_profile_has_int(RoxtermProfile *self, const char *key);
-gboolean roxterm_profile_has_boolean(RoxtermProfile *self, const char *key);
-gboolean roxterm_profile_has_float(RoxtermProfile *self, const char *key);
-gboolean roxterm_profile_has_rgba(RoxtermProfile *self, const char *key);
+gboolean roxterm_profile_has_string(RoxtermProfile *self, const char *key,
+        GError **error);
+gboolean roxterm_profile_has_int(RoxtermProfile *self, const char *key,
+        GError **error);
+gboolean roxterm_profile_has_boolean(RoxtermProfile *self, const char *key,
+        GError **error);
+gboolean roxterm_profile_has_float(RoxtermProfile *self, const char *key,
+        GError **error);
+gboolean roxterm_profile_has_rgba(RoxtermProfile *self, const char *key,
+        GError **error);
 
 /**
  * roxterm_profile_lookup:
@@ -110,8 +128,8 @@ void roxterm_profile_disconnect_property_listener(RoxtermProfile *self,
  * @mapper: (transfer none): Not used currently, may be used to map key names
  *          to property names in future
  */
-void roxterm_profile_apply_as_properties(RoxtermProfile *self,
-        GObject *target, gpointer mapper);
+gboolean roxterm_profile_apply_as_properties(RoxtermProfile *self,
+        GObject *target, gpointer mapper, GError **error);
 
 const char *roxterm_profile_get_name(RoxtermProfile *self);
 
