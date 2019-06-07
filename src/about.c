@@ -24,43 +24,8 @@
 
 #include "about.h"
 #include "globalopts.h"
+#include "logo.h"
 #include "version.h"
-
-#define LOGO_SIZE 64
-
-static GdkPixbuf *about_load_logo(void)
-{
-    static GdkPixbuf *result = NULL;
-    static gboolean tried = FALSE;
-
-    if (!tried)
-    {
-        GError *error = NULL;
-        char *filename;
-
-        if (global_options_appdir)
-        {
-            filename = g_build_filename(global_options_appdir,
-                    ".DirIcon", NULL);
-        }
-        else
-        {
-            filename = g_build_filename(ICON_DIR, "roxterm.svg", NULL);
-        }
-
-        result = gdk_pixbuf_new_from_file_at_size(filename,
-                LOGO_SIZE, LOGO_SIZE, &error);
-        if (error)
-        {
-            g_warning(_("Unable to load logo for about dialog: %s"),
-                    error->message);
-            g_error_free(error);
-        }
-        tried = TRUE;
-        g_free(filename);
-    }
-    return result;
-}
 
 static GtkWidget *about_dialog_create(void)
 {
@@ -69,15 +34,14 @@ static GtkWidget *about_dialog_create(void)
     char const *authors[] = { _("Tony Houghton <h@realh.co.uk>"),
         _("Thanks to the developers of VTE"),
         NULL };
-    GdkPixbuf *logo = about_load_logo();
 
     gtk_about_dialog_set_program_name(ad, "ROXTerm");
     gtk_about_dialog_set_version(ad, VERSION);
     gtk_about_dialog_set_copyright(ad, _("(c) 2005-2018 Tony Houghton"));
     gtk_about_dialog_set_website(ad, "https://realh.github.io/roxterm");
     gtk_about_dialog_set_authors(ad, authors);
-    if (logo)
-        gtk_about_dialog_set_logo(ad, logo);
+    logo_make_icon_findable();
+    gtk_about_dialog_set_logo_icon_name(ad, "roxterm");
     return about;
 }
 

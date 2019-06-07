@@ -15,9 +15,17 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/version.h.in
     ${CMAKE_CURRENT_BINARY_DIR}/version.h)
 
+add_custom_command(OUTPUT gresources.c
+    COMMAND glib-compile-resources
+        --target=${CMAKE_CURRENT_BINARY_DIR}/gresources.c --generate-source
+        --c-name=roxterm_resource ${CMAKE_CURRENT_SOURCE_DIR}/gresources.xml
+        --sourcedir=${CMAKE_CURRENT_SOURCE_DIR}
+        MAIN_DEPENDENCY gresources.xml
+        DEPENDS icons/roxterm.svg)
+
 add_library(rtlib OBJECT
-    colourscheme.c dlg.c dragrcv.c dynopts.c 
-    globalopts.c logo.c options.c optsfile.c rtdbus.c)
+    colourscheme.c dlg.c dragrcv.c dynopts.c globalopts.c
+    gresources.c logo.c options.c optsfile.c rtdbus.c)
 target_include_directories(rtlib PRIVATE
     ${RTCOMMON_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})
 target_compile_options(rtlib PRIVATE ${RTCOMMON_CFLAGS_OTHER})

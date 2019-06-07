@@ -24,6 +24,12 @@
 #include "defns.h"
 #endif
 
+#define ROXTERM_RESOURCE_PATH "/uk/co/realh/roxterm"
+#define ROXTERM_RESOURCE_ICONS_PATH ROXTERM_RESOURCE_PATH "/icons"
+#define ROXTERM_RESOURCE_LOGO ROXTERM_RESOURCE_ICONS_PATH "/roxterm.svg"
+
+void logo_make_icon_findable();
+
 /* Finds the logo file */
 char *logo_find(void);
 
