@@ -113,50 +113,21 @@ multitab_label_destroy (GtkWidget *w)
     GTK_WIDGET_CLASS (multitab_label_parent_class)->destroy (w);
 }
 
-/* The following functions are now unnecessary due to single mode being disabled
- */
-#if 0
+
+#define MULTITAB_LABEL_FIXED_WIDTH 200
+
 static void
-multitab_modify_width (MultitabLabel *self,
+multitab_label_modify_width(MultitabLabel *self,
         gint *minimum_width, gint *natural_width)
 {
-    if (self->fixed_width)
+    if (self->single)
     {
-        return;
-    }
-    /*
-    if (self->single && natural_width)
-    {
-        multitab_label_single_width (self, natural_width);
-        if (minimum_width && *minimum_width > *natural_width)
-            *minimum_width = *natural_width;
-    }
-    */
-    if (self->single && minimum_width)
-    {
-        int parent_width = 0;
-
-        multitab_label_single_width (self, minimum_width, &parent_width);
-#if MULTITAB_LABEL_GTK3_SIZE_KLUDGE
-        if (self->best_width)
-        {
-            if (*minimum_width < *self->best_width &&
-                    *minimum_width < parent_width)
-            {
-                *self->best_width = *minimum_width;
-            }
-            else if (*minimum_width > *self->best_width)
-            {
-                *minimum_width = *self->best_width;
-            }
-        }
-#endif
-        if (natural_width && *natural_width < *minimum_width)
-        {
-            *natural_width = *minimum_width;
-        }
+        if (*minimum_width < MULTITAB_LABEL_FIXED_WIDTH)
+            *minimum_width = MULTITAB_LABEL_FIXED_WIDTH;
+        *natural_width = MAX(*minimum_width, MULTITAB_LABEL_FIXED_WIDTH);
     }
 }
+
 
 static void
 multitab_label_get_preferred_width (GtkWidget *widget,
@@ -166,7 +137,7 @@ multitab_label_get_preferred_width (GtkWidget *widget,
 
     GTK_WIDGET_CLASS (multitab_label_parent_class)->get_preferred_width
                     (widget, minimum_width, natural_width);
-    multitab_modify_width (self, minimum_width, natural_width);
+    multitab_label_modify_width (self, minimum_width, natural_width);
 }
 
 static void
@@ -178,9 +149,8 @@ multitab_label_get_preferred_width_for_height (GtkWidget *widget,
     GTK_WIDGET_CLASS
             (multitab_label_parent_class)->get_preferred_width_for_height
                     (widget, height, minimum_width, natural_width);
-    multitab_modify_width (self, minimum_width, natural_width);
+    multitab_label_modify_width (self, minimum_width, natural_width);
 }
-#endif
 
 static void
 multitab_label_class_init(MultitabLabelClass *klass)
@@ -201,6 +171,9 @@ multitab_label_class_init(MultitabLabelClass *klass)
 
     wclass->destroy = multitab_label_destroy;
     wclass->draw = multitab_label_draw;
+    wclass->get_preferred_width = multitab_label_get_preferred_width;
+    wclass->get_preferred_width_for_height =
+            multitab_label_get_preferred_width_for_height;
 
     oclass->set_property = multitab_label_set_property;
     oclass->get_property = multitab_label_get_property;
@@ -216,11 +189,6 @@ multitab_label_class_init(MultitabLabelClass *klass)
             G_PARAM_READWRITE);
     g_object_class_install_property (oclass, PROP_ATTENTION_COLOR, pspec);
 
-#if 0
-    wclass->get_preferred_width = multitab_label_get_preferred_width;
-    wclass->get_preferred_width_for_height =
-            multitab_label_get_preferred_width_for_height;
-#endif
 }
 
 static void
@@ -249,7 +217,6 @@ multitab_label_init(MultitabLabel *self)
     gtk_event_box_set_visible_window (GTK_EVENT_BOX (self), FALSE);
     multitab_label_set_attention_color (self, &amber);
     self->label = GTK_LABEL (label);
-    self->fixed_width = FALSE;
     gtk_label_set_ellipsize (self->label, PANGO_ELLIPSIZE_MIDDLE);
     gtk_widget_show (label);
     gtk_container_add (GTK_CONTAINER (self), label);
@@ -327,12 +294,6 @@ multitab_label_get_attention_color (MultitabLabel *self)
 void
 multitab_label_set_single (MultitabLabel *self, gboolean single)
 {
-    (void) self;
-    (void) single;
-/*
-    single mode is disabled because it was only needed when the tab bar's
-    expand property was FALSE. It's now always TRUE to prevent the size bugging
-    when unmaximising.
 
     if (single != self->single)
     {
@@ -342,21 +303,6 @@ multitab_label_set_single (MultitabLabel *self, gboolean single)
             g_object_set(self->label, "hexpand", !single, NULL);
 #endif
         gtk_widget_queue_resize (GTK_WIDGET (self));
-    }
-*/
-}
-
-void
-multitab_label_set_fixed_width (MultitabLabel *self, int width)
-{
-    if (width == -1)
-    {
-        self->fixed_width = FALSE;
-    }
-    else
-    {
-        self->fixed_width = TRUE;
-        gtk_label_set_width_chars (self->label, width);
     }
 }
 

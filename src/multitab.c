@@ -762,20 +762,13 @@ static void multi_tab_pack_for_horizontal(MultiTab *tab, GtkContainer *nb)
 {
     gtk_container_child_set(nb, tab->widget,
             "tab-expand", FALSE, "tab-fill", TRUE, NULL);
-    multitab_label_set_fixed_width(MULTITAB_LABEL(tab->label),
-            HORIZ_TAB_WIDTH_CHARS);
 }
 
 static void multi_tab_pack_for_single(MultiTab *tab, GtkContainer *nb)
 {
-    /* tab-expand is now always TRUE to prevent the window width bugging when
-     * unmaximising. It doesn't look too ugly now that we have the new tab
-     * icon at the end of the bar.
-     */
     gtk_container_child_set(nb, tab->widget,
-            "tab-expand", TRUE, "tab-fill", TRUE, NULL);
+            "tab-expand", FALSE, "tab-fill", FALSE, NULL);
     multitab_label_set_single(MULTITAB_LABEL(tab->label), TRUE);
-    multitab_label_set_fixed_width(MULTITAB_LABEL(tab->label), -1);
 }
 
 static void multi_win_pack_for_single_tab(MultiWin *win)
@@ -790,7 +783,6 @@ static void multi_tab_pack_for_multiple(MultiTab *tab, GtkContainer *nb)
     gtk_container_child_set(nb, tab->widget,
             "tab-expand", TRUE, "tab-fill", TRUE, NULL);
     multitab_label_set_single(MULTITAB_LABEL(tab->label), FALSE);
-    multitab_label_set_fixed_width(MULTITAB_LABEL(tab->label), -1);
 }
 
 static void multi_win_pack_for_multiple_tabs(MultiWin *win)
@@ -1195,7 +1187,6 @@ static void page_added_callback(GtkNotebook *notebook, GtkWidget *child,
         {
             multi_win_pack_for_single_tab(win);
             gtk_widget_queue_resize(win->notebook);
-            /* multi_tab_set_single_size(tab); */
             multi_win_show(win);
         }
         else if (win->ntabs == 2)
@@ -2162,7 +2153,6 @@ static gboolean multi_win_notify_tab_removed(MultiWin * win, MultiTab * tab)
             tab = win->tabs->data;
             if (win->tab_pos == GTK_POS_TOP || win->tab_pos == GTK_POS_BOTTOM)
                 multi_win_pack_for_single_tab(win);
-            /*multi_tab_set_single_size(tab);*/
             if (!win->always_show_tabs)
             {
                 multi_win_request_size_restore(win);

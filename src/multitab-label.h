@@ -100,10 +100,6 @@ multitab_label_get_attention_color (MultitabLabel *label);
 void
 multitab_label_set_single (MultitabLabel *label, gboolean single);
 
-/* width is in chars; -1 to disable */
-void
-multitab_label_set_fixed_width (MultitabLabel *label, int width);
-
 void
 multitab_label_set_current(MultitabLabel *label, gboolean current);
 
