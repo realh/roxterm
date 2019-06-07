@@ -440,7 +440,6 @@ static void profilegui_fill_in_dialog(ProfileGUI * pg)
     }
     capplet_set_radio(&pg->capp, "cursor_shape", 0);
     capplet_set_boolean_toggle(&pg->capp, "hide_mouse", TRUE);
-    capplet_set_boolean_toggle(&pg->capp, "autowrap", TRUE);
     capplet_set_text_entry(&pg->capp, "word_chars", "-,./?%&#_");
     capplet_set_text_entry(&pg->capp, "term", NULL);
     capplet_set_float_range(&pg->capp, "saturation", 1.0);

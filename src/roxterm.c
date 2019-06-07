@@ -2565,13 +2565,6 @@ roxterm_update_audible_bell(ROXTermData * roxterm, VteTerminal * vte)
         (roxterm->profile, "audible_bell") != 0);
 }
 
-inline static void
-roxterm_update_autowrap(ROXTermData * roxterm, VteTerminal * vte)
-{
-    vte_terminal_set_rewrap_on_resize(vte, options_lookup_int_with_default
-        (roxterm->profile, "autowrap", TRUE) != FALSE);
-}
-
 static void
 roxterm_update_cursor_blink_mode(ROXTermData * roxterm, VteTerminal * vte)
 {
@@ -2814,7 +2807,6 @@ static void roxterm_apply_profile(ROXTermData *roxterm, VteTerminal *vte,
 {
     roxterm_set_word_chars(roxterm, vte);
     roxterm_update_audible_bell(roxterm, vte);
-    roxterm_update_autowrap(roxterm, vte);
     roxterm_update_cursor_blink_mode(roxterm, vte);
     roxterm_update_cursor_shape(roxterm, vte);
 
@@ -3167,10 +3159,6 @@ static void roxterm_reflect_profile_change(Options * profile, const char *key)
         else if (!strcmp(key, "audible_bell"))
         {
             roxterm_update_audible_bell(roxterm, vte);
-        }
-        else if (!strcmp(key, "autowrap"))
-        {
-            roxterm_update_autowrap(roxterm, vte);
         }
         else if (!strcmp(key, "cursor_blink_mode"))
         {
