@@ -1,3 +1,13 @@
+roxterm (3.7.4-1ppa1disco1) disco; urgency=medium
+
+  * New upstream version:
+    + Redesigned icon.
+    + Single tabs have a fixed width.
+    + Removed rewrap on resize option (deprecated by vte, now always on).
+    + Fixed order of General/Command selectors in profile editor.
+
+ -- Tony Houghton <h@realh.co.uk>  Fri, 07 Jun 2019 14:56:11 +0100
+
 roxterm (3.7.3-1ppa1bionic1) bionic; urgency=medium
 
   * Ensure consistent connection of signal handlers to new tabs. Fixes
