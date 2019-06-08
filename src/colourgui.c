@@ -28,6 +28,7 @@
 #include "configlet.h"
 #include "dlg.h"
 #include "dynopts.h"
+#include "resources.h"
 
 #define DEFAULT_PALETTE_SIZE 16
 
@@ -690,9 +691,8 @@ ColourGUI *colourgui_open(const char *scheme_name)
     cg->orig_scheme = options_copy(cg->capp.options);
 
     cg->capp.builder = gtk_builder_new();
-    if (!gtk_builder_add_objects_from_file(cg->capp.builder,
-            capplet_get_ui_filename(),
-            (char **) build_objs, &error))
+    if (!gtk_builder_add_objects_from_resource(cg->capp.builder,
+            ROXTERM_RESOURCE_UI, (char **) build_objs, &error))
     {
         g_error(_("Unable to load 'Colour_Scheme_Editor' from UI defs: %s"),
                 error->message);

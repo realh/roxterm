@@ -21,11 +21,11 @@ add_custom_command(OUTPUT gresources.c
         --c-name=roxterm_resource ${CMAKE_CURRENT_SOURCE_DIR}/gresources.xml
         --sourcedir=${CMAKE_CURRENT_SOURCE_DIR}
         MAIN_DEPENDENCY gresources.xml
-        DEPENDS icons/roxterm.svg)
+        DEPENDS icons/roxterm.svg roxterm-config.ui)
 
 add_library(rtlib OBJECT
     colourscheme.c dlg.c dragrcv.c dynopts.c globalopts.c
-    gresources.c logo.c options.c optsfile.c rtdbus.c)
+    gresources.c options.c optsfile.c resources.c rtdbus.c)
 target_include_directories(rtlib PRIVATE
     ${RTCOMMON_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})
 target_compile_options(rtlib PRIVATE ${RTCOMMON_CFLAGS_OTHER})

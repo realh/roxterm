@@ -390,26 +390,6 @@ int main(int argc, char **argv)
     return 0;
 }
 
-const char *capplet_get_ui_filename(void)
-{
-    static char *filename = NULL;
-
-    if (!filename)
-    {
-        if (global_options_appdir)
-        {
-            filename = g_build_filename(global_options_appdir, "src",
-                "roxterm-config.ui", NULL);
-        }
-        else
-        {
-            filename = g_build_filename(PKG_DATA_DIR,
-                "roxterm-config.ui", NULL);
-        }
-    }
-    return filename;
-}
-
 void capplet_inc_windows(void)
 {
     ++capplet_open_windows;

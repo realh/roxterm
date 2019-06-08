@@ -32,6 +32,7 @@
 #include "dynopts.h"
 #include "options.h"
 #include "profilegui.h"
+#include "resources.h"
 
 #define MANAGE_PREVIEW
 
@@ -588,10 +589,10 @@ ProfileGUI *profilegui_open(const char *profile_name)
         "roxterm profile");
 
     pg->capp.builder = gtk_builder_new();
-    if (!gtk_builder_add_objects_from_file(pg->capp.builder,
-            capplet_get_ui_filename(), (char **) adj_names, &error) ||
-            !gtk_builder_add_objects_from_file(pg->capp.builder,
-            capplet_get_ui_filename(), (char **) obj_names, &error))
+    if (!gtk_builder_add_objects_from_resource(pg->capp.builder,
+            ROXTERM_RESOURCE_UI, (char **) adj_names, &error) ||
+            !gtk_builder_add_objects_from_resource(pg->capp.builder,
+            ROXTERM_RESOURCE_UI, (char **) obj_names, &error))
     {
         g_error(_("Unable to load GTK UI definitions: %s"), error->message);
     }

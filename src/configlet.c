@@ -27,6 +27,7 @@
 #include "optsdbus.h"
 #include "optsfile.h"
 #include "profilegui.h"
+#include "resources.h"
 #include "shortcuts.h"
 
 #include <ctype.h>
@@ -923,8 +924,8 @@ gboolean configlet_open()
         GError *error = NULL;
 
         cg->capp.builder = gtk_builder_new();
-        if (gtk_builder_add_objects_from_file(cg->capp.builder,
-                capplet_get_ui_filename(), (char **) build_objs, &error))
+        if (gtk_builder_add_objects_from_resource(cg->capp.builder,
+                ROXTERM_RESOURCE_UI, (char **) build_objs, &error))
         {
             cg->widget =
                     GTK_WIDGET(gtk_builder_get_object(cg->capp.builder,
