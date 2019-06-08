@@ -1,5 +1,3 @@
-#ifndef LOGO_H
-#define LOGO_H
 /*
     roxterm - VTE/GTK terminal emulator with tabs
     Copyright (C) 2004-2015 Tony Houghton <h@realh.co.uk>
@@ -20,19 +18,36 @@
 */
 
 
-#ifndef DEFNS_H
 #include "defns.h"
-#endif
 
-#define ROXTERM_RESOURCE_PATH "/uk/co/realh/roxterm"
-#define ROXTERM_RESOURCE_ICONS_PATH ROXTERM_RESOURCE_PATH "/icons"
-#define ROXTERM_RESOURCE_LOGO ROXTERM_RESOURCE_ICONS_PATH "/roxterm.svg"
+#include "resources.h"
+#include "globalopts.h"
 
-void logo_make_icon_findable();
+void resources_access_icon()
+{
+    static gboolean added = FALSE;
+    if (!added)
+    {
+        gtk_icon_theme_add_resource_path(gtk_icon_theme_get_default(),
+                ROXTERM_RESOURCE_ICONS_PATH);
+        added = TRUE;
 
-/* Finds the logo file */
-char *logo_find(void);
-
-#endif /* LOGO_H */
+        GError *error = NULL;
+        gsize size;
+        guint32 flags;
+        if (!g_resources_get_info(ROXTERM_RESOURCE_LOGO, 0, &size, &flags,
+                    &error))
+        {
+            g_critical("%s not found: %s", ROXTERM_RESOURCE_LOGO,
+                    error->message);
+            g_error_free(error);
+        }
+        else
+        {
+            g_debug("%s has flags %x and size %ld", ROXTERM_RESOURCE_LOGO,
+                    flags, size);
+        }
+    }
+}
 
 /* vi:set sw=4 ts=4 noet cindent cino= */

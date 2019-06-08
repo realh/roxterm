@@ -26,10 +26,10 @@
 #include "configlet.h"
 #include "dynopts.h"
 #include "globalopts.h"
-#include "logo.h"
 #include "optsdbus.h"
 #include "optsfile.h"
 #include "profilegui.h"
+#include "resources.h"
 
 #include <ctype.h>
 #include <stdio.h>
@@ -321,9 +321,8 @@ int main(int argc, char **argv)
 
     gtk_init(&argc, &argv);
 
-    logo_filename = logo_find();
-    gtk_window_set_default_icon_from_file(logo_filename, NULL);
-    g_free(logo_filename);
+    resources_access_icon();
+    gtk_window_set_default_icon_name("roxterm");
     
     for (n = 1; n < argc; ++n)
     {

@@ -24,7 +24,7 @@
 
 #include "about.h"
 #include "globalopts.h"
-#include "logo.h"
+#include "resources.h"
 #include "version.h"
 
 static GtkWidget *about_dialog_create(void)
@@ -40,7 +40,7 @@ static GtkWidget *about_dialog_create(void)
     gtk_about_dialog_set_copyright(ad, _("(c) 2005-2018 Tony Houghton"));
     gtk_about_dialog_set_website(ad, "https://realh.github.io/roxterm");
     gtk_about_dialog_set_authors(ad, authors);
-    logo_make_icon_findable();
+    resources_access_icon();
     gtk_about_dialog_set_logo_icon_name(ad, "roxterm");
     return about;
 }

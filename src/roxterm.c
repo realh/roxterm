@@ -40,7 +40,6 @@
 #include "dragrcv.h"
 #include "dynopts.h"
 #include "globalopts.h"
-#include "logo.h"
 #include "optsfile.h"
 #include "optsdbus.h"
 #include "roxterm.h"
@@ -50,6 +49,7 @@
 #include "session-file.h"
 #include "shortcuts.h"
 #include "uri.h"
+#include "resources.h"
 
 #if VTE_CHECK_VERSION(0,50,0)
 /* EK says hyperlinks can cause segfaults in 0.50.0 */
@@ -4152,10 +4152,8 @@ static gboolean roxterm_delete_handler(GtkWindow *gtkwin, GdkEvent *event,
 
 void roxterm_init(void)
 {
-    char *logo_filename = logo_find();
-
-    gtk_window_set_default_icon_from_file(logo_filename, NULL);
-    g_free(logo_filename);
+    resources_access_icon();
+    gtk_window_set_default_icon_name("roxterm");
 
     optsdbus_listen_for_opt_signals(roxterm_opt_signal_handler);
     optsdbus_listen_for_stuff_changed_signals(roxterm_stuff_changed_handler);
