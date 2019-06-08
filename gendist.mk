@@ -1,6 +1,6 @@
 DOC_DIR		= Help
 IMG_DIR		= $(DOC_DIR)/lib
-LOGO_SVG	= roxterm.svg
+LOGO_SVG	= src/icons/roxterm.svg
 LOGO_PNG	= $(IMG_DIR)/roxterm_logo.png
 FAVICON		= $(IMG_DIR)/favicon.ico
 TEXT_LOGO	= $(IMG_DIR)/logo_text.png

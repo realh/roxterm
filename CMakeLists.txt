@@ -25,7 +25,7 @@ configure_file(${PROJECT_SOURCE_DIR}/roxterm-config.1.xml.in
 
 add_subdirectory(src)
 
-install(FILES roxterm.svg
+install(FILES src/icons/roxterm.svg
     DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/apps)
 
 install(DIRECTORY Config
@@ -99,7 +99,6 @@ add_custom_command(OUTPUT "${TARBALL_NAME}"
     roxterm.lsm.in
     roxterm.spec
     roxterm.spec.in
-    roxterm.svg
     roxterm.xml
     src
     version
