@@ -382,15 +382,37 @@ static void multi_win_set_geometry_hints_for_tab(MultiWin * win, MultiTab * tab)
 }
 */
 
-static char *make_title(const char *template, const char *title)
+static char *make_title(const char *template, const char *title, int num, int pos)
 {
     char *title0 = NULL;
 
     if (template)
     {
-        if (strstr(template, "%s"))
+        if (strchr(template, '%'))
         {
-            title0 = g_strdup_printf(template, title ? title: "");
+            char buf[1234];
+            char *end = &buf[sizeof buf - 34];
+            char *d = buf;
+            const char *s = template;
+            for (*d = '\0'; *s && d < end; ++s, *d = '\0')
+            {
+                if (*s != '%')
+                    *d++ = *s;
+                else if (*++s == '%')
+                    *d++ = '%';
+                else if (*s == 's')
+                {
+                    const char *t = title;
+                    while (t && *t && d < end)
+                        *d++ = *t++;
+                }
+                else if (*s == 'n' || *s == 't')
+                {
+                    g_snprintf(d, 30, "%d", *s == 'n' ? num : pos);
+                    d += strlen(d);
+                }
+            }
+            title0 = g_strdup(buf);
         }
         else
         {
@@ -402,41 +424,10 @@ static char *make_title(const char *template, const char *title)
 
 static gboolean check_title_template(const char *tt)
 {
-    const char *c;
-    gboolean lwpc = FALSE;
-    gboolean got_pcs = FALSE;
-
-    c = tt;
-    do
-    {
-        if (*c == '%')
-        {
-            /* Check for illegal trailing % */
-            if (!lwpc && *(c + 1) == 0)
-                return FALSE;
-            /* lwpc is FALSE after even # of %s, TRUE after odd # */
-            lwpc = !lwpc;
-        }
-        else
-        {
-            if (lwpc)
-            {
-                if (*c == 's')
-                {
-                    if (got_pcs)
-                        return FALSE;
-                    got_pcs = TRUE;
-                }
-                else
-                {
-                    return FALSE;
-                }
-            }
-            lwpc = FALSE;
-        }
-    }
-    while (*(c++));
-    return TRUE;
+    const char *c = tt;
+    while (*c && (*c != '%' || (c[1] && (++c, strchr("nst%", *c)))))
+        ++c;
+    return !*c;
 }
 
 static gboolean validate_title_template(GtkWindow *parent, const char *tt)
@@ -553,7 +544,9 @@ const char *multi_tab_get_window_title_template(MultiTab * tab)
 
 static char *multi_tab_get_full_window_title(MultiTab * tab)
 {
-    return make_title(tab->window_title_template, tab->window_title);
+    int num = tab->parent->ntabs;
+    int pos = multi_tab_get_page_num(tab) + 1;
+    return make_title(tab->window_title_template, tab->window_title, num, pos);
 }
 
 gpointer multi_tab_get_user_data(MultiTab * tab)
@@ -803,7 +796,9 @@ static void multi_win_set_full_title(MultiWin *win,
 {
     if (win->gtkwin)
     {
-        char *title0 = make_title(template, title);
+        int pos = win && win->current_tab ?
+                  multi_tab_get_page_num(win->current_tab) + 1 : 1;
+        char *title0 = make_title(template, title, win->ntabs, pos);
 
         gtk_window_set_title(GTK_WINDOW(win->gtkwin), title0);
         g_free(title0);
@@ -1450,7 +1445,9 @@ static void multi_win_set_window_title_action(MultiWin * win)
             GTK_ICON_SIZE_DIALOG);
     GtkWidget *tip_label = gtk_label_new(_("The title string may include '%s' "
             "which is substituted with the title set by the child command "
-            "(usually the current directory for shells). No other % "
+            "(usually the current directory for shells). "
+            "'%n' is substituted by the number of tabs and "
+            "'%t' by the current tab number. No other % "
             "characters or sequences are permitted except '%%' which is "
             "displayed as a single %. Apply an empty string here to use the "
             "profile's title string."));
