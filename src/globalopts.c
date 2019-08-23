@@ -79,8 +79,8 @@ static gboolean global_options_show_usage(const gchar *option_name,
     (void) data;
     (void) value;
     (void) option_name;
-    puts("roxterm [-?|--help] [--usage] [--geometry=GEOMETRY] [--appdir=DIR]\n"
-      "    [--session=SESSION]\n"
+    puts("roxterm [-?|--help] [--usage] [--geometry=GEOMETRY|-g GEOMETRY]\n"
+      "    [--session=SESSION] [--appdir=DIR]\n"
       "    [--profile=PROFILE|-p PROFILE]\n"
       "    [--colour-scheme=SCHEME|--color-scheme=SCHEME|-c SCHEME]\n"
       "    [--shortcut-scheme=SCHEME|-s SCHEME]\n"
@@ -192,7 +192,7 @@ static GOptionEntry global_g_options[] = {
     { "directory", 'd', G_OPTION_FLAG_IN_MAIN,
         G_OPTION_ARG_CALLBACK, global_options_set_directory,
         N_("Set the terminal's working directory"), N_("DIRECTORY") },
-    { "geometry", 0, G_OPTION_FLAG_IN_MAIN,
+    { "geometry", 'g', G_OPTION_FLAG_IN_MAIN,
         G_OPTION_ARG_CALLBACK, global_options_set_string,
         N_("Set size of terminal"),
         N_("COLUMNSxROWS") },
