@@ -398,6 +398,8 @@ static char *make_title(const char *template, const char *title, int num, int po
             {
                 if (*s != '%')
                     *d++ = *s;
+                else if (s[1] == '\0')
+                    break;
                 else if (*++s == '%')
                     *d++ = '%';
                 else if (*s == 's')
