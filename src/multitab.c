@@ -439,7 +439,7 @@ static void multi_tab_set_full_window_title(MultiTab * tab,
     {
         win->ignore_toggles = TRUE;
         if (win->current_tab == tab)
-            multi_win_set_title(win, tab_label);
+            multi_win_set_title(win, tab->window_title);
         if (tab->popup_menu_item)
         {
             tab->popup_menu_item = menutree_change_tab_title

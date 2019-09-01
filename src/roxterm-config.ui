@@ -1941,7 +1941,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="has_tooltip">True</property>
-                                    <property name="tooltip_text" translatable="yes">The title string may include '%s' which is substituted with the active tab's full label, '%t' for the active tab's number, '%n' for the number of tabs and or '%%' for a literal '%'. Other '%' sequences are passed through.</property>
+                                    <property name="tooltip_text" translatable="yes">The title string may include '%s' which is substituted with the active tab's name/window title, '%t' for the active tab's number, '%n' for the number of tabs and or '%%' for a literal '%'. Other '%' sequences are passed through.</property>
                                     <property name="hexpand">True</property>
                                     <property name="invisible_char">●</property>
                                     <signal name="activate" handler="on_entry_activate" swapped="no"/>
