@@ -3133,7 +3133,7 @@
                                   <object class="GtkEntry" id="title_string">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
-                                    <property name="tooltip_text" translatable="yes">The title string may include '%s' which is substituted with the title set by the child command (usually the current directory for shells). No other % characters or sequences are permitted except '%%' which is displayed as a single %.</property>
+                                    <property name="tooltip_text" translatable="yes">The title string may include '%s' which is substituted with the title set by the child command (usually the current directory for shells). '%n' is substituted by the number of tabs and '%t' by the current tab number. No other % characters or sequences are permitted except '%%' which is displayed as a single %.</property>
                                     <property name="hexpand">True</property>
                                     <property name="invisible_char">●</property>
                                     <signal name="activate" handler="on_entry_activate" swapped="no"/>
