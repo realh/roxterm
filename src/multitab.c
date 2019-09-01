@@ -513,7 +513,7 @@ static char *multi_tab_get_full_window_title(MultiTab * tab)
 {
     int num = tab->parent->ntabs;
     int pos = multi_tab_get_page_num(tab) + 1;
-    return make_title(tab->window_title_template, tab->window_title, num, pos);
+    return make_title(tab->window_title_template, tab->window_title, pos, num);
 }
 
 gpointer multi_tab_get_user_data(MultiTab * tab)
@@ -763,7 +763,7 @@ static void multi_win_set_full_title(MultiWin *win,
     {
         int pos = win && win->current_tab ?
                   multi_tab_get_page_num(win->current_tab) + 1 : 1;
-        char *title0 = make_title(template, title, win->ntabs, pos);
+        char *title0 = make_title(template, title, pos, win->ntabs);
 
         gtk_window_set_title(GTK_WINDOW(win->gtkwin), title0);
         g_free(title0);
