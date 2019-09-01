@@ -1941,8 +1941,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="has_tooltip">True</property>
-                                    <property name="tooltip_markup">The title string may include '%s' which is substituted with the contents of the current tab's label. No other % characters or sequences are permitted except '%%' which is displayed as a single %.</property>
-                                    <property name="tooltip_text" translatable="yes">The title string may include '%s' which is substituted with the contents of the current tab's label. No other % characters or sequences are permitted except '%%' which is displayed as a single %.</property>
+                                    <property name="tooltip_text" translatable="yes">The title string may include '%s' which is substituted with the active tab's full label, '%t' for the active tab's number, '%n' for the number of tabs and or '%%' for a literal '%'. Other '%' sequences are passed through.</property>
                                     <property name="hexpand">True</property>
                                     <property name="invisible_char">●</property>
                                     <signal name="activate" handler="on_entry_activate" swapped="no"/>
@@ -3133,7 +3132,7 @@
                                   <object class="GtkEntry" id="title_string">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
-                                    <property name="tooltip_text" translatable="yes">The title string may include '%s' which is substituted with the title set by the child command (usually the current directory for shells). '%n' is substituted by the number of tabs and '%t' by the current tab number. No other % characters or sequences are permitted except '%%' which is displayed as a single %.</property>
+                                    <property name="tooltip_text" translatable="yes">The title string may include '%s' which is substituted with the title set by the child command (usually the current directory for shells), '%t' for the active tab's number, '%n' for the number of tabs and or '%%' for a literal '%'. Other '%' sequences are passed through.</property>
                                     <property name="hexpand">True</property>
                                     <property name="invisible_char">●</property>
                                     <signal name="activate" handler="on_entry_activate" swapped="no"/>

@@ -382,74 +382,49 @@ static void multi_win_set_geometry_hints_for_tab(MultiWin * win, MultiTab * tab)
 }
 */
 
-static char *make_title(const char *template, const char *title, int num, int pos)
+static char *make_title(const char *template, const char *title,
+        int tab_num, int tab_count)
 {
-    char *title0 = NULL;
-
-    if (template)
+    GString *subbed;
+    size_t n, l;
+    if (!template || !template[0])
+        return g_new0(char, 1);
+    l = strlen(template);
+    subbed = g_string_sized_new(strlen(template));
+    for (n = 0; n < l; ++n)
     {
-        if (strchr(template, '%'))
+        if (template[n] == '%')
         {
-            char buf[1234];
-            char *end = &buf[sizeof buf - 34];
-            char *d = buf;
-            const char *s = template;
-            for (*d = '\0'; *s && d < end; ++s, *d = '\0')
+            switch (template[++n])
             {
-                if (*s != '%')
-                    *d++ = *s;
-                else if (s[1] == '\0')
+                case 's':
+                    g_string_append(subbed, title);
                     break;
-                else if (*++s == '%')
-                    *d++ = '%';
-                else if (*s == 's')
-                {
-                    const char *t = title;
-                    while (t && *t && d < end)
-                        *d++ = *t++;
-                }
-                else if (*s == 'n' || *s == 't')
-                {
-                    g_snprintf(d, 30, "%d", *s == 'n' ? num : pos);
-                    d += strlen(d);
-                }
+                case 't':
+                    g_string_append_printf(subbed, "%d", tab_num);
+                    break;
+                case 'n':
+                    g_string_append_printf(subbed, "%d", tab_count);
+                    break;
+                case 0:
+                    --n;    /* Make sure next iteration sees terminator */
+                case '%':
+                    g_string_append_c(subbed, '%');
+                    break;
+                default:
+                    g_string_append_c(subbed, '%');
+                    g_string_append_c(subbed, template[n]);
+                    break;
             }
-            title0 = g_strdup(buf);
         }
         else
         {
-            title0 = g_strdup(template);
+            g_string_append_c(subbed, template[n]);
         }
     }
-    return title0;
+    return g_string_free(subbed, FALSE);
 }
 
-static gboolean check_title_template(const char *tt)
-{
-    const char *c = tt;
-    while (*c && (*c != '%' || (c[1] && (++c, strchr("nst%", *c)))))
-        ++c;
-    return !*c;
-}
-
-static gboolean validate_title_template(GtkWindow *parent, const char *tt)
-{
-    if (tt && !check_title_template(tt))
-    {
-        static char *bad_template = NULL;
-
-        if (!bad_template || strcmp(bad_template, tt))
-        {
-            dlg_warning(parent,
-              _("'%s' contains invalid %% sequences for a title template"),
-              tt);
-            g_free(bad_template);
-            bad_template = g_strdup(tt);
-        }
-        return FALSE;
-    }
-    return TRUE;
-}
 
 static void multi_tab_set_full_window_title(MultiTab * tab,
         const char *template, const char *title)
@@ -500,13 +475,6 @@ void multi_tab_set_window_title(MultiTab * tab, const char *title)
 
 void multi_tab_set_window_title_template(MultiTab * tab, const char *template)
 {
-    GtkWidget *gwin = tab->parent ? tab->parent->gtkwin : NULL;
-
-    if (!validate_title_template(gwin ? GTK_WINDOW(gwin) : NULL,
-            template))
-    {
-        return;
-    }
     if (tab->title_template_locked)
         return;
     g_free(tab->window_title_template);
@@ -2524,8 +2492,6 @@ void multi_win_set_show_add_tab_button(MultiWin *win, gboolean show)
 
 void multi_win_set_title_template(MultiWin *win, const char *tt)
 {
-    if (!validate_title_template(GTK_WINDOW(win->gtkwin), tt))
-        return;
     if (win->title_template_locked)
         return;
     g_free(win->title_template);
