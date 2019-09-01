@@ -451,7 +451,6 @@ static void profilegui_fill_in_dialog(ProfileGUI * pg)
     capplet_set_boolean_toggle(&pg->capp, "always_show_tabs", TRUE);
     capplet_set_boolean_toggle(&pg->capp, "show_add_tab_btn", TRUE);
     capplet_set_boolean_toggle(&pg->capp, "new_tabs_adjacent", FALSE);
-    capplet_set_boolean_toggle(&pg->capp, "show_tab_num", TRUE);
     capplet_set_radio(&pg->capp, "middle_click_tab", 0);
     profilegui_set_close_buttons_shading(pg);
     capplet_set_text_entry(&pg->capp, "ssh", NULL);
@@ -490,7 +489,7 @@ static void profilegui_fill_in_dialog(ProfileGUI * pg)
     capplet_set_combo(&pg->capp, "exit_action", 0);
     profilegui_set_colour_scheme_combo(&pg->capp);
     capplet_set_spin_button_float(&pg->capp, "exit_pause");
-    capplet_set_text_entry(&pg->capp, "title_string", "%s");
+    capplet_set_text_entry(&pg->capp, "title_string", "%t. %s");
     capplet_set_text_entry(&pg->capp, "win_title", "%s");
     exit_action_changed(
         GTK_COMBO_BOX(capplet_lookup_widget(&pg->capp, "exit_action")),

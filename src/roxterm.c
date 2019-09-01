@@ -2725,13 +2725,6 @@ static void roxterm_apply_show_tab_status(ROXTermData *roxterm)
     }
 }
 
-static void roxterm_apply_show_tab_number(ROXTermData *roxterm)
-{
-    multi_tab_set_show_number(roxterm->tab,
-            options_lookup_int_with_default(roxterm->profile,
-                    "show_tab_num", TRUE));
-}
-
 /*
 static void roxterm_apply_match_files(ROXTermData *roxterm, VteTerminal *vte)
 {
@@ -2831,7 +2824,6 @@ static void roxterm_apply_profile(ROXTermData *roxterm, VteTerminal *vte,
     roxterm_apply_disable_menu_access(roxterm);
 
     roxterm_apply_title_template(roxterm);
-    roxterm_apply_show_tab_number(roxterm);
     roxterm_apply_show_tab_status(roxterm);
     /*roxterm_apply_match_files(roxterm, vte);*/
     roxterm_apply_middle_click_tab(roxterm);
@@ -3024,7 +3016,7 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
     {
         custom_tab_name = FALSE;
         tab_name = options_lookup_string_with_default(roxterm->profile,
-                "title_string", "%s");
+                "title_string", "%t. %s");
     }
     multi_tab_set_window_title_template(tab, tab_name);
     multi_tab_set_title_template_locked(tab, custom_tab_name);
@@ -3264,7 +3256,7 @@ static void roxterm_reflect_profile_change(Options * profile, const char *key)
         {
             multi_tab_set_window_title_template(roxterm->tab,
                     options_lookup_string_with_default(roxterm->profile,
-                            "title_string", "%s"));
+                            "title_string", "%t. %s"));
         }
         else if (!strcmp(key, "win_title"))
         {
@@ -3278,10 +3270,6 @@ static void roxterm_reflect_profile_change(Options * profile, const char *key)
                 multi_tab_add_close_button(roxterm->tab);
             else
                 multi_tab_remove_close_button(roxterm->tab);
-        }
-        else if (!strcmp(key, "show_tab_num"))
-        {
-            roxterm_apply_show_tab_number(roxterm);
         }
         else if (!strcmp(key, "show_tab_status"))
         {

@@ -3143,23 +3143,6 @@
                                     <property name="top_attach">0</property>
                                   </packing>
                                 </child>
-                                <child>
-                                  <object class="GtkCheckButton" id="show_tab_num">
-                                    <property name="label" translatable="yes">S_how number</property>
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">True</property>
-                                    <property name="receives_default">False</property>
-                                    <property name="tooltip_text" translatable="yes">This option causes the tab number to be shown at the start of the title.</property>
-                                    <property name="halign">start</property>
-                                    <property name="use_underline">True</property>
-                                    <property name="draw_indicator">True</property>
-                                    <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
-                                  </object>
-                                  <packing>
-                                    <property name="left_attach">2</property>
-                                    <property name="top_attach">0</property>
-                                  </packing>
-                                </child>
                               </object>
                               <packing>
                                 <property name="left_attach">0</property>
