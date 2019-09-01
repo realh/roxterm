@@ -391,48 +391,37 @@ static char *make_title(const char *template, const char *title,
         return g_new0(char, 1);
     l = strlen(template);
     subbed = g_string_sized_new(strlen(template));
-    g_debug("make_title(\"%s\", \"%s\", %d, %d)",
-            template, title, tab_num, tab_count);
     for (n = 0; n < l; ++n)
     {
         if (template[n] == '%')
         {
-            g_debug("%% at %ld, next char '%c'", n, template[n + 1]);
             switch (template[++n])
             {
                 case 's':
-                    g_debug("Appending title '%s'", title);
                     if (title)
                         g_string_append(subbed, title);
                     break;
                 case 't':
-                    g_debug("Appending tab_num %d", tab_num);
                     g_string_append_printf(subbed, "%d", tab_num);
                     break;
                 case 'n':
-                    g_debug("Appending tab_count %d", tab_count);
                     g_string_append_printf(subbed, "%d", tab_count);
                     break;
                 case 0:
-                    g_debug("Terminator");
                     --n;    /* Make sure next iteration sees terminator */
                     // Fall-through
                 case '%':
-                    g_debug("Literal '%%'");
                     g_string_append_c(subbed, '%');
                     break;
                 default:
-                    g_debug("Other %% sequence '%%%c", template[n]);
                     g_string_append_c(subbed, '%');
                     g_string_append_c(subbed, template[n]);
                     break;
             }
-            g_debug("After %% subbed now '%s'", subbed->str);
         }
         else
         {
             g_string_append_c(subbed, template[n]);
-            g_debug("After '%c' subbed now '%s'", template[n], subbed->str);
         }
     }
     return g_string_free(subbed, FALSE);
@@ -444,7 +433,7 @@ static void multi_tab_set_full_window_title(MultiTab * tab)
     MultiWin *win = tab->parent;
     char *tab_label;
     
-    tab_label= multi_tab_get_full_window_title(tab);
+    tab_label = multi_tab_get_full_window_title(tab);
     if (tab->label)
     {
         multitab_label_set_text(MULTITAB_LABEL(tab->label), tab_label);
@@ -756,14 +745,14 @@ static void multi_win_pack_for_multiple_tabs(MultiWin *win)
     }
 }
 
-static void multi_win_set_full_title(MultiWin *win,
-        const char *template, const char *title)
+static void multi_win_set_full_title(MultiWin *win)
 {
     if (win->gtkwin)
     {
         int pos = win && win->current_tab ?
                   multi_tab_get_page_num(win->current_tab) + 1 : 1;
-        char *title0 = make_title(template, title, pos, win->ntabs);
+        char *title0 = make_title(win->title_template, win->child_title,
+                pos, win->ntabs);
 
         gtk_window_set_title(GTK_WINDOW(win->gtkwin), title0);
         g_free(title0);
@@ -777,7 +766,7 @@ void multi_win_set_title(MultiWin *win, const char *title)
         g_free(win->child_title);
         win->child_title = title ? g_strdup(title) : NULL;
     }
-    multi_win_set_full_title(win, win->title_template, title);
+    multi_win_set_full_title(win);
 }
 
 static void multi_win_highlight_selected_tab(MultiWin *win)
@@ -820,7 +809,7 @@ void multi_win_select_tab(MultiWin * win, MultiTab * tab)
         gtk_notebook_set_current_page(GTK_NOTEBOOK(win->notebook),
             multi_tab_get_page_num(tab));
         gtk_widget_grab_focus(tab->active_widget);
-        multi_win_set_title(win, title);
+        multi_win_set_title(win, tab->window_title);
         g_free(title);
         menutree_select_tab(win->popup_menu, tab->popup_menu_item);
         menutree_select_tab(win->menu_bar, tab->menu_bar_item);
@@ -2490,7 +2479,7 @@ void multi_win_set_title_template(MultiWin *win, const char *tt)
         return;
     g_free(win->title_template);
     win->title_template = tt ? g_strdup(tt) : NULL;
-    multi_win_set_full_title(win, tt, win->child_title);
+    multi_win_set_full_title(win);
 }
 
 void multi_win_set_title_template_locked(MultiWin *win, gboolean locked)
