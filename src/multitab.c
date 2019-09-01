@@ -1397,13 +1397,11 @@ static void multi_win_set_window_title_action(MultiWin * win)
     GtkWidget *img = gtk_image_new_from_icon_name("dialog-information",
             GTK_ICON_SIZE_DIALOG);
     GtkWidget *tip_label = gtk_label_new(_("The title string may include '%s' "
-            "which is substituted with the title set by the child command "
-            "(usually the current directory for shells). "
-            "'%n' is substituted by the number of tabs and "
-            "'%t' by the current tab number. No other % "
-            "characters or sequences are permitted except '%%' which is "
-            "displayed as a single %. Apply an empty string here to use the "
-            "profile's title string."));
+           "which is substituted with the active tab's name/window title, "
+           "'%t' for the active tab's number, '%n' for the number of tabs "
+           "and or '%%' for a literal '%'. Other '%' sequences are passed "
+           "through. Apply an empty string here to use the profile's title "
+           "string."));
     int response;
     const char *title;
     GtkWidget *content_area = gtk_dialog_get_content_area(dialog);
@@ -2164,15 +2162,18 @@ static void multi_tab_add_menutree_items(MultiWin * win, MultiTab * tab,
         int position)
 {
     char *title = multi_tab_get_full_window_title(tab);
-    char *n_and_title = g_strdup_printf("%d. %s",
-            multi_tab_get_page_num(tab), title);
+    gboolean has_num = g_str_has_prefix(tab->window_title_template, "%t. ");
+    char *n_and_title = has_num ?
+            g_strdup_printf("%d. %s", multi_tab_get_page_num(tab), title) :
+            title;
 
+    if (has_num)
+        g_free(title);
     tab->popup_menu_item = menutree_add_tab_at_position(win->popup_menu,
             n_and_title, position);
     tab->menu_bar_item = menutree_add_tab_at_position(win->menu_bar,
             n_and_title, position);
     g_free(n_and_title);
-    g_free(title);
     g_signal_connect(tab->popup_menu_item, "toggled",
         G_CALLBACK(multi_win_select_tab_action), tab);
     g_signal_connect(tab->menu_bar_item, "toggled",
