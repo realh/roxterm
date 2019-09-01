@@ -156,6 +156,8 @@ static void multi_win_close_tab_clicked(GtkWidget *widget, MultiTab *tab);
 static gboolean multi_win_process_geometry(MultiWin *win,
         MultiTab *tab, int columns, int rows, int *width, int *height);
 
+static char *multi_tab_get_full_window_title(MultiTab * tab);
+
 static gboolean multi_tab_do_restore_size(MultiTab *tab)
 {
     int width, height;
@@ -389,48 +391,60 @@ static char *make_title(const char *template, const char *title,
         return g_new0(char, 1);
     l = strlen(template);
     subbed = g_string_sized_new(strlen(template));
+    g_debug("make_title(\"%s\", \"%s\", %d, %d)",
+            template, title, tab_num, tab_count);
     for (n = 0; n < l; ++n)
     {
         if (template[n] == '%')
         {
+            g_debug("%% at %ld, next char '%c'", n, template[n + 1]);
             switch (template[++n])
             {
                 case 's':
-                    g_string_append(subbed, title);
+                    g_debug("Appending title '%s'", title);
+                    if (title)
+                        g_string_append(subbed, title);
                     break;
                 case 't':
+                    g_debug("Appending tab_num %d", tab_num);
                     g_string_append_printf(subbed, "%d", tab_num);
                     break;
                 case 'n':
+                    g_debug("Appending tab_count %d", tab_count);
                     g_string_append_printf(subbed, "%d", tab_count);
                     break;
                 case 0:
+                    g_debug("Terminator");
                     --n;    /* Make sure next iteration sees terminator */
+                    // Fall-through
                 case '%':
+                    g_debug("Literal '%%'");
                     g_string_append_c(subbed, '%');
                     break;
                 default:
+                    g_debug("Other %% sequence '%%%c", template[n]);
                     g_string_append_c(subbed, '%');
                     g_string_append_c(subbed, template[n]);
                     break;
             }
+            g_debug("After %% subbed now '%s'", subbed->str);
         }
         else
         {
             g_string_append_c(subbed, template[n]);
+            g_debug("After '%c' subbed now '%s'", template[n], subbed->str);
         }
     }
     return g_string_free(subbed, FALSE);
 }
 
 
-static void multi_tab_set_full_window_title(MultiTab * tab,
-        const char *template, const char *title)
+static void multi_tab_set_full_window_title(MultiTab * tab)
 {
     MultiWin *win = tab->parent;
-    char *tab_label = g_strdup_printf(template ? template : "%s",
-            title ? title : "");
-
+    char *tab_label;
+    
+    tab_label= multi_tab_get_full_window_title(tab);
     if (tab->label)
     {
         multitab_label_set_text(MULTITAB_LABEL(tab->label), tab_label);
@@ -463,7 +477,7 @@ void multi_tab_set_window_title(MultiTab * tab, const char *title)
 {
     g_free(tab->window_title);
     tab->window_title = title ? g_strdup(title) : NULL;
-    multi_tab_set_full_window_title(tab, tab->window_title_template, title);
+    multi_tab_set_full_window_title(tab);
 }
 
 void multi_tab_set_window_title_template(MultiTab * tab, const char *template)
@@ -472,7 +486,7 @@ void multi_tab_set_window_title_template(MultiTab * tab, const char *template)
         return;
     g_free(tab->window_title_template);
     tab->window_title_template = template ? g_strdup(template) : NULL;
-    multi_tab_set_full_window_title(tab, template, tab->window_title);
+    multi_tab_set_full_window_title(tab);
 }
 
 gboolean multi_tab_get_title_template_locked(MultiTab *tab)
@@ -616,8 +630,7 @@ static void renumber_tabs(MultiWin *win)
     {
         MultiTab *tab = link->data;
 
-        multi_tab_set_full_window_title(tab, tab->window_title_template,
-                tab->window_title);
+        multi_tab_set_full_window_title(tab);
         ++n;
     }
 }
@@ -637,8 +650,7 @@ void multi_tab_move_to_position(MultiTab *tab, int position, gboolean reorder)
     multi_win_shade_menus_for_tabs(win);
     multi_tab_remove_menutree_items(win, tab);
     multi_tab_add_menutree_items(win, tab, position);
-    multi_tab_set_full_window_title(tab, tab->window_title_template,
-            tab->window_title);
+    multi_tab_set_full_window_title(tab);
 }
 
 gboolean multi_tab_remove_from_parent(MultiTab *tab, gboolean notify_only)
@@ -1069,8 +1081,7 @@ static GtkWidget *make_tab_label(MultiTab *tab, GtkPositionType tab_pos)
     (void) tab_pos;
     tab->label = multitab_label_new(tab->parent->notebook, NULL,
             &tab->parent->best_tab_width);
-    multi_tab_set_full_window_title(tab, tab->window_title_template,
-            tab->window_title);
+    multi_tab_set_full_window_title(tab);
     tab->label_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
     gtk_box_set_homogeneous(GTK_BOX(tab->label_box), FALSE);
     gtk_box_pack_start(GTK_BOX(tab->label_box), tab->label, TRUE, TRUE, 0);
@@ -2231,8 +2242,7 @@ static void multi_win_add_tab(MultiWin * win, MultiTab * tab, int position,
     {
         multitab_label_set_parent(MULTITAB_LABEL(tab->label),
                 tab->parent->notebook, &tab->parent->best_tab_width);
-        multi_tab_set_full_window_title(tab, tab->window_title_template,
-                tab->window_title);
+        multi_tab_set_full_window_title(tab);
     }
     win->ignore_tabs_moving = TRUE;
     if (position == -1)
