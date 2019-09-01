@@ -382,50 +382,73 @@ static void multi_win_set_geometry_hints_for_tab(MultiWin * win, MultiTab * tab)
 }
 */
 
-/* @title is either window or tab title to match %s, depending on whether
- * the window or tab title is being set.
- */
-static char *make_title(const char *template, const char *title,
-        int tab_num, int tab_count)
+static char *make_title(const char *template, const char *title, int num, int pos)
 {
-    GString *subbed;
-    size_t n, l;
-    if (!template || !template[0])
-        return g_new0(char, 1);
-    l = strlen(template);
-    subbed = g_string_sized_new(strlen(template));
-    for (n = 0; n < l; ++n)
+    char *title0 = NULL;
+
+    if (template)
     {
-        if (template[n] == '%')
+        if (strchr(template, '%'))
         {
-            switch (template[++n])
+            char buf[1234];
+            char *end = &buf[sizeof buf - 34];
+            char *d = buf;
+            const char *s = template;
+            for (*d = '\0'; *s && d < end; ++s, *d = '\0')
             {
-                case 's':
-                    g_string_append(subbed, title);
+                if (*s != '%')
+                    *d++ = *s;
+                else if (s[1] == '\0')
                     break;
-                case 't':
-                    g_string_append_printf(subbed, "%d", tab_num);
-                    break;
-                case 'n':
-                    g_string_append_printf(subbed, "%d", tab_count);
-                    break;
-                case 0:
-                    --n;    /* Make sure next iteration sees terminator */
-                case '%':
-                    g_string_append_c(subbed, '%');
-                    break;
-                default:
-                    g_string_append_c(subbed, '%');
-                    g_string_append_c(subbed, template[n]);
-                    break;
+                else if (*++s == '%')
+                    *d++ = '%';
+                else if (*s == 's')
+                {
+                    const char *t = title;
+                    while (t && *t && d < end)
+                        *d++ = *t++;
+                }
+                else if (*s == 'n' || *s == 't')
+                {
+                    g_snprintf(d, 30, "%d", *s == 'n' ? num : pos);
+                    d += strlen(d);
+                }
             }
+            title0 = g_strdup(buf);
         }
         else
         {
-            g_string_append_c(subbed, template[n]);
+            title0 = g_strdup(template);
         }
     }
-    return g_string_free(subbed, FALSE);
+    return title0;
+}
+
+static gboolean check_title_template(const char *tt)
+{
+    const char *c = tt;
+    while (*c && (*c != '%' || (c[1] && (++c, strchr("nst%", *c)))))
+        ++c;
+    return !*c;
+}
+
+static gboolean validate_title_template(GtkWindow *parent, const char *tt)
+{
+    if (tt && !check_title_template(tt))
+    {
+        static char *bad_template = NULL;
+
+        if (!bad_template || strcmp(bad_template, tt))
+        {
+            dlg_warning(parent,
+              _("'%s' contains invalid %% sequences for a title template"),
+              tt);
+            g_free(bad_template);
+            bad_template = g_strdup(tt);
+        }
+        return FALSE;
+    }
+    return TRUE;
 }
 
 static void multi_tab_set_full_window_title(MultiTab * tab,
@@ -477,6 +500,13 @@ void multi_tab_set_window_title(MultiTab * tab, const char *title)
 
 void multi_tab_set_window_title_template(MultiTab * tab, const char *template)
 {
+    GtkWidget *gwin = tab->parent ? tab->parent->gtkwin : NULL;
+
+    if (!validate_title_template(gwin ? GTK_WINDOW(gwin) : NULL,
+            template))
+    {
+        return;
+    }
     if (tab->title_template_locked)
         return;
     g_free(tab->window_title_template);
@@ -818,6 +848,8 @@ void multi_win_select_tab(MultiWin * win, MultiTab * tab)
     win->current_tab = tab;
     if (tab)
     {
+        char *title = multi_tab_get_full_window_title(tab);
+
         if (tab->label)
             multitab_label_cancel_attention(MULTITAB_LABEL(tab->label));
         multi_tab_set_status_icon_name(tab, NULL);
@@ -825,7 +857,8 @@ void multi_win_select_tab(MultiWin * win, MultiTab * tab)
         gtk_notebook_set_current_page(GTK_NOTEBOOK(win->notebook),
             multi_tab_get_page_num(tab));
         gtk_widget_grab_focus(tab->active_widget);
-        multi_win_set_title(win, tab->window_title);
+        multi_win_set_title(win, title);
+        g_free(title);
         menutree_select_tab(win->popup_menu, tab->popup_menu_item);
         menutree_select_tab(win->menu_bar, tab->menu_bar_item);
         if (gtk_widget_get_realized(tab->active_widget))
@@ -2491,6 +2524,8 @@ void multi_win_set_show_add_tab_button(MultiWin *win, gboolean show)
 
 void multi_win_set_title_template(MultiWin *win, const char *tt)
 {
+    if (!validate_title_template(GTK_WINDOW(win->gtkwin), tt))
+        return;
     if (win->title_template_locked)
         return;
     g_free(win->title_template);
