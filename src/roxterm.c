@@ -30,6 +30,7 @@
 #include <unistd.h>
 
 #include <vte/vte.h>
+#include <gdk/gdkx.h>
 
 #define PCRE2_CODE_UNIT_WIDTH 8
 #include <pcre2.h>
@@ -399,6 +400,18 @@ static char **roxterm_get_environment(ROXTermData *roxterm, const char *term)
             g_strdup_printf("%d", g_list_length(roxterm_terms)));
     g_hash_table_replace(env, g_strdup("ROXTERM_PID"),
             g_strdup_printf("%d", (int) getpid()));
+
+    MultiWin *mulwin = roxterm_get_win(roxterm);
+    if (mulwin) {
+        GtkWidget *widget = multi_win_get_widget(mulwin);
+        if (widget && gtk_widget_is_toplevel(widget)) {
+            Window xid = gdk_x11_window_get_xid(
+                            gtk_widget_get_window(
+                                    widget));
+            g_hash_table_replace(env, g_strdup("WINDOWID"),
+                    g_strdup_printf("%ld", xid));
+        }
+    }
 
     g_hash_table_remove(env, "COLORTERM");
     g_hash_table_remove(env, "COLUMNS");
