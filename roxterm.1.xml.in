@@ -248,8 +248,11 @@ and docbook-xsl in your Build-Depends control field.
           <option>-T <replaceable>TITLE</replaceable></option>
         </term>
         <listitem>
-          <para>Set window title template. May include "%s" which is substituted
-          with the full contents of the tab's label.</para>
+          <para>Set window title template. May include "%s" which
+          is substituted with the full contents of the tab's label,
+          "%n" which is substituted by the number of tabs,
+          and "%t" which is substituted by the current tab number.
+          </para>
         </listitem>
       </varlistentry>
       <varlistentry>
@@ -258,7 +261,9 @@ and docbook-xsl in your Build-Depends control field.
         </term>
         <listitem>
           <para>Set tab name as displayed in its label. May include "%s" which
-          is substituted with the window title string set by the terminal.
+          is substituted with the window title string set by the terminal,
+          "%n" which is substituted by the number of tabs,
+          and "%t" which is substituted by the current tab number.
           </para>
         </listitem>
       </varlistentry>
@@ -287,6 +292,17 @@ and docbook-xsl in your Build-Depends control field.
         <listitem>
           <para>Replace any existing instance as ROXTerm D-BUS service
             provider.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>
+          <option>--role=<replaceable>ROLE</replaceable></option>
+        </term>
+        <listitem>
+          <para>Set the WM_WINDOW_ROLE property on the window.
+              This can be used to uniquely identify a window across sessions,
+              or in selecting configuration resources by window managers.
+          </para>
         </listitem>
       </varlistentry>
       <varlistentry>
