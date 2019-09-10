@@ -321,6 +321,97 @@ and docbook-xsl in your Build-Depends control field.
 
   </refsect1>
   <refsect1>
+    <title>ENVIRONMENT</title>
+    <para>
+        The following environment variables are set or used by roxterm:
+    </para>
+    <variablelist>
+      <varlistentry>
+        <term>COLORTERM</term>
+        <listitem>
+            <para>This is set to "truecolor" by VTE if the window supports
+                16 million colors.
+                </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>EDITOR</term>
+        <listitem>
+            <para>The name of the editor.
+                Defaults to "gedit", "kate", "gvim", "emacs",
+                whichever appears first in PATH.
+            </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>LANG</term>
+        <listitem>
+            <para>
+                The language of the help URI. This defaults to "en".
+            </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>ROXTERM_ID</term>
+        <listitem>
+            <para>
+                The unique identity of the roxterm D-Bus instance.
+            </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>ROXTERM_NUM</term>
+        <listitem>
+            <para>
+                The number of toplevel windows which are managed
+                by this roxterm process.
+            </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>ROXTERM_PID</term>
+        <listitem>
+            <para>
+                The process identifier of roxterm.
+            </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>TERM</term>
+        <listitem>
+            <para>
+                The name of the terminfo description, which is xterm-256color.
+            </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>VTE_VERSION</term>
+        <listitem>
+            <para>The version number of the VTE library.
+                </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>WINDOWID</term>
+        <listitem>
+            <para>
+                The decimal X Window ID of the toplevel roxterm window.
+            </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>XDG_CONFIG_HOME</term>
+        <listitem>
+            <para>
+                Where to save roxterm sessions. Defaults to ~/.config.
+                Sessions are saved under
+                $XDG_CONFIG_HOME/roxterm.sourceforge.net/UserSessions/.
+            </para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </refsect1>
+  <refsect1>
     <title>SEE ALSO</title>
 
     <para>The program is documented fully by the HTML file
