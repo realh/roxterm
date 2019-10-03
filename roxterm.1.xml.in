@@ -395,7 +395,9 @@ and docbook-xsl in your Build-Depends control field.
         <term>WINDOWID</term>
         <listitem>
             <para>
-                The decimal X Window ID of the toplevel roxterm window.
+                The decimal X Window ID of the toplevel roxterm window. Only
+                supported in an X environment and when compiled with
+                ENABLE_X_WINDOWID (cmake -DENABLE_X_WINDOWID=ON ...).
             </para>
         </listitem>
       </varlistentry>
