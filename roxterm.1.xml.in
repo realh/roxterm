@@ -248,8 +248,11 @@ and docbook-xsl in your Build-Depends control field.
           <option>-T <replaceable>TITLE</replaceable></option>
         </term>
         <listitem>
-          <para>Set window title template. May include "%s" which is substituted
-          with the full contents of the tab's label.</para>
+          <para>Set window title template. May include "%s" which
+          is substituted with the full contents of the tab's label,
+          "%n" which is substituted by the number of tabs,
+          and "%t" which is substituted by the current tab number.
+          </para>
         </listitem>
       </varlistentry>
       <varlistentry>
@@ -258,7 +261,9 @@ and docbook-xsl in your Build-Depends control field.
         </term>
         <listitem>
           <para>Set tab name as displayed in its label. May include "%s" which
-          is substituted with the window title string set by the terminal.
+          is substituted with the window title string set by the terminal,
+          "%n" which is substituted by the number of tabs,
+          and "%t" which is substituted by the current tab number.
           </para>
         </listitem>
       </varlistentry>
@@ -290,6 +295,17 @@ and docbook-xsl in your Build-Depends control field.
         </listitem>
       </varlistentry>
       <varlistentry>
+        <term>
+          <option>--role=<replaceable>ROLE</replaceable></option>
+        </term>
+        <listitem>
+          <para>Set the WM_WINDOW_ROLE property on the window.
+              This can be used to uniquely identify a window across sessions,
+              or in selecting configuration resources by window managers.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
         <term><option>-e</option>
           <option>--execute</option>
         </term>
@@ -303,6 +319,97 @@ and docbook-xsl in your Build-Depends control field.
       </varlistentry>
     </variablelist>
 
+  </refsect1>
+  <refsect1>
+    <title>ENVIRONMENT</title>
+    <para>
+        The following environment variables are set or used by roxterm:
+    </para>
+    <variablelist>
+      <varlistentry>
+        <term>COLORTERM</term>
+        <listitem>
+            <para>This is set to "truecolor" by VTE if the window supports
+                16 million colors.
+                </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>EDITOR</term>
+        <listitem>
+            <para>The name of the editor.
+                Defaults to "gedit", "kate", "gvim", "emacs",
+                whichever appears first in PATH.
+            </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>LANG</term>
+        <listitem>
+            <para>
+                The language of the help URI. This defaults to "en".
+            </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>ROXTERM_ID</term>
+        <listitem>
+            <para>
+                The unique identity of the roxterm D-Bus instance.
+            </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>ROXTERM_NUM</term>
+        <listitem>
+            <para>
+                The number of toplevel windows which are managed
+                by this roxterm process.
+            </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>ROXTERM_PID</term>
+        <listitem>
+            <para>
+                The process identifier of roxterm.
+            </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>TERM</term>
+        <listitem>
+            <para>
+                The name of the terminfo description, which is xterm-256color.
+            </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>VTE_VERSION</term>
+        <listitem>
+            <para>The version number of the VTE library.
+                </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>WINDOWID</term>
+        <listitem>
+            <para>
+                The decimal X Window ID of the toplevel roxterm window.
+            </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>XDG_CONFIG_HOME</term>
+        <listitem>
+            <para>
+                Where to save roxterm sessions. Defaults to ~/.config.
+                Sessions are saved under
+                $XDG_CONFIG_HOME/roxterm.sourceforge.net/UserSessions/.
+            </para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
   </refsect1>
   <refsect1>
     <title>SEE ALSO</title>
