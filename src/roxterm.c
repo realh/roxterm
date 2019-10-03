@@ -410,11 +410,13 @@ static char **roxterm_get_environment(ROXTermData *roxterm, const char *term)
             GtkWidget *widget = multi_win_get_widget(mwin);
             if (widget && gtk_widget_is_toplevel(widget))
             {
+                g_print("xid can be read");
                 Window xid = gdk_x11_window_get_xid(
                                 gtk_widget_get_window(widget));
                 g_hash_table_replace(env, g_strdup("WINDOWID"),
                         g_strdup_printf("%ld", xid));
             }
+
         }
     }
 #endif

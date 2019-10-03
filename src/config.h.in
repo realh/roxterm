@@ -38,4 +38,6 @@
 
 #define SYS_CONF_DIR "@CMAKE_INSTALL_FULL_SYSCONFDIR@"
 
+#cmakedefine ENABLE_X_WINDOWID
+
 #endif /* ROXTERM__CONFIG_H */
