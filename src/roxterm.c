@@ -30,7 +30,9 @@
 #include <unistd.h>
 
 #include <vte/vte.h>
+#if defined ENABLE_X_WINDOWID && defined GDK_WINDOWING_X11
 #include <gdk/gdkx.h>
+#endif
 
 #define PCRE2_CODE_UNIT_WIDTH 8
 #include <pcre2.h>
