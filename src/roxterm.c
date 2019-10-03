@@ -401,17 +401,23 @@ static char **roxterm_get_environment(ROXTermData *roxterm, const char *term)
     g_hash_table_replace(env, g_strdup("ROXTERM_PID"),
             g_strdup_printf("%d", (int) getpid()));
 
-    MultiWin *mulwin = roxterm_get_win(roxterm);
-    if (mulwin) {
-        GtkWidget *widget = multi_win_get_widget(mulwin);
-        if (widget && gtk_widget_is_toplevel(widget)) {
-            Window xid = gdk_x11_window_get_xid(
-                            gtk_widget_get_window(
-                                    widget));
-            g_hash_table_replace(env, g_strdup("WINDOWID"),
-                    g_strdup_printf("%ld", xid));
+#if defined ENABLE_X_WINDOWID && defined GDK_WINDOWING_X11
+    if (GDK_IS_X11_DISPLAY(gdk_display_get_default()))
+    {
+        MultiWin *mwin = roxterm_get_win(roxterm);
+        if (mwin)
+        {
+            GtkWidget *widget = multi_win_get_widget(mwin);
+            if (widget && gtk_widget_is_toplevel(widget))
+            {
+                Window xid = gdk_x11_window_get_xid(
+                                gtk_widget_get_window(widget));
+                g_hash_table_replace(env, g_strdup("WINDOWID"),
+                        g_strdup_printf("%ld", xid));
+            }
         }
     }
+#endif
 
     g_hash_table_remove(env, "COLORTERM");
     g_hash_table_remove(env, "COLUMNS");
