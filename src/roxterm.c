@@ -30,7 +30,8 @@
 #include <unistd.h>
 
 #include <vte/vte.h>
-#if defined ENABLE_X_WINDOWID && defined GDK_WINDOWING_X11
+
+#ifdef GDK_WINDOWING_X11
 #include <gdk/gdkx.h>
 #endif
 
@@ -403,7 +404,7 @@ static char **roxterm_get_environment(ROXTermData *roxterm, const char *term)
     g_hash_table_replace(env, g_strdup("ROXTERM_PID"),
             g_strdup_printf("%d", (int) getpid()));
 
-#if defined ENABLE_X_WINDOWID && defined GDK_WINDOWING_X11
+#ifdef GDK_WINDOWING_X11
     if (GDK_IS_X11_DISPLAY(gdk_display_get_default()))
     {
         MultiWin *mwin = roxterm_get_win(roxterm);

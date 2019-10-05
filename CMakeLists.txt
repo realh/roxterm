@@ -5,9 +5,6 @@ project(roxterm C)
 include(FindPkgConfig)
 include(GNUInstallDirs)
 
-option(ENABLE_X_WINDOWID
-    "Enable setting of WINDOWID environment variable when running in X")
-
 execute_process(COMMAND ${PROJECT_SOURCE_DIR}/version.sh
     OUTPUT_VARIABLE ROXTERM_VERSION)
 execute_process(COMMAND date "+%Y-%m-%d"
