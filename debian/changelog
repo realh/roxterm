@@ -1,10 +1,10 @@
 roxterm (3.8.2-1ppa1disco1) disco; urgency=low
 
   * New upstream version:
-    + Added ENABLE_X_WINDOWID compile-time option (based on PR #212)
+    + Set WINDOWID env variable when running in X (based on PR #212).
     + Updated man page (PR #211).
 
- -- Tony Houghton <h@realh.co.uk>  Thu, 03 Oct 2019 19:49:35 +0100
+ -- Tony Houghton <h@realh.co.uk>  Sat, 05 Oct 2019 15:17:20 +0100
 
 roxterm (3.8.1-1ppa1disco1) disco; urgency=medium
 
