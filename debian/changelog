@@ -1,3 +1,12 @@
+roxterm (3.8.3-1ppa1eoan1) eoan; urgency=low
+
+  * New upstream version:
+    + Use gtk_widget_class_set_css_name instead of gtk_widget_set_name
+      for custom tab label widgets
+      <https://github.com/realh/roxterm/issues/214>.
+
+ -- Tony Houghton <h@realh.co.uk>  Mon, 06 Jan 2019 14:47:20 +0000
+
 roxterm (3.8.2-1ppa1disco1) disco; urgency=low
 
   * New upstream version:
