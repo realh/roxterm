@@ -41,17 +41,17 @@ multitab_close_button_style_updated (GtkWidget *self)
 static void
 multitab_close_button_class_init(MultitabCloseButtonClass *klass)
 {
-    GTK_WIDGET_CLASS (klass)->style_updated =
-            multitab_close_button_style_updated;
+    GtkWidgetClass *wk = GTK_WIDGET_CLASS (klass);
+
+    wk->style_updated = multitab_close_button_style_updated;
+    gtk_widget_class_set_css_name (wk, "multitab-close-button");
 }
 
 static void
 multitab_close_button_init(MultitabCloseButton *self)
 {
     GtkWidget *image = gtk_image_new ();
-    GtkWidget *w = GTK_WIDGET(self);
 
-    gtk_widget_set_name (w, "multitab-close-button");
     self->image = GTK_IMAGE (image);
     gtk_widget_show (image);
     gtk_container_add (GTK_CONTAINER (self), image);

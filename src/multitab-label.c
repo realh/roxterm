@@ -174,6 +174,7 @@ multitab_label_class_init(MultitabLabelClass *klass)
     wclass->get_preferred_width = multitab_label_get_preferred_width;
     wclass->get_preferred_width_for_height =
             multitab_label_get_preferred_width_for_height;
+    gtk_widget_class_set_css_name (wclass, "multitab-label");
 
     oclass->set_property = multitab_label_set_property;
     oclass->get_property = multitab_label_get_property;
@@ -208,7 +209,6 @@ multitab_label_init(MultitabLabel *self)
             GTK_STYLE_PROVIDER (MULTITAB_LABEL_GET_CLASS
                     (self)->style_provider),
             GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-    gtk_widget_set_name (w, "multitab-label");
     if (!parsed_amber)
     {
         gdk_rgba_parse(&amber, "#ffc450");
