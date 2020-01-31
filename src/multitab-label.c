@@ -91,22 +91,6 @@ multitab_label_toggle_attention (gpointer data)
 }
 
 static void
-multitab_label_single_width (MultitabLabel *self, gint *width,
-        gint *parent_width)
-{
-    GtkAllocation alloc;
-
-    g_return_if_fail (self->parent != NULL);
-    gtk_widget_get_allocation (self->parent, &alloc);
-    if (parent_width)
-        *parent_width = alloc.width;
-    /* About 40% of width of parent should look good */
-    alloc.width = (alloc.width * 2) / 5;
-    if (alloc.width > *width)
-        *width = alloc.width;
-}
-
-static void
 multitab_label_destroy (GtkWidget *w)
 {
     multitab_label_cancel_attention (MULTITAB_LABEL (w));
@@ -124,7 +108,7 @@ multitab_label_modify_width(MultitabLabel *self,
     {
         if (*minimum_width < MULTITAB_LABEL_FIXED_WIDTH)
             *minimum_width = MULTITAB_LABEL_FIXED_WIDTH;
-        *natural_width = MAX(*minimum_width, MULTITAB_LABEL_FIXED_WIDTH);
+        *natural_width = MAX(*natural_width, MULTITAB_LABEL_FIXED_WIDTH);
     }
 }
 

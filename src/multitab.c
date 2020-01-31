@@ -709,6 +709,7 @@ static void multi_tab_pack_for_horizontal(MultiTab *tab, GtkContainer *nb)
 {
     gtk_container_child_set(nb, tab->widget,
             "tab-expand", FALSE, "tab-fill", TRUE, NULL);
+    multitab_label_set_single(MULTITAB_LABEL(tab->label), TRUE);
 }
 
 static void multi_tab_pack_for_single(MultiTab *tab, GtkContainer *nb)
