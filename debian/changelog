@@ -1,3 +1,12 @@
+roxterm (3.8.4-1ppa1eoan1) UNRELEASED; urgency=medium
+
+  * New upstream version:
+    + Use fixed-width tab labels for left/right tabs so that they can display
+      more than "..." <https://github.com/realh/roxterm/issues/216>.
+    + Removed old debugging spam ("xid can be read").
+
+ -- Tony Houghton <tony@realh.co.uk>  Fri, 31 Jan 2020 21:45:05 +0100
+
 roxterm (3.8.3-1ppa1eoan1) eoan; urgency=low
 
   * New upstream version:
