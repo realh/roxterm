@@ -400,10 +400,20 @@ static void profilegui_connect_handlers(ProfileGUI * pg)
     gtk_builder_connect_signals(pg->capp.builder, pg);
 }
 
+static gboolean profilegui_font_filter(const PangoFontFamily *family,
+        const PangoFontFace *face, gpointer data)
+{
+    (void) face;
+    (void) data;
+
+    return pango_font_family_is_monospace((PangoFontFamily *) family);
+}
+
 static void profilegui_fill_in_dialog(ProfileGUI * pg)
 {
     Options *profile = pg->capp.options;
     char *val;
+    GtkFontChooser *font_chooser;
 
     capplet_set_spin_button(&pg->capp, "vspacing", 0);
     capplet_set_spin_button(&pg->capp, "hspacing", 0);
@@ -422,8 +432,10 @@ static void profilegui_fill_in_dialog(ProfileGUI * pg)
     {
         capplet_set_toggle(&pg->capp, "cell_size", TRUE);
     }
-    gtk_font_chooser_set_font(
-            GTK_FONT_CHOOSER(profilegui_widget(pg, "font_button")),
+    font_chooser = GTK_FONT_CHOOSER(profilegui_widget(pg, "font_button"));
+    gtk_font_chooser_set_filter_func(font_chooser, profilegui_font_filter,
+            NULL, NULL);
+    gtk_font_chooser_set_font( font_chooser,
             val = options_lookup_string_with_default(profile,
                 "font", "Monospace 10"));
     g_free(val);
