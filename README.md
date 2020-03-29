@@ -18,5 +18,13 @@ It still supports the ROX desktop application layout it was named after, but
 can also be installed in a more conventional manner for use in other desktop
 environments.
 
-The upcoming release is focused on clearing the backlog of bugs and removing
-X11-specific code for improved Wayland support.
+Related sites
+-------------
+
+* [User guide](https://realh.github.io/roxterm),
+* [Ubuntu PPA](https://launchpad.net/~h-realh/+archive/ubuntu/roxterm)
+* [roxterm-git in AUR](https://aur.archlinux.org/packages/roxterm-git/)
+
+[Tempus Themes](https://gitlab.com/protesilaos/tempus-themes) should have
+support for roxterm by the time you read this. If not, you can use
+[convert-tempus](https://gitlab.com/realh69/convert-tempus).
