@@ -53,7 +53,7 @@ and docbook-xsl in your Build-Depends control field.
       &dhfirstname; &dhsurname;
     </author>
     <copyright>
-      <year>2005-2015</year>
+      <year>2005-2020</year>
       <holder>&dhusername;</holder>
     </copyright>
     &dhdate;
@@ -94,7 +94,9 @@ and docbook-xsl in your Build-Depends control field.
         <option>-d <replaceable>DIR</replaceable></option></arg>
       <arg><option>--show-menubar</option></arg>
       <arg><option>--hide-menubar</option></arg>
-      <arg><option>--fullscreen</option><option>-f</option></arg>
+      <arg><option>--maximise</option> | <option>-m</option></arg>
+      <arg><option>--fullscreen</option> | <option>-f</option></arg>
+      <arg><option>--borderless</option> | <option>-b</option></arg>
       <arg><option>--disable-sm</option></arg>
       <arg><option>--tab</option></arg>
       <arg><option>--zoom=<replaceable>ZOOM</replaceable></option> |
@@ -104,25 +106,48 @@ and docbook-xsl in your Build-Depends control field.
       <arg><option>--tab-name=<replaceable>NAME</replaceable></option> |
         <option>-n <replaceable>NAME</replaceable></option></arg>
       <arg><option>--role=<replaceable>ROLE</replaceable></option></arg>
+      <arg><option>--session=<replaceable>SESSION</replaceable></option></arg>
       <arg><option>--execute <replaceable>COMMAND</replaceable></option> |
         <option>-e <replaceable>COMMAND</replaceable></option></arg>
+      <arg><option>--display=<replaceable>DISPLAY</replaceable></option></arg>
     </cmdsynopsis>
   </refsynopsisdiv>
   <refsect1>
     <title>DESCRIPTION</title>
 
-    <para>This manual page documents briefly the
-      <command>&dhpackage;</command> command.</para>
-
-    <para><command>&dhpackage;</command> is a terminal emulator.</para>
+    <para>
+        ROXTerm is a terminal emulator.
+        It provides features similar to gnome-terminal.
+        It is based on the same VTE library,
+        which implements a virtual terminal emulator.
+    </para>
+    <para>
+        The original design goals of ROXTerm were twofold.
+        A small memory footprint and a quick start-up time.
+        This was realised by not using the Gnome libraries
+        and by moving the configuration GUI to a separate applet.
+        However, thanks to all the features it has acquired
+        over the years, ROXTerm can now be accused of bloat.
+        But it is now very configurable indeed.
+        It is aimed at "power" users who make heavy use of terminals
+        and who wish to have fine control over the many options.
+    </para>
+    <para>
+        ROXTerm still supports the ROX desktop application layout
+        it was named after. It can also be installed in a conventional
+        manner for use in other desktop environments.
+        Both X11 and Wayland are supported.
+    </para>
 
   </refsect1>
   <refsect1>
     <title>OPTIONS</title>
 
-    <para>These programs follow the usual &gnu; command line syntax,
-      with long options starting with two dashes (`-').  A summary of
-      options is included below.</para>
+    <para>ROXTerm follows the usual &gnu; command line syntax.
+        Both long options starting with two dashes (`-') and
+        short single dash options are provided.
+        Here follows a summary of options.
+    </para>
 
     <variablelist>
       <varlistentry>
@@ -130,7 +155,14 @@ and docbook-xsl in your Build-Depends control field.
           <option>--help</option>
         </term>
         <listitem>
-          <para>Show description of options.</para>
+          <para>Show a list of ROXTerm options.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--help-gtk</option>
+        </term>
+        <listitem>
+          <para>Show only the GTK+ options.</para>
         </listitem>
       </varlistentry>
       <varlistentry>
@@ -141,17 +173,10 @@ and docbook-xsl in your Build-Depends control field.
         </listitem>
       </varlistentry>
       <varlistentry>
-        <term><option>--help-gtk</option>
-        </term>
-        <listitem>
-          <para>Show all GTK+ options.</para>
-        </listitem>
-      </varlistentry>
-      <varlistentry>
         <term><option>--usage</option>
         </term>
         <listitem>
-          <para>Show summary of usage.</para>
+          <para>Show a brief summary of usage.</para>
         </listitem>
       </varlistentry>
       <varlistentry>
@@ -189,12 +214,31 @@ and docbook-xsl in your Build-Depends control field.
         </listitem>
       </varlistentry>
       <varlistentry>
+        <term><option>--maximise</option>
+          <option>-m</option>
+        </term>
+        <listitem>
+          <para>Make initial terminal window take up the whole screen, but
+            keep the window frame decorations.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
         <term><option>--fullscreen</option>
           <option>-f</option>
         </term>
         <listitem>
           <para>Make initial terminal window take up the whole screen with
             no window furniture.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--borderless</option>
+          <option>-b</option>
+        </term>
+        <listitem>
+          <para>Disable window decorations like title bar, resize controls
+                and frame border, if the window manager supports this.
+          </para>
         </listitem>
       </varlistentry>
       <varlistentry>
@@ -306,20 +350,394 @@ and docbook-xsl in your Build-Depends control field.
         </listitem>
       </varlistentry>
       <varlistentry>
+        <term>
+          <option>--session=<replaceable>SESSION</replaceable></option>
+        </term>
+        <listitem>
+            <para>Restore the named user session. If you use roxterm
+                on multiple different displays on the same system
+                then you need to use the --separate option as well.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>
+          <option>--display=<replaceable>DISPLAY</replaceable></option>
+        </term>
+        <listitem>
+          <para>The named X server display to use.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
         <term><option>-e</option>
           <option>--execute</option>
         </term>
         <listitem>
-          <para>Execute remainder of the command line inside the terminal. Must
-            be the final option. If there is only one following argument it is
-            parsed in case it is a command with space-separated arguments that
-            was passed to roxterm in quotes. If there is more than one argument
-            they are treated as a command and arguments without parsing.</para>
+            <para>
+                Execute remainder of the command line inside
+                the terminal.  This must be the final option.
+                If there is only one following argument,
+                it is parsed in case it is a command
+                with space-separated arguments that
+                was passed to roxterm in quotes.
+                If there is more than one argument
+                they are treated as a command and
+                arguments without parsing.
+            </para>
         </listitem>
       </varlistentry>
     </variablelist>
 
   </refsect1>
+
+  <refsect1>
+    <title>SETUP</title>
+
+    <para>
+        D-Bus is a messaging system which ROXTerm uses
+        to connect terminals with its configure tool.
+        ROXTerm uses the "session" bus, which should
+        be started along with your desktop environment.
+        Current versions of ROX, GNOME and KDE/Plasma
+        session managers all launch D-Bus.
+        If you use some other session/desktop/window manager,
+        which doesn't launch D-Bus, you need to start it yourself.
+        Insert something like this near the start of your
+        .xinitrc or .xsession:
+    </para>
+    <programlisting>
+        if test -z "$DBUS_SESSION_BUS_ADDRESS" ; then
+            eval `dbus-launch --sh-syntax --exit-with-session`
+            export DBUS_SESSION_BUS_ADDRESS
+        fi
+    </programlisting>
+  <para>
+      This setup provides a way to map an arbitrary
+      number of profiles onto configuration filenames.
+  </para>
+
+  </refsect1>
+
+  <refsect1>
+    <title>TABS</title>
+    <para>
+        Each window can contain a number of tabs,
+        each with its own terminal.
+        The tab bar is always shown by default,
+        even if there is only one tab,
+        to avoid resizing inconsistencies,
+        but this is configurable.
+    </para>
+    <para>
+        If you experience a problem with tab labels shrinking,
+        after dragging tabs so that they only have room to display '...',
+        then make sure the pointer is over the body
+        of a terminal when you drop a dragged tab,
+        not over the tab bar area.
+    </para>
+
+  </refsect1>
+
+  <refsect1>
+    <title>MENUS</title>
+    <para>
+        When the menu bar is hidden,
+        the popup menu duplicates the same items as in the menu bar.
+        This gives you full access to all the functions
+        with the menu bar hidden.
+        The menu bar is effectively redundant,
+        but provided to make ROXTerm appear
+        more straightforward for first-time users.
+        It can be turned on and off for a particular window
+        or more permanently by using the configuration manager.
+    </para>
+    <para>
+        The popup menu also allows email and web addresses
+        to be opened in external applications,
+        if such an address is highlighted
+        by the pointer being over it.
+    </para>
+
+  </refsect1>
+
+  <refsect1>
+    <title>URI HIGHLIGHTING</title>
+    <para>
+        When the pointer is over an address
+        that ROXTerm recognises as a URI
+        (typically a web URL or email address)
+        it is highlighted by underlining and
+        a change of pointer shape.
+        You can open the address either by right-clicking on it
+        and choosing Open... in the menu
+        or by holding Ctrl and left-clicking.
+        The applications used to handle these
+        addresses may be set with the configuration tool,
+        otherwise it will try to find a suitable default.
+    </para>
+    <para>
+        Also, by holding down the Ctrl key,
+        you can drag a URI to pass it to another application
+        which is willing to accept it as a URI or text.
+        Dragging it into the same window it came from
+        pastes the address back in.
+    </para>
+    <para>
+        If the pointer is over the server address portion of a URL
+        it only highlights the address, but not the filename.
+        Move the pointer over the filename to get the whole URL.
+        Similarly, you can highlight an email address with
+        or without a leading mailto:.
+    </para>
+    <para>
+        SSH URI and hostname matching is supported.
+        URIs including a path name can only be copied to the clipboard.
+        In the absence of a pathname, ROXTerm can
+        also start a ssh session to the described host.
+        Plain hostnames are also matched,
+        but only if they start with "ssh",
+        or end with ".local" or ".lan".
+    </para>
+
+  </refsect1>
+
+  <refsect1>
+    <title>DRAG AND DROP</title>
+    <para>
+        You can drag items onto terminal windows.
+        Text objects are fed to the terminal as if typed.
+        Files and URIs have their location fed in
+        rather than the object's contents.
+        Graphical files can also be dragged onto the
+        appropriate area of the configuration manager
+        to set terminal background images.
+        Hold down the Ctrl key while dragging
+        a highlighted URI, to allow the address
+        to be dragged to another application.
+    </para>
+    <para>
+        You can now drag tabs by their labels
+        to reorder them within a window
+        or to move them to another ROXTerm window
+        or, by dropping them outside a ROXTerm window,
+        move tabs to new windows of their own.
+        Use mouse button 3 (the right button)
+        to move an unselected tab without selecting it.
+        Button 2 is a shortcut to paste the contents
+        of the clipboard as the tab's name.
+    </para>
+
+  </refsect1>
+
+  <refsect1>
+    <title>SESSIONS</title>
+    <para>
+        User sessions can be saved under a name. Click Save Session...
+        in the File menu. A session preserves the current state
+        windows and tabs, but not their textual content.
+        A session can be restored with the --session option.
+        It will be restored by the default if it is named 'Default'.
+        Leaving the field blank is equivalent to 'Default'.
+    </para>
+
+  </refsect1>
+
+  <refsect1>
+      <title>Configuration</title>
+    <para>
+        Configuration is based on named profiles,
+        so you can save different sets of options
+        and switch between them quickly.
+        There are profiles for general options,
+        colour schemes and keyboard shortcuts.
+        Colour Schemes and Profiles apply to
+        one tab at a time, but Keyboard Shortcuts
+        apply to all tabs in the same window.
+        New windows and tabs inherit settings
+        from the window/tab they were opened from.
+    </para>
+
+    <para>
+        The Preferences menu allows you to select the current profile.
+        Open the configuration manager to edit the current profile
+        or colour scheme, or to manage all settings.
+        In the configuration manager you can select
+        one of the four types of option groups and edit,
+        copy, delete or rename them.
+        The item with the selected radio button
+        is the default for new terminals.
+    </para>
+
+  </refsect1>
+
+  <refsect1>
+    <title>KEYBOARD SHORTCUTS</title>
+    <para>
+    ROXTerm allows the keyboard shortcut profiles
+    to be edited in a text editor, either via the
+    Configuration Manager or from a terminal's
+    menu (Preferences submenu). The action names
+    correspond to the localised labels used in
+    the menu items. The new shortcuts should
+    automatically be reloaded when you save the
+    file. Alternatively, selecting a scheme in the
+    Preferences menu now forces it to be reloaded.
+    The default file for keyboard shortcuts is:
+    </para>
+    <programlisting>
+        ~/.config/roxterm.sourceforge.net/Shortcuts/Default.
+    </programlisting>
+  </refsect1>
+
+  <refsect1>
+      <title>Configuration Management</title>
+    <para>
+        Run the configuration manager by selecting "Configure..."
+        in ROXTerm's menu or run roxterm-config.
+    </para>
+    <para>
+        Configuration files can be swapped with other users.
+        Each profile, colour scheme and keyboard shortcut scheme
+        consists of a single file. Saving a file in the
+        appropriate directory will create a profile
+        with the same name as the file.
+    </para>
+    <para>
+        Locations for files follow the XDG Base Directory specification.
+    </para>
+    <orderedlist numeration="arabic">
+      <listitem>
+        <para>
+            &#x0024;{XDG_CONFIG_HOME}/roxterm.sourceforge.net,
+            defaulting to ~/.config/roxterm.sourceforge.net.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          &#x0024;{XDG_CONFIG_DIRS}/roxtem.sourceforge.net,
+          defaulting to /etc/xdg/roxtem.sourceforge.net.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+            ROXTerm/Config for ROX users,
+            or &#x0024;{datadir}/roxterm/Config for others.
+            &#x0024;{datadir} is usually /usr/share for packages
+            or /usr/local/share when compiled from source.
+        </para>
+      </listitem>
+    </orderedlist>
+    <para>
+        Within any or each of those locations,
+        profiles are saved in a "Profiles" subdirectory,
+        colour schemes in "Colours" and
+        keyboard shortcut schemes in "Shortcuts".
+        A file called "Global" contains miscellaneous options,
+        which don't fall into the above categories,
+        including the default profile for new terminals.
+    </para>
+  </refsect1>
+
+  <refsect1>
+    <title>ADVANCED</title>
+    <para>
+        ROXTerm terminals can be configured from applications and
+        scripts via D-BUS. For this purpose there are three methods.
+        They require an ID code to target a specific terminal.
+        Each roxterm's ID can be read from the environment variable
+        ROXTERM_ID in the shell or application running in it.
+        The D-Bus object path is "net.sf.roxterm.Options" and
+        the D-Bus interface is "/net/sf/roxterm/Options".
+        The methods are:
+    </para>
+    <programlisting>
+        SetProfile("id", "profile_name")
+    </programlisting>
+    <para>
+        Ask the terminal to use the named profile.
+        Note that any other tabs in the same window
+        will be updated to the same new profile.
+        All tabs in one window must have the same profile, so
+        that their font size and terminal size remain consistent.
+    </para>
+    <programlisting>
+        SetColourScheme("id", "scheme_name")
+    </programlisting>
+    <para>
+        Ask the terminal to use the named colour scheme.
+        Tabs sharing the same window may have different
+        colour schemes from each other.
+    </para>
+    <programlisting>
+        SetShortcutScheme("id", "scheme_name")
+    </programlisting>
+    <para>
+        Ask the terminal to use the named keyboard shortcut scheme.
+        Tabs sharing the same window must also
+        share the same shortcut scheme.
+    </para>
+    <para>
+        Example using dbus-send in a shell script:
+    </para>
+    <programlisting>
+      dbus-send --session /net/sf/roxterm/Options \
+           net.sf.roxterm.Options.SetColourScheme \
+           string:$ROXTERM_ID string:GTK
+    </programlisting>
+    <para>
+        You may also send D-Bus signals to change
+        individual options within a named profile
+        or colour scheme using the methods StringOption,
+        IntOption (also used for boolean options)
+        and FloatOption. All terminals using the
+        named profile or colour scheme are affected,
+        but only temporarily. The options are not saved
+        for new terminals. The methods all take 3 arguments:
+    </para>
+    <itemizedlist>
+        <listitem>
+            <para>
+                Full profile name, including a prefix of
+                "Profiles/" or "Colours/"
+            </para>
+        </listitem>
+        <listitem>
+            <para>
+                Option name
+            </para>
+        </listitem>
+        <listitem>
+            <para>
+                Value
+            </para>
+        </listitem>
+    </itemizedlist>
+    <para>
+        To see which option names you can use, check the config files, from which the types can be deduced.  Example using dbus-send in a shell script:
+    </para>
+    <programlisting>
+        dbus-send --session /net/sf/roxterm/Options \
+            net.sf.roxterm.Options.StringOption \
+            string:Colours/GTK string:background 'string:#ffffff'
+    </programlisting>
+    <para>
+        A third possible use is to notify roxterm that a profile, colour scheme or shortcuts scheme has been changed by an external program and all terminals using that profile etc need to reload it:
+    </para>
+    <programlisting>
+        OptionsChanged("family_name", "profile_name")
+    </programlisting>
+    <para>
+        where family_name is one of "Profiles", "Colours"
+        or "Shortcuts". For example:
+    </para>
+    <programlisting>
+        dbus-send --session /net/sf/roxterm/Options \
+            net.sf.roxterm.Options.OptionsChanged \
+            string:Profiles string:Default
+    </programlisting>
+  </refsect1>
+
   <refsect1>
     <title>ENVIRONMENT</title>
     <para>

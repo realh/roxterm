@@ -101,6 +101,7 @@ struct ROXTermData {
     int zoom_index;
     gulong post_exit_tag;
     const char *status_icon_name;
+    gboolean borderless;
     gboolean maximise;
     gulong win_state_changed_tag;
     GtkWidget *replace_task_dialog;
@@ -3216,6 +3217,12 @@ static void roxterm_reflect_profile_change(Options * profile, const char *key)
             multi_win_set_fullscreen(win, fs);
             apply_to_win = TRUE;
         }
+        else if (!strcmp(key, "borderless"))
+        {
+            int fs = options_lookup_int(roxterm->profile, "borderless");
+            multi_win_set_borderless(win, fs);
+            apply_to_win = TRUE;
+        }
         else if (!strcmp(key, "saturation"))
         {
             roxterm_apply_colour_scheme(roxterm, vte);
@@ -3800,6 +3807,8 @@ static ROXTermData *roxterm_data_new(double zoom_factor, const char *directory,
         }
     }
     roxterm->maximise = maximise;
+    roxterm->borderless = options_lookup_int_with_default(profile,
+                                        "borderless", 0);
     if (colour_scheme_name)
     {
         roxterm->colour_scheme = colour_scheme_lookup_and_ref
@@ -3912,6 +3921,8 @@ void roxterm_launch(char **env)
         }
     }
 
+    gboolean borderless = roxterm->borderless | global_options_borderless;
+
     show_add_tab_btn = options_lookup_int_with_default(roxterm->profile,
             "show_add_tab_btn", 1);
     if (global_options_tab)
@@ -3924,14 +3935,14 @@ void roxterm_launch(char **env)
         global_options_fullscreen = FALSE;
         win = multi_win_new_fullscreen(shortcuts,
                 roxterm->zoom_index, roxterm,
-                tab_pos, always_show_tabs, show_add_tab_btn);
+                tab_pos, borderless, always_show_tabs, show_add_tab_btn);
     }
     else if (roxterm->maximise)
     {
         global_options_maximise = FALSE;
         win = multi_win_new_maximised(shortcuts,
                 roxterm->zoom_index, roxterm,
-                tab_pos, always_show_tabs, show_add_tab_btn);
+                tab_pos, borderless, always_show_tabs, show_add_tab_btn);
     }
     else
     {
@@ -3953,7 +3964,7 @@ void roxterm_launch(char **env)
         }
         win = multi_win_new_with_geom(shortcuts,
                 roxterm->zoom_index, roxterm, geom,
-                tab_pos, always_show_tabs, show_add_tab_btn);
+                tab_pos, borderless, always_show_tabs, show_add_tab_btn);
     }
     g_free(geom);
 
@@ -4231,6 +4242,7 @@ void roxterm_spawn(ROXTermData *roxterm, const char *command,
             roxterm->no_respawn = TRUE;
             multi_win_new(multi_win_get_shortcut_scheme(win),
                     roxterm->zoom_index, roxterm, tab_pos,
+                    roxterm->borderless,
                     multi_win_get_always_show_tabs(win),
                     options_lookup_int_with_default(roxterm->profile,
                             "show_add_tab_btn", 1));
@@ -4309,6 +4321,7 @@ typedef struct {
     MultiWin *win;
     MultiTab *tab;
     ROXTermData *roxterm;
+    gboolean borderless;
     gboolean maximised;
     gboolean fullscreen;
     char *geom;
@@ -4354,6 +4367,7 @@ static void parse_open_win(_ROXTermParseContext *rctx,
 
     rctx->fullscreen = FALSE;
     rctx->maximised = FALSE;
+    rctx->borderless = FALSE;
     rctx->zoom_factor = 1.0;
     rctx->active_tab = NULL;
     rctx->win_title_template_locked = FALSE;
@@ -4393,6 +4407,8 @@ static void parse_open_win(_ROXTermParseContext *rctx,
             rctx->maximised = (strcmp(v, "0") != 0);
         else if (!strcmp(a, "fullscreen"))
             rctx->fullscreen = (strcmp(v, "0") != 0);
+        else if (!strcmp(a, "borderless"))
+            rctx->borderless = (strcmp(v, "0") != 0);
         else if (!strcmp(a, "zoom"))
             rctx->zoom_factor = atof(v);
         else if (!strcmp(a, "title_template_locked"))
@@ -4440,6 +4456,7 @@ static void parse_open_win(_ROXTermParseContext *rctx,
         rctx->fdesc = pango_font_description_from_string(font);
         resize_pango_for_zoom(rctx->fdesc, rctx->zoom_factor);
     }
+    multi_win_set_borderless(win, rctx->borderless);
     multi_win_set_show_menu_bar(win, show_mbar);
     multi_win_set_always_show_tabs(win, show_tabs);
     if (title && title[0])
@@ -4463,6 +4480,10 @@ static void close_win_tag(_ROXTermParseContext *rctx)
     {
         GtkWindow *gwin = GTK_WINDOW(multi_win_get_widget(rctx->win));
 
+        if (rctx->borderless)
+        {
+            multi_win_set_borderless(rctx->win, TRUE);
+        }
         if (rctx->geom)
         {
             /* Need to show children before parsing geom */

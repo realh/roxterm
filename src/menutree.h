@@ -68,6 +68,7 @@ typedef enum {
     MENUTREE_VIEW_SHOW_MENUBAR,
     MENUTREE_VIEW_SHOW_TAB_BAR,
     MENUTREE_VIEW_FULLSCREEN,
+    MENUTREE_VIEW_BORDERLESS,
     MENUTREE_VIEW_ZOOM_IN,
     MENUTREE_VIEW_ZOOM_OUT,
     MENUTREE_VIEW_ZOOM_NORM,
@@ -195,6 +196,7 @@ GtkWidget *menutree_change_tab_title(MenuTree * tree,
 void menutree_set_show_menu_bar_active(MenuTree * tree, gboolean active);
 void menutree_set_show_tab_bar_active(MenuTree *tree, gboolean active);
 void menutree_set_fullscreen_active(MenuTree *tree, gboolean active);
+void menutree_set_borderless_active(MenuTree *tree, gboolean active);
 
 gulong menutree_named_signal_connect_data(MenuTree * tree, MenuTreeID id,
     const char *signame, GCallback handler, gpointer user_data,

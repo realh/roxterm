@@ -432,6 +432,10 @@ static void profilegui_fill_in_dialog(ProfileGUI * pg)
     {
         capplet_set_toggle(&pg->capp, "cell_size", TRUE);
     }
+    if (options_lookup_int_with_default(profile, "borderless", 0))
+    {
+        capplet_set_toggle(&pg->capp, "borderless", TRUE);
+    }
     font_chooser = GTK_FONT_CHOOSER(profilegui_widget(pg, "font_button"));
     gtk_font_chooser_set_filter_func(font_chooser, profilegui_font_filter,
             NULL, NULL);

@@ -88,6 +88,7 @@ struct MultiWin {
     MultiWinScrollBar_Position scroll_bar_pos;
     gboolean wrap_switch_tab;
     int zoom_index;
+    gboolean borderless;
     gboolean fullscreen;
     char *title_template;
     char *child_title;
@@ -673,6 +674,8 @@ void multi_tab_move_to_new_window(MultiWin *win, MultiTab *tab, int position)
 
     multi_win_set_always_show_tabs(win, old_win->always_show_tabs);
     multi_win_set_show_menu_bar(win, old_win->show_menu_bar);
+    if (multi_win_is_borderless(old_win))
+        multi_win_set_borderless(win, TRUE);
     if (multi_win_is_fullscreen(old_win))
         multi_win_set_fullscreen(win, TRUE);
     else if (multi_win_is_maximised(old_win))
@@ -888,6 +891,17 @@ void multi_win_set_show_menu_bar(MultiWin * win, gboolean show)
 gboolean multi_win_get_show_menu_bar(MultiWin * win)
 {
     return win->show_menu_bar;
+}
+
+void multi_win_set_borderless(MultiWin *win, gboolean borderless)
+{
+    if (borderless != win->borderless)
+    {
+        gtk_window_set_decorated(GTK_WINDOW(win->gtkwin), !borderless);
+        win->borderless = borderless;
+        menutree_set_borderless_active(win->menu_bar, borderless);
+        menutree_set_borderless_active(win->popup_menu, borderless);
+    }
 }
 
 void multi_win_set_fullscreen(MultiWin *win, gboolean fullscreen)
@@ -1182,6 +1196,7 @@ MultiWin *multi_win_new_for_tab(int x, int y, MultiTab *tab)
     GtkWindow *gwin = GTK_WINDOW(win->gtkwin);
     const char *title_template = win->title_template;
     gboolean show_menubar = win->show_menu_bar;
+    gboolean borderless = win->borderless;
 
     gtk_window_get_size(gwin, &w, &h);
     multi_win_get_disable_menu_shortcuts(tab->user_data,
@@ -1192,6 +1207,7 @@ MultiWin *multi_win_new_for_tab(int x, int y, MultiTab *tab)
                 win->show_add_tab_button);
     multi_win_set_show_menu_bar(win, show_menubar);
     multi_win_set_title_template(win, title_template);
+    multi_win_set_borderless(win, borderless);
     gwin = GTK_WINDOW(win->gtkwin);
     gtk_window_set_default_size(gwin, w, h);
     if (x != -1 && y != -1)
@@ -1218,13 +1234,14 @@ MultiWin *multi_win_clone(MultiWin *old,
     int width, height;
     MultiWin *result;
     GtkPositionType tab_pos = multi_win_get_config_tab_pos(user_data_template);
+    gboolean borderless = multi_win_is_borderless(old);
 
     multi_win_default_size_func(multi_tab_get_user_data(old->current_tab),
             &width, &height);
     geom = g_strdup_printf("%dx%d", width, height);
     result = multi_win_new_with_geom(old->shortcuts,
             old->zoom_index, user_data_template, geom,
-            tab_pos, always_show_tabs, old->show_add_tab_button);
+            tab_pos, borderless, always_show_tabs, old->show_add_tab_button);
     g_free(geom);
     return result;
 }
@@ -1499,6 +1516,15 @@ multi_win_toggle_fullscreen_action(GtkCheckMenuItem * item, MultiWin * win)
         multi_win_set_fullscreen(win, fs);
 }
 
+static void
+multi_win_toggle_borderless_action(GtkCheckMenuItem * item, MultiWin * win)
+{
+    gboolean fs = gtk_check_menu_item_get_active(item);
+
+    if (fs != win->borderless)
+        multi_win_set_borderless(win, fs);
+}
+
 static void multi_win_zoom_changed(MultiWin *win)
 {
     double zf = multi_win_zoom_factors[win->zoom_index];
@@ -1712,6 +1738,8 @@ static void multi_win_connect_actions(MultiWin * win)
         (multi_win_toggle_show_menubar_action), win, NULL, NULL, NULL);
     multi_win_menu_connect(win, MENUTREE_VIEW_FULLSCREEN, G_CALLBACK
         (multi_win_toggle_fullscreen_action), win, NULL, NULL, NULL);
+    multi_win_menu_connect(win, MENUTREE_VIEW_BORDERLESS, G_CALLBACK
+        (multi_win_toggle_borderless_action), win, NULL, NULL, NULL);
     multi_win_menu_connect_swapped(win, MENUTREE_VIEW_ZOOM_IN, G_CALLBACK
         (multi_win_zoom_in_action), win, NULL, NULL, NULL);
     multi_win_menu_connect_swapped(win, MENUTREE_VIEW_ZOOM_OUT, G_CALLBACK
@@ -1960,7 +1988,7 @@ void multi_win_set_role_prefix(const char *role_prefix)
 
 MultiWin *multi_win_new_full(Options *shortcuts,
         int zoom_index, gpointer user_data_template, const char *geom,
-        MultiWinSizing sizing, GtkPositionType tab_pos,
+        MultiWinSizing sizing, GtkPositionType tab_pos, gboolean borderless,
         gboolean always_show_tabs, gboolean add_tab_button)
 {
     gboolean disable_menu_shortcuts, disable_tab_shortcuts;
@@ -1977,6 +2005,7 @@ MultiWin *multi_win_new_full(Options *shortcuts,
     tab = multi_tab_new_defer_connect(win, user_data_template);
 
     multi_win_shade_menus_for_tabs(win);
+    multi_win_set_borderless(win, borderless);
 
     /* Showing everything except top-level, then realizing top-level, seems to
      * be the key to getting some sensible size allocations so we can work out
@@ -2274,6 +2303,11 @@ gboolean multi_win_is_maximised(MultiWin *win)
     GdkWindow *w = gtk_widget_get_window(win->gtkwin);
 
     return (w && (gdk_window_get_state(w) & GDK_WINDOW_STATE_MAXIMIZED) != 0);
+}
+
+gboolean multi_win_is_borderless(MultiWin *win)
+{
+    return win->borderless;
 }
 
 int multi_win_get_zoom_index(MultiWin *win)
