@@ -48,6 +48,9 @@ extern gboolean global_options_fullscreen;
 /* Whether to open next window maximised */
 extern gboolean global_options_maximise;
 
+/* Whether to open next window borderless */
+extern gboolean global_options_borderless;
+
 /* Whether to try to open new terminal in an existing window */
 extern gboolean global_options_tab;
 

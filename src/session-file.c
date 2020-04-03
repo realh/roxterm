@@ -158,7 +158,7 @@ static gboolean save_session_to_fp(FILE *fp, const char *session_id)
                 "      always_show_tabs='%d' tab_pos='%d'\n"
                 "      show_add_tab_btn='%d'\n"
                 "      disable_menu_shortcuts='%d' disable_tab_shortcuts='%d'\n"
-                "      maximised='%d' fullscreen='%d' zoom='%f'>\n",
+                "      maximised='%d' fullscreen='%d' borderless='%d' zoom='%f'>\n",
                 w, h, x, y,
                 tt ? tt : "", font_name,
                 multi_win_get_title_template_locked(win),
@@ -171,6 +171,7 @@ static gboolean save_session_to_fp(FILE *fp, const char *session_id)
                 disable_menu_shortcuts, disable_tab_shortcuts,
                 multi_win_is_maximised(win),
                 multi_win_is_fullscreen(win),
+                multi_win_is_borderless(win),
                 roxterm_get_zoom_factor(user_data));
         result = fputs(s, fp);
         g_free(s);
