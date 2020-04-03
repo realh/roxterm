@@ -86,6 +86,7 @@ static void menutree_build_shell_ap(MenuTree *menu_tree, GtkMenuShell *shell,
                 case MENUTREE_VIEW_SHOW_MENUBAR:
                 case MENUTREE_VIEW_SHOW_TAB_BAR:
                 case MENUTREE_VIEW_FULLSCREEN:
+                case MENUTREE_VIEW_BORDERLESS:
                     item = gtk_check_menu_item_new_with_mnemonic(label);
                     gtk_menu_shell_append(shell, item);
                     break;
@@ -381,6 +382,7 @@ static void menutree_build(MenuTree *menu_tree, Options *shortcuts,
         SHOW_MENU_BAR_ITEM,
         _("_Always Show Tab Bar"), MENUTREE_VIEW_SHOW_TAB_BAR,
         _("_Full Screen"), MENUTREE_VIEW_FULLSCREEN,
+        _("_Borderless"), MENUTREE_VIEW_BORDERLESS,
         "_", MENUTREE_NULL_ID,
         _("Zoom _In"), MENUTREE_VIEW_ZOOM_IN,
         _("Zoom _Out"), MENUTREE_VIEW_ZOOM_OUT,
@@ -700,6 +702,11 @@ void menutree_set_show_tab_bar_active(MenuTree *tree, gboolean active)
 void menutree_set_fullscreen_active(MenuTree *tree, gboolean active)
 {
     menutree_set_toggle(tree, MENUTREE_VIEW_FULLSCREEN, active);
+}
+
+void menutree_set_borderless_active(MenuTree *tree, gboolean active)
+{
+    menutree_set_toggle(tree, MENUTREE_VIEW_BORDERLESS, active);
 }
 
 extern  void multi_win_new_tab_action(gpointer win);

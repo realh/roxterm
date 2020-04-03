@@ -38,6 +38,7 @@ char *global_options_user_session_id = NULL;
 gboolean global_options_replace = FALSE;
 gboolean global_options_fullscreen = FALSE;
 gboolean global_options_maximise = FALSE;
+gboolean global_options_borderless = FALSE;
 gboolean global_options_tab = FALSE;
 gboolean global_options_fork = FALSE;
 
@@ -83,7 +84,7 @@ static gboolean global_options_show_usage(const gchar *option_name,
       "    [--session=SESSION] [--appdir=DIR]\n"
       "    [--profile=PROFILE|-p PROFILE]\n"
       "    [--colour-scheme=SCHEME|--color-scheme=SCHEME|-c SCHEME]\n"
-      "    [--shortcut-scheme=SCHEME|-s SCHEME]\n"
+      "    [--shortcut-scheme=SCHEME|-s SCHEME] [--borderless|-b]\n"
       "    [--fullscreen|-f] [--maximise|--maximize|-m] [--zoom=ZOOM|-z ZOOM]\n"
       "    [--title=TITLE|-T TITLE] [--tab-name=NAME|-n NAME]\n"
       "    [--separate] [--replace] [--tab]\n"
@@ -236,6 +237,9 @@ static GOptionEntry global_g_options[] = {
         N_("Make the initial terminal take up the whole\n"
         "                                   screen with no window furniture"),
         NULL },
+    { "borderless", 'b', G_OPTION_FLAG_IN_MAIN,
+        G_OPTION_ARG_NONE, &global_options_borderless,
+        N_("Show without decorations, overriding profile"), NULL },
     { "zoom", 'z', G_OPTION_FLAG_IN_MAIN,
         G_OPTION_ARG_CALLBACK, global_options_set_double,
         N_("Scale factor for terminal's fonts\n"

@@ -213,26 +213,26 @@ void multi_win_set_role_prefix(const char *role_prefix);
 /* Create a new window with default settings, adding it to main list */
 MultiWin *multi_win_new_full(Options *shortcuts, int zoom_index,
         gpointer user_data_template, const char *geom,
-        MultiWinSizing sizing, GtkPositionType tab_pos,
+        MultiWinSizing sizing, GtkPositionType tab_pos, gboolean borderless,
         gboolean always_show_tabs, gboolean add_tab_button);
 
 inline static MultiWin *multi_win_new_with_geom(Options *shortcuts,
         int zoom_index, gpointer user_data_template,
-        const char *geom, GtkPositionType tab_pos,
+        const char *geom, GtkPositionType tab_pos, gboolean borderless,
         gboolean always_show_tabs, gboolean add_tab_button)
 {
     return multi_win_new_full(shortcuts, zoom_index,
                   user_data_template, geom, MULTI_WIN_DEFAULT_SIZE,
-                  tab_pos, always_show_tabs, add_tab_button);
+                  tab_pos, borderless, always_show_tabs, add_tab_button);
 }
 
 inline static MultiWin *multi_win_new(Options *shortcuts, int zoom_index,
-        gpointer user_data_template, GtkPositionType tab_pos,
+        gpointer user_data_template, GtkPositionType tab_pos, gboolean borderless,
         gboolean always_show_tabs, gboolean add_tab_button)
 {
     return multi_win_new_full(shortcuts, zoom_index,
                   user_data_template, NULL, MULTI_WIN_DEFAULT_SIZE,
-                  tab_pos, always_show_tabs, add_tab_button);
+                  tab_pos, borderless, always_show_tabs, add_tab_button);
 }
 
 /* Creates a new window that's the same as the old one except with a different
@@ -243,22 +243,22 @@ MultiWin *multi_win_clone(MultiWin *old,
 
 inline static MultiWin *multi_win_new_fullscreen(Options *shortcuts,
         int zoom_index, gpointer user_data_template,
-        GtkPositionType tab_pos,
+        GtkPositionType tab_pos, gboolean borderless,
         gboolean always_show_tabs, gboolean add_tab_button)
 {
     return multi_win_new_full(shortcuts, zoom_index,
                   user_data_template, NULL, MULTI_WIN_FULL_SCREEN,
-                  tab_pos, always_show_tabs, add_tab_button);
+                  tab_pos, borderless, always_show_tabs, add_tab_button);
 }
 
 inline static MultiWin *multi_win_new_maximised(Options *shortcuts,
         int zoom_index, gpointer user_data_template,
-        GtkPositionType tab_pos,
+        GtkPositionType tab_pos, gboolean borderless,
         gboolean always_show_tabs, gboolean add_tab_button)
 {
     return multi_win_new_full(shortcuts, zoom_index,
                   user_data_template, NULL, MULTI_WIN_MAXIMISED,
-                  tab_pos, always_show_tabs, add_tab_button);
+                  tab_pos, borderless, always_show_tabs, add_tab_button);
 }
 
 /* Create a new window without a new child tab, ready to have an existing
@@ -279,6 +279,8 @@ void multi_win_show(MultiWin *win);
  * windows are destroyed it calls gtk_main_quit() */
 void multi_win_delete(MultiWin *);
 
+void multi_win_set_borderless(MultiWin *win, gboolean borderless);
+
 void multi_win_set_fullscreen(MultiWin *win, gboolean fullscreen);
 
 GtkWidget *multi_win_get_widget(MultiWin * win);
@@ -286,6 +288,8 @@ GtkWidget *multi_win_get_widget(MultiWin * win);
 gboolean multi_win_is_fullscreen(MultiWin *win);
 
 gboolean multi_win_is_maximised(MultiWin *win);
+
+gboolean multi_win_is_borderless(MultiWin *win);
 
 int multi_win_get_zoom_index(MultiWin *win);
 
