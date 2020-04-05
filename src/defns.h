@@ -71,6 +71,12 @@ enum {
  */
 #define MULTITAB_LABEL_GTK3_SIZE_KLUDGE FALSE
 
+#define UNUSED G_GNUC_UNUSED
+
+#define CHAIN_UP(mk, pk, slot) if (mk(pk)->slot) mk(pk)->slot
+#define CHAIN_UP_BOOL(mk, pk, slot) mk(pk)->slot && mk(pk)->slot
+
+
 #endif /* DEFNS_H */
 
 /* vi:set sw=4 ts=4 et cindent cino= */
