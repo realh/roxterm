@@ -25,11 +25,25 @@ PREFIX="--prefix=/usr/local/stow/roxterm"
 
 DEBUGGER=""
 
+configure() {
+    if [ ! -d "$APP_DIR/src" ] ; then
+        echo "ERROR from $APPRUN:" >&2
+        echo "Cannot configure/compile - source code is missing!" >&2
+        exit 1
+    fi
+    echo "Configuring/compiling $APP_DIR... please wait..." >&2
+    mkdir -p "$APP_DIR/build"
+    cd "$APP_DIR/build"
+    cmake -DCMAKE_BUILD_TYPE=RELWITHDEBINFO ..
+}
+
 case $1 in
-    --verbose) shift
+    --verbose)
+        shift
         DBGENV='G_MESSAGES_DEBUG=all'
         ;;
-    --debug) shift
+    --debug)
+        shift
         DEBUGGER="gdb --args"
         DBGENV='G_MESSAGES_DEBUG=all'
         ;;
@@ -37,30 +51,22 @@ case $1 in
         shift
         PROG=roxterm-config
         ;;
-    --valgrind) shift ;
+    --valgrind)
+        shift
         ulimit -c unlimited
         DEBUGGER="valgrind --freelist-vol=50000000"
         DBGENV='G_SLICE=always-malloc G_MESSAGES_DEBUG=all'
         ;;
-    --leaks) shift ;
+    --leaks)
+        shift
         DEBUGGER="valgrind --freelist-vol=50000000 "
         DEBUGGER="$DEBUGGER --leak-check=full --num-callers=80"
         DBGENV='G_SLICE=always-malloc G_MESSAGES_DEBUG=all'
         ;;
-    --compile)
-        shift
-        if [ ! -d "$APP_DIR/src" ] ; then
-            echo "ERROR from $APPRUN:" >&2
-            echo "Cannot compile - source code is missing!" >&2
-            exit 1
-        fi
-        echo "Compiling $APP_DIR... please wait..." >&2
-        mkdir -p "$APP_DIR/build"
-        cd "$APP_DIR/build"
-        cmake -DCMAKE_BUILD_TYPE=RELWITHDEBINFO -DENABLE_X_WINDOWID=ON .. &&
-        make && \
+    --compile|--configure)
+        configure && ( [ "$1" = "--compile" ] && make || true ) && \
         echo Done >&2 && exit 0
-        echo Compile failed >&2
+        echo Compile/configure failed >&2
         echo Press Return... >&2
         read WAIT
         exit 1 ;;
