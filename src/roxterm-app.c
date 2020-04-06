@@ -17,10 +17,26 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#include "roxterm-app.h"
+#include "dlg.h"
+#include "dynopts.h"
+#include "globalopts.h"
 #include "launch-params.h"
+#include "roxterm.h"
+#include "roxterm-app.h"
+#include "roxterm-dirs.h"
+#include "shortcuts.h"
 
 #include <string.h>
+
+static DynamicOptions *roxterm_profiles = NULL;
+
+DynamicOptions *roxterm_get_profiles(void)
+{
+    if (!roxterm_profiles)
+        roxterm_profiles = dynamic_options_get("Profiles");
+    return roxterm_profiles;
+}
+
 
 struct _RoxtermApp {
     GtkApplication parent_instance;
@@ -28,6 +44,7 @@ struct _RoxtermApp {
 
 G_DEFINE_TYPE(RoxtermApp, roxterm_app, GTK_TYPE_APPLICATION);
 
+#if 0
 static void on_app_about(UNUSED GSimpleAction *action, UNUSED GVariant *param,
         UNUSED gpointer app)
 {
@@ -44,18 +61,12 @@ static void on_app_new_win(UNUSED GSimpleAction *action, UNUSED GVariant *param,
     roxterm_app_new_window(app, NULL, NULL);
 }
 
-static void on_app_new_vim(UNUSED GSimpleAction *action, UNUSED GVariant *param,
-        UNUSED gpointer app)
-{
-}
-
 static void on_app_quit(UNUSED GSimpleAction *action, UNUSED GVariant *param,
         gpointer app)
 {
     g_application_quit(G_APPLICATION(app));
 }
 
-/*
 #define GACTIONENTRY_PADDING {0, 0, 0}
 
 static GActionEntry roxterm_app_actions[] = {
@@ -64,12 +75,13 @@ static GActionEntry roxterm_app_actions[] = {
     { "new-win", on_app_new_win, NULL, NULL, NULL, GACTIONENTRY_PADDING },
     { "quit", on_app_quit, NULL, NULL, NULL, GACTIONENTRY_PADDING },
 };
-*/
+#endif
 
 static void roxterm_app_startup(GApplication *gapp)
 {
-    CHAIN_UP(G_APPLICATION_CLASS, roxterm_app_parent_class, startup)
-            (gapp);
+    CHAIN_UP(G_APPLICATION_CLASS, roxterm_app_parent_class, startup)(gapp);
+    global_options_init();
+    roxterm_init();
     /*
     GtkApplication *gtkapp = GTK_APPLICATION(gapp);
     RoxtermApp *self = ROXTERM_APP(gapp);
@@ -81,6 +93,143 @@ static void roxterm_app_startup(GApplication *gapp)
     g_action_map_add_action_entries(G_ACTION_MAP(gapp),
             roxterm_app_actions, G_N_ELEMENTS(roxterm_app_actions), gapp);
      */
+}
+
+static void roxterm_app_launch_window(RoxtermApp *app, RoxtermLaunchParams *lp,
+        RoxtermWindowLaunchParams *wlp)
+{
+    MultiWin *win = NULL;
+    ROXTermData *partner = NULL;
+    gboolean free_partner = FALSE;
+    gboolean old_win = FALSE;
+    char *shortcut_scheme =
+        global_options_lookup_string_with_default("shortcut_scheme",
+                "Default");
+    Options *shortcuts = shortcuts_open(shortcut_scheme, FALSE);
+    if (wlp->implicit)
+    {
+        char *wtitle = wlp->window_title;
+        MultiWin *best_inactive = NULL;
+        GList *link;
+        // TODO: Eventually we should use gtk_application_get_windows()
+        // instead of multi_win_all
+        for (link = multi_win_all; link; link = g_list_next(link))
+        {
+            GtkWidget *w;
+            gboolean title_ok;
+
+            win = link->data;
+            w = multi_win_get_widget(win);
+            title_ok = !wtitle ||
+                    !g_strcmp0(multi_win_get_title_template(win), wtitle);
+            if (gtk_window_is_active(GTK_WINDOW(w)) && title_ok)
+            {
+                break;
+            }
+            if (title_ok && !best_inactive)
+                best_inactive = win;
+            win = NULL;
+        }
+        if (!win)
+        {
+            if (best_inactive)
+                win = best_inactive;
+        }
+        partner = win ? multi_win_get_user_data_for_current_tab(win) : NULL;
+        if (win)
+            old_win = TRUE;
+    }
+    gboolean size_on_cli = FALSE;
+    for (GList *link = wlp->tabs; link; link = g_list_next(link))
+    {
+        RoxtermTabLaunchParams *tlp = link->data;
+        const char *profile_name = tlp->profile_name ?
+            tlp->profile_name : "Default";
+        const char *colour_scheme_name = tlp->colour_scheme_name ?
+            tlp->colour_scheme_name : "Default";
+        Options *profile = dynamic_options_lookup_and_ref(
+                roxterm_get_profiles(), profile_name, "roxterm profile");
+        char *geom = wlp->geometry_str;
+        gboolean maximise = wlp->maximized ||
+            options_lookup_int_with_default(profile, "maximise", 0);
+        ROXTermData *roxterm = roxterm_data_new(
+                global_options_lookup_double("zoom"),
+                tlp->directory, profile_name, profile,
+                maximise, colour_scheme_name,
+                &geom, &size_on_cli, lp->env);
+        if (partner)
+        {
+            roxterm_data_init_from_partner(roxterm, partner);
+            GtkWidget *gwin = multi_win_get_widget(win);
+            multi_tab_new(win, roxterm);
+            if (gtk_widget_get_visible(gwin))
+                gtk_window_present(GTK_WINDOW(gwin));
+            // multi_* create functions only use ROXTermData as a template
+            // so we need to free it
+            roxterm_data_delete(roxterm);
+        }
+        else
+        {
+            gboolean borderless = wlp->borderless ||
+                options_lookup_int_with_default(profile, "borderless", 0);
+            gboolean show_add_tab_btn = options_lookup_int_with_default(profile,
+                "show_add_tab_btn", 1);
+            gboolean always_show_tabs = roxterm_get_always_show_tabs(roxterm);
+            GtkPositionType tab_pos = roxterm_get_tab_pos(roxterm);
+            int zoom_index = roxterm_data_get_zoom_index(roxterm);
+            if (wlp->fullscreen || options_lookup_int_with_default(profile,
+                        "full_screen", 0))
+            {
+                win = multi_win_new_fullscreen(shortcuts, zoom_index, roxterm,
+                    tab_pos, borderless, always_show_tabs, show_add_tab_btn);
+            }
+            else if (maximise)
+            {
+                win = multi_win_new_maximised(shortcuts, zoom_index, roxterm,
+                    tab_pos, borderless, always_show_tabs, show_add_tab_btn);
+            }
+            else
+            {
+                if (!size_on_cli)
+                {
+                    int columns, rows;
+                    roxterm_get_geometry(roxterm, &columns, &rows);
+                    geom = g_strdup_printf("%dx%d", columns, rows);
+                }
+                win = multi_win_new_with_geom(shortcuts,
+                        zoom_index, roxterm, geom, tab_pos, borderless,
+                        always_show_tabs, show_add_tab_btn);
+                if (!size_on_cli)
+                    g_free(geom);
+            }
+            if (!partner)
+            {
+                partner = roxterm;
+                free_partner = TRUE;
+            }
+            else
+            {
+                // multi_* create functions only use ROXTermData as a template
+                // so we need to free it
+                roxterm_data_delete(roxterm);
+            }
+        }
+    }
+    if (free_partner)
+        roxterm_data_delete(partner);
+    if (!old_win)
+        gtk_application_add_window(GTK_APPLICATION(app),
+                GTK_WINDOW(multi_win_get_widget(win)));
+    g_free(shortcut_scheme);
+}
+
+static void roxterm_app_launch(RoxtermApp *app, RoxtermLaunchParams *lp)
+{
+    // TODO: session
+    for (GList *link = lp->windows; link; link = g_list_next(link))
+    {
+        roxterm_app_launch_window(app, lp, link->data);
+    }
 }
 
 static gint roxterm_app_command_line(GApplication *gapp,
@@ -98,10 +247,8 @@ static gint roxterm_app_command_line(GApplication *gapp,
         g_error_free(error);
         return 1;
     }
-    for (GList *link = lp->windows; link; link = g_list_next(link))
-    {
-        roxterm_app_new_window(self, lp, link->data);
-    }
+    roxterm_app_launch(self, lp);
+    roxterm_launch_params_unref(lp);
     return 0;
 }
 
@@ -124,36 +271,6 @@ RoxtermApp *roxterm_app_new(void)
                 | G_APPLICATION_SEND_ENVIRONMENT,
             NULL);
     return ROXTERM_APP(obj);
-}
-
-MultiWin *roxterm_app_new_window(RoxtermApp *self,
-        RoxtermLaunchParams *lp, RoxtermWindowLaunchParams *wp)
-{
-    (void) self;
-    (void) lp;
-    (void) wp;
-    /*
-    GtkApplication *gapp = GTK_APPLICATION(self);
-    RoxtermWindow *win = roxterm_window_new(self->builder);
-    GtkWindow *gwin = GTK_WINDOW(win);
-    roxterm_window_apply_launch_params(win, lp, wp);
-    if (wp)
-    {
-        for (GList *link = wp->tabs; link; link = g_list_next(link))
-        {
-            roxterm_window_new_tab(win, link->data, -1);
-        }
-    }
-    else
-    {
-        roxterm_window_new_tab(win, NULL, -1);
-    }
-    gtk_app_add_window(gapp, gwin);
-    multitext_window_set_initial_size(MULTITEXT_WINDOW(win));
-    gtk_widget_show_all(GTK_WIDGET(win));
-    return win;
-    */
-    return NULL;
 }
 
 static int roxterm_app_parse_options_early(int argc, char **argv)
@@ -189,11 +306,13 @@ static int roxterm_app_parse_options_early(int argc, char **argv)
 
 int main(int argc, char **argv)
 {
+    roxterm_init_app_dir(argc, argv);
+    roxterm_init_bin_dir(argv[0]);
     // First check whether args contain --help or similar and, if so, process
     // them now and exit, so we respond to --help etc correctly in the local
     // instance. Otherwise all options are passed to primary instance, because
     // we now have repeatable options which is too sophisticated for
-    // GApp to handle the conventional way.
+    // GApplication to handle the conventional way.
     for (int n = 1; n < argc; ++n)
     {
         const char *s = argv[n];

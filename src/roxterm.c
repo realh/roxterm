@@ -47,6 +47,8 @@
 #include "optsfile.h"
 #include "optsdbus.h"
 #include "roxterm.h"
+#include "roxterm-app.h"
+#include "roxterm-dirs.h"
 #include "multitab.h"
 #include "roxterm-regex.h"
 #include "search.h"
@@ -84,7 +86,7 @@ struct ROXTermData {
     Options *profile;
     char *special_command;      /* Next window/tab opened from this one should
                                    run this command instead of default */
-    char **commandv;            /* Copied from --execute args */
+    RoxtermStrvRef *commandv;   /* From --execute args */
     char **actual_commandv;     /* The actual command used */
     char *directory;            /* Copied from global_options_directory */
     GArray *match_map;
@@ -110,7 +112,7 @@ struct ROXTermData {
     gboolean dont_lookup_dimensions;
     char *reply;
     int columns, rows;
-    char **env;
+    RoxtermStrvRef *env;
     char *search_pattern;
     guint search_flags;
     /*int file_match_tag[2];*/
@@ -123,8 +125,6 @@ struct ROXTermData {
 #define PROFILE_NAME_KEY "roxterm_profile_name"
 
 static GList *roxterm_terms = NULL;
-
-static DynamicOptions *roxterm_profiles = NULL;
 
 static void roxterm_apply_profile(ROXTermData * roxterm, VteTerminal * vte,
         gboolean update_geometry);
@@ -231,13 +231,6 @@ static ROXTerm_MatchType roxterm_get_match_type(ROXTermData *roxterm, int tag)
 
 /********************* End URI handling *********************/
 
-inline static DynamicOptions *roxterm_get_profiles(void)
-{
-    if (!roxterm_profiles)
-        roxterm_profiles = dynamic_options_get("Profiles");
-    return roxterm_profiles;
-}
-
 /* Foreground (and palette?) colour change doesn't cause a redraw so force it */
 inline static void roxterm_force_redraw(ROXTermData *roxterm)
 {
@@ -302,7 +295,9 @@ static ROXTermData *roxterm_data_clone(ROXTermData *old_gt)
     new_gt->postponed_free = FALSE;
     new_gt->dont_lookup_dimensions = FALSE;
     new_gt->actual_commandv = NULL;
-    new_gt->env = roxterm_strv_copy(old_gt->env);
+    new_gt->env = old_gt->env;
+    if (new_gt->env)
+        ++new_gt->env->count;
     new_gt->child_exited_tag = 0;
     new_gt->post_exit_tag = 0;
     new_gt->win_state_changed_tag = 0;
@@ -314,8 +309,9 @@ static ROXTermData *roxterm_data_clone(ROXTermData *old_gt)
     }
     if (old_gt->profile)
     {
-        new_gt->profile = dynamic_options_lookup_and_ref(roxterm_profiles,
-            options_get_leafname(old_gt->profile), "roxterm profile");
+        new_gt->profile = dynamic_options_lookup_and_ref(
+                roxterm_get_profiles(),
+                options_get_leafname(old_gt->profile), "roxterm profile");
     }
     /* special_command should be transferred to new data and removed from old
      * one */
@@ -324,7 +320,8 @@ static ROXTermData *roxterm_data_clone(ROXTermData *old_gt)
     /* Only inherit commandv from templates, not from running terminals */
     if (!old_gt->running && old_gt->commandv)
     {
-        new_gt->commandv = global_options_copy_strv(old_gt->commandv);
+        new_gt->commandv = old_gt->commandv;
+        ++new_gt->commandv->count;
     }
     else
     {
@@ -391,7 +388,7 @@ static char **roxterm_envv_from_hash(GHashTable *hash)
 
 static char **roxterm_get_environment(ROXTermData *roxterm, const char *term)
 {
-    GHashTable *env = roxterm_hash_env(roxterm->env);
+    GHashTable *env = roxterm_hash_env(roxterm->env->strv);
     char **envv;
 
     if (term)
@@ -619,11 +616,11 @@ static void roxterm_run_command(ROXTermData *roxterm, VteTerminal *vte)
              * separated by spaces, so parse it. See
              * <http://sourceforge.net/p/roxterm/bugs/87/>.
              */
-            if (!roxterm->commandv[1])
+            if (!roxterm->commandv->strv[1])
             {
-                command = roxterm->commandv[0];
-                roxterm->commandv[0] = NULL;
-                g_strfreev(roxterm->commandv);
+                command = roxterm->commandv->strv[0];
+                roxterm->commandv->strv[0] = NULL;
+                roxterm_strv_unref(roxterm->commandv);
                 roxterm->commandv = NULL;
             }
         }
@@ -669,7 +666,7 @@ static void roxterm_run_command(ROXTermData *roxterm, VteTerminal *vte)
     if (roxterm->commandv && !roxterm->special_command)
     {
         /* We're using roxterm->commandv, point commandv to it */
-        commandv = roxterm->commandv;
+        commandv = roxterm->commandv->strv;
     }
     else
     {
@@ -836,7 +833,7 @@ static void roxterm_launch_matched_uri(ROXTermData *roxterm, guint32 timestamp)
     g_free(mod);
 }
 
-static void roxterm_data_delete(ROXTermData *roxterm)
+void roxterm_data_delete(ROXTermData *roxterm)
 {
     /* This doesn't delete widgets because they're deleted when removed from
      * the parent */
@@ -860,16 +857,17 @@ static void roxterm_data_delete(ROXTermData *roxterm)
     }
     if (roxterm->profile)
     {
-        UNREF_LOG(dynamic_options_unref(roxterm_profiles,
+        UNREF_LOG(dynamic_options_unref(roxterm_get_profiles(),
                 options_get_leafname(roxterm->profile)));
     }
     drag_receive_data_delete(roxterm->drd);
-    if (roxterm->actual_commandv != roxterm->commandv)
+    if (roxterm->actual_commandv != roxterm->commandv->strv)
         g_strfreev(roxterm->actual_commandv);
     if (roxterm->commandv)
-        g_strfreev(roxterm->commandv);
+        roxterm_strv_unref(roxterm->commandv);
     g_free(roxterm->directory);
-    g_strfreev(roxterm->env);
+    if (roxterm->env)
+        roxterm_strv_unref(roxterm->env);
     if (roxterm->pango_desc)
         pango_font_description_free(roxterm->pango_desc);
     if (roxterm->replace_task_dialog)
@@ -1858,9 +1856,9 @@ static void roxterm_show_manual(MultiWin * win)
 
     g_return_if_fail(roxterm);
 
-    if (global_options_appdir)
+    if (roxterm_app_dir)
     {
-        dir = g_build_filename(global_options_appdir, "Help", NULL);
+        dir = g_build_filename(roxterm_app_dir, "Help", NULL);
     }
     else
     {
@@ -2021,7 +2019,7 @@ static void roxterm_change_profile(ROXTermData *roxterm, Options *profile)
     {
         if (roxterm->profile)
         {
-            dynamic_options_unref(roxterm_profiles,
+            dynamic_options_unref(roxterm_get_profiles(),
                     options_get_leafname(roxterm->profile));
         }
         roxterm->profile = profile;
@@ -2113,7 +2111,7 @@ static void roxterm_new_term_with_profile(GtkMenuItem *mitem,
                 options_lookup_int_with_default(new_profile,
                         "always_show_tabs", TRUE));
     }
-    dynamic_options_unref(roxterm_profiles, profile_name);
+    dynamic_options_unref(roxterm_get_profiles(), profile_name);
     roxterm->profile = old_profile;
     /* All tabs in the same window must have same size */
     /*
@@ -2158,8 +2156,8 @@ static void roxterm_profile_selected(GtkCheckMenuItem *mitem, MenuTree *mtree)
 
     if (strcmp(profile_name, options_get_leafname(roxterm->profile)))
     {
-        Options *profile = dynamic_options_lookup_and_ref(roxterm_profiles,
-            profile_name, "roxterm profile");
+        Options *profile = dynamic_options_lookup_and_ref(
+                roxterm_get_profiles(), profile_name, "roxterm profile");
 
         if (profile)
         {
@@ -3419,12 +3417,12 @@ roxterm_opt_signal_handler(const char *profile_name, const char *key,
     if (!strncmp(profile_name, "Profiles/", 9))
     {
         const char *short_profile_name = profile_name + 9;
-        Options *profile = dynamic_options_lookup_and_ref(roxterm_profiles,
-            short_profile_name, "roxterm profile");
+        Options *profile = dynamic_options_lookup_and_ref(
+                roxterm_get_profiles(), short_profile_name, "roxterm profile");
 
         if (roxterm_update_option(profile, key, opt_type, val))
             roxterm_reflect_profile_change(profile, key);
-        dynamic_options_unref(roxterm_profiles, short_profile_name);
+        dynamic_options_unref(roxterm_get_profiles(), short_profile_name);
     }
     else if (!strncmp(profile_name, "Colours/", 8))
     {
@@ -3695,8 +3693,8 @@ static void roxterm_set_profile_handler(ROXTermData *roxterm, const char *name)
     if (!roxterm_verify_id(roxterm))
         return;
 
-    Options *profile = dynamic_options_lookup_and_ref(roxterm_profiles, name,
-            "roxterm profile");
+    Options *profile = dynamic_options_lookup_and_ref(roxterm_get_profiles(),
+            name, "roxterm profile");
 
     if (profile)
     {
@@ -3750,25 +3748,36 @@ static GtkPositionType get_profile_tab_pos(Options *profile)
     }
 }
 
-inline static GtkPositionType roxterm_get_tab_pos(const ROXTermData *roxterm)
+GtkPositionType roxterm_get_tab_pos(const ROXTermData *roxterm)
 {
     return get_profile_tab_pos(roxterm->profile);
 }
 
-static gboolean roxterm_get_always_show_tabs(const ROXTermData *roxterm)
+gboolean roxterm_get_always_show_tabs(const ROXTermData *roxterm)
 {
     return (gboolean) options_lookup_int_with_default(roxterm->profile,
             "always_show_tabs", TRUE);
+}
+
+gboolean roxterm_get_maximise(const ROXTermData *roxterm)
+{
+    return roxterm->maximise;
+}
+
+void roxterm_get_geometry(ROXTermData *roxterm, int *columns, int *rows)
+{
+    *columns = roxterm->columns;
+    *rows = roxterm->rows;
 }
 
 /* Takes over ownership of profile and non-const strings;
  * on exit size_on_cli indicates whether dimensions were given in *geom;
  * geom is freed and set to NULL if it's invalid
  */
-static ROXTermData *roxterm_data_new(double zoom_factor, const char *directory,
-        char *profile_name, Options *profile, gboolean maximise,
+ROXTermData *roxterm_data_new(double zoom_factor, const char *directory,
+        const char *profile_name, Options *profile, gboolean maximise,
         const char *colour_scheme_name,
-        char **geom, gboolean *size_on_cli, char **env)
+        char **geom, gboolean *size_on_cli, RoxtermStrvRef *env)
 {
     ROXTermData *roxterm = g_new0(ROXTermData, 1);
     int width, height, x, y;
@@ -3815,11 +3824,14 @@ static ROXTermData *roxterm_data_new(double zoom_factor, const char *directory,
             (colour_scheme_name);
     }
     roxterm->pid = -1;
-    roxterm->env = global_options_copy_strv(env);
+    roxterm->env = env;
+    if (env)
+        ++env->count;
     /*roxterm->file_match_tag[0] = roxterm->file_match_tag[1] = -1;*/
     return roxterm;
 }
 
+#if 0
 void roxterm_launch(char **env)
 {
     GtkPositionType tab_pos;
@@ -3976,6 +3988,30 @@ void roxterm_launch(char **env)
     //g_debug("call roxterm_force_resize_now from %s:%d", __FILE__, __LINE__);
     //roxterm_force_resize_now(win);
 }
+#endif
+
+void roxterm_data_init_from_partner(ROXTermData *roxterm, ROXTermData *partner)
+{
+    roxterm->dont_lookup_dimensions = TRUE;
+    roxterm->target_zoom_factor = partner->target_zoom_factor;
+    roxterm->zoom_index = partner->zoom_index;
+    roxterm->maximise = partner->maximise;
+    roxterm->borderless = partner->borderless;
+    if (partner->pango_desc)
+    {
+        roxterm->pango_desc =
+                pango_font_description_copy(partner->pango_desc);
+        roxterm->current_zoom_factor = partner->current_zoom_factor;
+    }
+    else
+    {
+        roxterm->current_zoom_factor = 1.0;
+    }
+    /* roxterm_data_clone needs to see a widget to get geometry
+     * correct */
+    roxterm->widget = partner->widget;
+    roxterm->tab = partner->tab;
+}
 
 static void roxterm_tab_to_new_window(MultiWin *win, MultiTab *tab,
         MultiWin *old_win)
@@ -3999,6 +4035,11 @@ static void roxterm_tab_to_new_window(MultiWin *win, MultiTab *tab,
         return;
     }
     roxterm_match_text_size(roxterm, match_roxterm);
+}
+
+int roxterm_data_get_zoom_index(ROXTermData *roxterm)
+{
+    return roxterm->zoom_index;
 }
 
 static void roxterm_get_disable_menu_shortcuts(ROXTermData *roxterm,
@@ -4254,7 +4295,8 @@ void roxterm_spawn(ROXTermData *roxterm, const char *command,
             break;
         default:
             cwd = roxterm_get_cwd(roxterm);
-            roxterm_spawn_command_line(command, cwd, roxterm->env, &error);
+            roxterm_spawn_command_line(command, cwd,
+                    roxterm->env->strv, &error);
             if (error)
             {
                 dlg_warning(roxterm_get_toplevel(roxterm),
@@ -4332,7 +4374,7 @@ typedef struct {
     double zoom_factor;
     char *title;
     char *role;
-    char **commandv;
+    RoxtermStrvRef *commandv;
     int argc;
     int argn;
     char *tab_name;
@@ -4540,8 +4582,6 @@ static void close_win_tag(_ROXTermParseContext *rctx)
     rctx->geom = NULL;
 }
 
-extern char **environ;
-
 static void parse_open_tab(_ROXTermParseContext *rctx,
         const char **attribute_names, const char **attribute_values)
 {
@@ -4589,7 +4629,8 @@ static void parse_open_tab(_ROXTermParseContext *rctx,
     roxterm = roxterm_data_new(rctx->zoom_factor, cwd,
             g_strdup(profile_name), profile,
             rctx->maximised, colours_name,
-            &rctx->geom, NULL, environ);
+            &rctx->geom, NULL, NULL /* environ */);
+    // TODO: Get environ from somewhere
     roxterm->from_session = TRUE;
     roxterm->dont_lookup_dimensions = TRUE;
     if (rctx->fdesc)
@@ -4603,16 +4644,16 @@ static void close_tab_tag(_ROXTermParseContext *rctx)
 
     if (rctx->commandv)
     {
-        if (rctx->commandv[0])
+        if (rctx->commandv->strv[0])
         {
             roxterm->commandv = rctx->commandv;
+            ++roxterm->commandv->count;
         }
         else
         {
             g_warning(_("<command> with no arguments"));
         }
     }
-    rctx->commandv = NULL;
     rctx->tab = multi_tab_new(rctx->win, roxterm);
     if (rctx->current)
         rctx->active_tab = rctx->tab;
@@ -4661,7 +4702,8 @@ static void parse_open_command(_ROXTermParseContext *rctx,
     }
     if (rctx->argc)
     {
-        rctx->commandv = g_new0(char *, rctx->argc + 1);
+        char **commandv = g_new0(char *, rctx->argc + 1);
+        rctx->commandv = roxterm_strv_ref_new_take(commandv);
     }
     else
     {
@@ -4704,7 +4746,7 @@ static void parse_open_arg(_ROXTermParseContext *rctx,
     }
     if (arg)
     {
-        rctx->commandv[(rctx->argn)++] = g_strdup(arg);
+        rctx->commandv->strv[(rctx->argn)++] = g_strdup(arg);
     }
     else
     {

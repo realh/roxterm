@@ -2,7 +2,7 @@
 #define GLOBALOPTS_H
 /*
     roxterm - VTE/GTK terminal emulator with tabs
-    Copyright (C) 2004-2015 Tony Houghton <h@realh.co.uk>
+    Copyright (C) 2004-2020 Tony Houghton <h@realh.co.uk>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,50 +22,7 @@
 
 #include "options.h"
 
-/* Call before gtk_init parses argv in case there's an execute option which may
- * get corrupted by gtk_init; returns FALSE if there's a -e/--execute with no
- * subsequent args; use shallow_copy if you want original strings after -e
- * to be freed later; argc is reduced to exclude any args after and including
- * -e/--execute, but argv isn't actually changed */
-gboolean global_options_preparse_argv_for_execute(int *argc, char **argv,
-		gboolean shallow_copy);
-
-/* This will be non-NULL after above call if argv contained -e/--execute */
-extern char **global_options_commandv;
-
-/* This will be non-NULL after call below if argv contained --appdir */
-extern char *global_options_appdir;
-
-/* Similar to global_options_appdir but derived from argv[0] */
-extern char *global_options_bindir;
-
-/* Directory to run terminal in */
-extern char *global_options_directory;
-
-/* Whether to open next window fullscreen */
-extern gboolean global_options_fullscreen;
-
-/* Whether to open next window maximised */
-extern gboolean global_options_maximise;
-
-/* Whether to open next window borderless */
-extern gboolean global_options_borderless;
-
-/* Whether to try to open new terminal in an existing window */
-extern gboolean global_options_tab;
-
-/* Fork first instance */
-extern gboolean global_options_fork;
-
-extern char *global_options_user_session_id;
-
-/* Call after argv has been processed by gtk_init; may be called more than once
- * but repeat invocations have no effect on appdir/bindir and argv/argc are
- * altered. Bear in mind that --help/--usage args will cause exit.
- * If report is FALSE, parsing errors are ignored (because it gets called
- * twice with same args if doing a dbus launch).
- */
-void global_options_init(int *argc, char ***argv, gboolean report);
+void global_options_init(void);
 
 /* Only access via following functions */
 extern Options *global_options;
@@ -102,15 +59,6 @@ inline static void global_options_reset_string(const char *key)
 {
     options_set_string(global_options, key, NULL);
 }
-
-/* Checks CLI args for --appdir and --fork without altering argv */
-void global_options_init_appdir(int argc, char **argv);
-
-/* Detects bindir from argv[0] */
-void global_options_init_bindir(const char *argv0);
-
-/* Deep copy a NULL-terminated array of NULL-terminated strings */
-char **global_options_copy_strv(char **ps);
 
 void global_options_apply_dark_theme(void);
 

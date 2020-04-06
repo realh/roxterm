@@ -16,25 +16,20 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-#ifndef ROXTERM_APP_H
-#define ROXTERM_APP_H
+#ifndef ROXTERM_DIRS_H
+#define ROXTERM_DIRS_H
 
-#include "dynopts.h"
-#include "launch-params.h"
-#include "multitab.h"
+#include "defns.h"
 
 G_BEGIN_DECLS
 
-#define ROXTERM_APP_ID "uk.co.realh.roxterm"
+extern char *roxterm_app_dir;
+extern char *roxterm_bin_dir;
 
-#define ROXTERM_TYPE_APP roxterm_app_get_type()
-G_DECLARE_FINAL_TYPE(RoxtermApp, roxterm_app,
-        ROXTERM, APP, GtkApplication);
+void roxterm_init_app_dir(int argc, char **argv);
 
-RoxtermApp *roxterm_app_new(void);
-
-DynamicOptions *roxterm_get_profiles(void);
+void roxterm_init_bin_dir(const char *argv0);
 
 G_END_DECLS
 
-#endif /* ROXTERM_APP_H */
+#endif /* ROXTERM_DIRS_H */

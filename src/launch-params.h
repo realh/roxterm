@@ -26,8 +26,10 @@
 G_BEGIN_DECLS
 
 typedef struct {
-    grefcount refcount;
+    int refcount;
     char *profile_name;
+    char *colour_scheme_name;
+    char *shortcuts_name;
     char *tab_title;
     char *directory;
     gboolean custom_command;
@@ -45,7 +47,7 @@ roxterm_tab_launch_params_ref(RoxtermTabLaunchParams *tp)
 void roxterm_tab_launch_params_unref(RoxtermTabLaunchParams *tp);
 
 typedef struct {
-    grefcount refcount;
+    int refcount;
     GList *tabs;        // element-type: RoxtermTabLaunchParams 
     char *window_title;
     char *role;
@@ -55,6 +57,7 @@ typedef struct {
     int columns, rows;
     gboolean maximized;
     gboolean fullscreen;
+    gboolean borderless;
     gboolean implicit;  // means --tab was specified and tabs should be added
                         // to an existing window if possible
 } RoxtermWindowLaunchParams;
@@ -72,11 +75,12 @@ void roxterm_window_launch_params_unref(RoxtermWindowLaunchParams *wp);
 
 
 typedef struct {
-    grefcount refcount;
+    int refcount;
     GList *windows;     // element-type: RoxtermWindowLaunchParams 
     int argc;
     char **argv;
     RoxtermStrvRef *env;
+    char *user_session_id;
 } RoxtermLaunchParams;
 
 RoxtermLaunchParams *roxterm_launch_params_new(void);

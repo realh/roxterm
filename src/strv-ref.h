@@ -34,12 +34,17 @@ typedef struct {
     int count;
 } RoxtermStrvRef;
 
-inline static RoxtermStrvRef *roxterm_strv_ref_new(char const * const *src)
+inline static RoxtermStrvRef *roxterm_strv_ref_new_take(char **src)
 {
     RoxtermStrvRef *rsr = g_new(RoxtermStrvRef, 1);
-    rsr->strv = g_strdupv((char **) src);
+    rsr->strv = src;
     rsr->count = 1;
     return rsr;
+}
+
+inline static RoxtermStrvRef *roxterm_strv_ref_new(char const * const *src)
+{
+    return roxterm_strv_ref_new_take(g_strdupv((char **) src));
 }
 
 inline static RoxtermStrvRef *roxterm_strv_ref(RoxtermStrvRef *rsr)

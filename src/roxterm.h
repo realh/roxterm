@@ -27,6 +27,7 @@
 #include <vte/vte.h>
 
 #include "multitab.h"
+#include "strv-ref.h"
 
 typedef struct ROXTermData ROXTermData;
 
@@ -35,6 +36,29 @@ typedef struct ROXTermData ROXTermData;
  * variables etc.
  */
 void roxterm_init(void);
+
+/**
+ * roxterm_data_new: (constructor):
+ * @profile_name: (transfer full):
+ * @profile: (transfer full):
+ * @geom: (in-out) (transfer none) (nullable): Set to NULL if invalid
+ * @size_on_cli: (out): Set to TRUE if geom was specified
+ * @env: (transfer none):
+ */
+ROXTermData *roxterm_data_new(double zoom_factor, const char *directory,
+        const char *profile_name, Options *profile, gboolean maximise,
+        const char *colour_scheme_name,
+        char **geom, gboolean *size_on_cli, RoxtermStrvRef *env);
+
+void roxterm_data_delete(ROXTermData *roxterm);
+
+/**
+ * roxterm_data_init_from_partner: (method): Copy certain settings from @partner
+ *      to @roxterm when the latter is a new tab to share @partner's window
+ * @roxterm: (transfer none):
+ * @partner: (transfer none):
+ */
+void roxterm_data_init_from_partner(ROXTermData *roxterm, ROXTermData *partner);
 
 /* Launch a new terminal in response to a D-BUS message or for first time.
  * env is copied without being altered.
@@ -62,6 +86,21 @@ const char *roxterm_get_profile_name(ROXTermData *roxterm);
 const char *roxterm_get_colour_scheme_name(ROXTermData *roxterm);
 
 char *roxterm_get_cwd(ROXTermData *roxterm);
+
+int roxterm_data_get_zoom_index(ROXTermData *roxterm);
+
+GtkPositionType roxterm_get_tab_pos(const ROXTermData *roxterm);
+
+gboolean roxterm_get_always_show_tabs(const ROXTermData *roxterm);
+
+gboolean roxterm_get_maximise(const ROXTermData *roxterm);
+
+/**
+ * roxterm_get_geometry: (method):
+ * @columns: (out):
+ * @rows: (out):
+ */
+void roxterm_get_geometry(ROXTermData *roxterm, int *columns, int *rows);
 
 /* Returns non-full-screen dimensions */
 void roxterm_get_nonfs_dimensions(ROXTermData *roxterm, int *cols, int *rows);

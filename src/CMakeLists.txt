@@ -32,8 +32,9 @@ target_compile_options(rtlib PRIVATE ${RTCOMMON_CFLAGS_OTHER})
 
 link_directories(${RTCOMMON_LIBRARY_DIRS} ${VTE_LIBRARY_DIRS})
 add_executable(roxterm
-    about.c main.c multitab.c multitab-close-button.c
-    multitab-label.c menutree.c optsdbus.c roxterm.c roxterm-regex.c search.c
+    about.c multitab.c multitab-close-button.c
+    launch-params.c multitab-label.c menutree.c optsdbus.c roxterm.c
+    roxterm-app.c roxterm-regex.c search.c
     session-file.c shortcuts.c uri.c)
 add_dependencies(roxterm rtlib)
 target_include_directories(roxterm PRIVATE

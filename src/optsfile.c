@@ -27,6 +27,7 @@
 #include "dlg.h"
 #include "globalopts.h"
 #include "optsfile.h"
+#include "roxterm-dirs.h"
 
 static char **options_pathv = NULL;
 
@@ -128,9 +129,9 @@ static void options_file_init_paths(void)
 		options_file_append_leaf_to_pathv(options_pathv, ROXTERM_LEAF_DIR);
 
 	/* AppDir or datadir */
-	if (global_options_appdir)
+	if (roxterm_app_dir)
 	{
-		options_file_prepend_str_to_v(g_build_filename(global_options_appdir,
+		options_file_prepend_str_to_v(g_build_filename(roxterm_app_dir,
 					"Config", NULL));
 	}
 	else

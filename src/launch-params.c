@@ -34,6 +34,8 @@ void roxterm_tab_launch_params_unref(RoxtermTabLaunchParams *tp)
     if (--tp->refcount)
         return;
     g_free(tp->profile_name);
+    g_free(tp->colour_scheme_name);
+    g_free(tp->shortcuts_name);
     g_free(tp->tab_title);
     g_free(tp->directory);
     g_free(tp);
@@ -82,6 +84,7 @@ void roxterm_launch_params_unref(RoxtermLaunchParams *lp)
         g_strfreev(lp->argv);
     if (lp->env)
         roxterm_strv_unref(lp->env);
+    g_free(lp->user_session_id);
     g_free(lp);
 }
 
@@ -263,6 +266,20 @@ roxterm_launch_params_parse_window_str_option(const gchar *option,
 }
 
 static gboolean
+roxterm_launch_params_parse_global_str_option(const gchar *option,
+        const gchar *value, gpointer data, GError **error)
+{
+    if (!value)
+        return roxterm_launch_value_error(option, error);
+    RoxtermLaunchParams *lp = data;
+    if (!lp)
+        return TRUE;
+    if (!strcmp(option, "session"))
+        roxterm_launch_params_set_string(option, &lp->user_session_id, value);
+    return TRUE;
+}
+
+static gboolean
 roxterm_launch_params_parse_window_bool_option(const gchar *option,
         const gchar *value, gpointer data, GError **error)
 {
@@ -276,6 +293,8 @@ roxterm_launch_params_parse_window_bool_option(const gchar *option,
         roxterm_launch_params_set_boolean(option, &wp->maximized);
     else if (!strcmp(option, "fullscreen"))
         roxterm_launch_params_set_boolean(option, &wp->fullscreen);
+    else if (!strcmp(option, "borderless"))
+        roxterm_launch_params_set_boolean(option, &wp->borderless);
     return TRUE;
 }
 
@@ -386,6 +405,9 @@ static GOptionEntry roxterm_launch_params_cli_options[] = {
         N_("Take up the whole screen with no\n"
         PADDING "window furniture"),
         NULL },
+    { "borderless", 'b', G_OPTION_FLAG_IN_MAIN,
+        G_OPTION_ARG_NONE, &roxterm_launch_params_parse_window_bool_option,
+        N_("Show without decorations, overriding profile"), NULL },
     { "zoom", 'z', G_OPTION_FLAG_IN_MAIN,
         G_OPTION_ARG_CALLBACK, roxterm_launch_params_parse_window_str_option,
         N_("Scale factor for terminal's font\n"
@@ -408,6 +430,9 @@ static GOptionEntry roxterm_launch_params_cli_options[] = {
     { "role", 0, G_OPTION_FLAG_IN_MAIN,
         G_OPTION_ARG_CALLBACK, roxterm_launch_params_parse_window_str_option,
         N_("Set X window system 'role' hint"), N_("NAME") },
+    { "session", 0, G_OPTION_FLAG_IN_MAIN,
+        G_OPTION_ARG_STRING, &roxterm_launch_params_parse_global_str_option,
+        N_("Restore the named user session"), N_("SESSION") },
     { "execute", 'e', G_OPTION_FLAG_IN_MAIN,
         G_OPTION_ARG_NONE, NULL,
         N_("Execute remainder of command line inside the\n"

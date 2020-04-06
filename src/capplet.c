@@ -30,6 +30,7 @@
 #include "optsfile.h"
 #include "profilegui.h"
 #include "resources.h"
+#include "roxterm-dirs.h"
 
 #include <ctype.h>
 #include <stdio.h>
@@ -310,7 +311,8 @@ int main(int argc, char **argv)
 
     g_set_application_name(_("roxterm-config"));
 
-    global_options_init_appdir(argc, argv);
+    roxterm_init_app_dir(argc, argv);
+    roxterm_init_bin_dir(argv[0]);
 
 #if ENABLE_NLS
     setlocale(LC_ALL, "");
