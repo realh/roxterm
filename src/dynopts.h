@@ -25,36 +25,141 @@
 
 #include "options.h"
 
-typedef struct DynamicOptions DynamicOptions;
+#define ROXTERM_TYPE_DYNAMIC_OPTIONS roxterm_dynamic_options_get_type()
+G_DECLARE_FINAL_TYPE(RoxtermDynamicOptions, roxterm_dynamic_options,
+        ROXTERM, DYNAMIC_OPTIONS, GObject);
+
+typedef RoxtermDynamicOptions DynamicOptions;
+
+/**
+ * roxterm_dynamic_options_get:
+ * Returns: (transfer none):
+ */
+RoxtermDynamicOptions *roxterm_dynamic_options_get(const char *family);
+
+/**
+ * roxterm_dynamic_options_lookup: (method):
+ * Returns: (transfer none) (nullable):
+ */
+Options *roxterm_dynamic_options_lookup(RoxtermDynamicOptions *dynopts,
+	const char *profile_name);
+
+/**
+ * roxterm_dynamic_options_lookup: (method):
+ * Returns: (transfer none) (not nullable):
+ */
+Options *roxterm_dynamic_options_lookup_and_ref(RoxtermDynamicOptions *dynopts,
+	const char *profile_name);
+
+/**
+ * roxterm_dynamic_options_unref: (method): Unrefs the profile/scheme, not the
+ *      dynopts
+ * Returns: TRUE if the Options unref'd to 0
+ */
+gboolean roxterm_dynamic_options_unref(RoxtermDynamicOptions *dynopts,
+        const char *profile_name);
+
+/**
+ * roxterm_dynamic_options_rename: (method):
+ */
+void roxterm_dynamic_options_rename(RoxtermDynamicOptions *dynopts,
+		const char *old_name, const char *new_name);
+
+/**
+ * roxterm_dynamic_options_list_full: (method):
+ * Returns: (transfer full):
+ */
+char **roxterm_dynamic_options_list_full(RoxtermDynamicOptions *dynopts,
+        gboolean sorted);
+
+/**
+ * roxterm_opts_manager_option_changed: (method): Signal that an option's
+ *      value has changed
+ * @name: Name of profile/scheme
+ * @key: Option key
+ */
+void roxterm_dynamic_options_option_changed(RoxtermDynamicOptions *dynopts,
+        const char *name, const char *key);
+
+// Signals
+
+/**
+ * RoxtermDynamicOptions::options-deleted:
+ * @name: Name of profile/scheme
+ *
+ * This signal is raised before the deletion.
+ */
+
+/**
+ * RoxtermDynamicOptions::options-added:
+ * @name: Name of profile/scheme
+ *
+ * This signal is raised after the addition.
+ */
+
+/**
+ * RoxtermDynamicOptions::options-renamed:
+ * @old_name: Old name of profile/scheme
+ * @new_name: New name of profile/scheme
+ *
+ * This signal is raised after the rename.
+ */
+
+/**
+ * RoxtermDynamicOptions::option-changed:
+ * @name: Name of profile/scheme
+ * @key: Option key
+ * Raised after an option value has changed
+ */
+
+// Backwards compatibility with older code
+
+/* Like g_strcmp0 but "Default" comes first */
+int dynamic_options_strcmp(const char *s1, const char *s2);
 
 /* family is subdir in roxterm: Profiles, Colours, Shortcuts. This
  * returns a reference to existing DynamicOptions if one has already been
  * created for the given family */
-DynamicOptions *dynamic_options_get(const char *family);
+inline DynamicOptions *dynamic_options_get(const char *family)
+{
+    return roxterm_dynamic_options_get(family);
+}
 
 /* profile_name may actually be a colour scheme or keyboard shortcut scheme;
  * returns NULL if it hasn't already been opened with
  * dynamic_options_lookup_and_ref */
-Options *dynamic_options_lookup(DynamicOptions * dynopts,
-	const char *profile_name);
+inline Options *dynamic_options_lookup(DynamicOptions *dynopts,
+	const char *profile_name)
+{
+    return roxterm_dynamic_options_lookup(dynopts, profile_name);
+}
 
 /* Creates Options if it hasn't already been opened */
-Options *dynamic_options_lookup_and_ref(DynamicOptions * dynopts,
-	const char *profile_name, const char *group_name);
-
-/* Removes profile from dynopts without unrefing profile */
-void
-dynamic_options_forget(DynamicOptions *dynopts, const char *profile_name);
+inline Options *dynamic_options_lookup_and_ref(DynamicOptions * dynopts,
+	const char *profile_name)
+{
+    return roxterm_dynamic_options_lookup_and_ref(dynopts, profile_name);
+}
 
 /* Calls options_unref on looked up profile and removes it from dynopts */
-gboolean
-dynamic_options_unref(DynamicOptions * dynopts, const char *profile_name);
+inline gboolean dynamic_options_unref(DynamicOptions *dynopts,
+        const char *profile_name)
+{
+    return roxterm_dynamic_options_unref(dynopts, profile_name);
+}
 
 /* Renames a profile */
-void dynamic_options_rename(DynamicOptions *dynopts,
-		const char *old_name, const char *new_name);
+inline void dynamic_options_rename(DynamicOptions *dynopts,
+		const char *old_name, const char *new_name)
+{
+    roxterm_dynamic_options_rename(dynopts, old_name, new_name);
+}
 
-char **dynamic_options_list_full(DynamicOptions *, gboolean sorted);
+inline char **dynamic_options_list_full(DynamicOptions *dynopts,
+        gboolean sorted)
+{
+    return roxterm_dynamic_options_list_full(dynopts, sorted);
+}
 
 /* Returns a list of names (g_strfreev them) of files within family's subdir;
  * the first item will always be "Default" even if no such file exists */
@@ -69,8 +174,6 @@ inline static char **dynamic_options_list_sorted(DynamicOptions *dynopts)
     return dynamic_options_list_full(dynopts, TRUE);
 }
 
-/* Like g_strcmp0 but "Default" comes first */
-int dynamic_options_strcmp(const char *s1, const char *s2);
 
 #endif /* DYNOPTS_H */
 

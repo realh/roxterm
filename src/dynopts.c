@@ -17,22 +17,71 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-
 #include "dynopts.h"
 #include "optsfile.h"
 
 #include <string.h>
 
-struct DynamicOptions {
+enum {
+    SIG_DELETE_OPTS,
+    SIG_ADD_OPTS,
+    SIG_RENAME_OPTS,
+    SIG_OPT_CHANGED,
+
+    NUM_SIGS
+};
+
+struct _RoxtermDynamicOptions {
+    GObject parent_instance;
     char *family;
     GHashTable *profiles;
 };
 
+guint roxterm_dynamic_options_signals[NUM_SIGS];
 
-DynamicOptions *dynamic_options_get(const char *family)
+G_DEFINE_TYPE(RoxtermDynamicOptions, roxterm_dynamic_options, G_TYPE_OBJECT);
+
+void roxterm_dynamic_options_class_init(
+        UNUSED RoxtermDynamicOptionsClass *klass)
+{
+    roxterm_dynamic_options_signals[SIG_DELETE_OPTS] =
+        g_signal_new("delete-options",
+            ROXTERM_TYPE_DYNAMIC_OPTIONS,
+            G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS,
+            0, NULL, NULL, NULL,
+            G_TYPE_NONE, 1, G_TYPE_STRING);
+    roxterm_dynamic_options_signals[SIG_ADD_OPTS] =
+        g_signal_new("add-options",
+            ROXTERM_TYPE_DYNAMIC_OPTIONS,
+            G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS,
+            0, NULL, NULL, NULL,
+            G_TYPE_NONE, 1, G_TYPE_STRING);
+    roxterm_dynamic_options_signals[SIG_RENAME_OPTS] =
+        g_signal_new("rename-options",
+            ROXTERM_TYPE_DYNAMIC_OPTIONS,
+            G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS,
+            0, NULL, NULL, NULL,
+            G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_STRING);
+    roxterm_dynamic_options_signals[SIG_RENAME_OPTS] =
+        g_signal_new("option-changed",
+            ROXTERM_TYPE_DYNAMIC_OPTIONS,
+            G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS,
+            0, NULL, NULL, NULL,
+            G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_STRING);
+}
+
+void roxterm_dynamic_options_init(UNUSED RoxtermDynamicOptions *dynopts)
+{
+    dynopts->profiles = g_hash_table_new(g_str_hash, g_str_equal);
+}
+
+static RoxtermDynamicOptions *roxterm_dynamic_options = NULL;
+
+
+RoxtermDynamicOptions *roxterm_dynamic_options_get(const char *family)
 {
     static GHashTable *all_dynopts = NULL;
-    DynamicOptions *dynopts;
+    RoxtermDynamicOptions *dynopts;
 
     if (!all_dynopts)
         all_dynopts = g_hash_table_new(g_str_hash, g_str_equal);
@@ -40,22 +89,21 @@ DynamicOptions *dynamic_options_get(const char *family)
     dynopts = g_hash_table_lookup(all_dynopts, family);
     if (!dynopts)
     {
-        dynopts = g_new(DynamicOptions, 1);
+        dynopts = g_object_new(ROXTERM_TYPE_DYNAMIC_OPTIONS, NULL);
         dynopts->family = g_strdup(family);
-        dynopts->profiles = g_hash_table_new(g_str_hash, g_str_equal);
         g_hash_table_insert(all_dynopts, (gpointer) family, dynopts);
     }
     return dynopts;
 }
 
-Options *dynamic_options_lookup(DynamicOptions * dynopts,
+Options *roxterm_dynamic_options_lookup(RoxtermDynamicOptions * dynopts,
     const char *profile_name)
 {
     return g_hash_table_lookup(dynopts->profiles, profile_name);
 }
 
-Options *dynamic_options_lookup_and_ref(DynamicOptions * dynopts,
-    const char *profile_name, const char *group_name)
+Options *roxterm_dynamic_options_lookup_and_ref(RoxtermDynamicOptions *dynopts,
+    const char *profile_name)
 {
     Options *options = g_hash_table_lookup(dynopts->profiles, profile_name);
 
@@ -64,8 +112,10 @@ Options *dynamic_options_lookup_and_ref(DynamicOptions * dynopts,
         char *leafname = g_build_filename(dynopts->family, profile_name,
             NULL);
 
-        options = options_open(leafname, group_name);
+        options = options_open(leafname, dynopts->family);
         g_hash_table_insert(dynopts->profiles, g_strdup(profile_name), options);
+        g_signal_emit(dynopts, roxterm_dynamic_options_signals[SIG_ADD_OPTS], 0,
+                profile_name);
     }
     else
     {
@@ -74,14 +124,8 @@ Options *dynamic_options_lookup_and_ref(DynamicOptions * dynopts,
     return options;
 }
 
-void
-dynamic_options_forget(DynamicOptions *dynopts, const char *profile_name)
-{
-    g_hash_table_remove(dynopts->profiles, profile_name);
-}
-
-gboolean
-dynamic_options_unref(DynamicOptions * dynopts, const char *profile_name)
+gboolean roxterm_dynamic_options_unref(RoxtermDynamicOptions *dynopts,
+        const char *profile_name)
 {
     /* Use generic pointers for these to avoid breaking strict aliasing (see
      * man gcc) */
@@ -97,6 +141,8 @@ dynamic_options_unref(DynamicOptions * dynopts, const char *profile_name)
      * frees profile_name */
     if (((Options *) options)->ref == 1)
     {
+        g_signal_emit(dynopts, roxterm_dynamic_options_signals[SIG_DELETE_OPTS],
+                0, profile_name);
         g_hash_table_remove(dynopts->profiles, profile_name);
         g_free(key);
     }
@@ -152,7 +198,8 @@ static GList *dynopts_add_path_contents_to_list(GList *list, const char *path,
     return list;
 }
 
-char **dynamic_options_list_full(DynamicOptions *dynopts, gboolean sorted)
+char **roxterm_dynamic_options_list_full(RoxtermDynamicOptions *dynopts,
+        gboolean sorted)
 {
     int i;
     const char * const *paths = options_file_get_pathv();
@@ -180,14 +227,22 @@ char **dynamic_options_list_full(DynamicOptions *dynopts, gboolean sorted)
     return strv;
 }
 
-void dynamic_options_rename(DynamicOptions *dynopts,
+void roxterm_dynamic_options_rename(RoxtermDynamicOptions *dynopts,
         const char *old_name, const char *new_name)
 {
-    Options *opts = dynamic_options_lookup(dynopts, old_name);
-
+    g_signal_emit(dynopts, roxterm_dynamic_options_signals[SIG_RENAME_OPTS], 0,
+            old_name, new_name);
+    Options *opts = roxterm_dynamic_options_lookup(dynopts, old_name);
     g_return_if_fail(opts);
-    dynamic_options_forget(dynopts, old_name);
+    g_hash_table_remove(dynopts->profiles, old_name);
     g_hash_table_insert(dynopts->profiles, g_strdup(new_name), opts);
+}
+
+void roxterm_dynamic_options_option_changed(RoxtermDynamicOptions *dynopts,
+        const char *name, const char *key)
+{
+    g_signal_emit(dynopts, roxterm_dynamic_options_signals[SIG_OPT_CHANGED], 0,
+            name, key);
 }
 
 int dynamic_options_strcmp(const char *s1, const char *s2)
