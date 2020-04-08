@@ -43,18 +43,18 @@ void roxterm_init_bin_dir(const char *argv0)
     roxterm_bin_dir = g_path_get_dirname(argv0);
     if (!strcmp(roxterm_bin_dir, "."))
     {
-        /* No directory component, try to find roxterm-config in BIN_DIR,
+        /* No directory component, try to find roxterm in BIN_DIR,
          * current dir, then PATH */
         char *capplet;
 
         g_free(roxterm_bin_dir);
         roxterm_bin_dir = NULL;
-        capplet = g_build_filename(BIN_DIR, "roxterm-config", NULL);
+        capplet = g_build_filename(BIN_DIR, "roxterm", NULL);
         if (g_file_test(capplet, G_FILE_TEST_IS_EXECUTABLE))
         {
             roxterm_bin_dir = g_strdup(BIN_DIR);
         }
-        else if (g_file_test("roxterm-config", G_FILE_TEST_IS_EXECUTABLE))
+        else if (g_file_test("roxterm", G_FILE_TEST_IS_EXECUTABLE))
         {
             /* Paranoia in case g_free() != free() */
             char *bindir = g_get_current_dir();
@@ -64,7 +64,7 @@ void roxterm_init_bin_dir(const char *argv0)
         }
         else
         {
-            char *full = g_find_program_in_path("roxterm-config");
+            char *full = g_find_program_in_path("roxterm");
 
             if (full)
             {
@@ -73,7 +73,7 @@ void roxterm_init_bin_dir(const char *argv0)
             }
             else
             {
-                dlg_critical(NULL, _("Can't find roxterm-config"));
+                dlg_critical(NULL, _("Can't find roxterm binary"));
             }
         }
     }
