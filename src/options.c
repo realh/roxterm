@@ -25,6 +25,7 @@
 #include <string.h>
 
 #include "dlg.h"
+#include "dynopts.h"
 #include "options.h"
 #include "optsfile.h"
 
@@ -176,6 +177,12 @@ double options_lookup_double_with_default(Options *options, const char *key,
 	return result;
 }
 
+inline static void options_signal_change(Options *options, const char *key)
+{
+    RoxtermDynamicOptions *dynopts =
+        roxterm_dynamic_options_get(options->group_name);
+    roxterm_dynamic_options_option_changed(dynopts, options->name, key);
+}
 
 void options_set_string(Options * options, const char *key, const char *value)
 {
@@ -183,6 +190,7 @@ void options_set_string(Options * options, const char *key, const char *value)
 		options->kf = g_key_file_new();
 	g_key_file_set_string(options->kf, options->group_name, key,
 			value ? value : "");
+    options_signal_change(options, key);
 }
 
 void options_set_int(Options * options, const char *key, int value)
@@ -190,6 +198,7 @@ void options_set_int(Options * options, const char *key, int value)
 	if (!options->kf)
 		options->kf = g_key_file_new();
 	g_key_file_set_integer(options->kf, options->group_name, key, value);
+    options_signal_change(options, key);
 }
 
 void options_set_double(Options * options, const char *key, double value)
