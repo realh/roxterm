@@ -33,14 +33,20 @@ void options_reload_keyfile(Options *options)
 {
 	if (options->kf)
 		options_delete_keyfile(options);
-	options->kf = options_file_open(options->name, options->group_name);
+    const char *n1 = options->family ? options->family : options->name;
+    const char *n2 = options->family ? options->name : NULL;
+    char *filename = g_build_filename(n1, n2, NULL);
+	options->kf = options_file_open(filename, options->group_name);
 	options->kf_dirty = FALSE;
+    g_free(filename);
 }
 
-Options *options_open(const char *leafname, const char *group_name)
+Options *options_open(const char *leafname, const char *family,
+        const char *group_name)
 {
 	Options *options = g_new0(Options, 1);
 
+	options->family = family;
 	options->group_name = group_name;
 	options->name = g_strdup(leafname);
 	options->ref = 1;
@@ -180,7 +186,7 @@ double options_lookup_double_with_default(Options *options, const char *key,
 inline static void options_signal_change(Options *options, const char *key)
 {
     RoxtermDynamicOptions *dynopts =
-        roxterm_dynamic_options_get(options->group_name);
+        roxterm_dynamic_options_get(options->family);
     roxterm_dynamic_options_option_changed(dynopts, options->name, key);
 }
 
@@ -188,7 +194,7 @@ void options_set_string(Options * options, const char *key, const char *value)
 {
 	if (!options->kf)
 		options->kf = g_key_file_new();
-	g_key_file_set_string(options->kf, options->group_name, key,
+	g_key_file_set_string(options->kf, options->family, key,
 			value ? value : "");
     options_signal_change(options, key);
 }
@@ -197,7 +203,7 @@ void options_set_int(Options * options, const char *key, int value)
 {
 	if (!options->kf)
 		options->kf = g_key_file_new();
-	g_key_file_set_integer(options->kf, options->group_name, key, value);
+	g_key_file_set_integer(options->kf, options->family, key, value);
     options_signal_change(options, key);
 }
 
@@ -209,28 +215,10 @@ void options_set_double(Options * options, const char *key, double value)
 	g_free(str_val);
 }
 
-const char *options_get_leafname(Options *options)
-{
-	const char *leafname = strrchr(options->name, G_DIR_SEPARATOR);
-
-	return leafname ? leafname + 1 : options->name;
-}
-
 void options_change_leafname(Options *options, const char *new_leaf)
 {
-	char *old_name = options->name;
-	char *old_leaf = strrchr(options->name, G_DIR_SEPARATOR);
-
-	if (old_leaf)
-	{
-		*old_leaf = 0;
-		options->name = g_build_filename(old_name, new_leaf, NULL);
-	}
-	else
-	{
-		options->name = g_strdup(new_leaf);
-	}
-	g_free(old_name);
+    g_free(options->name);
+    options->name = g_strdup(new_leaf);
 }
 
 /* vi:set sw=4 ts=4 noet cindent cino= */

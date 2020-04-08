@@ -26,7 +26,6 @@
 
 #include "dlg.h"
 #include "dynopts.h"
-#include "optsdbus.h"
 #include "optsfile.h"
 #include "shortcuts.h"
 
@@ -155,8 +154,7 @@ Options *shortcuts_open(const char *scheme, gboolean reload)
     }
     else
     {
-        shortcuts = dynamic_options_lookup_and_ref(shortcuts_dynopts, scheme,
-                SHORTCUTS_GROUP);
+        shortcuts = dynamic_options_lookup_and_ref(shortcuts_dynopts, scheme);
         reload = FALSE;
     }
 
@@ -362,17 +360,11 @@ static void shortcuts_file_modified(GFileMonitor *monitor,
     (void) monitor;
     (void) other_file;
 
-    /* FIXME: Send dbus signal */
     g_debug("Shortcuts '%s' were modified, event %x", name, event_type);
     if (event_type == G_FILE_MONITOR_EVENT_CHANGES_DONE_HINT)
     {
-#ifdef ROXTERM_CAPPLET
-        optsdbus_send_stuff_changed_signal(OPTSDBUS_CHANGED,
-                "Shortcuts", name, NULL);
-#else
-        roxterm_stuff_changed_handler(OPTSDBUS_CHANGED,
-                "Shortcuts", name, NULL);
-#endif
+        DynamicOptions *dynopts = dynamic_options_get("Shortcuts");
+        roxterm_dynamic_options_scheme_changed(dynopts, name);
         g_file_monitor_cancel(monitor);
         g_signal_handlers_disconnect_by_func(monitor, shortcuts_file_modified,
                 name);

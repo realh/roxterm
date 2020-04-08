@@ -174,6 +174,16 @@ inline static char **dynamic_options_list_sorted(DynamicOptions *dynopts)
     return dynamic_options_list_full(dynopts, TRUE);
 }
 
+/**
+ * roxterm_dynamic_options_changed: (method): Raise corresponding signal
+ *      when a shortcuts scheme file has been changed
+ */
+void roxterm_dynamic_options_scheme_changed(DynamicOptions *dynopts,
+        const char *scheme_name);
+
+/**
+ * RoxtermDynamicOptions::changed:
+ */
 
 #endif /* DYNOPTS_H */
 

@@ -148,7 +148,7 @@ static void roxterm_app_launch_window(RoxtermApp *app, RoxtermLaunchParams *lp,
         const char *colour_scheme_name = tlp->colour_scheme_name ?
             tlp->colour_scheme_name : "Default";
         Options *profile = dynamic_options_lookup_and_ref(
-                roxterm_get_profiles(), profile_name, "roxterm profile");
+                roxterm_get_profiles(), profile_name);
         char *geom = wlp->geometry_str;
         gboolean maximise = wlp->maximized ||
             options_lookup_int_with_default(profile, "maximise", 0);

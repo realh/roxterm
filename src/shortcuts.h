@@ -21,7 +21,6 @@
 
 #include "defns.h"
 
-#ifndef ROXTERM_CAPPLET
 #include "options.h"
 
 /* Call once to connect signal to save shortcuts when changed by user; or you
@@ -38,9 +37,8 @@ Options *shortcuts_open(const char *scheme_name, gboolean reload);
 void shortcuts_unref(Options *scheme);
 
 #if GTK_CHECK_VERSION(3, 10, 0)
-inline static void shortcuts_enable_signal_handler(gboolean enable)
+inline static void shortcuts_enable_signal_handler(UNUSED gboolean enable)
 {
-    (void) enable;
 }
 #else
 void shortcuts_enable_signal_handler(gboolean enable);
@@ -50,8 +48,6 @@ gboolean shortcuts_key_is_shortcut(Options *shortcuts,
         guint key, GdkModifierType modifiers);
 
 const char *shortcuts_get_index_str(Options *shortcuts);
-
-#endif /* ROXTERM_CAPPLET */
 
 /* window = parent window for dialogs in case of error etc */
 void shortcuts_edit(GtkWindow *window, const char *name);

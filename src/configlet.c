@@ -150,10 +150,10 @@ static void configlet_set_sensitive(const char *wbasename, gboolean sensitive)
 
 static gboolean is_in_user_dir(const char *family, const char *profile_name)
 {
-    char *pathname = options_file_build_filename(family, profile_name,
-            NULL);
-    char *savename = options_file_filename_for_saving(family,
-            profile_name, NULL);
+    const char *n1 = family ? family : profile_name;
+    const char *n2 = family ? profile_name : NULL;
+    char *pathname = options_file_build_filename(n1, n2, NULL);
+    char *savename = options_file_filename_for_saving(n1, n2, NULL);
     gboolean result = (pathname != NULL) && !strcmp(savename, pathname);
 
     g_free(savename);
@@ -952,7 +952,7 @@ gboolean configlet_open()
         cg->size_group = size_group ? NULL :
             gtk_size_group_new(GTK_SIZE_GROUP_BOTH);
 
-        cg->capp.options = options_open("Global", "roxterm options");
+        cg->capp.options = options_open("Global", NULL, "roxterm options");
 
         gtk_builder_connect_signals(cg->capp.builder, cg);
 

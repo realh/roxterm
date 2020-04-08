@@ -27,6 +27,7 @@ enum {
     SIG_ADD_OPTS,
     SIG_RENAME_OPTS,
     SIG_OPT_CHANGED,
+    SIG_SCHEME_CHANGED,
 
     NUM_SIGS
 };
@@ -62,12 +63,18 @@ void roxterm_dynamic_options_class_init(
             G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS,
             0, NULL, NULL, NULL,
             G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_STRING);
-    roxterm_dynamic_options_signals[SIG_RENAME_OPTS] =
+    roxterm_dynamic_options_signals[SIG_OPT_CHANGED] =
         g_signal_new("option-changed",
             ROXTERM_TYPE_DYNAMIC_OPTIONS,
             G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS,
             0, NULL, NULL, NULL,
             G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_STRING);
+    roxterm_dynamic_options_signals[SIG_SCHEME_CHANGED] =
+        g_signal_new("scheme-changed",
+            ROXTERM_TYPE_DYNAMIC_OPTIONS,
+            G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS,
+            0, NULL, NULL, NULL,
+            G_TYPE_NONE, 1, G_TYPE_STRING);
 }
 
 void roxterm_dynamic_options_init(UNUSED RoxtermDynamicOptions *dynopts)
@@ -111,8 +118,17 @@ Options *roxterm_dynamic_options_lookup_and_ref(RoxtermDynamicOptions *dynopts,
     {
         char *leafname = g_build_filename(dynopts->family, profile_name,
             NULL);
+        const char *group_name = NULL;
 
-        options = options_open(leafname, dynopts->family);
+        if (!dynopts->family || !strcmp(dynopts->family, "Globals"))
+            group_name = "roxterm options";
+        else if (!strcmp(dynopts->family, "Profiles"))
+            group_name = "roxterm profile";
+        else if (!strcmp(dynopts->family, "Colours"))
+            group_name = "roxterm colour scheme";
+        else if (!strcmp(dynopts->family, "Colours"))
+            group_name = "roxterm shortcuts scheme";
+        options = options_open(leafname, dynopts->family, group_name);
         g_hash_table_insert(dynopts->profiles, g_strdup(profile_name), options);
         g_signal_emit(dynopts, roxterm_dynamic_options_signals[SIG_ADD_OPTS], 0,
                 profile_name);
@@ -243,6 +259,13 @@ void roxterm_dynamic_options_option_changed(RoxtermDynamicOptions *dynopts,
 {
     g_signal_emit(dynopts, roxterm_dynamic_options_signals[SIG_OPT_CHANGED], 0,
             name, key);
+}
+
+void roxterm_dynamic_options_scheme_changed(DynamicOptions *dynopts,
+        const char *scheme_name)
+{
+    g_signal_emit(dynopts, roxterm_dynamic_options_signals[SIG_SCHEME_CHANGED],
+            0, scheme_name);
 }
 
 int dynamic_options_strcmp(const char *s1, const char *s2)

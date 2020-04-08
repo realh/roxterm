@@ -113,7 +113,7 @@ void global_options_init()
     }
     else
     {
-        global_options = options_open("Global", "roxterm options");
+        global_options = options_open("Global", NULL, "roxterm options");
         correct_schemes();
     }
     already = TRUE;

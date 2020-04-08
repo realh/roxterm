@@ -603,8 +603,7 @@ ProfileGUI *profilegui_open(const char *profile_name)
 
     pg = g_new0(ProfileGUI, 1);
     pg->profile_name = g_strdup(profile_name);
-    pg->capp.options = dynamic_options_lookup_and_ref(profiles, profile_name,
-        "roxterm profile");
+    pg->capp.options = dynamic_options_lookup_and_ref(profiles, profile_name);
 
     pg->capp.builder = gtk_builder_new();
     if (!gtk_builder_add_objects_from_resource(pg->capp.builder,
@@ -663,7 +662,6 @@ void profilegui_delete(ProfileGUI * pg)
     g_free(pg->profile_name);
     drag_receive_data_delete(pg->bgimg_drd);
     g_free(pg);
-    capplet_dec_windows();
     configlet_unlock_profiles();
 }
 

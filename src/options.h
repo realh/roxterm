@@ -35,15 +35,17 @@ typedef struct {
     int ref;
     gpointer user_data;
     gboolean kf_dirty;
+    const char *family;
     const char *group_name; /* For GKeyFile */
-    char *name;             /* leafname for saving; includes "Profiles"
-                               or "Shortcuts" or whatever */
+    char *name;             /* leafname for saving; no longer includes
+                               "Profiles" or "Shortcuts" or whatever */
     gboolean deleted;       /* Has been deleted by configlet while still
                                in use */
 } Options;
 
 
-Options *options_open(const char *leafname, const char *group_name);
+Options *options_open(const char *leafname, const char *family,
+        const char *group_name);
 
 gboolean options_copy_keyfile(Options *dest, const Options *src);
 
@@ -107,8 +109,10 @@ inline static gpointer options_get_data(Options * options)
     return options->user_data;
 }
 
-/* Returns the last path element of the name member */
-const char *options_get_leafname(Options *options);
+inline const char *options_get_leafname(Options *options)
+{
+    return options->name;
+}
 
 void options_change_leafname(Options *options, const char *new_leaf);
 
