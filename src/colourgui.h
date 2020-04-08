@@ -34,6 +34,8 @@ ColourGUI *colourgui_open(const char *colour_scheme_name);
 
 void colourgui_delete(ColourGUI *);
 
+GtkWindow *colourgui_get_dialog(ColourGUI *cg);
+
 /* Handlers declared extern for GtkBuilder */
 void on_Colour_Editor_destroy(GtkWidget *widget, ColourGUI * cg);
 void on_Colour_Editor_response(GtkWidget *widget, gint response, ColourGUI *cg);

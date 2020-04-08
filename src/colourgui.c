@@ -664,6 +664,10 @@ void on_palette_size_toggled(GtkToggleButton *button, ColourGUI *cg)
 
 /***********************************************************/
 
+GtkWindow *colourgui_get_dialog(ColourGUI *cg)
+{
+    return GTK_WINDOW(cg->widget);
+}
 
 ColourGUI *colourgui_open(const char *scheme_name)
 {
@@ -719,8 +723,6 @@ ColourGUI *colourgui_open(const char *scheme_name)
 
     gtk_widget_show(cg->widget);
 
-    capplet_inc_windows();
-
     configlet_lock_colour_schemes();
 
     return cg;
@@ -744,7 +746,6 @@ void colourgui_delete(ColourGUI * cg)
         options_delete(cg->orig_scheme);
     UNREF_LOG(colour_scheme_unref(cg->capp.options));
     g_free(cg);
-    capplet_dec_windows();
     configlet_unlock_colour_schemes();
 }
 
