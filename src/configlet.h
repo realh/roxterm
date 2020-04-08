@@ -32,6 +32,8 @@ typedef struct _ConfigletData ConfigletData;
 
 gboolean configlet_open();
 
+GtkWindow *configlet_get_dialog(ConfigletData *cg);
+
 /* Lock when editing a profile etc and unlock when editing is complete. This is
  * done with reference counting */
 void configlet_lock_profiles(void);

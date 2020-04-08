@@ -24,7 +24,6 @@
 #include "dlg.h"
 #include "dynopts.h"
 #include "getname.h"
-#include "optsdbus.h"
 #include "optsfile.h"
 #include "profilegui.h"
 #include "resources.h"
@@ -72,7 +71,7 @@ enum {
 
 static gboolean ignore_changes = FALSE;
 
-static ConfigletData *configlet_data;
+static ConfigletData *configlet_data = NULL;
 
 static void set_sensitive_for_list(ConfigletList *cl);
 
@@ -186,7 +185,6 @@ static void configlet_delete(ConfigletData *cg)
     }
     g_free(cg);
     configlet_data = NULL;
-    capplet_dec_windows();
 }
 
 static const char *family_name_to_opt_key(const char *family)
@@ -556,8 +554,9 @@ static void configlet_copy(ConfigletList *cl,
     if (success)
     {
         add_name_to_list(cl, new_leaf);
-        optsdbus_send_stuff_changed_signal(OPTSDBUS_ADDED, cl->family,
-                new_leaf, NULL);
+        DynamicOptions *dynopts = dynamic_options_get(cl->family);
+        // Ensures that add signal is sent
+        roxterm_dynamic_options_lookup_and_ref(dynopts, new_leaf);
     }
 }
 
@@ -591,12 +590,8 @@ static void configlet_rename(ConfigletList *cl,
         {
             gtk_list_store_move_before(cl->list, &iter, NULL);
         }
-        /*
-        g_debug("Sending d-bus message: %s, %s, %s, %s",
-                OPTSDBUS_RENAMED, cl->family, old_leaf, new_leaf);
-        */
-        optsdbus_send_stuff_changed_signal(OPTSDBUS_RENAMED, cl->family,
-                old_leaf, new_leaf);
+        DynamicOptions *dynopts = dynamic_options_get(cl->family);
+        roxterm_dynamic_options_rename(dynopts, old_leaf, new_leaf);
     }
     else
     {
@@ -782,8 +777,8 @@ static void on_delete_clicked(ConfigletList *cl)
         {
             if (remove_name_from_list(cl, name))
             {
-                optsdbus_send_stuff_changed_signal(OPTSDBUS_DELETED,
-                        cl->family, name, NULL);
+                DynamicOptions *dynopts = dynamic_options_get(cl->family);
+                roxterm_dynamic_options_unref(dynopts, name);
             }
         }
     }
@@ -910,6 +905,11 @@ static void configlet_setup_family(ConfigletData *cg, ConfigletList *cl,
     }
 }
 
+GtkWindow *configlet_get_dialog(ConfigletData *cg)
+{
+    return GTK_WINDOW(cg->widget);
+}
+
 gboolean configlet_open()
 {
 
@@ -974,7 +974,6 @@ gboolean configlet_open()
                     "prefer_dark_theme")));
         }
 
-        capplet_inc_windows();
         gtk_widget_show(cg->widget);
     }
     return TRUE;
