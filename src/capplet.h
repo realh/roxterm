@@ -102,10 +102,6 @@ void capplet_set_float_range(CappletData *capp,
 void capplet_set_combo(CappletData *capp,
     const char *name, int dflt);
 
-/* Keep track of number of open windows and quit when it reaches 0 */
-void capplet_inc_windows(void);
-void capplet_dec_windows(void);
-
 #endif /* CAPPLET_H */
 
 /* vi:set sw=4 ts=4 noet cindent cino= */

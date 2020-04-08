@@ -26,7 +26,6 @@
 #include "configlet.h"
 #include "dynopts.h"
 #include "globalopts.h"
-#include "optsdbus.h"
 #include "optsfile.h"
 #include "profilegui.h"
 #include "resources.h"
@@ -51,7 +50,6 @@ void capplet_set_int(Options * options, const char *name, int value)
 {
     options_set_int(options, name, value);
     capplet_save_file(options);
-    optsdbus_send_int_opt_signal(options->name, name, value);
 }
 
 void capplet_set_string(Options * options, const char *name,
@@ -59,14 +57,12 @@ void capplet_set_string(Options * options, const char *name,
 {
     options_set_string(options, name, value);
     capplet_save_file(options);
-    optsdbus_send_string_opt_signal(options->name, name, value);
 }
 
 void capplet_set_float(Options * options, const char *name, double value)
 {
     options_set_double(options, name, value);
     capplet_save_file(options);
-    optsdbus_send_float_opt_signal(options->name, name, value);
 }
 
 void capplet_set_toggle(CappletData *capp, const char *name, gboolean state)
@@ -296,111 +292,5 @@ void on_combo_changed(GtkComboBox * combo, CappletData *capp)
 }
 
 /**********************************************/
-
-
-int main(int argc, char **argv)
-{
-    gboolean listen = FALSE;
-    int n;
-    const char *profile = NULL;
-    const char *colour_scheme = NULL;
-    char *logo_filename;
-    gboolean persist = FALSE;
-    gboolean open_configlet = FALSE;
-    gboolean dbus_ok;
-
-    g_set_application_name(_("roxterm-config"));
-
-    roxterm_init_app_dir(argc, argv);
-    roxterm_init_bin_dir(argv[0]);
-
-#if ENABLE_NLS
-    setlocale(LC_ALL, "");
-    bindtextdomain(PACKAGE, global_options_appdir ?
-            g_strdup_printf("%s/locale", global_options_appdir) : LOCALEDIR);
-    textdomain(PACKAGE);
-#endif    
-
-    gtk_init(&argc, &argv);
-
-    resources_access_icon();
-    gtk_window_set_default_icon_name("roxterm");
-    
-    for (n = 1; n < argc; ++n)
-    {
-        if (!strcmp(argv[n], "--listen"))
-            listen = TRUE;
-        else if (!strncmp(argv[n], "--EditProfile=", 14))
-            profile = argv[n] + 14;
-        else if (!strncmp(argv[n], "--EditColourScheme=", 19))
-            colour_scheme = argv[n] + 19;
-        else if (!strcmp(argv[n], "--Configlet"))
-            open_configlet = TRUE;
-    }
-    
-    if (!open_configlet)
-        open_configlet = !profile && !colour_scheme && !listen;
-
-    dbus_ok = rtdbus_init();
-
-    if (dbus_ok && optsdbus_init())
-    {
-        /* Defer to another instance */
-        if (profile)
-        {
-            if (optsdbus_send_edit_profile_message(profile))
-                profile = NULL;
-        }
-        if (colour_scheme)
-        {
-            if (optsdbus_send_edit_colour_scheme_message(colour_scheme))
-            {
-                colour_scheme = NULL;
-            }
-        }
-        if (open_configlet)
-        {
-            if (optsdbus_send_edit_opts_message("Configlet", ""))
-            {
-                open_configlet = FALSE;
-            }
-        }
-    }
-
-    if (profile)
-    {
-        profilegui_open(profile);
-        persist = TRUE;
-    }
-    if (colour_scheme)
-    {
-        colourgui_open(colour_scheme);
-        persist = TRUE;
-    }
-    if (open_configlet)
-    {
-        if (configlet_open())
-            persist = TRUE;
-    }
-
-    if (dbus_ok && listen)
-        persist = TRUE;
-
-    if (persist)
-        gtk_main();
-
-    return 0;
-}
-
-void capplet_inc_windows(void)
-{
-    ++capplet_open_windows;
-}
-
-void capplet_dec_windows(void)
-{
-    if (!--capplet_open_windows)
-        gtk_main_quit();
-}
 
 /* vi:set sw=4 ts=4 noet cindent cino= */

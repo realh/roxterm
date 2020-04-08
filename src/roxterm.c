@@ -45,7 +45,6 @@
 #include "dynopts.h"
 #include "globalopts.h"
 #include "optsfile.h"
-#include "optsdbus.h"
 #include "roxterm.h"
 #include "roxterm-app.h"
 #include "roxterm-dirs.h"

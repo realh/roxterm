@@ -34,6 +34,8 @@ ProfileGUI *profilegui_open(const char *profile_name);
 
 void profilegui_delete(ProfileGUI *);
 
+GtkWindow *profile_gui_get_dialog(ProfileGUI *pg);
+
 /* Handlers declared extern for GtkBuilder */
 void on_ssh_entry_activate(GtkEntry * entry, ProfileGUI * pg);
 void on_ssh_host_changed(GtkWidget * widget, ProfileGUI *pg);

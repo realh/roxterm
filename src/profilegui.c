@@ -193,7 +193,6 @@ void on_ssh_host_changed(GtkWidget * widget, ProfileGUI *pg)
 void on_edit_ssh_clicked(GtkWidget * widget, ProfileGUI *pg)
 {
     (void) widget;
-    capplet_inc_windows();
 
     capplet_set_text_entry(&pg->capp, "ssh_address", "localhost");
     capplet_set_text_entry(&pg->capp, "ssh_user", NULL);
@@ -202,7 +201,6 @@ void on_edit_ssh_clicked(GtkWidget * widget, ProfileGUI *pg)
     gtk_dialog_run(GTK_DIALOG(pg->ssh_dialog));
     profilegui_check_ssh_entries_for_changes(pg);
     gtk_widget_hide(pg->ssh_dialog);
-    capplet_dec_windows();
 }
 
 void on_Profile_Editor_destroy(GtkWidget * widget, ProfileGUI * pg)
@@ -565,6 +563,11 @@ static void profilegui_setup_list_store(ProfileGUI *pg)
     gtk_widget_show(tvw);
 }
 
+GtkWindow *profile_gui_get_dialog(ProfileGUI *pg)
+{
+    return GTK_WINDOW(pg->dialog);
+}
+
 /* Loads a Profile and creates a working dialog box for it */
 ProfileGUI *profilegui_open(const char *profile_name)
 {
@@ -629,7 +632,6 @@ ProfileGUI *profilegui_open(const char *profile_name)
 
     gtk_widget_show(pg->dialog);
 
-    capplet_inc_windows();
     configlet_lock_profiles();
 
     return pg;

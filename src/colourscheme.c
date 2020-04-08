@@ -59,8 +59,7 @@ Options *colour_scheme_lookup_and_ref(const char *scheme_name)
 
     if (!colour_scheme_dynopts)
         colour_scheme_dynopts = dynamic_options_get("Colours");
-    opts = dynamic_options_lookup_and_ref(colour_scheme_dynopts,
-            scheme_name, COLOURSCHEME_GROUP);
+    opts = dynamic_options_lookup_and_ref(colour_scheme_dynopts, scheme_name);
     colour_scheme_reset_cached_data(opts);
     return opts;
 }
