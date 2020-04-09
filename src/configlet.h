@@ -30,7 +30,7 @@
 typedef struct _ConfigletList ConfigletList;
 typedef struct _ConfigletData ConfigletData;
 
-gboolean configlet_open();
+ConfigetData *configlet_open();
 
 GtkWindow *configlet_get_dialog(ConfigletData *cg);
 

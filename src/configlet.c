@@ -910,9 +910,8 @@ GtkWindow *configlet_get_dialog(ConfigletData *cg)
     return GTK_WINDOW(cg->widget);
 }
 
-gboolean configlet_open()
+ConfigletData *configlet_open()
 {
-
     if (configlet_data)
     {
         gtk_window_present(GTK_WINDOW(configlet_data->widget));
@@ -940,7 +939,7 @@ gboolean configlet_open()
         if (!cg->widget)
         {
             configlet_delete(cg);
-            return FALSE;
+            return NULL;
         }
 
         /* GtkBuilder doesn't seem to load size group. Bug? If the size group
@@ -976,7 +975,7 @@ gboolean configlet_open()
 
         gtk_widget_show(cg->widget);
     }
-    return TRUE;
+    return configlet_data;
 }
 
 static void set_sensitive_for_list(ConfigletList *cl)

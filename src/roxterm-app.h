@@ -31,7 +31,32 @@ G_BEGIN_DECLS
 G_DECLARE_FINAL_TYPE(RoxtermApp, roxterm_app,
         ROXTERM, APP, GtkApplication);
 
-RoxtermApp *roxterm_app_new(void);
+/**
+ * roxterm_app_get: Gets the singleton
+ */
+RoxtermApp *roxterm_app_get(void);
+
+/**
+ * roxterm_app_open_configlet: (method):
+ */
+void roxterm_app_open_configlet(RoxtermApp *app);
+
+/**
+ * roxterm_app_edit_profile: (method):
+ */
+void roxterm_app_edit_profile(RoxtermApp *app, const char *profile_name);
+
+/**
+ * roxterm_app_edit_colours: (method):
+ */
+void roxterm_app_edit_colours(RoxtermApp *app, const char *scheme_name);
+
+/**
+ * roxterm_app_edit_shortcuts: (method):
+ * @parent_window: Parent in case an error has to be reported
+ */
+void roxterm_app_edit_shortcuts(RoxtermApp *app, const char *scheme_name,
+        GtkWindow *parent_window);
 
 DynamicOptions *roxterm_get_profiles(void);
 

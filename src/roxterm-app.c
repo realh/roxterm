@@ -17,10 +17,14 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+#include "configlet.h"
+#include "colourgui.h"
 #include "dlg.h"
 #include "dynopts.h"
 #include "globalopts.h"
 #include "launch-params.h"
+#include "profilegui.h"
+#include "dlg.h"
 #include "roxterm.h"
 #include "roxterm-app.h"
 #include "roxterm-dirs.h"
@@ -263,14 +267,19 @@ static void roxterm_app_init(UNUSED RoxtermApp *self)
 {
 }
 
-RoxtermApp *roxterm_app_new(void)
+RoxtermApp *roxterm_app_get(void)
 {
-    GObject *obj = g_object_new(ROXTERM_TYPE_APP,
-            "app-id", ROXTERM_APP_ID,
-            "flags", G_APPLICATION_HANDLES_COMMAND_LINE
-                | G_APPLICATION_SEND_ENVIRONMENT,
-            NULL);
-    return ROXTERM_APP(obj);
+    static RoxtermApp *app = NULL;
+    if (!app)
+    {
+        GObject *obj = g_object_new(ROXTERM_TYPE_APP,
+                "app-id", ROXTERM_APP_ID,
+                "flags", G_APPLICATION_HANDLES_COMMAND_LINE
+                    | G_APPLICATION_SEND_ENVIRONMENT,
+                NULL);
+        app = ROXTERM_APP(obj);
+    }
+    return app;
 }
 
 static int roxterm_app_parse_options_early(int argc, char **argv)
@@ -302,6 +311,45 @@ static int roxterm_app_parse_options_early(int argc, char **argv)
     g_option_context_free(octx);
     g_strfreev(argv);
     return result;
+}
+
+static void roxterm_app_add_window_if_new(RoxtermApp *app, GtkWindow *window)
+{
+    GtkApplication *gapp = GTK_APPLICATION(app);
+    GList *windows = gtk_application_get_windows(gapp);
+    for (GList *link = windows; link; link = g_list_next(link))
+    {
+        if (window == link->data)
+            return;
+    }
+    gtk_application_add_window(gapp, window);
+}
+
+void roxterm_app_open_configlet(RoxtermApp *app)
+{
+    ConfigletData *cg = configlet_open();
+    if (cg)
+        roxterm_app_add_window_if_new(app, configlet_get_dialog(cg));
+}
+
+void roxterm_app_edit_profile(RoxtermApp *app, const char *profile_name)
+{
+    ProfileGUI *pg = profilegui_open(profile_name);
+    if (pg)
+        roxterm_app_add_window_if_new(app, profile_gui_get_dialog(pg));
+}
+
+void roxterm_app_edit_colours(RoxtermApp *app, const char *scheme_name)
+{
+    ColourGUI *cg = colourgui_open(scheme_name);
+    if (cg)
+        roxterm_app_add_window_if_new(app, colourgui_get_dialog(cg));
+}
+
+void roxterm_app_edit_shortcuts(UNUSED RoxtermApp *app, const char *scheme_name,
+        GtkWindow *parent_window)
+{
+    shortcuts_edit(parent_window, scheme_name);
 }
 
 int main(int argc, char **argv)
