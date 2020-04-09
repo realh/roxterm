@@ -99,8 +99,8 @@ static void roxterm_app_startup(GApplication *gapp)
      */
 }
 
-static void roxterm_app_launch_window(RoxtermApp *app, RoxtermLaunchParams *lp,
-        RoxtermWindowLaunchParams *wlp)
+static void roxterm_app_launch_window(UNUSED RoxtermApp *app,
+        RoxtermLaunchParams *lp, RoxtermWindowLaunchParams *wlp)
 {
     MultiWin *win = NULL;
     ROXTermData *partner = NULL;
@@ -221,9 +221,6 @@ static void roxterm_app_launch_window(RoxtermApp *app, RoxtermLaunchParams *lp,
     }
     if (free_partner)
         roxterm_data_delete(partner);
-    if (!old_win)
-        gtk_application_add_window(GTK_APPLICATION(app),
-                GTK_WINDOW(multi_win_get_widget(win)));
     g_free(shortcut_scheme);
 }
 

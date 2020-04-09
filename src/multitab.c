@@ -30,6 +30,7 @@
 #include "multitab.h"
 #include "multitab-close-button.h"
 #include "multitab-label.h"
+#include "roxterm-app.h"
 #include "session-file.h"
 #include "shortcuts.h"
 
@@ -1976,6 +1977,8 @@ MultiWin *multi_win_new_blank(Options *shortcuts,
      * the actual sticky out bit */
 
     multi_win_all = g_list_append(multi_win_all, win);
+    gtk_application_add_window(GTK_APPLICATION(roxterm_app_get()),
+            GTK_WINDOW(win->gtkwin));
 
     return win;
 }
