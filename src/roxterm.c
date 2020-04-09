@@ -310,7 +310,7 @@ static ROXTermData *roxterm_data_clone(ROXTermData *old_gt)
     {
         new_gt->profile = dynamic_options_lookup_and_ref(
                 roxterm_get_profiles(),
-                options_get_leafname(old_gt->profile), "roxterm profile");
+                options_get_leafname(old_gt->profile));
     }
     /* special_command should be transferred to new data and removed from old
      * one */
@@ -1748,7 +1748,8 @@ static void roxterm_edit_profile_action(MultiWin * win)
     ROXTermData *roxterm = multi_win_get_user_data_for_current_tab(win);
 
     g_return_if_fail(roxterm);
-    optsdbus_send_edit_profile_message(options_get_leafname(roxterm->profile));
+    roxterm_app_edit_profile(roxterm_app_get(),
+            options_get_leafname(roxterm->profile));
 }
 
 static void roxterm_edit_colour_scheme_action(MultiWin * win)
@@ -1756,14 +1757,15 @@ static void roxterm_edit_colour_scheme_action(MultiWin * win)
     ROXTermData *roxterm = multi_win_get_user_data_for_current_tab(win);
 
     g_return_if_fail(roxterm);
-    optsdbus_send_edit_colour_scheme_message(
+    roxterm_app_edit_colours(roxterm_app_get(),
             options_get_leafname(roxterm->colour_scheme));
 }
 
 static void roxterm_edit_shortcuts_scheme_action(MultiWin * win)
 {
-    shortcuts_edit(GTK_WINDOW(multi_win_get_widget(win)),
-            multi_win_get_shortcuts_scheme_name(win));
+    roxterm_app_edit_shortcuts(roxterm_app_get(),
+            multi_win_get_shortcuts_scheme_name(win),
+            GTK_WINDOW(multi_win_get_widget(win)));
 }
 
 
@@ -2092,7 +2094,7 @@ static void roxterm_new_term_with_profile(GtkMenuItem *mitem,
     }
     old_profile = roxterm->profile;
     new_profile = dynamic_options_lookup_and_ref(roxterm_get_profiles(),
-            profile_name, "roxterm profile");
+            profile_name);
     if (!new_profile)
     {
         dlg_warning(roxterm_get_toplevel(roxterm),
@@ -2156,7 +2158,7 @@ static void roxterm_profile_selected(GtkCheckMenuItem *mitem, MenuTree *mtree)
     if (strcmp(profile_name, options_get_leafname(roxterm->profile)))
     {
         Options *profile = dynamic_options_lookup_and_ref(
-                roxterm_get_profiles(), profile_name, "roxterm profile");
+                roxterm_get_profiles(), profile_name);
 
         if (profile)
         {
@@ -3078,41 +3080,6 @@ static void roxterm_multi_tab_destructor(ROXTermData * roxterm)
     roxterm_data_delete(roxterm);
 }
 
-/* Returns FALSE if the value hasn't really changed */
-static gboolean
-roxterm_update_option(Options * opts, const char *key,
-    OptsDBusOptType opt_type, OptsDBusValue val)
-{
-    gboolean result = TRUE;
-    char *oldval;
-
-    switch (opt_type)
-    {
-        case OptsDBus_StringOpt:
-            oldval = options_lookup_string(opts, key);
-            if (g_strcmp0(oldval, val.s))
-                options_set_string(opts, key, val.s);
-            else
-                result = FALSE;
-            if (oldval)
-                g_free(oldval);
-            return result;
-        case OptsDBus_IntOpt:
-            if (options_lookup_int(opts, key) == val.i)
-                return FALSE;
-            options_set_int(opts, key, val.i);
-            return TRUE;
-        case OptsDBus_FloatOpt:
-            if (options_lookup_double(opts, key) == val.f)
-                return FALSE;
-            options_set_double(opts, key, val.f);
-            return TRUE;
-        default:
-            g_critical(_("Unknown option type (%d)"), opt_type);
-    }
-    return FALSE;
-}
-
 static gboolean roxterm_get_show_tab_close_button(ROXTermData *roxterm)
 {
     return options_lookup_int_with_default(roxterm->profile,
@@ -3410,46 +3377,40 @@ static void roxterm_reflect_colour_change(Options *scheme, const char *key)
 }
 
 static void
-roxterm_opt_signal_handler(const char *profile_name, const char *key,
-    OptsDBusOptType opt_type, OptsDBusValue val)
+roxterm_profile_option_changed(RoxtermDynamicOptions *dynopts,
+        const char *profile_name, const char *key)
 {
-    if (!strncmp(profile_name, "Profiles/", 9))
-    {
-        const char *short_profile_name = profile_name + 9;
-        Options *profile = dynamic_options_lookup_and_ref(
-                roxterm_get_profiles(), short_profile_name, "roxterm profile");
+    Options *profile = dynamic_options_lookup_and_ref(dynopts, profile_name);
+    roxterm_reflect_profile_change(profile, key);
+    dynamic_options_unref(roxterm_get_profiles(), profile_name);
+}
 
-        if (roxterm_update_option(profile, key, opt_type, val))
-            roxterm_reflect_profile_change(profile, key);
-        dynamic_options_unref(roxterm_get_profiles(), short_profile_name);
-    }
-    else if (!strncmp(profile_name, "Colours/", 8))
+static void
+roxterm_colour_option_changed(UNUSED RoxtermDynamicOptions *dynopts,
+        const char *profile_name, const char *key)
+{
+    const char *scheme_name = profile_name + 8;
+    Options *scheme = colour_scheme_lookup_and_ref(scheme_name);
+    if (!strcmp(key, "palette_size"))
     {
-        const char *scheme_name = profile_name + 8;
-        Options *scheme = colour_scheme_lookup_and_ref(scheme_name);
-        gboolean changed = FALSE;
-
-        if (!strcmp(key, "palette_size"))
-            changed = roxterm_update_palette_size(scheme, val.i);
-        else
-            changed = roxterm_update_colour_option(scheme, key, val.s);
-        if (changed)
-            roxterm_reflect_colour_change(scheme, key);
-        colour_scheme_unref(scheme);
-    }
-    else if (!strcmp(profile_name, "Global") &&
-            (!strcmp(key, "warn_close") ||
-            !strcmp(key, "only_warn_running") ||
-            !strcmp(key, "prefer_dark_theme")))
-    {
-        options_set_int(global_options, key, val.i);
-        if (!strcmp(key, "prefer_dark_theme"))
-            global_options_apply_dark_theme();
+        roxterm_update_palette_size(scheme, options_lookup_int(scheme, key));
     }
     else
     {
-        g_critical(_("Profile/key '%s/%s' not understood"), profile_name, key);
+        char *val = options_lookup_string(scheme, key);
+        roxterm_update_colour_option(scheme, key, val);
+        g_free(val);
+        roxterm_reflect_colour_change(scheme, key);
     }
+    colour_scheme_unref(scheme);
+}
+
+static void
+roxterm_global_option_changed(UNUSED RoxtermDynamicOptions *dynopts,
+        UNUSED const char *profile_name, const char *key)
+{
+    if (!strcmp(key, "prefer_dark_theme"))
+        global_options_apply_dark_theme();
 }
 
 /* data is cast to char const **pname; if the deleted item is currently
@@ -3500,8 +3461,14 @@ inline static void remove_name_from_menu(GtkMenu *menu, char const **pname)
             delete_name_from_menu, (gpointer) pname);
 }
 
+typedef enum {
+    WH_ADDED,
+    WH_RENAMED,
+    WH_DELETED,
+} _WhatHappened;
+
 static void stuff_changed_do_menu(MenuTree *mtree,
-        const char *what_happened, const char *family_name,
+        _WhatHappened what_happened, const char *family_name,
         const char *current_name, const char *new_name)
 {
     MenuTreeID id;
@@ -3549,41 +3516,33 @@ static void stuff_changed_do_menu(MenuTree *mtree,
     }
     g_return_if_fail((menu = menutree_submenu_from_id(mtree, id)) != NULL);
 
-    if (!strcmp(what_happened, OPTSDBUS_DELETED))
+    GtkWidget *mitem = NULL;
+    switch (what_happened)
     {
-        GtkWidget *unhandled_mitem = NULL;
-
-        remove_name_from_menu(menu, &current_name);
-        gtk_container_foreach(GTK_CONTAINER(menu),
-                find_unhandled_menu_entry, &unhandled_mitem);
-        if (!unhandled_mitem)
-        {
-            unhandled_mitem = append_name_to_menu(mtree, menu,
-                    _("[Deleted]"), NULL);
-            gtk_widget_set_sensitive(unhandled_mitem, FALSE);
-        }
-        /* If deleted item was selected, select unhandled item in its place
-         */
-        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(unhandled_mitem),
-                current_name == NULL);
-    }
-    else if (!strcmp(what_happened, OPTSDBUS_ADDED))
-    {
-        append_name_to_menu(mtree, menu, current_name, handler);
-    }
-    else if (!strcmp(what_happened, OPTSDBUS_RENAMED))
-    {
-        GtkWidget *mitem;
-
-        remove_name_from_menu(menu, &current_name);
-        mitem = append_name_to_menu(mtree, menu, new_name, handler);
-        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(mitem),
-                current_name == NULL);
-    }
-    else
-    {
-        g_warning(_("Options family change action '%s' not known"),
-                what_happened);
+        case WH_DELETED:
+            remove_name_from_menu(menu, &current_name);
+            gtk_container_foreach(GTK_CONTAINER(menu),
+                    find_unhandled_menu_entry, &mitem);
+            if (!mitem)
+            {
+                mitem = append_name_to_menu(mtree, menu,
+                        _("[Deleted]"), NULL);
+                gtk_widget_set_sensitive(mitem, FALSE);
+            }
+            /* If deleted item was selected, select unhandled item in its place
+             */
+            gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(mitem),
+                    current_name == NULL);
+            break;
+        case WH_ADDED:
+            append_name_to_menu(mtree, menu, current_name, handler);
+            break;
+        case WH_RENAMED:
+            remove_name_from_menu(menu, &current_name);
+            mitem = append_name_to_menu(mtree, menu, new_name, handler);
+            gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(mitem),
+                    current_name == NULL);
+            break;
     }
 }
 
