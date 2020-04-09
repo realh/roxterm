@@ -192,27 +192,46 @@ inline static void options_signal_change(Options *options, const char *key)
 
 void options_set_string(Options * options, const char *key, const char *value)
 {
+    char *oldval = NULL;
 	if (!options->kf)
 		options->kf = g_key_file_new();
-	g_key_file_set_string(options->kf, options->family, key,
-			value ? value : "");
-    options_signal_change(options, key);
+    else
+        oldval = options_lookup_string(options, key);
+    if (!g_strcmp0(value, oldval))
+    {
+        g_key_file_set_string(options->kf, options->family, key,
+                value ? value : "");
+        options_signal_change(options, key);
+    }
 }
 
 void options_set_int(Options * options, const char *key, int value)
 {
+    int oldval = -value;
 	if (!options->kf)
 		options->kf = g_key_file_new();
-	g_key_file_set_integer(options->kf, options->family, key, value);
-    options_signal_change(options, key);
+    else
+        oldval = options_lookup_int_with_default(options, key, oldval);
+    if (value != oldval)
+    {
+        g_key_file_set_integer(options->kf, options->family, key, value);
+        options_signal_change(options, key);
+    }
 }
 
 void options_set_double(Options * options, const char *key, double value)
 {
-	char *str_val = g_strdup_printf("%f", value);
-
-	options_set_string(options, key, str_val);
-	g_free(str_val);
+    double oldval = -value;
+	if (!options->kf)
+		options->kf = g_key_file_new();
+    else
+        oldval = options_lookup_double_with_default(options, key, oldval);
+    if (value != oldval)
+    {
+        char *str_val = g_strdup_printf("%f", value);
+        options_set_string(options, key, str_val);
+        g_free(str_val);
+    }
 }
 
 void options_change_leafname(Options *options, const char *new_leaf)
