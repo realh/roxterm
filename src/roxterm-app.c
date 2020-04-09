@@ -270,7 +270,7 @@ RoxtermApp *roxterm_app_get(void)
     if (!app)
     {
         GObject *obj = g_object_new(ROXTERM_TYPE_APP,
-                "app-id", ROXTERM_APP_ID,
+                "application-id", ROXTERM_APP_ID,
                 "flags", G_APPLICATION_HANDLES_COMMAND_LINE
                     | G_APPLICATION_SEND_ENVIRONMENT,
                 NULL);

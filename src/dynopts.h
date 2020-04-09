@@ -112,6 +112,13 @@ void roxterm_dynamic_options_option_changed(RoxtermDynamicOptions *dynopts,
  */
 
 /**
+ * RoxtermDynamicOptions::scheme-changed:
+ * @name: Name of profile/scheme
+ *
+ * This signal is raised after the change.
+ */
+
+/**
  * RoxtermDynamicOptions::option-changed:
  * @name: Name of profile/scheme
  * @key: Option key

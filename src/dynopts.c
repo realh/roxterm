@@ -46,19 +46,19 @@ void roxterm_dynamic_options_class_init(
         UNUSED RoxtermDynamicOptionsClass *klass)
 {
     roxterm_dynamic_options_signals[SIG_DELETE_OPTS] =
-        g_signal_new("delete-options",
+        g_signal_new("options-deleted",
             ROXTERM_TYPE_DYNAMIC_OPTIONS,
             G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS,
             0, NULL, NULL, NULL,
             G_TYPE_NONE, 1, G_TYPE_STRING);
     roxterm_dynamic_options_signals[SIG_ADD_OPTS] =
-        g_signal_new("add-options",
+        g_signal_new("options-added",
             ROXTERM_TYPE_DYNAMIC_OPTIONS,
             G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS,
             0, NULL, NULL, NULL,
             G_TYPE_NONE, 1, G_TYPE_STRING);
     roxterm_dynamic_options_signals[SIG_RENAME_OPTS] =
-        g_signal_new("rename-options",
+        g_signal_new("options-renamed",
             ROXTERM_TYPE_DYNAMIC_OPTIONS,
             G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS,
             0, NULL, NULL, NULL,
