@@ -24,6 +24,8 @@ fi
 PREFIX="--prefix=/usr/local/stow/roxterm"
 
 DEBUGGER=""
+DBGENV=""
+FATAL=""
 
 configure() {
     if [ ! -d "$APP_DIR/src" ] ; then
@@ -46,6 +48,10 @@ case $1 in
         shift
         DEBUGGER="gdb --args"
         DBGENV='G_MESSAGES_DEBUG=all'
+        ;;
+    --fatal)
+        shift
+        G_DEBUG=fatal-warnings
         ;;
     --config)
         shift
@@ -99,6 +105,7 @@ fi
 if [ -x "$BIN" ]; then
     exitcode=0
     [ -n "$DBGENV" ] && export $DBGENV
+    [ -n "$G_DEBUG" ] && export G_DEBUG
     exec $DEBUGGER "$BIN" "--appdir=$APP_DIR" "$@"
 else
     echo "No roxterm executable found" >&2
