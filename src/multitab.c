@@ -2094,10 +2094,6 @@ static void multi_win_destructor(MultiWin *win, gboolean destroy_widgets)
     g_free(win->child_title);
     g_free(win);
     multi_win_all = g_list_remove(multi_win_all, win);
-    if (!multi_win_all)
-    {
-        gtk_main_quit();
-    }
 }
 
 void multi_win_delete(MultiWin *win)
