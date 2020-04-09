@@ -197,7 +197,7 @@ static void roxterm_app_launch_window(UNUSED RoxtermApp *app,
                 if (!size_on_cli)
                 {
                     int columns, rows;
-                    roxterm_get_geometry(roxterm, &columns, &rows);
+                    roxterm_init_default_size(roxterm, &columns, &rows);
                     geom = g_strdup_printf("%dx%d", columns, rows);
                 }
                 win = multi_win_new_with_geom(shortcuts,

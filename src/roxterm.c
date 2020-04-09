@@ -1100,11 +1100,19 @@ static void roxterm_size_func(ROXTermData *roxterm, gboolean pixels,
     }
 }
 
-static void roxterm_default_size_func(ROXTermData *roxterm,
-        int *pwidth, int *pheight)
+void roxterm_get_default_size(ROXTermData *roxterm, int *pwidth, int *pheight)
 {
     *pwidth = options_lookup_int_with_default(roxterm->profile, "width", 80);
     *pheight = options_lookup_int_with_default(roxterm->profile, "height", 24);
+}
+
+void roxterm_init_default_size(ROXTermData *roxterm, int *pwidth, int *pheight)
+{
+    roxterm_get_default_size(roxterm, &roxterm->columns, &roxterm->rows);
+    if (pwidth)
+        *pwidth = roxterm->columns;
+    if (pheight)
+        *pheight = roxterm->rows;
 }
 
 static void roxterm_update_geometry(ROXTermData * roxterm, VteTerminal * vte)
@@ -1121,7 +1129,7 @@ static void roxterm_update_size(ROXTermData * roxterm, VteTerminal * vte)
 {
     int w, h;
 
-    roxterm_default_size_func(roxterm, &w, &h);
+    roxterm_get_default_size(roxterm, &w, &h);
     roxterm_set_vte_size(roxterm, vte, w, h);
     roxterm_update_geometry(roxterm, vte);
 }
@@ -3779,165 +3787,6 @@ ROXTermData *roxterm_data_new(double zoom_factor, const char *directory,
     return roxterm;
 }
 
-#if 0
-void roxterm_launch(char **env)
-{
-    GtkPositionType tab_pos;
-    gboolean always_show_tabs;
-    char *shortcut_scheme;
-    Options *shortcuts;
-    char *geom = options_lookup_string(global_options, "geometry");
-    gboolean size_on_cli = FALSE;
-    char *profile_name =
-            global_options_lookup_string_with_default("profile", "Default");
-    char *colour_scheme_name =
-            global_options_lookup_string_with_default("colour_scheme", "GTK");
-    Options *profile = dynamic_options_lookup_and_ref(roxterm_get_profiles(),
-            profile_name, "roxterm profile");
-    MultiWin *win = NULL;
-    ROXTermData *roxterm = roxterm_data_new(
-            global_options_lookup_double("zoom"),
-            global_options_directory,
-            profile_name, profile,
-            global_options_maximise ||
-                    options_lookup_int_with_default(profile,
-                            "maximise", 0),
-            colour_scheme_name,
-            &geom, &size_on_cli, env);
-    int show_add_tab_btn;
-
-    if (!size_on_cli)
-    {
-        roxterm_default_size_func(roxterm, &roxterm->columns, &roxterm->rows);
-    }
-    if (global_options_commandv)
-    {
-        roxterm->commandv = global_options_copy_strv(global_options_commandv);
-    }
-    tab_pos = roxterm_get_tab_pos(roxterm);
-    always_show_tabs = roxterm_get_always_show_tabs(roxterm);
-    shortcut_scheme = global_options_lookup_string_with_default
-        ("shortcut_scheme", "Default");
-    shortcuts = shortcuts_open(shortcut_scheme, FALSE);
-    if (global_options_tab)
-    {
-        ROXTermData *partner;
-        char *wtitle = global_options_lookup_string("title");
-        MultiWin *best_inactive = NULL;
-        GList *link;
-
-        win = NULL;
-        for (link = multi_win_all; link; link = g_list_next(link))
-        {
-            GtkWidget *w;
-            gboolean title_ok;
-
-            win = link->data;
-            w = multi_win_get_widget(win);
-            title_ok = !wtitle ||
-                    !g_strcmp0(multi_win_get_title_template(win), wtitle);
-            if (gtk_window_is_active(GTK_WINDOW(w)) && title_ok)
-            {
-                break;
-            }
-            if (title_ok && !best_inactive)
-                best_inactive = win;
-            win = NULL;
-        }
-        if (!win)
-        {
-            if (best_inactive)
-                win = best_inactive;
-        }
-        partner = win ? multi_win_get_user_data_for_current_tab(win) : NULL;
-        if (partner)
-        {
-            GtkWidget *gwin = multi_win_get_widget(win);
-
-            roxterm->dont_lookup_dimensions = TRUE;
-            roxterm->target_zoom_factor = partner->target_zoom_factor;
-            roxterm->zoom_index = partner->zoom_index;
-            if (partner->pango_desc)
-            {
-                roxterm->pango_desc =
-                        pango_font_description_copy(partner->pango_desc);
-                roxterm->current_zoom_factor = partner->current_zoom_factor;
-            }
-            else
-            {
-                roxterm->current_zoom_factor = 1.0;
-            }
-            /* roxterm_data_clone needs to see a widget to get geometry
-             * correct */
-            roxterm->widget = partner->widget;
-            roxterm->tab = partner->tab;
-            multi_tab_new(win, roxterm);
-            if (gtk_widget_get_visible(gwin))
-                gtk_window_present(GTK_WINDOW(gwin));
-        }
-        else
-        {
-            global_options_tab = FALSE;
-        }
-    }
-
-    gboolean borderless = roxterm->borderless | global_options_borderless;
-
-    show_add_tab_btn = options_lookup_int_with_default(roxterm->profile,
-            "show_add_tab_btn", 1);
-    if (global_options_tab)
-    {
-        global_options_tab = FALSE;
-    }
-    else if (global_options_fullscreen ||
-            options_lookup_int_with_default(roxterm->profile, "full_screen", 0))
-    {
-        global_options_fullscreen = FALSE;
-        win = multi_win_new_fullscreen(shortcuts,
-                roxterm->zoom_index, roxterm,
-                tab_pos, borderless, always_show_tabs, show_add_tab_btn);
-    }
-    else if (roxterm->maximise)
-    {
-        global_options_maximise = FALSE;
-        win = multi_win_new_maximised(shortcuts,
-                roxterm->zoom_index, roxterm,
-                tab_pos, borderless, always_show_tabs, show_add_tab_btn);
-    }
-    else
-    {
-        if (!size_on_cli)
-        {
-            if (geom)
-            {
-                char *old_geom = geom;
-
-                geom = g_strdup_printf("%dx%d%s",
-                        roxterm->columns, roxterm->rows, old_geom);
-                g_free(old_geom);
-            }
-            else
-            {
-                geom = g_strdup_printf("%dx%d",
-                        roxterm->columns, roxterm->rows);
-            }
-        }
-        win = multi_win_new_with_geom(shortcuts,
-                roxterm->zoom_index, roxterm, geom,
-                tab_pos, borderless, always_show_tabs, show_add_tab_btn);
-    }
-    g_free(geom);
-
-    roxterm_data_delete(roxterm);
-    g_free(shortcut_scheme);
-    g_free(colour_scheme_name);
-    g_free(profile_name);
-
-    //g_debug("call roxterm_force_resize_now from %s:%d", __FILE__, __LINE__);
-    //roxterm_force_resize_now(win);
-}
-#endif
-
 void roxterm_data_init_from_partner(ROXTermData *roxterm, ROXTermData *partner)
 {
     roxterm->dont_lookup_dimensions = TRUE;
@@ -4199,7 +4048,7 @@ void roxterm_init(void)
         roxterm_connect_menu_signals,
         (MultiWinGeometryFunc) roxterm_geometry_func,
         (MultiWinSizeFunc) roxterm_size_func,
-        (MultiWinDefaultSizeFunc) roxterm_default_size_func,
+        (MultiWinDefaultSizeFunc) roxterm_get_default_size,
         roxterm_tab_to_new_window,
         (MultiWinZoomHandler) roxterm_set_zoom_factor,
         (MultiWinGetDisableMenuShortcuts) roxterm_get_disable_menu_shortcuts,

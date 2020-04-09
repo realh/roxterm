@@ -116,6 +116,10 @@ MultiWin *roxterm_get_multi_win(ROXTermData *roxterm);
 
 VteTerminal *roxterm_get_vte(ROXTermData *roxterm);
 
+void roxterm_get_default_size(ROXTermData *roxterm, int *pwidth, int *pheight);
+
+void roxterm_init_default_size(ROXTermData *roxterm, int *pwidth, int *pheight);
+
 typedef enum {
     ROXTERM_SEARCH_MATCH_CASE = 1,
     ROXTERM_SEARCH_ENTIRE_WORD = 2,
