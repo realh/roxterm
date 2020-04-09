@@ -45,6 +45,12 @@ Options *roxterm_dynamic_options_lookup(RoxtermDynamicOptions *dynopts,
 	const char *profile_name);
 
 /**
+ * roxterm_dynamic_options_get_family_name: (method):
+ */
+const char *
+roxterm_dynamic_options_get_family_name(RoxtermDynamicOptions *dynopts);
+
+/**
  * roxterm_dynamic_options_lookup: (method):
  * Returns: (transfer none) (not nullable):
  */
@@ -182,7 +188,7 @@ void roxterm_dynamic_options_scheme_changed(DynamicOptions *dynopts,
         const char *scheme_name);
 
 /**
- * RoxtermDynamicOptions::changed:
+ * RoxtermDynamicOptions::scheme-changed:
  */
 
 #endif /* DYNOPTS_H */

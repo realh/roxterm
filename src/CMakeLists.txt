@@ -24,7 +24,7 @@ add_executable(roxterm
     launch-params.c menutree.c
     multitab.c multitab-close-button.c multitab-label.c
     options.c optsfile.c profilegui.c resources.c
-    roxterm-app.c roxterm.c roxterm-regex.c search.c
+    roxterm.c roxterm-app.c roxterm-dirs.c roxterm-regex.c search.c
     session-file.c shortcuts.c uri.c)
 target_include_directories(roxterm PRIVATE
     ${ROXTERM_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})

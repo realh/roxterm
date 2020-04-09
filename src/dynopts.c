@@ -90,6 +90,9 @@ RoxtermDynamicOptions *roxterm_dynamic_options_get(const char *family)
     static GHashTable *all_dynopts = NULL;
     RoxtermDynamicOptions *dynopts;
 
+    if (!family)
+        family = "Globals";
+
     if (!all_dynopts)
         all_dynopts = g_hash_table_new(g_str_hash, g_str_equal);
 
@@ -153,16 +156,18 @@ gboolean roxterm_dynamic_options_unref(RoxtermDynamicOptions *dynopts,
     if (!lookup_ok)
         return FALSE;
 
-    /* Have to check ref and remove from hash first in case options_unref
-     * frees profile_name */
-    if (((Options *) options)->ref == 1)
-    {
-        g_signal_emit(dynopts, roxterm_dynamic_options_signals[SIG_DELETE_OPTS],
-                0, profile_name);
-        g_hash_table_remove(dynopts->profiles, profile_name);
-        g_free(key);
-    }
+    ((Options *) options)->deleted = TRUE;
+    g_signal_emit(dynopts, roxterm_dynamic_options_signals[SIG_DELETE_OPTS],
+            0, profile_name);
+    g_hash_table_remove(dynopts->profiles, profile_name);
+    g_free(key);
     return options_unref(options);
+}
+
+const char *
+roxterm_dynamic_options_get_family_name(RoxtermDynamicOptions *dynopts)
+{
+    return dynopts->family;
 }
 
 static GList *dynopts_add_path_contents_to_list(GList *list, const char *path,
@@ -250,6 +255,7 @@ void roxterm_dynamic_options_rename(RoxtermDynamicOptions *dynopts,
             old_name, new_name);
     Options *opts = roxterm_dynamic_options_lookup(dynopts, old_name);
     g_return_if_fail(opts);
+    options_change_leafname(opts, new_name);
     g_hash_table_remove(dynopts->profiles, old_name);
     g_hash_table_insert(dynopts->profiles, g_strdup(new_name), opts);
 }

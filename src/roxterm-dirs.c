@@ -20,7 +20,7 @@
 #include "dlg.h"
 #include "roxterm-dirs.h"
 
-char *roxterm_dir = NULL;
+char *roxterm_app_dir = NULL;
 
 char *roxterm_bin_dir = NULL;
 

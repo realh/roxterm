@@ -109,10 +109,6 @@ double roxterm_get_zoom_factor(ROXTermData *roxterm);
 
 char const * const *roxterm_get_actual_commandv(ROXTermData *roxterm);
 
-void roxterm_stuff_changed_handler(const char *what_happened,
-        const char *family_name, const char *current_name,
-        const char *new_name);
-
 gboolean roxterm_load_session(const char *xml, gssize len,
         const char *client_id);
 
