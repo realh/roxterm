@@ -376,7 +376,7 @@ int main(int argc, char **argv)
             break;
         }
     }
-    RoxtermApp *app = roxterm_app_new();
+    RoxtermApp *app = roxterm_app_get();
     int result = g_application_run(G_APPLICATION(app), argc, argv);
     g_object_unref(app);
     return result;
