@@ -619,7 +619,7 @@ static void roxterm_run_command(ROXTermData *roxterm, VteTerminal *vte)
             {
                 command = roxterm->commandv->strv[0];
                 roxterm->commandv->strv[0] = NULL;
-                roxterm_strv_unref(roxterm->commandv);
+                roxterm_strv_ref_unref(roxterm->commandv);
                 roxterm->commandv = NULL;
             }
         }
@@ -860,13 +860,14 @@ void roxterm_data_delete(ROXTermData *roxterm)
                 options_get_leafname(roxterm->profile)));
     }
     drag_receive_data_delete(roxterm->drd);
-    if (roxterm->actual_commandv != roxterm->commandv->strv)
+    if (roxterm->actual_commandv && (!roxterm->commandv ||
+                roxterm->actual_commandv != roxterm->commandv->strv))
         g_strfreev(roxterm->actual_commandv);
     if (roxterm->commandv)
-        roxterm_strv_unref(roxterm->commandv);
+        roxterm_strv_ref_unref(roxterm->commandv);
     g_free(roxterm->directory);
     if (roxterm->env)
-        roxterm_strv_unref(roxterm->env);
+        roxterm_strv_ref_unref(roxterm->env);
     if (roxterm->pango_desc)
         pango_font_description_free(roxterm->pango_desc);
     if (roxterm->replace_task_dialog)

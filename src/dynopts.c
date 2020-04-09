@@ -119,8 +119,6 @@ Options *roxterm_dynamic_options_lookup_and_ref(RoxtermDynamicOptions *dynopts,
 
     if (!options)
     {
-        char *leafname = g_build_filename(dynopts->family, profile_name,
-            NULL);
         const char *group_name = NULL;
 
         if (!dynopts->family || !strcmp(dynopts->family, "Globals"))
@@ -129,9 +127,9 @@ Options *roxterm_dynamic_options_lookup_and_ref(RoxtermDynamicOptions *dynopts,
             group_name = "roxterm profile";
         else if (!strcmp(dynopts->family, "Colours"))
             group_name = "roxterm colour scheme";
-        else if (!strcmp(dynopts->family, "Colours"))
+        else if (!strcmp(dynopts->family, "Shortcuts"))
             group_name = "roxterm shortcuts scheme";
-        options = options_open(leafname, dynopts->family, group_name);
+        options = options_open(profile_name, dynopts->family, group_name);
         g_hash_table_insert(dynopts->profiles, g_strdup(profile_name), options);
         g_signal_emit(dynopts, roxterm_dynamic_options_signals[SIG_ADD_OPTS], 0,
                 profile_name);

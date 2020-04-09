@@ -83,7 +83,7 @@ void roxterm_launch_params_unref(RoxtermLaunchParams *lp)
     if (lp->argv)
         g_strfreev(lp->argv);
     if (lp->env)
-        roxterm_strv_unref(lp->env);
+        roxterm_strv_ref_unref(lp->env);
     g_free(lp->user_session_id);
     g_free(lp);
 }
@@ -276,6 +276,7 @@ roxterm_launch_params_parse_global_str_option(const gchar *option,
         return TRUE;
     if (!strcmp(option, "session"))
         roxterm_launch_params_set_string(option, &lp->user_session_id, value);
+    // Ignore appdir, it's handled before this
     return TRUE;
 }
 
@@ -431,8 +432,11 @@ static GOptionEntry roxterm_launch_params_cli_options[] = {
         G_OPTION_ARG_CALLBACK, roxterm_launch_params_parse_window_str_option,
         N_("Set X window system 'role' hint"), N_("NAME") },
     { "session", 0, G_OPTION_FLAG_IN_MAIN,
-        G_OPTION_ARG_STRING, &roxterm_launch_params_parse_global_str_option,
+        G_OPTION_ARG_CALLBACK, &roxterm_launch_params_parse_global_str_option,
         N_("Restore the named user session"), N_("SESSION") },
+    { "appdir", 0, G_OPTION_FLAG_IN_MAIN,
+        G_OPTION_ARG_CALLBACK, &roxterm_launch_params_parse_global_str_option,
+        N_("Run from APPDIR without installation"), N_("APPDIR") },
     { "execute", 'e', G_OPTION_FLAG_IN_MAIN,
         G_OPTION_ARG_NONE, NULL,
         N_("Execute remainder of command line inside the\n"

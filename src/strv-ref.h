@@ -53,7 +53,7 @@ inline static RoxtermStrvRef *roxterm_strv_ref(RoxtermStrvRef *rsr)
     return rsr;
 }
 
-inline static int roxterm_strv_unref(RoxtermStrvRef *rsr)
+inline static int roxterm_strv_ref_unref(RoxtermStrvRef *rsr)
 {
     int a = --rsr->count;
     if (!a)
