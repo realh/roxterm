@@ -31,7 +31,7 @@ void resources_access_icon()
         gtk_icon_theme_add_resource_path(gtk_icon_theme_get_default(),
                 ROXTERM_RESOURCE_ICONS_PATH);
         added = TRUE;
-
+#if 0
         GError *error = NULL;
         gsize size;
         guint32 flags;
@@ -47,6 +47,7 @@ void resources_access_icon()
             g_debug("%s has flags %x and size %ld", ROXTERM_RESOURCE_LOGO,
                     flags, size);
         }
+#endif
     }
 }
 
