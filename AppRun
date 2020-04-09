@@ -39,44 +39,50 @@ configure() {
     cmake -DCMAKE_BUILD_TYPE=RELWITHDEBINFO ..
 }
 
-case $1 in
-    --verbose)
-        shift
-        DBGENV='G_MESSAGES_DEBUG=all'
-        ;;
-    --debug)
-        shift
-        DEBUGGER="gdb --args"
-        DBGENV='G_MESSAGES_DEBUG=all'
-        ;;
-    --fatal)
-        shift
-        G_DEBUG=fatal-warnings
-        ;;
-    --config)
-        shift
-        PROG=roxterm-config
-        ;;
-    --valgrind)
-        shift
-        ulimit -c unlimited
-        DEBUGGER="valgrind --freelist-vol=50000000"
-        DBGENV='G_SLICE=always-malloc G_MESSAGES_DEBUG=all'
-        ;;
-    --leaks)
-        shift
-        DEBUGGER="valgrind --freelist-vol=50000000 "
-        DEBUGGER="$DEBUGGER --leak-check=full --num-callers=80"
-        DBGENV='G_SLICE=always-malloc G_MESSAGES_DEBUG=all'
-        ;;
-    --compile|--configure)
-        configure && ( [ "$1" = "--compile" ] && make || true ) && \
-        echo Done >&2 && exit 0
-        echo Compile/configure failed >&2
-        echo Press Return... >&2
-        read WAIT
-        exit 1 ;;
-esac
+RECOGNISED=1
+while [ "$RECOGNISED" = "1" ] ; do
+    case $1 in
+        --verbose)
+            shift
+            DBGENV='G_MESSAGES_DEBUG=all'
+            ;;
+        --debug)
+            shift
+            DEBUGGER="gdb --args"
+            DBGENV='G_MESSAGES_DEBUG=all'
+            ;;
+        --fatal)
+            shift
+            G_DEBUG=fatal-warnings
+            ;;
+        --config)
+            shift
+            PROG=roxterm-config
+            ;;
+        --valgrind)
+            shift
+            ulimit -c unlimited
+            DEBUGGER="valgrind --freelist-vol=50000000"
+            DBGENV='G_SLICE=always-malloc G_MESSAGES_DEBUG=all'
+            ;;
+        --leaks)
+            shift
+            DEBUGGER="valgrind --freelist-vol=50000000 "
+            DEBUGGER="$DEBUGGER --leak-check=full --num-callers=80"
+            DBGENV='G_SLICE=always-malloc G_MESSAGES_DEBUG=all'
+            ;;
+        --compile|--configure)
+            configure && ( [ "$1" = "--compile" ] && make || true ) && \
+            echo Done >&2 && exit 0
+            echo Compile/configure failed >&2
+            echo Press Return... >&2
+            read WAIT
+            exit 1 ;;
+        *)
+            RECOGNISED=0
+            ;;
+    esac
+done
 
 exitcode=1
 
