@@ -57,8 +57,8 @@ extern gboolean global_options_tab;
 /* Fork first instance */
 extern gboolean global_options_fork;
 
-/* Keep window open on exit */
-extern gboolean global_options_hold;
+/* What to do on command exit */
+extern gint global_options_atexit;
 
 extern char *global_options_user_session_id;
 

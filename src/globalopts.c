@@ -41,7 +41,7 @@ gboolean global_options_maximise = FALSE;
 gboolean global_options_borderless = FALSE;
 gboolean global_options_tab = FALSE;
 gboolean global_options_fork = FALSE;
-gboolean global_options_hold = FALSE;
+gint global_options_atexit = -1;
 
 static void correct_scheme(const char *bad_name, const char *good_name)
 {
@@ -68,7 +68,7 @@ static void global_options_reset(void)
     global_options_replace = FALSE;
     global_options_fullscreen = FALSE;
     global_options_tab = FALSE;
-    global_options_hold = FALSE;
+    global_options_atexit = -1;
     options_reload_keyfile(global_options);
     correct_schemes();
 }
@@ -92,8 +92,8 @@ static gboolean global_options_show_usage(const gchar *option_name,
       "    [--separate] [--replace] [--tab]\n"
       "    [--directory=DIRECTORY|-d DIRECTORY]\n"
       "    [--show-menubar] [--hide-menubar]\n"
-      "    [--fork]\n"
-      "    [--role=ROLE]\n"
+      "    [--fork] [--hold] [--atexit=close|hold|respawn|ask]\n"
+      "    [--role=ROLE] [--display=DISPLAY]\n"
       "    [-e|--execute COMMAND]\n");
     exit(0);
     return TRUE;
@@ -126,6 +126,36 @@ static gboolean global_options_set_string(const gchar *option_name,
         option_name = "shortcut_scheme";
     }
     options_set_string(global_options, option_name, value);
+    return TRUE;
+}
+
+static gboolean global_options_set_atexit(const gchar *option_name,
+        const gchar *value, gpointer data, GError **error)
+{
+    (void) error;
+    (void) data;
+    (void) option_name;
+    if (!strcmp(value, "close"))
+    {
+        global_options_atexit = 0;
+    }
+    else if (!strcmp(value, "hold"))
+    {
+        global_options_atexit = 1;
+    }
+    else if (!strcmp(value, "respawn"))
+    {
+        global_options_atexit = 2;
+    }
+    else if (!strcmp(value, "ask"))
+    {
+        global_options_atexit = 3;
+    }
+    else
+    {
+        g_set_error(error, ROXTERM_ARG_ERROR, ROXTermArgError,
+            _("Invalid atexit option '%s'"), value);
+    }
     return TRUE;
 }
 
@@ -271,10 +301,13 @@ static GOptionEntry global_g_options[] = {
         N_("Fork into the background even if this is the\n"
         "                                   first instance"),
         NULL },
+    { "atexit", 0, G_OPTION_FLAG_IN_MAIN,
+        G_OPTION_ARG_CALLBACK, global_options_set_atexit,
+        N_("On command exit: close, hold, respawn, ask"),
+        N_("ACTION") },
     { "hold", 0, G_OPTION_FLAG_IN_MAIN,
-        G_OPTION_ARG_NONE, &global_options_hold,
-        N_("Don't immediately close the window when the\n"
-        "                                   shell command exits."),
+        G_OPTION_ARG_NONE, &global_options_atexit,
+        N_("An alias for --atexit=hold: keep tab open"),
         NULL },
     { "session", 0, G_OPTION_FLAG_IN_MAIN,
         G_OPTION_ARG_STRING, &global_options_user_session_id,

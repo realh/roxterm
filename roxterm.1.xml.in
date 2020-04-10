@@ -91,6 +91,7 @@ and docbook-xsl in your Build-Depends control field.
       <arg><option>--replace</option></arg>
       <arg><option>--fork</option></arg>
       <arg><option>--hold</option></arg>
+      <arg><option>--atexit=<replaceable>ACTION</replaceable></option></arg>
       <arg><option>--directory=<replaceable>DIR</replaceable></option> |
         <option>-d <replaceable>DIR</replaceable></option></arg>
       <arg><option>--show-menubar</option></arg>
@@ -334,10 +335,19 @@ and docbook-xsl in your Build-Depends control field.
         </listitem>
       </varlistentry>
       <varlistentry>
+          <term><option>--atexit=<replaceable>ACTION</replaceable></option>
+        </term>
+        <listitem>
+          <para>What should be done with the tab after the shell
+          command exits. Choose one of: close, hold, respawn, ask.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
         <term><option>--hold</option>
         </term>
         <listitem>
-          <para>Keep the window open after the shell command exits.
+          <para>An alias for --atexit=hold. Keep the tab open.
           </para>
         </listitem>
       </varlistentry>
