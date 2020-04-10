@@ -2554,71 +2554,69 @@ guint multi_win_get_num_tabs(MultiWin *win)
     return g_list_length(win->tabs);
 }
 
-/* Parses a number from a geometry string which must be terminated by NULL or
- * one of chars from trmntrs immediately after digits. Returns pointer to that
- * terminator or NULL if invalid. */
-static const char *parse_geom_n(const char *g, int *n, const char *trmntrs)
+/* Parse a sequence of digits from a geometry string.
+ * Return pointer to first non-digit or NULL if invalid. */
+static const char *parse_digits(const char *geom, int *num)
 {
-    const char *g2 = g;
-    size_t l;
-    gboolean neg = (*g == '-');
-
-    if (*g == '-' || *g == '+')
-        ++g2;
-    if (!isdigit(*g2))
-        return NULL;
-    l = strspn(g2, "0123456789");
-    /* Check we've reached end of string or one of trmntrs */
-    if (g2[l] && (!trmntrs || !strchr(trmntrs, g2[l])))
-        return NULL;
-    if (n && sscanf(g, "%d", n) != 1)
-        return NULL;
-    if (neg)
-        *n = -*n;
-    return g2 + l;
+    unsigned long ul = 0;
+    size_t len = geom ? strspn(geom, "0123456789") : 0;
+    if (0 < len && 1 == sscanf(geom, "%lu", &ul) && ul <= G_MAXINT)
+    {
+        *num = (int) ul;
+        return geom + len;
+    }
+    return NULL;
 }
 
-/* Returns NULL if invalid */
+/* Parse a signed integer, which might be preceded by a plus or minus.
+ * Return NULL if invalid, or a pointer to where the parsing ended. */
+static const char *parse_signed(const char *geom, int *num)
+{
+    char c = *geom;
+    if (c == '+' || c == '-')
+        geom++;
+    geom = parse_digits(geom, num);
+    if (geom && c == '-')
+    {
+        *num = (0 - *num);
+    }
+    return geom;
+}
+
+/* Parse a pair of signed integers, each must be preceded by a plus-sign.
+ * Return NULL if invalid, or a pointer to where the parsing ended. */
 static const char *parse_geom_offsets(const char *g, int *x, int *y)
 {
-    if ((g = parse_geom_n(g, x, "+-")) == NULL)
+    if (g && *g == '+')
     {
-        return NULL;
+        g = parse_signed(g + 1, x);
+        if (g && *g == '+')
+        {
+            return parse_signed(g + 1, y);
+        }
     }
-    if ((*g != '+' && *g != '-')
-        || (g = parse_geom_n(g, y, NULL)) == NULL)
-    {
-        return NULL;
-    }
-    return g;
+    return NULL;
 }
 
+/* Parse a geometry string WxH[+X+Y]. If pxy is non-null, then also
+ * parse a position +X+Y. Return TRUE for WxH and set pxy for +X+Y. */
 gboolean multi_win_parse_geometry(const char *geom,
         int *width, int *height, int *x, int *y, gboolean *pxy)
 {
-    gboolean xy;
-
-    if (!pxy)
-        pxy = &xy;
-    *pxy = FALSE;
-    if (!geom || !*geom)
-        return FALSE;
-    if (*geom == '+' || *geom == '-')
+    geom = parse_digits(geom, width);
+    if (geom && strchr("xX", *geom))
     {
-        geom = parse_geom_offsets(geom, x, y);
-        if (!geom)
-            return FALSE;
-        *pxy = TRUE;
+        geom = parse_digits(geom + 1, height);
+        if (geom && (!*geom || strchr("+-", *geom)))
+        {
+            if (pxy)
+            {
+                *pxy = (parse_geom_offsets(geom, x, y) != NULL);
+            }
+            return TRUE;
+        }
     }
-    geom = parse_geom_n(geom, width, "x");
-    if (geom && *geom == 'x')
-    {
-        ++geom;
-        geom = parse_geom_n(geom, height, "+-");
-        if (*geom && (*pxy || !parse_geom_offsets(geom, x, y)))
-            return FALSE;
-    }
-    return TRUE;
+    return FALSE;
 }
 
 /* Returns TRUE if the geometry hints have changed. */
@@ -2709,7 +2707,11 @@ void multi_win_set_initial_geometry(MultiWin *win, const char *geom,
         multi_win_process_geometry(win, tab, columns, rows, &width, &height);
         multi_win_apply_geometry_hints(win);
         gtk_window_set_default_size(GTK_WINDOW(win->gtkwin), width, height);
-        /* Ignore position, it's deprecated */
+        /* Honor initial position on launch: it is indispensable and ubiquitous */
+        if (xy)
+        {
+            gtk_window_move(GTK_WINDOW(win->gtkwin), x, y);
+        }
     }
 }
 

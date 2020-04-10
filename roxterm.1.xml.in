@@ -90,6 +90,7 @@ and docbook-xsl in your Build-Depends control field.
       <arg><option>--separate</option></arg>
       <arg><option>--replace</option></arg>
       <arg><option>--fork</option></arg>
+      <arg><option>--hold</option></arg>
       <arg><option>--directory=<replaceable>DIR</replaceable></option> |
         <option>-d <replaceable>DIR</replaceable></option></arg>
       <arg><option>--show-menubar</option></arg>
@@ -107,9 +108,9 @@ and docbook-xsl in your Build-Depends control field.
         <option>-n <replaceable>NAME</replaceable></option></arg>
       <arg><option>--role=<replaceable>ROLE</replaceable></option></arg>
       <arg><option>--session=<replaceable>SESSION</replaceable></option></arg>
+      <arg><option>--display=<replaceable>DISPLAY</replaceable></option></arg>
       <arg><option>--execute <replaceable>COMMAND</replaceable></option> |
         <option>-e <replaceable>COMMAND</replaceable></option></arg>
-      <arg><option>--display=<replaceable>DISPLAY</replaceable></option></arg>
     </cmdsynopsis>
   </refsynopsisdiv>
   <refsect1>
@@ -190,11 +191,13 @@ and docbook-xsl in your Build-Depends control field.
       </varlistentry>
       <varlistentry>
         <term>
-            <option>-g <replaceable>COLUMNSxROWS</replaceable></option>
-            <option>--geometry=<replaceable>COLUMNSxROWS</replaceable></option>
+            <option>-g <replaceable>COLUMNSxROWS[+X+Y]</replaceable></option>
+            <option>--geometry=<replaceable>COLUMNSxROWS[+X+Y]</replaceable></option>
         </term>
         <listitem>
-          <para>Set size of terminal.</para>
+          <para>Set the size of the terminal window.
+            Optionally a position may be given as well.
+          </para>
         </listitem>
       </varlistentry>
       <varlistentry>
@@ -331,6 +334,14 @@ and docbook-xsl in your Build-Depends control field.
         </listitem>
       </varlistentry>
       <varlistentry>
+        <term><option>--hold</option>
+        </term>
+        <listitem>
+          <para>Keep the window open after the shell command exits.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
         <term><option>--replace</option>
         </term>
         <listitem>
@@ -354,9 +365,7 @@ and docbook-xsl in your Build-Depends control field.
           <option>--session=<replaceable>SESSION</replaceable></option>
         </term>
         <listitem>
-            <para>Restore the named user session. If you use roxterm
-                on multiple different displays on the same system
-                then you need to use the --separate option as well.
+            <para>Restore the named user session.
           </para>
         </listitem>
       </varlistentry>
@@ -365,7 +374,9 @@ and docbook-xsl in your Build-Depends control field.
           <option>--display=<replaceable>DISPLAY</replaceable></option>
         </term>
         <listitem>
-          <para>The named X server display to use.
+          <para>The named X server display to use.  If you use roxterm
+                on multiple different displays on the same system
+                then you need to use the --separate option as well.
           </para>
         </listitem>
       </varlistentry>
@@ -588,13 +599,49 @@ and docbook-xsl in your Build-Depends control field.
     <programlisting>
         ~/.config/roxterm.sourceforge.net/Shortcuts/Default.
     </programlisting>
+    <para>
+    The default keyboard shortcuts are:
+    </para>
+    <programlisting>
+        Ctrl+Shift+N    New Window
+        Ctrl+Shift+T    New Tab
+        Ctrl+Shift+Q    Close Window
+        Ctrl+Shift+W    Close Tab
+        Ctrl+PageUp     Previous Tab
+        Ctrl+PageDown   Next Tab
+        Ctrl+Shift+A    Select All
+        Ctrl+Shift+C    Copy
+        Ctrl+Shift+V    Paste
+        Ctrl+Shift+M    Show Menubar
+        Ctrl+plus       Zoom In
+        Ctrl+minus      Zoom Out
+        Ctrl+0          Normal Size
+        F11             Full Screen
+        Ctrl+Shift+B    Borderless
+        Shift+Up        Scroll Up One Line
+        Shift+Down      Scroll Down One Line
+        F1              Show Manual
+        Ctrl+Shift+Y    Copy &amp; Paste
+        Ctrl+Shift+F    Find...
+        Ctrl+Shift+I    Find Next
+        Ctrl+Shift+P    Find Previous
+    </programlisting>
+    <para>
+        In addition, tabs can be selected by
+        <keycombo action='simul'>
+            <keycap>Alt</keycap>
+            <keycap>1</keycap>
+        </keycombo>,
+        where 1 is to be replaced by the tab number.
+        This can be disabled in the profile.
+    </para>
   </refsect1>
 
   <refsect1>
       <title>Configuration Management</title>
     <para>
         Run the configuration manager by selecting "Configure..."
-        in ROXTerm's menu or run roxterm-config.
+        in ROXTerm's menu or run <command>roxterm-config</command>.
     </para>
     <para>
         Configuration files can be swapped with other users.
@@ -833,8 +880,9 @@ and docbook-xsl in your Build-Depends control field.
   <refsect1>
     <title>SEE ALSO</title>
 
-    <para>The program is documented fully by the HTML file
-      <filename>file://@CMAKE_INSTALL_FULL_DOCDIR@/en/index.html</filename>.</para>
+    <para>
+    <filename>file://@CMAKE_INSTALL_FULL_DOCDIR@/en/index.html</filename>
+    </para>
   </refsect1>
   <refsect1>
     <title>AUTHOR</title>

@@ -41,6 +41,7 @@ gboolean global_options_maximise = FALSE;
 gboolean global_options_borderless = FALSE;
 gboolean global_options_tab = FALSE;
 gboolean global_options_fork = FALSE;
+gboolean global_options_hold = FALSE;
 
 static void correct_scheme(const char *bad_name, const char *good_name)
 {
@@ -67,6 +68,7 @@ static void global_options_reset(void)
     global_options_replace = FALSE;
     global_options_fullscreen = FALSE;
     global_options_tab = FALSE;
+    global_options_hold = FALSE;
     options_reload_keyfile(global_options);
     correct_schemes();
 }
@@ -268,6 +270,11 @@ static GOptionEntry global_g_options[] = {
         G_OPTION_ARG_NONE, &global_options_fork,
         N_("Fork into the background even if this is the\n"
         "                                   first instance"),
+        NULL },
+    { "hold", 0, G_OPTION_FLAG_IN_MAIN,
+        G_OPTION_ARG_NONE, &global_options_hold,
+        N_("Don't immediately close the window when the\n"
+        "                                   shell command exits."),
         NULL },
     { "session", 0, G_OPTION_FLAG_IN_MAIN,
         G_OPTION_ARG_STRING, &global_options_user_session_id,

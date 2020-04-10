@@ -3920,6 +3920,11 @@ void roxterm_launch(char **env)
             global_options_tab = FALSE;
         }
     }
+    if (global_options_hold)
+    {
+         options_set_int(roxterm->profile, "exit_action", 1);
+         global_options_hold = 0;
+    }
 
     gboolean borderless = roxterm->borderless | global_options_borderless;
 
