@@ -57,6 +57,9 @@ extern gboolean global_options_tab;
 /* Fork first instance */
 extern gboolean global_options_fork;
 
+/* What to do on command exit */
+extern gint global_options_atexit;
+
 extern char *global_options_user_session_id;
 
 /* Call after argv has been processed by gtk_init; may be called more than once
