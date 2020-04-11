@@ -148,10 +148,11 @@ static void roxterm_app_launch_window(UNUSED RoxtermApp *app,
     for (GList *link = wlp->tabs; link; link = g_list_next(link))
     {
         RoxtermTabLaunchParams *tlp = link->data;
-        const char *profile_name = tlp->profile_name ?  tlp->profile_name :
+        const char *profile_name = tlp->profile_name ?
+            g_strdup(tlp->profile_name) :
             global_options_lookup_string_with_default("profile", "Default");
         const char *colour_scheme_name = tlp->colour_scheme_name ?
-            tlp->colour_scheme_name :
+            g_strdup(tlp->colour_scheme_name) :
             global_options_lookup_string_with_default("colour_scheme",
                     "Default");
         Options *profile = dynamic_options_lookup_and_ref(

@@ -146,19 +146,23 @@ gboolean roxterm_dynamic_options_unref(RoxtermDynamicOptions *dynopts,
 {
     /* Use generic pointers for these to avoid breaking strict aliasing (see
      * man gcc) */
-    gpointer options;
+    gpointer val;
     gpointer key;
     gboolean lookup_ok = g_hash_table_lookup_extended(dynopts->profiles,
-        profile_name, &key, &options);
+        profile_name, &key, &val);
 
     if (!lookup_ok)
         return FALSE;
 
-    ((Options *) options)->deleted = TRUE;
-    g_signal_emit(dynopts, roxterm_dynamic_options_signals[SIG_DELETE_OPTS],
-            0, profile_name);
-    g_hash_table_remove(dynopts->profiles, profile_name);
-    g_free(key);
+    Options *options = val;
+    if (options->ref == 1)
+    {
+        options->deleted = TRUE;
+        g_signal_emit(dynopts, roxterm_dynamic_options_signals[SIG_DELETE_OPTS],
+                0, profile_name);
+        g_hash_table_remove(dynopts->profiles, profile_name);
+        g_free(key);
+    }
     return options_unref(options);
 }
 
