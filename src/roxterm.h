@@ -29,6 +29,15 @@
 #include "multitab.h"
 #include "strv-ref.h"
 
+typedef enum {
+    Roxterm_ChildExitClose,
+    Roxterm_ChildExitHold,
+    Roxterm_ChildExitRespawn,
+    Roxterm_ChildExitAsk,
+
+    Roxterm_ChildExitNotOverridden
+} RoxtermChildExitAction;
+
 typedef struct ROXTermData ROXTermData;
 
 /* Make sure global options have been parsed before calling this, but call it

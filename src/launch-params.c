@@ -190,6 +190,34 @@ static void roxterm_launch_params_set_boolean(const gchar *option,
     *pval = TRUE;
 }
 
+static gboolean roxterm_launch_params_set_atexit(RoxtermTabLaunchParams *tp,
+        const gchar *value, GError **error)
+{
+    (void) error;
+    if (!strcmp(value, "close"))
+    {
+        tp->exit_action = Roxterm_ChildExitClose;
+    }
+    else if (!strcmp(value, "hold"))
+    {
+        tp->exit_action = Roxterm_ChildExitHold;
+    }
+    else if (!strcmp(value, "respawn"))
+    {
+        tp->exit_action = Roxterm_ChildExitRespawn;
+    }
+    else if (!strcmp(value, "ask"))
+    {
+        tp->exit_action = Roxterm_ChildExitAsk;
+    }
+    else
+    {
+        g_set_error(error, ROXTERM_ARG_ERROR, ROXTermArgError,
+            _("Invalid atexit option '%s'"), value);
+    }
+    return TRUE;
+}
+
 static gboolean roxterm_launch_params_parse_tab_option(const gchar *option,
         const gchar *value, gpointer data, GError **error)
 {
@@ -205,6 +233,10 @@ static gboolean roxterm_launch_params_parse_tab_option(const gchar *option,
         roxterm_launch_params_set_string(option, &tp->tab_title, value);
     else if (!strcmp(option, "directory"))
         roxterm_launch_params_set_string(option, &tp->directory, value);
+    else if (!strcmp(option, "atexit"))
+        roxterm_launch_params_set_atexit(tp, value, error);
+    else if (!strcmp(option, "hold"))
+        roxterm_launch_params_set_atexit(tp, "hold", error);
     return TRUE;
 }
 
@@ -437,6 +469,14 @@ static GOptionEntry roxterm_launch_params_cli_options[] = {
     { "appdir", 0, G_OPTION_FLAG_IN_MAIN,
         G_OPTION_ARG_CALLBACK, &roxterm_launch_params_parse_global_str_option,
         N_("Run from APPDIR without installation"), N_("APPDIR") },
+    { "atexit", 0, G_OPTION_FLAG_IN_MAIN,
+        G_OPTION_ARG_CALLBACK, roxterm_launch_params_parse_tab_option,
+        N_("On command exit: close, hold, respawn, ask"),
+        N_("ACTION") },
+    { "hold", 0, G_OPTION_FLAG_IN_MAIN,
+        G_OPTION_ARG_CALLBACK, roxterm_launch_params_parse_tab_option,
+        N_("An alias for --atexit=hold: keep tab open"),
+        NULL },
     { "execute", 'e', G_OPTION_FLAG_IN_MAIN,
         G_OPTION_ARG_NONE, NULL,
         N_("Execute remainder of command line inside the\n"

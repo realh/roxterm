@@ -19,6 +19,7 @@
 #ifndef LAUNCH_PARAMS_H
 #define LAUNCH_PARAMS_H
 
+#include "roxterm.h"
 #include "strv-ref.h"
 
 #include <gio/gio.h>
@@ -32,6 +33,7 @@ typedef struct {
     char *shortcuts_name;
     char *tab_title;
     char *directory;
+    RoxtermChildExitAction exit_action;
     gboolean custom_command;
 } RoxtermTabLaunchParams;
 

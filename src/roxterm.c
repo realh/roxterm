@@ -119,6 +119,8 @@ struct ROXTermData {
     int padding_w, padding_h;
     gboolean is_shell;
     gulong child_exited_tag;
+    RoxtermChildExitAction exit_action;
+    gboolean override_exit_action;
 };
 
 #define PROFILE_NAME_KEY "roxterm_profile_name"
@@ -347,6 +349,10 @@ static ROXTermData *roxterm_data_clone(ROXTermData *old_gt)
         new_gt->rows = vte_terminal_get_row_count(vte);
     }
     /*new_gt->file_match_tag[0] = new_gt->file_match_tag[1] = -1;*/
+    if (new_gt->override_exit_action)
+        new_gt->override_exit_action = FALSE;
+    else
+        new_gt->exit_action = Roxterm_ChildExitNotOverridden;
 
     return new_gt;
 }
@@ -1917,13 +1923,6 @@ roxterm_char_size_changed(GtkSettings * settings, guint arg1, guint arg2,
     roxterm_update_geometry(roxterm, VTE_TERMINAL(roxterm->widget));
 }
 
-typedef enum {
-    roxterm_ChildExitClose,
-    roxterm_ChildExitHold,
-    roxterm_ChildExitRespawn,
-    roxterm_ChildExitAsk
-} roxterm_ChildExitAction;
-
 static void roxterm_hide_menutree(GtkMenuItem *item, gpointer handle)
 {
     GtkWidget *submenu = gtk_menu_item_get_submenu(item);
@@ -1937,14 +1936,28 @@ static void roxterm_hide_menutree(GtkMenuItem *item, gpointer handle)
     }
 }
 
+static RoxtermChildExitAction
+roxterm_get_child_exit_action(ROXTermData *roxterm)
+{
+    RoxtermChildExitAction action = roxterm->exit_action;
+    if (action == Roxterm_ChildExitNotOverridden)
+    {
+        action = options_lookup_int_with_default(roxterm->profile,
+                "exit_action", Roxterm_ChildExitClose);
+    }
+    return action;
+}
+
 static gboolean roxterm_post_child_exit(ROXTermData *roxterm)
 {
     MultiWin *win = roxterm_get_win(roxterm);
-    roxterm_ChildExitAction action =
-        options_lookup_int_with_default(roxterm->profile, "exit_action",
-                roxterm_ChildExitClose);
-
-    if (action == roxterm_ChildExitAsk)
+    RoxtermChildExitAction action = roxterm_get_child_exit_action(roxterm);
+    if (action == Roxterm_ChildExitNotOverridden)
+    {
+        action = options_lookup_int_with_default(roxterm->profile,
+                "exit_action", Roxterm_ChildExitClose);
+    }
+    if (action == Roxterm_ChildExitAsk)
     {
         GtkWidget *dialog = gtk_message_dialog_new(
                 roxterm_get_toplevel(roxterm),
@@ -1955,11 +1968,11 @@ static gboolean roxterm_post_child_exit(ROXTermData *roxterm)
         GtkWidget *respawn;
 
         gtk_dialog_add_button(GTK_DIALOG(dialog),
-                _("Close"), roxterm_ChildExitClose);
+                _("Close"), Roxterm_ChildExitClose);
         gtk_dialog_add_button(GTK_DIALOG(dialog),
-                _("Leave open"), roxterm_ChildExitHold);
+                _("Leave open"), Roxterm_ChildExitHold);
         respawn = gtk_dialog_add_button(GTK_DIALOG(dialog),
-                _("Rerun command"), roxterm_ChildExitRespawn);
+                _("Rerun command"), Roxterm_ChildExitRespawn);
         if (roxterm->no_respawn)
             gtk_widget_set_sensitive(respawn, FALSE);
         gtk_widget_show_all(dialog);
@@ -1967,11 +1980,11 @@ static gboolean roxterm_post_child_exit(ROXTermData *roxterm)
         gtk_widget_destroy(dialog);
     }
     roxterm->post_exit_tag = 0;
-    if (action == roxterm_ChildExitRespawn && roxterm->no_respawn)
-        action = roxterm_ChildExitClose;
+    if (action == Roxterm_ChildExitRespawn && roxterm->no_respawn)
+        action = Roxterm_ChildExitClose;
     switch (action)
     {
-        case roxterm_ChildExitClose:
+        case Roxterm_ChildExitClose:
             gtk_container_foreach(
                     GTK_CONTAINER(
                             multi_win_get_menu_bar(win)->top_level),
@@ -1980,10 +1993,10 @@ static gboolean roxterm_post_child_exit(ROXTermData *roxterm)
             gtk_widget_hide(multi_win_get_short_popup_menu(win)->top_level);
             multi_tab_delete(roxterm->tab);
             break;
-        case roxterm_ChildExitHold:
+        case Roxterm_ChildExitHold:
             roxterm_show_status(roxterm, "dialog-error");
             break;
-        case roxterm_ChildExitRespawn:
+        case Roxterm_ChildExitRespawn:
             roxterm_run_command(roxterm, VTE_TERMINAL(roxterm->widget));
             break;
         default:
@@ -2001,8 +2014,8 @@ static void roxterm_child_exited(VteTerminal *vte, int status,
 
     roxterm->running = FALSE;
     roxterm_show_status(roxterm, "dialog-error");
-    if ((options_lookup_int(roxterm->profile, "exit_action") !=
-            roxterm_ChildExitAsk) &&
+    RoxtermChildExitAction action = roxterm_get_child_exit_action(roxterm);
+    if (action != Roxterm_ChildExitAsk &&
         ((delay = options_lookup_double(roxterm->profile, "exit_pause")) != 0))
     {
         vte_terminal_feed(vte, _("\n.\n"), -1);
@@ -3784,6 +3797,7 @@ ROXTermData *roxterm_data_new(double zoom_factor, const char *directory,
     if (env)
         ++env->count;
     /*roxterm->file_match_tag[0] = roxterm->file_match_tag[1] = -1;*/
+    roxterm->exit_action = Roxterm_ChildExitNotOverridden;
     return roxterm;
 }
 
