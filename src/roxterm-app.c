@@ -31,6 +31,7 @@
 #include "shortcuts.h"
 
 #include <string.h>
+#include <gdk/gdkprivate.h>
 
 static DynamicOptions *roxterm_profiles = NULL;
 
@@ -147,10 +148,12 @@ static void roxterm_app_launch_window(UNUSED RoxtermApp *app,
     for (GList *link = wlp->tabs; link; link = g_list_next(link))
     {
         RoxtermTabLaunchParams *tlp = link->data;
-        const char *profile_name = tlp->profile_name ?
-            tlp->profile_name : "Default";
+        const char *profile_name = tlp->profile_name ?  tlp->profile_name :
+            global_options_lookup_string_with_default("profile", "Default");
         const char *colour_scheme_name = tlp->colour_scheme_name ?
-            tlp->colour_scheme_name : "Default";
+            tlp->colour_scheme_name :
+            global_options_lookup_string_with_default("colour_scheme",
+                    "Default");
         Options *profile = dynamic_options_lookup_and_ref(
                 roxterm_get_profiles(), profile_name);
         char *geom = wlp->geometry_str;
