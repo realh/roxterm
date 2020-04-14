@@ -605,8 +605,13 @@ static void roxterm_run_command(ROXTermData *roxterm, VteTerminal *vte)
     roxterm->running = TRUE;
     roxterm_show_status(roxterm, "window-close");
     roxterm->is_shell = FALSE;
-    if (roxterm->special_command)
+    if (roxterm->actual_commandv)
     {
+        special = TRUE;
+    }
+    else if (roxterm->special_command)
+    {
+        special = TRUE;
         /* Use special_command, currently single string */
         command = roxterm->special_command;
         special = TRUE;
@@ -668,12 +673,16 @@ static void roxterm_run_command(ROXTermData *roxterm, VteTerminal *vte)
             special = TRUE;
         }
     }
+    if (roxterm->actual_commandv)
+    {
+        commandv = roxterm->actual_commandv;
+    }
     if (roxterm->commandv && !roxterm->special_command)
     {
         /* We're using roxterm->commandv, point commandv to it */
         commandv = roxterm->commandv->strv;
     }
-    else
+    else if (!roxterm->actual_commandv)
     {
         /* Parse our own commandv from single string command */
         int argc;
