@@ -280,9 +280,11 @@ char *options_file_filename_for_saving(const char *leafname, ...)
 	return result;
 }
 
-void options_file_save(GKeyFile *kf, const char *leafname)
+void options_file_save(GKeyFile *kf, const char *family, const char *leafname)
 {
-	char *pathname = options_file_filename_for_saving(leafname, NULL);
+    const char *n1 = family ? family : leafname;
+    const char *n2 = family ? leafname : NULL;
+	char *pathname = options_file_filename_for_saving(n1, n2, NULL);
 	char *file_data;
 	gsize data_len;
 	GError *err = NULL;

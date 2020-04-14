@@ -30,7 +30,7 @@
  * file found it returns NULL */
 GKeyFile *options_file_open(const char *leafname, const char *group_name);
 
-void options_file_save(GKeyFile *, const char *leafname);
+void options_file_save(GKeyFile *, const char *family, const char *leafname);
 
 inline static void options_file_delete(GKeyFile *kf)
 {

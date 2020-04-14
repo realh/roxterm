@@ -42,7 +42,7 @@ gboolean capplet_ignore_changes = FALSE;
 
 void capplet_save_file(Options * options)
 {
-    options_file_save(options->kf, options->name);
+    options_file_save(options->kf, options->family, options->name);
     options->kf_dirty = FALSE;
 }
 
@@ -55,7 +55,7 @@ void capplet_set_int(Options * options, const char *name, int value)
 void capplet_set_string(Options * options, const char *name,
         const char *value)
 {
-    g_print("capplet_set_string: %p %s = '%s'", options, name, value);
+    g_debug("capplet_set_string: %p %s = '%s'", options, name, value);
     options_set_string(options, name, value);
     capplet_save_file(options);
 }
