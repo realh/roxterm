@@ -29,8 +29,12 @@ add_executable(roxterm
 target_include_directories(roxterm PRIVATE
     ${ROXTERM_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})
 target_compile_options(roxterm PRIVATE ${ROXTERM_CFLAGS_OTHER})
-target_link_libraries(roxterm ${ROXTERM_LDFLAGS_OTHER}
-    ${ROXTERM_LIBRARIES})
+target_link_directories(roxterm PRIVATE ${ROXTERM_LIBRARY_DIRS})
+target_link_libraries(roxterm PRIVATE ${ROXTERM_LIBRARIES})
+
+# Doesn't work on Mac: https://gitlab.kitware.com/cmake/cmake/issues/19688
+# Luckily it seems to be OK to just miss out the -framework libraries
+#target_link_options(roxterm PUBLIC ${ROXTERM_LDFLAGS_OTHER})
 
 install(TARGETS roxterm RUNTIME DESTINATION bin)
 install(FILES roxterm-config.ui DESTINATION share/roxterm)
