@@ -10,7 +10,7 @@ execute_process(COMMAND ${PROJECT_SOURCE_DIR}/version.sh
 execute_process(COMMAND date "+%Y-%m-%d"
     OUTPUT_VARIABLE ROXTERM_DATE)
 
-set(APPINFO_VERSION "$ROXTERM_VERSION $ROXTERM_DATE")
+set(APPINFO_VERSION "${ROXTERM_VERSION} ${ROXTERM_DATE}")
 configure_file(${PROJECT_SOURCE_DIR}/AppInfo.xml.in
     ${PROJECT_SOURCE_DIR}/AppInfo.xml)
 # appdata should really be processed by i18n
