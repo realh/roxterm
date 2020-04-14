@@ -37,7 +37,7 @@ for l in fp.readlines():
 fp.close()
 
 os.unlink(output)
-subprocess.call("/usr/bin/pkg-config --cflags " + " ".join(packages) +
+subprocess.call("pkg-config --cflags " + " ".join(packages) +
         " > " + output, shell = True)
 fp = open(output, 'r')
 flags.extend(fp.read().strip().split())
