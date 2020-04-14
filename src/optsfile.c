@@ -287,6 +287,8 @@ void options_file_save(GKeyFile *kf, const char *leafname)
 	gsize data_len;
 	GError *err = NULL;
 
+    g_debug("options_file_save: kf %p, leafname %s, pathname %s",
+            kf, leafname, pathname);
 	if (!pathname)
 		return;
 	/* leafname may actually be a relative path, so make sure any directories
@@ -299,6 +301,7 @@ void options_file_save(GKeyFile *kf, const char *leafname)
 		g_free(dirname);
 	}
 	file_data = g_key_file_to_data(kf, &data_len, &err);
+    g_debug("options_file_save data:\n%s", file_data);
 	if (err)
 	{
 		if (err && !STR_EMPTY(err->message))

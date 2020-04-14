@@ -180,6 +180,7 @@ double options_lookup_double_with_default(Options *options, const char *key,
             result = d;
 		}
 	}
+    g_free(str_val);
 	return result;
 }
 
@@ -203,6 +204,7 @@ void options_set_string(Options * options, const char *key, const char *value)
                 value ? value : "");
         options_signal_change(options, key);
     }
+    g_free(oldval);
 }
 
 void options_set_int(Options * options, const char *key, int value)
