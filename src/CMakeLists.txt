@@ -7,8 +7,6 @@ pkg_check_modules(ROXTERM REQUIRED
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in
     ${CMAKE_CURRENT_BINARY_DIR}/config.h)
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/version.h.in
-    ${CMAKE_CURRENT_BINARY_DIR}/version.h)
 
 add_custom_command(OUTPUT gresources.c
     COMMAND glib-compile-resources

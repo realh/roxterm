@@ -13,6 +13,8 @@ execute_process(COMMAND date "+%Y-%m-%d"
 set(APPINFO_VERSION "${ROXTERM_VERSION} ${ROXTERM_DATE}")
 configure_file(${PROJECT_SOURCE_DIR}/AppInfo.xml.in
     ${PROJECT_SOURCE_DIR}/AppInfo.xml)
+configure_file(${PROJECT_SOURCE_DIR}/src/version.h.in
+    ${PROJECT_BINARY_DIR}/src/version.h)
 # appdata should really be processed by i18n
 configure_file(${PROJECT_SOURCE_DIR}/roxterm.appdata.xml.in
     ${PROJECT_BINARY_DIR}/roxterm.appdata.xml)
