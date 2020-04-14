@@ -3,7 +3,7 @@
 # If VTE >= 0.50 this should include the necessary flags for libpcre.
 # Need gmodule so GtkBuilder can find signal handlers
 pkg_check_modules(ROXTERM REQUIRED
-    vte-2.91>=0.52 gtk+-3.0>=3.20.0 gmodule-export-2.0)
+    vte-2.91>=0.52 gtk+-3.0>=3.20.0 gmodule-export-2.0 libpcre2-8)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in
     ${CMAKE_CURRENT_BINARY_DIR}/config.h)
