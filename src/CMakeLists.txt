@@ -20,7 +20,9 @@ add_custom_command(OUTPUT gresources.c
 
 add_executable(roxterm
     about.c capplet.c colourgui.c colourscheme.c configlet.c
-    dlg.c dragrcv.c dynopts.c getname.c globalopts.c gresources.c
+    dlg.c dragrcv.c dynopts.c getname.c
+    geom-widget.c
+    globalopts.c gresources.c
     launch-params.c menutree.c
     multitab.c multitab-close-button.c multitab-label.c
     options.c optsfile.c profilegui.c resources.c
