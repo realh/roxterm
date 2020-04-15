@@ -200,9 +200,9 @@ void options_set_string(Options * options, const char *key, const char *value)
 		options->kf = g_key_file_new();
     else
         oldval = options_lookup_string(options, key);
-    if (!g_strcmp0(value, oldval))
+    if (g_strcmp0(value, oldval))
     {
-        g_key_file_set_string(options->kf, options->family, key,
+        g_key_file_set_string(options->kf, options->group_name, key,
                 value ? value : "");
         g_debug("signalling that option %p %s changed to %s",
                 options, key, value);
@@ -220,7 +220,7 @@ void options_set_int(Options * options, const char *key, int value)
         oldval = options_lookup_int_with_default(options, key, oldval);
     if (value != oldval)
     {
-        g_key_file_set_integer(options->kf, options->family, key, value);
+        g_key_file_set_integer(options->kf, options->group_name, key, value);
         options_signal_change(options, key);
     }
 }
