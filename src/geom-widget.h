@@ -63,10 +63,6 @@ struct _GeometryWidgetInterface
      */
     void (*set_active)(GeometryWidget *gw, gboolean active);
     /**
-     * GeometryWidgetInterface::confirm_close:
-     */
-    gboolean (*confirm_close)(GeometryWidget *gw);
-    /**
      * GeometryWidgetInterface::get_active:
      * Returns: (transfer none):
      */
@@ -75,6 +71,10 @@ struct _GeometryWidgetInterface
      * GeometryWidgetInterface::is_active:
      */
     gboolean (*is_active)(GeometryWidget *gw);
+    /**
+     * GeometryWidgetInterface::confirm_close:
+     */
+    gboolean (*confirm_close)(GeometryWidget *gw);
     /**
      * GeometryWidgetInterface::set_alloc_for_measurement:
      *
