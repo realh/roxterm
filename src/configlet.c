@@ -311,8 +311,6 @@ static void configlet_cell_toggled(GtkCellRendererToggle *cell,
     gtk_tree_model_get(GTK_TREE_MODEL(cl->list), &iter,
             cfColumn_Radio, &active,
             cfColumn_Name, &name, -1);
-    g_debug("configlet_cell_toggled: %s %s %d",
-            cl->family, name, active);
     if (!active)
     {
         gtk_tree_model_foreach(GTK_TREE_MODEL(cl->list), update_radios, name);

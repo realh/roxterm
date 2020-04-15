@@ -36,7 +36,6 @@ void options_reload_keyfile(Options *options)
     const char *n1 = options->family ? options->family : options->name;
     const char *n2 = options->family ? options->name : NULL;
     char *filename = g_build_filename(n1, n2, NULL);
-    g_debug("options_reload_keyfile(%p): filename %s", options, filename);
 	options->kf = options_file_open(filename, options->group_name);
 	options->kf_dirty = FALSE;
     g_free(filename);
@@ -47,7 +46,6 @@ Options *options_open(const char *leafname, const char *family,
 {
 	Options *options = g_new0(Options, 1);
 
-    g_debug("Opening Options %s/%s", family, leafname);
 	options->family = family;
 	options->group_name = group_name;
 	options->name = g_strdup(leafname);
@@ -204,8 +202,6 @@ void options_set_string(Options * options, const char *key, const char *value)
     {
         g_key_file_set_string(options->kf, options->group_name, key,
                 value ? value : "");
-        g_debug("signalling that option %p %s changed to %s",
-                options, key, value);
         options_signal_change(options, key);
     }
     g_free(oldval);

@@ -256,7 +256,6 @@ gboolean options_file_mkdir_with_parents(const char *dirname)
 			dirname, strerror(errno));
 		return FALSE;
 	}
-    g_debug("Result of g_mkdir_with_parents(%s): %d", dirname, result);
 	return TRUE;
 }
 
@@ -291,19 +290,15 @@ void options_file_save(GKeyFile *kf, const char *family, const char *leafname)
 	gsize data_len;
 	GError *err = NULL;
 
-    g_debug("options_file_save: kf %p, leafname %s, pathname %s",
-            kf, leafname, pathname);
 	if (!pathname)
 		return;
 	/* leafname may actually be a relative path, so make sure any directories
 	 * in it exist */
     char *dirname = g_path_get_dirname(pathname);
 
-    g_debug("Making directory %s", dirname);
     options_file_mkdir_with_parents(dirname);
     g_free(dirname);
 	file_data = g_key_file_to_data(kf, &data_len, &err);
-    g_debug("options_file_save data:\n%s", file_data);
 	if (err)
 	{
 		if (err && !STR_EMPTY(err->message))
