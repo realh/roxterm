@@ -33,9 +33,6 @@ G_DECLARE_INTERFACE(GeometryWidget, geometry_widget, GEOMETRY, WIDGET,
  *
  * A widget containing text with fixed-width characters that determines the
  * size of the window, or a container for such a widget.
- *
- * Implementations (must) also provide a "geometry-changed" signal with no
- * arguments. It should only be emitted on an active page.
  */
 struct _GeometryWidgetInterface
 {
@@ -75,6 +72,10 @@ struct _GeometryWidgetInterface
      */
     GeometryWidget *(*get_active)(GeometryWidget *gw);
     /**
+     * GeometryWidgetInterface::is_active:
+     */
+    gboolean (*is_active)(GeometryWidget *gw);
+    /**
      * GeometryWidgetInterface::set_alloc_for_measurement:
      *
      * @afm: Any size-allocate events received while this is TRUE should
@@ -83,6 +84,7 @@ struct _GeometryWidgetInterface
      */
     void (*set_alloc_for_measurement)(GeometryWidget *gw,
             gboolean afm);
+    guint changed_signal;
 };
 
 /**
@@ -141,6 +143,12 @@ void geometry_widget_set_active(GeometryWidget *gw,
 GeometryWidget *geometry_widget_get_active(GeometryWidget *gw);
 
 /**
+ * geometry_widget_is_active: (slot is_active)
+ * Returns: Whether gw was set active by geometry_widget_set_active().
+ */
+gboolean geometry_widget_is_active(GeometryWidget *gw);
+
+/**
  * geometry_widget_confirm_close: (slot confirm_close):
  * Returns: TRUE if the user should be asked to confirm before detsroying
  *          this widget
@@ -156,6 +164,13 @@ gboolean geometry_widget_confirm_close(GeometryWidget *gw);
  */
 void geometry_widget_set_alloc_for_measurement(
         GeometryWidget *gw, gboolean afm);
+
+/**
+ * geometry_widget_geometry_changed: (method):
+ * Raises a "geometry-changed" signal with no arguments, but only if gw is
+ * currently active.
+ */
+void geometry_widget_geometry_changed(GeometryWidget *gw);
 
 G_END_DECLS
 

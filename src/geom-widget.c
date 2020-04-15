@@ -19,17 +19,20 @@
 
 #include "geom-widget.h"
 
-G_DEFINE_INTERFACE(GeometryWidget, multitext_geometry_widget,
+G_DEFINE_INTERFACE(GeometryWidget, geometry_widget,
         GTK_TYPE_WIDGET);
 
-void
-multitext_geometry_widget_default_init(
-        UNUSED GeometryWidgetInterface *iface)
+void geometry_widget_default_init(GeometryWidgetInterface *iface)
 {
+    iface->changed_signal = g_signal_new("geometry-changed",
+            GEOMETRY_TYPE_WIDGET,
+            G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS,
+            0, NULL, NULL, NULL,
+            G_TYPE_NONE, 0);
 }
 
 void
-multitext_geometry_widget_get_target_size(GeometryWidget *gw,
+geometry_widget_get_target_size(GeometryWidget *gw,
         int *columns, int *rows)
 {
     g_return_if_fail(GEOMETRY_IS_WIDGET(gw));
@@ -40,7 +43,7 @@ multitext_geometry_widget_get_target_size(GeometryWidget *gw,
 }
 
 void
-multitext_geometry_widget_get_current_size(GeometryWidget *gw,
+geometry_widget_get_current_size(GeometryWidget *gw,
         int *columns, int *rows)
 {
     g_return_if_fail(GEOMETRY_IS_WIDGET(gw));
@@ -51,7 +54,7 @@ multitext_geometry_widget_get_current_size(GeometryWidget *gw,
 }
 
 void
-multitext_geometry_widget_get_cell_size(GeometryWidget *gw,
+geometry_widget_get_cell_size(GeometryWidget *gw,
         int *width, int *height)
 {
     g_return_if_fail(GEOMETRY_IS_WIDGET(gw));
@@ -61,7 +64,7 @@ multitext_geometry_widget_get_cell_size(GeometryWidget *gw,
     iface->get_cell_size(gw, width, height);
 }
 
-void multitext_geometry_widget_set_active(GeometryWidget *gw,
+void geometry_widget_set_active(GeometryWidget *gw,
         gboolean active)
 {
     g_return_if_fail(GEOMETRY_IS_WIDGET(gw));
@@ -71,8 +74,26 @@ void multitext_geometry_widget_set_active(GeometryWidget *gw,
     iface->set_active(gw, active);
 }
 
+GeometryWidget *geometry_widget_get_active(GeometryWidget *gw)
+{
+    g_return_val_if_fail(GEOMETRY_IS_WIDGET(gw), NULL);
+    GeometryWidgetInterface *iface
+            = GEOMETRY_WIDGET_GET_IFACE(gw);
+    g_return_val_if_fail(iface->set_active != NULL, NULL);
+    return iface->get_active(gw);
+}
+
+gboolean geometry_widget_is_active(GeometryWidget *gw)
+{
+    g_return_val_if_fail(GEOMETRY_IS_WIDGET(gw), FALSE);
+    GeometryWidgetInterface *iface
+            = GEOMETRY_WIDGET_GET_IFACE(gw);
+    g_return_val_if_fail(iface->set_active != NULL, FALSE);
+    return iface->is_active(gw);
+}
+
 gboolean
-multitext_geometry_widget_confirm_close(GeometryWidget *gw)
+geometry_widget_confirm_close(GeometryWidget *gw)
 {
     g_return_val_if_fail(GEOMETRY_IS_WIDGET(gw), FALSE);
     GeometryWidgetInterface *iface
@@ -81,7 +102,7 @@ multitext_geometry_widget_confirm_close(GeometryWidget *gw)
     return iface->confirm_close(gw);
 }
 
-void multitext_geometry_widget_set_alloc_for_measurement(
+void geometry_widget_set_alloc_for_measurement(
         GeometryWidget *gw, gboolean afm)
 {
     g_return_if_fail(GEOMETRY_IS_WIDGET(gw));
@@ -89,4 +110,11 @@ void multitext_geometry_widget_set_alloc_for_measurement(
             = GEOMETRY_WIDGET_GET_IFACE(gw);
     g_return_if_fail(iface->set_alloc_for_measurement != NULL);
     iface->set_alloc_for_measurement(gw, afm);
+}
+
+void geometry_widget_geometry_changed(GeometryWidget *gw)
+{
+    g_return_if_fail(GEOMETRY_IS_WIDGET(gw));
+    if (geometry_widget_is_active(gw))
+        g_signal_emit(gw, GEOMETRY_WIDGET_GET_IFACE(gw)->changed_signal, 0);
 }
