@@ -45,35 +45,35 @@ struct _GeometryWidgetInterface
      * @columns: (out):
      * @rows: (out):
      */
-    void (*get_target_size)(GeometryWidget *self,
+    void (*get_target_size)(GeometryWidget *gw,
             int *columns, int *rows);
     /**
      * GeometryWidgetInterface::get_current_size:
      * @columns: (out):
      * @rows: (out):
      */
-    void (*get_current_size)(GeometryWidget *self,
+    void (*get_current_size)(GeometryWidget *gw,
             int *columns, int *rows);
     /**
      * GeometryWidgetInterface::get_cell_size:
      * @width: (out):
      * @height: (out):
      */
-    void (*get_cell_size)(GeometryWidget *self,
+    void (*get_cell_size)(GeometryWidget *gw,
             int *width, int *height);
     /**
      * GeometryWidgetInterface::set_active:
      */
-    void (*set_active)(GeometryWidget *self, gboolean active);
+    void (*set_active)(GeometryWidget *gw, gboolean active);
     /**
      * GeometryWidgetInterface::confirm_close:
      */
-    gboolean (*confirm_close)(GeometryWidget *self);
+    gboolean (*confirm_close)(GeometryWidget *gw);
     /**
      * GeometryWidgetInterface::get_active:
      * Returns: (transfer none):
      */
-    GeometryWidget *(*get_active)(GeometryWidget *self);
+    GeometryWidget *(*get_active)(GeometryWidget *gw);
     /**
      * GeometryWidgetInterface::set_alloc_for_measurement:
      *
@@ -81,7 +81,7 @@ struct _GeometryWidgetInterface
      *       be treated for the purpose of measurement only, they should not
      *       influence the widget's target size
      */
-    void (*set_alloc_for_measurement)(GeometryWidget *self,
+    void (*set_alloc_for_measurement)(GeometryWidget *gw,
             gboolean afm);
 };
 
@@ -95,7 +95,7 @@ struct _GeometryWidgetInterface
  * @rows: (out):
  */
 void
-geometry_widget_get_target_size(GeometryWidget *self,
+geometry_widget_get_target_size(GeometryWidget *gw,
         int *columns, int *rows);
 
 /**
@@ -107,7 +107,7 @@ geometry_widget_get_target_size(GeometryWidget *self,
  * @rows: (out):
  */
 void
-geometry_widget_get_current_size(GeometryWidget *self,
+geometry_widget_get_current_size(GeometryWidget *gw,
         int *columns, int *rows);
 
 /**
@@ -119,7 +119,7 @@ geometry_widget_get_current_size(GeometryWidget *self,
  * @height: (out):
  */
 void
-geometry_widget_get_cell_size(GeometryWidget *self,
+geometry_widget_get_cell_size(GeometryWidget *gw,
         int *width, int *height);
 
 /**
@@ -129,23 +129,23 @@ geometry_widget_get_cell_size(GeometryWidget *self,
  * the window's geometry. The active widget may change when they're the child
  * of a GtkNotebook.
  */
-void geometry_widget_set_active(GeometryWidget *self,
+void geometry_widget_set_active(GeometryWidget *gw,
         gboolean active);
 
 /**
  * geometry_widget_get_active: (slot get_active)
  * Returns: (transfer none):
  * 
- * Returns self for child widgets, the active child for containers.
+ * Returns gw for child widgets, the active child for containers.
  */
-GeometryWidget *geometry_widget_get_active(GeometryWidget *self);
+GeometryWidget *geometry_widget_get_active(GeometryWidget *gw);
 
 /**
  * geometry_widget_confirm_close: (slot confirm_close):
  * Returns: TRUE if the user should be asked to confirm before detsroying
  *          this widget
  */
-gboolean geometry_widget_confirm_close(GeometryWidget *self);
+gboolean geometry_widget_confirm_close(GeometryWidget *gw);
 
 /**
  * geometry_widget_set_alloc_for_measurement: (slot set_alloc_for_measurement)
@@ -155,7 +155,7 @@ gboolean geometry_widget_confirm_close(GeometryWidget *self);
  *       influence the widget's target size
  */
 void geometry_widget_set_alloc_for_measurement(
-        GeometryWidget *self, gboolean afm);
+        GeometryWidget *gw, gboolean afm);
 
 G_END_DECLS
 

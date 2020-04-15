@@ -29,64 +29,64 @@ multitext_geometry_widget_default_init(
 }
 
 void
-multitext_geometry_widget_get_target_size(GeometryWidget *self,
+multitext_geometry_widget_get_target_size(GeometryWidget *gw,
         int *columns, int *rows)
 {
-    g_return_if_fail(GEOMETRY_IS_WIDGET(self));
+    g_return_if_fail(GEOMETRY_IS_WIDGET(gw));
     GeometryWidgetInterface *iface
-            = GEOMETRY_WIDGET_GET_IFACE(self);
+            = GEOMETRY_WIDGET_GET_IFACE(gw);
     g_return_if_fail(iface->get_target_size != NULL);
-    iface->get_target_size(self, columns, rows);
+    iface->get_target_size(gw, columns, rows);
 }
 
 void
-multitext_geometry_widget_get_current_size(GeometryWidget *self,
+multitext_geometry_widget_get_current_size(GeometryWidget *gw,
         int *columns, int *rows)
 {
-    g_return_if_fail(GEOMETRY_IS_WIDGET(self));
+    g_return_if_fail(GEOMETRY_IS_WIDGET(gw));
     GeometryWidgetInterface *iface
-            = GEOMETRY_WIDGET_GET_IFACE(self);
+            = GEOMETRY_WIDGET_GET_IFACE(gw);
     g_return_if_fail(iface->get_current_size != NULL);
-    iface->get_current_size(self, columns, rows);
+    iface->get_current_size(gw, columns, rows);
 }
 
 void
-multitext_geometry_widget_get_cell_size(GeometryWidget *self,
+multitext_geometry_widget_get_cell_size(GeometryWidget *gw,
         int *width, int *height)
 {
-    g_return_if_fail(GEOMETRY_IS_WIDGET(self));
+    g_return_if_fail(GEOMETRY_IS_WIDGET(gw));
     GeometryWidgetInterface *iface
-            = GEOMETRY_WIDGET_GET_IFACE(self);
+            = GEOMETRY_WIDGET_GET_IFACE(gw);
     g_return_if_fail(iface->get_cell_size != NULL);
-    iface->get_cell_size(self, width, height);
+    iface->get_cell_size(gw, width, height);
 }
 
-void multitext_geometry_widget_set_active(GeometryWidget *self,
+void multitext_geometry_widget_set_active(GeometryWidget *gw,
         gboolean active)
 {
-    g_return_if_fail(GEOMETRY_IS_WIDGET(self));
+    g_return_if_fail(GEOMETRY_IS_WIDGET(gw));
     GeometryWidgetInterface *iface
-            = GEOMETRY_WIDGET_GET_IFACE(self);
+            = GEOMETRY_WIDGET_GET_IFACE(gw);
     g_return_if_fail(iface->set_active != NULL);
-    iface->set_active(self, active);
+    iface->set_active(gw, active);
 }
 
 gboolean
-multitext_geometry_widget_confirm_close(GeometryWidget *self)
+multitext_geometry_widget_confirm_close(GeometryWidget *gw)
 {
-    g_return_val_if_fail(GEOMETRY_IS_WIDGET(self), FALSE);
+    g_return_val_if_fail(GEOMETRY_IS_WIDGET(gw), FALSE);
     GeometryWidgetInterface *iface
-            = GEOMETRY_WIDGET_GET_IFACE(self);
+            = GEOMETRY_WIDGET_GET_IFACE(gw);
     g_return_val_if_fail(iface->confirm_close != NULL, FALSE);
-    return iface->confirm_close(self);
+    return iface->confirm_close(gw);
 }
 
 void multitext_geometry_widget_set_alloc_for_measurement(
-        GeometryWidget *self, gboolean afm)
+        GeometryWidget *gw, gboolean afm)
 {
-    g_return_if_fail(GEOMETRY_IS_WIDGET(self));
+    g_return_if_fail(GEOMETRY_IS_WIDGET(gw));
     GeometryWidgetInterface *iface
-            = GEOMETRY_WIDGET_GET_IFACE(self);
+            = GEOMETRY_WIDGET_GET_IFACE(gw);
     g_return_if_fail(iface->set_alloc_for_measurement != NULL);
-    iface->set_alloc_for_measurement(self, afm);
+    iface->set_alloc_for_measurement(gw, afm);
 }
