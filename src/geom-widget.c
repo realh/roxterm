@@ -79,7 +79,7 @@ GeometryWidget *geometry_widget_get_active(GeometryWidget *gw)
     g_return_val_if_fail(GEOMETRY_IS_WIDGET(gw), NULL);
     GeometryWidgetInterface *iface
             = GEOMETRY_WIDGET_GET_IFACE(gw);
-    g_return_val_if_fail(iface->set_active != NULL, NULL);
+    g_return_val_if_fail(iface->get_active != NULL, NULL);
     return iface->get_active(gw);
 }
 
@@ -88,7 +88,7 @@ gboolean geometry_widget_is_active(GeometryWidget *gw)
     g_return_val_if_fail(GEOMETRY_IS_WIDGET(gw), FALSE);
     GeometryWidgetInterface *iface
             = GEOMETRY_WIDGET_GET_IFACE(gw);
-    g_return_val_if_fail(iface->set_active != NULL, FALSE);
+    g_return_val_if_fail(iface->is_active != NULL, FALSE);
     return iface->is_active(gw);
 }
 
