@@ -10,6 +10,11 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/version.h.in
     ${CMAKE_CURRENT_BINARY_DIR}/version.h)
 
+#message("LIBRARIES ${ROXTERM_LIBRARIES}")
+#message("LIBRARY_DIRS ${ROXTERM_LIBRARY_DIRS}")
+#message("LDFLAGS ${ROXTERM_LDFLAGS}")
+#message("LDFLAGS_OTHER ${ROXTERM_LDFLAGS_OTHER}")
+
 add_custom_command(OUTPUT gresources.c
     COMMAND glib-compile-resources
         --target=${CMAKE_CURRENT_BINARY_DIR}/gresources.c --generate-source
@@ -34,9 +39,11 @@ target_compile_options(roxterm PRIVATE ${ROXTERM_CFLAGS_OTHER})
 target_link_directories(roxterm PRIVATE ${ROXTERM_LIBRARY_DIRS})
 target_link_libraries(roxterm PRIVATE ${ROXTERM_LIBRARIES})
 
-# Doesn't work on Mac: https://gitlab.kitware.com/cmake/cmake/issues/19688
-# Luckily it seems to be OK to just miss out the -framework libraries
-#target_link_options(roxterm PUBLIC ${ROXTERM_LDFLAGS_OTHER})
+if (NOT APPLE)
+    # Doesn't work on Mac: https://gitlab.kitware.com/cmake/cmake/issues/19688
+    # Luckily it seems to be OK to just miss out the -framework libraries
+    target_link_options(roxterm PUBLIC ${ROXTERM_LDFLAGS_OTHER})
+endif(NOT APPLE)
 
 install(TARGETS roxterm RUNTIME DESTINATION bin)
 install(FILES roxterm-config.ui DESTINATION share/roxterm)
