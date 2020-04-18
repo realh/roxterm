@@ -25,18 +25,18 @@ typedef struct
     gboolean active;
 } GeometryNotebookPrivate;
 
-static void
-geometry_notebook_container_init(GeometryContainerInterface *iface);
+static void geometry_notebook_implement_geometry_container(
+        GeometryContainerInterface *iface);
 
 static void
-geometry_notebook_widget_init(GeometryWidgetInterface *iface);
+geometry_notebook_implement_geometry_widget(GeometryWidgetInterface *iface);
 
 G_DEFINE_TYPE_WITH_CODE(GeometryNotebook, geometry_notebook, GTK_TYPE_NOTEBOOK,
         G_ADD_PRIVATE(GeometryNotebook)
         G_IMPLEMENT_INTERFACE(GEOMETRY_TYPE_CONTAINER,
-            geometry_notebook_container_init)
+            geometry_notebook_implement_geometry_container)
         G_IMPLEMENT_INTERFACE(GEOMETRY_TYPE_WIDGET,
-            geometry_notebook_widget_init)
+            geometry_notebook_implement_geometry_widget)
         );
 
 static GeometryWidget *geometry_notebook_get_current(GeometryContainer *gc)
@@ -50,8 +50,8 @@ static GeometryWidget *geometry_notebook_get_current(GeometryContainer *gc)
     return gw;
 }
 
-static void
-geometry_notebook_container_init(GeometryContainerInterface *iface)
+static void geometry_notebook_implement_geometry_container(
+        GeometryContainerInterface *iface)
 {
     iface->get_current = geometry_notebook_get_current;
 }
@@ -81,8 +81,9 @@ static gboolean geometry_container_is_active(GeometryWidget *gw)
 }
 
 static void
-geometry_notebook_widget_init(GeometryWidgetInterface *iface)
+geometry_notebook_implement_geometry_widget(GeometryWidgetInterface *iface)
 {
+    geometry_container_implement_geometry_widget(iface);
     iface->set_active = geometry_container_set_active;
 }
 

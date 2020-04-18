@@ -108,7 +108,7 @@ void geometry_container_add_signal_hooks(GeometryContainer *gc)
             G_CALLBACK(geometry_container_remove), NULL);
 }
 
-static void geometry_container_implement_geometry_widget(
+void geometry_container_implement_geometry_widget(
         GeometryWidgetInterface *iface)
 {
     iface->get_target_size = geometry_container_get_target_size;
@@ -133,7 +133,7 @@ geometry_container_default_get_current(GeometryContainer *gc)
 G_DEFINE_INTERFACE(GeometryContainer, geometry_container,
         GTK_TYPE_WIDGET);
 
-void geometry_container_default_init(UNUSED GeometryContainerInterface *iface)
+static void geometry_container_default_init(GeometryContainerInterface *iface)
 {
     iface->get_current = geometry_container_default_get_current;
 }

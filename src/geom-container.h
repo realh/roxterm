@@ -63,11 +63,19 @@ GeometryWidget *geometry_container_get_current(GeometryContainer *gc);
 void geometry_container_add_signal_hooks(GeometryContainer *gc);
 
 /**
- * geometry_container_dispose: (method):
+ * geometry_container_remove_signal_hooks: (method):
  * Implementations need to call this from their dispose methods to remove any
  * outstanding signal connections. It doesn't chain up.
  */
 void geometry_container_remove_signal_hooks(GeometryContainer *gc);
+
+/**
+ * geometry_container_implement_geometry_widget: Sets up iface's vtable with
+ *      GeometryContainer's default implementations
+ * @iface: (transfer none):
+ */
+void geometry_container_implement_geometry_widget(
+        GeometryWidgetInterface *iface);
 
 G_END_DECLS
 
