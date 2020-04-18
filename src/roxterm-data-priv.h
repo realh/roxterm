@@ -25,7 +25,7 @@
 G_BEGIN_DECLS
 
 struct ROXTermData {
-    /* We own a reference to colour_scheme */
+    /* We own references to colour_scheme and profile */
     Options *colour_scheme;
     Options *profile;
     char *special_command;      /* Next window/tab opened from this one should
@@ -34,10 +34,8 @@ struct ROXTermData {
     char **actual_commandv;     /* The actual command used */
     char *directory;            /* Copied from launch params */
     double target_zoom_factor;
-    int zoom_index;
     gboolean borderless;
     gboolean maximise;
-    PangoFontDescription *pango_desc;
     gboolean dont_lookup_dimensions;
     int columns, rows;
     RoxtermStrvRef *env;

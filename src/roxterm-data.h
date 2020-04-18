@@ -35,7 +35,7 @@ typedef struct ROXTermData ROXTermData;
  * @env: (transfer none):
  */
 ROXTermData *roxterm_data_new(double zoom_factor, const char *directory,
-        const char *profile_name, Options *profile, gboolean maximise,
+        Options *profile, gboolean maximise,
         const char *colour_scheme_name,
         char **geom, gboolean *size_on_cli, RoxtermStrvRef *env);
 
