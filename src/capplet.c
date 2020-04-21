@@ -42,7 +42,7 @@ gboolean capplet_ignore_changes = FALSE;
 
 void capplet_save_file(Options * options)
 {
-    options_file_save(options->kf, options->name);
+    options_file_save(options->kf, options->family, options->name);
     options->kf_dirty = FALSE;
 }
 

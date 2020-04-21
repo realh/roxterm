@@ -154,7 +154,7 @@ static void roxterm_app_launch_window(UNUSED RoxtermApp *app,
         const char *colour_scheme_name = tlp->colour_scheme_name ?
             g_strdup(tlp->colour_scheme_name) :
             global_options_lookup_string_with_default("colour_scheme",
-                    "Default");
+                    "GTK");
         Options *profile = dynamic_options_lookup_and_ref(
                 roxterm_get_profiles(), profile_name);
         char *geom = wlp->geometry_str;

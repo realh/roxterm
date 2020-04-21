@@ -232,6 +232,7 @@ void on_Profile_Editor_close(GtkWidget * widget, ProfileGUI * pg)
 
 void on_font_set(GtkFontButton * fontbutton, ProfileGUI * pg)
 {
+    g_debug("on_font_set");
     capplet_set_string(pg->capp.options,
         "font", gtk_font_chooser_get_font(GTK_FONT_CHOOSER(fontbutton)));
 }

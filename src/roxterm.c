@@ -3901,7 +3901,7 @@ static void dont_show_again_toggled(GtkToggleButton *button, DontShowData *d)
         val = d->warn;
     }
     options_set_int(global_options, "warn_close", val);
-    options_file_save(global_options->kf, "Global");
+    options_file_save(global_options->kf, NULL, "Global");
 }
 
 static void only_running_toggled(GtkToggleButton *button, DontShowData *d)
@@ -3909,7 +3909,7 @@ static void only_running_toggled(GtkToggleButton *button, DontShowData *d)
     (void) d;
     options_set_int(global_options, "only_warn_running",
             gtk_toggle_button_get_active(button));
-    options_file_save(global_options->kf, "Global");
+    options_file_save(global_options->kf, NULL, "Global");
 }
 
 static gboolean check_pid_has_children(pid_t pid)

@@ -249,7 +249,8 @@ gboolean options_file_mkdir_with_parents(const char *dirname)
 		g_critical(_("Invalid directory name '%s'"), dirname);
 		return FALSE;
 	}
-	if (g_mkdir_with_parents(dirname, 0755) == -1)
+    int result = g_mkdir_with_parents(dirname, 0755);
+	if (result == -1)
 	{
 		dlg_critical(NULL, _("Failed to create directory '%s': %s"),
 			dirname, strerror(errno));
@@ -280,9 +281,11 @@ char *options_file_filename_for_saving(const char *leafname, ...)
 	return result;
 }
 
-void options_file_save(GKeyFile *kf, const char *leafname)
+void options_file_save(GKeyFile *kf, const char *family, const char *leafname)
 {
-	char *pathname = options_file_filename_for_saving(leafname, NULL);
+    const char *n1 = family ? family : leafname;
+    const char *n2 = family ? leafname : NULL;
+	char *pathname = options_file_filename_for_saving(n1, n2, NULL);
 	char *file_data;
 	gsize data_len;
 	GError *err = NULL;
@@ -291,13 +294,10 @@ void options_file_save(GKeyFile *kf, const char *leafname)
 		return;
 	/* leafname may actually be a relative path, so make sure any directories
 	 * in it exist */
-	if (strchr(leafname, G_DIR_SEPARATOR))
-	{
-		char *dirname = g_path_get_dirname(pathname);
+    char *dirname = g_path_get_dirname(pathname);
 
-		options_file_mkdir_with_parents(dirname);
-		g_free(dirname);
-	}
+    options_file_mkdir_with_parents(dirname);
+    g_free(dirname);
 	file_data = g_key_file_to_data(kf, &data_len, &err);
 	if (err)
 	{
