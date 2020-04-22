@@ -3419,8 +3419,7 @@ static void
 roxterm_colour_option_changed(UNUSED RoxtermDynamicOptions *dynopts,
         const char *profile_name, const char *key, UNUSED gpointer handle)
 {
-    const char *scheme_name = profile_name + 8;
-    Options *scheme = colour_scheme_lookup_and_ref(scheme_name);
+    Options *scheme = colour_scheme_lookup_and_ref(profile_name);
     if (!strcmp(key, "palette_size"))
     {
         roxterm_update_palette_size(scheme, options_lookup_int(scheme, key));
