@@ -3044,14 +3044,16 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
          */
         viewport = gtk_scrolled_window_new(roxterm_get_vte_hadjustment(vte),
                         roxterm_get_vte_vadjustment(vte));
-        gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(viewport),
+        GtkScrolledWindow *sw = GTK_SCROLLED_WINDOW(viewport);
+        gtk_scrolled_window_set_policy(sw,
                 GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
-        gtk_scrolled_window_set_overlay_scrolling(GTK_SCROLLED_WINDOW(viewport),
+        gtk_scrolled_window_set_overlay_scrolling(sw,
             options_lookup_int_with_default(roxterm_template->profile,
                 "overlay_scrollbar", TRUE));
-        gtk_scrolled_window_set_placement(GTK_SCROLLED_WINDOW(viewport),
+        gtk_scrolled_window_set_placement(sw,
                 (scrollbar_pos == MultiWinScrollBar_Left) ?
                 GTK_CORNER_TOP_RIGHT : GTK_CORNER_TOP_LEFT);
+        gtk_scrolled_window_set_kinetic_scrolling(sw, TRUE);
         gtk_container_add(GTK_CONTAINER(viewport), roxterm->widget);
         gtk_widget_show_all(viewport);
     }
