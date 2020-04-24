@@ -30,7 +30,7 @@ target_include_directories(rtlib PRIVATE
     ${RTCOMMON_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})
 target_compile_options(rtlib PRIVATE ${RTCOMMON_CFLAGS_OTHER})
 
-add_executable(roxterm
+add_executable(roxterm $<TARGET_OBJECTS:rtlib>
     about.c main.c multitab.c multitab-close-button.c
     multitab-label.c menutree.c optsdbus.c roxterm.c roxterm-regex.c search.c
     session-file.c shortcuts.c uri.c)
@@ -40,13 +40,13 @@ target_include_directories(roxterm PRIVATE
 target_compile_options(roxterm PRIVATE
     ${RTCOMMON_CFLAGS_OTHER} ${VTE_CFLAGS_OTHER})
 target_link_libraries(roxterm
-    $<TARGET_OBJECTS:rtlib> ${RTCOMMON_LIBRARIES} ${VTE_LIBRARIES})
+    ${RTCOMMON_LIBRARIES} ${VTE_LIBRARIES})
 target_link_directories(roxterm PRIVATE
     ${RTCOMMON_LIBRARY_DIRS} ${VTE_LIBRARY_DIRS})
 target_link_options(roxterm PRIVATE
-    ${RTCOMMON_LDFLAGS} ${VTE_LDFLAGS})
+${RTCOMMON_LDFLAGS_OTHER} ${VTE_LDFLAGS_OTHER})
 
-add_executable(roxterm-config
+add_executable(roxterm-config $<TARGET_OBJECTS:rtlib>
     capplet.c colourgui.c configlet.c getname.c optsdbus.c
     profilegui.c shortcuts.c)
 add_dependencies(roxterm-config rtlib)
@@ -56,12 +56,12 @@ target_include_directories(roxterm-config PRIVATE
 target_compile_options(roxterm-config PRIVATE
     ${RTCOMMON_CFLAGS_OTHER} ${GMODULE_CFLAGS_OTHER})
 target_compile_definitions(roxterm-config PRIVATE -DROXTERM_CAPPLET)
-target_link_libraries(roxterm
-    $<TARGET_OBJECTS:rtlib> ${RTCOMMON_LIBRARIES} ${GMODULE_LIBRARIES})
+target_link_libraries(roxterm-config
+    ${RTCOMMON_LIBRARIES} ${GMODULE_LIBRARIES})
 target_link_directories(roxterm-config PRIVATE
     ${RTCOMMON_LIBRARY_DIRS} ${GMODULE_LIBRARY_DIRS})
 target_link_options(roxterm-config PRIVATE
-    ${RTCOMMON_LDFLAGS} ${GMODULE_LDFLAGS})
+    ${RTCOMMON_LDFLAGS_OTHER} ${GMODULE_LDFLAGS_OTHER})
 
 install(TARGETS roxterm roxterm-config
     RUNTIME DESTINATION bin)
