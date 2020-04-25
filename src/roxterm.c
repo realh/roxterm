@@ -3053,7 +3053,6 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
         gtk_scrolled_window_set_placement(sw,
                 (scrollbar_pos == MultiWinScrollBar_Left) ?
                 GTK_CORNER_TOP_RIGHT : GTK_CORNER_TOP_LEFT);
-        gtk_scrolled_window_set_kinetic_scrolling(sw, TRUE);
         gtk_container_add(GTK_CONTAINER(viewport), roxterm->widget);
         gtk_widget_show_all(viewport);
     }
