@@ -15,9 +15,9 @@ configure_file(${PROJECT_SOURCE_DIR}/AppInfo.xml.in
     ${PROJECT_SOURCE_DIR}/AppInfo.xml)
 configure_file(${PROJECT_SOURCE_DIR}/src/version.h.in
     ${PROJECT_BINARY_DIR}/src/version.h)
-# appdata should really be processed by i18n
-configure_file(${PROJECT_SOURCE_DIR}/roxterm.appdata.xml.in
-    ${PROJECT_BINARY_DIR}/roxterm.appdata.xml)
+# metainfo should really be processed by i18n
+configure_file(${PROJECT_SOURCE_DIR}/roxterm.metainfo.xml.in
+    ${PROJECT_BINARY_DIR}/roxterm.metainfo.xml)
 configure_file(${PROJECT_SOURCE_DIR}/roxterm.spec.in
     ${PROJECT_SOURCE_DIR}/roxterm.spec)
 configure_file(${PROJECT_SOURCE_DIR}/roxterm.1.xml.in
@@ -64,8 +64,8 @@ endif ()
 install(FILES roxterm.desktop
     DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/roxterm.appdata.xml
-    DESTINATION ${CMAKE_INSTALL_DATADIR}/appdata)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/roxterm.metainfo.xml
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/metainfo)
 
 
 # It would be nice if we could use cmake -E tar here, but it doesn't support
@@ -95,7 +95,7 @@ add_custom_command(OUTPUT "${TARBALL_NAME}"
     README.md
     README.translations
     roxterm.1.xml.in
-    roxterm.appdata.xml.in
+    roxterm.metainfo.xml.in
     roxterm-config.1.xml.in
     roxterm.desktop
     roxterm.lsm.in
