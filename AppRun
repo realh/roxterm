@@ -1,5 +1,17 @@
 #!/bin/sh
 
+#CVTELIB=~/opt/vte/lib
+#PCP=$CVTELIB/pkgconfig
+#if [ -f $CVTELIB/libvte-2.91.so -a $PCP/vte-2.91.pc ] ; then
+#    echo "Enabling custom vte in ~/opt"
+#    if echo "$PKG_CONFIG_PATH" | grep -qv $PCP ; then
+#        export PKG_CONFIG_PATH="$PCP:${PKG_CONFIG_PATH}"
+#    fi
+#    if echo "$LD_LIBRARY_PATH" | grep -qv $CVTELIB ; then
+#        export LD_LIBRARY_PATH="$CVTELIB:${LD_LIBRARY_PATH}"
+#    fi
+#fi
+
 PROG=roxterm
 
 APP_DIR=`dirname "$0"`
@@ -36,7 +48,7 @@ configure() {
     echo "Configuring/compiling $APP_DIR... please wait..." >&2
     mkdir -p "$APP_DIR/build"
     cd "$APP_DIR/build"
-    cmake -DCMAKE_BUILD_TYPE=RELWITHDEBINFO ..
+    cmake -v -DCMAKE_BUILD_TYPE=RELWITHDEBINFO ..
 }
 
 RECOGNISED=1

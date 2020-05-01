@@ -1,4 +1,4 @@
-# Find libraries
+include(CheckSymbolExists)
 
 # roxterm and roxterm-config both depend on these
 pkg_check_modules(RTCOMMON REQUIRED
@@ -9,6 +9,12 @@ pkg_check_modules(GMODULE REQUIRED gmodule-export-2.0)
 
 # If VTE >= 0.50 this should include the necessary flags for libpcre
 pkg_check_modules(VTE REQUIRED vte-2.91>=0.52)
+
+set(CMAKE_REQUIRED_FLAGS "${VTE_CFLAGS_OTHER}")
+set(CMAKE_REQUIRED_INCLUDES "${VTE_INCLUDE_DIRS}")
+#set(CMAKE_REQUIRED_LIBRARIES "${VTE_LIBRARIES}")
+set(CMAKE_REQUIRED_LINK_OPTIONS "${VTE_LDFLAGS}")
+check_symbol_exists(vte_terminal_set_self_scrolling vte/vte.h VTE_SELF_SCROLLING)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in
     ${CMAKE_CURRENT_BINARY_DIR}/config.h)
