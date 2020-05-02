@@ -1,16 +1,5 @@
 #!/bin/sh
 
-#CVTELIB=~/opt/vte/lib
-#PCP=$CVTELIB/pkgconfig
-#if [ -f $CVTELIB/libvte-2.91.so -a $PCP/vte-2.91.pc ] ; then
-#    echo "Enabling custom vte in ~/opt"
-#    if echo "$PKG_CONFIG_PATH" | grep -qv $PCP ; then
-#        export PKG_CONFIG_PATH="$PCP:${PKG_CONFIG_PATH}"
-#    fi
-#    if echo "$LD_LIBRARY_PATH" | grep -qv $CVTELIB ; then
-#        export LD_LIBRARY_PATH="$CVTELIB:${LD_LIBRARY_PATH}"
-#    fi
-#fi
 
 PROG=roxterm
 
@@ -54,6 +43,22 @@ configure() {
 RECOGNISED=1
 while [ "$RECOGNISED" = "1" ] ; do
     case $1 in
+        --opt-vte)
+            shift
+            CVTELIB=~/opt/vte/lib
+            PCP=$CVTELIB/pkgconfig
+            if [ -f $CVTELIB/libvte-2.91.so -a $PCP/vte-2.91.pc ] ; then
+                echo "Enabling custom vte in ~/opt"
+                if echo "$PKG_CONFIG_PATH" | grep -qv $PCP ; then
+                    export PKG_CONFIG_PATH="$PCP:${PKG_CONFIG_PATH}"
+                fi
+                if echo "$LD_LIBRARY_PATH" | grep -qv $CVTELIB ; then
+                    export LD_LIBRARY_PATH="$CVTELIB:${LD_LIBRARY_PATH}"
+                fi
+            else
+                echo "vte not found in ~/opt"
+            fi
+            ;;
         --verbose)
             shift
             DBGENV='G_MESSAGES_DEBUG=all'
