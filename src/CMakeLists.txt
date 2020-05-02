@@ -14,7 +14,8 @@ set(CMAKE_REQUIRED_FLAGS "${VTE_CFLAGS_OTHER}")
 set(CMAKE_REQUIRED_INCLUDES "${VTE_INCLUDE_DIRS}")
 set(CMAKE_REQUIRED_LIBRARIES "${VTE_LIBRARIES}")
 set(CMAKE_REQUIRED_LINK_OPTIONS "${VTE_LDFLAGS}")
-check_symbol_exists(vte_terminal_set_self_scrolling vte/vte.h VTE_SELF_SCROLLING)
+check_symbol_exists(vte_terminal_set_handle_scroll vte/vte.h
+    HAVE_VTE_HANDLE_SCROLL)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in
     ${CMAKE_CURRENT_BINARY_DIR}/config.h)

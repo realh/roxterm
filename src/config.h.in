@@ -38,6 +38,6 @@
 
 #define SYS_CONF_DIR "@CMAKE_INSTALL_FULL_SYSCONFDIR@"
 
-#cmakedefine VTE_SELF_SCROLLING
+#cmakedefine HAVE_VTE_HANDLE_SCROLL
 
 #endif /* ROXTERM__CONFIG_H */

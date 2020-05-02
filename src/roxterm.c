@@ -3022,8 +3022,8 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
     *roxterm_out = roxterm;
 
     roxterm->widget = vte_terminal_new();
-#ifdef VTE_SELF_SCROLLING
-    vte_terminal_set_self_scrolling(VTE_TERMINAL(roxterm->widget), FALSE);
+#ifdef HAVE_VTE_HANDLE_SCROLL
+    vte_terminal_set_handle_scroll(VTE_TERMINAL(roxterm->widget), FALSE);
 #endif
     vte_terminal_set_size(VTE_TERMINAL(roxterm->widget),
             roxterm->columns, roxterm->rows);
