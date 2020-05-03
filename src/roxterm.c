@@ -591,7 +591,6 @@ static void roxterm_fork_command(ROXTermData *roxterm, VteTerminal *vte,
      */
     vte_terminal_spawn_async(vte, VTE_PTY_DEFAULT,
             working_directory, argv, envv, 
-            G_SPAWN_DO_NOT_REAP_CHILD |
             (login ? G_SPAWN_FILE_AND_ARGV_ZERO : G_SPAWN_SEARCH_PATH) |
             VTE_SPAWN_NO_PARENT_ENVV,
             NULL, NULL, NULL,
