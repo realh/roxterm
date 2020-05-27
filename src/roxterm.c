@@ -577,7 +577,6 @@ static void roxterm_fork_command(ROXTermData *roxterm, VteTerminal *vte,
      */
     vte_terminal_spawn_async(vte, VTE_PTY_DEFAULT,
             working_directory, argv, envv, 
-            G_SPAWN_DO_NOT_REAP_CHILD |
             (login ? G_SPAWN_FILE_AND_ARGV_ZERO : G_SPAWN_SEARCH_PATH) |
             VTE_SPAWN_NO_PARENT_ENVV,
             NULL, NULL, NULL,
@@ -3019,6 +3018,9 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
     *roxterm_out = roxterm;
 
     roxterm->widget = vte_terminal_new();
+#ifdef HAVE_VTE_HANDLE_SCROLL
+    vte_terminal_set_handle_scroll(VTE_TERMINAL(roxterm->widget), FALSE);
+#endif
     vte_terminal_set_size(VTE_TERMINAL(roxterm->widget),
             roxterm->columns, roxterm->rows);
     gtk_widget_grab_focus(roxterm->widget);
