@@ -18,6 +18,18 @@ It still supports the ROX desktop application layout it was named after, but
 can also be installed in a more conventional manner for use in other desktop
 environments.
 
+Kinetic scrolling
+-----------------
+
+Recent versions of ROXTerm support kinetic scrolling with libinput, which
+considerably improves the UX on laptops for users of Wayland, and for xorg
+users who can't or won't use the deprecated synaptics driver. However, it
+requires a [patched fork of vte](https://gitlab.gnome.org/realh69/vte).
+ROXTerm needs to be (re)compiled against this version of vte to enable support.
+If you like this feature please visit
+[this vte issue](https://gitlab.gnome.org/GNOME/vte/-/issues/234) and give it an
+upvote.
+
 Related sites
 -------------
 
