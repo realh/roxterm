@@ -4221,7 +4221,7 @@ void roxterm_init(void)
     {
 #ifndef RT_VTE_LIBDIR
         g_warning("RT_VTE_LIBDIR is not defined, may not be able to detect "
-                "kinetic scrolling support");
+                "kinetic scrolling support correctly");
 #endif
         char *modpath = g_module_build_path(
 #ifdef RT_VTE_LIBDIR
@@ -4229,17 +4229,25 @@ void roxterm_init(void)
 #endif
                 NULL,
                 "vte-2.91");
-        g_debug("Attempting to open %s to detect kinetic scrolling support",
-                modpath);
+        //g_debug("Attempting to open %s to detect kinetic scrolling support",
+        //        modpath);
         GModule *mod = g_module_open(modpath,
                 G_MODULE_BIND_LAZY | G_MODULE_BIND_LOCAL);
         if (mod)
         {
-            if (g_module_symbol(mod, "vte_terminal_set_handle_scroll",
+            if (!g_module_symbol(mod, "vte_terminal_set_handle_scroll",
                         (gpointer *) &p_vte_terminal_set_handle_scroll))
-                g_debug("Kinetic scrolling is supported");
+            {
+                //g_debug("Kinetic scrolling is not supported");
+                g_module_close(mod);
+            }
+            /*
             else
-                g_debug("Kinetic scrolling is not supported");
+            {
+                g_debug("Kinetic scrolling is supported");
+                // Keep the module open if we're going to use this function
+            }
+            */
         }
         else
         {
@@ -4247,7 +4255,6 @@ void roxterm_init(void)
                     "scrolling support: %s", modpath, g_module_error());
         }
         g_free(modpath);
-        // Don't close the module
     }
     resources_access_icon();
     gtk_window_set_default_icon_name("roxterm");
