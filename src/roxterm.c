@@ -67,6 +67,8 @@ inline static gboolean roxterm_enable_hyperlinks()
 }
 #endif
 
+void (*p_vte_terminal_set_handle_scroll)(VteTerminal *vte, gboolean) = NULL;
+
 typedef enum {
     Roxterm_ChildExitClose,
     Roxterm_ChildExitHold,
@@ -3021,9 +3023,8 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
     *roxterm_out = roxterm;
 
     roxterm->widget = vte_terminal_new();
-#ifdef HAVE_VTE_HANDLE_SCROLL
-    vte_terminal_set_handle_scroll(VTE_TERMINAL(roxterm->widget), FALSE);
-#endif
+    if (p_vte_terminal_set_handle_scroll)
+        p_vte_terminal_set_handle_scroll(VTE_TERMINAL(roxterm->widget), FALSE);
     vte_terminal_set_size(VTE_TERMINAL(roxterm->widget),
             roxterm->columns, roxterm->rows);
     gtk_widget_grab_focus(roxterm->widget);
@@ -4216,6 +4217,38 @@ static gboolean roxterm_delete_handler(GtkWindow *gtkwin, GdkEvent *event,
 
 void roxterm_init(void)
 {
+    if (g_module_supported())
+    {
+#ifndef RT_VTE_LIBDIR
+        g_warning("RT_VTE_LIBDIR is not defined, may not be able to detect "
+                "kinetic scrolling support");
+#endif
+        char *modpath = g_module_build_path(
+#ifdef RT_VTE_LIBDIR
+                strlen(RT_VTE_LIBDIR) ? RT_VTE_LIBDIR :
+#endif
+                NULL,
+                "vte-2.91");
+        g_debug("Attempting to open %s to detect kinetic scrolling support",
+                modpath);
+        GModule *mod = g_module_open(modpath,
+                G_MODULE_BIND_LAZY | G_MODULE_BIND_LOCAL);
+        if (mod)
+        {
+            if (g_module_symbol(mod, "vte_terminal_set_handle_scroll",
+                        (gpointer *) &p_vte_terminal_set_handle_scroll))
+                g_debug("Kinetic scrolling is supported");
+            else
+                g_debug("Kinetic scrolling is not supported");
+        }
+        else
+        {
+            g_warning("Unable to dynamically (re)load %s to detect kinetic "
+                    "scrolling support: %s", modpath, g_module_error());
+        }
+        g_free(modpath);
+        // Don't close the module
+    }
     resources_access_icon();
     gtk_window_set_default_icon_name("roxterm");
 

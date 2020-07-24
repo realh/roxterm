@@ -4,18 +4,22 @@ include(CheckSymbolExists)
 pkg_check_modules(RTCOMMON REQUIRED
     gtk+-3.0>=3.20.0 dbus-1>=1.0 dbus-glib-1>=0.22)
 
-# roxterm-config needs certain flags so GtkBuilder can find signal handlers
-pkg_check_modules(GMODULE REQUIRED gmodule-export-2.0)
+# roxterm-config needs to export symbols so GtkBuilder can find signal handlers
+pkg_check_modules(GMODULE_EXPORT REQUIRED gmodule-export-2.0)
+
+# roxterm also now uses gmodule, but doesn't need to export its symbols
+pkg_check_modules(GMODULE REQUIRED gmodule-no-export-2.0)
 
 # If VTE >= 0.50 this should include the necessary flags for libpcre
 pkg_check_modules(VTE REQUIRED vte-2.91>=0.52)
 
-set(CMAKE_REQUIRED_FLAGS "${VTE_CFLAGS_OTHER}")
-set(CMAKE_REQUIRED_INCLUDES "${VTE_INCLUDE_DIRS}")
-set(CMAKE_REQUIRED_LIBRARIES "${VTE_LIBRARIES}")
-set(CMAKE_REQUIRED_LINK_OPTIONS "${VTE_LDFLAGS}")
-check_symbol_exists(vte_terminal_set_handle_scroll vte/vte.h
-    HAVE_VTE_HANDLE_SCROLL)
+# set(CMAKE_REQUIRED_FLAGS "${VTE_CFLAGS_OTHER}")
+# set(CMAKE_REQUIRED_INCLUDES "${VTE_INCLUDE_DIRS}")
+# set(CMAKE_REQUIRED_LIBRARIES "${VTE_LIBRARIES}")
+# set(CMAKE_REQUIRED_LINK_OPTIONS "${VTE_LDFLAGS}")
+# check_symbol_exists(vte_terminal_set_handle_scroll vte/vte.h
+#     HAVE_VTE_HANDLE_SCROLL)
+pkg_get_variable(RT_VTE_LIBDIR vte-2.91 libdir)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in
     ${CMAKE_CURRENT_BINARY_DIR}/config.h)
@@ -43,32 +47,33 @@ add_executable(roxterm $<TARGET_OBJECTS:rtlib>
     session-file.c shortcuts.c uri.c)
 add_dependencies(roxterm rtlib)
 target_include_directories(roxterm PRIVATE
-    ${RTCOMMON_INCLUDE_DIRS} ${VTE_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})
+    ${RTCOMMON_INCLUDE_DIRS} ${VTE_INCLUDE_DIRS} ${GMODULE_INCLUDE_DIRS}
+    ${CMAKE_CURRENT_BINARY_DIR})
 target_compile_options(roxterm PRIVATE
-    ${RTCOMMON_CFLAGS_OTHER} ${VTE_CFLAGS_OTHER})
+    ${RTCOMMON_CFLAGS_OTHER} ${VTE_CFLAGS_OTHER} ${GMODULE_CFLAGS_OTHER})
 target_link_libraries(roxterm
-    ${RTCOMMON_LIBRARIES} ${VTE_LIBRARIES})
+    ${RTCOMMON_LIBRARIES} ${VTE_LIBRARIES} ${GMODULE_LIBRARIES})
 target_link_directories(roxterm PRIVATE
-    ${RTCOMMON_LIBRARY_DIRS} ${VTE_LIBRARY_DIRS})
+    ${RTCOMMON_LIBRARY_DIRS} ${VTE_LIBRARY_DIRS} ${GMODULE_LIBRARY_DIRS})
 target_link_options(roxterm PRIVATE
-${RTCOMMON_LDFLAGS_OTHER} ${VTE_LDFLAGS_OTHER})
+${RTCOMMON_LDFLAGS_OTHER} ${VTE_LDFLAGS_OTHER} ${GMODULE_EXPORT_LDFLAGS_OTHER})
 
 add_executable(roxterm-config $<TARGET_OBJECTS:rtlib>
     capplet.c colourgui.c configlet.c getname.c optsdbus.c
     profilegui.c shortcuts.c)
 add_dependencies(roxterm-config rtlib)
 target_include_directories(roxterm-config PRIVATE
-    ${RTCOMMON_INCLUDE_DIRS} ${GMODULE_INCLUDE_DIRS}
+    ${RTCOMMON_INCLUDE_DIRS} ${GMODULE_EXPORT_INCLUDE_DIRS}
     ${CMAKE_CURRENT_BINARY_DIR})
 target_compile_options(roxterm-config PRIVATE
-    ${RTCOMMON_CFLAGS_OTHER} ${GMODULE_CFLAGS_OTHER})
+    ${RTCOMMON_CFLAGS_OTHER} ${GMODULE_EXPORT_CFLAGS_OTHER})
 target_compile_definitions(roxterm-config PRIVATE -DROXTERM_CAPPLET)
 target_link_libraries(roxterm-config
-    ${RTCOMMON_LIBRARIES} ${GMODULE_LIBRARIES})
+    ${RTCOMMON_LIBRARIES} ${GMODULE_EXPORT_LIBRARIES})
 target_link_directories(roxterm-config PRIVATE
-    ${RTCOMMON_LIBRARY_DIRS} ${GMODULE_LIBRARY_DIRS})
+    ${RTCOMMON_LIBRARY_DIRS} ${GMODULE_EXPORT_LIBRARY_DIRS})
 target_link_options(roxterm-config PRIVATE
-    ${RTCOMMON_LDFLAGS_OTHER} ${GMODULE_LDFLAGS_OTHER})
+    ${RTCOMMON_LDFLAGS_OTHER} ${GMODULE_EXPORT_LDFLAGS_OTHER})
 
 install(TARGETS roxterm roxterm-config
     RUNTIME DESTINATION bin)
