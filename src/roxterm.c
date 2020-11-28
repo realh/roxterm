@@ -67,7 +67,8 @@ inline static gboolean roxterm_enable_hyperlinks()
 }
 #endif
 
-void (*p_vte_terminal_set_handle_scroll)(VteTerminal *vte, gboolean) = NULL;
+void (*p_vte_terminal_set_enable_fallback_scrolling)
+    (VteTerminal *vte, gboolean) = NULL;
 
 typedef enum {
     Roxterm_ChildExitClose,
@@ -3023,8 +3024,9 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
     *roxterm_out = roxterm;
 
     roxterm->widget = vte_terminal_new();
-    if (p_vte_terminal_set_handle_scroll)
-        p_vte_terminal_set_handle_scroll(VTE_TERMINAL(roxterm->widget), FALSE);
+    if (p_vte_terminal_set_enable_fallback_scrolling)
+        p_vte_terminal_set_enable_fallback_scrolling(
+                VTE_TERMINAL(roxterm->widget), FALSE);
     vte_terminal_set_size(VTE_TERMINAL(roxterm->widget),
             roxterm->columns, roxterm->rows);
     gtk_widget_grab_focus(roxterm->widget);
@@ -4235,8 +4237,9 @@ void roxterm_init(void)
                 G_MODULE_BIND_LAZY | G_MODULE_BIND_LOCAL);
         if (mod)
         {
-            if (!g_module_symbol(mod, "vte_terminal_set_handle_scroll",
-                        (gpointer *) &p_vte_terminal_set_handle_scroll))
+            if (!g_module_symbol(mod,
+                    "vte_terminal_set_enable_fallback_scrolling",
+                    (gpointer *) &p_vte_terminal_set_enable_fallback_scrolling))
             {
                 //g_debug("Kinetic scrolling is not supported");
                 g_module_close(mod);
