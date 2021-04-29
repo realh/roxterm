@@ -4206,7 +4206,6 @@ static gboolean roxterm_delete_handler(GtkWindow *gtkwin, GdkEvent *event,
 
 void roxterm_init(void)
 {
-#if 0
     if (g_module_supported())
     {
 #ifndef RT_VTE_LIBDIR
@@ -4247,7 +4246,6 @@ void roxterm_init(void)
         }
         g_free(modpath);
     }
-#endif
     resources_access_icon();
     gtk_window_set_default_icon_name("roxterm");
 
