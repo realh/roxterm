@@ -3037,34 +3037,21 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
         *adjustment = roxterm_get_vte_vadjustment(vte);
 
     scrollbar_pos = multi_win_set_scroll_bar_position(win,
+    options_lookup_int_with_default(roxterm_template->profile,
+        "scrollbar_pos", MultiWinScrollBar_Right));
+    viewport = gtk_scrolled_window_new(roxterm_get_vte_hadjustment(vte),
+                    roxterm_get_vte_vadjustment(vte));
+    GtkScrolledWindow *sw = GTK_SCROLLED_WINDOW(viewport);
+    gtk_scrolled_window_set_policy(sw, GTK_POLICY_NEVER,
+            scrollbar_pos ? GTK_POLICY_ALWAYS : GTK_POLICY_NEVER);
+    gtk_scrolled_window_set_overlay_scrolling(sw,
         options_lookup_int_with_default(roxterm_template->profile,
-            "scrollbar_pos", MultiWinScrollBar_Right));
-    if (scrollbar_pos)
-    {
-        /* gnome-terminal packs a separate scrollbar and vte into an HBox, but
-         * doing the same here causes warnings about the scrollbar getting 
-         * allocated a size without calling get_preferred_*. Hopefully using
-         * a GtkScrolledWindow will fix that, and also has the advantage of
-         * enabling the use of overlay scrollbars.
-         */
-        viewport = gtk_scrolled_window_new(roxterm_get_vte_hadjustment(vte),
-                        roxterm_get_vte_vadjustment(vte));
-        GtkScrolledWindow *sw = GTK_SCROLLED_WINDOW(viewport);
-        gtk_scrolled_window_set_policy(sw,
-                GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
-        gtk_scrolled_window_set_overlay_scrolling(sw,
-            options_lookup_int_with_default(roxterm_template->profile,
-                "overlay_scrollbar", TRUE));
-        gtk_scrolled_window_set_placement(sw,
-                (scrollbar_pos == MultiWinScrollBar_Left) ?
-                GTK_CORNER_TOP_RIGHT : GTK_CORNER_TOP_LEFT);
-        gtk_container_add(GTK_CONTAINER(viewport), roxterm->widget);
-        gtk_widget_show_all(viewport);
-    }
-    else
-    {
-        gtk_widget_show(roxterm->widget);
-    }
+            "overlay_scrollbar", TRUE));
+    gtk_scrolled_window_set_placement(sw,
+            (scrollbar_pos == MultiWinScrollBar_Left) ?
+            GTK_CORNER_BOTTOM_RIGHT : GTK_CORNER_BOTTOM_LEFT);
+    gtk_container_add(GTK_CONTAINER(viewport), roxterm->widget);
+    gtk_widget_show_all(viewport);
 
     roxterm_add_matches(roxterm, vte);
 
@@ -4219,6 +4206,7 @@ static gboolean roxterm_delete_handler(GtkWindow *gtkwin, GdkEvent *event,
 
 void roxterm_init(void)
 {
+#if 0
     if (g_module_supported())
     {
 #ifndef RT_VTE_LIBDIR
@@ -4259,6 +4247,7 @@ void roxterm_init(void)
         }
         g_free(modpath);
     }
+#endif
     resources_access_icon();
     gtk_window_set_default_icon_name("roxterm");
 
