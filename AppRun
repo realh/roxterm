@@ -37,7 +37,7 @@ configure() {
     echo "Configuring/compiling $APP_DIR... please wait..." >&2
     mkdir -p "$APP_DIR/build"
     cd "$APP_DIR/build"
-    cmake -v -DCMAKE_BUILD_TYPE=RELWITHDEBINFO ..
+    cmake -DCMAKE_BUILD_TYPE=RELWITHDEBINFO ..
 }
 
 RECOGNISED=1
