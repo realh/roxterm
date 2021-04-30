@@ -3043,7 +3043,9 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
                     roxterm_get_vte_vadjustment(vte));
     GtkScrolledWindow *sw = GTK_SCROLLED_WINDOW(viewport);
     gtk_scrolled_window_set_policy(sw, GTK_POLICY_NEVER,
-            scrollbar_pos ? GTK_POLICY_ALWAYS : GTK_POLICY_NEVER);
+            scrollbar_pos ? GTK_POLICY_ALWAYS : GTK_POLICY_EXTERNAL);
+    gtk_scrolled_window_set_propagate_natural_width(sw, TRUE);
+    gtk_scrolled_window_set_propagate_natural_height(sw, TRUE);
     gtk_scrolled_window_set_overlay_scrolling(sw,
         options_lookup_int_with_default(roxterm_template->profile,
             "overlay_scrollbar", TRUE));
