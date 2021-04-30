@@ -2,7 +2,7 @@ include(CheckSymbolExists)
 
 # roxterm and roxterm-config both depend on these
 pkg_check_modules(RTCOMMON REQUIRED
-    gtk+-3.0>=3.20.0 dbus-1>=1.0 dbus-glib-1>=0.22)
+    gtk+-3.0>=3.22.0 dbus-1>=1.0 dbus-glib-1>=0.22)
 
 # roxterm-config needs to export symbols so GtkBuilder can find signal handlers
 pkg_check_modules(GMODULE_EXPORT REQUIRED gmodule-export-2.0)
