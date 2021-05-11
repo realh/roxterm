@@ -89,7 +89,9 @@ while [ "$RECOGNISED" = "1" ] ; do
             DBGENV='G_SLICE=always-malloc G_MESSAGES_DEBUG=all'
             ;;
         --compile|--configure)
-            configure && ( [ "$1" = "--compile" ] && make || true ) && \
+            cmd="$1"
+            shift
+            configure "$@" && ( [ "$cmd" = "--compile" ] && make || true ) && \
             echo Done >&2 && exit 0
             echo Compile/configure failed >&2
             echo Press Return... >&2
