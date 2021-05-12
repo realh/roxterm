@@ -308,8 +308,15 @@ MultiTab *multi_tab_new_defer_connect(MultiWin * parent,
 MultiTab *multi_tab_new(MultiWin * parent, gpointer user_data_template)
 {
     MultiTab *tab = multi_tab_new_defer_connect(parent, user_data_template);
+    g_debug("multi_tab_new connecting signals for %p", tab->user_data);
     multi_tab_connect_misc_signals(tab->user_data);
     return tab;
+}
+
+/* For setting a breakpoint */
+static void multi_tab_free(MultiTab *tab)
+{
+    g_free(tab);
 }
 
 static void multi_tab_delete_without_notifying_parent(MultiTab * tab,
@@ -324,6 +331,7 @@ static void multi_tab_delete_without_notifying_parent(MultiTab * tab,
     {
         tab->postponed_free = FALSE;
     }
+    g_debug("Deleting tab with roxterm %p", tab->user_data);
     (*multi_tab_destructor) (tab->user_data);
     tab->user_data = NULL;
 
@@ -349,7 +357,7 @@ static void multi_tab_delete_without_notifying_parent(MultiTab * tab,
         tab->menu_bar_item = NULL;
     }
     if (!tab->postponed_free)
-        g_free(tab);
+        multi_tab_free(tab);
 }
 
 void multi_tab_delete(MultiTab * tab)
@@ -1209,6 +1217,8 @@ MultiWin *multi_win_new_for_tab(int x, int y, MultiTab *tab)
     multi_win_set_title_template(win, title_template);
     multi_win_set_borderless(win, borderless);
     gwin = GTK_WINDOW(win->gtkwin);
+    g_debug("multi_win_new_for_tab: Calling gtk_window_set_default_size(%d, %d)",
+            w, h);
     gtk_window_set_default_size(gwin, w, h);
     if (x != -1 && y != -1)
         gtk_window_move(gwin, MAX(x - 20, 0), MAX(y - 8, 0));
@@ -1333,7 +1343,7 @@ static void multi_win_name_tab_action(MultiWin * win)
     }
     tab->rename_dialog = NULL;
     if (tab->postponed_free)
-        g_free(tab);
+        multi_tab_free(tab);
 }
 static void multi_win_save_session_action(MultiWin * win)
 {
@@ -1826,7 +1836,14 @@ static gboolean multi_win_delete_event_cb(GtkWidget *widget, GdkEvent *event,
         MultiWin *win)
 {
     if (!multi_win_delete_handler(widget, event, win))
+    {
+        g_debug("window delete: handler returned FALSE");
         multi_win_destructor(win, TRUE);
+    }
+    else
+    {
+        g_debug("window delete: handler returned TRUE");
+    }
     return TRUE;
 }
 
@@ -2033,6 +2050,7 @@ MultiWin *multi_win_new_full(Options *shortcuts,
     gtk_notebook_set_current_page(GTK_NOTEBOOK(win->notebook), 0);
     tab = win->tabs->data;
     win->tab_selection_handler(tab->user_data, tab);
+    g_debug("multi_win_new_full connecting signals for %p", tab->user_data);
     multi_tab_connect_misc_signals(tab->user_data);
     return win;
 }
@@ -2629,15 +2647,13 @@ static gboolean multi_win_process_geometry(MultiWin *win,
     int gw, gh;
     int ww, wh;
 
-    //g_debug("Processing geometry %dx%d", columns, rows);
+    g_debug("Processing geometry %dx%d", columns, rows);
     if (!tab)
         tab = win->current_tab;
     multi_win_geometry_func(tab->user_data, &geom, &hint_mask);
-    /*
     g_debug("VTE cell size %dx%d, padding %dx%d",
             geom.width_inc, geom.height_inc,
             geom.base_width, geom.base_height);
-    */
 
     /* Get difference in size between toplevel window and the geometry
      * widget.
@@ -2649,33 +2665,33 @@ static gboolean multi_win_process_geometry(MultiWin *win,
      */
     bw = gtk_widget_get_allocated_width(win->vbox);
     bh = gtk_widget_get_allocated_height(win->vbox);
-    //g_debug("Terminal allocation %dx%d, undecorated window allocation %dx%d",
-    //        gw, gh, bw, bh);
+    g_debug("Terminal allocation %dx%d, undecorated window allocation %dx%d",
+            gw, gh, bw, bh);
     if (gw <= 1 || gh <= 1)
     {
+        *width = 0;
+        *height = 0;
         return FALSE;
     }
-    /*
     g_debug("Want to allocate %dx%d to terminal", 
             columns * geom.width_inc + geom.base_width,
             rows * geom.height_inc + geom.base_height);
-    */
 
     geom.base_width += bw - gw;
     geom.base_height += bh - gh;
-    //g_debug("Additional padding %dx%d, total %dx%d", bw - gw, bh - gh,
-    //        geom.base_width, geom.base_height);
+    g_debug("Additional padding %dx%d, total %dx%d", bw - gw, bh - gh,
+            geom.base_width, geom.base_height);
     *width = columns * geom.width_inc + geom.base_width;
     *height = rows * geom.height_inc + geom.base_height;
-    //g_debug("Desired size including chrome but not CSD: %dx%d",
-    //        *width, *height);
+    g_debug("Desired size including chrome but not CSD: %dx%d",
+            *width, *height);
     /* From gnome-terminal's code I deduced that gtk_window_set_default_size
      * etc should exclude the window decorations, but the geometry hints should
      * include them. This seems to fix roxterm's sizing :).
      */
     ww = gtk_widget_get_allocated_width(win->gtkwin);
     wh = gtk_widget_get_allocated_height(win->gtkwin);
-    //g_debug("Window allocation %dx%d, CSD %dx%d", ww, wh, ww - bw, wh - bh);
+    g_debug("Window allocation %dx%d, CSD %dx%d", ww, wh, ww - bw, wh - bh);
     geom.min_width += ww - gw;
     geom.min_height += wh - gh;
     geom.base_width += ww - bw;
@@ -2704,14 +2720,26 @@ void multi_win_set_initial_geometry(MultiWin *win, const char *geom,
 
     if (multi_win_parse_geometry(geom, &columns, &rows, &x, &y, &xy))
     {
+        g_debug("multi_win_set_initial_geometry: %d columns, %d rows",
+                columns, rows);
         multi_win_process_geometry(win, tab, columns, rows, &width, &height);
-        multi_win_apply_geometry_hints(win);
-        gtk_window_set_default_size(GTK_WINDOW(win->gtkwin), width, height);
+        g_debug("processed geometry to : %dx%d", width, height);
+        if (width > 1 && height > 1)
+        {
+            multi_win_apply_geometry_hints(win);
+            gtk_window_set_default_size(GTK_WINDOW(win->gtkwin), width, height);
+        }
+        else
+        {
+            g_warning("Unable to determine geometry");
+        }
         /* Honor initial position on launch: it is indispensable and ubiquitous */
         if (xy)
         {
             gtk_window_move(GTK_WINDOW(win->gtkwin), x, y);
         }
+    } else {
+        g_debug("multi_win_set_initial_geometry: parse_geometry returned false");
     }
 }
 

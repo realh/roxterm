@@ -331,6 +331,8 @@ static ROXTermData *roxterm_data_clone(ROXTermData *old_gt)
     {
         new_gt->profile = dynamic_options_lookup_and_ref(roxterm_profiles,
             options_get_leafname(old_gt->profile), "roxterm profile");
+        g_debug("clone: Using profile %p %s, ref %d",
+                new_gt->profile, new_gt->profile->name, new_gt->profile->ref);
     }
     /* special_command should be transferred to new data and removed from old
      * one */
@@ -865,6 +867,7 @@ static void roxterm_launch_matched_uri(ROXTermData *roxterm, guint32 timestamp)
 
 static void roxterm_data_delete(ROXTermData *roxterm)
 {
+    g_debug("roxterm_data_delete: %p", roxterm);
     /* This doesn't delete widgets because they're deleted when removed from
      * the parent */
     GtkWindow *gwin;
@@ -873,7 +876,20 @@ static void roxterm_data_delete(ROXTermData *roxterm)
 
     /* Fix for https://github.com/realh/roxterm/issues/197 */
     if (roxterm->widget && roxterm->child_exited_tag)
+    {
+        g_debug("Disconnecting child_exited handler %ld from widget %p for %p",
+                roxterm->child_exited_tag, roxterm->widget, roxterm);
         g_signal_handler_disconnect(roxterm->widget, roxterm->child_exited_tag);
+    }
+    else if (roxterm->child_exited_tag)
+    {
+        g_warning("child_exited_tag == %ld but widget is NULL for %p", 
+                roxterm->child_exited_tag, roxterm);
+    }
+    else
+    {
+        g_debug("No child_exited handler for %p", roxterm);
+    }
     gwin = roxterm_get_toplevel(roxterm);
     if (gwin && roxterm->win_state_changed_tag)
     {
@@ -887,8 +903,11 @@ static void roxterm_data_delete(ROXTermData *roxterm)
     }
     if (roxterm->profile)
     {
+        g_debug("roxterm_data_delete: Unref profile");
         UNREF_LOG(dynamic_options_unref(roxterm_profiles,
                 options_get_leafname(roxterm->profile)));
+    } else {
+        g_debug("roxterm_data_delete: No profile to unref");
     }
     drag_receive_data_delete(roxterm->drd);
     if (roxterm->actual_commandv != roxterm->commandv)
@@ -2022,6 +2041,16 @@ static gboolean roxterm_post_child_exit(ROXTermData *roxterm)
 static void roxterm_child_exited(VteTerminal *vte, int status,
         ROXTermData *roxterm)
 {
+    if (!g_list_find(roxterm_terms, roxterm))
+    {
+        g_warning("roxterm_child_exited for widget %p: data %p not listed",
+                vte, roxterm);
+        return;
+    }
+    else
+    {
+        g_debug("roxterm_child_exited: widget %p, %p", vte, roxterm);
+    }
     double delay = 0;
 
     (void) status;
@@ -2568,6 +2597,8 @@ static void roxterm_connect_misc_signals(ROXTermData * roxterm)
 {
     roxterm->child_exited_tag = g_signal_connect(roxterm->widget,
             "child-exited", G_CALLBACK(roxterm_child_exited), roxterm);
+    g_debug("Connected child-exited handler to widget %p for %p with tag %ld",
+            roxterm->widget, roxterm, roxterm->child_exited_tag);
     g_signal_connect(roxterm->widget, "popup-menu",
             G_CALLBACK(roxterm_popup_handler), roxterm);
     g_signal_connect(roxterm->widget, "button-press-event",
@@ -3003,6 +3034,7 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
     MultiWin *template_win = roxterm_get_win(roxterm_template);
     GtkWidget *viewport = NULL;
 
+    g_debug("Adding %p to roxterm_terms", roxterm);
     roxterm_terms = g_list_append(roxterm_terms, roxterm);
 
     if (template_win)
@@ -3020,6 +3052,7 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
     }
     multi_win_set_show_menu_bar(win, !hide_menu_bar);
 
+    g_debug("Assigned tab %p to roxterm %p", tab, roxterm);
     roxterm->tab = tab;
     *roxterm_out = roxterm;
 
@@ -3104,6 +3137,7 @@ VteTerminal *roxterm_get_current_vte_ptr(MultiWin *win) {
 
 static void roxterm_multi_tab_destructor(ROXTermData * roxterm)
 {
+    g_debug("Removing %p from roxterm_terms", roxterm);
     roxterm_terms = g_list_remove(roxterm_terms, roxterm);
     roxterm_data_delete(roxterm);
 }
@@ -3826,12 +3860,18 @@ static ROXTermData *roxterm_data_new(double zoom_factor, const char *directory,
             roxterm->rows = height;
             if (size_on_cli)
                 *size_on_cli = TRUE;
+            g_debug("geom '%s' parsed to %dx%d", *geom, width, height);
         }
         else
         {
             dlg_warning(NULL, _("Invalid geometry specification"));
             *geom = NULL;
         }
+    }
+    if (!*geom)
+    {
+        roxterm_default_size_func(roxterm, &roxterm->columns, &roxterm->rows);
+        g_debug("Using default size %dx%d", roxterm->columns, roxterm->rows);
     }
     roxterm->maximise = maximise;
     roxterm->borderless = options_lookup_int_with_default(profile,
@@ -3938,6 +3978,8 @@ void roxterm_launch(char **env)
             /* roxterm_data_clone needs to see a widget to get geometry
              * correct */
             roxterm->widget = partner->widget;
+            g_debug("Assigned partner tab %p to roxterm %p",
+                    partner->tab, roxterm);
             roxterm->tab = partner->tab;
             multi_tab_new(win, roxterm);
             if (gtk_widget_get_visible(gwin))
@@ -4399,7 +4441,7 @@ typedef struct {
     gboolean maximised;
     gboolean fullscreen;
     char *geom;
-    int width, height;
+    //int width, height;
     PangoFontDescription *fdesc;
     char *window_title;
     char *window_title_template;
@@ -4452,8 +4494,8 @@ static void parse_open_win(_ROXTermParseContext *rctx,
 
         if (!strcmp(a, "geometry"))
         {
-            rctx->geom = g_strdup(v);
-            sscanf(v, "%dx%d+", &rctx->width, &rctx->height);
+            geom = g_strdup(v);
+            //sscanf(v, "%dx%d+", &rctx->width, &rctx->height);
         }
         else if (!strcmp(a, "title_template"))
             title_template = v;
@@ -4537,12 +4579,6 @@ static void parse_open_win(_ROXTermParseContext *rctx,
         rctx->window_title = g_strdup(title);
 }
 
-static void roxterm_connect_each_tabs_signals(MultiTab *tab, void *handle)
-{
-    roxterm_connect_misc_signals(multi_tab_get_user_data(tab));
-    (void) handle;
-}
-
 static void close_win_tag(_ROXTermParseContext *rctx)
 {
     if (!multi_win_get_num_tabs(rctx->win))
@@ -4553,6 +4589,7 @@ static void close_win_tag(_ROXTermParseContext *rctx)
     else
     {
         GtkWindow *gwin = GTK_WINDOW(multi_win_get_widget(rctx->win));
+        gtk_widget_realize(GTK_WIDGET(gwin));
 
         if (rctx->borderless)
         {
@@ -4563,6 +4600,7 @@ static void close_win_tag(_ROXTermParseContext *rctx)
             /* Need to show children before parsing geom */
             gtk_widget_realize(gtk_bin_get_child(GTK_BIN(gwin)));
             gtk_widget_show_all(gtk_bin_get_child(GTK_BIN(gwin)));
+            g_debug("close_win_tag calling multi_win_set_initial_geometry");
             multi_win_set_initial_geometry(rctx->win, rctx->geom,
                     rctx->active_tab);
         }
@@ -4586,8 +4624,6 @@ static void close_win_tag(_ROXTermParseContext *rctx)
         multi_win_set_title_template_locked(rctx->win,
                 rctx->win_title_template_locked);
         multi_win_show(rctx->win);
-        multi_win_foreach_tab(rctx->win, roxterm_connect_each_tabs_signals,
-                NULL);
         if (rctx->active_tab)
         {
             multi_win_select_tab(rctx->win, rctx->active_tab);
@@ -4660,6 +4696,8 @@ static void parse_open_tab(_ROXTermParseContext *rctx,
 
     profile = dynamic_options_lookup_and_ref(roxterm_get_profiles(),
             profile_name, "roxterm profile");
+    g_debug("parse_open_tab: Got profile %p %s, ref %d",
+            profile, profile_name, profile->ref);
     roxterm = roxterm_data_new(rctx->zoom_factor, cwd,
             g_strdup(profile_name), profile,
             rctx->maximised, colours_name,
@@ -4703,10 +4741,13 @@ static void close_tab_tag(_ROXTermParseContext *rctx)
     rctx->tab_title_template = NULL;
     g_free(rctx->tab_title);
     rctx->tab_title = NULL;
+    g_debug("Deleting template roxterm %p with tab %p, "
+            "new tab %p has roxterm %p", roxterm, roxterm->tab,
+            rctx->tab, multi_tab_get_user_data(rctx->tab));
     roxterm_data_delete(roxterm);
     /*
     roxterm = multi_tab_get_user_data(rctx->tab);
-    vte = VTE_TERMINAL(roxterm->widget);
+    VteTerminal *vte = VTE_TERMINAL(roxterm->widget);
     roxterm_set_vte_size(roxterm, vte, rctx->width, rctx->height);
     */
 }
@@ -5000,6 +5041,7 @@ gboolean roxterm_load_session(const char *xml, gssize len,
         result = g_markup_parse_context_end_parse(pctx, &error) & result;
     if (error)
     {
+        g_critical("Error in session %s: %s", client_id, error->message);
         g_error_free(error);
         error = NULL;
     }

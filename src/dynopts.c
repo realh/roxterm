@@ -95,6 +95,8 @@ dynamic_options_unref(DynamicOptions * dynopts, const char *profile_name)
 
     /* Have to check ref and remove from hash first in case options_unref
      * frees profile_name */
+    g_debug("dynamic_options_unref: %s/%s, ref %d", dynopts->family,
+            profile_name, ((Options *) options)->ref - 1);
     if (((Options *) options)->ref == 1)
     {
         g_hash_table_remove(dynopts->profiles, profile_name);
