@@ -121,9 +121,6 @@ void options_delete(Options *options)
 /* Deletes options and returns true if ref reaches zero */
 gboolean options_unref(Options * options)
 {
-    g_debug("options_unref: %p", options);
-    g_debug("name %s/%s, ref was: %d",
-            options->group_name, options->name, options->ref);
 	if (!--options->ref)
 	{
 		options_delete(options);
