@@ -99,6 +99,7 @@ struct MultiWin {
     gboolean show_add_tab_button;
     GdkGeometry geom_hints;
     GdkWindowHints geom_hint_mask;
+    gboolean has_geometry;
 };
 
 static double multi_win_zoom_factors[] = {
@@ -958,7 +959,7 @@ static gboolean multi_win_state_event_handler(GtkWidget *widget,
         {
             gtk_window_set_geometry_hints(GTK_WINDOW(widget), NULL, NULL, 0);
         }
-        else
+        else if (win->has_geometry)
         {
             multi_win_apply_geometry_hints(win);
         }
@@ -1847,6 +1848,28 @@ static gboolean multi_win_delete_event_cb(GtkWidget *widget, GdkEvent *event,
     return TRUE;
 }
 
+static void multi_win_size_allocate(GtkWidget *widget, GdkRectangle *alloc,
+        MultiWin *win)
+{
+    (void) widget;
+    (void) alloc;
+    if (!win->has_geometry)
+    {
+        MultiTab *tab = win->current_tab;
+        if (!tab)
+        {
+            g_warning("Size allocated to window with no current tab");
+            return;
+        }
+        int columns, rows, width, height;
+        (*multi_win_size_func)(tab->user_data,
+                FALSE, &columns, &rows);
+        g_debug("Window has no geometry at size-allocate, "
+                "calculating now for %dx%d", columns, rows);
+        multi_win_process_geometry(win, tab, columns, rows, &width, &height);
+    }
+}
+
 MultiWin *multi_win_new_blank(Options *shortcuts,
         int zoom_index,
         gboolean disable_menu_shortcuts, gboolean disable_tab_shortcuts,
@@ -1897,6 +1920,8 @@ MultiWin *multi_win_new_blank(Options *shortcuts,
     }
     g_signal_connect(win->gtkwin, "draw",
             G_CALLBACK(multi_win_draw_chrome_bg), win);
+    g_signal_connect(win->gtkwin, "size-allocate",
+            G_CALLBACK(multi_win_size_allocate), win);
 
     multi_win_set_colormap(win);
 
@@ -2696,16 +2721,17 @@ static gboolean multi_win_process_geometry(MultiWin *win,
     geom.min_height += wh - gh;
     geom.base_width += ww - bw;
     geom.base_height += wh - bh;
-    if (geom.min_width != win->geom_hints.min_width ||
+    if (!win->has_geometry || geom.min_width != win->geom_hints.min_width ||
         geom.min_height != win->geom_hints.min_height ||
         geom.base_width != win->geom_hints.base_width ||
         geom.base_height != win->geom_hints.base_height ||
         geom.width_inc != win->geom_hints.width_inc ||
         geom.height_inc != win->geom_hints.height_inc)
     {
-        //g_debug("Updating geometry");
+        g_debug("Updating geometry");
         win->geom_hints = geom;
         win->geom_hint_mask = hint_mask;
+        win->has_geometry = TRUE;
         return TRUE;
     }
     //g_debug("Geometry unchanged");
@@ -2739,7 +2765,8 @@ void multi_win_set_initial_geometry(MultiWin *win, const char *geom,
             gtk_window_move(GTK_WINDOW(win->gtkwin), x, y);
         }
     } else {
-        g_debug("multi_win_set_initial_geometry: parse_geometry returned false");
+        g_debug(
+            "multi_win_set_initial_geometry: parse_geometry returned false");
     }
 }
 
