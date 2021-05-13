@@ -67,8 +67,8 @@ inline static gboolean roxterm_enable_hyperlinks()
 }
 #endif
 
-void (*p_vte_terminal_set_enable_fallback_scrolling)
-    (VteTerminal *vte, gboolean) = NULL;
+// -1 = don't know yet, 0 = no, 1 = yes
+static int roxterm_can_disable_fallback_scrolling = -1;
 
 typedef enum {
     Roxterm_ChildExitClose,
@@ -3037,9 +3037,19 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
     *roxterm_out = roxterm;
 
     roxterm->widget = vte_terminal_new();
-    if (p_vte_terminal_set_enable_fallback_scrolling)
-        p_vte_terminal_set_enable_fallback_scrolling(
-                VTE_TERMINAL(roxterm->widget), FALSE);
+    if (roxterm_can_disable_fallback_scrolling == -1)
+    {
+        roxterm_can_disable_fallback_scrolling = g_object_class_find_property(
+                G_OBJECT_GET_CLASS(roxterm->widget),
+                "enable-fallback-scrolling") ? 1 : 0;
+        g_debug("VTE %s enable-fallback-scrolling",
+                roxterm_can_disable_fallback_scrolling ?
+                "supports" : "doesn't support");
+    }
+    if (roxterm_can_disable_fallback_scrolling)
+    {
+        g_object_set(roxterm->widget, "enable-fallback-scrolling", FALSE, NULL);
+    }
     vte_terminal_set_size(VTE_TERMINAL(roxterm->widget),
             roxterm->columns, roxterm->rows);
     gtk_widget_grab_focus(roxterm->widget);
@@ -4229,46 +4239,6 @@ static gboolean roxterm_delete_handler(GtkWindow *gtkwin, GdkEvent *event,
 
 void roxterm_init(void)
 {
-    if (g_module_supported())
-    {
-#ifndef RT_VTE_LIBDIR
-        g_warning("RT_VTE_LIBDIR is not defined, may not be able to detect "
-                "kinetic scrolling support correctly");
-#endif
-        char *modpath = g_module_build_path(
-#ifdef RT_VTE_LIBDIR
-                strlen(RT_VTE_LIBDIR) ? RT_VTE_LIBDIR :
-#endif
-                NULL,
-                "vte-2.91");
-        //g_debug("Attempting to open %s to detect kinetic scrolling support",
-        //        modpath);
-        GModule *mod = g_module_open(modpath,
-                G_MODULE_BIND_LAZY | G_MODULE_BIND_LOCAL);
-        if (mod)
-        {
-            if (!g_module_symbol(mod,
-                    "vte_terminal_set_enable_fallback_scrolling",
-                    (gpointer *) &p_vte_terminal_set_enable_fallback_scrolling))
-            {
-                //g_debug("Kinetic scrolling is not supported");
-                g_module_close(mod);
-            }
-            /*
-            else
-            {
-                g_debug("Kinetic scrolling is supported");
-                // Keep the module open if we're going to use this function
-            }
-            */
-        }
-        else
-        {
-            g_warning("Unable to dynamically (re)load %s to detect kinetic "
-                    "scrolling support: %s", modpath, g_module_error());
-        }
-        g_free(modpath);
-    }
     resources_access_icon();
     gtk_window_set_default_icon_name("roxterm");
 
