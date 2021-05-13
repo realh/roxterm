@@ -1,3 +1,15 @@
+roxterm (3.10.5-1ppa1focal1) focal; urgency=medium
+
+  * New upstream version:
+    + Fixed issues caused by incorrect initialisation when loading a session
+      (upstream github issue #234).
+    + Use enable-fallback-scrolling property instead of dynamically finding
+      setter with GModule.
+  * debian/control: Updated gtk dependency to match previous update of
+    CMakeLists.txt.
+
+ -- Tony Houghton <h@realh.co.uk>  Thu, 13 May 2021 14:40:28 +0100
+
 roxterm (3.10.4-1ppa1focal1) focal; urgency=medium
 
   * New upstream version:
