@@ -3157,8 +3157,8 @@
                                     <property name="can-focus">False</property>
                                     <property name="hexpand">True</property>
                                     <property name="label" translatable="yes">Kinetic scrolling is available with vte 0.64 or later. It enhances the UX for touch pads and screens,
-but can be &lt;a href="https://gitlab.gnome.org/GNOME/vte/-/issues/336"&gt;buggy&lt;/a&gt;.  Enabling "Scroll in units of pixels" (vte &gt;= 0.66) and disabling
-"Limit scrollback" is advised to mitigate against these bugs when Kinetic scrolling is enabled.</property>
+but can be &lt;a href="https://gitlab.gnome.org/GNOME/vte/-/issues/336"&gt;buggy&lt;/a&gt;.  Enabling "Scroll in units of pixels" (vte &amp;gt;= 0.66) or disabling "Limit scrollback"
+(vte &amp;lt; 0.66) is advised to mitigate against these bugs when Kinetic scrolling is enabled.</property>
                                     <property name="use-markup">True</property>
                                     <property name="justify">fill</property>
                                     <property name="max-width-chars">100</property>
