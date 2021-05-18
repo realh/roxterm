@@ -2866,6 +2866,26 @@ roxterm_apply_text_blink_mode(ROXTermData *roxterm, VteTerminal *vte)
     vte_terminal_set_text_blink_mode(vte, modes[i]);
 }
 
+static void roxterm_apply_kinetic_scroling(ROXTermData *roxterm)
+{
+    if (roxterm_can_disable_fallback_scrolling == -1)
+    {
+        roxterm_can_disable_fallback_scrolling = g_object_class_find_property(
+                G_OBJECT_GET_CLASS(roxterm->widget),
+                "enable-fallback-scrolling") ? 1 : 0;
+        g_debug("VTE %s enable-fallback-scrolling",
+                roxterm_can_disable_fallback_scrolling ?
+                "supports" : "doesn't support");
+    }
+    gboolean kinetic = options_lookup_int_with_default(roxterm->profile,
+                "kinetic_scrolling", TRUE);
+    if (roxterm_can_disable_fallback_scrolling)
+    {
+        g_object_set(roxterm->widget, "enable-fallback-scrolling",
+                !kinetic, NULL);
+    }
+}
+
 static void roxterm_apply_profile(ROXTermData *roxterm, VteTerminal *vte,
         gboolean update_geometry)
 {
@@ -2884,6 +2904,7 @@ static void roxterm_apply_profile(ROXTermData *roxterm, VteTerminal *vte,
     roxterm_set_scrollback_lines(roxterm, vte);
     roxterm_set_scroll_on_output(roxterm, vte);
     roxterm_set_scroll_on_keystroke(roxterm, vte);
+    roxterm_apply_kinetic_scroling(roxterm);
 
     roxterm_set_backspace_binding(roxterm, vte);
     roxterm_set_delete_binding(roxterm, vte);
@@ -3037,19 +3058,6 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
     *roxterm_out = roxterm;
 
     roxterm->widget = vte_terminal_new();
-    if (roxterm_can_disable_fallback_scrolling == -1)
-    {
-        roxterm_can_disable_fallback_scrolling = g_object_class_find_property(
-                G_OBJECT_GET_CLASS(roxterm->widget),
-                "enable-fallback-scrolling") ? 1 : 0;
-        g_debug("VTE %s enable-fallback-scrolling",
-                roxterm_can_disable_fallback_scrolling ?
-                "supports" : "doesn't support");
-    }
-    if (roxterm_can_disable_fallback_scrolling)
-    {
-        g_object_set(roxterm->widget, "enable-fallback-scrolling", FALSE, NULL);
-    }
     vte_terminal_set_size(VTE_TERMINAL(roxterm->widget),
             roxterm->columns, roxterm->rows);
     gtk_widget_grab_focus(roxterm->widget);
@@ -3289,6 +3297,10 @@ static void roxterm_reflect_profile_change(Options * profile, const char *key)
         else if (!strcmp(key, "scroll_on_keystroke"))
         {
             roxterm_set_scroll_on_keystroke(roxterm, vte);
+        }
+        else if (!strcmp(key, "kinetic_scrolling"))
+        {
+            roxterm_apply_kinetic_scroling(roxterm);
         }
         else if (!strcmp(key, "backspace_binding"))
         {

@@ -482,6 +482,7 @@ static void profilegui_fill_in_dialog(ProfileGUI * pg)
     capplet_set_spin_button(&pg->capp, "scrollback_lines", 1000);
     capplet_set_boolean_toggle(&pg->capp, "scroll_on_output", FALSE);
     capplet_set_boolean_toggle(&pg->capp, "scroll_on_keystroke", FALSE);
+    capplet_set_boolean_toggle(&pg->capp, "kinetic_scrolling", TRUE);
     capplet_set_combo(&pg->capp, "backspace_binding",
             DEFAULT_BACKSPACE_BINDING);
     capplet_set_combo(&pg->capp, "delete_binding",
