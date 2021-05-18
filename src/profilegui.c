@@ -279,6 +279,12 @@ void on_scrollbar_pos_toggled(GtkRadioButton *button, ProfileGUI *pg)
     profilegui_set_scrollbar_shading(pg);
 }
 
+void on_kinetic_toggled(GtkToggleButton *button, ProfileGUI *pg)
+{
+    gboolean kinetic = gtk_toggle_button_get_active(button);
+    capplet_set_boolean_toggle(&pg->capp, "pixel_scrolling", kinetic);
+}
+
 #define DEFAULT_BACKSPACE_BINDING 0
 #define DEFAULT_DELETE_BINDING 0
 
@@ -482,7 +488,9 @@ static void profilegui_fill_in_dialog(ProfileGUI * pg)
     capplet_set_spin_button(&pg->capp, "scrollback_lines", 1000);
     capplet_set_boolean_toggle(&pg->capp, "scroll_on_output", FALSE);
     capplet_set_boolean_toggle(&pg->capp, "scroll_on_keystroke", FALSE);
-    capplet_set_boolean_toggle(&pg->capp, "kinetic_scrolling", TRUE);
+    gboolean kinetic = capplet_set_boolean_toggle(&pg->capp,
+            "kinetic_scrolling", TRUE);
+    capplet_set_boolean_toggle(&pg->capp, "pixel_scrolling", kinetic);
     capplet_set_combo(&pg->capp, "backspace_binding",
             DEFAULT_BACKSPACE_BINDING);
     capplet_set_combo(&pg->capp, "delete_binding",

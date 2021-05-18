@@ -77,11 +77,11 @@ void capplet_set_toggle(CappletData *capp, const char *name, gboolean state)
     capplet_ignore_changes = FALSE;
 }
 
-void capplet_set_boolean_toggle(CappletData *capp,
+gboolean capplet_set_boolean_toggle(CappletData *capp,
     const char *name, gboolean dflt)
 {
-    capplet_set_toggle(capp, name,
-            options_lookup_int_with_default(capp->options, name, dflt));
+    gboolean value = options_lookup_int_with_default(capp->options, name, dflt);
+    capplet_set_toggle(capp, name, value);
 }
 
 void capplet_set_text_entry(CappletData *capp,

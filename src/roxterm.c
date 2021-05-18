@@ -69,6 +69,7 @@ inline static gboolean roxterm_enable_hyperlinks()
 
 // -1 = don't know yet, 0 = no, 1 = yes
 static int roxterm_can_disable_fallback_scrolling = -1;
+static int roxterm_can_use_pixel_scrolling = -1;
 
 typedef enum {
     Roxterm_ChildExitClose,
@@ -2879,10 +2880,26 @@ static void roxterm_apply_kinetic_scroling(ROXTermData *roxterm)
     }
     gboolean kinetic = options_lookup_int_with_default(roxterm->profile,
                 "kinetic_scrolling", TRUE);
-    if (roxterm_can_disable_fallback_scrolling)
+    if (roxterm_can_disable_fallback_scrolling == 1)
     {
         g_object_set(roxterm->widget, "enable-fallback-scrolling",
                 !kinetic, NULL);
+        if (roxterm_can_use_pixel_scrolling == -1)
+        {
+            roxterm_can_use_pixel_scrolling = g_object_class_find_property(
+                    G_OBJECT_GET_CLASS(roxterm->widget),
+                    "scroll-unit-is-pixels") ? 1 : 0;
+            g_debug("VTE %s scroll-unit-is-pixels",
+                    roxterm_can_use_pixel_scrolling ?
+                    "supports" : "doesn't support");
+        }
+        gboolean pixel = options_lookup_int_with_default(roxterm->profile,
+                    "pixel_scrolling", kinetic);
+        if (roxterm_can_use_pixel_scrolling == 1)
+        {
+            g_object_set(roxterm->widget, "scroll-unit-is-pixels",
+                    pixel, NULL);
+        }
     }
 }
 
