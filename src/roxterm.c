@@ -2899,7 +2899,6 @@ roxterm_scroll_value_handler(GtkAdjustment *adj, ROXTermData *roxterm)
     gboolean sticky_time = elapsed < 1500000;
     if (val < roxterm->scroll_value && !sticky_time)
     {
-        g_debug("Scroll value decreased after sticky time (%ld)", elapsed);
         // User has scrolled up, cancel stick to bottom
         roxterm->scroll_at_bottom = FALSE;
         roxterm->scroll_value = val;
@@ -2914,20 +2913,8 @@ roxterm_scroll_value_handler(GtkAdjustment *adj, ROXTermData *roxterm)
         {
             // scrollbar has accidentally come "unstuck" from bottom,
             // force it back
-            g_debug(
-                "Scroll value decreased within sticky time (%ld), going down",
-                elapsed);
             gtk_adjustment_set_value(adj, limit);
             roxterm->scroll_value = limit;
-        }
-        else if (sticky_time)
-        {
-            g_debug("Scroll value at limit within sticky time (%ld)",
-                elapsed);
-        }
-        else
-        {
-            g_debug("Sticky time elapsed (%ld)", elapsed);
         }
     }
     else
@@ -2936,12 +2923,7 @@ roxterm_scroll_value_handler(GtkAdjustment *adj, ROXTermData *roxterm)
         roxterm->scroll_at_bottom = val >= limit;
         if (roxterm->scroll_at_bottom)
         {
-            g_debug("Scrollbar hit bottom");
             roxterm->scroll_bottom_time = g_get_monotonic_time();
-        }
-        else
-        {
-            g_debug("Scrollbar didn't decrease, but not at bottom");
         }
     }
 }
