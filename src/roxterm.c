@@ -2330,10 +2330,35 @@ static gboolean roxterm_key_press_handler(GtkWidget *widget,
     Options *shortcuts = multi_win_get_shortcut_scheme(
             roxterm_get_win(roxterm));
     (void) widget;
+    guint mod = event->state & GDK_MODIFIER_MASK;
 
+    g_debug("modifier %x, ctrl %x, shift %x, mod & ~(ctrl|shift) %x",
+        mod, GDK_CONTROL_MASK, GDK_SHIFT_MASK, 
+        mod & ~(GDK_CONTROL_MASK | GDK_SHIFT_MASK));
+    if ((event->keyval == GDK_KEY_Tab || event->keyval == GDK_KEY_ISO_Left_Tab)
+        && (mod & GDK_CONTROL_MASK)
+        && !(mod & ~(GDK_CONTROL_MASK | GDK_SHIFT_MASK))
+        && options_lookup_int_with_default(roxterm->profile,
+            "ctrl_tab_shortcut", FALSE))
+    {
+        MultiWin *win = roxterm_get_win(roxterm);
+        if (mod & GDK_SHIFT_MASK)
+        {
+            g_debug("shift, prev tab");
+            multi_win_previous_tab_action(win);
+        }
+        else
+        {
+            g_debug("no shift, next tab");
+            multi_win_next_tab_action(win);
+        }
+        return TRUE;
+    }
+    g_debug("Not tab cycle shortcut");
+    g_debug("Keyval %x '%s' (tab is %x)", event->keyval,
+        gdk_keyval_name(event->keyval), GDK_KEY_Tab);
     if (!event->is_modifier &&
-            shortcuts_key_is_shortcut(shortcuts, event->keyval,
-                    event->state & GDK_MODIFIER_MASK))
+            shortcuts_key_is_shortcut(shortcuts, event->keyval, mod))
     {
         return TRUE;
     }
@@ -4326,7 +4351,6 @@ void roxterm_spawn(ROXTermData *roxterm, const char *command,
     GtkPositionType tab_pos;
     char *cwd;
     MultiWin *win = roxterm_get_win(roxterm);
-    MultiTab *tab;
 
     tab_pos = roxterm_get_tab_pos(roxterm);
     switch (spawn_type)
@@ -4344,7 +4368,7 @@ void roxterm_spawn(ROXTermData *roxterm, const char *command,
         case ROXTerm_SpawnNewTab:
             roxterm->special_command = g_strdup(command);
             roxterm->no_respawn = TRUE;
-            tab = multi_tab_new(win, roxterm);
+            (void) multi_tab_new(win, roxterm);
             break;
         default:
             cwd = roxterm_get_cwd(roxterm);

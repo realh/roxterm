@@ -1526,7 +1526,7 @@
           </packing>
         </child>
         <child>
-          <!-- n-columns=3 n-rows=3 -->
+          <!-- n-columns=2 n-rows=1 -->
           <object class="GtkGrid" id="grid11">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
@@ -3426,75 +3426,14 @@ but can be &lt;a href="https://gitlab.gnome.org/GNOME/vte/-/issues/336"&gt;buggy
                         <property name="margin-left">12</property>
                         <property name="margin-start">12</property>
                         <child>
-                          <!-- n-columns=3 n-rows=4 -->
+                          <!-- n-columns=1 n-rows=4 -->
                           <object class="GtkGrid" id="grid23">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
                             <property name="margin-top">4</property>
                             <property name="row-spacing">12</property>
                             <child>
-                              <!-- n-columns=3 n-rows=3 -->
-                              <object class="GtkGrid" id="grid24">
-                                <property name="visible">True</property>
-                                <property name="can-focus">False</property>
-                                <property name="column-spacing">8</property>
-                                <child>
-                                  <object class="GtkLabel" id="label34">
-                                    <property name="visible">True</property>
-                                    <property name="can-focus">False</property>
-                                    <property name="label" translatable="yes">_Tab title:</property>
-                                    <property name="use-underline">True</property>
-                                    <property name="mnemonic-widget">title_string</property>
-                                  </object>
-                                  <packing>
-                                    <property name="left-attach">0</property>
-                                    <property name="top-attach">0</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkEntry" id="title_string">
-                                    <property name="visible">True</property>
-                                    <property name="can-focus">True</property>
-                                    <property name="tooltip-text" translatable="yes">The title string may include '%s' which is substituted with the title set by the child command (usually the current directory for shells), '%t' for the active tab's number, '%n' for the number of tabs and or '%%' for a literal '%'. Other '%' sequences are passed through.</property>
-                                    <property name="hexpand">True</property>
-                                    <property name="invisible-char">●</property>
-                                    <signal name="activate" handler="on_entry_activate" swapped="no"/>
-                                    <signal name="changed" handler="on_editable_changed" swapped="no"/>
-                                  </object>
-                                  <packing>
-                                    <property name="left-attach">1</property>
-                                    <property name="top-attach">0</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <placeholder/>
-                                </child>
-                                <child>
-                                  <placeholder/>
-                                </child>
-                                <child>
-                                  <placeholder/>
-                                </child>
-                                <child>
-                                  <placeholder/>
-                                </child>
-                                <child>
-                                  <placeholder/>
-                                </child>
-                                <child>
-                                  <placeholder/>
-                                </child>
-                                <child>
-                                  <placeholder/>
-                                </child>
-                              </object>
-                              <packing>
-                                <property name="left-attach">0</property>
-                                <property name="top-attach">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <!-- n-columns=3 n-rows=4 -->
+                              <!-- n-columns=3 n-rows=5 -->
                               <object class="GtkGrid" id="grid25">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
@@ -3636,8 +3575,6 @@ but can be &lt;a href="https://gitlab.gnome.org/GNOME/vte/-/issues/336"&gt;buggy
                                     <property name="can-focus">True</property>
                                     <property name="receives-default">False</property>
                                     <property name="has-tooltip">True</property>
-                                    <property name="tooltip-markup">Whether to open new tabs adjacent to the current tab in a window, otherwise append them.</property>
-                                    <property name="tooltip-text" translatable="yes">Whether to open new tabs adjacent to the current tab in a window, otherwise append them.</property>
                                     <property name="halign">start</property>
                                     <property name="use-underline">True</property>
                                     <property name="image-position">bottom</property>
@@ -3661,6 +3598,30 @@ but can be &lt;a href="https://gitlab.gnome.org/GNOME/vte/-/issues/336"&gt;buggy
                                     <property name="height">4</property>
                                   </packing>
                                 </child>
+                                <child>
+                                  <object class="GtkCheckButton" id="ctrl_tab_shortcut">
+                                    <property name="label" translatable="yes">Use Ctrl-Tab keyboard shortcut</property>
+                                    <property name="visible">True</property>
+                                    <property name="can-focus">True</property>
+                                    <property name="receives-default">False</property>
+                                    <property name="tooltip-text" translatable="yes">Use Ctrl-Tab and Shift-Ctrl-Tab to cycle through tabs.</property>
+                                    <property name="halign">start</property>
+                                    <property name="use-underline">True</property>
+                                    <property name="image-position">bottom</property>
+                                    <property name="draw-indicator">True</property>
+                                    <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
+                                  </object>
+                                  <packing>
+                                    <property name="left-attach">0</property>
+                                    <property name="top-attach">4</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <placeholder/>
+                                </child>
+                                <child>
+                                  <placeholder/>
+                                </child>
                               </object>
                               <packing>
                                 <property name="left-attach">0</property>
@@ -3668,12 +3629,51 @@ but can be &lt;a href="https://gitlab.gnome.org/GNOME/vte/-/issues/336"&gt;buggy
                               </packing>
                             </child>
                             <child>
-                              <!-- n-columns=3 n-rows=3 -->
-                              <object class="GtkGrid" id="grid26">
+                              <object class="GtkBox">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
-                                <property name="margin-top">8</property>
-                                <property name="column-spacing">8</property>
+                                <property name="spacing">8</property>
+                                <child>
+                                  <object class="GtkLabel" id="label34">
+                                    <property name="visible">True</property>
+                                    <property name="can-focus">False</property>
+                                    <property name="label" translatable="yes">_Tab title:</property>
+                                    <property name="use-underline">True</property>
+                                    <property name="mnemonic-widget">title_string</property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkEntry" id="title_string">
+                                    <property name="visible">True</property>
+                                    <property name="can-focus">True</property>
+                                    <property name="tooltip-text" translatable="yes">The title string may include '%s' which is substituted with the title set by the child command (usually the current directory for shells), '%t' for the active tab's number, '%n' for the number of tabs and or '%%' for a literal '%'. Other '%' sequences are passed through.</property>
+                                    <property name="hexpand">True</property>
+                                    <property name="invisible-char">●</property>
+                                    <signal name="activate" handler="on_entry_activate" swapped="no"/>
+                                    <signal name="changed" handler="on_editable_changed" swapped="no"/>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                              </object>
+                              <packing>
+                                <property name="left-attach">0</property>
+                                <property name="top-attach">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkBox">
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="spacing">8</property>
                                 <child>
                                   <object class="GtkImage" id="image4">
                                     <property name="visible">True</property>
@@ -3683,8 +3683,9 @@ but can be &lt;a href="https://gitlab.gnome.org/GNOME/vte/-/issues/336"&gt;buggy
                                     <property name="icon_size">3</property>
                                   </object>
                                   <packing>
-                                    <property name="left-attach">0</property>
-                                    <property name="top-attach">0</property>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">0</property>
                                   </packing>
                                 </child>
                                 <child>
@@ -3699,30 +3700,10 @@ but can be &lt;a href="https://gitlab.gnome.org/GNOME/vte/-/issues/336"&gt;buggy
                                     <property name="max-width-chars">40</property>
                                   </object>
                                   <packing>
-                                    <property name="left-attach">1</property>
-                                    <property name="top-attach">0</property>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">1</property>
                                   </packing>
-                                </child>
-                                <child>
-                                  <placeholder/>
-                                </child>
-                                <child>
-                                  <placeholder/>
-                                </child>
-                                <child>
-                                  <placeholder/>
-                                </child>
-                                <child>
-                                  <placeholder/>
-                                </child>
-                                <child>
-                                  <placeholder/>
-                                </child>
-                                <child>
-                                  <placeholder/>
-                                </child>
-                                <child>
-                                  <placeholder/>
                                 </child>
                               </object>
                               <packing>
@@ -3731,12 +3712,10 @@ but can be &lt;a href="https://gitlab.gnome.org/GNOME/vte/-/issues/336"&gt;buggy
                               </packing>
                             </child>
                             <child>
-                              <!-- n-columns=3 n-rows=3 -->
-                              <object class="GtkGrid" id="grid27">
+                              <object class="GtkBox">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
-                                <property name="row-spacing">6</property>
-                                <property name="column-spacing">8</property>
+                                <property name="spacing">8</property>
                                 <child>
                                   <object class="GtkLabel" id="tab_pos_label">
                                     <property name="visible">True</property>
@@ -3749,8 +3728,9 @@ but can be &lt;a href="https://gitlab.gnome.org/GNOME/vte/-/issues/336"&gt;buggy
                                     <property name="xalign">0</property>
                                   </object>
                                   <packing>
-                                    <property name="left-attach">0</property>
-                                    <property name="top-attach">0</property>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">0</property>
                                   </packing>
                                 </child>
                                 <child>
@@ -3768,60 +3748,16 @@ but can be &lt;a href="https://gitlab.gnome.org/GNOME/vte/-/issues/336"&gt;buggy
                                     <signal name="changed" handler="on_combo_changed" swapped="no"/>
                                   </object>
                                   <packing>
-                                    <property name="left-attach">1</property>
-                                    <property name="top-attach">0</property>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">1</property>
                                   </packing>
-                                </child>
-                                <child>
-                                  <placeholder/>
-                                </child>
-                                <child>
-                                  <placeholder/>
-                                </child>
-                                <child>
-                                  <placeholder/>
-                                </child>
-                                <child>
-                                  <placeholder/>
-                                </child>
-                                <child>
-                                  <placeholder/>
-                                </child>
-                                <child>
-                                  <placeholder/>
-                                </child>
-                                <child>
-                                  <placeholder/>
                                 </child>
                               </object>
                               <packing>
                                 <property name="left-attach">0</property>
                                 <property name="top-attach">3</property>
                               </packing>
-                            </child>
-                            <child>
-                              <placeholder/>
-                            </child>
-                            <child>
-                              <placeholder/>
-                            </child>
-                            <child>
-                              <placeholder/>
-                            </child>
-                            <child>
-                              <placeholder/>
-                            </child>
-                            <child>
-                              <placeholder/>
-                            </child>
-                            <child>
-                              <placeholder/>
-                            </child>
-                            <child>
-                              <placeholder/>
-                            </child>
-                            <child>
-                              <placeholder/>
                             </child>
                           </object>
                         </child>
@@ -3848,27 +3784,6 @@ but can be &lt;a href="https://gitlab.gnome.org/GNOME/vte/-/issues/336"&gt;buggy
                 <property name="left-attach">1</property>
                 <property name="top-attach">0</property>
               </packing>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
             </child>
           </object>
           <packing>

@@ -369,6 +369,10 @@ gboolean multi_win_get_ignore_toggles(MultiWin *win);
 
 void multi_win_select_tab(MultiWin *win, MultiTab *tab);
 
+void multi_win_next_tab_action(MultiWin * win);
+
+void multi_win_previous_tab_action(MultiWin * win);
+
 void multi_win_set_wrap_switch_tab(MultiWin *win, gboolean wrap);
 
 /* Apply a function to all tabs in one window */

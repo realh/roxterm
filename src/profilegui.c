@@ -473,6 +473,7 @@ static void profilegui_fill_in_dialog(ProfileGUI * pg)
     capplet_set_boolean_toggle(&pg->capp, "always_show_tabs", TRUE);
     capplet_set_boolean_toggle(&pg->capp, "show_add_tab_btn", TRUE);
     capplet_set_boolean_toggle(&pg->capp, "new_tabs_adjacent", FALSE);
+    capplet_set_boolean_toggle(&pg->capp, "ctrl_tab_shortcut", FALSE);
     capplet_set_radio(&pg->capp, "middle_click_tab", 0);
     profilegui_set_close_buttons_shading(pg);
     capplet_set_text_entry(&pg->capp, "ssh", NULL);

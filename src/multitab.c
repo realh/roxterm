@@ -1466,7 +1466,7 @@ static void multi_win_set_window_title_action(MultiWin * win)
     }
 }
 
-static void multi_win_next_tab_action(MultiWin * win)
+void multi_win_next_tab_action(MultiWin * win)
 {
     if (win->wrap_switch_tab && multi_win_at_last_tab(win))
         gtk_notebook_set_current_page(GTK_NOTEBOOK(win->notebook), 0);
@@ -1474,7 +1474,7 @@ static void multi_win_next_tab_action(MultiWin * win)
         gtk_notebook_next_page(GTK_NOTEBOOK(win->notebook));
 }
 
-static void multi_win_previous_tab_action(MultiWin * win)
+void multi_win_previous_tab_action(MultiWin * win)
 {
     if (win->wrap_switch_tab && multi_win_at_first_tab(win))
     {
