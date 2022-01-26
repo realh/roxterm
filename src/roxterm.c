@@ -2332,9 +2332,6 @@ static gboolean roxterm_key_press_handler(GtkWidget *widget,
     (void) widget;
     guint mod = event->state & GDK_MODIFIER_MASK;
 
-    g_debug("modifier %x, ctrl %x, shift %x, mod & ~(ctrl|shift) %x",
-        mod, GDK_CONTROL_MASK, GDK_SHIFT_MASK, 
-        mod & ~(GDK_CONTROL_MASK | GDK_SHIFT_MASK));
     if ((event->keyval == GDK_KEY_Tab || event->keyval == GDK_KEY_ISO_Left_Tab)
         && (mod & GDK_CONTROL_MASK)
         && !(mod & ~(GDK_CONTROL_MASK | GDK_SHIFT_MASK))
@@ -2354,9 +2351,6 @@ static gboolean roxterm_key_press_handler(GtkWidget *widget,
         }
         return TRUE;
     }
-    g_debug("Not tab cycle shortcut");
-    g_debug("Keyval %x '%s' (tab is %x)", event->keyval,
-        gdk_keyval_name(event->keyval), GDK_KEY_Tab);
     if (!event->is_modifier &&
             shortcuts_key_is_shortcut(shortcuts, event->keyval, mod))
     {
