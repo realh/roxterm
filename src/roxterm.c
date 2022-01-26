@@ -2338,22 +2338,12 @@ static gboolean roxterm_key_press_handler(GtkWidget *widget,
     guint mod = event->state & GDK_MODIFIER_MASK;
 
     if ((event->keyval == GDK_KEY_Tab || event->keyval == GDK_KEY_ISO_Left_Tab)
-        && (mod & GDK_CONTROL_MASK)
-        && !(mod & ~(GDK_CONTROL_MASK | GDK_SHIFT_MASK))
+        && (mod & GDK_CONTROL_MASK) && !(mod & ~GDK_CONTROL_MASK)
         && options_lookup_int_with_default(roxterm->profile,
             "ctrl_tab_shortcut", FALSE))
     {
         MultiWin *win = roxterm_get_win(roxterm);
-        if (mod & GDK_SHIFT_MASK)
-        {
-            g_debug("shift, prev tab");
-            multi_win_previous_tab_action(win);
-        }
-        else
-        {
-            g_debug("no shift, next tab");
-            multi_win_next_tab_action(win);
-        }
+        multi_win_next_tab(win, TRUE);
         return TRUE;
     }
     if (!event->is_modifier &&

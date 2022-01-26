@@ -369,6 +369,8 @@ gboolean multi_win_get_ignore_toggles(MultiWin *win);
 
 void multi_win_select_tab(MultiWin *win, MultiTab *tab);
 
+void multi_win_next_tab(MultiWin * win, gboolean wrap);
+
 void multi_win_next_tab_action(MultiWin * win);
 
 void multi_win_previous_tab_action(MultiWin * win);

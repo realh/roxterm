@@ -1466,20 +1466,33 @@ static void multi_win_set_window_title_action(MultiWin * win)
     }
 }
 
+void multi_win_next_tab(MultiWin * win, gboolean wrap)
+{
+    if (multi_win_at_last_tab(win))
+    {
+        if (wrap)
+            gtk_notebook_set_current_page(GTK_NOTEBOOK(win->notebook), 0);
+    }
+    else
+    {
+        gtk_notebook_next_page(GTK_NOTEBOOK(win->notebook));
+    }
+}
+
 void multi_win_next_tab_action(MultiWin * win)
 {
-    if (win->wrap_switch_tab && multi_win_at_last_tab(win))
-        gtk_notebook_set_current_page(GTK_NOTEBOOK(win->notebook), 0);
-    else
-        gtk_notebook_next_page(GTK_NOTEBOOK(win->notebook));
+    multi_win_next_tab(win, win->wrap_switch_tab);
 }
 
 void multi_win_previous_tab_action(MultiWin * win)
 {
-    if (win->wrap_switch_tab && multi_win_at_first_tab(win))
+    if (multi_win_at_first_tab(win))
     {
-        gtk_notebook_set_current_page(GTK_NOTEBOOK(win->notebook),
-                win->ntabs - 1);
+        if (win->wrap_switch_tab)
+        {
+            gtk_notebook_set_current_page(GTK_NOTEBOOK(win->notebook),
+                    win->ntabs - 1);
+        }
     }
     else
     {
