@@ -133,7 +133,9 @@ struct ROXTermData {
     gboolean is_shell;
     gulong child_exited_tag;
     RoxtermChildExitAction exit_action;
-    gulong scroll_value_tag, scroll_limit_tag;
+    gulong scroll_value_tag;
+    gdouble scroll_value;
+    gint64 scroll_bottom_time;
     gboolean scroll_at_bottom;
     gboolean override_exit_action;
 };
@@ -2889,44 +2891,58 @@ roxterm_apply_text_blink_mode(ROXTermData *roxterm, VteTerminal *vte)
     vte_terminal_set_text_blink_mode(vte, modes[i]);
 }
 
-inline static gboolean
-scroll_values_at_limit(gdouble val, gdouble limit, gdouble page)
-{
-    return val + page >= limit;
-}
-
-inline static gboolean adjustment_at_limit(GtkAdjustment *adj)
-{
-    return scroll_values_at_limit(gtk_adjustment_get_value(adj),
-        gtk_adjustment_get_upper(adj), gtk_adjustment_get_page_size(adj));
-}
-
 static void
 roxterm_scroll_value_handler(GtkAdjustment *adj, ROXTermData *roxterm)
 {
-    roxterm->scroll_at_bottom =
-        scroll_values_at_limit(gtk_adjustment_get_value(adj),
-            gtk_adjustment_get_upper(adj), gtk_adjustment_get_page_size(adj));
+    gdouble val = gtk_adjustment_get_value(adj);
+    gint64 elapsed = g_get_monotonic_time() - roxterm->scroll_bottom_time;
+    gboolean sticky_time = elapsed < 1500000;
+    if (val < roxterm->scroll_value && !sticky_time)
+    {
+        g_debug("Scroll value decreased after sticky time (%ld)", elapsed);
+        // User has scrolled up, cancel stick to bottom
+        roxterm->scroll_at_bottom = FALSE;
+        roxterm->scroll_value = val;
+        return;
+    }
+    roxterm->scroll_value = val;
+    gdouble limit = gtk_adjustment_get_upper(adj) -
+        gtk_adjustment_get_page_size(adj);
     if (roxterm->scroll_at_bottom)
     {
-        g_debug("Scrolled to bottom");
+        if (val < limit && sticky_time)
+        {
+            // scrollbar has accidentally come "unstuck" from bottom,
+            // force it back
+            g_debug(
+                "Scroll value decreased within sticky time (%ld), going down",
+                elapsed);
+            gtk_adjustment_set_value(adj, limit);
+            roxterm->scroll_value = limit;
+        }
+        else if (sticky_time)
+        {
+            g_debug("Scroll value at limit within sticky time (%ld)",
+                elapsed);
+        }
+        else
+        {
+            g_debug("Sticky time elapsed (%ld)", elapsed);
+        }
     }
     else
     {
-        g_debug("Scrolled away from bottom");
-    }
-}
-
-static void
-roxterm_scroll_limit_handler(GtkAdjustment *adj,GParamSpec *pspec,
-    ROXTermData *roxterm)
-{
-    (void) pspec;
-    g_debug("Scroll limit changed");
-    if (roxterm->scroll_at_bottom)
-    {
-        gtk_adjustment_set_value(adj, gtk_adjustment_get_upper(adj) - 
-            gtk_adjustment_get_page_size(adj));
+        // If scrollbar has hit bottom, set flag to try to keep it there
+        roxterm->scroll_at_bottom = val >= limit;
+        if (roxterm->scroll_at_bottom)
+        {
+            g_debug("Scrollbar hit bottom");
+            roxterm->scroll_bottom_time = g_get_monotonic_time();
+        }
+        else
+        {
+            g_debug("Scrollbar didn't decrease, but not at bottom");
+        }
     }
 }
 
@@ -2965,22 +2981,22 @@ static void roxterm_apply_kinetic_scroling(ROXTermData *roxterm)
         }
         GtkAdjustment *adj = gtk_scrollable_get_vadjustment(
             GTK_SCROLLABLE(roxterm->widget));
+        roxterm->scroll_value = gtk_adjustment_get_value(adj);
+        roxterm->scroll_at_bottom = roxterm->scroll_value >= 
+            gtk_adjustment_get_upper(adj) - 
+            gtk_adjustment_get_page_size(adj);
+        roxterm->scroll_bottom_time = g_get_monotonic_time();
         if (kinetic && !roxterm->scroll_value_tag)
         {
             g_debug("Enabling scroll bounceback prevention");
             roxterm->scroll_value_tag = g_signal_connect(adj, "value-changed",
                 G_CALLBACK(roxterm_scroll_value_handler), roxterm);
-            roxterm->scroll_limit_tag = g_signal_connect(adj,
-                "notify::upper", G_CALLBACK(roxterm_scroll_limit_handler),
-                roxterm);
         }
         else if (!kinetic && roxterm->scroll_value_tag)
         {
             g_debug("Disabling scroll bounceback prevention");
             g_signal_handler_disconnect(adj, roxterm->scroll_value_tag);
             roxterm->scroll_value_tag = 0;
-            g_signal_handler_disconnect(adj, roxterm->scroll_limit_tag);
-            roxterm->scroll_limit_tag = 0;
         }
     }
 }
