@@ -133,6 +133,8 @@ struct ROXTermData {
     gboolean is_shell;
     gulong child_exited_tag;
     RoxtermChildExitAction exit_action;
+    gulong scroll_value_tag, scroll_limit_tag;
+    gboolean scroll_at_bottom;
     gboolean override_exit_action;
 };
 
@@ -546,11 +548,12 @@ static void roxterm_fork_callback(VteTerminal *vte,
         GPid pid, GError *error, gpointer user_data)
 {
     ROXTermData *roxterm = user_data;
-    (void) vte;
 
     roxterm->pid = pid;
     if (!vte)
+    {
         roxterm->widget = NULL;
+    }
     if (pid == -1)
     {
         roxterm_report_launch_error_async(roxterm,
@@ -2886,6 +2889,47 @@ roxterm_apply_text_blink_mode(ROXTermData *roxterm, VteTerminal *vte)
     vte_terminal_set_text_blink_mode(vte, modes[i]);
 }
 
+inline static gboolean
+scroll_values_at_limit(gdouble val, gdouble limit, gdouble page)
+{
+    return val + page >= limit;
+}
+
+inline static gboolean adjustment_at_limit(GtkAdjustment *adj)
+{
+    return scroll_values_at_limit(gtk_adjustment_get_value(adj),
+        gtk_adjustment_get_upper(adj), gtk_adjustment_get_page_size(adj));
+}
+
+static void
+roxterm_scroll_value_handler(GtkAdjustment *adj, ROXTermData *roxterm)
+{
+    roxterm->scroll_at_bottom =
+        scroll_values_at_limit(gtk_adjustment_get_value(adj),
+            gtk_adjustment_get_upper(adj), gtk_adjustment_get_page_size(adj));
+    if (roxterm->scroll_at_bottom)
+    {
+        g_debug("Scrolled to bottom");
+    }
+    else
+    {
+        g_debug("Scrolled away from bottom");
+    }
+}
+
+static void
+roxterm_scroll_limit_handler(GtkAdjustment *adj,GParamSpec *pspec,
+    ROXTermData *roxterm)
+{
+    (void) pspec;
+    g_debug("Scroll limit changed");
+    if (roxterm->scroll_at_bottom)
+    {
+        gtk_adjustment_set_value(adj, gtk_adjustment_get_upper(adj) - 
+            gtk_adjustment_get_page_size(adj));
+    }
+}
+
 static void roxterm_apply_kinetic_scroling(ROXTermData *roxterm)
 {
     if (roxterm_can_disable_fallback_scrolling == -1)
@@ -2918,6 +2962,25 @@ static void roxterm_apply_kinetic_scroling(ROXTermData *roxterm)
         {
             g_object_set(roxterm->widget, "scroll-unit-is-pixels",
                     pixel, NULL);
+        }
+        GtkAdjustment *adj = gtk_scrollable_get_vadjustment(
+            GTK_SCROLLABLE(roxterm->widget));
+        if (kinetic && !roxterm->scroll_value_tag)
+        {
+            g_debug("Enabling scroll bounceback prevention");
+            roxterm->scroll_value_tag = g_signal_connect(adj, "value-changed",
+                G_CALLBACK(roxterm_scroll_value_handler), roxterm);
+            roxterm->scroll_limit_tag = g_signal_connect(adj,
+                "notify::upper", G_CALLBACK(roxterm_scroll_limit_handler),
+                roxterm);
+        }
+        else if (!kinetic && roxterm->scroll_value_tag)
+        {
+            g_debug("Disabling scroll bounceback prevention");
+            g_signal_handler_disconnect(adj, roxterm->scroll_value_tag);
+            roxterm->scroll_value_tag = 0;
+            g_signal_handler_disconnect(adj, roxterm->scroll_limit_tag);
+            roxterm->scroll_limit_tag = 0;
         }
     }
 }
@@ -3106,8 +3169,8 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
     scrollbar_pos = multi_win_set_scroll_bar_position(win,
     options_lookup_int_with_default(roxterm_template->profile,
         "scrollbar_pos", MultiWinScrollBar_Right));
-    viewport = gtk_scrolled_window_new(roxterm_get_vte_hadjustment(vte),
-                    roxterm_get_vte_vadjustment(vte));
+    GtkAdjustment *vadj = roxterm_get_vte_vadjustment(vte);
+    viewport = gtk_scrolled_window_new(roxterm_get_vte_hadjustment(vte), vadj);
     GtkScrolledWindow *sw = GTK_SCROLLED_WINDOW(viewport);
     gtk_scrolled_window_set_policy(sw, GTK_POLICY_NEVER,
             scrollbar_pos ? GTK_POLICY_ALWAYS : GTK_POLICY_EXTERNAL);
@@ -3121,6 +3184,7 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
             GTK_CORNER_BOTTOM_RIGHT : GTK_CORNER_BOTTOM_LEFT);
     gtk_container_add(GTK_CONTAINER(viewport), roxterm->widget);
     gtk_widget_show_all(viewport);
+    roxterm_scroll_value_handler(vadj, roxterm);
 
     roxterm_add_matches(roxterm, vte);
 
