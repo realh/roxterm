@@ -8,7 +8,7 @@ pkg_check_modules(RTCOMMON REQUIRED
 pkg_check_modules(GMODULE_EXPORT REQUIRED gmodule-export-2.0)
 
 # If VTE >= 0.50 this should include the necessary flags for libpcre
-pkg_check_modules(VTE REQUIRED vte-2.91>=0.52)
+pkg_check_modules(VTE REQUIRED vte-2.91>=0.52 libpcre2-8)
 
 set(RTLIB_CFLAGS ${RTCOMMON_CFLAGS})
 if(RTLIB_CFLAG MATCHES ";")
