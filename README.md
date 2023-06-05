@@ -21,16 +21,12 @@ environments.
 Kinetic scrolling
 -----------------
 
-Recent versions of ROXTerm support kinetic scrolling with libinput, which
-considerably improves the UX on laptops for users of Wayland, and for xorg
-users who can't or prefer not to use the deprecated synaptics driver. However,
-it requires a [patched fork of vte](https://gitlab.gnome.org/realh69/vte). This
-version is also available in
-[AUR](https://aur.archlinux.org/packages/vte3-kinetic/).
-ROXTerm can now detect the patch at run-time without having to be recompiled.
-If you like this feature please visit
-[this vte issue](https://gitlab.gnome.org/GNOME/vte/-/issues/234) (you may get
-a 500 error at the moment dues to a gitlab problem) and give it an upvote.
+Recent versions of ROXTerm, in conjunction with recent versions of vte, support
+kinetic scrolling with libinput, which considerably improves the UX on laptops
+for users of Wayland, and for xorg users who can't or prefer not to use the
+deprecated synaptics driver. ROXTerm can detect whether the feature is
+supported in vte at run-time, so no re-compilation is necessary if you upgrade
+from an older vte.
 
 Related sites
 -------------
