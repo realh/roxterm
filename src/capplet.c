@@ -311,6 +311,7 @@ int main(int argc, char **argv)
     g_set_application_name(_("roxterm-config"));
 
     global_options_init_appdir(argc, argv);
+    global_options_init(&argc, &argv, TRUE);
 
 #if ENABLE_NLS
     setlocale(LC_ALL, "");
@@ -320,6 +321,7 @@ int main(int argc, char **argv)
 #endif    
 
     gtk_init(&argc, &argv);
+    global_options_apply_dark_theme();
 
     resources_access_icon();
     gtk_window_set_default_icon_name("roxterm");
