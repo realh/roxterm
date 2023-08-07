@@ -24,6 +24,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <gio/gio.h>
+
 #include "dlg.h"
 #include "globalopts.h"
 #include "version.h"
@@ -520,18 +522,40 @@ char **global_options_copy_strv(char **ps)
     return ps2;
 }
 
+static const char *color_scheme_key = "color-scheme";
+
+static void apply_dark_theme_from_settings(GSettings *gsettings,
+        const char *key, GtkSettings *gtk_settings)
+{
+    if (strcmp(key, color_scheme_key))
+    {
+        return;
+    }
+    char *setting = g_settings_get_string(gsettings, color_scheme_key);
+    gboolean prefer_dark = setting != NULL && !strcmp(setting, "prefer-dark");
+    g_free(setting);
+    g_object_set(gtk_settings, "gtk-application-prefer-dark-theme",
+        prefer_dark, NULL);
+}
+
 void global_options_apply_dark_theme(void)
 {
     GtkSettings *gtk_settings;
+    static gboolean listening = FALSE;
 
     gtk_settings = gtk_settings_get_default();
     if (g_object_class_find_property(G_OBJECT_GET_CLASS(gtk_settings),
             "gtk-application-prefer-dark-theme"))
     {
-        g_object_set(gtk_settings, "gtk-application-prefer-dark-theme",
-                global_options_lookup_int_with_default("prefer_dark_theme",
-                        FALSE),
-                NULL);
+        GSettings *gsettings =
+                g_settings_new("org.gnome.desktop.interface");
+        apply_dark_theme_from_settings(gsettings, color_scheme_key,
+            gtk_settings);
+        if (!listening)
+        {
+            g_signal_connect(gsettings, "changed",
+                G_CALLBACK(apply_dark_theme_from_settings), gtk_settings);
+        }
     }
 }
 

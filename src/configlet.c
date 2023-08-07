@@ -962,17 +962,6 @@ gboolean configlet_open()
 
         capplet_set_radio(&cg->capp, "warn_close", 3);
         capplet_set_boolean_toggle(&cg->capp, "only_warn_running", FALSE);
-        if (g_object_class_find_property(
-                G_OBJECT_GET_CLASS(gtk_settings_get_default()),
-                "gtk-application-prefer-dark-theme"))
-        {
-            capplet_set_boolean_toggle(&cg->capp, "prefer_dark_theme", FALSE);
-        }
-        else
-        {
-            gtk_widget_hide(GTK_WIDGET(gtk_builder_get_object(cg->capp.builder,
-                    "prefer_dark_theme")));
-        }
 
         capplet_inc_windows();
         gtk_widget_show(cg->widget);

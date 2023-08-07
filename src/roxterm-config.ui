@@ -1316,23 +1316,7 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkCheckButton" id="prefer_dark_theme">
-                            <property name="label" translatable="yes">Use dark theme</property>
-                            <property name="visible">True</property>
-                            <property name="can-focus">True</property>
-                            <property name="receives-default">False</property>
-                            <property name="has-tooltip">True</property>
-                            <property name="tooltip-markup">This option applies to terminal windows' menus and borders etc; terminal colours are handled separately. It does not apply to the configuration applet.</property>
-                            <property name="tooltip-text" translatable="yes">This option applies to terminal windows' menus and borders etc; terminal colours are handled separately. It does not apply to the configuration applet.</property>
-                            <property name="halign">start</property>
-                            <property name="margin-top">8</property>
-                            <property name="draw-indicator">True</property>
-                            <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
-                          </object>
-                          <packing>
-                            <property name="left-attach">0</property>
-                            <property name="top-attach">5</property>
-                          </packing>
+                          <placeholder/>
                         </child>
                         <child>
                           <placeholder/>

@@ -3592,12 +3592,9 @@ roxterm_opt_signal_handler(const char *profile_name, const char *key,
     }
     else if (!strcmp(profile_name, "Global") &&
             (!strcmp(key, "warn_close") ||
-            !strcmp(key, "only_warn_running") ||
-            !strcmp(key, "prefer_dark_theme")))
+            !strcmp(key, "only_warn_running")))
     {
         options_set_int(global_options, key, val.i);
-        if (!strcmp(key, "prefer_dark_theme"))
-            global_options_apply_dark_theme();
     }
     else
     {
