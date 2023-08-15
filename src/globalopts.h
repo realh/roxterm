@@ -115,6 +115,15 @@ void global_options_init_bindir(const char *argv0);
 /* Deep copy a NULL-terminated array of NULL-terminated strings */
 char **global_options_copy_strv(char **ps);
 
+/* Gets the GSettings which provides the dark theme setting; it's a singleton */
+GSettings *global_options_get_interface_gsettings(void);
+
+/* Gets the prefer-dark setting from the above settings. GSettings may be
+ * null, in which case this calls global_options_get_interface_gsettings()
+ */
+gboolean global_options_system_theme_is_dark(GSettings *gsettings)
+
+/* Applies the dark theme setting now and whenever the Gsetting changes */
 void global_options_apply_dark_theme(void);
 
 #endif /* GLOBALOPTS_H */

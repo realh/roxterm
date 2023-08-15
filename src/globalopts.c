@@ -524,16 +524,35 @@ char **global_options_copy_strv(char **ps)
 
 static const char *color_scheme_key = "color-scheme";
 
+GSettings *global_options_get_interface_gsettings()
+{
+    static GSettings *gsettings = NULL;
+    if (!gsettings)
+    {
+        gsettings = g_settings_new("org.gnome.desktop.interface");
+    }
+    return gsettings;
+}
+
+gboolean global_options_system_theme_is_dark(GSettings *gsettings)
+{
+    if (!gsettings) gsettings = global_options_get_interface_gsettings();
+    char *setting = g_settings_get_string(gsettings, color_scheme_key);
+    gboolean prefer_dark = setting != NULL && !strcmp(setting, "prefer-dark");
+    g_free(setting);
+    return prefer_dark;
+}
+
 static void apply_dark_theme_from_settings(GSettings *gsettings,
         const char *key, GtkSettings *gtk_settings)
 {
+    /* This gets called when any of the settings in gsettings changes,
+     * so ignore the other keys */
     if (strcmp(key, color_scheme_key))
     {
         return;
     }
-    char *setting = g_settings_get_string(gsettings, color_scheme_key);
-    gboolean prefer_dark = setting != NULL && !strcmp(setting, "prefer-dark");
-    g_free(setting);
+    gboolean prefer_dark = global_options_system_theme_is_dark(gsettings);
     g_object_set(gtk_settings, "gtk-application-prefer-dark-theme",
         prefer_dark, NULL);
 }
@@ -547,8 +566,7 @@ void global_options_apply_dark_theme(void)
     if (g_object_class_find_property(G_OBJECT_GET_CLASS(gtk_settings),
             "gtk-application-prefer-dark-theme"))
     {
-        GSettings *gsettings =
-                g_settings_new("org.gnome.desktop.interface");
+        GSettings *gsettings = global_options_get_interface_gsettings();
         apply_dark_theme_from_settings(gsettings, color_scheme_key,
             gtk_settings);
         if (!listening)

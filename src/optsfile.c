@@ -347,9 +347,9 @@ static void report_lookup_err(GError *err,
 		g_error_free(err);
 }
 
-char *options_file_lookup_string_with_default(
+static char *options_file_do_lookup_string(
 		GKeyFile *kf, const char *group_name,
-		const char *key, const char *default_value)
+		const char *key)
 {
 	GError *err = NULL;
 	char *result = g_key_file_get_string(kf, group_name, key, &err);
@@ -359,12 +359,46 @@ char *options_file_lookup_string_with_default(
 		g_free(result);
 		result = NULL;
 	}
-	if (!result)
-	{
-		if (default_value)
-			result = g_strdup(default_value);
-		report_lookup_err(err, key, group_name);
-	}
+	return result;
+}
+
+char *options_file_lookup_string_with_default(
+		GKeyFile *kf, const char *group_name,
+		const char *key, const char *default_value)
+{
+    char *result;
+    const char *alt_key = NULL;
+
+    if (!strcmp(group_name, "Global"))
+    {
+        if (!strcmp(key, "colour_scheme"))
+        {
+            /* When looking up colour_scheme, try dark/light first, falling
+             * back to old default
+             */
+            alt_key = global_options_system_theme_is_dark() ?
+                "colour_scheme_dark" : "colour_scheme_light";
+            default = global_options_system_theme_is_dark() ?
+                "Nocturne" : "GTK";
+        }
+        else if (g_str_has_prefix(key, "colour_scheme_"))
+        {
+            /* When looking up one of the dark/light options, try it first,
+             * falling back to old colour_scheme.
+             */
+            alt_key = key;
+            key = "colour_scheme";
+        }
+    }
+
+    if (alt_key)
+    {
+        result = options_file_do_lookup_string(kf, group_name, alt_key);
+        if (result) return result;
+    }
+    result = options_file_do_lookup_string(kf, group_name, key);
+    if (!result) result = default_value;
+
 	return result;
 }
 

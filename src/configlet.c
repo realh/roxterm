@@ -192,11 +192,18 @@ static void configlet_delete(ConfigletData *cg)
 static const char *family_name_to_opt_key(const char *family)
 {
     if (!strcmp(family, "Profiles"))
+    {
         return "profile";
+    }
     else if (!strcmp(family, "Colours"))
-        return "colour_scheme";
+    {
+        return global_options_system_theme_is_dark ?
+            "colour_scheme_dark" : "colour_scheme_light";
+    }
     else if (!strcmp(family, "Shortcuts"))
+    {
         return "shortcut_scheme";
+    }
     return NULL;
 }
 
@@ -205,6 +212,14 @@ static char *configlet_get_configured_name(ConfigletList *cl)
     const char *optkey = family_name_to_opt_key(cl->family);
 
     g_return_val_if_fail(optkey, NULL);
+    const char *default_name;
+    if (strcmp(cl->family, "Colours"))
+    {
+        default_name = "Default";
+    } else {
+        default_name = global_options_system_theme_is_dark(NULL) ?
+            "Nocturne" : "GTK";
+    }
     return options_lookup_string_with_default(cl->cg->capp.options, optkey,
             strcmp(cl->family, "Colours") ? "Default" : "GTK");
 }
