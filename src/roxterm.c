@@ -93,6 +93,7 @@ struct ROXTermData {
     pid_t pid;
     /* We own a reference to colour_scheme */
     Options *colour_scheme;
+    gboolean colour_scheme_overridden;
     char *matched_url;
     ROXTerm_MatchType match_type;
     Options *profile;
@@ -2259,6 +2260,7 @@ static void roxterm_colour_scheme_selected(GtkCheckMenuItem *mitem,
         if (colour_scheme)
         {
             roxterm_change_colour_scheme(roxterm, colour_scheme);
+            roxterm->colour_scheme_overridden = TRUE;
             options_unref(colour_scheme);
         }
         else
@@ -2838,6 +2840,10 @@ inline static void roxterm_apply_middle_click_tab(ROXTermData *roxterm)
 
 static void roxterm_apply_colour_scheme_from_profile(ROXTermData *roxterm)
 {
+    if (roxterm->colour_scheme_overridden)
+    {
+        return;
+    }
     char *scheme = options_lookup_string(roxterm->profile, "colour_scheme");
     if (scheme && scheme[0])
     {
@@ -3864,7 +3870,10 @@ static void roxterm_set_colour_scheme_handler(ROXTermData *roxterm,
 {
     if (!roxterm_verify_id(roxterm))
         return;
-    roxterm_change_colour_scheme_by_name(roxterm, name);
+    if (!roxterm->colour_scheme_overridden)
+    {
+        roxterm_change_colour_scheme_by_name(roxterm, name);
+    }
 }
 
 static void roxterm_set_shortcut_scheme_handler(ROXTermData *roxterm,
