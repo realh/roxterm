@@ -24,6 +24,7 @@
 #include "dlg.h"
 #include "dynopts.h"
 #include "getname.h"
+#include "globalopts.h"
 #include "optsdbus.h"
 #include "optsfile.h"
 #include "profilegui.h"
@@ -197,7 +198,7 @@ static const char *family_name_to_opt_key(const char *family)
     }
     else if (!strcmp(family, "Colours"))
     {
-        return global_options_system_theme_is_dark ?
+        return global_options_system_theme_is_dark(NULL) ?
             "colour_scheme_dark" : "colour_scheme_light";
     }
     else if (!strcmp(family, "Shortcuts"))
@@ -899,6 +900,20 @@ static void configlet_add_family_to_size_group(ConfigletData *cg,
     configlet_add_button_to_size_group(cg, f2, "edit");
 }
 
+static void configlet_on_dark_pref_changed(GSettings *gsettings,
+        const char *key, ConfigletList *cl)
+{
+    if (strcmp(key, global_options_color_scheme_key))
+    {
+        return;
+    }
+    char *name = configlet_get_configured_name(cl);
+	gtk_tree_model_foreach(GTK_TREE_MODEL(cl->list), update_radios, name);
+	g_debug("prefer-dark changed, selected scheme %s", name);
+    g_free(name);
+}
+
+
 static void configlet_setup_family(ConfigletData *cg, ConfigletList *cl,
         const char *family)
 {
@@ -923,6 +938,13 @@ static void configlet_setup_family(ConfigletData *cg, ConfigletList *cl,
     {
         configlet_add_family_to_size_group(cg, family);
     }
+
+	if (!strcmp(family, "Colours"))
+	{
+		GSettings *gsettings = global_options_get_interface_gsettings();
+		g_signal_connect(gsettings, "changed",
+			G_CALLBACK(configlet_on_dark_pref_changed), cl);
+	}
 }
 
 gboolean configlet_open()

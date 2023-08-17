@@ -376,9 +376,9 @@ char *options_file_lookup_string_with_default(
             /* When looking up colour_scheme, try dark/light first, falling
              * back to old default
              */
-            alt_key = global_options_system_theme_is_dark() ?
+            alt_key = global_options_system_theme_is_dark(NULL) ?
                 "colour_scheme_dark" : "colour_scheme_light";
-            default = global_options_system_theme_is_dark() ?
+            default_value = global_options_system_theme_is_dark(NULL) ?
                 "Nocturne" : "GTK";
         }
         else if (g_str_has_prefix(key, "colour_scheme_"))
@@ -397,7 +397,7 @@ char *options_file_lookup_string_with_default(
         if (result) return result;
     }
     result = options_file_do_lookup_string(kf, group_name, key);
-    if (!result) result = default_value;
+    if (!result) result = g_strdup(default_value);
 
 	return result;
 }

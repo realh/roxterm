@@ -522,7 +522,7 @@ char **global_options_copy_strv(char **ps)
     return ps2;
 }
 
-static const char *color_scheme_key = "color-scheme";
+const char *global_options_color_scheme_key = "color-scheme";
 
 GSettings *global_options_get_interface_gsettings()
 {
@@ -537,7 +537,7 @@ GSettings *global_options_get_interface_gsettings()
 gboolean global_options_system_theme_is_dark(GSettings *gsettings)
 {
     if (!gsettings) gsettings = global_options_get_interface_gsettings();
-    char *setting = g_settings_get_string(gsettings, color_scheme_key);
+    char *setting = g_settings_get_string(gsettings, global_options_color_scheme_key);
     gboolean prefer_dark = setting != NULL && !strcmp(setting, "prefer-dark");
     g_free(setting);
     return prefer_dark;
@@ -548,7 +548,7 @@ static void apply_dark_theme_from_settings(GSettings *gsettings,
 {
     /* This gets called when any of the settings in gsettings changes,
      * so ignore the other keys */
-    if (strcmp(key, color_scheme_key))
+    if (strcmp(key, global_options_color_scheme_key))
     {
         return;
     }
@@ -567,7 +567,7 @@ void global_options_apply_dark_theme(void)
             "gtk-application-prefer-dark-theme"))
     {
         GSettings *gsettings = global_options_get_interface_gsettings();
-        apply_dark_theme_from_settings(gsettings, color_scheme_key,
+        apply_dark_theme_from_settings(gsettings, global_options_color_scheme_key,
             gtk_settings);
         if (!listening)
         {

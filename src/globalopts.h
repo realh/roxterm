@@ -62,6 +62,9 @@ extern gint global_options_atexit;
 
 extern char *global_options_user_session_id;
 
+/* Key for dark theme preference in GSettings */
+extern const char *global_options_color_scheme_key;
+
 /* Call after argv has been processed by gtk_init; may be called more than once
  * but repeat invocations have no effect on appdir/bindir and argv/argc are
  * altered. Bear in mind that --help/--usage args will cause exit.
@@ -121,7 +124,7 @@ GSettings *global_options_get_interface_gsettings(void);
 /* Gets the prefer-dark setting from the above settings. GSettings may be
  * null, in which case this calls global_options_get_interface_gsettings()
  */
-gboolean global_options_system_theme_is_dark(GSettings *gsettings)
+gboolean global_options_system_theme_is_dark(GSettings *gsettings);
 
 /* Applies the dark theme setting now and whenever the Gsetting changes */
 void global_options_apply_dark_theme(void);
