@@ -3572,9 +3572,14 @@ static void
 roxterm_opt_signal_handler(const char *profile_name, const char *key,
     OptsDBusOptType opt_type, OptsDBusValue val)
 {
-    if (!strncmp(profile_name, "Profiles/", 9))
+    const char prof_s[] = "Profiles/";
+    size_t prof_l = sizeof(prof_s) - 1;
+    const char col_s[] = "Colours/";
+    size_t col_l = sizeof(col_s) - 1;
+
+    if (!strncmp(profile_name, prof_s, prof_l))
     {
-        const char *short_profile_name = profile_name + 9;
+        const char *short_profile_name = profile_name + prof_l;
         Options *profile = dynamic_options_lookup_and_ref(roxterm_profiles,
             short_profile_name, "roxterm profile");
 
@@ -3582,9 +3587,9 @@ roxterm_opt_signal_handler(const char *profile_name, const char *key,
             roxterm_reflect_profile_change(profile, key);
         dynamic_options_unref(roxterm_profiles, short_profile_name);
     }
-    else if (!strncmp(profile_name, "Colours/", 8))
+    else if (!strncmp(profile_name, col_s, col_l))
     {
-        const char *scheme_name = profile_name + 8;
+        const char *scheme_name = profile_name + col_l;
         Options *scheme = colour_scheme_lookup_and_ref(scheme_name);
         gboolean changed = FALSE;
 
