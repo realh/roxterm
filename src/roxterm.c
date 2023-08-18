@@ -4464,6 +4464,7 @@ static void on_dark_theme_pref_changed(GSettings *gsettings,
         return;
     }
     gboolean prefer_dark = global_options_system_theme_is_dark(gsettings);
+    g_debug("System theme changed to %s", prefer_dark ? "dark" : "light");
     const char *pref_key = prefer_dark ?
         "colour_scheme_dark" : "colour_scheme_light";
     GList *link;
@@ -4475,6 +4476,11 @@ static void on_dark_theme_pref_changed(GSettings *gsettings,
         if (!theme)
         {
             theme = global_options_lookup_string(pref_key);
+            g_debug("Applying global theme: %s", theme);
+        }
+        else
+        {
+            g_debug("Applying theme from profile: %s", theme);
         }
         if (theme)
         {

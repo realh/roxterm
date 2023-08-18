@@ -369,8 +369,8 @@ char *options_file_lookup_string_with_default(
     char *result;
     const char *alt_key = NULL;
 
-    if (!strcmp(group_name, "Global") ||
-		g_str_has_prefix(group_name, "Profile"))
+    if (!strcmp(group_name, "roxterm options") ||
+		!strcmp(group_name, "roxterm profile"))
     {
         if (!strcmp(key, "colour_scheme"))
         {
@@ -381,6 +381,7 @@ char *options_file_lookup_string_with_default(
                 "colour_scheme_dark" : "colour_scheme_light";
             default_value = global_options_system_theme_is_dark(NULL) ?
                 "Nocturne" : "GTK";
+            g_debug("Looking up %s/%s instead of %s", group_name, alt_key, key);
         }
         else if (g_str_has_prefix(key, "colour_scheme_"))
         {
@@ -389,16 +390,33 @@ char *options_file_lookup_string_with_default(
              */
             alt_key = key;
             key = "colour_scheme";
+            g_debug("Looking up %s/%s with fallback %s",
+                group_name, alt_key, key);
         }
     }
 
     if (alt_key)
     {
         result = options_file_do_lookup_string(kf, group_name, alt_key);
-        if (result) return result;
+        if (result)
+        {
+            g_debug("%s/%s is %s", group_name, alt_key, result);
+            return result;
+        }
     }
     result = options_file_do_lookup_string(kf, group_name, key);
-    if (!result) result = g_strdup(default_value);
+    if (!result)
+    {
+        result = g_strdup(default_value);
+        if (alt_key)
+        {
+            g_debug("%s/%s was null, default %s", group_name, key, result);
+        }
+    }
+    else if (alt_key)
+    {
+        g_debug("%s/%s fallback is %s", group_name, key, result);
+    }
 
 	return result;
 }
