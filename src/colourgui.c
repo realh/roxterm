@@ -596,10 +596,10 @@ void on_use_custom_colours_toggled(GtkToggleButton *button, ColourGUI *cg)
         colourgui_set_palette_shading(cg->capp.builder);
         for (n = old_size; n < palette_size; ++n)
         {
-            char key[8];
+            char key[12];
             char *val;
 
-            snprintf(key, sizeof(key) - 1, "%d", n);
+            snprintf(key, sizeof(key), "%d", n);
             val = options_lookup_string(cg->capp.options, key);
             if (!val)
             {
