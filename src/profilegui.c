@@ -301,12 +301,24 @@ void on_reset_compat_clicked(GtkButton *button, ProfileGUI *pg)
             DEFAULT_DELETE_BINDING);
 }
 
-void on_edit_colour_scheme_clicked(GtkButton *button, ProfileGUI *pg)
+void on_edit_colour_scheme_clicked(const char *combo_name, ProfileGUI *pg)
+{
+    GtkWidget *combo = capplet_lookup_widget(&pg->capp, combo_name);
+    char *theme_name =
+		gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(combo));
+    colourgui_open(theme_name);
+}
+
+void on_edit_colour_scheme_light_clicked(GtkButton *button, ProfileGUI *pg)
 {
     (void) button;
-    GtkWidget *combo = capplet_lookup_widget(&pg->capp, "colour_scheme");
-    char *name = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(combo));
-    colourgui_open(name);
+	on_edit_colour_scheme_clicked("colour_scheme_light", pg);
+}
+
+void on_edit_colour_scheme_dark_clicked(GtkButton *button, ProfileGUI *pg)
+{
+    (void) button;
+	on_edit_colour_scheme_clicked("colour_scheme_dark", pg);
 }
 
 static void exit_action_changed(GtkComboBox *combo, ProfileGUI *pg)
@@ -326,9 +338,10 @@ inline static void profilegui_add_combo_item(GtkWidget *combo, const char *item)
     gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(combo), item);
 }
 
-/* GtkBuilder signal handlers can't be static */
-void on_colour_scheme_combo_changed(GtkComboBox *combo,
-        CappletData *capp)
+static void on_colour_scheme_changed(GtkComboBox *combo,
+        CappletData *capp,
+		const char *edit_button_name,
+		const char *option_name)
 {
     char *value;
 
@@ -338,7 +351,7 @@ void on_colour_scheme_combo_changed(GtkComboBox *combo,
     gboolean unset = gtk_combo_box_get_active(combo) == 0;
     gtk_widget_set_sensitive(
             GTK_WIDGET(gtk_builder_get_object(capp->builder,
-                    "edit_colour_scheme")), !unset);
+                    edit_button_name)), !unset);
     if (unset)
     {
         value = NULL;
@@ -347,14 +360,30 @@ void on_colour_scheme_combo_changed(GtkComboBox *combo,
     {
         value = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(combo));
     }
-    capplet_set_string(capp->options, "colour_scheme", value);
+    capplet_set_string(capp->options, option_name, value);
     g_free(value);
 }
 
-static void profilegui_init_colour_scheme_combo(ProfileGUI *pg)
+/* GtkBuilder signal handlers can't be static */
+void on_colour_scheme_light_changed(GtkComboBox *combo,
+        CappletData *capp)
+{
+	on_colour_scheme_changed(combo, capp,
+		"edit_colour_scheme_light", "colour_scheme_light");
+}
+
+void on_colour_scheme_dark_changed(GtkComboBox *combo,
+        CappletData *capp)
+{
+	on_colour_scheme_changed(combo, capp,
+		"edit_colour_scheme_dark", "colour_scheme_dark");
+}
+
+static void profilegui_init_colour_scheme_combo(ProfileGUI *pg,
+	const char *name)
 {
     GtkWidget *combo = GTK_WIDGET(gtk_builder_get_object(pg->capp.builder,
-                "colour_scheme"));
+                name));
     char **schemes = dynamic_options_list_sorted(
             dynamic_options_get("Colours"));
     int n;
@@ -365,10 +394,17 @@ static void profilegui_init_colour_scheme_combo(ProfileGUI *pg)
         profilegui_add_combo_item(combo, schemes[n]);
 }
 
-static void profilegui_set_colour_scheme_combo(CappletData *capp)
+static void profilegui_init_colour_scheme_combos(ProfileGUI *pg)
 {
-    GtkWidget *combo = capplet_lookup_widget(capp, "colour_scheme");
-    char *value = options_lookup_string(capp->options, "colour_scheme");
+	profilegui_init_colour_scheme_combo(pg, "colour_scheme_light");
+	profilegui_init_colour_scheme_combo(pg, "colour_scheme_dark");
+}
+
+static void profilegui_set_colour_scheme_combo(CappletData *capp,
+	const char *name)
+{
+    GtkWidget *combo = capplet_lookup_widget(capp, name);
+    char *value = options_lookup_string(capp->options, name);
     int active = 0;
     if (value && value[0])
     {
@@ -395,10 +431,18 @@ static void profilegui_set_colour_scheme_combo(CappletData *capp)
             profilegui_add_combo_item(combo, value);
     }
     gtk_combo_box_set_active(GTK_COMBO_BOX(combo), active);
+	char button_name[32];
+	snprintf(button_name, sizeof(button_name) - 1, "edit_%s", name);
     gtk_widget_set_sensitive(
             GTK_WIDGET(gtk_builder_get_object(capp->builder,
-                    "edit_colour_scheme")), active != 0);
+                    button_name)), active != 0);
     g_free(value);
+}
+
+static void profilegui_set_colour_scheme_combos(CappletData *capp)
+{
+    profilegui_set_colour_scheme_combo(capp, "colour_scheme_light");
+    profilegui_set_colour_scheme_combo(capp, "colour_scheme_dark");
 }
 
 static void profilegui_connect_handlers(ProfileGUI * pg)
@@ -513,7 +557,7 @@ static void profilegui_fill_in_dialog(ProfileGUI * pg)
     capplet_set_boolean_toggle(&pg->capp, "use_custom_command", FALSE);
     capplet_set_text_entry(&pg->capp, "command", NULL);
     capplet_set_combo(&pg->capp, "exit_action", 0);
-    profilegui_set_colour_scheme_combo(&pg->capp);
+    profilegui_set_colour_scheme_combos(&pg->capp);
     capplet_set_spin_button_float(&pg->capp, "exit_pause");
     capplet_set_text_entry(&pg->capp, "title_string", "%t. %s");
     capplet_set_text_entry(&pg->capp, "win_title", "%s");
@@ -628,7 +672,7 @@ ProfileGUI *profilegui_open(const char *profile_name)
     gtk_window_set_title(GTK_WINDOW(pg->dialog), title);
     g_free(title);
 
-    profilegui_init_colour_scheme_combo(pg);
+    profilegui_init_colour_scheme_combos(pg);
 
     profilegui_setup_list_store(pg);
 

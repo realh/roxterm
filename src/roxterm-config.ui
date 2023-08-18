@@ -1963,7 +1963,7 @@
                               </packing>
                             </child>
                             <child>
-                              <!-- n-columns=3 n-rows=2 -->
+                              <!-- n-columns=3 n-rows=3 -->
                               <object class="GtkGrid" id="grid15">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
@@ -2005,9 +2005,9 @@
                                   <object class="GtkLabel" id="colour_scheme_label">
                                     <property name="visible">True</property>
                                     <property name="can-focus">False</property>
-                                    <property name="label" translatable="yes">C_olour scheme:</property>
+                                    <property name="label" translatable="yes">L_ight colour scheme:</property>
                                     <property name="use-underline">True</property>
-                                    <property name="mnemonic-widget">colour_scheme</property>
+                                    <property name="mnemonic-widget">colour_scheme_light</property>
                                     <property name="ellipsize">end</property>
                                     <property name="xalign">0</property>
                                   </object>
@@ -2017,7 +2017,7 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkButton" id="edit_colour_scheme">
+                                  <object class="GtkButton" id="edit_colour_scheme_light">
                                     <property name="label" translatable="yes">Edit</property>
                                     <property name="visible">True</property>
                                     <property name="can-focus">True</property>
@@ -2026,7 +2026,7 @@
                                     <property name="has-tooltip">True</property>
                                     <property name="tooltip-markup">Click to edit this colour scheme.</property>
                                     <property name="tooltip-text" translatable="yes">Click to edit this colour scheme.</property>
-                                    <signal name="clicked" handler="on_edit_colour_scheme_clicked" swapped="no"/>
+                                    <signal name="clicked" handler="on_edit_colour_scheme_light_clicked" swapped="no"/>
                                   </object>
                                   <packing>
                                     <property name="left-attach">2</property>
@@ -2034,12 +2034,12 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkComboBoxText" id="colour_scheme">
+                                  <object class="GtkComboBoxText" id="colour_scheme_light">
                                     <property name="visible">True</property>
                                     <property name="can-focus">False</property>
                                     <property name="hexpand">True</property>
                                     <property name="has-entry">True</property>
-                                    <signal name="changed" handler="on_colour_scheme_combo_changed" swapped="no"/>
+                                    <signal name="changed" handler="on_colour_scheme_light_changed" swapped="no"/>
                                     <child internal-child="entry">
                                       <object class="GtkEntry" id="comboboxtext-entry">
                                         <property name="can-focus">False</property>
@@ -2049,6 +2049,56 @@
                                   <packing>
                                     <property name="left-attach">1</property>
                                     <property name="top-attach">1</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel" id="colour_scheme_label1">
+                                    <property name="visible">True</property>
+                                    <property name="can-focus">False</property>
+                                    <property name="label" translatable="yes">D_ark colour scheme:</property>
+                                    <property name="use-underline">True</property>
+                                    <property name="mnemonic-widget">colour_scheme_dark</property>
+                                    <property name="ellipsize">end</property>
+                                    <property name="xalign">0</property>
+                                  </object>
+                                  <packing>
+                                    <property name="left-attach">0</property>
+                                    <property name="top-attach">2</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkComboBoxText" id="colour_scheme_dark">
+                                    <property name="visible">True</property>
+                                    <property name="can-focus">False</property>
+                                    <property name="hexpand">True</property>
+                                    <property name="has-entry">True</property>
+                                    <signal name="changed" handler="on_colour_scheme_dark_changed" swapped="no"/>
+                                    <child internal-child="entry">
+                                      <object class="GtkEntry">
+                                        <property name="can-focus">True</property>
+                                      </object>
+                                    </child>
+                                  </object>
+                                  <packing>
+                                    <property name="left-attach">1</property>
+                                    <property name="top-attach">2</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkButton" id="edit_colour_scheme_dark">
+                                    <property name="label" translatable="yes">Edit</property>
+                                    <property name="visible">True</property>
+                                    <property name="can-focus">True</property>
+                                    <property name="can-default">True</property>
+                                    <property name="receives-default">True</property>
+                                    <property name="has-tooltip">True</property>
+                                    <property name="tooltip-markup">Click to edit this colour scheme.</property>
+                                    <property name="tooltip-text" translatable="yes">Click to edit this colour scheme.</property>
+                                    <signal name="clicked" handler="on_edit_colour_scheme_dark_clicked" swapped="no"/>
+                                  </object>
+                                  <packing>
+                                    <property name="left-attach">2</property>
+                                    <property name="top-attach">2</property>
                                   </packing>
                                 </child>
                               </object>

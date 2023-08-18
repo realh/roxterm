@@ -369,7 +369,7 @@ char *options_file_lookup_string_with_default(
     char *result;
     const char *alt_key = NULL;
 
-    if (!strcmp(group_name, "Global"))
+    if (!strcmp(group_name, "Global") || !strcmp(group_name, "Profiles"))
     {
         if (!strcmp(key, "colour_scheme"))
         {
