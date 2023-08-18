@@ -338,6 +338,10 @@ static void menutree_build(MenuTree *menu_tree, Options *shortcuts,
         _("New Tab With _Profile"), MENUTREE_FILE_NEW_TAB_WITH_PROFILE,
         _("C_lose Tab"), MENUTREE_FILE_CLOSE_TAB,
         _("_Close Window"), MENUTREE_FILE_CLOSE_WINDOW,
+        "_", MENUTREE_NULL_ID,
+        _("Save Buffer _As..."), MENUTREE_FILE_SAVE_BUFFER_AS,
+        _("Save _Buffer"), MENUTREE_FILE_SAVE_BUFFER,
+        "_", MENUTREE_NULL_ID,
         _("_Save Session..."), MENUTREE_FILE_SAVE_SESSION,
         NULL);
     gtk_menu_item_set_submenu(GTK_MENU_ITEM(menu_tree->item_widgets

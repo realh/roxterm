@@ -54,6 +54,8 @@ typedef enum {
     MENUTREE_FILE_NEW_TAB_WITH_PROFILE_HEADER,
     MENUTREE_FILE_CLOSE_TAB,
     MENUTREE_FILE_CLOSE_WINDOW,
+    MENUTREE_FILE_SAVE_BUFFER_AS,
+    MENUTREE_FILE_SAVE_BUFFER,
     MENUTREE_FILE_SAVE_SESSION,
 
     MENUTREE_EDIT_SELECT_ALL,
@@ -206,7 +208,7 @@ inline static gulong menutree_named_signal_connect(MenuTree *tree,
     MenuTreeID id, const char *signame, GCallback handler, gpointer user_data)
 {
     return menutree_named_signal_connect_data(tree, id, signame, handler,
-            user_data, 0);
+            user_data, G_CONNECT_DEFAULT);
 }
 
 inline static gulong menutree_named_signal_connect_swapped(MenuTree *tree,
@@ -228,7 +230,8 @@ inline static gulong
 menutree_signal_connect(MenuTree * tree, MenuTreeID id,
     GCallback handler, gpointer user_data)
 {
-    return menutree_signal_connect_data(tree, id, handler, user_data, 0);
+    return menutree_signal_connect_data(tree, id, handler, user_data,
+        G_CONNECT_DEFAULT);
 }
 
 inline static gulong

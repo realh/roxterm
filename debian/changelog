@@ -1,10 +1,12 @@
-roxterm (3.13.0) unstable; urgency=medium
+roxterm (3.13.1) unstable; urgency=medium
 
-  * Upstream changes to system dark mode handling:
+  * New upstream version:
+    + Use desktop's dark mode setting instead of roxterm having its own.
     + Apply dark mode setting to config applet.
-    + Use desktop's setting instead of a separate setting.
+    + Separate colour scheme settings for light and dark modes.
+    + Allow saving of scrollback buffer.
 
- -- Tony Houghton <h@realh.co.uk>  Mon, 07 Aug 2023 21:36:14 +0100
+ -- Tony Houghton <h@realh.co.uk>  Fri, 18 Aug 2023 19:21:06 +0100
 
 roxterm (3.12.1-1ppa1focal1) focal; urgency=medium
 

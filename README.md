@@ -18,6 +18,12 @@ It still supports the ROX desktop application layout it was named after, but
 can also be installed in a more conventional manner for use in other desktop
 environments.
 
+What's new
+----------
+
+The [Debian changelog](./debian/changelog) provides a good summary of what's
+changed between versions.
+
 Kinetic scrolling
 -----------------
 

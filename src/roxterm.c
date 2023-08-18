@@ -139,6 +139,7 @@ struct ROXTermData {
     gint64 scroll_bottom_time;
     gboolean scroll_at_bottom;
     gboolean override_exit_action;
+    char *buffer_file_name;
 };
 
 #define PROFILE_NAME_KEY "roxterm_profile_name"
@@ -327,6 +328,7 @@ static ROXTermData *roxterm_data_clone(ROXTermData *old_gt)
     new_gt->child_exited_tag = 0;
     new_gt->post_exit_tag = 0;
     new_gt->win_state_changed_tag = 0;
+    new_gt->buffer_file_name = NULL;
 
     if (old_gt->colour_scheme)
     {
@@ -913,6 +915,7 @@ static void roxterm_data_delete(ROXTermData *roxterm)
     g_strfreev(roxterm->env);
     if (roxterm->pango_desc)
         pango_font_description_free(roxterm->pango_desc);
+    g_free(roxterm->buffer_file_name);
     if (roxterm->replace_task_dialog)
     {
         roxterm->postponed_free = TRUE;
@@ -1633,6 +1636,16 @@ static void roxterm_shade_search_menu_items(ROXTermData *roxterm)
     roxterm_shade_mtree_search_items(multi_win_get_popup_menu(win), shade);
 }
 
+static void roxterm_shade_save_buffer_menu_item(ROXTermData *roxterm)
+{
+    MultiWin *win = roxterm_get_win(roxterm);
+    gboolean shade = roxterm->buffer_file_name == NULL;
+    menutree_shade(multi_win_get_menu_bar(win),
+        MENUTREE_FILE_SAVE_BUFFER, shade);
+    menutree_shade(multi_win_get_popup_menu(win),
+        MENUTREE_FILE_SAVE_BUFFER, shade);
+}
+
 static void roxterm_tab_selection_handler(ROXTermData * roxterm, MultiTab * tab)
 {
     MultiWin *win = roxterm_get_win(roxterm);
@@ -1649,6 +1662,7 @@ static void roxterm_tab_selection_handler(ROXTermData * roxterm, MultiTab * tab)
             MENUTREE_PREFERENCES_SELECT_SHORTCUTS,
             options_get_leafname(multi_win_get_shortcut_scheme(win)));
     roxterm_shade_search_menu_items(roxterm);
+    roxterm_shade_save_buffer_menu_item(roxterm);
 
     multi_win_set_ignore_toggles(win, TRUE);
     multi_win_set_ignore_toggles(win, FALSE);
@@ -2378,6 +2392,91 @@ static void roxterm_resize_window_handler(VteTerminal *vte,
     roxterm_set_vte_size(roxterm, vte, columns, rows);
 }
 
+static void roxterm_save_buffer(ROXTermData *roxterm)
+{
+    GFile *gfile = g_file_new_for_path(roxterm->buffer_file_name);
+    GError *error = NULL;
+    GFileOutputStream *stream = g_file_replace(gfile, NULL, FALSE,
+        G_FILE_CREATE_NONE, NULL, &error);
+    gboolean result = FALSE;
+    if (stream)
+    {
+        GOutputStream *ostream = G_OUTPUT_STREAM(stream);
+        result = vte_terminal_write_contents_sync(
+            VTE_TERMINAL(roxterm->widget),
+            ostream,
+            VTE_WRITE_DEFAULT,
+            NULL,
+            &error);
+        // Don't overwrite write error if close fails too
+        g_output_stream_close(ostream, NULL, result ? &error : NULL);
+        if (result && error)
+        {
+            const char *msg = error ? error->message : NULL;
+            if (!msg) msg = "NULL";
+            g_critical("Error closing '%s' after saving buffer: %s",
+                roxterm->buffer_file_name, msg);
+        }
+    }
+    if (!result)
+    {
+        const char *msg = error ? error->message : NULL;
+        if (!msg)
+            msg = _("Unknown error");
+        dlg_critical(roxterm_get_toplevel(roxterm),
+            _("Unable to save buffer to '%s': %s"),
+            roxterm->buffer_file_name, msg);
+    }
+    if (error)
+    {
+        g_error_free(error);
+    }
+}
+
+static void roxterm_save_buffer_as_action(MultiWin *win)
+{
+    ROXTermData *roxterm = multi_win_get_user_data_for_current_tab(win);
+    g_return_if_fail(roxterm);
+
+    GtkWidget *dialog = gtk_file_chooser_dialog_new(
+        _("Save Terminal Buffer"),
+        GTK_WINDOW(multi_win_get_widget(win)),
+        GTK_FILE_CHOOSER_ACTION_SAVE,
+        _("_Cancel"),
+        GTK_RESPONSE_CANCEL,
+        _("_Save"),
+        GTK_RESPONSE_ACCEPT,
+        NULL);
+    GtkFileChooser *chooser = GTK_FILE_CHOOSER(dialog);
+    gtk_file_chooser_set_do_overwrite_confirmation(chooser, TRUE);
+    if (roxterm->buffer_file_name)
+        gtk_file_chooser_set_current_name(chooser, roxterm->buffer_file_name);
+    else
+        gtk_file_chooser_set_filename(chooser, _("Untitled"));
+    GtkResponseType response = gtk_dialog_run(GTK_DIALOG(dialog));
+    if (response == GTK_RESPONSE_ACCEPT)
+    {
+        g_free(roxterm->buffer_file_name);
+        roxterm->buffer_file_name = gtk_file_chooser_get_filename(chooser);
+        roxterm_save_buffer(roxterm);
+        roxterm_shade_save_buffer_menu_item(roxterm);
+    }
+    gtk_widget_destroy(dialog);
+}
+
+static void roxterm_save_buffer_action(MultiWin * win)
+{
+    ROXTermData *roxterm = multi_win_get_user_data_for_current_tab(win);
+    g_return_if_fail(roxterm);
+    if (!roxterm->buffer_file_name)
+    {
+        roxterm_save_buffer_as_action(win);
+        return;
+    }
+    roxterm_save_buffer(roxterm);
+}
+
+
 static GtkWidget *create_radio_menu_item(MenuTree *mtree,
         const char *name, GSList **group, GCallback handler)
 {
@@ -2534,6 +2633,11 @@ static void roxterm_add_all_pref_submenus(MultiWin *win)
 
 static void roxterm_connect_menu_signals(MultiWin * win)
 {
+    multi_win_menu_connect_swapped(win, MENUTREE_FILE_SAVE_BUFFER_AS,
+        G_CALLBACK(roxterm_save_buffer_as_action), win, NULL, NULL, NULL);
+    multi_win_menu_connect_swapped(win, MENUTREE_FILE_SAVE_BUFFER,
+        G_CALLBACK(roxterm_save_buffer_action), win, NULL, NULL, NULL);
+
     multi_win_menu_connect_swapped(win, MENUTREE_EDIT_SELECT_ALL,
         G_CALLBACK(roxterm_select_all_action), win, NULL, NULL, NULL);
     multi_win_menu_connect_swapped(win, MENUTREE_EDIT_COPY,
