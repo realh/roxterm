@@ -100,7 +100,8 @@ static void colourgui_set_all_palette_widgets(GtkBuilder *builder,
     {
         char widget_name[20];
 
-        sprintf(widget_name, "palette%d_%d", n / 8, n % 8);
+        snprintf(widget_name, sizeof(widget_name) - 1,
+			"palette%d_%d", n / 8, n % 8);
         colourgui_set_colour_widget(builder, widget_name, &palette[n], ignore);
     }
 }
@@ -113,7 +114,8 @@ static void colourgui_shade_row(GtkBuilder *builder,
 
     for (column = 0; column < 8; ++column)
     {
-        sprintf(widget_name, "palette%d_%d", row, column);
+        snprintf(widget_name, sizeof(widget_name) - 1,
+			"palette%d_%d", row, column);
         gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(builder,
                 widget_name)), sensitive);
     }
@@ -137,7 +139,8 @@ static void colourgui_set_palette_shading(GtkBuilder *builder)
     colourgui_shade_row(builder, 0, size_radio >= 0);
     for (row = 0; row < 2; ++row)
     {
-        sprintf(widget_name, "palette_size%d", row);
+        snprintf(widget_name, sizeof(widget_name) - 1,
+        	"palette_size%d", row);
         gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(builder,
                 widget_name)), use_custom);
     }
@@ -372,9 +375,10 @@ static const char *colourgui_name_colour(const GdkRGBA *colour)
 {
     static char colour_name[16];
 
-    sprintf(colour_name, "#%04hx%04hx%04hx", \
-        (guint16) (colour->red * 65535), \
-        (guint16) (colour->green * 65535), \
+	snprintf(colour_name, sizeof(colour_name) - 1,
+		"#%04hx%04hx%04hx",
+        (guint16) (colour->red * 65535),
+        (guint16) (colour->green * 65535),
         (guint16) (colour->blue * 65535));
     return colour_name;
 }
@@ -464,7 +468,7 @@ void on_color_set(GtkColorButton *button, ColourGUI * cg)
         int column = widget_name[9] - '0';
 
         colour_scheme_set_palette_entry(opts, row * 8 + column, colour_name);
-        sprintf(dyn_opt_nm, "%d", row * 8 + column);
+        snprintf(dyn_opt_nm, sizeof(dyn_opt_nm) - 1, "%d", row * 8 + column);
         option_name = dyn_opt_nm;
         if (row == 0 && gtk_toggle_button_get_active(
                 GTK_TOGGLE_BUTTON(gtk_builder_get_object(cg->capp.builder,
@@ -595,14 +599,15 @@ void on_use_custom_colours_toggled(GtkToggleButton *button, ColourGUI *cg)
             char key[8];
             char *val;
 
-            sprintf(key, "%d", n);
+            snprintf(key, sizeof(key) - 1, "%d", n);
             val = options_lookup_string(cg->capp.options, key);
             if (!val)
             {
                 char widget_name[24];
                 const char *colour_name;
 
-                sprintf(widget_name, "palette%d_%d", n / 8, n % 8);
+                snprintf(widget_name, sizeof(widget_name) - 1,
+					"palette%d_%d", n / 8, n % 8);
                 colour_name = colourgui_read_colour_widget(cg, widget_name);
                 colour_scheme_set_palette_entry(cg->capp.options, n,
                         colour_name);

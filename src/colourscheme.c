@@ -140,7 +140,7 @@ colour_scheme_parse_palette_range(Options * opts, ColourScheme * scheme,
     for (n = start; n < 16; ++n)
     {
         char key[8];
-        sprintf(key, "%d", n);
+        snprintf(key, sizeof(key) - 1, "%d", n);
 
         colour_scheme_lookup_and_parse(opts, scheme, &scheme->palette[n], key,
                     colour_scheme_choose_default(n), n < end);
@@ -299,7 +299,7 @@ void colour_scheme_set_palette_entry(Options * opts, int index,
     scheme = options_get_data(opts);
     g_return_if_fail(scheme);
     colour = &scheme->palette[index];
-    sprintf(key, "%d", index);
+	snprintf(key, sizeof(key) - 1, "%d", index);
     colour_scheme_set_colour(opts, scheme, &colour, key, colour_name);
 }
 
