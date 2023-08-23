@@ -41,7 +41,9 @@
 //#cmakedefine HAVE_VTE_HANDLE_SCROLL
 #define RT_VTE_LIBDIR "@RT_VTE_LIBDIR@"
 
-#if !GLIB_CHECK_VERSION(2,74,0)
+/* GLIB_CHECK_VERSION is broken! */
+#if GLIB_MAJOR_VERSION < 2 || \
+    (GLIB_MAJOR_VERSION == 2 && GLIB_MINOR_VERSION < 74)
 #define G_CONNECT_DEFAULT ((GConnectFlags) 0)
 #endif
 
