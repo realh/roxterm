@@ -41,4 +41,8 @@
 //#cmakedefine HAVE_VTE_HANDLE_SCROLL
 #define RT_VTE_LIBDIR "@RT_VTE_LIBDIR@"
 
+#if !GLIB_CHECK_VERSION(2,74,0)
+#define G_CONNECT_DEFAULT ((GConnectFlags) 0)
+#endif
+
 #endif /* ROXTERM__CONFIG_H */
