@@ -214,7 +214,6 @@ static char *configlet_get_configured_name(ConfigletList *cl)
 
     g_return_val_if_fail(optkey, NULL);
     const char *default_name;
-    const char *default_value;
     if (strcmp(cl->family, "Colours"))
     {
         default_name = "Default";
@@ -427,26 +426,6 @@ static gboolean get_selected_iter(ConfigletList *cl,
 {
     return gtk_tree_selection_get_selected(
                 gtk_tree_view_get_selection(cl->tvwidget), pmodel, piter);
-}
-
-static int get_selected_index(ConfigletList *cl)
-{
-    /* FIXME: Is there a better way of doing this? */
-    GtkTreeIter iter;
-    GtkTreeModel *model = gtk_tree_view_get_model(cl->tvwidget);
-    GtkTreeSelection *selection;
-    int n = 0;
-
-    selection = gtk_tree_view_get_selection(cl->tvwidget);
-    if (!gtk_tree_model_get_iter_first(model, &iter))
-        return -1;
-    while (!gtk_tree_selection_iter_is_selected(selection, &iter))
-    {
-        if (!gtk_tree_model_iter_next(model, &iter))
-            return -1;
-        ++n;
-    }
-    return n;
 }
 
 static char *get_selected_name(ConfigletList *cl)
@@ -881,7 +860,7 @@ void on_shortcuts_rename_clicked(GtkButton *button, ConfigletData *cg)
     on_rename_clicked(&cg->shortcuts);
 }
 
-static void configlet_on_dark_pref_changed(gboolean prefer_dark,
+static void configlet_on_dark_pref_changed(G_GNUC_UNUSED gboolean prefer_dark,
         ConfigletList *cl)
 {
     char *name = configlet_get_configured_name(cl);

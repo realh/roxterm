@@ -1,5 +1,11 @@
 include(CheckSymbolExists)
 
+if (MSVC)
+    add_compile_options(/W4)
+else()
+    add_compile_options(-Wall -Wextra)
+endif()
+
 # roxterm and roxterm-config both depend on these
 pkg_check_modules(RTCOMMON REQUIRED
     gtk+-3.0>=3.22.0 dbus-1>=1.0 dbus-glib-1>=0.22)

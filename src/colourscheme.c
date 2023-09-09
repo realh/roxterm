@@ -139,7 +139,7 @@ colour_scheme_parse_palette_range(Options * opts, ColourScheme * scheme,
 
     for (n = start; n < 16; ++n)
     {
-        char key[8];
+        char key[16];
         snprintf(key, sizeof(key) - 1, "%d", n);
 
         colour_scheme_lookup_and_parse(opts, scheme, &scheme->palette[n], key,

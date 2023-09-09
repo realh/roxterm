@@ -1336,6 +1336,7 @@ static void multi_win_name_tab_action(MultiWin * win)
             multi_tab_set_window_title_template(tab, name);
             tab->title_template_locked = (name != NULL);
             /* Fall through to destroy */
+            G_GNUC_FALLTHROUGH;
         default:
             gtk_widget_destroy(dialog_w);
             break;
@@ -1403,6 +1404,7 @@ static void multi_win_save_session_action(MultiWin * win)
                         filename, strerror(errno));
             }
             /* Fall through to destroy */
+            G_GNUC_FALLTHROUGH;
         default:
             gtk_widget_destroy(dialog_w);
             break;
@@ -1461,6 +1463,7 @@ static void multi_win_set_window_title_action(MultiWin * win)
             multi_win_set_title_template(win, title);
             win->title_template_locked = (title != NULL);
             /* Fall through to destroy */
+            G_GNUC_FALLTHROUGH;
         default:
             gtk_widget_destroy(dialog_w);
             break;

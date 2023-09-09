@@ -109,6 +109,7 @@ static GtkTreeModel *search_create_model(void)
                         g_error_free(error);
                         error = NULL;
                     }
+                    G_GNUC_FALLTHROUGH;
                 case G_IO_STATUS_EOF:
                     g_io_channel_shutdown(ioc, FALSE, NULL);
                     g_io_channel_unref(ioc);

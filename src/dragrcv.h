@@ -56,7 +56,7 @@ typedef gboolean (*DragReceiveHandler)(GtkWidget *, const char *text,
 
 /* Called when a tab is dropped on a target widget. widget is  the dragged
  * widget, data is as passed to drag_receive_setup_dest_widget. */
-typedef gboolean (*DragReceiveTabHandler)(GtkWidget *widget, gpointer data);
+typedef void (*DragReceiveTabHandler)(GtkWidget *widget, gpointer data);
 
 /* Sets up widget as a destination for the types of drag we're interested in.
  * It returns a pointer to an opaque data structure which should be deleted

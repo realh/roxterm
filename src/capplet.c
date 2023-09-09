@@ -82,6 +82,7 @@ gboolean capplet_set_boolean_toggle(CappletData *capp,
 {
     gboolean value = options_lookup_int_with_default(capp->options, name, dflt);
     capplet_set_toggle(capp, name, value);
+    return value;
 }
 
 void capplet_set_text_entry(CappletData *capp,
@@ -303,7 +304,6 @@ int main(int argc, char **argv)
     int n;
     const char *profile = NULL;
     const char *colour_scheme = NULL;
-    char *logo_filename;
     gboolean persist = FALSE;
     gboolean open_configlet = FALSE;
     gboolean dbus_ok;

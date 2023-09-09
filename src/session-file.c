@@ -85,13 +85,14 @@ static void save_tab_to_fp(MultiTab *tab, gpointer handle)
     char *colour_scheme_clause = colour_scheme_name ?
         g_strdup_printf("colour_scheme='%s' ", colour_scheme_name) : NULL;
     char *s = g_markup_printf_escaped("<tab profile='%s'\n"
-            "        cwd='%s'\n"
+            "        %scwd='%s'\n"
             "        title_template='%s' window_title='%s'\n"
             "        title_template_locked='%d'",
             roxterm_get_profile_name(roxterm),
             cwd ? cwd : (cwd = g_get_current_dir()),
             colour_scheme_clause ? colour_scheme_clause : "",
-            name ? name : "", title ? title : "",
+            name ? name : "",
+            title ? title : "",
             multi_tab_get_title_template_locked(tab));
     g_free(colour_scheme_clause);
 
