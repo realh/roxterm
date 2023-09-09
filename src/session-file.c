@@ -89,8 +89,8 @@ static void save_tab_to_fp(MultiTab *tab, gpointer handle)
             "        title_template='%s' window_title='%s'\n"
             "        title_template_locked='%d'",
             roxterm_get_profile_name(roxterm),
-            colour_scheme_clause ? colour_scheme_clause : "",
             cwd ? cwd : (cwd = g_get_current_dir()),
+            colour_scheme_clause ? colour_scheme_clause : "",
             name ? name : "", title ? title : "",
             multi_tab_get_title_template_locked(tab));
     g_free(colour_scheme_clause);
