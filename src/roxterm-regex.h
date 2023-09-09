@@ -43,4 +43,4 @@ extern ROXTerm_RegexAndType roxterm_regexes[];
 
 #endif /* ROXTERM_REGEX_H */
 
-/* vi:set sw=4 ts=4 noet cindent cino= */
+/* vi:set sw=4 ts=4 et cindent cino= */

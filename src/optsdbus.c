@@ -553,4 +553,4 @@ gboolean optsdbus_send_edit_opts_message(const char *method, const char *arg)
 
 #endif /* !ROXTERM_CAPPLET */
 
-/* vi:set sw=4 ts=4 noet cindent cino= */
+/* vi:set sw=4 ts=4 et cindent cino= */

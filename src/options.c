@@ -224,4 +224,4 @@ void options_change_leafname(Options *options, const char *new_leaf)
 	g_free(old_name);
 }
 
-/* vi:set sw=4 ts=4 noet cindent cino= */
+/* vi:set sw=4 ts=4 et cindent cino= */

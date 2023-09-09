@@ -33,4 +33,4 @@ void resources_access_icon();
 
 #endif /* RESOURCES_H */
 
-/* vi:set sw=4 ts=4 noet cindent cino= */
+/* vi:set sw=4 ts=4 et cindent cino= */

@@ -318,6 +318,7 @@ int main(int argc, char **argv)
 #endif    
 
     gtk_init(&argc, &argv);
+    global_options_init(&argc, &argv, TRUE);
     global_options_apply_dark_theme();
 
     resources_access_icon();
@@ -400,4 +401,4 @@ void capplet_dec_windows(void)
         gtk_main_quit();
 }
 
-/* vi:set sw=4 ts=4 noet cindent cino= */
+/* vi:set sw=4 ts=4 et cindent cino= */

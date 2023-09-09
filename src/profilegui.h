@@ -56,4 +56,4 @@ void on_cell_size_toggled(GtkToggleButton * button, ProfileGUI *pg);
 
 #endif /* PROFILEGUI_H */
 
-/* vi:set sw=4 ts=4 noet cindent cino= */
+/* vi:set sw=4 ts=4 et cindent cino= */

@@ -1344,6 +1344,7 @@ static void multi_win_name_tab_action(MultiWin * win)
     if (tab->postponed_free)
         multi_tab_free(tab);
 }
+
 static void multi_win_save_session_action(MultiWin * win)
 {
     GtkWidget *dialog_w = gtk_dialog_new_with_buttons(_("Save Session"),

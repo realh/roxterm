@@ -98,4 +98,4 @@ guint roxterm_get_search_flags(ROXTermData *roxterm);
 
 #endif /* ROXTERM_H */
 
-/* vi:set sw=4 ts=4 noet cindent cino= */
+/* vi:set sw=4 ts=4 et cindent cino= */

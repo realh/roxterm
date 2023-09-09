@@ -69,4 +69,4 @@ char *options_file_make_editable(GtkWindow *window,
 
 #endif /* OPTSFILE_H */
 
-/* vi:set sw=4 ts=4 noet cindent cino= */
+/* vi:set sw=4 ts=4 et cindent cino= */

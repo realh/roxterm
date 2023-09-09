@@ -47,4 +47,4 @@ void on_use_custom_colours_toggled(GtkToggleButton *button, ColourGUI *cg);
 
 #endif /* COLOURGUI_H */
 
-/* vi:set sw=4 ts=4 noet cindent cino= */
+/* vi:set sw=4 ts=4 et cindent cino= */

@@ -62,4 +62,4 @@ void on_shortcuts_rename_clicked(GtkButton *button, ConfigletData *cg);
 
 #endif /* CONFIGLET_H */
 
-/* vi:set sw=4 ts=4 noet cindent cino= */
+/* vi:set sw=4 ts=4 et cindent cino= */

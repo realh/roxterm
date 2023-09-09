@@ -135,4 +135,4 @@ char *getname_run_dialog(GtkWindow *parent, const char *old_name,
 	return new_name;
 }
 
-/* vi:set sw=4 ts=4 noet cindent cino= */
+/* vi:set sw=4 ts=4 et cindent cino= */

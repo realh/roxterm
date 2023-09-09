@@ -60,4 +60,4 @@ void about_dialog_show(GtkWindow *parent,
     gtk_widget_destroy(ad);
 }
 
-/* vi:set sw=4 ts=4 noet cindent cino= */
+/* vi:set sw=4 ts=4 et cindent cino= */

@@ -38,4 +38,4 @@ ROXTerm_RegexAndType roxterm_regexes[] = {
     { NULL, ROXTerm_Match_Invalid }
 };
 
-/* vi:set sw=4 ts=4 noet cindent cino= */
+/* vi:set sw=4 ts=4 et cindent cino= */

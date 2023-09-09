@@ -71,4 +71,4 @@ inline static void drag_receive_data_delete(DragReceiveData *drd)
 
 #endif /* DRAGRCV_H */
 
-/* vi:set sw=4 ts=4 noet cindent cino= */
+/* vi:set sw=4 ts=4 et cindent cino= */

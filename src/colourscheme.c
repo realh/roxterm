@@ -351,4 +351,4 @@ void colour_scheme_set_bold_colour(Options * opts,
             offsetof(ColourScheme, bold));
 }
 
-/* vi:set sw=4 ts=4 noet cindent cino= */
+/* vi:set sw=4 ts=4 et cindent cino= */

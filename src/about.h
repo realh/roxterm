@@ -31,4 +31,4 @@ void about_dialog_show(GtkWindow *parent,
 
 #endif /* ABOUT_H */
 
-/* vi:set sw=4 ts=4 noet cindent cino= */
+/* vi:set sw=4 ts=4 et cindent cino= */

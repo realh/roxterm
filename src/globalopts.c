@@ -53,7 +53,6 @@ static void correct_scheme(const char *bad_name, const char *good_name)
         return;
     if (global_options_lookup_string(good_name))
         return;
-    /*g_print("Converting %s to %s (%s)\n", bad_name, good_name, val);*/
     options_set_string(global_options, good_name, val);
 }
 
@@ -522,7 +521,7 @@ char **global_options_copy_strv(char **ps)
     return ps2;
 }
 
-static const char *global_options_color_scheme_key = "color-scheme";
+const char *global_options_color_scheme_key = "color-scheme";
 
 static GSettings *global_options_get_interface_gsettings()
 {
@@ -537,9 +536,16 @@ static GSettings *global_options_get_interface_gsettings()
     return gsettings;
 }
 
-static gboolean global_options_has_gnome_dark_theme_setting()
+gboolean global_options_has_gnome_dark_theme_setting()
 {
     return global_options_get_interface_gsettings() != NULL;
+}
+
+gboolean global_options_has_gtk_dark_theme_setting()
+{
+    GtkSettings *gtk_settings = gtk_settings_get_default();
+    return g_object_class_find_property(G_OBJECT_GET_CLASS(gtk_settings),
+            "gtk-application-prefer-dark-theme") != NULL;
 }
 
 static gboolean global_options_gsettings_prefer_dark(GSettings *gsettings)
@@ -659,8 +665,8 @@ void global_options_register_dark_theme_change_handler(
         closure->handler = handler;
         closure->handle = handle;
         g_signal_connect(gsettings, "changed",
-                            G_CALLBACK(apply_dark_theme_from_settings),
-                            closure);
+                G_CALLBACK(global_options_gsettings_dark_theme_change_handler),
+                closure);
     }
 }
 

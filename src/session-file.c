@@ -81,15 +81,19 @@ static void save_tab_to_fp(MultiTab *tab, gpointer handle)
     const char *name = multi_tab_get_window_title_template(tab);
     const char *title = multi_tab_get_window_title(tab);
     char *cwd = roxterm_get_cwd(roxterm);
+    const char *colour_scheme_name = roxterm_get_colour_scheme_name(roxterm);
+    char *colour_scheme_clause = colour_scheme_name ?
+        g_strdup_printf("colour_scheme='%s' ", colour_scheme_name) : NULL;
     char *s = g_markup_printf_escaped("<tab profile='%s'\n"
-            "        colour_scheme='%s' cwd='%s'\n"
+            "        cwd='%s'\n"
             "        title_template='%s' window_title='%s'\n"
             "        title_template_locked='%d'",
             roxterm_get_profile_name(roxterm),
-            roxterm_get_colour_scheme_name(roxterm),
+            colour_scheme_clause ? colour_scheme_clause : "",
             cwd ? cwd : (cwd = g_get_current_dir()),
             name ? name : "", title ? title : "",
             multi_tab_get_title_template_locked(tab));
+    g_free(colour_scheme_clause);
 
     SLOG("Saving tab with window_title '%s', cwd %s", title, cwd);
     fprintf(fp, "    %s current='%d'%s>\n", s,

@@ -30,4 +30,4 @@ char *uri_get_ssh_command(const char *uri, const char *ssh);
 
 #endif /* URI_H */
 
-/* vi:set sw=4 ts=4 noet cindent cino= */
+/* vi:set sw=4 ts=4 et cindent cino= */

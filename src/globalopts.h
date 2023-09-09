@@ -121,6 +121,9 @@ char **global_options_copy_strv(char **ps);
 /* Returns whether GNOME's dark theme preference is available. */
 gboolean global_options_has_gnome_dark_theme_setting(void);
 
+/* Returns whether GTK supports dark theme. */
+gboolean global_options_has_gtk_dark_theme_setting();
+
 /* Gets the prefer-dark setting from GNOME's gsettings or roxterm's legacy
  * option.
  */
@@ -138,4 +141,4 @@ void global_options_register_dark_theme_change_handler(
 
 #endif /* GLOBALOPTS_H */
 
-/* vi:set sw=4 ts=4 noet cindent cino= */
+/* vi:set sw=4 ts=4 et cindent cino= */

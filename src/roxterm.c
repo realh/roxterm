@@ -3672,6 +3672,30 @@ static void roxterm_reflect_colour_change(Options *scheme, const char *key)
     }
 }
 
+static void on_dark_theme_pref_changed(gboolean prefer_dark, gpointer handle)
+{
+    (void) handle;
+
+    const char *pref_key = prefer_dark ?
+        "colour_scheme_dark" : "colour_scheme_light";
+    GList *link;
+    for (link = roxterm_terms; link; link = g_list_next(link))
+    {
+        ROXTermData *roxterm = link->data;
+        if (roxterm->colour_scheme_overridden) {
+            continue;
+        }
+        char *theme = options_lookup_string(roxterm->profile, pref_key);
+        if (!theme)
+            theme = global_options_lookup_string(pref_key);
+        if (theme)
+        {
+            roxterm_change_colour_scheme_by_name(roxterm, theme);
+            g_free(theme);
+        }
+    }
+}
+
 static void
 roxterm_opt_signal_handler(const char *profile_name, const char *key,
     OptsDBusOptType opt_type, OptsDBusValue val)
@@ -3707,14 +3731,16 @@ roxterm_opt_signal_handler(const char *profile_name, const char *key,
     }
     else if (!strcmp(profile_name, "Global") &&
             (!strcmp(key, "warn_close") ||
-            !strcmp(key, "only_warn_running")))
+            !strcmp(key, "only_warn_running") ||
+            !strcmp(key, "prefer_dark_theme")))
     {
         options_set_int(global_options, key, val.i);
-    }
-    else if (!strcmp(profile_name, "Global") &&
-        !strcmp(key, "prefer_dark_theme"))
-    {
-        global_options_apply_dark_theme();
+        if (!strcmp(key, "prefer_dark_theme"))
+        {
+            global_options_apply_dark_theme();
+            on_dark_theme_pref_changed(global_options_system_theme_is_dark(),
+                NULL);
+        }
     }
     else
     {
@@ -4107,10 +4133,15 @@ void roxterm_launch(char **env)
     gboolean size_on_cli = FALSE;
     char *profile_name =
             global_options_lookup_string_with_default("profile", "Default");
-    char *colour_scheme_name =
-            global_options_lookup_string_with_default("colour_scheme", "GTK");
     Options *profile = dynamic_options_lookup_and_ref(roxterm_get_profiles(),
             profile_name, "roxterm profile");
+    char *colour_scheme_name = profile ?
+        options_lookup_string(profile, "colour_scheme") : NULL;
+    if (!colour_scheme_name)
+    {
+        colour_scheme_name =
+            global_options_lookup_string_with_default("colour_scheme", "GTK");
+    }
     MultiWin *win = NULL;
     ROXTermData *roxterm = roxterm_data_new(
             global_options_lookup_double("zoom"),
@@ -4457,31 +4488,6 @@ static gboolean roxterm_delete_handler(GtkWindow *gtkwin, GdkEvent *event,
     return response;
 }
 
-static void on_dark_theme_pref_changed(gboolean prefer_dark, gpointer handle)
-{
-    (void) handle;
-
-    const char *pref_key = prefer_dark ?
-        "colour_scheme_dark" : "colour_scheme_light";
-    GList *link;
-    for (link = roxterm_terms; link; link = g_list_next(link))
-    {
-        ROXTermData *roxterm = link->data;
-        if (roxterm->colour_scheme_overridden) continue;
-        char *theme = options_lookup_string(roxterm->profile, pref_key);
-        if (!theme)
-        {
-            theme = global_options_lookup_string(pref_key);
-        }
-        if (theme)
-        {
-            roxterm_change_colour_scheme_by_name(roxterm, theme);
-            g_free(theme);
-        }
-    }
-}
-
-
 void roxterm_init(void)
 {
     resources_access_icon();
@@ -4597,7 +4603,10 @@ const char *roxterm_get_profile_name(ROXTermData *roxterm)
 
 const char *roxterm_get_colour_scheme_name(ROXTermData *roxterm)
 {
-    return get_options_leafname(roxterm->colour_scheme);
+    if (roxterm->colour_scheme_overridden)
+        return get_options_leafname(roxterm->colour_scheme);
+    else
+        return NULL;
 }
 
 const char *roxterm_get_shortcuts_scheme_name(ROXTermData *roxterm)

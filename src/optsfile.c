@@ -369,17 +369,18 @@ char *options_file_lookup_string_with_default(
     char *result;
     const char *alt_key = NULL;
 
-    if (!strcmp(group_name, "Global") ||
-		g_str_has_prefix(group_name, "Profile"))
+    if (!strcmp(group_name, "roxterm options") ||
+		!strcmp(group_name, "roxterm profile"))
     {
         if (!strcmp(key, "colour_scheme"))
         {
             /* When looking up colour_scheme, try dark/light first, falling
              * back to old default
              */
-            alt_key = global_options_system_theme_is_dark(NULL) ?
+            alt_key = global_options_system_theme_is_dark() ?
                 "colour_scheme_dark" : "colour_scheme_light";
-            default_value = global_options_system_theme_is_dark(NULL) ?
+            const char *old_default_value = default_value;
+            default_value = global_options_system_theme_is_dark() ?
                 "Nocturne" : "GTK";
         }
         else if (g_str_has_prefix(key, "colour_scheme_"))
@@ -481,4 +482,4 @@ char *options_file_make_editable(GtkWindow *window,
     return path;
 }
 
-/* vi:set sw=4 ts=4 noet cindent cino= */
+/* vi:set sw=4 ts=4 et cindent cino= */

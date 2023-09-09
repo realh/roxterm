@@ -109,4 +109,4 @@ void capplet_dec_windows(void);
 
 #endif /* CAPPLET_H */
 
-/* vi:set sw=4 ts=4 noet cindent cino= */
+/* vi:set sw=4 ts=4 et cindent cino= */

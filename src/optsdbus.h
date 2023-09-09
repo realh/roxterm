@@ -112,4 +112,4 @@ optsdbus_send_edit_colour_scheme_message(const char *profile_name)
 
 #endif /* OPTSDBUS_H */
 
-/* vi:set sw=4 ts=4 noet cindent cino= */
+/* vi:set sw=4 ts=4 et cindent cino= */

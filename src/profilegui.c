@@ -719,4 +719,4 @@ void profilegui_delete(ProfileGUI * pg)
     configlet_unlock_profiles();
 }
 
-/* vi:set sw=4 ts=4 noet cindent cino= */
+/* vi:set sw=4 ts=4 et cindent cino= */

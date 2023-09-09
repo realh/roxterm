@@ -882,9 +882,10 @@ static void configlet_on_dark_pref_changed(gboolean prefer_dark,
         ConfigletList *cl)
 {
     char *name = configlet_get_configured_name(cl);
-	gtk_tree_model_foreach(GTK_TREE_MODEL(cl->list), update_radios, name);
-	g_debug("prefer-dark changed, selected scheme %s", name);
+    gtk_tree_model_foreach(GTK_TREE_MODEL(cl->list), update_radios, name);
+    g_debug("prefer-dark changed, selected scheme %s", name);
     g_free(name);
+    global_options_apply_dark_theme();
 }
 
 void on_ui_theme_radio_toggled(GtkToggleButton *button, ConfigletData *cg)
@@ -906,11 +907,11 @@ void on_ui_theme_radio_toggled(GtkToggleButton *button, ConfigletData *cg)
 
         g_return_if_fail(isdigit(name[l - 1]));
         opt_name[l - 1] = 0;
-        options_set_int(global_options, opt_name, n);
+        capplet_set_int(global_options, opt_name, n);
         g_free(opt_name);
-		configlet_on_dark_pref_changed(
-			global_options_system_theme_is_dark(),
-			&cg->colours);
+        configlet_on_dark_pref_changed(
+            global_options_system_theme_is_dark(),
+            &cg->colours);
     }
 }
 
@@ -961,16 +962,16 @@ static void configlet_setup_family(ConfigletData *cg, ConfigletList *cl,
         configlet_add_family_to_size_group(cg, family);
     }
 
-	if (!strcmp(family, "Colours"))
-	{
-		global_options_register_dark_theme_change_handler(
-			configlet_on_dark_pref_changed, cl);
-	}
+    if (!strcmp(family, "Colours"))
+    {
+        global_options_register_dark_theme_change_handler(
+            (GlobalOptionsDarkThemeChangeHandler)
+                configlet_on_dark_pref_changed, cl);
+    }
 }
 
 gboolean configlet_open()
 {
-
     if (configlet_data)
     {
         gtk_window_present(GTK_WINDOW(configlet_data->widget));
@@ -1020,7 +1021,33 @@ gboolean configlet_open()
 
         capplet_set_radio(&cg->capp, "warn_close", 3);
         capplet_set_boolean_toggle(&cg->capp, "only_warn_running", FALSE);
-        capplet_set_radio(&cg->capp, "prefer_dark_theme", 0);
+
+        const char *hide_widget = NULL;
+        if (!global_options_has_gtk_dark_theme_setting())
+        {
+            g_debug("GTK does not support dark theme");
+            hide_widget = "ui_theme_grid";
+        }
+        else if (!global_options_has_gnome_dark_theme_setting())
+        {
+            g_debug("GSettings does not support dark theme");
+            hide_widget = "prefer_dark_theme0";
+            int index = options_lookup_int_with_default(global_options,
+                    "prefer_dark_theme", 0);
+            if (index == 0) index = 2;
+            capplet_set_radio_by_index(cg->capp.builder,
+                "prefer_dark_theme", index);
+        }
+        else
+        {
+            g_debug("Dark theme fully supported");
+            capplet_set_radio(&cg->capp, "prefer_dark_theme", 0);
+        }
+        if (hide_widget)
+        {
+            GtkWidget *widget = capplet_lookup_widget(&cg->capp, hide_widget);
+            if (widget) gtk_widget_hide(widget);
+        }
 
         capplet_inc_windows();
         gtk_widget_show(cg->widget);
@@ -1087,4 +1114,4 @@ void configlet_unlock_shortcuts(void)
         set_sensitive_for_list(&configlet_data->shortcuts);
 }
 
-/* vi:set sw=4 ts=4 noet cindent cino= */
+/* vi:set sw=4 ts=4 et cindent cino= */

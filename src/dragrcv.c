@@ -219,4 +219,4 @@ DragReceiveData *drag_receive_setup_dest_widget(GtkWidget *widget,
     return drd;
 }
 
-/* vi:set sw=4 ts=4 noet cindent cino= */
+/* vi:set sw=4 ts=4 et cindent cino= */

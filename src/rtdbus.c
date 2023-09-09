@@ -341,4 +341,4 @@ char **rtdbus_get_message_arg_string_array(DBusMessageIter *iter)
     return rtdbus_get_message_args_as_strings(&sub_iter);
 }
 
-/* vi:set sw=4 ts=4 noet cindent cino= */
+/* vi:set sw=4 ts=4 et cindent cino= */

@@ -49,4 +49,4 @@ inline static void box_compat_packv(GtkWidget *box, GtkWidget *child,
 
 #endif /* BOXCOMPAT_H */
 
-/* vi:set sw=4 ts=4 noet cindent cino= */
+/* vi:set sw=4 ts=4 et cindent cino= */

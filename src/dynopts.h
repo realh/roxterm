@@ -74,4 +74,4 @@ int dynamic_options_strcmp(const char *s1, const char *s2);
 
 #endif /* DYNOPTS_H */
 
-/* vi:set sw=4 ts=4 noet cindent cino= */
+/* vi:set sw=4 ts=4 et cindent cino= */

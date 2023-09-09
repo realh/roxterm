@@ -753,4 +753,4 @@ void colourgui_delete(ColourGUI * cg)
     configlet_unlock_colour_schemes();
 }
 
-/* vi:set sw=4 ts=4 noet cindent cino= */
+/* vi:set sw=4 ts=4 et cindent cino= */
