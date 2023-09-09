@@ -4,5 +4,7 @@ if [ -z "$RELEASE" ] ; then
 	echo "You forgot the version number" >&2
 	exit 1
 fi
-git tag -s --force stable -m "roxterm-$RELEASE" $2
 git tag -s --force $RELEASE -m "Release $RELEASE" $2
+git checkout stable
+git merge main
+git checkout main
