@@ -63,6 +63,7 @@ inline static GtkWidget *capplet_lookup_widget(const CappletData *capp,
 
 void on_boolean_toggled(GtkToggleButton * button, CappletData *);
 
+/* Returns false if the event should be ignored */
 void on_radio_toggled(GtkToggleButton * button, CappletData *);
 
 void on_spin_button_changed(GtkSpinButton * button, CappletData *);

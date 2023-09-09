@@ -198,7 +198,7 @@ static const char *family_name_to_opt_key(const char *family)
     }
     else if (!strcmp(family, "Colours"))
     {
-        return global_options_system_theme_is_dark(NULL) ?
+        return global_options_system_theme_is_dark() ?
             "colour_scheme_dark" : "colour_scheme_light";
     }
     else if (!strcmp(family, "Shortcuts"))
@@ -218,11 +218,11 @@ static char *configlet_get_configured_name(ConfigletList *cl)
     {
         default_name = "Default";
     } else {
-        default_name = global_options_system_theme_is_dark(NULL) ?
+        default_name = global_options_system_theme_is_dark() ?
             "Nocturne" : "GTK";
     }
     return options_lookup_string_with_default(cl->cg->capp.options, optkey,
-            strcmp(cl->family, "Colours") ? "Default" : "GTK");
+            default_name);
 }
 
 static void configlet_list_build(ConfigletList *cl)
@@ -878,6 +878,42 @@ void on_shortcuts_rename_clicked(GtkButton *button, ConfigletData *cg)
     on_rename_clicked(&cg->shortcuts);
 }
 
+static void configlet_on_dark_pref_changed(gboolean prefer_dark,
+        ConfigletList *cl)
+{
+    char *name = configlet_get_configured_name(cl);
+	gtk_tree_model_foreach(GTK_TREE_MODEL(cl->list), update_radios, name);
+	g_debug("prefer-dark changed, selected scheme %s", name);
+    g_free(name);
+}
+
+void on_ui_theme_radio_toggled(GtkToggleButton *button, ConfigletData *cg)
+{
+    const char *name;
+
+    /* We'll get two events: one for the button going off and one for the
+     * button going on; we can ignore the former */
+    if (ignore_changes || !gtk_toggle_button_get_active(button))
+    {
+        return;
+    }
+    name = gtk_buildable_get_name(GTK_BUILDABLE(button));
+    if (name)
+    {
+        char *opt_name = g_strdup(name);
+        int l = strlen(name);
+        int n = atoi(name + l - 1);
+
+        g_return_if_fail(isdigit(name[l - 1]));
+        opt_name[l - 1] = 0;
+        options_set_int(global_options, opt_name, n);
+        g_free(opt_name);
+		configlet_on_dark_pref_changed(
+			global_options_system_theme_is_dark(),
+			&cg->colours);
+    }
+}
+
 /********************************************************************/
 
 static void configlet_add_button_to_size_group(ConfigletData *cg,
@@ -899,20 +935,6 @@ static void configlet_add_family_to_size_group(ConfigletData *cg,
     configlet_add_button_to_size_group(cg, f2, "delete");
     configlet_add_button_to_size_group(cg, f2, "edit");
 }
-
-static void configlet_on_dark_pref_changed(GSettings *gsettings,
-        const char *key, ConfigletList *cl)
-{
-    if (strcmp(key, global_options_color_scheme_key))
-    {
-        return;
-    }
-    char *name = configlet_get_configured_name(cl);
-	gtk_tree_model_foreach(GTK_TREE_MODEL(cl->list), update_radios, name);
-	g_debug("prefer-dark changed, selected scheme %s", name);
-    g_free(name);
-}
-
 
 static void configlet_setup_family(ConfigletData *cg, ConfigletList *cl,
         const char *family)
@@ -941,9 +963,8 @@ static void configlet_setup_family(ConfigletData *cg, ConfigletList *cl,
 
 	if (!strcmp(family, "Colours"))
 	{
-		GSettings *gsettings = global_options_get_interface_gsettings();
-		g_signal_connect(gsettings, "changed",
-			G_CALLBACK(configlet_on_dark_pref_changed), cl);
+		global_options_register_dark_theme_change_handler(
+			configlet_on_dark_pref_changed, cl);
 	}
 }
 
@@ -999,6 +1020,7 @@ gboolean configlet_open()
 
         capplet_set_radio(&cg->capp, "warn_close", 3);
         capplet_set_boolean_toggle(&cg->capp, "only_warn_running", FALSE);
+        capplet_set_radio(&cg->capp, "prefer_dark_theme", 0);
 
         capplet_inc_windows();
         gtk_widget_show(cg->widget);

@@ -3711,6 +3711,11 @@ roxterm_opt_signal_handler(const char *profile_name, const char *key,
     {
         options_set_int(global_options, key, val.i);
     }
+    else if (!strcmp(profile_name, "Global") &&
+        !strcmp(key, "prefer_dark_theme"))
+    {
+        global_options_apply_dark_theme();
+    }
     else
     {
         g_critical(_("Profile/key '%s/%s' not understood"), profile_name, key);
@@ -4452,18 +4457,10 @@ static gboolean roxterm_delete_handler(GtkWindow *gtkwin, GdkEvent *event,
     return response;
 }
 
-static void on_dark_theme_pref_changed(GSettings *gsettings,
-        const char *key, gpointer handle)
+static void on_dark_theme_pref_changed(gboolean prefer_dark, gpointer handle)
 {
     (void) handle;
 
-    /* This gets called when any of the settings in gsettings changes,
-     * so ignore the other keys */
-    if (strcmp(key, global_options_color_scheme_key))
-    {
-        return;
-    }
-    gboolean prefer_dark = global_options_system_theme_is_dark(gsettings);
     const char *pref_key = prefer_dark ?
         "colour_scheme_dark" : "colour_scheme_light";
     GList *link;
@@ -4515,9 +4512,8 @@ void roxterm_init(void)
         (MultiTabConnectMiscSignals) roxterm_connect_misc_signals
     );
 
-    GSettings *gsettings = global_options_get_interface_gsettings();
-    g_signal_connect(gsettings, "changed",
-        G_CALLBACK(on_dark_theme_pref_changed), NULL);
+    global_options_register_dark_theme_change_handler(
+        on_dark_theme_pref_changed, NULL);
 }
 
 gboolean roxterm_spawn_command_line(const gchar *command_line,

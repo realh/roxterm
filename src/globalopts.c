@@ -522,24 +522,65 @@ char **global_options_copy_strv(char **ps)
     return ps2;
 }
 
-const char *global_options_color_scheme_key = "color-scheme";
+static const char *global_options_color_scheme_key = "color-scheme";
 
-GSettings *global_options_get_interface_gsettings()
+static GSettings *global_options_get_interface_gsettings()
 {
+    static gboolean unavailable = FALSE;
     static GSettings *gsettings = NULL;
+    if (unavailable) return NULL;
     if (!gsettings)
     {
         gsettings = g_settings_new("org.gnome.desktop.interface");
+        if (!gsettings) unavailable = TRUE;
     }
     return gsettings;
 }
 
-gboolean global_options_system_theme_is_dark(GSettings *gsettings)
+static gboolean global_options_has_gnome_dark_theme_setting()
 {
-    if (!gsettings) gsettings = global_options_get_interface_gsettings();
-    char *setting = g_settings_get_string(gsettings, global_options_color_scheme_key);
-    gboolean prefer_dark = setting != NULL && !strcmp(setting, "prefer-dark");
+    return global_options_get_interface_gsettings() != NULL;
+}
+
+static gboolean global_options_gsettings_prefer_dark(GSettings *gsettings)
+{
+    gboolean prefer_dark = FALSE;
+    char *setting = g_settings_get_string(gsettings,
+                                          global_options_color_scheme_key);
+    prefer_dark = setting != NULL &&
+                  !strcmp(setting, "prefer-dark");
     g_free(setting);
+    return prefer_dark;
+}
+
+gboolean global_options_system_theme_is_dark(void)
+{
+    gboolean prefer_dark = FALSE;
+    GSettings *gsettings = NULL;
+    int legacy = global_options_lookup_int("prefer_dark_theme");
+    /* legacy setting has 3 possible values:
+     * 0: If have gsettings, use that, otherwise prefer light
+     * 1: Prefer dark, overriding gsettings
+     * 2: Prefer light, overriding gsettings
+    */
+    switch (legacy)
+    {
+        case 1:
+            prefer_dark = TRUE;
+            break;
+        case 2:
+            /* prefer_dark is already FALSE */
+            break;
+        default:
+            gsettings = global_options_get_interface_gsettings();
+            if (gsettings)
+            {
+                prefer_dark = global_options_gsettings_prefer_dark(gsettings);
+            }
+            /* If above conditions fail, default is FALSE (light). */
+            break;
+
+    }
     return prefer_dark;
 }
 
@@ -552,7 +593,10 @@ static void apply_dark_theme_from_settings(GSettings *gsettings,
     {
         return;
     }
-    gboolean prefer_dark = global_options_system_theme_is_dark(gsettings);
+    /* Check whether user actually wants to use that setting */
+    int legacy = global_options_lookup_int("prefer_dark_theme");
+    if (legacy != 0) return;
+    gboolean prefer_dark = global_options_gsettings_prefer_dark(gsettings);
     g_object_set(gtk_settings, "gtk-application-prefer-dark-theme",
         prefer_dark, NULL);
 }
@@ -566,15 +610,58 @@ void global_options_apply_dark_theme(void)
     if (g_object_class_find_property(G_OBJECT_GET_CLASS(gtk_settings),
             "gtk-application-prefer-dark-theme"))
     {
-        GSettings *gsettings = global_options_get_interface_gsettings();
-        apply_dark_theme_from_settings(gsettings, global_options_color_scheme_key,
-            gtk_settings);
+        gboolean prefer_dark = global_options_system_theme_is_dark();
+        g_object_set(gtk_settings, "gtk-application-prefer-dark-theme",
+            prefer_dark, NULL);
         if (!listening)
         {
-            g_signal_connect(gsettings, "changed",
-                G_CALLBACK(apply_dark_theme_from_settings), gtk_settings);
+            GSettings *gsettings = global_options_get_interface_gsettings();
+            if (gsettings)
+            {
+                g_signal_connect(gsettings, "changed",
+                                 G_CALLBACK(apply_dark_theme_from_settings),
+                                 gtk_settings);
+            }
+            listening = TRUE;
         }
     }
 }
 
-/* vi:set sw=4 ts=4 noet cindent cino= */
+typedef struct {
+    GlobalOptionsDarkThemeChangeHandler handler;
+    gpointer handle;
+} DarkThemeChangeClosure;
+
+static void global_options_gsettings_dark_theme_change_handler(
+    GSettings *gsettings, const char *key, DarkThemeChangeClosure *closure)
+{
+    /* This gets called when any of the settings in gsettings changes,
+     * so ignore the other keys */
+    if (strcmp(key, global_options_color_scheme_key))
+    {
+        return;
+    }
+    /* Check whether user actually wants to use that setting */
+    int legacy = global_options_lookup_int("prefer_dark_theme");
+    if (legacy != 0) return;
+    gboolean prefer_dark = global_options_gsettings_prefer_dark(gsettings);
+    closure->handler(prefer_dark, closure->handle);
+}
+
+
+void global_options_register_dark_theme_change_handler(
+    GlobalOptionsDarkThemeChangeHandler handler, gpointer handle)
+{
+    GSettings *gsettings = global_options_get_interface_gsettings();
+    if (gsettings)
+    {
+        DarkThemeChangeClosure *closure = g_new(DarkThemeChangeClosure, 1);
+        closure->handler = handler;
+        closure->handle = handle;
+        g_signal_connect(gsettings, "changed",
+                            G_CALLBACK(apply_dark_theme_from_settings),
+                            closure);
+    }
+}
+
+/* vi:set sw=4 ts=4 et cindent cino= */
