@@ -214,12 +214,15 @@ static char *configlet_get_configured_name(ConfigletList *cl)
 
     g_return_val_if_fail(optkey, NULL);
     const char *default_name;
+    const char *default_value;
     if (strcmp(cl->family, "Colours"))
     {
         default_name = "Default";
     } else {
         default_name = global_options_system_theme_is_dark() ?
             "Nocturne" : "GTK";
+        g_debug("Getting colour scheme for configlet: key %s, default %s",
+            optkey, default_name);
     }
     return options_lookup_string_with_default(cl->cg->capp.options, optkey,
             default_name);
