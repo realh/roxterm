@@ -37,6 +37,7 @@ configure() {
     echo "Configuring/compiling $APP_DIR... please wait..." >&2
     mkdir -p "$APP_DIR/build"
     cd "$APP_DIR/build"
+    export CFLAGS="-Wall -Wextra"
     cmake -DCMAKE_BUILD_TYPE=RELWITHDEBINFO -DCMAKE_EXPORT_COMPILE_COMMANDS=1 "$@" ..
 }
 
