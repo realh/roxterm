@@ -4488,44 +4488,6 @@ static gboolean roxterm_delete_handler(GtkWindow *gtkwin, GdkEvent *event,
     return response;
 }
 
-static void on_dark_theme_pref_changed(GSettings *gsettings,
-        const char *key, gpointer handle)
-{
-    (void) handle;
-
-    /* This gets called when any of the settings in gsettings changes,
-     * so ignore the other keys */
-    if (strcmp(key, global_options_color_scheme_key))
-    {
-        return;
-    }
-    gboolean prefer_dark = global_options_system_theme_is_dark(gsettings);
-    g_debug("System theme changed to %s", prefer_dark ? "dark" : "light");
-    const char *pref_key = prefer_dark ?
-        "colour_scheme_dark" : "colour_scheme_light";
-    GList *link;
-    for (link = roxterm_terms; link; link = g_list_next(link))
-    {
-        ROXTermData *roxterm = link->data;
-        if (roxterm->colour_scheme_overridden) continue;
-        char *theme = options_lookup_string(roxterm->profile, pref_key);
-        if (!theme)
-        {
-            theme = global_options_lookup_string(pref_key);
-            g_debug("Applying global theme: %s", theme);
-        }
-        else
-        {
-            g_debug("Applying theme from profile: %s", theme);
-        }
-        if (theme)
-        {
-            roxterm_change_colour_scheme_by_name(roxterm, theme);
-            g_free(theme);
-        }
-    }
-}
-
 void roxterm_init(void)
 {
     resources_access_icon();
