@@ -1,0 +1,22 @@
+Remove target_link_directories directives from src/CMakeLists.txt.
+This command was introduced in cmake 3.13. Ubuntu bionic uses 3.10
+and the directives appear to be superfluous in GNU/Linux, but were
+added to fix an issue on MacOS.
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -133,7 +133,6 @@
+     ${RTMAIN_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})
+ target_compile_options(roxterm PRIVATE ${RTMAIN_CFLAGS_OTHER})
+ target_link_libraries(roxterm ${RTMAIN_LIBRARIES})
+-target_link_directories(roxterm PRIVATE ${RTMAIN_LIBRARY_DIRS})
+ target_link_options(roxterm PRIVATE ${RTMAIN_LDFLAGS_OTHER})
+ 
+ add_executable(roxterm-config $<TARGET_OBJECTS:rtlib>
+@@ -145,7 +144,6 @@
+ target_compile_options(roxterm-config PRIVATE ${RTCONFIG_CFLAGS_OTHER})
+ target_compile_definitions(roxterm-config PRIVATE -DROXTERM_CAPPLET)
+ target_link_libraries(roxterm-config ${RTCONFIG_LIBRARIES})
+-target_link_directories(roxterm-config PRIVATE ${RTCONFIG_LIBRARY_DIRS})
+ target_link_options(roxterm-config PRIVATE ${RTCONFIG_LDFLAGS_OTHER})
+ 
+ install(TARGETS roxterm roxterm-config
