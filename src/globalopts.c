@@ -523,6 +523,7 @@ char **global_options_copy_strv(char **ps)
 
 const char *global_options_color_scheme_key = "color-scheme";
 
+#if GLIB_CHECK_VERSION(2,32,0)
 static GSettings *global_options_get_interface_gsettings()
 {
     static gboolean unavailable = FALSE;
@@ -530,11 +531,32 @@ static GSettings *global_options_get_interface_gsettings()
     if (unavailable) return NULL;
     if (!gsettings)
     {
+        unavailable = TRUE;
         gsettings = g_settings_new("org.gnome.desktop.interface");
-        if (!gsettings) unavailable = TRUE;
+        g_return_val_if_fail(gsettings != NULL, NULL);
+        GValue schema_value;
+        g_value_init(&schema_value, G_TYPE_SETTINGS_SCHEMA);
+        g_object_get_property(G_OBJECT(gsettings),
+            "settings-schema", &schema_value);
+        GSettingsSchema *schema = (GSettingsSchema *)
+            g_value_get_pointer(&schema_value);
+        if (!schema) g_object_unref(gsettings);
+        g_return_val_if_fail(schema != NULL, NULL);
+        if (!g_settings_schema_has_key(schema, global_options_color_scheme_key))
+        {
+            g_object_unref(gsettings);
+            return NULL;
+        }
+        unavailable = FALSE;
     }
     return gsettings;
 }
+#else
+static GSettings *global_options_get_interface_gsettings()
+{
+    return NULL;
+}
+#endif
 
 gboolean global_options_has_gnome_dark_theme_setting()
 {
