@@ -1,0 +1,13 @@
+Index: roxterm-3.14.2/src/config.h.in
+===================================================================
+--- roxterm-3.14.2.orig/src/config.h.in
++++ roxterm-3.14.2/src/config.h.in
+@@ -48,4 +48,8 @@
+ #define G_CONNECT_DEFAULT ((GConnectFlags) 0)
+ #endif
+ 
++#ifndef G_GNUC_FALLTHROUGH 
++#define G_GNUC_FALLTHROUGH __attribute__((fallthrough))
++#endif
++
+ #endif /* ROXTERM__CONFIG_H */
