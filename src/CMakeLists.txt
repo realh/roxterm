@@ -132,9 +132,7 @@ add_dependencies(roxterm rtlib)
 target_include_directories(roxterm PRIVATE
     ${RTMAIN_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})
 target_compile_options(roxterm PRIVATE ${RTMAIN_CFLAGS_OTHER})
-target_link_libraries(roxterm ${RTMAIN_LIBRARIES})
-target_link_directories(roxterm PRIVATE ${RTMAIN_LIBRARY_DIRS})
-target_link_options(roxterm PRIVATE ${RTMAIN_LDFLAGS_OTHER})
+target_link_libraries(roxterm ${RTMAIN_LIBRARIES} ${RTMAIN_LDFLAGS})
 
 add_executable(roxterm-config $<TARGET_OBJECTS:rtlib>
     capplet.c colourgui.c configlet.c getname.c optsdbus.c
@@ -144,9 +142,7 @@ target_include_directories(roxterm-config PRIVATE
     ${RTCONFIG_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})
 target_compile_options(roxterm-config PRIVATE ${RTCONFIG_CFLAGS_OTHER})
 target_compile_definitions(roxterm-config PRIVATE -DROXTERM_CAPPLET)
-target_link_libraries(roxterm-config ${RTCONFIG_LIBRARIES})
-target_link_directories(roxterm-config PRIVATE ${RTCONFIG_LIBRARY_DIRS})
-target_link_options(roxterm-config PRIVATE ${RTCONFIG_LDFLAGS_OTHER})
+target_link_libraries(roxterm-config ${RTCONFIG_LIBRARIES} ${RTCONFIG_LDFLAGS})
 
 install(TARGETS roxterm roxterm-config
     RUNTIME DESTINATION bin)
