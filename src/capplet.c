@@ -318,7 +318,7 @@ int main(int argc, char **argv)
 #endif    
 
     gtk_init(&argc, &argv);
-    global_options_init(&argc, &argv, TRUE);
+    global_options_init(&argc, &argv, FALSE);
     global_options_apply_dark_theme();
 
     resources_access_icon();

@@ -501,7 +501,9 @@ void global_options_init(int *argc, char ***argv, gboolean report)
         global_options = options_open("Global", "roxterm options");
         correct_schemes();
     }
-    global_options_parse_argv(argc, argv, report);
+    /* roxterm-config doesn't use the same options as the main app */
+    if (!g_str_has_suffix((*argv)[0], "-config"))
+        global_options_parse_argv(argc, argv, report);
     if (!global_options_bindir)
     {
         global_options_init_bindir((*argv)[0]);
