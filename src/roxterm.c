@@ -37,7 +37,6 @@
 
 #define PCRE2_CODE_UNIT_WIDTH 8
 #include <pcre2.h>
-
 #include "about.h"
 #include "colourscheme.h"
 #include "dlg.h"
@@ -54,6 +53,12 @@
 #include "shortcuts.h"
 #include "uri.h"
 #include "resources.h"
+
+#ifndef VTE_VERSION_NUMERIC 
+#define VTE_VERSION_NUMERIC ((VTE_MAJOR_VERSION) * 10000 + \
+    (VTE_MINOR_VERSION) * 100 + (VTE_MICRO_VERSION))
+#endif
+
 
 #if VTE_CHECK_VERSION(0,50,0)
 /* EK says hyperlinks can cause segfaults in 0.50.0 */
@@ -384,6 +389,56 @@ static ROXTermData *roxterm_data_clone(ROXTermData *old_gt)
 
 static GHashTable *roxterm_hash_env(char **env)
 {
+    static char const * const envs_to_remove[] =
+    {
+        "COLORTERM",
+        "COLUMNS",
+        "DESKTOP_STARTUP_ID",
+        "EXIT_CODE",
+        "EXIT_STATUS",
+        "GIO_LAUNCHED_DESKTOP_FILE",
+        "GIO_LAUNCHED_DESKTOP_FILE_PID",
+        "GJS_DEBUG_OUTPUT",
+        "GJS_DEBUG_TOPICS",
+        "GNOME_DESKTOP_ICON",
+        "INVOCATION_ID",
+        "JOURNAL_STREAM",
+        "LINES",
+        "LISTEN_FDNAMES",
+        "LISTEN_FDS",
+        "LISTEN_PID",
+        "MAINPID",
+        "MANAGERPID",
+        "NOTIFY_SOCKET",
+        "NOTIFY_SOCKET",
+        "PIDFILE",
+        "PWD",
+        "REMOTE_ADDR",
+        "REMOTE_PORT",
+        "SERVICE_RESULT",
+        "SHLVL",
+        "TERM",
+        "WATCHDOG_PID",
+        "WATCHDOG_USEC",
+        "WINDOWID",
+        NULL
+    };
+    static char const * const prefixes_to_remove[] =
+    {
+        "GNOME_TERMINAL_",
+        "FOOT_",
+        "ITERM2_",
+        "MC_",
+        "MINTTY_",
+        "PUTTY_",
+        "RXVT_",
+        "TERM_",
+        "URXVT_",
+        "WEZTERM_",
+        "XTERM_",
+        NULL
+    };
+
     int n;
     GHashTable *env_table = g_hash_table_new_full(g_str_hash, g_str_equal,
             g_free, g_free);
@@ -391,10 +446,33 @@ static GHashTable *roxterm_hash_env(char **env)
     for (n = 0; env[n]; ++n)
     {
         const char *eq = strchr(env[n], '=');
-        
-        g_hash_table_replace(env_table, eq ?
-                g_strndup(env[n], eq - env[n]) : g_strdup(env[n]),
-                eq ? g_strdup(eq + 1) : NULL);
+        char *varname = eq ? g_strndup(env[n], eq - env[n]) : g_strdup(env[n]);
+        gboolean skip = FALSE;
+        const char *s;
+        for (int i = 0; s = envs_to_remove[i], s; ++i)
+        {
+            if (!strcmp(s, varname))
+            {
+                skip = TRUE;
+                break;
+            }
+        }
+        if (!skip)
+        {
+            for (int i = 0; s = prefixes_to_remove[i], s; ++i)
+            {
+                if (g_str_has_prefix(varname, s))
+                {
+                    skip = TRUE;
+                    break;
+                }
+            }
+        }
+        if (!skip)
+        {
+            g_hash_table_replace(env_table, varname,
+                    eq ? g_strdup(eq + 1) : NULL);
+        }
     }
     return env_table;
 }
@@ -423,14 +501,15 @@ static char **roxterm_get_environment(ROXTermData *roxterm, const char *term)
 
     if (term)
         g_hash_table_replace(env, g_strdup("TERM"), g_strdup(term));
-    else
-        g_hash_table_remove(env, "TERM");
     g_hash_table_replace(env, g_strdup("ROXTERM_ID"),
             g_strdup_printf("%p", roxterm));
     g_hash_table_replace(env, g_strdup("ROXTERM_NUM"),
             g_strdup_printf("%d", g_list_length(roxterm_terms)));
     g_hash_table_replace(env, g_strdup("ROXTERM_PID"),
             g_strdup_printf("%d", (int) getpid()));
+    g_hash_table_replace(env, g_strdup("VTE_VERSION"),
+                         g_strdup_printf("%u", VTE_VERSION_NUMERIC));  
+    g_hash_table_replace(env, g_strdup("COLORTERM"), g_strdup("truecolor"));
 
 #ifdef GDK_WINDOWING_X11
     if (GDK_IS_X11_DISPLAY(gdk_display_get_default()))
@@ -451,10 +530,6 @@ static char **roxterm_get_environment(ROXTermData *roxterm, const char *term)
     }
 #endif
 
-    g_hash_table_remove(env, "COLORTERM");
-    g_hash_table_remove(env, "COLUMNS");
-    g_hash_table_remove(env, "LINES");
-    g_hash_table_remove(env, "VTE_VERSION");
     /* gnome-terminal also removes GNOME_DESKTOP_ICON, probably best not to do
      * the same without knowing why. */
     /* g_hash_table_remove(env, "GNOME_DESKTOP_ICON"); */
