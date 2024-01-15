@@ -500,8 +500,8 @@ static char **roxterm_get_environment(ROXTermData *roxterm, const char *term)
     GHashTable *env = roxterm_hash_env(roxterm->env);
     char **envv;
 
-    if (term)
-        g_hash_table_replace(env, g_strdup("TERM"), g_strdup(term));
+    g_hash_table_replace(env, g_strdup("TERM"),
+                         g_strdup(term ? term : "xterm-256color"));
     g_hash_table_replace(env, g_strdup("ROXTERM_ID"),
             g_strdup_printf("%p", roxterm));
     g_hash_table_replace(env, g_strdup("ROXTERM_NUM"),
