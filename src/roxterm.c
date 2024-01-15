@@ -53,6 +53,7 @@
 #include "shortcuts.h"
 #include "uri.h"
 #include "resources.h"
+#include "spawn.h"
 
 #ifndef VTE_VERSION_NUMERIC 
 #define VTE_VERSION_NUMERIC ((VTE_MAJOR_VERSION) * 10000 + \
@@ -652,7 +653,7 @@ static void roxterm_fork_command(ROXTermData *roxterm, VteTerminal *vte,
     working_directory = roxterm_check_cwd(working_directory);
     if (login)
     {
-        /* If login_shell, make sure argv[0] is the
+        /* If login_shell, make sure argv[1] is the
          * shell base name (== leaf name) prepended by "-" */
         guint old_len;
         char *leaf = strrchr(filename, G_DIR_SEPARATOR);
@@ -668,26 +669,13 @@ static void roxterm_fork_command(ROXTermData *roxterm, VteTerminal *vte,
 
         new_argv[0] = filename;
         new_argv[1] = g_strconcat("-", leaf, NULL);
+        /* This memcpy includes the NULL terminator */
         memcpy(new_argv + 2, argv + 1, sizeof(char *) * old_len);
         argv = new_argv;
     }
 
-    /* VTE_SPAWN_NO_PARENT_ENVV is undocumented; looking at VTE's source it
-     * appears to prevent our process' env from being merged into the envv we're
-     * passing in here, which is behaviour we want.
-     */
-    vte_terminal_spawn_async(vte, VTE_PTY_DEFAULT,
-            working_directory, argv, envv, 
-            (login ? G_SPAWN_FILE_AND_ARGV_ZERO : G_SPAWN_SEARCH_PATH) |
-            VTE_SPAWN_NO_PARENT_ENVV,
-            NULL, NULL, NULL,
-            -1, NULL,
-            roxterm_fork_callback, roxterm);
-    if (new_argv)
-    {
-        g_free(new_argv[1]);
-        g_free(new_argv);
-    }
+    roxterm_spawn_child(roxterm, vte, working_directory, argv, envv,
+                        roxterm_fork_callback, new_argv != NULL);
 }
 
 static void roxterm_run_command(ROXTermData *roxterm, VteTerminal *vte)

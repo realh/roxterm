@@ -127,7 +127,7 @@ target_compile_options(rtlib PRIVATE ${RTLIB_CFLAGS_OTHER})
 add_executable(roxterm $<TARGET_OBJECTS:rtlib>
     about.c main.c multitab.c multitab-close-button.c
     multitab-label.c menutree.c optsdbus.c roxterm.c roxterm-regex.c search.c
-    session-file.c shortcuts.c uri.c)
+    session-file.c shortcuts.c spawn.c uri.c)
 add_dependencies(roxterm rtlib)
 target_include_directories(roxterm PRIVATE
     ${RTMAIN_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})
