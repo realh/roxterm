@@ -2773,6 +2773,34 @@ static void roxterm_composited_changed_handler(VteTerminal *vte,
     roxterm_apply_colour_scheme(roxterm, vte);
 }
 
+static void roxterm_osc52_handler(VteTerminal *vte, const char *clipboards,
+                                  const guchar *text, gsize text_len,
+                                  G_GNUC_UNUSED ROXTermData * roxterm)
+{
+    gboolean primary = strchr(clipboards, 'p') != NULL;
+    gboolean clipboard = strchr(clipboards, 'c') != NULL;
+    if (!primary && !clipboard) return;
+    GdkDisplay *display = gtk_widget_get_display(GTK_WIDGET(vte));
+    if (primary)
+    {
+        GtkClipboard *cb = gtk_clipboard_get_for_display(
+            display, GDK_SELECTION_PRIMARY);
+        if (!text || !text_len)
+            gtk_clipboard_clear(cb);
+        else
+            gtk_clipboard_set_text(cb, (const char *) text, text_len);
+    }
+    if (clipboard)
+    {
+        GtkClipboard *cb = gtk_clipboard_get_for_display(
+            display, GDK_SELECTION_CLIPBOARD);
+        if (!text || !text_len)
+            gtk_clipboard_clear(cb);
+        else
+            gtk_clipboard_set_text(cb, (const char *) text, text_len);
+    }
+}
+
 static void roxterm_connect_misc_signals(ROXTermData * roxterm)
 {
     roxterm->child_exited_tag = g_signal_connect(roxterm->widget,
@@ -2812,6 +2840,8 @@ static void roxterm_connect_misc_signals(ROXTermData * roxterm)
             G_CALLBACK(roxterm_composited_changed_handler), roxterm);
     g_signal_connect(roxterm->widget, "key-press-event",
             G_CALLBACK(roxterm_key_press_handler), roxterm);
+    g_signal_connect(roxterm->widget, "write-clipboard",
+            G_CALLBACK(roxterm_osc52_handler), roxterm);
 }
 
 inline static void
