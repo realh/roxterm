@@ -2840,8 +2840,13 @@ static void roxterm_connect_misc_signals(ROXTermData * roxterm)
             G_CALLBACK(roxterm_composited_changed_handler), roxterm);
     g_signal_connect(roxterm->widget, "key-press-event",
             G_CALLBACK(roxterm_key_press_handler), roxterm);
-    g_signal_connect(roxterm->widget, "write-clipboard",
-            G_CALLBACK(roxterm_osc52_handler), roxterm);
+
+    static gboolean support_osc52 = TRUE;
+    if (support_osc52 && !g_signal_connect(roxterm->widget, "write-clipboard",
+            G_CALLBACK(roxterm_osc52_handler), roxterm))
+    {
+        support_osc52 = FALSE;
+    }
 }
 
 inline static void
