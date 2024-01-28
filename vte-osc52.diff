@@ -88,7 +88,7 @@ index 521f7450..bc7d5f3a 100644
 +         * If text is NULL or empty, the clipboard should be cleared. Attempts
 +         * to query the clipboard (child sent "?" instead of base64) are ignored.
 +         *
-+         * Note: vte has a limit of 1024 characters in control sequences,
++         * Note: vte has a limit of 4096 characters in control sequences,
 +         * including encoding overhead, so the amount of text you can copy at a
 +         * time is somewhat limited.
 +         */
