@@ -2530,7 +2530,7 @@
                         <property name="margin-start">12</property>
                         <property name="margin-top">8</property>
                         <child>
-                          <!-- n-columns=4 n-rows=7 -->
+                          <!-- n-columns=4 n-rows=10 -->
                           <object class="GtkGrid" id="grid16">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
@@ -2795,21 +2795,79 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkCheckButton" id="allow_osc52">
-                                <property name="label" translatable="yes">Allow c_lipboard to be written with OSC 52</property>
+                              <object class="GtkLabel">
                                 <property name="visible">True</property>
-                                <property name="can-focus">True</property>
-                                <property name="receives-default">False</property>
-                                <property name="has-tooltip">True</property>
-                                <property name="tooltip-text" translatable="yes">If selected, "printing" an ASCII bell character will cause a beep.</property>
+                                <property name="can-focus">False</property>
                                 <property name="halign">start</property>
-                                <property name="use-underline">True</property>
-                                <property name="draw-indicator">True</property>
-                                <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
+                                <property name="label" translatable="yes">Allow programs to write to the clipboard with OSC 52</property>
+                                <attributes>
+                                  <attribute name="weight" value="bold"/>
+                                </attributes>
                               </object>
                               <packing>
                                 <property name="left-attach">0</property>
                                 <property name="top-attach">6</property>
+                                <property name="width">4</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkRadioButton" id="allow_osc520">
+                                <property name="label" translatable="yes">Ne_ver</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                                <property name="receives-default">False</property>
+                                <property name="has-tooltip">True</property>
+                                <property name="tooltip-text" translatable="yes">Whether the terminal cursor blinks depends on the GTK system setting.</property>
+                                <property name="halign">start</property>
+                                <property name="use-underline">True</property>
+                                <property name="active">True</property>
+                                <property name="draw-indicator">True</property>
+                                <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
+                              </object>
+                              <packing>
+                                <property name="left-attach">0</property>
+                                <property name="top-attach">7</property>
+                                <property name="width">4</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkRadioButton" id="allow_osc521">
+                                <property name="label" translatable="yes">Ask ever_y time</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                                <property name="receives-default">False</property>
+                                <property name="has-tooltip">True</property>
+                                <property name="tooltip-text" translatable="yes">Whether the terminal cursor blinks depends on the GTK system setting.</property>
+                                <property name="halign">start</property>
+                                <property name="use-underline">True</property>
+                                <property name="active">True</property>
+                                <property name="draw-indicator">True</property>
+                                <property name="group">allow_osc520</property>
+                                <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
+                              </object>
+                              <packing>
+                                <property name="left-attach">0</property>
+                                <property name="top-attach">8</property>
+                                <property name="width">4</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkRadioButton" id="allow_osc522">
+                                <property name="label" translatable="yes">_Always</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                                <property name="receives-default">False</property>
+                                <property name="has-tooltip">True</property>
+                                <property name="tooltip-text" translatable="yes">Whether the terminal cursor blinks depends on the GTK system setting.</property>
+                                <property name="halign">start</property>
+                                <property name="use-underline">True</property>
+                                <property name="draw-indicator">True</property>
+                                <property name="group">allow_osc520</property>
+                                <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
+                              </object>
+                              <packing>
+                                <property name="left-attach">0</property>
+                                <property name="top-attach">9</property>
                                 <property name="width">4</property>
                               </packing>
                             </child>

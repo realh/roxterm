@@ -18,6 +18,7 @@
 */
 
 #include "defns.h"
+#include "options.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -337,6 +338,8 @@ static ROXTermData *roxterm_data_clone(ROXTermData *old_gt)
 
     // TODO: Get from profile
     new_gt->allow_osc52 = 1;
+    new_gt->allow_osc52 = options_lookup_int_with_default(new_gt->profile,
+                                                          "allow_osc52", 1);
 
     if (old_gt->colour_scheme)
     {
@@ -3134,6 +3137,14 @@ roxterm_apply_text_blink_mode(ROXTermData *roxterm, VteTerminal *vte)
     vte_terminal_set_text_blink_mode(vte, modes[i]);
 }
 
+inline static void
+roxterm_update_allow_osc52(ROXTermData * roxterm)
+{
+    roxterm->allow_osc52 = options_lookup_int_with_default(roxterm->profile,
+                                                           "allow_osc52", 1);
+}
+
+
 static void
 roxterm_scroll_value_handler(GtkAdjustment *adj, ROXTermData *roxterm)
 {
@@ -3263,6 +3274,8 @@ static void roxterm_apply_profile(ROXTermData *roxterm, VteTerminal *vte,
     roxterm_apply_colour_scheme_from_profile(roxterm);
 
     roxterm_apply_show_add_tab_btn(roxterm);
+
+    roxterm_update_allow_osc52(roxterm);
 }
 
 static gboolean
@@ -3721,6 +3734,10 @@ static void roxterm_reflect_profile_change(Options * profile, const char *key)
         else if (!strcmp(key, "colour_scheme"))
         {
             roxterm_apply_colour_scheme_from_profile(roxterm);
+        }
+        else if (!strcmp(key, "osc52"))
+        {
+            roxterm_update_allow_osc52(roxterm);
         }
         if (apply_to_win)
         {
@@ -4263,8 +4280,8 @@ static ROXTermData *roxterm_data_new(double zoom_factor, const char *directory,
     roxterm->env = global_options_copy_strv(env);
     /*roxterm->file_match_tag[0] = roxterm->file_match_tag[1] = -1;*/
     roxterm->exit_action = Roxterm_ChildExitNotOverridden;
-    // TODO: Get from profile
-    roxterm->allow_osc52 = 1;
+    roxterm->allow_osc52 = options_lookup_int_with_default(profile,
+                                                           "allow_osc52", 1);
     return roxterm;
 }
 
