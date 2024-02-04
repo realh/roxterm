@@ -2530,7 +2530,7 @@
                         <property name="margin-start">12</property>
                         <property name="margin-top">8</property>
                         <child>
-                          <!-- n-columns=4 n-rows=6 -->
+                          <!-- n-columns=4 n-rows=7 -->
                           <object class="GtkGrid" id="grid16">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
@@ -2792,6 +2792,25 @@
                                 <property name="left-attach">2</property>
                                 <property name="top-attach">5</property>
                                 <property name="width">2</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkCheckButton" id="allow_osc52">
+                                <property name="label" translatable="yes">Allow c_lipboard to be written with OSC 52</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                                <property name="receives-default">False</property>
+                                <property name="has-tooltip">True</property>
+                                <property name="tooltip-text" translatable="yes">If selected, "printing" an ASCII bell character will cause a beep.</property>
+                                <property name="halign">start</property>
+                                <property name="use-underline">True</property>
+                                <property name="draw-indicator">True</property>
+                                <signal name="toggled" handler="on_boolean_toggled" swapped="no"/>
+                              </object>
+                              <packing>
+                                <property name="left-attach">0</property>
+                                <property name="top-attach">6</property>
+                                <property name="width">4</property>
                               </packing>
                             </child>
                           </object>
