@@ -6,6 +6,7 @@ if [ -z "$RELEASE" ] ; then
 	exit 1
 fi
 printf $RELEASE > version
+printf $RELEASE > release_version
 git commit version -m "Version $RELEASE"
 git tag -s --force $RELEASE -m "Release $RELEASE" $2
 git checkout stable
