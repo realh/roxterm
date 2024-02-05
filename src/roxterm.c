@@ -1721,6 +1721,7 @@ static void roxterm_copy_clipboard_action(MultiWin * win)
 #else
     vte_terminal_copy_clipboard(VTE_TERMINAL(roxterm->widget));
 #endif
+    multi_win_hide_clipboard_indicator(win);
 }
 
 static void roxterm_paste_clipboard_action(MultiWin * win)
@@ -1743,6 +1744,7 @@ static void roxterm_copy_and_paste_action(MultiWin * win)
     vte_terminal_copy_clipboard(VTE_TERMINAL(roxterm->widget));
 #endif
     vte_terminal_paste_clipboard(VTE_TERMINAL(roxterm->widget));
+    multi_win_hide_clipboard_indicator(win);
 }
 
 static void roxterm_reset_action(MultiWin * win)
@@ -2725,9 +2727,16 @@ static void roxterm_write_clipboard(ROXTermData *roxterm,
         GDK_SELECTION_PRIMARY : GDK_SELECTION_CLIPBOARD;
     GtkClipboard *cb = gtk_clipboard_get_for_display(display, sel_type);
     if (!clipboard_content || !len)
+    {
         gtk_clipboard_clear(cb);
+        multi_win_flash_clipboard_indicator(roxterm_get_win(roxterm),
+                                            FALSE);
+    }
     else
+    {
         gtk_clipboard_set_text(cb, (const char *) clipboard_content, len);
+        multi_win_show_clipboard_indicator(roxterm_get_win(roxterm));
+    }
 }
 
 /* This runs via g_idle_add */

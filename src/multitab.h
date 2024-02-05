@@ -433,6 +433,15 @@ void multi_win_set_initial_geometry(MultiWin *win, const char *geom,
 void multi_win_apply_new_geometry(MultiWin *win, int columns, int rows,
         MultiTab *tab);
 
+void multi_win_flash_clipboard_indicator(MultiWin *win, gboolean show);
+
+inline static void multi_win_show_clipboard_indicator(MultiWin *win)
+{
+    multi_win_flash_clipboard_indicator(win, TRUE);
+}
+
+void multi_win_hide_clipboard_indicator(MultiWin *win);
+
 #endif /* MULTITAB_H */
 
 /* vi:set sw=4 ts=4 et cindent cino= */

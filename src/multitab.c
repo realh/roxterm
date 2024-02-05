@@ -21,7 +21,6 @@
 #include "defns.h"
 #endif
 
-#include <ctype.h>
 #include <errno.h>
 
 #include "dlg.h"
@@ -100,6 +99,10 @@ struct MultiWin {
     GdkGeometry geom_hints;
     GdkWindowHints geom_hint_mask;
     gboolean has_geometry;
+    gboolean show_clipboard_indicator;
+    int clipboard_flash_frame;
+    gulong clipboard_flash_tag;
+    GtkWidget *clipboard_indicator_button;
 };
 
 static double multi_win_zoom_factors[] = {
@@ -2005,13 +2008,26 @@ MultiWin *multi_win_new_blank(Options *shortcuts,
         multi_win_set_show_tabs_menu_items(win, FALSE);
         multi_win_hide_tabs(win);
     }
+
+    GtkWidget *action_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
+    win->clipboard_indicator_button =
+        multitab_close_button_new("edit-paste-symbolic");
+    g_signal_connect_swapped(win->clipboard_indicator_button, "clicked",
+            G_CALLBACK(multi_win_hide_clipboard_indicator), win);
+    gtk_box_pack_start(GTK_BOX(action_box), win->clipboard_indicator_button,
+                       FALSE, FALSE, 0);
     win->add_tab_button = multitab_close_button_new("tab-new-symbolic");
     g_signal_connect_swapped(win->add_tab_button, "clicked",
             G_CALLBACK(multi_win_new_tab_action), win);
-    gtk_notebook_set_action_widget(notebook, win->add_tab_button, GTK_PACK_END);
+    gtk_box_pack_start(GTK_BOX(action_box), win->add_tab_button,
+                       FALSE, FALSE, 0);
+    gtk_notebook_set_action_widget(notebook, action_box, GTK_PACK_END);
+    gtk_widget_show(action_box);
+    gtk_widget_hide(win->clipboard_indicator_button);
     if (add_tab_button)
         gtk_widget_show_all(win->add_tab_button);
     win->show_add_tab_button = add_tab_button;
+
     gtk_box_pack_start(GTK_BOX(win->vbox), win->notebook, TRUE, TRUE, 0);
     g_signal_connect(win->notebook, "switch-page",
         G_CALLBACK(multi_win_page_switched), win);
@@ -2094,6 +2110,10 @@ static void multi_win_destructor(MultiWin *win, gboolean destroy_widgets)
     g_return_if_fail(win);
 
     win->ignore_tab_selections = TRUE;
+    if (win->clipboard_flash_tag != 0)
+    {
+        g_source_remove(win->clipboard_flash_tag);
+    }
     if (win->accel_group)
     {
         UNREF_LOG(g_object_unref(win->accel_group));
@@ -2799,6 +2819,50 @@ void multi_win_apply_new_geometry(MultiWin *win, int columns, int rows,
         gtk_window_set_geometry_hints(GTK_WINDOW(win->gtkwin), NULL, NULL, 0);
         gtk_window_resize(GTK_WINDOW(win->gtkwin), width, height);
         multi_win_apply_geometry_hints(win);
+    }
+}
+
+/* Shows the indicator on odd frames, hides it on even */
+static gboolean multi_win_toggle_clipboard_indicator(MultiWin *win)
+{
+    // Use opacity instead of show/hide in case the tab bar is full and
+    // the tabs would grow and shrink if the visibility were toggled.
+    gtk_widget_set_opacity(win->clipboard_indicator_button,
+                           (win->clipboard_flash_frame % 2) ? 1.0 : 0.0);
+    if ((!--win->clipboard_flash_frame && win->show_clipboard_indicator) ||
+        win->clipboard_flash_frame < 0)
+    {
+        if (!win->show_clipboard_indicator)
+        {
+            gtk_widget_hide(win->clipboard_indicator_button);
+        }
+        win->clipboard_flash_tag = 0;
+        return FALSE;
+    }
+    return TRUE;
+}
+
+void multi_win_flash_clipboard_indicator(MultiWin *win, gboolean show)
+{
+    gboolean already_showing = win->show_clipboard_indicator;
+    win->show_clipboard_indicator = show;
+    if (!win->clipboard_flash_tag)
+    {
+        win->clipboard_flash_frame = already_showing ? 5 : 4;
+        gtk_widget_show_all(win->clipboard_indicator_button);
+        win->clipboard_flash_tag =
+            g_timeout_add(200,
+                          G_SOURCE_FUNC(multi_win_toggle_clipboard_indicator),
+                          win);
+    }
+}
+
+void multi_win_hide_clipboard_indicator(MultiWin *win)
+{
+    win->show_clipboard_indicator = FALSE;
+    if (!win->clipboard_flash_tag)
+    {
+        gtk_widget_hide(win->clipboard_indicator_button);
     }
 }
 
