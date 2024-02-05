@@ -68,7 +68,7 @@ index 521f7450..bc7d5f3a 100644
                                     g_cclosure_marshal_VOID__POINTERv);
  
 +        /**
-+         * VteTerminal::commit:
++         * VteTerminal::write-clipboard:
 +         * @vteterminal: the object which received the signal
 +         * @clipboards: a string describing which clipboard(s) to set
 +         * @text (nullable) (array length=text_size) (element-type guint8):
