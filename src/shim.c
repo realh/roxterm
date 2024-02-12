@@ -17,7 +17,6 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#include <sys/types.h>
 #define G_LOG_DOMAIN "roxterm-shim"
 
 #include <glib.h>
@@ -28,14 +27,19 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
+#define MIN_CAPACITY 1024
+#define EXCESS_CAPACITY 2048
+#define MAX_CAPACITY 1024 * 1024
+
 static FILE *debug_out = NULL;
 
 typedef struct {
     int fd;
-    char *buf;
+    guint8 *buf;
     gssize capacity;
     gsize offset_to_next_str;
     gsize offset_to_end;
+    gboolean eof;
 } BufferedReader;
 
 static inline BufferedReader *buffered_reader_new(int fd)
@@ -46,14 +50,17 @@ static inline BufferedReader *buffered_reader_new(int fd)
 }
 
 /**
- * Attempts to read from fd up to and including a character matching c.
- * If c is -1 just read as many bytes as are available, up to the buffer's
- * capacity. The result should not be freed and will be overwritten on the
- * next call. end_out is the offset of the byte following c if c != -1.
- * Returns NULL without setting errmsg if no bytes are read (assumes EOF).
+ * Attempts to read from fd up to and including an escape character. If the
+ * escape is a double byte (ESC something), it will include the second byte.
+ * If force_esc is TRUE it will enlarge the buffer (up to a point) to
+ * accommodate a long clipboard, otherwise it may return before encountering an
+ * ESC. The result should not be freed and will be overwritten on
+ * the next call. end_out is the offset of the byte following the last byte read
+ * or one past the escape character. Returns NULL without setting errmsg if no
+ * bytes are read (assumes EOF).
  */
-static const char *read_until_c(BufferedReader *reader,
-    gsize *end_out, int c, char const **errmsg)
+static const guint8 *read_until_esc(BufferedReader *reader,
+    gsize *end_out, gboolean force_esc, char const **errmsg)
 {
     /* If there's stuff left over from the previous read, move it to the start
      * of the buffer.
@@ -70,24 +77,51 @@ static const char *read_until_c(BufferedReader *reader,
     /* Start reading */
     while (TRUE)
     {
+        gboolean want_esc_code = FALSE;
         /* See if we can return the current buffered content. */
-        if (c != -1)
+        for (gsize i = chunk_offset; i < reader->offset_to_end; ++i)
         {
-            for (gsize i = chunk_offset; i < reader->offset_to_end; ++i)
+            switch (reader->buf[i])
             {
-                if (reader->buf[i] == c)
-                {
+                case 0x1b:      // ESC
+                    if (i + 1 < reader->offset_to_end)
+                    {
+                        ++i;
+                        // fall through
+                    }
+                    else
+                    {
+                        want_esc_code = TRUE;
+                        break;
+                    }
+                /* Not interested in all of these, but they introduce string
+                 * sequences, except for BEL, which is a non-standard
+                 * alternative to ST.
+                 */
+                case 0x90:      // DCS
+                case 0x98:      // SOS
+                case 0x9b:      // CSI
+                case 0x9c:      // ST
+                case 0x9d:      // OSC
+                case 0x9e:      // PM
+                case 0x9f:      // APC
+                case 0x07:      // BEL
                     *end_out = i + 1;
                     reader->offset_to_next_str = i + 1;
                     return reader->buf;
-                }
             }
-        } else if (reader->offset_to_end) {
+        }
+
+        /* Any surplus from previous read should be sent to pty asap */
+        if (!force_esc && !want_esc_code && reader->offset_to_end) {
             *end_out = reader->offset_to_end;
             reader->offset_to_next_str = 0;
             reader->offset_to_end = 0;
             return reader->buf;
         }
+
+        if (reader->eof)
+            return NULL;
 
         /* Buf was empty, or didn't contain c, read more data. */
         chunk_offset = reader->offset_to_end;
@@ -96,23 +130,32 @@ static const char *read_until_c(BufferedReader *reader,
 
         /* Make sure we have enough capacity for a decent read, but if we
          * have excess, shrink the buffer to make sure memory is freed after
-         * a huge paste.
+         * a huge paste and that we're not reading big chunks which might
+         * increase latency.
          */
-        if (spare_capacity < 256)
-            new_capacity = reader->capacity + 1024;
-        else if (spare_capacity > 4096)
-            new_capacity = chunk_offset + 1024;
+        if (spare_capacity < MIN_CAPACITY)
+            new_capacity = reader->capacity + MIN_CAPACITY;
+        else if (spare_capacity > EXCESS_CAPACITY)
+            new_capacity = chunk_offset + MIN_CAPACITY;
+        if (new_capacity > MAX_CAPACITY && !want_esc_code)
+        {
+            force_esc = FALSE;
+            continue;
+        }
         if (new_capacity)
         {
             reader->buf = g_realloc(reader->buf, new_capacity);
             reader->capacity = new_capacity;
             spare_capacity = new_capacity - chunk_offset;
         }
+        if (want_esc_code)
+            spare_capacity = 1;
 
-        ssize_t nread = read(reader->fd, reader->buf, spare_capacity);
+        ssize_t nread = read(reader->fd, reader->buf + reader->offset_to_end,
+                             spare_capacity);
         if (nread == 0)
         {
-            return NULL;
+            reader->eof = TRUE;
         }
         else if (nread < 0)
         { 
@@ -124,12 +167,11 @@ static const char *read_until_c(BufferedReader *reader,
     return NULL;
 }
 
-/* If len is -1, data is written until and including its 0 terminator. */
-static gboolean blocking_write(int fd, const char *data, gssize length,
+static gboolean blocking_write(int fd, const guint8 *data, gsize length,
                                char const **errmsg)
 {
-    if (length < 0) length = strlen(data) + 1;
-    gssize nwritten = 0;
+    if (length < 0) length = strlen((char *) data) + 1;
+    gsize nwritten = 0;
     while (nwritten < length)
     {
         gssize n = write(fd, data + nwritten, length - nwritten);
@@ -156,16 +198,27 @@ typedef struct {
     guintptr roxterm_tab_id;
 } RoxtermPipeContext;
 
+typedef enum {
+    NormalMode,
+    StartedEsc,
+    ReceivingClipBoard,
+    ClipboardTooLarge,
+} PipeFilterState;
+
 static gpointer osc52_pipe_filter(RoxtermPipeContext *rpc)
 {
     BufferedReader *reader = buffered_reader_new(rpc->pipe_from_child);
     const char *outname = rpc->output == 1 ? "stdout" : "stderr";
     const char *errmsg = NULL;
+    PipeFilterState pf_state = NormalMode;
+
     while (TRUE)
     {
-        const char *buf;
+        const guint8 *buf;
         gsize buflen;
-        buf = read_until_c(reader, &buflen, -1, &errmsg);
+        gboolean force_esc = pf_state == ReceivingClipBoard;
+
+        buf = read_until_esc(reader, &buflen, force_esc, &errmsg);
         if (errmsg)
         {
             fprintf(debug_out, "Error reading from %lx child's %s: %s\n",
