@@ -17,6 +17,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+#include <sys/types.h>
 #define G_LOG_DOMAIN "roxterm-shim"
 
 #include <glib.h>
@@ -26,6 +27,8 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/wait.h>
+
+static FILE *debug_out = NULL;
 
 typedef struct {
     int fd;
@@ -165,26 +168,26 @@ static gpointer osc52_pipe_filter(RoxtermPipeContext *rpc)
         buf = read_until_c(reader, &buflen, -1, &errmsg);
         if (errmsg)
         {
-            g_error("Error reading from %lx child's %s: %s",
+            fprintf(debug_out, "Error reading from %lx child's %s: %s\n",
                     rpc->roxterm_tab_id, outname, errmsg);
             exit(1);
         }
         else if (!buf || !buflen)
         {
-            g_debug("No data read from %lx child's %s (EOF?)",
+            fprintf(debug_out, "No data read from %lx child's %s (EOF?)\n",
                     rpc->roxterm_tab_id, outname);
             exit(0);
         }
         gboolean wrote = blocking_write(rpc->output, buf, buflen, &errmsg);
         if (errmsg)
         {
-            g_debug("Error writing to %lx pty's %s: %s",
+            fprintf(debug_out, "Error writing to %lx pty's %s: %s\n",
                     rpc->roxterm_tab_id, outname, errmsg);
             exit(1);
         }
         else if (!wrote)
         {
-            g_debug("No data written to %lx pty's %s (EOF?)",
+            fprintf(debug_out, "No data written to %lx pty's %s (EOF?)\n",
                     rpc->roxterm_tab_id, outname);
             exit(0);
         }
@@ -194,10 +197,10 @@ static gpointer osc52_pipe_filter(RoxtermPipeContext *rpc)
 
 int main(int argc, char **argv)
 {
-    freopen("/home/tony/Code/roxterm/log.txt", "w", stderr);
-    g_setenv("G_MESSAGES_DEBUG", "all", TRUE);
-    fprintf(stderr, "shim argv[0] = %s\n", argv[0]);
-
+    char *log_path = g_build_filename(
+        g_get_home_dir(), "Code", "roxterm", "log.txt", NULL);
+    debug_out = fopen(log_path, "w");
+    g_free(log_path);
 
     RoxtermPipeContext *rpc_stdout = g_new(RoxtermPipeContext, 1);
     rpc_stdout->roxterm_tab_id = strtoul(argv[1], NULL, 16);
@@ -206,15 +209,6 @@ int main(int argc, char **argv)
     RoxtermPipeContext *rpc_stderr = g_new(RoxtermPipeContext, 1);
     rpc_stderr->roxterm_tab_id = rpc_stdout->roxterm_tab_id;
     rpc_stderr->output = 2;
-
-    char **argvn = g_new(char *, argc + 1);
-    for (int n = 0; n < argc; ++n)
-         argvn[n] = argv[n];
-    argvn[argc] = NULL;
-    char *cmd = g_strjoinv(" ", argvn);
-    fprintf(stderr, "Shim argv %s\n", cmd);
-    g_free(cmd);
-    g_free(argvn);
 
     GPid pid;
     argv += 2;
@@ -236,24 +230,24 @@ int main(int argc, char **argv)
         if (!g_thread_new("stdout",
                           (GThreadFunc) osc52_pipe_filter, rpc_stdout))
         {
-            g_error("Failed to launch thread for stdout");
+            fprintf(debug_out, "Failed to launch thread for stdout\n");
             exit(1);
         }
         if (!g_thread_new("stderr",
                           (GThreadFunc) osc52_pipe_filter, rpc_stderr))
         {
-            g_error("Failed to launch thread for stderr");
+            fprintf(debug_out, "Failed to launch thread for stderr\n");
             exit(1);
         }
         int status = 0;
         waitpid(pid, &status, 0);
-        g_debug("Child exited: %d, status %d",
+        fprintf(debug_out, "Child exited: %d, status %d\n",
                 WIFEXITED(status), WEXITSTATUS(status));
         exit(status);
     }
     else
     {
-        g_error("Failed to run command: %s",
+        fprintf(debug_out, "Failed to run command: %s\n",
                 error ? error->message : "unknown error");
         exit(1);
     }
