@@ -577,13 +577,35 @@ static void roxterm_fork_command(ROXTermData *roxterm, VteTerminal *vte,
 {
     char *filename = argv[0];
     char **new_argv = NULL;
+    static char *shim = NULL;
+    int arg_offset = 2;
+    int copy_offset = 0;
+
+    if (!shim)
+    {
+        char *dir = g_path_get_dirname(global_options_bindir);
+        shim = g_build_filename(dir, "libexec", "roxterm-shim", NULL);
+        g_free(dir);
+        if (!g_file_test(shim, G_FILE_TEST_IS_EXECUTABLE))
+        {
+            g_free(shim);
+            shim = g_build_filename(global_options_bindir, "roxterm-shim",
+                                    NULL);
+            if (!g_file_test(shim, G_FILE_TEST_IS_EXECUTABLE))
+                shim[0] = 0;
+        }
+    }
+    if (!shim[0])
+        arg_offset = 0;
+
 
     working_directory = roxterm_check_cwd(working_directory);
+    size_t old_len = g_strv_length(argv);
+
     if (login)
     {
         /* If login_shell, make sure argv[0] is the
          * shell base name (== leaf name) prepended by "-" */
-        guint old_len;
         char *leaf = strrchr(filename, G_DIR_SEPARATOR);
 
         if (leaf)
@@ -591,24 +613,45 @@ static void roxterm_fork_command(ROXTermData *roxterm, VteTerminal *vte,
         else
             leaf = argv[0];
 
-        /* The NULL terminator is not considered by g_strv_length() */
-        old_len = g_strv_length(argv);
-        new_argv = g_new(char *, old_len + 2);
-
-        new_argv[0] = filename;
-        new_argv[1] = g_strconcat("-", leaf, NULL);
-        memcpy(new_argv + 2, argv + 1, sizeof(char *) * old_len);
+        /* The NULL terminator is not considered by g_strv_length(), and
+         * we're replacing argv[0], not adding to it. */
+        new_argv = g_new(char *, old_len + arg_offset + 2);
+        new_argv[arg_offset] = filename;
+        new_argv[arg_offset + 1] = g_strconcat("-", leaf, NULL);
+        arg_offset += 2;
+        copy_offset = 1;
+    }
+    else if (shim[0])
+    {
+        new_argv = g_new(char *, old_len + arg_offset + 1);
+    }
+    if (shim[0])
+    {
+        new_argv[0] = shim;
+        new_argv[1] = g_strdup_printf("%lx", (guintptr) roxterm);
+    }
+    if (arg_offset)
+    {
+        // This memcpy includes the NULL-terminator */
+        memcpy(new_argv + arg_offset,
+               argv + copy_offset,
+               sizeof(char *) * (old_len + 1 - copy_offset));
         argv = new_argv;
     }
 
+    char *cmd = g_strjoinv(" ", argv);
+    g_debug("Command line %s", cmd);
+    g_free(cmd);
+
+    GSpawnFlags spawn_flags = shim[0] ? G_SPAWN_DEFAULT :
+        (login ? G_SPAWN_FILE_AND_ARGV_ZERO : G_SPAWN_SEARCH_PATH);
     /* VTE_SPAWN_NO_PARENT_ENVV is undocumented; looking at VTE's source it
      * appears to prevent our process' env from being merged into the envv we're
      * passing in here, which is behaviour we want.
      */
     vte_terminal_spawn_async(vte, VTE_PTY_DEFAULT,
             working_directory, argv, envv, 
-            (login ? G_SPAWN_FILE_AND_ARGV_ZERO : G_SPAWN_SEARCH_PATH) |
-            VTE_SPAWN_NO_PARENT_ENVV,
+            spawn_flags | VTE_SPAWN_NO_PARENT_ENVV,
             NULL, NULL, NULL,
             -1, NULL,
             roxterm_fork_callback, roxterm);
