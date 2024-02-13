@@ -42,6 +42,25 @@ typedef struct {
     gboolean eof;
 } BufferedReader;
 
+static const char *fd_name(int fd)
+{
+    static char *name = NULL;
+
+    switch (fd)
+    {
+        case 0:
+            return "stdin";
+        case 1:
+            return "stdout";
+        case 2:
+            return "stderr";
+        default:
+            g_free(name);
+            name = g_strdup_printf("fd%d", fd);
+            return name;
+    }
+}
+
 static inline BufferedReader *buffered_reader_new(int fd)
 {
     BufferedReader *reader = g_new0(BufferedReader, 1);
@@ -49,18 +68,26 @@ static inline BufferedReader *buffered_reader_new(int fd)
     return reader;
 }
 
+typedef enum {
+    Normal,         // Just read up to buffer limit
+    ForceEsc,       // Try to read until we get an ESC
+    GetOsc,         // Make sure we've got enough to identify an OSC sequence
+} BufferStrategy;
+
 /**
  * Attempts to read from fd up to and including an escape character. If the
  * escape is a double byte (ESC something), it will include the second byte.
- * If force_esc is TRUE it will enlarge the buffer (up to a point) to
+ * If strategy is ForceEsc it will enlarge the buffer (up to a point) to
  * accommodate a long clipboard, otherwise it may return before encountering an
- * ESC. The result should not be freed and will be overwritten on
- * the next call. end_out is the offset of the byte following the last byte read
- * or one past the escape character. Returns NULL without setting errmsg if no
- * bytes are read (assumes EOF).
+ * ESC.
+ *
+ * The result should not be freed and will be overwritten on the next call.
+ * end_out is the offset of the byte following the last byte read or one past
+ * the escape character. Returns NULL without setting errmsg if no bytes are
+ * read (assumes EOF).
  */
 static const guint8 *read_until_esc(BufferedReader *reader,
-    gsize *end_out, gboolean force_esc, char const **errmsg)
+    gsize *end_out, BufferStrategy strategy, char const **errmsg)
 {
     /* If there's stuff left over from the previous read, move it to the start
      * of the buffer.
@@ -87,24 +114,15 @@ static const guint8 *read_until_esc(BufferedReader *reader,
                     if (i + 1 < reader->offset_to_end)
                     {
                         ++i;
-                        // fall through
+                        G_GNUC_FALLTHROUGH;
                     }
                     else
                     {
                         want_esc_code = TRUE;
                         break;
                     }
-                /* Not interested in all of these, but they introduce string
-                 * sequences, except for BEL, which is a non-standard
-                 * alternative to ST.
-                 */
-                case 0x90:      // DCS
-                case 0x98:      // SOS
-                case 0x9b:      // CSI
                 case 0x9c:      // ST
                 case 0x9d:      // OSC
-                case 0x9e:      // PM
-                case 0x9f:      // APC
                 case 0x07:      // BEL
                     *end_out = i + 1;
                     reader->offset_to_next_str = i + 1;
@@ -112,8 +130,39 @@ static const guint8 *read_until_esc(BufferedReader *reader,
             }
         }
 
-        /* Any surplus from previous read should be sent to pty asap */
-        if (!force_esc && !want_esc_code && reader->offset_to_end) {
+        /* Any surplus from previous read should be sent to pty asap.
+         */
+        gboolean strategy_satisifed;
+        if (strategy == Normal)
+        {
+            strategy_satisifed = TRUE;
+        }
+        else if (strategy == GetOsc)
+        {
+            const guint8 *b = reader->buf;
+            gsize l = reader->offset_to_end;
+            strategy_satisifed = FALSE;
+            if (l >= 18)
+            {
+                strategy_satisifed = TRUE;
+            }
+            else if (l >= 6 && b[0] == '5' && b[1] == '2' && b[3] == ';')
+            {
+                for (gsize n = 3; n < l; ++n)
+                {
+                    if (b[n] == ';' && n < l - 1)
+                    {
+                        strategy_satisifed = TRUE;
+                        break;
+                    }
+                }
+            }
+        }
+        else
+        {
+            strategy_satisifed = FALSE;
+        }
+        if (strategy_satisifed && !want_esc_code && reader->offset_to_end) {
             *end_out = reader->offset_to_end;
             reader->offset_to_next_str = 0;
             reader->offset_to_end = 0;
@@ -139,7 +188,8 @@ static const guint8 *read_until_esc(BufferedReader *reader,
             new_capacity = chunk_offset + MIN_CAPACITY;
         if (new_capacity > MAX_CAPACITY && !want_esc_code)
         {
-            force_esc = FALSE;
+            if (strategy == ForceEsc)
+                strategy = Normal;
             continue;
         }
         if (new_capacity)
@@ -167,29 +217,31 @@ static const guint8 *read_until_esc(BufferedReader *reader,
     return NULL;
 }
 
-static gboolean blocking_write(int fd, const guint8 *data, gsize length,
-                               char const **errmsg)
+// Returns number of bytes written, 0 for EOF, <0 for error
+static gssize blocking_write(int fd, const guint8 *data, gsize length,
+                             char const *name)
 {
-    if (length < 0) length = strlen((char *) data) + 1;
     gsize nwritten = 0;
     while (nwritten < length)
     {
         gssize n = write(fd, data + nwritten, length - nwritten);
         if (n == 0)
         {
-            return FALSE;
+            fprintf(debug_out, "No bytes written to %s (EOF?)\n", name);
+            return 0;
         }
         else if (n < 0)
         {
-            *errmsg = strerror(errno);
-            return FALSE;
+            fprintf(debug_out, "Error writing to %s: %s\n",
+                    name, strerror(errno));
+            return n;
         }
         else
         {
             nwritten += n;
         }
     }
-    return TRUE;
+    return nwritten;
 }
 
 typedef struct {
@@ -199,51 +251,236 @@ typedef struct {
 } RoxtermPipeContext;
 
 typedef enum {
-    NormalMode,
-    StartedEsc,
-    ReceivingClipBoard,
-    ClipboardTooLarge,
+    NormalMode,             // Receiving naything other than OSC 52 payload
+    StartedOsc,             // Last chunk ended with OSC code
+    ReceivingClipBoard,     // We are receiving clipboard, not terminated yet
+    EscTooLarge,            // Esc sequence has filled oversized buffer
 } PipeFilterState;
+
+// If buf ends with an OSC code, returns true and sets (esc1_out, esc2_out)
+// to (0x1b, ']') or (0x9d, 0) accordingly. Otherwise returns FALSE and
+// leaves esc1, esc2 unset.
+static gboolean check_buf_end_for_osc(const guint8 *buf, gsize buflen,
+                                      guint8 *esc1_out, guint8 *esc2_out)
+{
+    guint8 c = buf[buflen - 1];
+    if (buflen >= 2 && buf[buflen - 2] == 0x1b)
+    {
+        *esc1_out = 0x1b;
+        *esc2_out = c;
+        return c == ']';
+    }
+    if (c == 0x9d)
+    {
+        *esc1_out = c;
+        *esc2_out = 0;
+        return TRUE;
+    }
+    return FALSE;
+
+}
+
+// Returns TRUE if the buffer ends with a valid terminator.
+static gboolean check_buf_end_for_terminator(const guint8 *buf, gsize buflen)
+{
+    switch (buf[buflen - 1])
+    {
+        case 0x9c:
+        case 0x07:
+            return TRUE;
+        case '\\':
+            return buflen >= 2 && buf[buflen - 2] == 0x1b;
+        default:
+            return FALSE;
+    }
+}
+
+// Processes clipboard content. part1 is optional, only present if the OSC 52
+// data was split across two buffers. It will be freed if so. Although part2
+// is const it will actually have its terminator replaced with 0.
+static void process_clipboard_write(guint8 **part1,
+                                    gsize *part1_size,
+                                    const guint8 *part2,
+                                    gsize part2_size,
+                                    guintptr roxterm_tab_id)
+{
+    const guint8 *p1 = *part1 ? *part1 : part2;
+    gsize p1_size = *part1 ? *part1_size : part2_size;
+    gssize semicolon = -1;
+    gboolean own_base64;
+
+    for (gsize i = 0; i < p1_size; ++i)
+    {
+        if (p1[i] == ';')
+        {
+            semicolon = i;
+            break;
+        }
+    }
+    if (semicolon == -1)
+        goto free_part1;
+    char *selection = g_strndup((const char *) p1, semicolon);
+    if ((gssize) strspn(selection, "cpqs01234567") != semicolon)
+    {
+        g_free(selection);
+        goto free_part1;
+    }
+    gsize total_size = *part1_size + part2_size - semicolon;
+    guint8 *base64;
+    gsize p1_size_after_semi = p1_size - semicolon - 1;
+    if (*part1)
+    {
+        own_base64 = TRUE;
+        base64 = g_new(guint8, total_size);
+        memcpy(base64, *part1 + semicolon + 1, p1_size_after_semi);
+        memcpy(base64 + p1_size_after_semi, part2, part2_size);
+    }
+    else
+    {
+        own_base64 = FALSE;
+        base64 = (guint8 *) part2 + semicolon + 1;
+    }
+    if (base64[total_size - 2] == 0x1b)
+        base64[total_size - 2] = 0;
+    else
+        base64[total_size - 1] = 0;
+    if (base64[0])
+    {
+        gsize decoded_size;
+        g_base64_decode_inplace((char *) base64, &decoded_size);
+        fprintf(debug_out, "Decoded clipboard: %s\n", (char *) base64);
+    }
+    if (own_base64)
+        g_free(base64);
+free_part1:
+    g_free(*part1);
+    *part1 = NULL;
+    *part1_size = 0;
+}
+
+// Returns TRUE if buf starts with "52;" and indicates it's a clipboard write
+// and not a read. If TRUE semicolon_out will contain the index into buf of
+// the semicolon separating the selection description from the payload.
+static gboolean check_for_osc52_write(const guint8 *buf, gsize buflen)
+{
+    if (buflen < 5)
+        return FALSE;
+    if (buf[0] != '5' || buf[1] != '2' || buf[2] != ';')
+        return FALSE;
+    gsize n;
+    for (n = 3; n < buflen && buf[n] != ';'; ++n);
+    if (buf[n] != ';')
+        return FALSE;
+    if (buf[n + 1] == '?')
+        return FALSE;
+    return TRUE;
+}
 
 static gpointer osc52_pipe_filter(RoxtermPipeContext *rpc)
 {
     BufferedReader *reader = buffered_reader_new(rpc->pipe_from_child);
-    const char *outname = rpc->output == 1 ? "stdout" : "stderr";
+    char *outname = g_strdup_printf("%lx:%s", rpc->roxterm_tab_id,
+                                    fd_name(rpc->output));
     const char *errmsg = NULL;
     PipeFilterState pf_state = NormalMode;
+    guint8 esc[2];
+    guint8 *partial_clipboard = NULL;
+    gsize partial_len = 0;
 
     while (TRUE)
     {
         const guint8 *buf;
         gsize buflen;
-        gboolean force_esc = pf_state == ReceivingClipBoard;
+        // Only force read to next ESC if we know we're receiving a clipboard.
+        // Other ESC sequences should be processed in smaller chunks to keep
+        gboolean force_esc = pf_state == ReceivingClipBoard ||
+            pf_state == StartedOsc;
 
         buf = read_until_esc(reader, &buflen, force_esc, &errmsg);
         if (errmsg)
         {
-            fprintf(debug_out, "Error reading from %lx child's %s: %s\n",
-                    rpc->roxterm_tab_id, outname, errmsg);
+            fprintf(debug_out, "Error reading from %s: %s\n", outname, errmsg);
             exit(1);
         }
         else if (!buf || !buflen)
         {
-            fprintf(debug_out, "No data read from %lx child's %s (EOF?)\n",
-                    rpc->roxterm_tab_id, outname);
-            exit(0);
+            fprintf(debug_out, "No data read from %s (EOF?)\n", outname);
+            return NULL;
         }
-        gboolean wrote = blocking_write(rpc->output, buf, buflen, &errmsg);
-        if (errmsg)
+
+        switch (pf_state)
         {
-            fprintf(debug_out, "Error writing to %lx pty's %s: %s\n",
-                    rpc->roxterm_tab_id, outname, errmsg);
+            case NormalMode:
+                if (check_buf_end_for_osc(buf, buflen, esc, esc + 1))
+                    pf_state = StartedOsc;
+                break;
+            case StartedOsc:
+                // Last read ended with OSC, this one should start with a 
+                // number then ';'
+                if (check_for_osc52_write(buf, buflen))
+                {
+                    if (check_buf_end_for_terminator(buf, buflen))
+                    {
+                        process_clipboard_write(&partial_clipboard,
+                                                &partial_len, buf + 3,
+                                                buflen - 3,
+                                                rpc->roxterm_tab_id);
+                        pf_state = NormalMode;
+                    }
+                    else
+                    {
+                        partial_clipboard = g_new(guint8, buflen);
+                        partial_len = buflen;
+                        memcpy(partial_clipboard, buf, buflen);
+                        pf_state = ReceivingClipBoard;
+                    }
+                    continue;
+                }
+                else
+                {
+                    // Not OSC 52 write; send the code we stashed earlier
+                    // before the payload we just received, then continue
+                    // as normal.
+                    int n = blocking_write(rpc->output,
+                                           esc, esc[1] ? 2 : 1,
+                                           outname);
+                    if (n == 0)
+                        return NULL;
+                    else if (n < 0)
+                        exit(1);
+                    pf_state = NormalMode;
+                }
+                break;
+            case ReceivingClipBoard:
+                if (check_buf_end_for_terminator(buf, buflen))
+                {
+                    process_clipboard_write(&partial_clipboard,
+                                            &partial_len, buf + 3,
+                                            buflen - 3,
+                                            rpc->roxterm_tab_id);
+                    pf_state = NormalMode;
+                    continue;
+                }
+                else
+                {
+                    // Clipboard is too long, ignore it
+                    partial_clipboard = NULL;
+                    partial_len = 0;
+                    pf_state = EscTooLarge;
+                    continue;
+                }
+                break;
+            case EscTooLarge:
+                if (check_buf_end_for_terminator(buf, buflen))
+                    pf_state = NormalMode;
+                continue;
+        }
+
+        gssize n = blocking_write(rpc->output, buf, buflen, outname);
+        if (n < 0)
             exit(1);
-        }
-        else if (!wrote)
-        {
-            fprintf(debug_out, "No data written to %lx pty's %s (EOF?)\n",
-                    rpc->roxterm_tab_id, outname);
-            exit(0);
-        }
+        else if (!n)
+            return NULL;
     }
     return NULL;
 }
