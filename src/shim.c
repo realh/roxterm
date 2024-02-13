@@ -250,10 +250,14 @@ static gpointer osc52_pipe_filter(RoxtermPipeContext *rpc)
 
 int main(int argc, char **argv)
 {
-    char *log_path = g_build_filename(
-        g_get_home_dir(), "Code", "roxterm", "log.txt", NULL);
-    debug_out = fopen(log_path, "w");
-    g_free(log_path);
+    char *log_dir = g_build_filename(g_get_user_cache_dir(), "roxterm", NULL);
+    g_mkdir_with_parents(log_dir, 0755);
+    char *log_leaf = g_strdup_printf("shim-log-%s.txt", argv[1]);
+    char *log_file = g_build_filename(log_dir, log_leaf, NULL);
+    debug_out = fopen(log_file, "a");
+    g_free(log_file);
+    g_free(log_leaf);
+    g_free(log_dir);
 
     RoxtermPipeContext *rpc_stdout = g_new(RoxtermPipeContext, 1);
     rpc_stdout->roxterm_tab_id = strtoul(argv[1], NULL, 16);
@@ -265,14 +269,21 @@ int main(int argc, char **argv)
 
     GPid pid;
     argv += 2;
+    argc -= 2;
     char *cmd_leaf = g_path_get_basename(argv[0]);
     gboolean login = argv[1] != NULL && argv[1][0] == '-' &&
         !strcmp(argv[1] + 1, cmd_leaf);
     g_free(cmd_leaf);
 
+    // g_spawn_async_with_pipes requires that argv is null-terminated and
+    // there's no guarantee that the main argument is.
+    char **argv2 = g_new(char *, argc + 1);
+    memcpy(argv2, argv, argc * sizeof(char *));
+    argv2[argc] = NULL;
+
     GError *error = NULL;
     if (g_spawn_async_with_pipes(
-        NULL, argv, NULL,
+        NULL, argv2, NULL,
         G_SPAWN_DO_NOT_REAP_CHILD | G_SPAWN_CHILD_INHERITS_STDIN |
         (login ? G_SPAWN_FILE_AND_ARGV_ZERO : G_SPAWN_SEARCH_PATH),
         NULL, NULL,
