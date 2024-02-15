@@ -38,6 +38,7 @@ configure() {
     mkdir -p "$APP_DIR/build"
     cd "$APP_DIR/build"
     export CFLAGS="-Wall -Wextra"
+    export CC='clang'
     cmake -DCMAKE_BUILD_TYPE=RELWITHDEBINFO -DCMAKE_EXPORT_COMPILE_COMMANDS=1 "$@" ..
 }
 
