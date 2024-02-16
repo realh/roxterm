@@ -17,14 +17,13 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#include "glibconfig.h"
-#include <stdarg.h>
 #define G_LOG_DOMAIN "roxterm-shim"
 
 #include <glib.h>
 
 #include <assert.h>
 #include <errno.h>
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -69,12 +68,14 @@ typedef struct {
     gsize end;      // Offset to one after current data
     gsize capacity; // Total capacity of buf
     GMutex output_lock;
+    GCond output_cond;
     OutputItem *output_head;
     OutputItem *output_tail;
     gssize output_result; // <= -1 error, 0 EOF, >= 1 good
     GMutex debug_lock;
     FILE *debug_out;
     const char *output_name;
+    gboolean stop_output;
 } Osc52FilterContext;
 
 static char *log_dir = NULL;
@@ -120,9 +121,11 @@ static Osc52FilterContext *osc52_filter_context_new(guintptr roxterm_tab_id,
     ofc->end = 0;
     ofc->capacity = DEFAULT_CAPACITY;
     g_mutex_init(&ofc->output_lock);
+    g_cond_init(&ofc->output_cond);
     ofc->output_head = NULL;
     ofc->output_tail = NULL;
     ofc->output_result = 1;
+    ofc->stop_output = FALSE;
     g_mutex_init(&ofc->debug_lock);
     ofc->output_name = fd_name(ofc->output_fd);
     char *log_leaf = g_strdup_printf("osc52-log-%lx-%s.txt",
@@ -135,7 +138,7 @@ static Osc52FilterContext *osc52_filter_context_new(guintptr roxterm_tab_id,
 }
 
 // Returns number of bytes written, 0 for EOF, <0 for error
-static gssize blocking_write(Osc52FilterContext *ofc, const guint8 *data,
+static gssize write_output(Osc52FilterContext *ofc, const guint8 *data,
                              gsize length)
 {
     gsize nwritten = 0;
@@ -238,16 +241,19 @@ static gssize get_more_data(Osc52FilterContext *ofc, gsize min_capacity)
 // Call while the mutex is locked. Returns the result of the previous write.
 static gssize queue_item_for_writing(Osc52FilterContext *ofc, OutputItem *item)
 {
-    if (ofc->output_result <= 0)
+    gssize last_result = ofc->output_result;
+    if (last_result <= 0)
     {
         output_item_free(item);
-        return ofc->output_result;
+        return last_result;
     }
     if (ofc->output_tail)
         ofc->output_tail->next = item;
     else
         ofc->output_head = item;
     ofc->output_tail = item;
+    g_cond_signal(&ofc->output_cond);
+    return last_result;
 }
 
 // Writes nwrite bytes starting from from ofc->start and updates
@@ -453,7 +459,7 @@ static gssize find_osc_start(Osc52FilterContext *ofc)
     return 0;
 }
 
-static gpointer osc52_pipe_filter(Osc52FilterContext *ofc)
+static gpointer input_filter(Osc52FilterContext *ofc)
 {
     while (TRUE)
     {
@@ -469,7 +475,7 @@ static gpointer osc52_pipe_filter(Osc52FilterContext *ofc)
             return NULL;
         }
 
-        gsize osc52_offset = find_osc_start(ofc);
+        gssize osc52_offset = find_osc_start(ofc);
         if (osc52_offset == -1)
         {
             return NULL;
@@ -483,18 +489,65 @@ static gpointer osc52_pipe_filter(Osc52FilterContext *ofc)
     return NULL;
 }
 
-static void run_filter(Osc52FilterContext *ofc)
+static void stop_output_writer(Osc52FilterContext *ofc)
 {
-    ofc_debug(ofc, "%s filter copying from %d to %d\n",
-            ofc->output_name, ofc->input_fd,
-            ofc->output_fd);
-    char *thread_name = g_strdup_printf("filter-%s", ofc->output_name);
-    if (!g_thread_new(thread_name,
-                        (GThreadFunc) osc52_pipe_filter, ofc))
+    g_mutex_lock(&ofc->output_lock);
+    ofc->stop_output = TRUE;
+    g_cond_signal(&ofc->output_cond);
+    g_mutex_unlock(&ofc->output_lock);
+}
+
+static gpointer output_writer(Osc52FilterContext *ofc)
+{
+    g_mutex_lock(&ofc->output_lock);
+    while (!ofc->stop_output || ofc->output_head)
+    {
+        if (!ofc->output_head)
+            g_cond_wait(&ofc->output_cond, &ofc->output_lock);
+        OutputItem *item = ofc->output_head;
+        if (!item)
+            continue;
+        if (item == ofc->output_tail)
+            ofc->output_tail = NULL;
+        ofc->output_head = item->next;
+        g_mutex_unlock(&ofc->output_lock);
+        gssize nwritten = write_output(ofc,
+            item->buf + item->start, item->size);
+        output_item_free(item);
+        g_mutex_lock(&ofc->output_lock);
+        if (nwritten <= 0)
+            break;
+    }
+    g_mutex_unlock(&ofc->output_lock);
+    return NULL;
+}
+
+static GThread *run_osc52_thread(gpointer (*thread_func)(Osc52FilterContext *),
+                                 Osc52FilterContext *ofc,
+                                 const char *name_prefix)
+{
+    char *thread_name = g_strdup_printf("%s-%s",
+        name_prefix, ofc->output_name);
+    ofc_debug(ofc, "Launching %s thread copying from %d to %d\n",
+            thread_name, ofc->input_fd, ofc->output_fd);
+    GThread *thread = g_thread_new(thread_name,
+                        (GThreadFunc) thread_func, ofc);
+    if (!thread)
     {
         ofc_debug(ofc, "Failed to launch %s thread\n", thread_name);
         exit(1);
     }
+    return thread;
+}
+
+inline static GThread *run_input_filter(Osc52FilterContext *ofc)
+{
+    return run_osc52_thread(input_filter, ofc, "input");
+}
+
+inline static GThread *run_output_writer(Osc52FilterContext *ofc)
+{
+    return run_osc52_thread(output_writer, ofc, "output");
 }
 
 int main(int argc, char **argv)
@@ -532,17 +585,21 @@ int main(int argc, char **argv)
         &error))
     {
         // TODO: stdout
-        Osc52FilterContext *ofc_stderr = osc52_filter_context_new(roxterm_tab_id,
-            stderr_pipe, 2);
+        Osc52FilterContext *ofc_stderr = osc52_filter_context_new(
+            roxterm_tab_id, stderr_pipe, 2);
 
         g_free(log_dir);
 
-        run_filter(ofc_stderr);
+        GThread *stderr_input_thread = run_input_filter(ofc_stderr);
+        GThread *stderr_output_thread = run_output_writer(ofc_stderr);
 
         int status = 0;
         waitpid(pid, &status, 0);
         ofc_debug(ofc_stderr, "Child exited: %d, status %d\n",
                 WIFEXITED(status), WEXITSTATUS(status));
+        stop_output_writer(ofc_stderr);
+        g_thread_join(stderr_input_thread);
+        g_thread_join(stderr_output_thread);
         exit(status);
     }
     else
