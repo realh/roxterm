@@ -36,6 +36,7 @@
 #define MIN_CAPACITY 1024
 #define EXCESS_CAPACITY 4096
 #define MAX_CAPACITY 1024 * 1024
+#define MAX_MOVE DEFAULT_CAPACITY
 
 #define ESC_CODE 0x1b
 #define OSC_CODE 0x9c
@@ -170,10 +171,14 @@ static void ensure_spare_capacity(BufferedReader *br, gsize spare_capacity)
     if (br->start)
     {
         gsize old_size = br->end - br->start;
-        if (old_size)
-            memmove(br->buf, br->buf + br->start, old_size);
-        br->start = 0;
-        br->end = old_size;
+        // Don't shift data to the start if it means moving a large amount
+        if (old_size <= MAX_MOVE)
+        {
+            if (old_size)
+                memmove(br->buf, br->buf + br->start, old_size);
+            br->start = 0;
+            br->end = old_size;
+        }
     }
     if (br->capacity - br->end >= spare_capacity)
         return;
