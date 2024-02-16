@@ -17,6 +17,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+#include "glibconfig.h"
 #include <stdarg.h>
 #define G_LOG_DOMAIN "roxterm-shim"
 
@@ -45,12 +46,6 @@
 #define ST_ESC '\\'
 #define BEL_CODE 7
 
-typedef struct {
-    int output;
-    int pipe_from_child;
-    guintptr roxterm_tab_id;
-} RoxtermPipeContext;
-
 // An item queued for output.
 typedef struct _OutputItem {
     struct _OutputItem *next;
@@ -66,8 +61,9 @@ inline static void output_item_free(OutputItem *item)
 }
 
 typedef struct {
-    RoxtermPipeContext *rpc;
-    int fd;
+    int input_fd;
+    int output_fd;
+    guintptr roxterm_tab_id;
     guint8 *buf;
     gsize start;    // Offset to start of current data
     gsize end;      // Offset to one after current data
@@ -79,21 +75,21 @@ typedef struct {
     GMutex debug_lock;
     FILE *debug_out;
     const char *output_name;
-} BufferedReader;
+} Osc52FilterContext;
 
 static char *log_dir = NULL;
 
-static void br_debug(BufferedReader *br, const char *format, ...)
+static void ofc_debug(Osc52FilterContext *ofc, const char *format, ...)
 {
     va_list ap;
     va_start(ap, format);
-    g_mutex_lock(&br->debug_lock);
-    vfprintf(br->debug_out, format, ap);
+    g_mutex_lock(&ofc->debug_lock);
+    vfprintf(ofc->debug_out, format, ap);
     va_end(ap);
     if (format[strlen(format) - 1] != '\n')
-        fputc('\n', br->debug_out);
-    fflush(br->debug_out);
-    g_mutex_unlock(&br->debug_lock);
+        fputc('\n', ofc->debug_out);
+    fflush(ofc->debug_out);
+    g_mutex_unlock(&ofc->debug_lock);
 }
 
 // This may leak if called with fd > 2
@@ -112,47 +108,49 @@ static const char *fd_name(int fd)
     }
 }
 
-static BufferedReader *buffered_reader_new(RoxtermPipeContext *rpc)
+static Osc52FilterContext *osc52_filter_context_new(guintptr roxterm_tab_id,
+                                             int input_fd, int output_fd)
 {
-    BufferedReader *br = g_new(BufferedReader, 1);
-    br->rpc = rpc;
-    br->fd = rpc->pipe_from_child;
-    br->buf = g_new(guint8, DEFAULT_CAPACITY);
-    br->start = 0;
-    br->end = 0;
-    br->capacity = DEFAULT_CAPACITY;
-    g_mutex_init(&br->output_lock);
-    br->output_head = NULL;
-    br->output_tail = NULL;
-    br->output_result = 1;
-    g_mutex_init(&br->debug_lock);
-    br->output_name = fd_name(br->rpc->output);
-    char *log_leaf = g_strdup_printf("shim-log-%lx-%s.txt",
-        br->rpc->roxterm_tab_id, br->output_name);
+    Osc52FilterContext *ofc = g_new(Osc52FilterContext, 1);
+    ofc->roxterm_tab_id = roxterm_tab_id;
+    ofc->output_fd = output_fd;
+    ofc->input_fd = input_fd;
+    ofc->buf = g_new(guint8, DEFAULT_CAPACITY);
+    ofc->start = 0;
+    ofc->end = 0;
+    ofc->capacity = DEFAULT_CAPACITY;
+    g_mutex_init(&ofc->output_lock);
+    ofc->output_head = NULL;
+    ofc->output_tail = NULL;
+    ofc->output_result = 1;
+    g_mutex_init(&ofc->debug_lock);
+    ofc->output_name = fd_name(ofc->output_fd);
+    char *log_leaf = g_strdup_printf("osc52-log-%lx-%s.txt",
+        ofc->roxterm_tab_id, ofc->output_name);
     char *log_file = g_build_filename(log_dir, log_leaf, NULL);
-    br->debug_out = fopen(log_file, "w");
+    ofc->debug_out = fopen(log_file, "w");
     g_free(log_file);
     g_free(log_leaf);
-    return br;
+    return ofc;
 }
 
 // Returns number of bytes written, 0 for EOF, <0 for error
-static gssize blocking_write(BufferedReader *br, const guint8 *data,
+static gssize blocking_write(Osc52FilterContext *ofc, const guint8 *data,
                              gsize length)
 {
     gsize nwritten = 0;
     while (nwritten < length)
     {
-        gssize n = write(br->rpc->output, data + nwritten, length - nwritten);
+        gssize n = write(ofc->output_fd, data + nwritten, length - nwritten);
         if (n == 0)
         {
-            br_debug(br, "No bytes written to %s (EOF?)\n", br->output_name);
+            ofc_debug(ofc, "No bytes written to %s (EOF?)\n", ofc->output_name);
             return 0;
         }
         else if (n < 0)
         {
-            br_debug(br, "Error writing to %s: %s\n",
-                    br->output_name, strerror(errno));
+            ofc_debug(ofc, "Error writing to %s: %s\n",
+                    ofc->output_name, strerror(errno));
             return n;
         }
         else
@@ -163,41 +161,41 @@ static gssize blocking_write(BufferedReader *br, const guint8 *data,
     return nwritten;
 }
 
-inline static guint8 br_char(BufferedReader *br, gsize index)
+inline static guint8 ofc_char(Osc52FilterContext *ofc, gsize index)
 {
-    return br->buf[br->start + index];
+    return ofc->buf[ofc->start + index];
 }
 
-// Returns number of bytes of data between br->start and br->end.
-inline static guint8 br_len(BufferedReader *br)
+// Returns number of bytes of data between ofc->start and ofc->end.
+inline static guint8 ofc_len(Osc52FilterContext *ofc)
 {
-    return br->end - br->start;
+    return ofc->end - ofc->start;
 }
 
 // If spare_capacity is 1, allows buf to exceed MAX_CAPACITY to avoid
 // frustratingly giving up when all we need is one more byte to check for ST.
-static void ensure_spare_capacity(BufferedReader *br, gsize spare_capacity)
+static void ensure_spare_capacity(Osc52FilterContext *ofc, gsize spare_capacity)
 {
-    if (br->capacity - br->end >= spare_capacity)
+    if (ofc->capacity - ofc->end >= spare_capacity)
         return;
-    if (br->start)
+    if (ofc->start)
     {
-        gsize old_size = br->end - br->start;
+        gsize old_size = ofc->end - ofc->start;
         // Only shift data to the start if it's a small amount
         if (old_size <= MAX_MOVE)
         {
             if (old_size)
-                memmove(br->buf, br->buf + br->start, old_size);
-            br->start = 0;
-            br->end = old_size;
+                memmove(ofc->buf, ofc->buf + ofc->start, old_size);
+            ofc->start = 0;
+            ofc->end = old_size;
         }
     }
-    if (br->capacity - br->end >= spare_capacity)
+    if (ofc->capacity - ofc->end >= spare_capacity)
         return;
-    gsize capacity = br->capacity * 2;
+    gsize capacity = ofc->capacity * 2;
     if (capacity > MAX_CAPACITY)
         capacity = MAX_CAPACITY;
-    if (capacity <= br->capacity)
+    if (capacity <= ofc->capacity)
     {
         if (spare_capacity == 1 && capacity < MAX_CAPACITY + 1)
         {
@@ -205,56 +203,56 @@ static void ensure_spare_capacity(BufferedReader *br, gsize spare_capacity)
         }
         else
         {
-            br_debug(br, "GMD: Buffer capacity %ld is at/beyond max\n",
-                br->capacity);
+            ofc_debug(ofc, "GMD: Buffer capacity %ld is at/beyond max\n",
+                ofc->capacity);
             return;
         }
     }
-    assert(capacity >= br->capacity);
-    if (capacity > br->capacity)
+    assert(capacity >= ofc->capacity);
+    if (capacity > ofc->capacity)
     {
-        br->buf = g_realloc(br->buf, capacity * sizeof(guint8));
-        br->capacity = capacity;
+        ofc->buf = g_realloc(ofc->buf, capacity * sizeof(guint8));
+        ofc->capacity = capacity;
     }
 }
 
 // Reads more data into buf at end, extending buf's capacity if necessary.
 // If buf is already at MAX_CAPACITY, no data will be read, and end will
 // remain unchanged. Returns result of the read operation.
-static gssize get_more_data(BufferedReader *br, gsize min_capacity)
+static gssize get_more_data(Osc52FilterContext *ofc, gsize min_capacity)
 {
-    ensure_spare_capacity(br, min_capacity);
-    gsize spare_capacity = br->capacity - br->end;
+    ensure_spare_capacity(ofc, min_capacity);
+    gsize spare_capacity = ofc->capacity - ofc->end;
     gsize nread = MAX_OF(spare_capacity, DEFAULT_CAPACITY);
-    gsize offset = br->end;
+    gsize offset = ofc->end;
     if (nread < 0)
-        br_debug(br, "GMD: Read error %s\n", strerror(errno));
+        ofc_debug(ofc, "GMD: Read error %s\n", strerror(errno));
     else if (nread == 0)
-        br_debug(br, "GMD: Read EOF\n");
-    nread = read(br->fd, br->buf + offset, nread);
+        ofc_debug(ofc, "GMD: Read EOF\n");
+    nread = read(ofc->input_fd, ofc->buf + offset, nread);
     if (nread > 0)
-        br->end += nread;
+        ofc->end += nread;
     return nread;
 }
 
 // Call while the mutex is locked. Returns the result of the previous write.
-static gssize queue_item_for_writing(BufferedReader *br, OutputItem *item)
+static gssize queue_item_for_writing(Osc52FilterContext *ofc, OutputItem *item)
 {
-    if (br->output_result <= 0)
+    if (ofc->output_result <= 0)
     {
         output_item_free(item);
-        return br->output_result;
+        return ofc->output_result;
     }
-    if (br->output_tail)
-        br->output_tail->next = item;
+    if (ofc->output_tail)
+        ofc->output_tail->next = item;
     else
-        br->output_head = item;
-    br->output_tail = item;
+        ofc->output_head = item;
+    ofc->output_tail = item;
 }
 
-// Writes nwrite bytes starting from from br->start and updates
+// Writes nwrite bytes starting from from ofc->start and updates
 // start to point to one past the written data.
-static gssize flush_up_to(BufferedReader *br, gsize nwrite)
+static gssize flush_up_to(Osc52FilterContext *ofc, gsize nwrite)
 {
     if (nwrite > 0)
     {
@@ -265,50 +263,50 @@ static gssize flush_up_to(BufferedReader *br, gsize nwrite)
         OutputItem *item = g_new(OutputItem, 1);
         item->next = NULL;
         // If the data to be written is smaller than the remainder of the
-        // main buffer, copy the former to a new buffer, otherwise use br's
+        // main buffer, copy the former to a new buffer, otherwise use ofc's
         // buf in the item and replace it with a copy of the remainder.
-        gsize surplus = br_len(br) - nwrite;
+        gsize surplus = ofc_len(ofc) - nwrite;
         if (nwrite < surplus)
         {
             item->buf = g_new(guint8, nwrite);
-            memcpy(item->buf, br->buf + br->start, nwrite);
+            memcpy(item->buf, ofc->buf + ofc->start, nwrite);
             item->start = 0;
             item->size = nwrite;
-            br->start += nwrite;
+            ofc->start += nwrite;
         }
         else {
-            item->buf = br->buf;
-            item->start = br->start;
+            item->buf = ofc->buf;
+            item->start = ofc->start;
             item->size = nwrite;
-            br->buf = g_new(guint8, surplus);
-            memcpy(br->buf, item->buf + item->start + nwrite, surplus);
-            br->start = 0;
-            br->end = surplus;
+            ofc->buf = g_new(guint8, surplus);
+            memcpy(ofc->buf, item->buf + item->start + nwrite, surplus);
+            ofc->start = 0;
+            ofc->end = surplus;
         }
 
-        g_mutex_lock(&br->output_lock);
-        nwrite = queue_item_for_writing(br, item);
-        g_mutex_unlock(&br->output_lock);
+        g_mutex_lock(&ofc->output_lock);
+        nwrite = queue_item_for_writing(ofc, item);
+        g_mutex_unlock(&ofc->output_lock);
         if (nwrite <= 0)
         {
-            br_debug(br, "FUT: Previous output result %ld\n", nwrite);
+            ofc_debug(ofc, "FUT: Previous output result %ld\n", nwrite);
             return nwrite;
         }
 
-        // nwrite = blocking_write(br->rpc->output, br->buf + br->start, nwrite,
-        //                         fd_name(br->rpc->output));
+        // nwrite = blocking_write(ofc->output, ofc->buf + ofc->start, nwrite,
+        //                         fd_name(ofc->output));
     }
-    if (br->start == br->end && br->start != 0)
+    if (ofc->start == ofc->end && ofc->start != 0)
     {
-        br->start = 0;
-        br->end = 0;
-        if (br->capacity > DEFAULT_CAPACITY)
+        ofc->start = 0;
+        ofc->end = 0;
+        if (ofc->capacity > DEFAULT_CAPACITY)
         {
             // Don't use realloc because the data is invalid so copying it
             // is wasteful
-            g_free(br->buf);
-            br->buf = g_new(guint8, DEFAULT_CAPACITY);
-            br->capacity = DEFAULT_CAPACITY;
+            g_free(ofc->buf);
+            ofc->buf = g_new(guint8, DEFAULT_CAPACITY);
+            ofc->capacity = DEFAULT_CAPACITY;
         }
     }
     return nwrite;
@@ -330,16 +328,16 @@ static char const *osc_status_names[] = {
     "IsOsc52",
 };
 
-// offset is relative to br->start. If the buffer contains 52; but not a valid
+// offset is relative to ofc->start. If the buffer contains 52; but not a valid
 // *write* request, returns IsNotOsc52.
-static OscStatus buf_contains_52(BufferedReader *br, gsize offset)
+static OscStatus buf_contains_52(Osc52FilterContext *ofc, gsize offset)
 {
-    gsize buflen = br->end - br->start;
-    if (offset < buflen - 1 && br_char(br, offset) != '5')
+    gsize buflen = ofc->end - ofc->start;
+    if (offset < buflen - 1 && ofc_char(ofc, offset) != '5')
         return IsNotOsc52;
-    if (offset < buflen - 2 && br_char(br, offset + 1) != '2')
+    if (offset < buflen - 2 && ofc_char(ofc, offset + 1) != '2')
         return IsNotOsc52;
-    if (offset < buflen - 3 && br_char(br, offset + 2) != ';')
+    if (offset < buflen - 3 && ofc_char(ofc, offset + 2) != ';')
         return IsNotOsc52;
     if (offset + 3 >= buflen)
         return IsOsc;
@@ -351,7 +349,7 @@ static OscStatus buf_contains_52(BufferedReader *br, gsize offset)
     gboolean have_semi = FALSE;
     for (offset = offset + 4; offset < buflen; ++offset)
     {
-        guint8 c = br_char(br, offset);
+        guint8 c = ofc_char(ofc, offset);
         if (have_semi)
         {
             return c == '?' ? IsNotOsc52 : IsOsc52;
@@ -373,10 +371,10 @@ static OscStatus buf_contains_52(BufferedReader *br, gsize offset)
     return IsNotOsc52;
 }
 
-static OscStatus get_osc_status_at_offset(BufferedReader *br, gsize offset)
+static OscStatus get_osc_status_at_offset(Osc52FilterContext *ofc, gsize offset)
 {
-    gsize buflen = br_len(br);
-    guint8 c = br_char(br, offset);
+    gsize buflen = ofc_len(ofc);
+    guint8 c = ofc_char(ofc, offset);
     gsize esc_size = 0;
     if (c == OSC_CODE)
         esc_size = 1;
@@ -391,32 +389,32 @@ static OscStatus get_osc_status_at_offset(BufferedReader *br, gsize offset)
     {
         if (offset + 1 >= buflen)
             osc_status = Unknown;
-        else if (br_char(br, offset + 1) == OSC_ESC)
+        else if (ofc_char(ofc, offset + 1) == OSC_ESC)
             osc_status = IsOsc;
         else
             osc_status = IsNotOsc;
     }
     if (osc_status == IsOsc)
-        osc_status = buf_contains_52(br, offset + esc_size);
+        osc_status = buf_contains_52(ofc, offset + esc_size);
     if (osc_status != IsNotOsc)
     {
-        br_debug(br, "FOS: osc_status %s at offset %ld/%ld\n",
-            osc_status_names[osc_status], offset, br_len(br));
+        ofc_debug(ofc, "FOS: osc_status %s at offset %ld/%ld\n",
+            osc_status_names[osc_status], offset, ofc_len(ofc));
     }
     return osc_status;
 }
 
-// If data between br->start and br->end contains the start of an OSC 52,
-// returns the offset, relative to br->start, of the data following "52;".
+// If data between ofc->start and ofc->end contains the start of an OSC 52,
+// returns the offset, relative to ofc->start, of the data following "52;".
 // Otherwise returns 0 for no match, -1 for error/EOF. If there is a match
-// the data before it is flushed ie it's written to the output, and br->start
+// the data before it is flushed ie it's written to the output, and ofc->start
 // then points to the start of the ESC sequence.
-static gssize find_osc_start(BufferedReader *br)
+static gssize find_osc_start(Osc52FilterContext *ofc)
 {
-    gsize offset;   // Relative to br->start
-    for (offset = 0; offset < br_len(br); ++offset)
+    gsize offset;   // Relative to ofc->start
+    for (offset = 0; offset < ofc_len(ofc); ++offset)
     {
-        OscStatus osc_status = get_osc_status_at_offset(br, offset);
+        OscStatus osc_status = get_osc_status_at_offset(ofc, offset);
 
         switch (osc_status)
         {
@@ -424,12 +422,12 @@ static gssize find_osc_start(BufferedReader *br)
             // more data and check the status again.
             case Unknown:
             case IsOsc:
-                flush_up_to(br, offset);
+                flush_up_to(ofc, offset);
                 // flush changes start to offset, so now offset is 0
                 offset = 0;
-                if (get_more_data(br, MIN_CAPACITY) <= 0)
+                if (get_more_data(ofc, MIN_CAPACITY) <= 0)
                     return -1;
-                osc_status = get_osc_status_at_offset(br, offset);
+                osc_status = get_osc_status_at_offset(ofc, offset);
                 break;
             default:
                 break;
@@ -439,66 +437,64 @@ static gssize find_osc_start(BufferedReader *br)
         {
         case Unknown:
         case IsOsc:
-            br_debug(br, "FOS: OscStatus %s, fail!\n",
+            ofc_debug(ofc, "FOS: OscStatus %s, fail!\n",
                 osc_status_names[osc_status]);
             continue;
         case IsNotOsc:
         case IsNotOsc52:
             continue;
         case IsOsc52:
-            flush_up_to(br, offset);
+            flush_up_to(ofc, offset);
             offset = 0;
-            return (br_char(br, offset) == ESC_CODE) ? 5 : 4;
+            return (ofc_char(ofc, offset) == ESC_CODE) ? 5 : 4;
         }
     }
 
     return 0;
 }
 
-static gpointer osc52_pipe_filter(BufferedReader *br)
+static gpointer osc52_pipe_filter(Osc52FilterContext *ofc)
 {
     while (TRUE)
     {
-        gssize nread = get_more_data(br, MIN_CAPACITY);
+        gssize nread = get_more_data(ofc, MIN_CAPACITY);
         if (nread == 0)
         {
-            br_debug(br, "F: Read EOF\n");
+            ofc_debug(ofc, "F: Read EOF\n");
             return NULL;
         }
         else if (nread < 0)
         { 
-            br_debug(br, "F: Read error %s\n", strerror(errno));
+            ofc_debug(ofc, "F: Read error %s\n", strerror(errno));
             return NULL;
         }
 
-        gsize osc52_offset = find_osc_start(br);
+        gsize osc52_offset = find_osc_start(ofc);
         if (osc52_offset == -1)
         {
             return NULL;
         }
         if (TRUE) // (osc52_offset == 0)
         {
-            if (flush_up_to(br, br_len(br)) <= 0)
+            if (flush_up_to(ofc, ofc_len(ofc)) <= 0)
                 return NULL;
         }
     }
     return NULL;
 }
 
-static BufferedReader *run_filter(RoxtermPipeContext *rpc)
+static void run_filter(Osc52FilterContext *ofc)
 {
-    BufferedReader *br = buffered_reader_new(rpc);
-    br_debug(br, "%s filter copying from %d to %d\n",
-            br->output_name, rpc->pipe_from_child,
-            rpc->output);
-    char *thread_name = g_strdup_printf("filter-%s", br->output_name);
+    ofc_debug(ofc, "%s filter copying from %d to %d\n",
+            ofc->output_name, ofc->input_fd,
+            ofc->output_fd);
+    char *thread_name = g_strdup_printf("filter-%s", ofc->output_name);
     if (!g_thread_new(thread_name,
-                        (GThreadFunc) osc52_pipe_filter, br))
+                        (GThreadFunc) osc52_pipe_filter, ofc))
     {
-        br_debug(br, "Failed to launch %s thread\n", thread_name);
+        ofc_debug(ofc, "Failed to launch %s thread\n", thread_name);
         exit(1);
     }
-    return br;
 }
 
 int main(int argc, char **argv)
@@ -506,13 +502,7 @@ int main(int argc, char **argv)
     log_dir = g_build_filename(g_get_user_cache_dir(), "roxterm", NULL);
     g_mkdir_with_parents(log_dir, 0755);
 
-    RoxtermPipeContext *rpc_stdout = g_new(RoxtermPipeContext, 1);
-    rpc_stdout->roxterm_tab_id = strtoul(argv[1], NULL, 16);
-    rpc_stdout->output = 1;
-
-    RoxtermPipeContext *rpc_stderr = g_new(RoxtermPipeContext, 1);
-    rpc_stderr->roxterm_tab_id = rpc_stdout->roxterm_tab_id;
-    rpc_stderr->output = 2;
+    guintptr roxterm_tab_id = strtoul(argv[1], NULL, 16);
 
     GPid pid;
     argv += 2;
@@ -528,6 +518,9 @@ int main(int argc, char **argv)
     memcpy(argv2, argv, argc * sizeof(char *));
     argv2[argc] = NULL;
 
+    int stdout_pipe = -1;
+    int stderr_pipe = -1;
+
     GError *error = NULL;
     if (g_spawn_async_with_pipes(
         NULL, argv2, NULL,
@@ -535,17 +528,20 @@ int main(int argc, char **argv)
         (login ? G_SPAWN_FILE_AND_ARGV_ZERO : G_SPAWN_SEARCH_PATH),
         NULL, NULL,
         &pid, NULL,
-//        &rpc_stdout->pipe_from_child,
-        NULL,
-        &rpc_stderr->pipe_from_child, &error))
+        &stdout_pipe, &stderr_pipe,
+        &error))
     {
-        BufferedReader *br_stderr = run_filter(rpc_stderr);
+        // TODO: stdout
+        Osc52FilterContext *ofc_stderr = osc52_filter_context_new(roxterm_tab_id,
+            stderr_pipe, 2);
 
         g_free(log_dir);
 
+        run_filter(ofc_stderr);
+
         int status = 0;
         waitpid(pid, &status, 0);
-        br_debug(br_stderr, "Child exited: %d, status %d\n",
+        ofc_debug(ofc_stderr, "Child exited: %d, status %d\n",
                 WIFEXITED(status), WEXITSTATUS(status));
         exit(status);
     }
