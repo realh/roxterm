@@ -78,6 +78,12 @@ typedef struct {
     gboolean stop_output;
 } Osc52FilterContext;
 
+// Returns number of bytes of data between ofc->start and ofc->end.
+inline static guint8 ofc_len(Osc52FilterContext *ofc)
+{
+    return ofc->end - ofc->start;
+}
+
 static char *log_dir = NULL;
 
 static void ofc_debug(Osc52FilterContext *ofc, const char *format, ...)
@@ -91,6 +97,33 @@ static void ofc_debug(Osc52FilterContext *ofc, const char *format, ...)
         fputc('\n', ofc->debug_out);
     fflush(ofc->debug_out);
     g_mutex_unlock(&ofc->debug_lock);
+}
+
+static void ofc_debug_esc(Osc52FilterContext *ofc, const guint8 *data,
+                          gsize length)
+{
+    GString *s = g_string_new_len((const char *) data, length);
+    g_string_replace(s, "\033", "<ESC>", 0);
+    g_string_replace(s, "\007", "<BEL>", 0);
+    g_string_replace(s, "\n", "\\n", 0);
+    fprintf(ofc->debug_out, "%s", s->str);
+    g_string_free(s, TRUE);
+}
+
+static void ofc_debug_data(Osc52FilterContext *ofc, const char *msg,
+                           const guint8 *data, gsize length)
+{
+    g_mutex_lock(&ofc->debug_lock);
+    fprintf(ofc->debug_out, "%s: '", msg);
+    ofc_debug_esc(ofc, data, length);
+    fputs("'\n", ofc->debug_out);
+    fflush(ofc->debug_out);
+    g_mutex_unlock(&ofc->debug_lock);
+}
+
+static void ofc_debug_buf(Osc52FilterContext *ofc, const char *msg)
+{
+    ofc_debug_data(ofc, msg, ofc->buf + ofc->start, ofc_len(ofc));
 }
 
 // This may leak if called with fd > 2
@@ -169,12 +202,6 @@ inline static guint8 ofc_char(Osc52FilterContext *ofc, gsize index)
     return ofc->buf[ofc->start + index];
 }
 
-// Returns number of bytes of data between ofc->start and ofc->end.
-inline static guint8 ofc_len(Osc52FilterContext *ofc)
-{
-    return ofc->end - ofc->start;
-}
-
 // If spare_capacity is 1, allows buf to exceed MAX_CAPACITY to avoid
 // frustratingly giving up when all we need is one more byte to check for ST.
 static void ensure_spare_capacity(Osc52FilterContext *ofc, gsize spare_capacity)
@@ -226,15 +253,17 @@ static gssize get_more_data(Osc52FilterContext *ofc, gsize min_capacity)
 {
     ensure_spare_capacity(ofc, min_capacity);
     gsize spare_capacity = ofc->capacity - ofc->end;
-    gsize nread = MAX_OF(spare_capacity, DEFAULT_CAPACITY);
+    gssize count = MAX_OF(spare_capacity, DEFAULT_CAPACITY);
     gsize offset = ofc->end;
+    gssize nread = read(ofc->input_fd, ofc->buf + offset, count);
     if (nread < 0)
         ofc_debug(ofc, "GMD: Read error %s\n", strerror(errno));
     else if (nread == 0)
         ofc_debug(ofc, "GMD: Read EOF\n");
-    nread = read(ofc->input_fd, ofc->buf + offset, nread);
     if (nread > 0)
         ofc->end += nread;
+    ofc_debug(ofc, "Read %ld/%ld/%ld, start %ld, end %ld\n",
+        nread, count, spare_capacity, ofc->start, ofc->end);
     return nread;
 }
 
@@ -274,18 +303,25 @@ static gssize flush_up_to(Osc52FilterContext *ofc, gsize nwrite)
         gsize surplus = ofc_len(ofc) - nwrite;
         if (nwrite < surplus)
         {
+            ofc_debug(ofc, "Copying %ld bytes to q buffer, %ld surplus\n",
+                nwrite, surplus);
             item->buf = g_new(guint8, nwrite);
             memcpy(item->buf, ofc->buf + ofc->start, nwrite);
             item->start = 0;
             item->size = nwrite;
             ofc->start += nwrite;
         }
-        else {
+        else
+        {
+            ofc_debug(ofc,
+                "Queuing %ld bytes in buf, %ld surplus to new buf\n",
+                nwrite, surplus);
             item->buf = ofc->buf;
             item->start = ofc->start;
             item->size = nwrite;
             ofc->buf = g_new(guint8, surplus);
-            memcpy(ofc->buf, item->buf + item->start + nwrite, surplus);
+            if (surplus)
+                memcpy(ofc->buf, item->buf + item->start + nwrite, surplus);
             ofc->start = 0;
             ofc->end = surplus;
         }
@@ -338,7 +374,9 @@ static char const *osc_status_names[] = {
 // *write* request, returns IsNotOsc52.
 static OscStatus buf_contains_52(Osc52FilterContext *ofc, gsize offset)
 {
-    gsize buflen = ofc->end - ofc->start;
+    gsize buflen = ofc_len(ofc);
+    ofc_debug_data(ofc, "Looking for '52;...' in ", 
+        ofc->buf + ofc->start + offset, buflen - offset);
     if (offset < buflen - 1 && ofc_char(ofc, offset) != '5')
         return IsNotOsc52;
     if (offset < buflen - 2 && ofc_char(ofc, offset + 1) != '2')
@@ -353,27 +391,46 @@ static OscStatus buf_contains_52(Osc52FilterContext *ofc, gsize offset)
     gboolean have_c = FALSE;
     gboolean have_p = FALSE;
     gboolean have_semi = FALSE;
-    for (offset = offset + 4; offset < buflen; ++offset)
+    for (offset = offset + 3; offset < buflen; ++offset)
     {
         guint8 c = ofc_char(ofc, offset);
+        ofc_debug(ofc, "BC52: char at %ld is '%c'\n", offset, c);
         if (have_semi)
         {
+            ofc_debug(ofc, "BC52: char after ';' is '%c'\n", c);
             return c == '?' ? IsNotOsc52 : IsOsc52;
         }
         if (c == ';')
         {
             if (have_c || have_p)
+            {
+                ofc_debug(ofc, "BC52: ';' follows 'p' or 'c'\n", c);
                 have_semi = TRUE;
+                continue;
+            }
             else
+            {
+                ofc_debug(ofc, "BC52: ';' before 'p' or 'c'\n", c);
                 return IsNotOsc52;
+            }
         }
         else if (c == 'c' && !have_c)
+        {
+            ofc_debug(ofc, "BC52: Have 'c'\n");
             have_c = TRUE;
+        }
         else if (c == 'p' && !have_p)
+        {
+            ofc_debug(ofc, "BC52: Have 'p'\n");
             have_p = TRUE;
+        }
         else if (!strchr("qs01234567", (char) c))
+        {
+            ofc_debug(ofc, "BC52: Invalid '%c' in selection\n", c);
             return IsNotOsc52;
+        }
     }
+    ofc_debug(ofc, "BC52: Finished without detecting OSC52\n");
     return IsNotOsc52;
 }
 
@@ -417,6 +474,7 @@ static OscStatus get_osc_status_at_offset(Osc52FilterContext *ofc, gsize offset)
 // then points to the start of the ESC sequence.
 static gssize find_osc_start(Osc52FilterContext *ofc)
 {
+    ofc_debug_buf(ofc, "Looking for OSC 52 in ");
     gsize offset;   // Relative to ofc->start
     for (offset = 0; offset < ofc_len(ofc); ++offset)
     {
@@ -466,12 +524,12 @@ static gpointer input_filter(Osc52FilterContext *ofc)
         gssize nread = get_more_data(ofc, MIN_CAPACITY);
         if (nread == 0)
         {
-            ofc_debug(ofc, "F: Read EOF\n");
+            ofc_debug(ofc, "IF: Read EOF\n");
             return NULL;
         }
         else if (nread < 0)
         { 
-            ofc_debug(ofc, "F: Read error %s\n", strerror(errno));
+            ofc_debug(ofc, "IF: Read error %s\n", strerror(errno));
             return NULL;
         }
 
@@ -598,7 +656,9 @@ int main(int argc, char **argv)
         ofc_debug(ofc_stderr, "Child exited: %d, status %d\n",
                 WIFEXITED(status), WEXITSTATUS(status));
         stop_output_writer(ofc_stderr);
+        ofc_debug(ofc_stderr, "Joining stderr_input_thread\n");
         g_thread_join(stderr_input_thread);
+        ofc_debug(ofc_stderr, "Joining stderr_output_thread\n");
         g_thread_join(stderr_output_thread);
         exit(status);
     }
