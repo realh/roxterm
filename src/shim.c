@@ -639,7 +639,7 @@ int main(int argc, char **argv)
         (login ? G_SPAWN_FILE_AND_ARGV_ZERO : G_SPAWN_SEARCH_PATH),
         NULL, NULL,
         &pid, NULL,
-        &stdout_pipe, &stderr_pipe,
+        NULL, &stderr_pipe,
         &error))
     {
         // TODO: stdout
