@@ -55,15 +55,6 @@ static void h_debug(const char *format, ...)
     fflush(debug_out);
 }
 
-// typedef struct {
-//     int fd;
-//     guint8 *buf;
-//     gssize capacity;
-//     gsize offset_to_next_str;
-//     gsize offset_to_end;
-//     gboolean eof;
-// } BufferedReader;
-
 static const char *fd_name(int fd)
 {
     static char *name = NULL;
@@ -116,6 +107,20 @@ typedef struct {
     guintptr roxterm_tab_id;
 } RoxtermPipeContext;
 
+// An item queued for output.
+typedef struct _OutputItem {
+    struct _OutputItem *next;
+    guint8 *buf;
+    gsize start;
+    gsize size;
+} OutputItem;
+
+inline static void output_item_free(OutputItem *item)
+{
+    g_free(item->buf);
+    g_free(item);
+}
+
 typedef struct {
     RoxtermPipeContext *rpc;
     int fd;
@@ -123,6 +128,10 @@ typedef struct {
     gsize start;    // Offset to start of current data
     gsize end;      // Offset to one after current data
     gsize capacity; // Total capacity of buf
+    GMutex output_lock;
+    OutputItem *output_head;
+    OutputItem *output_tail;
+    gssize output_result; // <= -1 error, 0 EOF, >= 1 good
 } BufferedReader;
 
 static BufferedReader *buffered_reader_new(RoxtermPipeContext *rpc)
@@ -134,6 +143,10 @@ static BufferedReader *buffered_reader_new(RoxtermPipeContext *rpc)
     br->start = 0;
     br->end = 0;
     br->capacity = DEFAULT_CAPACITY;
+    g_mutex_init(&br->output_lock);
+    br->output_head = NULL;
+    br->output_tail = NULL;
+    br->output_result = 1;
     return br;
 }
 
@@ -207,25 +220,66 @@ static gssize get_more_data(BufferedReader *br, gsize min_capacity)
     return nread;
 }
 
+// Call while the mutex is locked. Returns the result of the previous write.
+static gssize queue_item_for_writing(BufferedReader *br, OutputItem *item)
+{
+    if (br->output_result <= 0)
+    {
+        output_item_free(item);
+        return br->output_result;
+    }
+    if (br->output_tail)
+        br->output_tail->next = item;
+    else
+        br->output_head = item;
+    br->output_tail = item;
+}
+
 // Writes nwrite bytes starting from from br->start and updates
 // start to point to one past the written data.
 static gssize flush_up_to(BufferedReader *br, gsize nwrite)
 {
     if (nwrite > 0)
     {
-        nwrite = blocking_write(br->rpc->output, br->buf + br->start, nwrite,
-                                fd_name(br->rpc->output));
-        if (nwrite < 0)
+        // Prepare the OutputItem before locking to check whether it can be
+        // flushed, because if it can't be flushed, the time wasted by this
+        // is irrelevant, and the lock should be held for as short a time as
+        // possible.
+        OutputItem *item = g_new(OutputItem, 1);
+        item->next = NULL;
+        // If the data to be written is smaller than the remainder of the
+        // main buffer, copy the former to a new buffer, otherwise use br's
+        // buf in the item and replace it with a copy of the remainder.
+        gsize surplus = br_len(br) - nwrite;
+        if (nwrite < surplus)
         {
-            h_debug("FUT: write error\n");
-            return -1;
+            item->buf = g_new(guint8, nwrite);
+            memcpy(item->buf, br->buf + br->start, nwrite);
+            item->start = 0;
+            item->size = nwrite;
+            br->start += nwrite;
         }
-        else if (nwrite == 0)
+        else {
+            item->buf = br->buf;
+            item->start = br->start;
+            item->size = nwrite;
+            br->buf = g_new(guint8, surplus);
+            memcpy(br->buf, item->buf + item->start + nwrite, surplus);
+            br->start = 0;
+            br->end = surplus;
+        }
+
+        g_mutex_lock(&br->output_lock);
+        nwrite = queue_item_for_writing(br, item);
+        g_mutex_unlock(&br->output_lock);
+        if (nwrite <= 0)
         {
-            h_debug("FUT: write EOF\n");
-            return -1;
+            h_debug("FUT: Previous output result %ld\n", nwrite);
+            return nwrite;
         }
-        br->start += nwrite;
+
+        // nwrite = blocking_write(br->rpc->output, br->buf + br->start, nwrite,
+        //                         fd_name(br->rpc->output));
     }
     if (br->start == br->end && br->start != 0)
     {
