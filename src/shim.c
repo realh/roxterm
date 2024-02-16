@@ -45,63 +45,6 @@
 #define ST_ESC '\\'
 #define BEL_CODE 7
 
-static FILE *debug_out = NULL;
-
-static void h_debug(const char *format, ...)
-{
-    va_list ap;
-    va_start(ap, format);
-    vfprintf(debug_out, format, ap);
-    va_end(ap);
-    fflush(debug_out);
-}
-
-static const char *fd_name(int fd)
-{
-    static char *name = NULL;
-
-    switch (fd)
-    {
-        case 0:
-            return "stdin";
-        case 1:
-            return "stdout";
-        case 2:
-            return "stderr";
-        default:
-            g_free(name);
-            name = g_strdup_printf("fd%d", fd);
-            return name;
-    }
-}
-
-// Returns number of bytes written, 0 for EOF, <0 for error
-static gssize blocking_write(int fd, const guint8 *data, gsize length,
-                             char const *name)
-{
-    gsize nwritten = 0;
-    while (nwritten < length)
-    {
-        gssize n = write(fd, data + nwritten, length - nwritten);
-        if (n == 0)
-        {
-            h_debug("No bytes written to %s (EOF?)\n", name);
-            return 0;
-        }
-        else if (n < 0)
-        {
-            h_debug("Error writing to %s: %s\n",
-                    name, strerror(errno));
-            return n;
-        }
-        else
-        {
-            nwritten += n;
-        }
-    }
-    return nwritten;
-}
-
 typedef struct {
     int output;
     int pipe_from_child;
@@ -133,7 +76,41 @@ typedef struct {
     OutputItem *output_head;
     OutputItem *output_tail;
     gssize output_result; // <= -1 error, 0 EOF, >= 1 good
+    GMutex debug_lock;
+    FILE *debug_out;
+    const char *output_name;
 } BufferedReader;
+
+static char *log_dir = NULL;
+
+static void br_debug(BufferedReader *br, const char *format, ...)
+{
+    va_list ap;
+    va_start(ap, format);
+    g_mutex_lock(&br->debug_lock);
+    vfprintf(br->debug_out, format, ap);
+    va_end(ap);
+    if (format[strlen(format) - 1] != '\n')
+        fputc('\n', br->debug_out);
+    fflush(br->debug_out);
+    g_mutex_unlock(&br->debug_lock);
+}
+
+// This may leak if called with fd > 2
+static const char *fd_name(int fd)
+{
+    switch (fd)
+    {
+        case 0:
+            return "stdin";
+        case 1:
+            return "stdout";
+        case 2:
+            return "stderr";
+        default:
+            return g_strdup_printf("fd%d", fd);
+    }
+}
 
 static BufferedReader *buffered_reader_new(RoxtermPipeContext *rpc)
 {
@@ -148,7 +125,42 @@ static BufferedReader *buffered_reader_new(RoxtermPipeContext *rpc)
     br->output_head = NULL;
     br->output_tail = NULL;
     br->output_result = 1;
+    g_mutex_init(&br->debug_lock);
+    br->output_name = fd_name(br->rpc->output);
+    char *log_leaf = g_strdup_printf("shim-log-%lx-%s.txt",
+        br->rpc->roxterm_tab_id, br->output_name);
+    char *log_file = g_build_filename(log_dir, log_leaf, NULL);
+    br->debug_out = fopen(log_file, "w");
+    g_free(log_file);
+    g_free(log_leaf);
     return br;
+}
+
+// Returns number of bytes written, 0 for EOF, <0 for error
+static gssize blocking_write(BufferedReader *br, const guint8 *data,
+                             gsize length)
+{
+    gsize nwritten = 0;
+    while (nwritten < length)
+    {
+        gssize n = write(br->rpc->output, data + nwritten, length - nwritten);
+        if (n == 0)
+        {
+            br_debug(br, "No bytes written to %s (EOF?)\n", br->output_name);
+            return 0;
+        }
+        else if (n < 0)
+        {
+            br_debug(br, "Error writing to %s: %s\n",
+                    br->output_name, strerror(errno));
+            return n;
+        }
+        else
+        {
+            nwritten += n;
+        }
+    }
+    return nwritten;
 }
 
 inline static guint8 br_char(BufferedReader *br, gsize index)
@@ -171,7 +183,7 @@ static void ensure_spare_capacity(BufferedReader *br, gsize spare_capacity)
     if (br->start)
     {
         gsize old_size = br->end - br->start;
-        // Don't shift data to the start if it means moving a large amount
+        // Only shift data to the start if it's a small amount
         if (old_size <= MAX_MOVE)
         {
             if (old_size)
@@ -193,7 +205,7 @@ static void ensure_spare_capacity(BufferedReader *br, gsize spare_capacity)
         }
         else
         {
-            h_debug("GMD: Buffer capacity %ld is at/beyond max\n",
+            br_debug(br, "GMD: Buffer capacity %ld is at/beyond max\n",
                 br->capacity);
             return;
         }
@@ -216,9 +228,9 @@ static gssize get_more_data(BufferedReader *br, gsize min_capacity)
     gsize nread = MAX_OF(spare_capacity, DEFAULT_CAPACITY);
     gsize offset = br->end;
     if (nread < 0)
-        h_debug("GMD: Read error %s\n", strerror(errno));
+        br_debug(br, "GMD: Read error %s\n", strerror(errno));
     else if (nread == 0)
-        h_debug("GMD: Read EOF\n");
+        br_debug(br, "GMD: Read EOF\n");
     nread = read(br->fd, br->buf + offset, nread);
     if (nread > 0)
         br->end += nread;
@@ -279,7 +291,7 @@ static gssize flush_up_to(BufferedReader *br, gsize nwrite)
         g_mutex_unlock(&br->output_lock);
         if (nwrite <= 0)
         {
-            h_debug("FUT: Previous output result %ld\n", nwrite);
+            br_debug(br, "FUT: Previous output result %ld\n", nwrite);
             return nwrite;
         }
 
@@ -388,7 +400,7 @@ static OscStatus get_osc_status_at_offset(BufferedReader *br, gsize offset)
         osc_status = buf_contains_52(br, offset + esc_size);
     if (osc_status != IsNotOsc)
     {
-        h_debug("FOS: osc_status %s at offset %ld/%ld\n",
+        br_debug(br, "FOS: osc_status %s at offset %ld/%ld\n",
             osc_status_names[osc_status], offset, br_len(br));
     }
     return osc_status;
@@ -427,7 +439,7 @@ static gssize find_osc_start(BufferedReader *br)
         {
         case Unknown:
         case IsOsc:
-            h_debug("FOS: OscStatus %s, fail!\n",
+            br_debug(br, "FOS: OscStatus %s, fail!\n",
                 osc_status_names[osc_status]);
             continue;
         case IsNotOsc:
@@ -443,21 +455,19 @@ static gssize find_osc_start(BufferedReader *br)
     return 0;
 }
 
-static gpointer osc52_pipe_filter(RoxtermPipeContext *rpc)
+static gpointer osc52_pipe_filter(BufferedReader *br)
 {
-    BufferedReader *br = buffered_reader_new(rpc);
-
     while (TRUE)
     {
         gssize nread = get_more_data(br, MIN_CAPACITY);
         if (nread == 0)
         {
-            h_debug("F: Read EOF\n");
+            br_debug(br, "F: Read EOF\n");
             return NULL;
         }
         else if (nread < 0)
         { 
-            h_debug("F: Read error %s\n", strerror(errno));
+            br_debug(br, "F: Read error %s\n", strerror(errno));
             return NULL;
         }
 
@@ -475,17 +485,26 @@ static gpointer osc52_pipe_filter(RoxtermPipeContext *rpc)
     return NULL;
 }
 
+static BufferedReader *run_filter(RoxtermPipeContext *rpc)
+{
+    BufferedReader *br = buffered_reader_new(rpc);
+    br_debug(br, "%s filter copying from %d to %d\n",
+            br->output_name, rpc->pipe_from_child,
+            rpc->output);
+    char *thread_name = g_strdup_printf("filter-%s", br->output_name);
+    if (!g_thread_new(thread_name,
+                        (GThreadFunc) osc52_pipe_filter, br))
+    {
+        br_debug(br, "Failed to launch %s thread\n", thread_name);
+        exit(1);
+    }
+    return br;
+}
+
 int main(int argc, char **argv)
 {
-    char *log_dir = g_build_filename(g_get_user_cache_dir(), "roxterm", NULL);
+    log_dir = g_build_filename(g_get_user_cache_dir(), "roxterm", NULL);
     g_mkdir_with_parents(log_dir, 0755);
-    char *log_leaf = g_strdup_printf("shim-log-%s.txt", argv[1]);
-    char *log_file = g_build_filename(log_dir, log_leaf, NULL);
-    debug_out = fopen(log_file, "w");
-    g_free(log_file);
-    g_free(log_leaf);
-    g_free(log_dir);
-    h_debug("Let's go!\n");
 
     RoxtermPipeContext *rpc_stdout = g_new(RoxtermPipeContext, 1);
     rpc_stdout->roxterm_tab_id = strtoul(argv[1], NULL, 16);
@@ -520,30 +539,19 @@ int main(int argc, char **argv)
         NULL,
         &rpc_stderr->pipe_from_child, &error))
     {
-//          if (!g_thread_new("stdout",
-//                            (GThreadFunc) osc52_pipe_filter, rpc_stdout))
-//          {
-//              h_debug("Failed to launch thread for stdout\n");
-//              exit(1);
-//          }
-        h_debug("stderr filter piping from %d to %d (%s)\n",
-                rpc_stderr->pipe_from_child, rpc_stderr->output,
-                fd_name(rpc_stderr->output));
-        if (!g_thread_new("stderr",
-                          (GThreadFunc) osc52_pipe_filter, rpc_stderr))
-        {
-            h_debug("Failed to launch thread for stderr\n");
-            exit(1);
-        }
+        BufferedReader *br_stderr = run_filter(rpc_stderr);
+
+        g_free(log_dir);
+
         int status = 0;
         waitpid(pid, &status, 0);
-        h_debug("Child exited: %d, status %d\n",
+        br_debug(br_stderr, "Child exited: %d, status %d\n",
                 WIFEXITED(status), WEXITSTATUS(status));
         exit(status);
     }
     else
     {
-        h_debug("Failed to run command: %s\n",
+        fprintf(stderr, "Failed to run command: %s\n",
                 error ? error->message : "unknown error");
         exit(1);
     }
