@@ -30,6 +30,7 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
+#define MAX_OF(a, b) ((a) >= (b) ? (a) : (b))
 #define MIN_OF(a, b) ((a) <= (b) ? (a) : (b))
 
 #define DEFAULT_CAPACITY 2048
@@ -167,6 +168,7 @@ static Osc52FilterContext *osc52_filter_context_new(guintptr roxterm_tab_id,
     ofc->debug_out = fopen(log_file, "w");
     g_free(log_file);
     g_free(log_leaf);
+    ofc_debug(ofc, "Allocated buffer %p %ld\n", ofc->buf, DEFAULT_CAPACITY);
     return ofc;
 }
 
@@ -249,11 +251,14 @@ static void ensure_spare_capacity(Osc52FilterContext *ofc, gsize spare_capacity)
         // Not realloc, because usually the valid data won't occupy the whole
         // buffer
         guint8 *new_buf = g_new(guint8, capacity);
-        memcpy(new_buf, ofc->buf + ofc->start, old_size);
+        if (old_size)
+            memcpy(new_buf, ofc->buf + ofc->start, old_size);
         ofc->buf = new_buf;
         ofc->start = 0;
         ofc->end = old_size;
         ofc->capacity = capacity;
+        ofc_debug(ofc, "Ensure: reallocated %p %ld\n",
+            ofc->buf, DEFAULT_CAPACITY);
     }
 }
 
@@ -262,10 +267,20 @@ static void ensure_spare_capacity(Osc52FilterContext *ofc, gsize spare_capacity)
 // remain unchanged. Returns result of the read operation.
 static gssize get_more_data(Osc52FilterContext *ofc, gsize min_capacity)
 {
+    ofc_debug(ofc,
+              "GMD: Want %ld bytes, buf content %ld-%ld, "
+              "capacity %ld\n",
+              min_capacity, ofc->start, ofc->end, ofc->capacity);
     ensure_spare_capacity(ofc, min_capacity);
+    ofc_debug(ofc,
+              "GMD after ensure: Want %ld bytes, buf content %ld-%ld, "
+              "capacity %ld\n",
+              min_capacity, ofc->start, ofc->end, ofc->capacity);
     gsize spare_capacity = ofc->capacity - ofc->end;
     gssize count = MIN_OF(spare_capacity, DEFAULT_CAPACITY);
     gsize offset = ofc->end;
+    ofc_debug(ofc, "GMD: Reading %ld bytes to %p + %ld\n",
+            count, ofc->buf, ofc->start);
     gssize nread = read(ofc->input_fd, ofc->buf + offset, count);
     if (nread < 0)
         ofc_debug(ofc, "GMD: Read error %s\n", strerror(errno));
@@ -331,7 +346,11 @@ static gssize flush_up_to(Osc52FilterContext *ofc, gsize nwrite)
             item->buf = ofc->buf;
             item->start = ofc->start;
             item->size = nwrite;
-            ofc->buf = g_new(guint8, surplus);
+            gsize capacity = MAX_OF(surplus, DEFAULT_CAPACITY);
+            ofc->buf = g_new(guint8, capacity);
+            ofc->capacity = capacity;
+            ofc_debug(ofc, "FUT: reallocated %p %ld\n",
+                ofc->buf, capacity);
             if (surplus)
                 memcpy(ofc->buf, item->buf + item->start + nwrite, surplus);
             ofc->start = 0;
@@ -647,16 +666,17 @@ static gpointer input_filter(Osc52FilterContext *ofc)
 
     while (TRUE)
     {
-        gssize nread = get_more_data(ofc, MIN_CAPACITY);
-        if (nread == 0)
+        if (ofc->start == ofc->end)
         {
-            ofc_debug(ofc, "IF: Read EOF\n");
-            return NULL;
-        }
-        else if (nread < 0)
-        { 
-            ofc_debug(ofc, "IF: Read error %s\n", strerror(errno));
-            return NULL;
+            gssize nread = get_more_data(ofc, MIN_CAPACITY);
+            if (nread == 0) {
+                ofc_debug(ofc, "IF: Read EOF\n");
+                return NULL;
+            } else if (nread < 0) {
+                ofc_debug(ofc, "IF: Read error %s\n",
+                        strerror(errno));
+                return NULL;
+            }
         }
 
         int osc52_end_result = skip ? find_osc52_end(ofc, skip) : 1;
