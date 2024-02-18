@@ -446,14 +446,6 @@ static EscStatus get_esc_status_at_offset(Osc52FilterContext *ofc, gsize offset,
     guint8 c = ofc_char(ofc, offset);
     gsize esc_size = 0;
     
-    if (!osc52)
-    {
-        char *msg = g_strdup_printf("GESAO: char at offset %ld: ",
-            offset);
-        ofc_debug_data(ofc, msg, ofc->buf + ofc->start + offset, 1);
-        g_free(msg);
-    }
-
     switch (c)
     {
         case OSC_CODE:
