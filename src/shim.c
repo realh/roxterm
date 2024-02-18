@@ -30,7 +30,7 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
-#define MAX_OF(a, b) ((a) >= (b) ? (a) : (b))
+#define MIN_OF(a, b) ((a) <= (b) ? (a) : (b))
 
 #define DEFAULT_CAPACITY 2048
 #define MIN_CAPACITY 1024
@@ -39,7 +39,7 @@
 #define MAX_MOVE DEFAULT_CAPACITY
 
 #define ESC_CODE 0x1b
-#define OSC_CODE 0x9c
+#define OSC_CODE 0x9d
 #define OSC_ESC ']'
 #define ST_CODE 0x9c
 #define ST_ESC '\\'
@@ -208,26 +208,31 @@ static void ensure_spare_capacity(Osc52FilterContext *ofc, gsize spare_capacity)
 {
     if (ofc->capacity - ofc->end >= spare_capacity)
         return;
-    if (ofc->start)
+
+    gsize old_size = ofc->end - ofc->start;
+
+    // Only shift data to the start if it will free up sufficient capacity,
+    // otherwise it will be moved twice (inefficient).
+    if (ofc->start >= spare_capacity)
     {
-        gsize old_size = ofc->end - ofc->start;
-        // Only shift data to the start if it's a small amount
-        if (old_size <= MAX_MOVE)
-        {
-            if (old_size)
-                memmove(ofc->buf, ofc->buf + ofc->start, old_size);
-            ofc->start = 0;
-            ofc->end = old_size;
-        }
+        if (old_size)
+            memmove(ofc->buf, ofc->buf + ofc->start, old_size);
+        ofc->start = 0;
+        ofc->end = old_size;
     }
     if (ofc->capacity - ofc->end >= spare_capacity)
         return;
+
     gsize capacity = ofc->capacity * 2;
-    if (capacity > MAX_CAPACITY)
-        capacity = MAX_CAPACITY;
+
+    // Capacity limit needs to be considered relative to start, because in some
+    // circumstances start could already be near the capacity.
+    gsize max_capacity = MAX_CAPACITY + ofc->start;
+    if (capacity > max_capacity)
+        capacity = max_capacity;
     if (capacity <= ofc->capacity)
     {
-        if (spare_capacity == 1 && capacity < MAX_CAPACITY + 1)
+        if (spare_capacity == 1 && capacity < max_capacity + 1)
         {
             capacity++;
         }
@@ -241,7 +246,13 @@ static void ensure_spare_capacity(Osc52FilterContext *ofc, gsize spare_capacity)
     assert(capacity >= ofc->capacity);
     if (capacity > ofc->capacity)
     {
-        ofc->buf = g_realloc(ofc->buf, capacity * sizeof(guint8));
+        // Not realloc, because usually the valid data won't occupy the whole
+        // buffer
+        guint8 *new_buf = g_new(guint8, capacity);
+        memcpy(new_buf, ofc->buf + ofc->start, old_size);
+        ofc->buf = new_buf;
+        ofc->start = 0;
+        ofc->end = old_size;
         ofc->capacity = capacity;
     }
 }
@@ -253,7 +264,7 @@ static gssize get_more_data(Osc52FilterContext *ofc, gsize min_capacity)
 {
     ensure_spare_capacity(ofc, min_capacity);
     gsize spare_capacity = ofc->capacity - ofc->end;
-    gssize count = MAX_OF(spare_capacity, DEFAULT_CAPACITY);
+    gssize count = MIN_OF(spare_capacity, DEFAULT_CAPACITY);
     gsize offset = ofc->end;
     gssize nread = read(ofc->input_fd, ofc->buf + offset, count);
     if (nread < 0)
@@ -285,8 +296,9 @@ static gssize queue_item_for_writing(Osc52FilterContext *ofc, OutputItem *item)
     return last_result;
 }
 
-// Writes nwrite bytes starting from from ofc->start and updates
-// start to point to one past the written data.
+// Writes nwrite bytes starting from from ofc->start and updates start to point
+// to one past the written data. If nwrite is 0, discard the data and reset buf
+// to default size. Buf size is also reset if all valid data was written.
 static gssize flush_up_to(Osc52FilterContext *ofc, gsize nwrite)
 {
     if (nwrite > 0)
@@ -334,11 +346,9 @@ static gssize flush_up_to(Osc52FilterContext *ofc, gsize nwrite)
             ofc_debug(ofc, "FUT: Previous output result %ld\n", nwrite);
             return nwrite;
         }
-
-        // nwrite = blocking_write(ofc->output, ofc->buf + ofc->start, nwrite,
-        //                         fd_name(ofc->output));
     }
-    if (ofc->start == ofc->end && ofc->start != 0)
+
+    if (!nwrite || (ofc->start == ofc->end && ofc->start != 0))
     {
         ofc->start = 0;
         ofc->end = 0;
@@ -355,36 +365,42 @@ static gssize flush_up_to(Osc52FilterContext *ofc, gsize nwrite)
 }
 
 typedef enum {
-    Unknown,    // No more data after ESC
-    IsNotOsc,
-    IsOsc,      // OSC, number unknown
-    IsNotOsc52, // OSC but confirmed not 52
+    IsUnknownEsc,   // ESC character, but missing subsequent data
+    IsOtherEsc,     // ESC, but not ST or OSC
+    IsUnknownOsc,   // OSC, number unknown
+    IsOtherOsc,     // OSC but confirmed not 52
     IsOsc52,
-} OscStatus;
+    IsST,           // ST = String terminator
+    IsBel,          // Also acceptable as an alternative to ST
+    IsNotEsc,
+} EscStatus;
 
-static char const *osc_status_names[] = {
-    "Unknown",
-    "IsNotOsc",
-    "IsOsc",
-    "IsNotOsc52",
+static char const *esc_status_names[] = {
+    "IsUnknownEsc",
+    "IsOtherEsc",
+    "IsUnknownOsc",
+    "IsOtherOsc",
     "IsOsc52",
+    "IsST",
+    "IsBel",
+    "IsNotEsc",
 };
 
 // offset is relative to ofc->start. If the buffer contains 52; but not a valid
-// *write* request, returns IsNotOsc52.
-static OscStatus buf_contains_52(Osc52FilterContext *ofc, gsize offset)
+// *write* request, returns IsOtherOsc.
+static EscStatus buf_contains_52(Osc52FilterContext *ofc, gsize offset)
 {
     gsize buflen = ofc_len(ofc);
     ofc_debug_data(ofc, "Looking for '52;...' in ", 
         ofc->buf + ofc->start + offset, buflen - offset);
     if (offset < buflen - 1 && ofc_char(ofc, offset) != '5')
-        return IsNotOsc52;
+        return IsOtherOsc;
     if (offset < buflen - 2 && ofc_char(ofc, offset + 1) != '2')
-        return IsNotOsc52;
+        return IsOtherOsc;
     if (offset < buflen - 3 && ofc_char(ofc, offset + 2) != ';')
-        return IsNotOsc52;
+        return IsOtherOsc;
     if (offset + 3 >= buflen)
-        return IsOsc;
+        return IsUnknownOsc;
     // Don't allow more than one each of 'c' and 'p'
     // Other selection characters are allowed, but will be ignored in the
     // absence of c or p.
@@ -394,131 +410,249 @@ static OscStatus buf_contains_52(Osc52FilterContext *ofc, gsize offset)
     for (offset = offset + 3; offset < buflen; ++offset)
     {
         guint8 c = ofc_char(ofc, offset);
-        ofc_debug(ofc, "BC52: char at %ld is '%c'\n", offset, c);
         if (have_semi)
-        {
-            ofc_debug(ofc, "BC52: char after ';' is '%c'\n", c);
-            return c == '?' ? IsNotOsc52 : IsOsc52;
-        }
+            return c == '?' ? IsOtherOsc : IsOsc52;
         if (c == ';')
         {
             if (have_c || have_p)
             {
-                ofc_debug(ofc, "BC52: ';' follows 'p' or 'c'\n", c);
                 have_semi = TRUE;
                 continue;
             }
             else
             {
-                ofc_debug(ofc, "BC52: ';' before 'p' or 'c'\n", c);
-                return IsNotOsc52;
+                return IsOtherOsc;
             }
         }
         else if (c == 'c' && !have_c)
-        {
-            ofc_debug(ofc, "BC52: Have 'c'\n");
             have_c = TRUE;
-        }
         else if (c == 'p' && !have_p)
-        {
-            ofc_debug(ofc, "BC52: Have 'p'\n");
             have_p = TRUE;
-        }
         else if (!strchr("qs01234567", (char) c))
         {
             ofc_debug(ofc, "BC52: Invalid '%c' in selection\n", c);
-            return IsNotOsc52;
+            return IsOtherOsc;
         }
     }
     ofc_debug(ofc, "BC52: Finished without detecting OSC52\n");
-    return IsNotOsc52;
+    return IsOtherOsc;
 }
 
-static OscStatus get_osc_status_at_offset(Osc52FilterContext *ofc, gsize offset)
+// The osc52 argument determines whether it looks for 52 after finding OSC.
+static EscStatus get_esc_status_at_offset(Osc52FilterContext *ofc, gsize offset,
+                                          gboolean osc52)
 {
     gsize buflen = ofc_len(ofc);
     guint8 c = ofc_char(ofc, offset);
     gsize esc_size = 0;
-    if (c == OSC_CODE)
-        esc_size = 1;
-    else if (c == ESC_CODE)
-        esc_size = 2;
-    OscStatus osc_status = IsNotOsc;
+    
+    if (!osc52)
+    {
+        char *msg = g_strdup_printf("GESAO: char at offset %ld: ",
+            offset);
+        ofc_debug_data(ofc, msg, ofc->buf + ofc->start + offset, 1);
+        g_free(msg);
+    }
+
+    switch (c)
+    {
+        case OSC_CODE:
+            esc_size = 1;
+            break;
+        case ESC_CODE:
+            esc_size = 2;
+            break;
+        case BEL_CODE:
+            return IsBel;
+            break;
+        case ST_CODE:
+            return IsST;
+            break;
+        default:
+            return IsNotEsc;
+    }
+    EscStatus esc_status = IsOtherEsc;
     if (esc_size == 1)
     {
-        osc_status = IsOsc;
+        esc_status = IsUnknownOsc;
     }
     else if (esc_size == 2)
     {
         if (offset + 1 >= buflen)
-            osc_status = Unknown;
-        else if (ofc_char(ofc, offset + 1) == OSC_ESC)
-            osc_status = IsOsc;
+            esc_status = IsUnknownEsc;
+        else if ((c = ofc_char(ofc, offset + 1)) == OSC_ESC)
+            esc_status = IsUnknownOsc;
+        else if (c == ST_ESC)
+            return IsST;
         else
-            osc_status = IsNotOsc;
+            esc_status = IsOtherEsc;
     }
-    if (osc_status == IsOsc)
-        osc_status = buf_contains_52(ofc, offset + esc_size);
-    if (osc_status != IsNotOsc)
+    if (esc_status == IsUnknownOsc && osc52)
+        esc_status = buf_contains_52(ofc, offset + esc_size);
+    if (esc_status != IsOtherEsc)
     {
-        ofc_debug(ofc, "FOS: osc_status %s at offset %ld/%ld\n",
-            osc_status_names[osc_status], offset, ofc_len(ofc));
+        ofc_debug(ofc, "FOS: esc_status %s at offset %ld/%ld\n",
+            esc_status_names[esc_status], offset, ofc_len(ofc));
     }
-    return osc_status;
+    return esc_status;
+}
+
+typedef enum {
+    EscNotFound,
+    EscFound,
+    EscInvalid,
+    EscIOError,
+} FindEscResult;
+
+// osc52 determines whether to find OSC 52 (TRUE) or ST/BEL (FALSE). offset_out
+// is written with the matching/offending offset relative to ofc->start.
+static FindEscResult find_esc(Osc52FilterContext *ofc, gboolean osc52,
+                              gsize *offset_out)
+{
+    // If we're looking for a terminator, we need to skip char at 0 because
+    // it will be the ESC at the start of the OSC 52 and will look invalid
+    gsize start = osc52 ? 0 : 1;
+    gsize offset;   // Relative to ofc->start
+    for (offset = start; offset < ofc_len(ofc); ++offset)
+    {
+        EscStatus esc_status = get_esc_status_at_offset(ofc, offset, osc52);
+        if (esc_status == IsUnknownEsc || (osc52 && esc_status == IsUnknownOsc))
+        {
+            // Don't flush if we're looking for a terminator
+            if (osc52)
+            {
+                flush_up_to(ofc, offset);
+                offset = 0;
+            }
+            // Get more data and check the status again.
+            gsize capacity = esc_status == IsUnknownEsc ? 1 : MIN_CAPACITY;
+            if (get_more_data(ofc, capacity) <= 0)
+            {
+                if (osc52)
+                    flush_up_to(ofc, offset);
+                *offset_out = 0;
+                return EscIOError;
+            }
+            esc_status = get_esc_status_at_offset(ofc, offset, osc52);
+        }
+
+        *offset_out = offset;
+        
+        switch (esc_status)
+        {
+        case IsNotEsc:
+            break;
+        case IsUnknownEsc:
+            ofc_debug(ofc, "FE: OscStatus %s, fail!\n",
+                esc_status_names[esc_status]);
+            break;
+        case IsUnknownOsc:
+            if (osc52)
+            {
+                ofc_debug(ofc, "FOS: OscStatus %s, fail!\n",
+                    esc_status_names[esc_status]);
+            }
+            break;
+        case IsOsc52:
+            return osc52 ? EscFound : EscInvalid;
+            break;
+        case IsOtherEsc:
+        case IsOtherOsc:
+            if (!osc52)
+                return EscInvalid;
+            break;
+        case IsST:
+        case IsBel:
+            if (!osc52)
+                return EscFound;
+            break;
+        }
+    }
+
+    return EscNotFound;
 }
 
 // If data between ofc->start and ofc->end contains the start of an OSC 52,
-// returns the offset, relative to ofc->start, of the data following "52;".
-// Otherwise returns 0 for no match, -1 for error/EOF. If there is a match
-// the data before it is flushed ie it's written to the output, and ofc->start
-// then points to the start of the ESC sequence.
-static gssize find_osc_start(Osc52FilterContext *ofc)
+// the data leading up to it is flushed, and this returns 1. The ESC will now
+// be at offset 0. Otherwise returns 0 for no match, -1 for error/EOF.
+static int find_osc_start(Osc52FilterContext *ofc)
 {
     ofc_debug_buf(ofc, "Looking for OSC 52 in ");
-    gsize offset;   // Relative to ofc->start
-    for (offset = 0; offset < ofc_len(ofc); ++offset)
+    gsize offset;
+    FindEscResult esc = find_esc(ofc, TRUE, &offset);
+    switch (esc)
     {
-        OscStatus osc_status = get_osc_status_at_offset(ofc, offset);
-
-        switch (osc_status)
-        {
-            // In these 2 cases flush the data before the ESC, then get
-            // more data and check the status again.
-            case Unknown:
-            case IsOsc:
-                flush_up_to(ofc, offset);
-                // flush changes start to offset, so now offset is 0
-                offset = 0;
-                if (get_more_data(ofc, MIN_CAPACITY) <= 0)
-                    return -1;
-                osc_status = get_osc_status_at_offset(ofc, offset);
-                break;
-            default:
-                break;
-        }
-
-        switch (osc_status)
-        {
-        case Unknown:
-        case IsOsc:
-            ofc_debug(ofc, "FOS: OscStatus %s, fail!\n",
-                osc_status_names[osc_status]);
-            continue;
-        case IsNotOsc:
-        case IsNotOsc52:
-            continue;
-        case IsOsc52:
+    case EscNotFound:
+        break;
+    case EscInvalid:    // Shouldn't be possible when OSC 52 is TRUE
+        ofc_debug(ofc, "FOS: EscStatus invalid, fail!\n");
+        break;
+    case EscFound:
+        if (offset)
             flush_up_to(ofc, offset);
-            offset = 0;
-            return (ofc_char(ofc, offset) == ESC_CODE) ? 5 : 4;
-        }
+        return 1;
+    case EscIOError:
+        return -1;
     }
+    return 0;
+}
 
+static void discard_esc_sequence(Osc52FilterContext *ofc, gsize offset)
+{
+    // Discards buffer from start to offset. If the character at offset is
+    // ESC_CODE, discard the next byte too.
+    if (ofc_char(ofc, offset) == ESC_CODE)
+    {
+        if (offset + 1 + ofc->start >= ofc->end)
+            ofc_debug(ofc, "discard_esc_sequence: truncated at esc\n");
+        else
+            ++offset;
+    }
+    ofc->start += offset;
+}
+
+// A return value of 0 means we didn't find a terminator and buffer is full,
+// so data should be skipped until a terminator is found.
+static int find_osc52_end(Osc52FilterContext *ofc, gboolean skip)
+{
+    ofc_debug_buf(ofc, "Looking for ESC terminator in ");
+    gsize offset;
+    FindEscResult esc = find_esc(ofc, FALSE, &offset);
+    
+    switch (esc)
+    {
+    case EscNotFound:
+        // Buffer is at max capacity, empty it without saving.
+        ofc_debug(ofc, "FOE: OSC 52 buffer reached max capacity\n");
+        return 0;
+    case EscInvalid:
+        // Discard the buffer and continue as normal from the new ESC.
+        ofc_debug(ofc, "FOE: Invalid ESC\n");
+        discard_esc_sequence(ofc, offset);
+        return 1;
+    case EscFound:
+        if (skip)
+        {
+            ofc_debug(ofc, "FOE: Found belated terminator\n");
+            discard_esc_sequence(ofc, offset);
+        } else {
+            gsize end = ofc_char(ofc, offset) == ESC_CODE ?
+                    offset + 1 : offset;
+            ofc_debug_data(ofc, "FOE: OSC 52: ",
+                ofc->buf + ofc->start, end);
+            discard_esc_sequence(ofc, offset);
+        }
+        return 1;
+    case EscIOError:
+        return -1;
+    }
     return 0;
 }
 
 static gpointer input_filter(Osc52FilterContext *ofc)
 {
+    gboolean skip = FALSE;
+
     while (TRUE)
     {
         gssize nread = get_more_data(ofc, MIN_CAPACITY);
@@ -533,15 +667,37 @@ static gpointer input_filter(Osc52FilterContext *ofc)
             return NULL;
         }
 
-        gssize osc52_offset = find_osc_start(ofc);
-        if (osc52_offset == -1)
+        int osc52_end_result = skip ? find_osc52_end(ofc, skip) : 1;
+
+        if (!skip)
         {
-            return NULL;
-        }
-        if (TRUE) // (osc52_offset == 0)
-        {
-            if (flush_up_to(ofc, ofc_len(ofc)) <= 0)
+            switch (find_osc_start(ofc)) {
+            case -1:
                 return NULL;
+            case 1:
+                osc52_end_result = find_osc52_end(ofc, skip);
+                break;
+            case 0:
+            default:
+                // No OSC52, flush anyway and continue
+                if (flush_up_to(ofc, ofc_len(ofc)) <= 0)
+                    return NULL;
+                break;
+            }
+        }
+
+        switch (osc52_end_result)
+        {
+            case -1:
+                flush_up_to(ofc, ofc_len(ofc));
+                return NULL;
+            case 0:
+                skip = TRUE;
+                break;
+            case 1:
+                break;
+            default:
+                break;
         }
     }
     return NULL;
