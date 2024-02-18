@@ -80,7 +80,7 @@ typedef struct {
 } Osc52FilterContext;
 
 // Returns number of bytes of data between ofc->start and ofc->end.
-inline static guint8 ofc_len(Osc52FilterContext *ofc)
+inline static gsize ofc_len(Osc52FilterContext *ofc)
 {
     return ofc->end - ofc->start;
 }
@@ -106,7 +106,7 @@ static void ofc_debug_esc(Osc52FilterContext *ofc, const guint8 *data,
     GString *s = g_string_new_len((const char *) data, length);
     g_string_replace(s, "\033", "<ESC>", 0);
     g_string_replace(s, "\007", "<BEL>", 0);
-    g_string_replace(s, "\n", "\\n", 0);
+    //g_string_replace(s, "\n", "\\n", 0);
     fprintf(ofc->debug_out, "%s", s->str);
     g_string_free(s, TRUE);
 }
@@ -115,7 +115,7 @@ static void ofc_debug_data(Osc52FilterContext *ofc, const char *msg,
                            const guint8 *data, gsize length)
 {
     g_mutex_lock(&ofc->debug_lock);
-    fprintf(ofc->debug_out, "%s: '", msg);
+    fprintf(ofc->debug_out, "%s: %ld: '", msg, length);
     ofc_debug_esc(ofc, data, length);
     fputs("'\n", ofc->debug_out);
     fflush(ofc->debug_out);
@@ -206,10 +206,12 @@ inline static guint8 ofc_char(Osc52FilterContext *ofc, gsize index)
 
 // If spare_capacity is 1, allows buf to exceed MAX_CAPACITY to avoid
 // frustratingly giving up when all we need is one more byte to check for ST.
-static void ensure_spare_capacity(Osc52FilterContext *ofc, gsize spare_capacity)
+// Returns FALSE if buffer has reached max capacity.
+static gboolean ensure_spare_capacity(Osc52FilterContext *ofc,
+                                      gsize spare_capacity)
 {
     if (ofc->capacity - ofc->end >= spare_capacity)
-        return;
+        return TRUE;
 
     gsize old_size = ofc->end - ofc->start;
 
@@ -223,7 +225,7 @@ static void ensure_spare_capacity(Osc52FilterContext *ofc, gsize spare_capacity)
         ofc->end = old_size;
     }
     if (ofc->capacity - ofc->end >= spare_capacity)
-        return;
+        return TRUE;
 
     gsize capacity = ofc->capacity * 2;
 
@@ -242,7 +244,7 @@ static void ensure_spare_capacity(Osc52FilterContext *ofc, gsize spare_capacity)
         {
             ofc_debug(ofc, "GMD: Buffer capacity %ld is at/beyond max\n",
                 ofc->capacity);
-            return;
+            return FALSE;
         }
     }
     assert(capacity >= ofc->capacity);
@@ -260,6 +262,7 @@ static void ensure_spare_capacity(Osc52FilterContext *ofc, gsize spare_capacity)
         ofc_debug(ofc, "Ensure: reallocated %p %ld\n",
             ofc->buf, DEFAULT_CAPACITY);
     }
+    return TRUE;
 }
 
 // Reads more data into buf at end, extending buf's capacity if necessary.
@@ -515,16 +518,16 @@ typedef enum {
     EscIOError,
 } FindEscResult;
 
-// osc52 determines whether to find OSC 52 (TRUE) or ST/BEL (FALSE). offset_out
-// is written with the matching/offending offset relative to ofc->start.
+// osc52 determines whether to find OSC 52 (TRUE) or ST/BEL (FALSE). Search
+// starts from *offset_in_out, which gets overwritten with the matching/
+// offending offset relative to ofc->start.
 static FindEscResult find_esc(Osc52FilterContext *ofc, gboolean osc52,
-                              gsize *offset_out)
+                              gsize *offset_in_out)
 {
     // If we're looking for a terminator, we need to skip char at 0 because
     // it will be the ESC at the start of the OSC 52 and will look invalid
-    gsize start = osc52 ? 0 : 1;
-    gsize offset;   // Relative to ofc->start
-    for (offset = start; offset < ofc_len(ofc); ++offset)
+    gsize offset = *offset_in_out;
+    for (; offset < ofc_len(ofc); ++offset)
     {
         EscStatus esc_status = get_esc_status_at_offset(ofc, offset, osc52);
         if (esc_status == IsUnknownEsc || (osc52 && esc_status == IsUnknownOsc))
@@ -541,13 +544,13 @@ static FindEscResult find_esc(Osc52FilterContext *ofc, gboolean osc52,
             {
                 if (osc52)
                     flush_up_to(ofc, offset);
-                *offset_out = 0;
+                *offset_in_out = 0;
                 return EscIOError;
             }
             esc_status = get_esc_status_at_offset(ofc, offset, osc52);
         }
 
-        *offset_out = offset;
+        *offset_in_out = offset;
         
         switch (esc_status)
         {
@@ -588,8 +591,8 @@ static FindEscResult find_esc(Osc52FilterContext *ofc, gboolean osc52,
 // be at offset 0. Otherwise returns 0 for no match, -1 for error/EOF.
 static int find_osc_start(Osc52FilterContext *ofc)
 {
-    ofc_debug_buf(ofc, "Looking for OSC 52 in ");
-    gsize offset;
+    ofc_debug_buf(ofc, "Looking for OSC 52 in");
+    gsize offset = ofc->start;
     FindEscResult esc = find_esc(ofc, TRUE, &offset);
     switch (esc)
     {
@@ -619,43 +622,61 @@ static void discard_esc_sequence(Osc52FilterContext *ofc, gsize offset)
         else
             ++offset;
     }
-    ofc->start += offset;
+    ofc->start += offset + 1;
 }
 
 // A return value of 0 means we didn't find a terminator and buffer is full,
 // so data should be skipped until a terminator is found.
 static int find_osc52_end(Osc52FilterContext *ofc, gboolean skip)
 {
-    ofc_debug_buf(ofc, "Looking for ESC terminator in ");
-    gsize offset;
-    FindEscResult esc = find_esc(ofc, FALSE, &offset);
-    
-    switch (esc)
+    gsize offset = 1;
+
+    while (TRUE)
     {
-    case EscNotFound:
-        // Buffer is at max capacity, empty it without saving.
-        ofc_debug(ofc, "FOE: OSC 52 buffer reached max capacity\n");
-        return 0;
-    case EscInvalid:
-        // Discard the buffer and continue as normal from the new ESC.
-        ofc_debug(ofc, "FOE: Invalid ESC\n");
-        discard_esc_sequence(ofc, offset);
-        return 1;
-    case EscFound:
-        if (skip)
-        {
-            ofc_debug(ofc, "FOE: Found belated terminator\n");
+        gssize nread;
+        ofc_debug_data(ofc, "Looking for ESC terminator in",
+            ofc->buf + offset, ofc_len(ofc) - offset);
+        FindEscResult esc = find_esc(ofc, FALSE, &offset);
+
+        switch (esc) {
+        case EscNotFound:
+            if (ofc->end >= MAX_CAPACITY)
+            {
+                // Empty buffer without saving, then continue, skipping until
+                // terminator or some other ESC sequence.
+                ofc_debug(ofc,
+                    "FOE: OSC 52 buffer reached max capacity\n");
+                discard_esc_sequence(ofc, offset);
+                return 0;
+            }
+            ofc_debug(ofc, "FOE: Requesting %ld more bytes\n",
+                DEFAULT_CAPACITY);
+            nread = get_more_data(ofc, DEFAULT_CAPACITY);
+            ofc_debug(ofc, "FOE: Got %ld more bytes\n", nread);
+            if (nread <= 0)
+                return -1;
+            ++offset;
+            break;
+        case EscInvalid:
+            // Discard the buffer and continue as normal from the new ESC.
+            ofc_debug(ofc, "FOE: Invalid ESC\n");
             discard_esc_sequence(ofc, offset);
-        } else {
-            gsize end = ofc_char(ofc, offset) == ESC_CODE ?
-                    offset + 1 : offset;
-            ofc_debug_data(ofc, "FOE: OSC 52: ",
-                ofc->buf + ofc->start, end);
-            discard_esc_sequence(ofc, offset);
+            return 1;
+        case EscFound:
+            if (skip) {
+                ofc_debug(ofc, "FOE: Found belated terminator\n");
+                discard_esc_sequence(ofc, offset);
+            } else {
+                gsize end = ofc_char(ofc, offset) == ESC_CODE
+                        ? offset + 1 : offset;
+                ofc_debug_data(ofc, "FOE: OSC 52", ofc->buf + ofc->start,
+                               end);
+                discard_esc_sequence(ofc, offset);
+            }
+            return 1;
+        case EscIOError:
+            return -1;
         }
-        return 1;
-    case EscIOError:
-        return -1;
     }
     return 0;
 }
@@ -677,6 +698,8 @@ static gpointer input_filter(Osc52FilterContext *ofc)
                         strerror(errno));
                 return NULL;
             }
+            ofc_debug(ofc, "IF: Read %ld, buflen %ld, start %ld, end %ld",
+                    nread, ofc_len(ofc), ofc->start, ofc->end);
         }
 
         int osc52_end_result = skip ? find_osc52_end(ofc, skip) : 1;
