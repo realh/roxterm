@@ -93,7 +93,6 @@ typedef struct {
     OutputQueue output_queue;
     GMutex debug_lock;
     FILE *debug_out;
-    const char *output_name;
 } Osc52FilterContext;
 
 // Returns number of bytes of data between ofc->start and ofc->end.
@@ -163,6 +162,7 @@ static const char *fd_name(int fd)
 static Osc52FilterContext *osc52_filter_context_new(guintptr roxterm_tab_id,
                                              int input_fd, int output_fd)
 {
+    char *output_name = fd_name(output_fd);
     Osc52FilterContext *ofc = g_new(Osc52FilterContext, 1);
     ofc->roxterm_tab_id = roxterm_tab_id;
     ofc->input_fd = input_fd;
@@ -170,10 +170,10 @@ static Osc52FilterContext *osc52_filter_context_new(guintptr roxterm_tab_id,
     ofc->start = 0;
     ofc->end = 0;
     ofc->capacity = DEFAULT_CAPACITY;
-    output_queue_init(&ofc->output_queue, output_fd, fd_name(output_fd));
+    output_queue_init(&ofc->output_queue, output_fd, output_name);
     g_mutex_init(&ofc->debug_lock);
     char *log_leaf = g_strdup_printf("osc52-log-%lx-%s.txt",
-        ofc->roxterm_tab_id, ofc->output_name);
+        ofc->roxterm_tab_id, output_name);
     char *log_file = g_build_filename(log_dir, log_leaf, NULL);
     ofc->debug_out = fopen(log_file, "w");
     g_free(log_file);
@@ -192,13 +192,14 @@ static gssize write_output(Osc52FilterContext *ofc, const guint8 *data,
             data + nwritten, length - nwritten);
         if (n == 0)
         {
-            ofc_debug(ofc, "No bytes written to %s (EOF?)\n", ofc->output_name);
+            ofc_debug(ofc, "No bytes written to %s (EOF?)\n",
+                ofc->output_queue.name);
             return 0;
         }
         else if (n < 0)
         {
             ofc_debug(ofc, "Error writing to %s: %s\n",
-                    ofc->output_name, strerror(errno));
+                    ofc->output_queue.name, strerror(errno));
             return n;
         }
         else
@@ -795,7 +796,7 @@ static GThread *run_osc52_thread(GThreadFunc thread_func,
                                  const char *name_prefix)
 {
     char *thread_name = g_strdup_printf("%s-%s",
-        name_prefix, ofc->output_name);
+        name_prefix, oq ? oq->name : ofc->output_queue.name);
     ofc_debug(ofc, "Launching %s thread copying from %d to %s\n",
             thread_name, ofc->input_fd, ofc->output_queue.name);
     GThread *thread = g_thread_new(thread_name, thread_func,
