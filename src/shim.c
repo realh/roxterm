@@ -46,9 +46,11 @@
 #define ST_ESC '\\'
 #define BEL_CODE 7
 
+typedef struct Osc52FilterContext Osc52FilterContext;
+
 // An item queued for output.
-typedef struct _OutputItem {
-    struct _OutputItem *next;
+typedef struct OutputItem {
+    struct OutputItem *next;
     guint8 *buf;
     gsize start;
     gsize size;
@@ -69,6 +71,7 @@ typedef struct {
     OutputItem *tail;
     gssize last_result; // <= -1 error, 0 EOF, >= 1 good
     gboolean stop;
+    GThread *thread;
 } OutputQueue;
 
 static void output_queue_init(OutputQueue *oq, int fd, const char *name)
@@ -81,19 +84,81 @@ static void output_queue_init(OutputQueue *oq, int fd, const char *name)
     oq->tail = NULL;
     oq->last_result = 1;
     oq->stop = FALSE;
+    oq->thread = NULL;
 }
 
-typedef struct {
+// Call while the mutex is locked. Returns the result of the previous write.
+static gssize queue_item_for_writing(OutputQueue *oq, OutputItem *item)
+{
+
+    gssize last_result = oq->last_result;
+    if (last_result <= 0)
+    {
+        output_item_free(item);
+        return last_result;
+    }
+    if (oq->tail)
+        oq->tail->next = item;
+    else
+        oq->head = item;
+    oq->tail = item;
+    g_cond_signal(&oq->cond);
+    return last_result;
+}
+
+// Typically writes (all) data from item to oq->fd. handle can be used to
+// provide additional context.
+typedef gssize (*OutputQueueItemFunc)(OutputQueue *oq, OutputItem *item,
+                                      gpointer handle);
+
+// Keeps popping items from the queue and passes them  to item_processor
+static void queue_processor(OutputQueue *oq,
+                            OutputQueueItemFunc item_processor,
+                            gpointer handle)
+{
+    g_mutex_lock(&oq->lock);
+    while (!oq->stop || oq->head)
+    {
+        if (!oq->head)
+            g_cond_wait(&oq->cond, &oq->lock);
+        OutputItem *item = oq->head;
+        if (!item)
+            continue;
+        if (item == oq->tail)
+            oq->tail = NULL;
+        oq->head = item->next;
+        g_mutex_unlock(&oq->lock);
+        gssize nprocessed = item_processor(oq, item, handle);
+        output_item_free(item);
+        g_mutex_lock(&oq->lock);
+        if (nprocessed <= 0)
+            break;
+    }
+    g_mutex_unlock(&oq->lock);
+}
+
+// Signals the thread to stop when queue is empty
+static void stop_queue_processor(OutputQueue *oq)
+{
+    g_mutex_lock(&oq->lock);
+    oq->stop = TRUE;
+    g_cond_signal(&oq->cond);
+    g_mutex_unlock(&oq->lock);
+}
+
+struct Osc52FilterContext {
     int input_fd;
     guintptr roxterm_tab_id;
     guint8 *buf;
     gsize start;    // Offset to start of current data
     gsize end;      // Offset to one after current data
     gsize capacity; // Total capacity of buf
+    GThread *input_thread;
     OutputQueue output_queue;
-    GMutex debug_lock;
-    FILE *debug_out;
-} Osc52FilterContext;
+    OutputQueue debug_queue;
+    FILE *debug_fp;
+    GMutex debug_fp_lock;
+};
 
 // Returns number of bytes of data between ofc->start and ofc->end.
 inline static gsize ofc_len(Osc52FilterContext *ofc)
@@ -103,39 +168,66 @@ inline static gsize ofc_len(Osc52FilterContext *ofc)
 
 static char *log_dir = NULL;
 
-static void ofc_debug(Osc52FilterContext *ofc, const char *format, ...)
+// Returns number of bytes written, 0 for EOF, <0 for error
+static gssize write_item_to_fd(OutputQueue *oq, OutputItem *item,
+                               G_GNUC_UNUSED gpointer handle)
 {
-    va_list ap;
-    va_start(ap, format);
-    g_mutex_lock(&ofc->debug_lock);
-    vfprintf(ofc->debug_out, format, ap);
-    va_end(ap);
-    if (format[strlen(format) - 1] != '\n')
-        fputc('\n', ofc->debug_out);
-    fflush(ofc->debug_out);
-    g_mutex_unlock(&ofc->debug_lock);
+    const guint8 *data = item->buf + item->start;
+    gsize length = item->size;
+    gsize nwritten = 0;
+    while (nwritten < length)
+    {
+        gssize n = write(oq->fd, data + nwritten, length - nwritten);
+        if (n > 0)
+            nwritten += n;
+        else
+            return n;
+    }
+    return nwritten;
 }
 
-static void ofc_debug_esc(Osc52FilterContext *ofc, const guint8 *data,
-                          gsize length)
+static gssize write_item_to_fp(G_GNUC_UNUSED OutputQueue *oq, OutputItem *item,
+                               gpointer handle)
+{
+    Osc52FilterContext *ofc = handle;
+    FILE *fp = ofc->debug_fp;
+    char *s = (char *) item->buf + item->start;
+    int length = (int) item->size;
+    gssize nwritten;
+    g_mutex_lock(&ofc->debug_fp_lock);
+    if (s[length - 1] == '\n')
+        nwritten = fprintf(fp, "%*s", length, s);
+    else
+        nwritten = fprintf(fp, "%*s\n", length, s);
+    fflush(fp);
+    g_mutex_unlock(&ofc->debug_fp_lock);
+    return nwritten;
+}
+
+static void ofc_debug(Osc52FilterContext *ofc, const char *format, ...)
+{
+    char *msg;
+    va_list ap;
+    va_start(ap, format);
+    msg = g_strdup_vprintf(format, ap);
+    va_end(ap);
+    OutputItem *item = g_new(OutputItem, 1);
+    item->buf = (guint8 *) msg;
+    item->start = 0;
+    item->size = strlen(msg);
+    item->next = NULL;
+    queue_item_for_writing(&ofc->debug_queue, item);
+}
+
+static void ofc_debug_data(Osc52FilterContext *ofc, const char *msg,
+                          const guint8 *data, gsize length)
 {
     GString *s = g_string_new_len((const char *) data, length);
     g_string_replace(s, "\033", "<ESC>", 0);
     g_string_replace(s, "\007", "<BEL>", 0);
     //g_string_replace(s, "\n", "\\n", 0);
-    fprintf(ofc->debug_out, "%s", s->str);
+    ofc_debug(ofc, "%s: %s", msg, s);
     g_string_free(s, TRUE);
-}
-
-static void ofc_debug_data(Osc52FilterContext *ofc, const char *msg,
-                           const guint8 *data, gsize length)
-{
-    g_mutex_lock(&ofc->debug_lock);
-    fprintf(ofc->debug_out, "%s: %ld: '", msg, length);
-    ofc_debug_esc(ofc, data, length);
-    fputs("'\n", ofc->debug_out);
-    fflush(ofc->debug_out);
-    g_mutex_unlock(&ofc->debug_lock);
 }
 
 static void ofc_debug_buf(Osc52FilterContext *ofc, const char *msg)
@@ -159,11 +251,19 @@ static const char *fd_name(int fd)
     }
 }
 
+static gpointer debug_thread(gpointer handle)
+{
+    Osc52FilterContext *ofc = handle;
+    queue_processor(&ofc->debug_queue, write_item_to_fp, ofc);
+    return NULL;
+}
+
 static Osc52FilterContext *osc52_filter_context_new(guintptr roxterm_tab_id,
                                              int input_fd, int output_fd)
 {
-    char *output_name = fd_name(output_fd);
+    const char *output_name = fd_name(output_fd);
     Osc52FilterContext *ofc = g_new(Osc52FilterContext, 1);
+    ofc->input_thread = NULL;
     ofc->roxterm_tab_id = roxterm_tab_id;
     ofc->input_fd = input_fd;
     ofc->buf = g_new(guint8, DEFAULT_CAPACITY);
@@ -171,43 +271,36 @@ static Osc52FilterContext *osc52_filter_context_new(guintptr roxterm_tab_id,
     ofc->end = 0;
     ofc->capacity = DEFAULT_CAPACITY;
     output_queue_init(&ofc->output_queue, output_fd, output_name);
-    g_mutex_init(&ofc->debug_lock);
+    g_mutex_init(&ofc->debug_fp_lock);
     char *log_leaf = g_strdup_printf("osc52-log-%lx-%s.txt",
         ofc->roxterm_tab_id, output_name);
     char *log_file = g_build_filename(log_dir, log_leaf, NULL);
-    ofc->debug_out = fopen(log_file, "w");
+    ofc->debug_fp = fopen(log_file, "w");
     g_free(log_file);
     g_free(log_leaf);
-    ofc_debug(ofc, "Allocated buffer %p %ld\n", ofc->buf, DEFAULT_CAPACITY);
+    char *debug_name = g_strdup_printf("debug-%s", output_name);
+    output_queue_init(&ofc->debug_queue, -1, debug_name);
+    ofc->debug_queue.thread = g_thread_new(debug_name, debug_thread, ofc);
     return ofc;
 }
 
-// Returns number of bytes written, 0 for EOF, <0 for error
-static gssize write_output(Osc52FilterContext *ofc, const guint8 *data,
-                           gsize length) {
-    gsize nwritten = 0;
-    while (nwritten < length)
+// Same as write_item_to_fd but logs errors/EOF
+static gssize write_output(OutputQueue *oq, OutputItem *item,
+                           gpointer handle)
+{
+    Osc52FilterContext *ofc = handle;
+    gssize n = write_item_to_fd(oq, item, ofc);
+    if (n == 0)
     {
-        gssize n = write(ofc->output_queue.fd,
-            data + nwritten, length - nwritten);
-        if (n == 0)
-        {
-            ofc_debug(ofc, "No bytes written to %s (EOF?)\n",
-                ofc->output_queue.name);
-            return 0;
-        }
-        else if (n < 0)
-        {
-            ofc_debug(ofc, "Error writing to %s: %s\n",
-                    ofc->output_queue.name, strerror(errno));
-            return n;
-        }
-        else
-        {
-            nwritten += n;
-        }
+        ofc_debug(ofc, "No bytes written to %s (EOF?)\n",
+            oq->name);
     }
-    return nwritten;
+    else if (n < 0)
+    {
+        ofc_debug(ofc, "Error writing to %s: %s\n",
+                oq->name, strerror(errno));
+    }
+    return n;
 }
 
 inline static guint8 ofc_char(Osc52FilterContext *ofc, gsize index)
@@ -305,25 +398,6 @@ static gssize get_more_data(Osc52FilterContext *ofc, gsize min_capacity)
     ofc_debug(ofc, "Read %ld/%ld/%ld, start %ld, end %ld\n",
         nread, count, spare_capacity, ofc->start, ofc->end);
     return nread;
-}
-
-// Call while the mutex is locked. Returns the result of the previous write.
-static gssize queue_item_for_writing(OutputQueue *oq, OutputItem *item)
-{
-
-    gssize last_result = oq->last_result;
-    if (last_result <= 0)
-    {
-        output_item_free(item);
-        return last_result;
-    }
-    if (oq->tail)
-        oq->tail->next = item;
-    else
-        oq->head = item;
-    oq->tail = item;
-    g_cond_signal(&oq->cond);
-    return last_result;
 }
 
 // Queues nwrite bytes starting from from ofc->start and updates start to point
@@ -757,36 +831,9 @@ static gpointer input_filter(Osc52FilterContext *ofc)
     return NULL;
 }
 
-static void stop_output_writer(OutputQueue *oq)
+static gpointer output_writer(Osc52FilterContext *ofc)
 {
-    g_mutex_lock(&oq->lock);
-    oq->stop = TRUE;
-    g_cond_signal(&oq->cond);
-    g_mutex_unlock(&oq->lock);
-}
-
-static gpointer output_writer(OutputQueue *oq)
-{
-    g_mutex_lock(&oq->lock);
-    while (!oq->stop || oq->head)
-    {
-        if (!oq->head)
-            g_cond_wait(&oq->cond, &oq->lock);
-        OutputItem *item = oq->head;
-        if (!item)
-            continue;
-        if (item == oq->tail)
-            oq->tail = NULL;
-        oq->head = item->next;
-        g_mutex_unlock(&oq->lock);
-        gssize nwritten = write_output(oq,
-            item->buf + item->start, item->size);
-        output_item_free(item);
-        g_mutex_lock(&oq->lock);
-        if (nwritten <= 0)
-            break;
-    }
-    g_mutex_unlock(&oq->lock);
+    queue_processor(&ofc->output_queue, write_output, ofc);
     return NULL;
 }
 
@@ -795,30 +842,44 @@ static GThread *run_osc52_thread(GThreadFunc thread_func,
                                  OutputQueue *oq,
                                  const char *name_prefix)
 {
+    const char *fd_name = oq ? oq->name : ofc->output_queue.name;
     char *thread_name = g_strdup_printf("%s-%s",
-        name_prefix, oq ? oq->name : ofc->output_queue.name);
-    ofc_debug(ofc, "Launching %s thread copying from %d to %s\n",
-            thread_name, ofc->input_fd, ofc->output_queue.name);
-    GThread *thread = g_thread_new(thread_name, thread_func,
-        oq ? (gpointer) oq : (gpointer) ofc);
+        name_prefix, fd_name);
+    GThread *thread = g_thread_new(thread_name, thread_func, ofc);
     if (!thread)
     {
         ofc_debug(ofc, "Failed to launch %s thread\n", thread_name);
         exit(1);
     }
+    ofc_debug(ofc, "Launched %s thread %p copying from %d to %s\n",
+            thread_name, thread, ofc->input_fd, fd_name);
     return thread;
 }
 
-inline static GThread *run_input_filter(Osc52FilterContext *ofc)
+static gboolean start_threads(Osc52FilterContext *ofc)
 {
-    return run_osc52_thread((GThreadFunc) input_filter,
+    ofc->input_thread = run_osc52_thread((GThreadFunc) input_filter,
         ofc, NULL, "input");
+    if (!ofc->input_thread)
+        return FALSE;
+    GThread *thread =
+        run_osc52_thread((GThreadFunc) output_writer, ofc,
+                         &ofc->output_queue, "output");
+    ofc->output_queue.thread = thread;
+    return ofc->output_queue.thread != NULL;
 }
 
-inline static GThread *run_output_writer(Osc52FilterContext *ofc)
+// Waits for the threads to finish. This should only be called after the child
+// process has closed the outputs the filters are reading, otherwise the input
+// thread would block indefinitely. 
+static void stop_and_join_threads(Osc52FilterContext *ofc)
 {
-    return run_osc52_thread((GThreadFunc) output_writer,
-        ofc, &ofc->output_queue, "output");
+    g_thread_join(ofc->input_thread);
+    stop_queue_processor(&ofc->output_queue);
+    g_thread_join(ofc->output_queue.thread);
+    stop_queue_processor(&ofc->debug_queue);
+    g_thread_join(ofc->debug_queue.thread);
+    fprintf(ofc->debug_fp, "Shutdown cleanly\n");
 }
 
 int main(int argc, char **argv)
@@ -842,7 +903,7 @@ int main(int argc, char **argv)
     memcpy(argv2, argv, argc * sizeof(char *));
     argv2[argc] = NULL;
 
-    int stdout_pipe = -1;
+    //int stdout_pipe = -1;
     int stderr_pipe = -1;
 
     GError *error = NULL;
@@ -861,18 +922,14 @@ int main(int argc, char **argv)
 
         g_free(log_dir);
 
-        GThread *stderr_input_thread = run_input_filter(ofc_stderr);
-        GThread *stderr_output_thread = run_output_writer(ofc_stderr);
+        if (!start_threads(ofc_stderr))
+            exit(1);
 
         int status = 0;
         waitpid(pid, &status, 0);
         ofc_debug(ofc_stderr, "Child exited: %d, status %d\n",
                 WIFEXITED(status), WEXITSTATUS(status));
-        stop_output_writer(ofc_stderr);
-        ofc_debug(ofc_stderr, "Joining stderr_input_thread\n");
-        g_thread_join(stderr_input_thread);
-        ofc_debug(ofc_stderr, "Joining stderr_output_thread\n");
-        g_thread_join(stderr_output_thread);
+        stop_and_join_threads(ofc_stderr);
         exit(status);
     }
     else
