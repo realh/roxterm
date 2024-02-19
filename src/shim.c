@@ -226,12 +226,14 @@ static void ofc_debug_data(Osc52FilterContext *ofc, const char *msg,
     g_string_replace(s, "\033", "<ESC>", 0);
     g_string_replace(s, "\007", "<BEL>", 0);
     //g_string_replace(s, "\n", "\\n", 0);
-    ofc_debug(ofc, "%s: %s", msg, s);
+    ofc_debug(ofc, "%s: %s", msg, s->str);
     g_string_free(s, TRUE);
 }
 
 static void ofc_debug_buf(Osc52FilterContext *ofc, const char *msg)
 {
+    ofc_debug(ofc, "ODB: %p->%p start %ld size %ld\n", ofc,
+        ofc->buf, ofc->start, ofc_len(ofc));
     ofc_debug_data(ofc, msg, ofc->buf + ofc->start, ofc_len(ofc));
 }
 
@@ -280,6 +282,7 @@ static Osc52FilterContext *osc52_filter_context_new(guintptr roxterm_tab_id,
     g_free(log_leaf);
     char *debug_name = g_strdup_printf("debug-%s", output_name);
     output_queue_init(&ofc->debug_queue, -1, debug_name);
+    fprintf(ofc->debug_fp, "Created ofc %p\n", ofc);
     ofc->debug_queue.thread = g_thread_new(debug_name, debug_thread, ofc);
     return ofc;
 }
@@ -684,6 +687,7 @@ static FindEscResult find_esc(Osc52FilterContext *ofc, gboolean osc52,
 // be at offset 0. Otherwise returns 0 for no match, -1 for error/EOF.
 static int find_osc_start(Osc52FilterContext *ofc)
 {
+    ofc_debug(ofc, "Looking for OSC 52 in ofc %p\n", ofc);
     ofc_debug_buf(ofc, "Looking for OSC 52 in");
     gsize offset = ofc->start;
     FindEscResult esc = find_esc(ofc, TRUE, &offset);
@@ -851,8 +855,8 @@ static GThread *run_osc52_thread(GThreadFunc thread_func,
         ofc_debug(ofc, "Failed to launch %s thread\n", thread_name);
         exit(1);
     }
-    ofc_debug(ofc, "Launched %s thread %p copying from %d to %s\n",
-            thread_name, thread, ofc->input_fd, fd_name);
+    ofc_debug(ofc, "Launched %s thread copying from %d to %s\n",
+            thread_name, ofc->input_fd, fd_name);
     return thread;
 }
 
