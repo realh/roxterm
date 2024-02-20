@@ -683,7 +683,7 @@ static void roxterm_fork_command(ROXTermData *roxterm, VteTerminal *vte,
     if (login)
     {
         /* If login_shell, make sure argv[1] is the
-         * shell base name (== leaf name) prepended by "-" */
+         * shell base name (leaf name) prepended by "-" */
         char *leaf = strrchr(filename, G_DIR_SEPARATOR);
 
         if (leaf)
