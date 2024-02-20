@@ -13,6 +13,8 @@ pkg_check_modules(RTCOMMON REQUIRED
 # roxterm-config needs to export symbols so GtkBuilder can find signal handlers
 pkg_check_modules(GMODULE_EXPORT REQUIRED gmodule-export-2.0)
 
+pkg_check_modules(RTSHIM REQUIRED glib-2.0>=2.32.0)
+
 # If VTE >= 0.50 this should include the necessary flags for libpcre
 pkg_check_modules(VTE REQUIRED vte-2.91>=0.52 libpcre2-8)
 
@@ -148,7 +150,14 @@ target_link_libraries(roxterm-config ${RTCONFIG_LIBRARIES})
 target_link_directories(roxterm-config PRIVATE ${RTCONFIG_LIBRARY_DIRS})
 target_link_options(roxterm-config PRIVATE ${RTCONFIG_LDFLAGS_OTHER})
 
-install(TARGETS roxterm roxterm-config
-    RUNTIME DESTINATION bin)
-install(FILES roxterm-config.ui
-    DESTINATION share/roxterm)
+add_executable(roxterm-shim shim.c)
+target_include_directories(roxterm-shim PRIVATE
+    ${RTSHIM_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})
+target_compile_options(roxterm-shim PRIVATE ${RTSHIM_CFLAGS_OTHER})
+target_link_libraries(roxterm-shim ${RTSHIM_LIBRARIES})
+target_link_directories(roxterm-shim PRIVATE ${RTSHIM_LIBRARY_DIRS})
+target_link_options(roxterm-shim PRIVATE ${RTSHIM_LDFLAGS_OTHER})
+
+install(TARGETS roxterm roxterm-config RUNTIME DESTINATION bin)
+install(TARGETS roxterm-shim RUNTIME DESTINATION libexec)
+#install(FILES roxterm-config.ui DESTINATION share/roxterm)

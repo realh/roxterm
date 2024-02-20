@@ -561,6 +561,7 @@ static void profilegui_fill_in_dialog(ProfileGUI * pg)
     capplet_set_spin_button_float(&pg->capp, "exit_pause");
     capplet_set_text_entry(&pg->capp, "title_string", "%t. %s");
     capplet_set_text_entry(&pg->capp, "win_title", "%s");
+    capplet_set_radio(&pg->capp, "allow_osc52", 1);
     exit_action_changed(
         GTK_COMBO_BOX(capplet_lookup_widget(&pg->capp, "exit_action")),
         pg);
