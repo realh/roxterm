@@ -396,6 +396,56 @@ static ROXTermData *roxterm_data_clone(ROXTermData *old_gt)
 
 static GHashTable *roxterm_hash_env(char **env)
 {
+    static char const * const envs_to_remove[] =
+    {
+        "COLORTERM",
+        "COLUMNS",
+        "DESKTOP_STARTUP_ID",
+        "EXIT_CODE",
+        "EXIT_STATUS",
+        "GIO_LAUNCHED_DESKTOP_FILE",
+        "GIO_LAUNCHED_DESKTOP_FILE_PID",
+        "GJS_DEBUG_OUTPUT",
+        "GJS_DEBUG_TOPICS",
+        "GNOME_DESKTOP_ICON",
+        "INVOCATION_ID",
+        "JOURNAL_STREAM",
+        "LINES",
+        "LISTEN_FDNAMES",
+        "LISTEN_FDS",
+        "LISTEN_PID",
+        "MAINPID",
+        "MANAGERPID",
+        "NOTIFY_SOCKET",
+        "NOTIFY_SOCKET",
+        "PIDFILE",
+        "PWD",
+        "REMOTE_ADDR",
+        "REMOTE_PORT",
+        "SERVICE_RESULT",
+        "SHLVL",
+        "TERM",
+        "WATCHDOG_PID",
+        "WATCHDOG_USEC",
+        "WINDOWID",
+        NULL
+    };
+    static char const * const prefixes_to_remove[] =
+    {
+        "GNOME_TERMINAL_",
+        "FOOT_",
+        "ITERM2_",
+        "MC_",
+        "MINTTY_",
+        "PUTTY_",
+        "RXVT_",
+        "TERM_",
+        "URXVT_",
+        "WEZTERM_",
+        "XTERM_",
+        NULL
+    };
+
     int n;
     GHashTable *env_table = g_hash_table_new_full(g_str_hash, g_str_equal,
             g_free, g_free);
@@ -404,8 +454,32 @@ static GHashTable *roxterm_hash_env(char **env)
     {
         const char *eq = strchr(env[n], '=');
         char *varname = eq ? g_strndup(env[n], eq - env[n]) : g_strdup(env[n]);
-        g_hash_table_replace(env_table, varname,
-                eq ? g_strdup(eq + 1) : NULL);
+        gboolean skip = FALSE;
+        const char *s;
+        for (int i = 0; s = envs_to_remove[i], s; ++i)
+        {
+            if (!strcmp(s, varname))
+            {
+                skip = TRUE;
+                break;
+            }
+        }
+        if (!skip)
+        {
+            for (int i = 0; s = prefixes_to_remove[i], s; ++i)
+            {
+                if (g_str_has_prefix(varname, s))
+                {
+                    skip = TRUE;
+                    break;
+                }
+            }
+        }
+        if (!skip)
+        {
+            g_hash_table_replace(env_table, varname,
+                    eq ? g_strdup(eq + 1) : NULL);
+        }
     }
     return env_table;
 }
@@ -440,6 +514,9 @@ static char **roxterm_get_environment(ROXTermData *roxterm, const char *term)
             g_strdup_printf("%d", g_list_length(roxterm_terms)));
     g_hash_table_replace(env, g_strdup("ROXTERM_PID"),
             g_strdup_printf("%d", (int) getpid()));
+    g_hash_table_replace(env, g_strdup("VTE_VERSION"),
+                         g_strdup_printf("%u", VTE_VERSION_NUMERIC));  
+    g_hash_table_replace(env, g_strdup("COLORTERM"), g_strdup("truecolor"));
 
 #ifdef GDK_WINDOWING_X11
     if (GDK_IS_X11_DISPLAY(gdk_display_get_default()))
