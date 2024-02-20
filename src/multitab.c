@@ -626,14 +626,12 @@ static void multi_tab_remove_menutree_items(MultiWin * win, MultiTab * tab)
 static void renumber_tabs(MultiWin *win)
 {
     GList *link;
-    int n = 0;
 
     for (link = win->tabs; link; link = g_list_next(link))
     {
         MultiTab *tab = link->data;
 
         multi_tab_set_full_window_title(tab);
-        ++n;
     }
 }
 

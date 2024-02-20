@@ -109,7 +109,7 @@ while [ "$RECOGNISED" = "1" ] ; do
             configure -DCMAKE_BUILD_TYPE=DEBUG \
                     -DCMAKE_EXPORT_COMPILE_COMMANDS=1 "$@" \
                     -G Ninja && \
-                    ( [ "$cmd" = "--build" ] && make || true ) && \
+                    ( [ "$cmd" = "--build" ] && ninja || true ) && \
                 echo Done >&2 && exit 0
             echo Configure failed >&2
             echo Press Return... >&2
