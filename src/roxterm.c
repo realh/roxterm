@@ -132,6 +132,7 @@ struct ROXTermData {
     char *reply;
     int columns, rows;
     char **env;
+    char **env_for_spawn;
     char *search_pattern;
     guint search_flags;
     /*int file_match_tag[2];*/
@@ -332,6 +333,7 @@ static ROXTermData *roxterm_data_clone(ROXTermData *old_gt)
     new_gt->dont_lookup_dimensions = FALSE;
     new_gt->actual_commandv = NULL;
     new_gt->env = roxterm_strv_copy(old_gt->env);
+    new_gt->env_for_spawn = NULL;
     new_gt->child_exited_tag = 0;
     new_gt->post_exit_tag = 0;
     new_gt->win_state_changed_tag = 0;
@@ -543,6 +545,7 @@ static char **roxterm_get_environment(ROXTermData *roxterm, const char *term)
 
     envv = roxterm_envv_from_hash(env);
     g_hash_table_unref(env);
+    roxterm->env_for_spawn = envv;
     return envv;
 }
 
@@ -646,6 +649,11 @@ static void roxterm_fork_callback(VteTerminal *vte,
         roxterm_report_launch_error_async(roxterm,
                 _("Failed to run command"), error);
     }
+    if (roxterm->env_for_spawn)
+    {
+        g_strfreev(roxterm->env_for_spawn);
+        roxterm->env_for_spawn = NULL;
+    }
 }
 
 static void roxterm_fork_command(ROXTermData *roxterm, VteTerminal *vte,
@@ -656,10 +664,10 @@ static void roxterm_fork_command(ROXTermData *roxterm, VteTerminal *vte,
     char *filename = argv[0];
     char **new_argv = NULL;
     static char *shim = NULL;
-    int arg_offset = 2;
-    int copy_offset = 0;
+    int arg_offset = 1;         // TODO: Set to 0 or 1 depending on whether
+                                // OSC 52 option is enabled.
 
-    if (!shim)
+    if (arg_offset && !shim)
     {
         char *dir = g_path_get_dirname(global_options_bindir);
         shim = g_build_filename(dir, "libexec", "roxterm-shim", NULL);
@@ -670,40 +678,66 @@ static void roxterm_fork_command(ROXTermData *roxterm, VteTerminal *vte,
             shim = g_build_filename(global_options_bindir, "roxterm-shim",
                                     NULL);
             if (!g_file_test(shim, G_FILE_TEST_IS_EXECUTABLE))
+            {
                 shim[0] = 0;
+                arg_offset = 0;
+                g_warning("roxterm-shim not found");
+            }
         }
     }
-    if (!shim[0])
-        arg_offset = 0;
-
 
     working_directory = roxterm_check_cwd(working_directory);
-    size_t old_len = g_strv_length(argv);
 
-    if (login)
+    if (login || arg_offset)
     {
-        /* If login_shell, make sure argv[1] is the
-         * shell base name (== leaf name) prepended by "-" */
-        char *leaf = strrchr(filename, G_DIR_SEPARATOR);
+        size_t old_len = g_strv_length(argv);
+        int dest = arg_offset;
+        int src = login ? 1 : 0;
+        /* The NULL terminator is not included by g_strv_length(), so
+           add an extra 1 */
+        new_argv = g_new(char *, old_len + (login ? 1 : 0) + arg_offset + 1);
 
-        if (leaf)
-            ++leaf;
+        if (arg_offset)
+            new_argv[0] = shim;
+
+        if (login)
+        {
+            /* If login_shell, make sure argv[1] is the
+             * shell base name (== leaf name) prepended by "-" */
+            char *leaf = strrchr(filename, G_DIR_SEPARATOR);
+
+            if (leaf)
+                ++leaf;
+            else
+                leaf = argv[0];
+            new_argv[arg_offset] = filename;
+            new_argv[arg_offset + 1] = g_strconcat("-", leaf, NULL);
+            dest += 2;
+            /* src == 1 so memcpy(...old_len) now includes the terminator */
+        }
         else
-            leaf = argv[0];
-
-        /* The NULL terminator is not considered by g_strv_length() */
-        old_len = g_strv_length(argv);
-        new_argv = g_new(char *, old_len + 2);
-
-        new_argv[0] = filename;
-        new_argv[1] = g_strconcat("-", leaf, NULL);
-        /* This memcpy includes the NULL terminator */
-        memcpy(new_argv + 2, argv + 1, sizeof(char *) * old_len);
+        {
+            /* src == 0 so copy an extra byte to include the terminator */
+            old_len++;
+        }
+        memcpy(new_argv + dest, argv + src, sizeof(char *) * old_len);
         argv = new_argv;
     }
 
-    roxterm_spawn_child(roxterm, vte, working_directory, argv, envv,
-                        roxterm_fork_callback, new_argv != NULL);
+    if (arg_offset)
+    {
+        roxterm_spawn_child(roxterm, vte, working_directory, argv, envv,
+                            roxterm_fork_callback, login);
+    }
+    else
+    {
+        vte_terminal_spawn_async(
+            vte, VTE_PTY_DEFAULT, working_directory, argv, envv,
+            (login ? G_SPAWN_FILE_AND_ARGV_ZERO : G_SPAWN_SEARCH_PATH) |
+                VTE_SPAWN_NO_PARENT_ENVV,
+            NULL, NULL, NULL,
+            -1, NULL, roxterm_fork_callback, roxterm);
+    }
 }
 
 static void roxterm_run_command(ROXTermData *roxterm, VteTerminal *vte)
@@ -839,7 +873,6 @@ static void roxterm_run_command(ROXTermData *roxterm, VteTerminal *vte)
     /* If special_command was set, command points to the same string */
     g_free(command);
     roxterm->actual_commandv = commandv;
-    g_strfreev(env);
 }
 
 static char *roxterm_lookup_uri_handler(ROXTermData *roxterm, const char *tag)
@@ -1004,6 +1037,7 @@ static void roxterm_data_delete(ROXTermData *roxterm)
         g_strfreev(roxterm->commandv);
     g_free(roxterm->directory);
     g_strfreev(roxterm->env);
+    g_strfreev(roxterm->env_for_spawn);
     if (roxterm->pango_desc)
         pango_font_description_free(roxterm->pango_desc);
     g_free(roxterm->buffer_file_name);
@@ -4783,7 +4817,6 @@ void roxterm_init(void)
 gboolean roxterm_spawn_command_line(const gchar *command_line,
         const char *cwd, char **env, GError **error)
 {
-    char **env2 = NULL;
     int argc;
     char **argv = NULL;
     gboolean result;
@@ -4795,8 +4828,6 @@ gboolean roxterm_spawn_command_line(const gchar *command_line,
         result = g_spawn_async(cwd, argv, env, G_SPAWN_SEARCH_PATH,
                 NULL, NULL, NULL, error);
     }
-    if (env2)
-        g_strfreev(env2);
     if (argv)
         g_strfreev(argv);
     return result;
