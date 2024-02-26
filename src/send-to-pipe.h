@@ -1,6 +1,6 @@
 /*
     roxterm - VTE/GTK terminal emulator with tabs
-    Copyright (C) 2004-2018 Tony Houghton <h@realh.co.uk>
+    Copyright (C) 2024 Tony Houghton <h@realh.co.uk>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,18 +17,12 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#include "defns.h"
-#include "roxterm.h"
+#include <stdint.h>
 
-/*
- * This is rather like vte_terminal_spawn_async but uses a shim
- * (passed in argv[0]) to handle OSC 52 clipboard writes. argv gets
- * (shallow) freed by this If free_argv2 is true, it also
- * frees argv[2], which should be "-sh" where 'sh' is the shell.
- * env is not freed, that should be done in the callback.
+/* Writes data to a pipe (or any file descriptor), blocking until all the
+ * data is sent. The data sent to the pipe is preceded by length encoded in
+ * binary. If length < 0, the length of the string, including terminator,
+ * is used. The result is length on success (excluding the extra 4 bytes used
+ * to encode it), 0 for EOF, < 0 for error (result of write()).
  */
-void roxterm_spawn_child(ROXTermData *roxterm, VteTerminal *vte,
-                         const char *working_directory,
-                         char **argv, char **envv,
-                         VteTerminalSpawnAsyncCallback callback,
-                         gboolean free_argv2);
+int send_to_pipe(int fd, const char *data, uint32_t length);

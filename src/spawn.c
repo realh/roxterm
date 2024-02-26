@@ -17,14 +17,15 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#include "spawn.h"
 #include <errno.h>
 #include <signal.h>
 #include <stdlib.h>
 #include <string.h>
 #include <glib-unix.h>
 #include <unistd.h>
-#include <sys/wait.h>
+
+#include "roxterm.h"
+#include "send-to-pipe.h"
 
 #define ROXTERM_SPAWN_ERROR \
     g_quark_from_static_string("roxterm-spawn-error-quark")    
@@ -37,140 +38,6 @@ enum {
     ROXTermSpawnUnexpectedMsgError,
     ROXTermSpawnBadPidError,
 };
-
-typedef struct {
-    int fd;
-    char *buf;
-    gssize capacity;
-    gsize offset_to_next_str;
-    gsize offset_to_end;
-} BufferedReader;
-
-static inline BufferedReader *buffered_reader_new(int fd)
-{
-    BufferedReader *reader = g_new0(BufferedReader, 1);
-    reader->fd = fd;
-    return reader;
-}
-
-/**
- * Attempts to read from fd up to and including a character matching c.
- * If c is -1 just read as many bytes as are available, up to the buffer's
- * capacity. The result should not be freed and will be overwritten on the
- * next call. end_out is the offset of the byte following c if c != -1.
- * Returns NULL without setting an error if no bytes are read (assumes EOF).
- */
-static const char *read_until_c(BufferedReader *reader,
-    gsize *end_out, int c, GError **error)
-{
-    /* If there's stuff left over from the previous read, move it to the start
-     * of the buffer.
-     */
-    if (reader->offset_to_next_str)
-    {
-        memcpy(reader->buf, reader->buf + reader->offset_to_next_str,
-            reader->offset_to_end - reader->offset_to_next_str);
-        reader->offset_to_end -= reader->offset_to_next_str;
-        reader->offset_to_next_str = 0;
-    }
-    gsize chunk_offset = 0;
-
-    /* Start reading */
-    while (TRUE)
-    {
-        /* See if we can return the current buffered content. */
-        if (c != -1)
-        {
-            for (gsize i = chunk_offset; i < reader->offset_to_end; ++i)
-            {
-                if (reader->buf[i] == c)
-                {
-                    *end_out = i + 1;
-                    reader->offset_to_next_str = i + 1;
-                    return reader->buf;
-                }
-            }
-        } else if (reader->offset_to_end) {
-            *end_out = reader->offset_to_end;
-            reader->offset_to_next_str = 0;
-            reader->offset_to_end = 0;
-            return reader->buf;
-        }
-
-        /* Buf was empty, or didn't contain c, read more data. */
-        chunk_offset = reader->offset_to_end;
-        gsize spare_capacity = reader->capacity - chunk_offset;
-        gsize new_capacity = 0;
-
-        /* Make sure we have enough capacity for a decent read, but if we
-         * have excess, shrink the buffer to make sure memory is freed after
-         * a huge paste.
-         */
-        if (spare_capacity < 256)
-            new_capacity = reader->capacity + 1024;
-        else if (spare_capacity > 4096)
-            new_capacity = chunk_offset + 1024;
-        if (new_capacity)
-        {
-            reader->buf = g_realloc(reader->buf, new_capacity);
-            reader->capacity = new_capacity;
-            spare_capacity = new_capacity - chunk_offset;
-        }
-
-        ssize_t nread = read(reader->fd, reader->buf, spare_capacity);
-        if (nread == 0)
-        {
-            return NULL;
-        }
-        else if (nread < 0)
-        { 
-            if (error)
-            {
-                *error = g_error_new(G_FILE_ERROR,
-                                    g_io_error_from_errno(errno),
-                                    "Error reading from pipe: %s",
-                                    strerror(errno));
-            }
-            return NULL;
-        }
-        reader->offset_to_end += nread;
-    }
-    return NULL;
-}
-
-/* If len is -1, data is written until and including its 0 terminator. */
-static gboolean blocking_write(int fd, const char *data, gssize length,
-    GError **error)
-{
-    if (length < 0) length = strlen(data) + 1;
-    gssize nwritten = 0;
-    while (nwritten < length)
-    {
-        gssize n = write(fd, data + nwritten, length - nwritten);
-        if (n = 0)
-        {
-            if (error)
-            {
-                *error = g_error_new(ROXTERM_SPAWN_ERROR, ROXTermSpawnPipeError,
-                    "Nothing was written to pipe");
-            }
-            return FALSE;
-        }
-        else if (n < 0)
-        {
-            if (error)
-            {
-                *error = g_io_error_from_errno(errno);
-            }
-            return FALSE;
-        }
-        else
-        {
-            nwritten += n;
-        }
-    }
-    return TRUE;
-}
 
 typedef struct {
     ROXTermData *roxterm;
@@ -229,6 +96,67 @@ static int main_callback_on_idle(RoxtermMainContext *context)
     return G_SOURCE_REMOVE;
 }
 
+/* Reads from fd into buffer, blocking until it's received length bytes. */
+static gssize blocking_read(int fd, void *buffer, guint32 length)
+{
+    guint32 nread = 0;
+    while (nread < length)
+    {
+        gssize n = read(fd, buffer + nread, length - nread);
+        if (n <= 0)
+            return n;
+        else
+            nread += n;
+    }
+    return nread;
+}
+
+/*
+ * Counterpart to send_to_pipe. Result should be freed. p_nread will be updated
+ * to -errno on error.
+ */
+static char *receive_from_pipe(int fd, gint32 *p_nread)
+{
+    guint32 len;
+    gssize nread = blocking_read(fd, &len, sizeof len);
+    if (nread < 0)
+    {
+        *p_nread = -errno;
+        return NULL;
+    }
+    if (nread == 0)
+    {
+        *p_nread = 0;
+        return NULL;
+    }
+    if (len > OSC52_SIZE_LIMIT)
+    {
+        *p_nread = -EMSGSIZE;
+        return NULL;
+    }
+    char *buffer = g_malloc(len);
+    if (!buffer)
+    {
+        *p_nread = -ENOMEM;
+        return NULL;
+    }
+    nread = blocking_read(fd, buffer, len);
+    if (nread <= 0)
+        g_free(buffer);
+    if (nread < 0)
+    {
+        *p_nread = -errno;
+        return NULL;
+    }
+    if (nread == 0)
+    {
+        *p_nread = 0;
+        return NULL;
+    }
+    *p_nread = nread;
+    return buffer;
+}
+
 /*
  * This runs in a background thread of the original process. First it waits
  * for OK <pid> or ERR <error details> from a forked pid and sends it to the
@@ -237,12 +165,12 @@ static int main_callback_on_idle(RoxtermMainContext *context)
 static gpointer main_context_listener(RoxtermMainContext *ctx)
 {
     gboolean started = FALSE;
-    BufferedReader *reader = buffered_reader_new(ctx->pipe_from_fork);
+    
     while (TRUE)
     {
-        const char *msg;
-        gsize msg_len;
-        msg = read_until_c(reader, &msg_len, 0, &ctx->error);
+        gint32 msg_len;
+        char *msg = receive_from_pipe(ctx->pipe_from_fork, &msg_len);
+
         if (msg)
         {
             if (g_str_has_prefix(msg, "ERR"))
@@ -275,8 +203,16 @@ static gpointer main_context_listener(RoxtermMainContext *ctx)
                 }
             }
         }
+        else if (msg_len < 0)
+        {
+            ctx->error = g_error_new(G_IO_ERROR,
+                g_io_error_from_errno(-msg_len),
+                "Error reading message from child");
+        }
         if (!msg || ctx->error)
         {
+            g_clear_pointer(&msg, g_free);
+            msg = NULL;
             if (!started)
             {
                 if (!ctx->error)
@@ -287,7 +223,7 @@ static gpointer main_context_listener(RoxtermMainContext *ctx)
                 }
                 /* This will free the context later. */
                 g_idle_add((GSourceFunc) main_callback_on_idle, ctx);
-                return;
+                return NULL;
             }
             else if (ctx->error)
             {
@@ -302,69 +238,25 @@ static gpointer main_context_listener(RoxtermMainContext *ctx)
         }
 
         if (!strcmp(msg, "END"))
+        {
+            g_clear_pointer(&msg, g_free);
             break;
+        }
+
         /* TODO: Check for OSC52 */
+
+        g_clear_pointer(&msg, g_free);
     }
     roxterm_main_context_free(ctx);
     return NULL;
 }
 
-static gpointer osc52_pipe_filter(RoxtermPipeContext *rpc)
-{
-    GError *error = NULL;
-    BufferedReader *reader = buffered_reader_new(rpc->pipe_from_child);
-    const char *outname = rpc->output == 1 ? "stdout" : "stderr";
-    while (TRUE)
-    {
-        const char *buf;
-        gsize buflen;
-        buf = read_until_c(reader, &buflen, -1, &error);
-        if (error)
-        {
-            g_critical("Error reading from child's %s: %s",
-                outname, error->message);
-            break;
-        }
-        else if (!buf || !buflen)
-        {
-            g_critical("No data from child's %s", outname, error->message);
-            break;
-        }
-        gboolean wrote = blocking_write(rpc->output, buf, buflen, &error);
-        if (error)
-        {
-            g_critical("Error writing to pty's %s: %s",
-                outname, error->message);
-            break;
-        }
-        else if (!wrote)
-        {
-            g_critical("No data written to pty's %s", outname);
-            break;
-        }
-    }
-    return NULL;
-}
-
-static void start_pipe_filter_thread(int output,
-                                     int pipe_to_main, int pipe_from_child,
-                                     GError **error)
-{
-    RoxtermPipeContext *rpc = g_new(RoxtermPipeContext, 1);
-    rpc->output = output;
-    rpc->pipe_to_main = pipe_to_main;
-    rpc->pipe_from_child = pipe_from_child;
-    g_thread_create(osc52_pipe_filter, rpc, FALSE, error);
-}
-
 /*
- * This blocks until the child dies, then exits itself (it never returns).
+ * This exits after the child has been launched (or not) and the appropriate
+ * message sent to the parent.
  */
-static void launch_and_monitor_child(VtePty *pty,
-                                     const char *working_directory,
-                                     char **argv, char **envv,
-                                     int pipe_to_main,
-                                     gboolean free_argv1_and_argv)
+static void launch_child(VtePty *pty, const char *working_directory,
+                         char **argv, char **envv, int pipe_to_main)
 {
     gboolean login = argv[0] != NULL && argv[1] != NULL && argv[1][0] == '-';
     GError *error = NULL;
@@ -372,25 +264,15 @@ static void launch_and_monitor_child(VtePty *pty,
     int child_stdout, child_stderr;
 
     vte_pty_child_setup(pty);
-    if (g_spawn_async_with_pipes(
+    // TODO: Instead of g_spawn_async_with_pipes, close all fds this process
+    // doesn't need (use /proc/self/fd or /dev/fd) and call execvpe.
+    if (!g_spawn_async_with_pipes(
             working_directory, argv, envv,
             G_SPAWN_DO_NOT_REAP_CHILD | G_SPAWN_CHILD_INHERITS_STDIN |
                 (login ? G_SPAWN_FILE_AND_ARGV_ZERO : G_SPAWN_SEARCH_PATH),
-            NULL, NULL,
-            &pid, NULL, &child_stdout, &child_stderr, &error))
-    {
-        start_pipe_filter_thread(1, pipe_to_main, child_stdout, &error);
-        if (!error)
-        {
-            start_pipe_filter_thread(2, pipe_to_main, child_stdout, &error);
-        }
-        if (error)
-        {
-            g_critical("Error staring pipe filter thread: %s", error->message);
-            kill(pid, SIGTERM);
-        }
-    }
-    else if (!error)
+            NULL, NULL, &pid, NULL,
+            &child_stdout, &child_stderr, &error) &&
+        !error)
     {
         error = g_error_new(ROXTERM_SPAWN_ERROR, ROXTermSpawnError,
                             _("Unable to spawn child process"));
@@ -405,35 +287,25 @@ static void launch_and_monitor_child(VtePty *pty,
     {
         msg = g_strdup_printf("OK %u", pid);
     }
-    GError *e2 = NULL;
-    if (!blocking_write(pipe_to_main, msg, -1, &e2))
+    int nwrit = send_to_pipe(pipe_to_main, msg, -1);
+    if (nwrit <= 0)
     {
-        g_critical("Failed to send message to main: %s", msg);
-        if (e2)
-        {
-            g_critical("Pipe write error: %s", e2->message);
-            g_error_free(e2);
-        }
+        g_critical("Failed to send '%s' message to main: %s",
+            msg, nwrit ? strerror(-nwrit) : "EOF");
     }
     g_free(msg);
-    if (!error && !e2)
-    {
-        wait(NULL);
-    }
-    close(pipe_to_main);
-    if (error)
-        g_error_free(error);
-    exit((error || e2) ? 1 : 0);
+    exit((error || nwrit <= 0) ? 1 : 0);
 }
 
 void roxterm_spawn_child(ROXTermData *roxterm, VteTerminal *vte,
                          const char *working_directory,
                          char **argv, char **envv,
                          VteTerminalSpawnAsyncCallback callback,
-                         gboolean free_argv1_and_argv)
+                         gboolean free_argv2)
 {
     GError *error = NULL;
-    VtePty *pty = vte_terminal_pty_new_sync(vte, VTE_PTY_DEFAULT, NULL, &error);
+    VtePty *pty = vte_terminal_pty_new_sync(vte, VTE_PTY_DEFAULT,
+                                            NULL, &error);
     GPid pid = -1;
 
     if (pty)
@@ -461,11 +333,12 @@ void roxterm_spawn_child(ROXTermData *roxterm, VteTerminal *vte,
                 RoxtermMainContext *context = g_new(RoxtermMainContext, 1);
                 context->roxterm = roxterm;
                 context->vte = vte;
-                context->pipe_from_fork = pipe_pair;
+                context->pipe_from_fork = pipe_pair[0];
                 context->callback = callback;
                 context->pid = -1;
                 context->error = NULL;
-                g_thread_create(main_context_listener, context, FALSE, &error);
+                g_thread_create((GThreadFunc) main_context_listener,
+                                context, FALSE, &error);
                 
                 /* Not sure whether it's better to make vte wait for this pid
                  * or the child it's about to spawn, but this is easier. */
@@ -474,17 +347,15 @@ void roxterm_spawn_child(ROXTermData *roxterm, VteTerminal *vte,
                 /* We can go ahead and free argv now because the fork's child
                  * has a copy.
                  */
-                if (free_argv1_and_argv)
-                {
-                    g_free(argv[1]);
-                    g_free(argv);
-                }
+                if (free_argv2)
+                    g_free(argv[2]);
+                g_free(argv);
             }
             else    /* Child */
             {
                 close(pipe_pair[0]);
-                launch_and_monitor_child(pty, working_directory, argv, envv,
-                                         pipe_pair[1], free_argv1_and_argv);
+                launch_child(pty, working_directory, argv, envv,
+                                         pipe_pair[1]);
             }
         }
         else if (!error)

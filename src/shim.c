@@ -30,13 +30,15 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
+#include "config.h"
+
 #define MAX_OF(a, b) ((a) >= (b) ? (a) : (b))
 #define MIN_OF(a, b) ((a) <= (b) ? (a) : (b))
 
 #define DEFAULT_CAPACITY 2048
 #define MIN_CAPACITY 1024
 #define EXCESS_CAPACITY 4096
-#define MAX_CAPACITY 1024 * 1024
+#define MAX_CAPACITY OSC52_SIZE_LIMIT
 #define MAX_MOVE DEFAULT_CAPACITY
 
 #define ESC_CODE 0x1b
