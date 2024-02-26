@@ -31,6 +31,7 @@
 #include <sys/wait.h>
 
 #include "config.h"
+#include "thread-compat.h"
 
 #define MAX_OF(a, b) ((a) >= (b) ? (a) : (b))
 #define MIN_OF(a, b) ((a) <= (b) ? (a) : (b))
@@ -927,6 +928,10 @@ int main(int argc, char **argv)
             roxterm_tab_id, stderr_pipe, 2);
 
         g_free(log_dir);
+
+#if !GLIB_CHECK_VERSION(2, 32, 0)
+        g_thread_init(NULL);
+#endif
 
         if (!start_threads(ofc_stderr))
             exit(1);

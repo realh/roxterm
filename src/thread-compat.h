@@ -1,3 +1,4 @@
+
 /*
     roxterm - VTE/GTK terminal emulator with tabs
     Copyright (C) 2004-2024 Tony Houghton <h@realh.co.uk>
@@ -17,12 +18,24 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#include <stdint.h>
+#include <glib.h>
 
-/* Writes data to a pipe (or any file descriptor), blocking until all the
- * data is sent. The data sent to the pipe is preceded by length encoded in
- * binary. If length < 0, the length of the string, including terminator,
- * is used. The result is length on success (excluding the extra 4 bytes used
- * to encode it), 0 for EOF, < 0 for error (result of write()).
- */
-int send_to_pipe(int fd, const char *data, uint32_t length);
+#if !GLIB_CHECK_VERSION(2, 32, 0)
+inline static GThread *g_thread_try_new(const gchar *name, GThreadFunc func,
+                                        gpointer data, GError **error)
+{
+    return g_thread_create(func, data, TRUE, error);
+}
+
+inline static GThread *g_thread_new(const gchar *name, GThreadFunc func,
+                                    gpointer data)
+{
+    GError *error = NULL;
+    GThread *thread = g_thread_create(func, data, TRUE, &error);
+    if (!thread)
+    {
+        g_error("Failed to launch thread '%s': %s", name,
+            (error && error->message) ? error->message : "unknown error");
+    }
+}
+#endif

@@ -281,6 +281,11 @@ int main(int argc, char **argv)
 #endif
 
     gtk_init(&argc, &argv);
+
+#if !GLIB_CHECK_VERSION(2, 32, 0)
+    g_thread_init(NULL);
+#endif
+
     if (!preparse_ok)
     {
         /* Only one possible reason for failure */

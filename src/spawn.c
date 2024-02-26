@@ -26,6 +26,7 @@
 
 #include "roxterm.h"
 #include "send-to-pipe.h"
+#include "thread-compat.h"
 
 #define ROXTERM_SPAWN_ERROR \
     g_quark_from_static_string("roxterm-spawn-error-quark")    
@@ -46,6 +47,7 @@ typedef struct {
     VteTerminalSpawnAsyncCallback callback;
     GPid pid;
     GError *error;
+    GThread *thread;
 } RoxtermMainContext;
 
 typedef struct {
@@ -60,6 +62,8 @@ static void roxterm_main_context_free(RoxtermMainContext *context)
         g_error_free(context->error);
     if (context->pipe_from_fork > 0)
         close(context->pipe_from_fork);
+    if (context->thread)
+        g_thread_unref(context->thread);
     g_free(context);
 }
 
@@ -80,20 +84,6 @@ GError *parse_error(const char *s)
     if (endptr == s || *endptr != ',')
         return garbled_message_error(s);
     return g_error_new((GQuark) domain, (int) code, "%s", endptr + 1);
-}
-
-/*
- * If context->error is set, the context is freed after calling its callback.
- */
-static int main_callback_on_idle(RoxtermMainContext *context)
-{
-    context->callback(context->vte, context->pid, context->error,
-        context->roxterm);
-    if (context->error)
-    {
-        roxterm_main_context_free(context);
-    }
-    return G_SOURCE_REMOVE;
 }
 
 /* Reads from fd into buffer, blocking until it's received length bytes. */
@@ -158,52 +148,17 @@ static char *receive_from_pipe(int fd, gint32 *p_nread)
 }
 
 /*
- * This runs in a background thread of the original process. First it waits
- * for OK <pid> or ERR <error details> from a forked pid and sends it to the
- * callback via idle. Then it waits for OSC52 messages until it reads END.
+ * This runs in a background thread of the original process, waiting for OSC 52
+ * messages. It should stop automatically when the pipe gets closed by the shim.
  */
 static gpointer main_context_listener(RoxtermMainContext *ctx)
 {
-    gboolean started = FALSE;
-    
     while (TRUE)
     {
         gint32 msg_len;
         char *msg = receive_from_pipe(ctx->pipe_from_fork, &msg_len);
 
-        if (msg)
-        {
-            if (g_str_has_prefix(msg, "ERR"))
-            {
-                ctx->error = parse_error(msg + 4);
-            }
-            else if (g_str_has_prefix(msg, "OK"))
-            {
-                if (started)
-                {
-                    g_critical("main_context_listener received spurious OK");
-                }
-                else
-                {
-                    long pid = strtol(msg + 3, NULL, 10);
-                    if (pid == 0)
-                    {
-                        ctx->error = g_error_new(ROXTERM_SPAWN_ERROR,
-                            ROXTermSpawnBadPidError,
-                            "Can't read pid from '%s'", msg);
-                    }
-                    else
-                    {
-                        g_debug("main_context_listener: %s", msg);
-                        ctx->pid = pid;
-                        ctx->error = NULL;
-                        g_idle_add((GSourceFunc) main_callback_on_idle, ctx);
-                        started = TRUE;
-                    }
-                }
-            }
-        }
-        else if (msg_len < 0)
+        if (msg_len < 0)
         {
             ctx->error = g_error_new(G_IO_ERROR,
                 g_io_error_from_errno(-msg_len),
@@ -212,20 +167,7 @@ static gpointer main_context_listener(RoxtermMainContext *ctx)
         if (!msg || ctx->error)
         {
             g_clear_pointer(&msg, g_free);
-            msg = NULL;
-            if (!started)
-            {
-                if (!ctx->error)
-                {
-                    ctx->error = g_error_new(ROXTERM_SPAWN_ERROR,
-                        ROXTermSpawnPipeError,
-                        "IPC pipe was closed prematurely");
-                }
-                /* This will free the context later. */
-                g_idle_add((GSourceFunc) main_callback_on_idle, ctx);
-                return NULL;
-            }
-            else if (ctx->error)
+            if (ctx->error)
             {
                 g_critical("main_context_listener error %s",
                     ctx->error->message);
@@ -322,11 +264,6 @@ void roxterm_spawn_child(ROXTermData *roxterm, VteTerminal *vte,
             pid = fork();
             if (pid != 0)   /* Parent */
             {
-                /*
-                 * Note this pid is not the one we need to pass back to the
-                 * callback; we need the child of that pid. It gets sent down
-                 * result_pipe.
-                 */
                 g_debug("roxterm_spawn_child: main context (parent) waiting "
                     "for pid of %d's child", pid);
                 close(pipe_pair[1]);
@@ -337,9 +274,10 @@ void roxterm_spawn_child(ROXTermData *roxterm, VteTerminal *vte,
                 context->callback = callback;
                 context->pid = -1;
                 context->error = NULL;
-                g_thread_create((GThreadFunc) main_context_listener,
-                                context, FALSE, &error);
-                
+                context->thread = g_thread_try_new(
+                    "osc52-listener", (GThreadFunc) main_context_listener,
+                    context, &error);
+
                 /* Not sure whether it's better to make vte wait for this pid
                  * or the child it's about to spawn, but this is easier. */
                 vte_terminal_watch_child(vte, pid);
