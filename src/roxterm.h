@@ -43,17 +43,12 @@ void roxterm_launch(char **env);
 
 /* Ways of spawning a command */
 typedef enum {
-	ROXTerm_SpawnExternal,		/* Run independently of ROXterm,
-								   eg because it has its own window */
 	ROXTerm_SpawnNewWindow,		/* Run command in a new ROXterm window */
 	ROXTerm_SpawnNewTab			/* Run command in a new ROXterm tab */
 } ROXTerm_SpawnType;
 
 /* NB ROXTermData is unused if spawn type is External */
 void roxterm_spawn(ROXTermData *, const char *command, ROXTerm_SpawnType);
-
-gboolean roxterm_spawn_command_line(const gchar *command_line,
-        const char *cwd, char **env, GError **error);
 
 VteTerminal *roxterm_get_vte_terminal(ROXTermData *roxterm);
 

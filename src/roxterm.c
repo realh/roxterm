@@ -4814,25 +4814,6 @@ void roxterm_init(void)
         on_dark_theme_pref_changed, NULL);
 }
 
-gboolean roxterm_spawn_command_line(const gchar *command_line,
-        const char *cwd, char **env, GError **error)
-{
-    int argc;
-    char **argv = NULL;
-    gboolean result;
-
-    cwd = roxterm_check_cwd(cwd);
-    result = g_shell_parse_argv(command_line, &argc, &argv, error);
-    if (result)
-    {
-        result = g_spawn_async(cwd, argv, env, G_SPAWN_SEARCH_PATH,
-                NULL, NULL, NULL, error);
-    }
-    if (argv)
-        g_strfreev(argv);
-    return result;
-}
-
 void roxterm_spawn(ROXTermData *roxterm, const char *command,
     ROXTerm_SpawnType spawn_type)
 {
@@ -4858,17 +4839,6 @@ void roxterm_spawn(ROXTermData *roxterm, const char *command,
             roxterm->special_command = g_strdup(command);
             roxterm->no_respawn = TRUE;
             (void) multi_tab_new(win, roxterm);
-            break;
-        default:
-            cwd = roxterm_get_cwd(roxterm);
-            roxterm_spawn_command_line(command, cwd, roxterm->env, &error);
-            if (error)
-            {
-                dlg_warning(roxterm_get_toplevel(roxterm),
-                        _("Unable to spawn command %s: %s"),
-                    command, error->message);
-            }
-            g_free(cwd);
             break;
     }
 }
