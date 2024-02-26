@@ -664,7 +664,7 @@ static void roxterm_fork_command(ROXTermData *roxterm, VteTerminal *vte,
     char *filename = argv[0];
     char **new_argv = NULL;
     static char *shim = NULL;
-    int arg_offset = 1;         // TODO: Set to 0 or 1 depending on whether
+    int arg_offset = 2;         // TODO: Set to 0 or 2 depending on whether
                                 // OSC 52 option is enabled.
 
     if (arg_offset && !shim)
@@ -698,7 +698,10 @@ static void roxterm_fork_command(ROXTermData *roxterm, VteTerminal *vte,
         new_argv = g_new(char *, old_len + (login ? 1 : 0) + arg_offset + 1);
 
         if (arg_offset)
+        {
             new_argv[0] = shim;
+            // new_argv[1] will contain pipe fd number
+        }
 
         if (login)
         {
