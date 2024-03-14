@@ -185,7 +185,25 @@ static gpointer main_context_listener(RoxtermMainContext *ctx)
             break;
         }
 
-        /* TODO: Check for OSC52 */
+        if (g_str_has_prefix(msg, "OK "))
+        {
+            GPid pid = strtol(msg + 3, NULL, 10);
+            ctx->callback(ctx->vte, pid, NULL, ctx->roxterm);
+        }
+        else
+        {
+            // Anything else is OSC52
+            char *semi = strchr(msg, ';');
+            if (semi != NULL)
+            {
+                *semi = 0;
+                roxterm_set_clipboard_from_osc52(ctx->roxterm, msg, semi + 1);
+            }
+            else
+            {
+                g_critical("Badly formed OSC52 message piped from shim");
+            }
+        }
 
         g_clear_pointer(&msg, g_free);
     }

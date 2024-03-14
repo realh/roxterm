@@ -726,7 +726,8 @@ static void discard_esc_sequence(Osc52FilterContext *ofc, gsize offset)
 }
 
 // A return value of 0 means we didn't find a terminator and buffer is full,
-// so data should be skipped until a terminator is found.
+// so data should be skipped until a terminator is found. 1 means end found,
+// -1 means error.
 static int find_osc52_end(Osc52FilterContext *ofc, gboolean skip)
 {
     gsize offset = 1;
@@ -830,6 +831,7 @@ static gpointer input_filter(Osc52FilterContext *ofc)
                 skip = TRUE;
                 break;
             case 1:
+                // TODO: Pipe it to the parent
                 break;
             default:
                 break;

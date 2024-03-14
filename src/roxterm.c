@@ -3010,12 +3010,12 @@ static void roxterm_connect_misc_signals(ROXTermData * roxterm)
     g_signal_connect(roxterm->widget, "key-press-event",
             G_CALLBACK(roxterm_key_press_handler), roxterm);
 
-    static gboolean support_osc52 = TRUE;
-    if (support_osc52 && !g_signal_connect(roxterm->widget, "write-clipboard",
-            G_CALLBACK(roxterm_osc52_handler), roxterm))
-    {
-        support_osc52 = FALSE;
-    }
+    // static gboolean support_osc52 = TRUE;
+    // if (support_osc52 && !g_signal_connect(roxterm->widget, "write-clipboard",
+    //         G_CALLBACK(roxterm_osc52_handler), roxterm))
+    // {
+    //     support_osc52 = FALSE;
+    // }
 }
 
 inline static void
@@ -5575,6 +5575,20 @@ const char *roxterm_get_search_pattern(ROXTermData *roxterm)
 guint roxterm_get_search_flags(ROXTermData *roxterm)
 {
     return roxterm->search_flags;
+}
+
+void roxterm_set_clipboard_from_osc52(ROXTermData *roxterm,
+                                      const char *clipboards,
+                                      const char *base64)
+{
+    gsize decoded_len;
+    guchar *decoded = g_base64_decode(base64, &decoded_len);
+    if (decoded && decoded_len > 1)
+    {
+      roxterm_osc52_handler(VTE_TERMINAL(roxterm->widget), clipboards, decoded,
+                            decoded_len, roxterm);
+    }
+    g_free(decoded);
 }
 
 /* vi:set sw=4 ts=4 et cindent cino= */

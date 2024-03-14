@@ -91,6 +91,10 @@ gboolean roxterm_set_search(ROXTermData *roxterm,
 const char *roxterm_get_search_pattern(ROXTermData *roxterm);
 guint roxterm_get_search_flags(ROXTermData *roxterm);
 
+void roxterm_set_clipboard_from_osc52(ROXTermData *roxterm,
+                                      const char *clipboards,
+                                      const char *base64);
+
 #endif /* ROXTERM_H */
 
 /* vi:set sw=4 ts=4 et cindent cino= */
