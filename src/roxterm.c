@@ -700,6 +700,7 @@ static void roxterm_fork_command(ROXTermData *roxterm, VteTerminal *vte,
         if (arg_offset)
         {
             new_argv[0] = shim;
+            new_argv[1] = NULL;
             // new_argv[1] will contain pipe fd number
         }
 

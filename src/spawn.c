@@ -17,13 +17,14 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+#include <ctype.h>
 #include <errno.h>
-#include <signal.h>
 #include <stdlib.h>
 #include <string.h>
 #include <glib-unix.h>
 #include <unistd.h>
 
+#include "glib/gstdio.h"
 #include "roxterm.h"
 #include "send-to-pipe.h"
 #include "thread-compat.h"
@@ -212,41 +213,62 @@ static gpointer main_context_listener(RoxtermMainContext *ctx)
 }
 
 /*
- * This exits after the child has been launched (or not) and the appropriate
- * message sent to the parent.
+ * Closes all files open in the current process except for 0, 1, 2 and
+ * keep_pipe.
+ */
+static void close_fds(int keep_pipe)
+{
+    // /dev/fd should exist on most systems, but isn't guaranteed on Linux, so
+    // check /dev/fd first, and if it doesn't exist try /proc/self/fd.
+    const char *fd_dir = "/dev/fd";
+    if (!g_file_test(fd_dir, G_FILE_TEST_EXISTS))
+        fd_dir = "/proc/self/fd";
+    if (!g_file_test(fd_dir, G_FILE_TEST_EXISTS))
+    {
+        g_warning("Unable to locate /dev/fd or /proc/self/fd");
+        return;
+    }
+
+    GError *error = NULL;
+    GDir *dir = g_dir_open(fd_dir, 0, &error);
+    if (!dir)
+    {
+        g_critical("Unable to read contents of %s: %s", fd_dir,
+            (error && error->message) ? error->message : "unknown error");
+        return;
+    }
+
+    const char *entry_name;
+    while ((entry_name = g_dir_read_name(dir)) != NULL)
+    {
+        // POSIX should skip '.' and '..', but play it safe 
+        if (!isdigit(entry_name[0]))
+            continue;
+        int fd = strtol(entry_name, NULL, 10);
+        if (fd > 2 && fd != keep_pipe)
+            close(fd);
+    }
+    g_dir_close(dir);
+}
+
+/*
+ * If this fails it sends an error message down pipe_to_main.
  */
 static void launch_child(VtePty *pty, const char *working_directory,
                          char **argv, char **envv, int pipe_to_main)
 {
-    gboolean login = argv[0] != NULL && argv[1] != NULL && argv[1][0] == '-';
-    GError *error = NULL;
-    GPid pid;
-    int child_stdout, child_stderr;
+    close_fds(pipe_to_main);
+    argv[1] = g_strdup_printf("%d", pipe_to_main);
+
+    g_chdir(working_directory);
 
     vte_pty_child_setup(pty);
-    // TODO: Instead of g_spawn_async_with_pipes, close all fds this process
-    // doesn't need (use /proc/self/fd or /dev/fd) and call execvpe.
-    if (!g_spawn_async_with_pipes(
-            working_directory, argv, envv,
-            G_SPAWN_DO_NOT_REAP_CHILD | G_SPAWN_CHILD_INHERITS_STDIN |
-                (login ? G_SPAWN_FILE_AND_ARGV_ZERO : G_SPAWN_SEARCH_PATH),
-            NULL, NULL, &pid, NULL,
-            &child_stdout, &child_stderr, &error) &&
-        !error)
-    {
-        error = g_error_new(ROXTERM_SPAWN_ERROR, ROXTermSpawnError,
-                            _("Unable to spawn child process"));
-    }
-    char *msg;
-    if (error)
-    {
-        msg = g_strdup_printf("ERR %u,%u,%s", error->domain, error->code,
-            error->message);
-    }
-    else
-    {
-        msg = g_strdup_printf("OK %u", pid);
-    }
+
+    // This doesn't return if it succeeds
+    execve(argv[0], argv, envv);
+    char *msg = g_strdup_printf("ERR %u,%u,%s: %s", ROXTERM_SPAWN_ERROR,
+        ROXTermSpawnError, _("Unable to spawn child process"),
+        strerror(errno));
     int nwrit = send_to_pipe(pipe_to_main, msg, -1);
     if (nwrit <= 0)
     {
@@ -254,7 +276,7 @@ static void launch_child(VtePty *pty, const char *working_directory,
             msg, nwrit ? strerror(-nwrit) : "EOF");
     }
     g_free(msg);
-    exit((error || nwrit <= 0) ? 1 : 0);
+    exit(1);
 }
 
 void roxterm_spawn_child(ROXTermData *roxterm, VteTerminal *vte,
