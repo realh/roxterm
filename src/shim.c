@@ -31,6 +31,8 @@
 #include <sys/wait.h>
 
 #include "config.h"
+#include "roxterm-error.h"
+#include "send-to-pipe.h"
 #include "thread-compat.h"
 
 #define MAX_OF(a, b) ((a) >= (b) ? (a) : (b))
@@ -151,7 +153,6 @@ static void stop_queue_processor(OutputQueue *oq)
 
 struct Osc52FilterContext {
     int input_fd;
-    guintptr roxterm_tab_id;
     guint8 *buf;
     gsize start;    // Offset to start of current data
     gsize end;      // Offset to one after current data
@@ -159,6 +160,8 @@ struct Osc52FilterContext {
     GThread *input_thread;
     OutputQueue output_queue;
     OutputQueue debug_queue;
+    // ptp_queue is a pointer because it may be shared by stdout and stderr
+    OutputQueue *ptp_queue;
     FILE *debug_fp;
     GMutex debug_fp_lock;
 };
@@ -263,22 +266,24 @@ static gpointer debug_thread(gpointer handle)
     return NULL;
 }
 
-static Osc52FilterContext *osc52_filter_context_new(guintptr roxterm_tab_id,
-                                             int input_fd, int output_fd)
+static Osc52FilterContext *osc52_filter_context_new(int input_fd, int output_fd,
+                                                    OutputQueue *ptp_queue)
 {
     const char *output_name = fd_name(output_fd);
     Osc52FilterContext *ofc = g_new(Osc52FilterContext, 1);
     ofc->input_thread = NULL;
-    ofc->roxterm_tab_id = roxterm_tab_id;
     ofc->input_fd = input_fd;
     ofc->buf = g_new(guint8, DEFAULT_CAPACITY);
     ofc->start = 0;
     ofc->end = 0;
     ofc->capacity = DEFAULT_CAPACITY;
+    ofc->ptp_queue = ptp_queue;
+
     output_queue_init(&ofc->output_queue, output_fd, output_name);
     g_mutex_init(&ofc->debug_fp_lock);
-    char *log_leaf = g_strdup_printf("osc52-log-%lx-%s.txt",
-        ofc->roxterm_tab_id, output_name);
+
+    char *log_leaf = g_strdup_printf("osc52-log-%ld-%d-%s.txt",
+        g_get_real_time(), getpid(), output_name);
     char *log_file = g_build_filename(log_dir, log_leaf, NULL);
     ofc->debug_fp = fopen(log_file, "w");
     g_free(log_file);
@@ -296,6 +301,8 @@ static gssize write_output(OutputQueue *oq, OutputItem *item,
 {
     Osc52FilterContext *ofc = handle;
     gssize n = write_item_to_fd(oq, item, ofc);
+    if (!ofc)
+        return n;
     if (n == 0)
     {
         ofc_debug(ofc, "No bytes written to %s (EOF?)\n",
@@ -307,6 +314,15 @@ static gssize write_output(OutputQueue *oq, OutputItem *item,
                 oq->name, strerror(errno));
     }
     return n;
+}
+
+// As write_item_to_fd but prefixes data with its length by using send_to_pipe.
+// No logging, because handle is NULL in the thread this is called from.
+static gssize send_with_size(OutputQueue *oq, OutputItem *item,
+                             G_GNUC_UNUSED gpointer handle)
+{
+    return send_to_pipe(oq->fd, (const char *) item->buf + item->start,
+                            item->size);
 }
 
 inline static guint8 ofc_char(Osc52FilterContext *ofc, gsize index)
@@ -726,9 +742,9 @@ static void discard_esc_sequence(Osc52FilterContext *ofc, gsize offset)
 }
 
 // A return value of 0 means we didn't find a terminator and buffer is full,
-// so data should be skipped until a terminator is found. 1 means end found,
-// -1 means error.
-static int find_osc52_end(Osc52FilterContext *ofc, gboolean skip)
+// so data should be skipped until a terminator is found. >0 means end found
+// at that offset, -1 means error.
+static gssize find_osc52_end(Osc52FilterContext *ofc, gboolean skip)
 {
     gsize offset = 1;
 
@@ -767,19 +783,32 @@ static int find_osc52_end(Osc52FilterContext *ofc, gboolean skip)
             if (skip) {
                 ofc_debug(ofc, "FOE: Found belated terminator\n");
                 discard_esc_sequence(ofc, offset);
+                return 0;
             } else {
                 gsize end = ofc_char(ofc, offset) == ESC_CODE
                         ? offset + 1 : offset;
                 ofc_debug_data(ofc, "FOE: OSC 52", ofc->buf + ofc->start,
                                end);
-                discard_esc_sequence(ofc, offset);
+                return offset;
             }
-            return 1;
         case EscIOError:
             return -1;
         }
     }
     return 0;
+}
+
+static void queue_osc52_message(Osc52FilterContext *ofc, gssize len)
+{
+    OutputItem *item = g_new(OutputItem, 1);
+    item->size = len;
+    item->buf = g_malloc(len);
+    item->start = 0;
+    item->next = NULL;
+    memcpy(item->buf, ofc->buf + ofc->start, len);
+    g_mutex_lock(&ofc->ptp_queue->lock);
+    queue_item_for_writing(ofc->ptp_queue, item);
+    g_mutex_unlock(&ofc->ptp_queue->lock);
 }
 
 static gpointer input_filter(Osc52FilterContext *ofc)
@@ -803,21 +832,20 @@ static gpointer input_filter(Osc52FilterContext *ofc)
                     nread, ofc_len(ofc), ofc->start, ofc->end);
         }
 
-        int osc52_end_result = skip ? find_osc52_end(ofc, skip) : 1;
+        gssize osc52_end_result = skip ? find_osc52_end(ofc, skip) : -1;
 
         if (!skip)
         {
             switch (find_osc_start(ofc)) {
             case -1:
                 return NULL;
-            case 1:
-                osc52_end_result = find_osc52_end(ofc, skip);
-                break;
             case 0:
-            default:
                 // No OSC52, flush anyway and continue
                 if (flush_up_to(ofc, ofc_len(ofc)) <= 0)
                     return NULL;
+                break;
+            default:
+                osc52_end_result = find_osc52_end(ofc, skip);
                 break;
             }
         }
@@ -830,10 +858,9 @@ static gpointer input_filter(Osc52FilterContext *ofc)
             case 0:
                 skip = TRUE;
                 break;
-            case 1:
-                // TODO: Pipe it to the parent
-                break;
             default:
+                queue_osc52_message(ofc, osc52_end_result);
+                discard_esc_sequence(ofc, osc52_end_result);
                 break;
         }
     }
@@ -843,6 +870,12 @@ static gpointer input_filter(Osc52FilterContext *ofc)
 static gpointer output_writer(Osc52FilterContext *ofc)
 {
     queue_processor(&ofc->output_queue, write_output, ofc);
+    return NULL;
+}
+
+static gpointer ptp_writer(OutputQueue *ptp_queue)
+{
+    queue_processor(ptp_queue, send_with_size, NULL);
     return NULL;
 }
 
@@ -891,12 +924,19 @@ static void stop_and_join_threads(Osc52FilterContext *ofc)
     fprintf(ofc->debug_fp, "Shutdown cleanly\n");
 }
 
+static void err_to_parent(GError *error, int pipe)
+{
+    char *data = g_strdup_printf("ERR %u,%d,%s", error->domain,
+        error->code, error->message);
+    send_to_pipe(pipe, data, -1);
+}
+
 int main(int argc, char **argv)
 {
     log_dir = g_build_filename(g_get_user_cache_dir(), "roxterm", NULL);
     g_mkdir_with_parents(log_dir, 0755);
 
-    guintptr roxterm_tab_id = strtoul(argv[1], NULL, 16);
+    int pipe_to_parent = strtoul(argv[1], NULL, 10);
 
     GPid pid;
     argv += 2;
@@ -925,9 +965,12 @@ int main(int argc, char **argv)
         NULL, &stderr_pipe,
         &error))
     {
+        OutputQueue *ptp_queue = g_new(OutputQueue, 1);
+        output_queue_init(ptp_queue, pipe_to_parent, "ptp");
+
         // TODO: stdout
         Osc52FilterContext *ofc_stderr = osc52_filter_context_new(
-            roxterm_tab_id, stderr_pipe, 2);
+            stderr_pipe, 2, ptp_queue);
 
         g_free(log_dir);
 
@@ -935,20 +978,43 @@ int main(int argc, char **argv)
         g_thread_init(NULL);
 #endif
 
-        if (!start_threads(ofc_stderr))
+        // Lock this before starting its thread to make sure "OK " is the first
+        // message sent
+        g_mutex_lock(&ptp_queue->lock);
+
+        ptp_queue->thread =
+            g_thread_new("ptp-writer", (GThreadFunc) ptp_writer, ptp_queue);
+
+        if (!ptp_queue->thread || !start_threads(ofc_stderr))
+        {
+            error = g_error_new(ROXTERM_SPAWN_ERROR, ROXTermSpawnThreadError,
+                "Failed to create threads");
+            err_to_parent(error, pipe_to_parent);
             exit(1);
+        }
+
+        OutputItem *ok = g_new(OutputItem, 1);
+        ok->next = NULL;
+        ok->buf = (guchar *) g_strdup_printf("OK %d", pid);
+        ok->start = 0;
+        ok->size = strlen((char *) ok->buf) + 1;
+        queue_item_for_writing(ptp_queue, ok);
+        g_mutex_unlock(&ptp_queue->lock);
 
         int status = 0;
         waitpid(pid, &status, 0);
         ofc_debug(ofc_stderr, "Child exited: %d, status %d\n",
                 WIFEXITED(status), WEXITSTATUS(status));
         stop_and_join_threads(ofc_stderr);
+        stop_queue_processor(ptp_queue);
+        g_thread_join(ptp_queue->thread);
         exit(status);
     }
     else
     {
         fprintf(stderr, "Failed to run command: %s\n",
                 error ? error->message : "unknown error");
+        err_to_parent(error, pipe_to_parent);
         exit(1);
     }
     

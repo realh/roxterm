@@ -27,6 +27,7 @@
 #include <vte/vte.h>
 
 #include "multitab.h"
+#include "roxterm-error.h"
 
 typedef struct ROXTermData ROXTermData;
 

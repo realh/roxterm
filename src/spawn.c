@@ -29,18 +29,6 @@
 #include "send-to-pipe.h"
 #include "thread-compat.h"
 
-#define ROXTERM_SPAWN_ERROR \
-    g_quark_from_static_string("roxterm-spawn-error-quark")    
-
-enum {
-    ROXTermSpawnPtyError,
-    ROXTermSpawnError,
-    ROXTermSpawnPipeError,
-    ROXTermSpawnGarbledMessageError,
-    ROXTermSpawnUnexpectedMsgError,
-    ROXTermSpawnBadPidError,
-};
-
 typedef struct {
     ROXTermData *roxterm;
     VteTerminal *vte;
