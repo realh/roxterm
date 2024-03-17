@@ -4832,9 +4832,7 @@ void roxterm_init(void)
 void roxterm_spawn(ROXTermData *roxterm, const char *command,
     ROXTerm_SpawnType spawn_type)
 {
-    GError *error = NULL;
     GtkPositionType tab_pos;
-    char *cwd;
     MultiWin *win = roxterm_get_win(roxterm);
 
     tab_pos = roxterm_get_tab_pos(roxterm);
@@ -5597,8 +5595,8 @@ void roxterm_set_clipboard_from_osc52(ROXTermData *roxterm,
     guchar *decoded = g_base64_decode(base64, &decoded_len);
     if (decoded && decoded_len > 1)
     {
-      roxterm_osc52_handler(VTE_TERMINAL(roxterm->widget), clipboards, decoded,
-                            decoded_len, roxterm);
+      roxterm_osc52_handler(VTE_TERMINAL(roxterm->widget), clipboards,
+                            (const char *) decoded, decoded_len, roxterm);
     }
     g_free(decoded);
 }
