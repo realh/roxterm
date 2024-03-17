@@ -2836,31 +2836,45 @@ enum {
 
 typedef struct {
     ROXTermData *roxterm;
-    guchar *content;
+    gchar *base64;
     gsize len;
     gboolean primary;
 } ROXTermClipboardClosure;
 
-static void roxterm_write_clipboard(ROXTermData *roxterm,
-                                    const guchar *clipboard_content,
-                                    gsize len,
-                                    gboolean primary)
+inline static void
+roxterm_clipboard_closure_free(ROXTermClipboardClosure *closure)
 {
+    if (closure)
+    {
+        g_free(closure->base64);
+        g_free(closure);
+    }
+}
+
+    static gboolean roxterm_write_clipboard(ROXTermClipboardClosure *closure)
+{
+    ROXTermData *roxterm = closure->roxterm;
     GdkDisplay *display = gtk_widget_get_display(roxterm->widget);
-    GdkAtom sel_type = primary ?
+    GdkAtom sel_type = closure->primary ?
         GDK_SELECTION_PRIMARY : GDK_SELECTION_CLIPBOARD;
     GtkClipboard *cb = gtk_clipboard_get_for_display(display, sel_type);
-    if (!clipboard_content || !len)
+
+    gsize decoded_len = 0;
+    guchar *decoded = NULL;
+    if (closure->base64 && closure->len)
+        decoded = g_base64_decode(closure->base64, &decoded_len);
+    if (decoded && decoded_len > 1)
     {
-        gtk_clipboard_clear(cb);
-        multi_win_flash_clipboard_indicator(roxterm_get_win(roxterm),
-                                            FALSE);
+        gtk_clipboard_set_text(cb, (const char *) decoded, decoded_len);
+        multi_win_show_clipboard_indicator(roxterm_get_win(roxterm));
     }
     else
     {
-        gtk_clipboard_set_text(cb, (const char *) clipboard_content, len);
-        multi_win_show_clipboard_indicator(roxterm_get_win(roxterm));
+        gtk_clipboard_clear(cb);
+        multi_win_flash_clipboard_indicator(roxterm_get_win(roxterm), FALSE);
     }
+    roxterm_clipboard_closure_free(closure);
+    return G_SOURCE_REMOVE;
 }
 
 /* This runs via g_idle_add */
@@ -2914,33 +2928,31 @@ static gboolean roxterm_run_osc52_dialog(ROXTermClipboardClosure *closure)
     gtk_widget_show_all(content_area);
     int response = gtk_dialog_run(dialog);
     gtk_widget_destroy(GTK_WIDGET(dialog));
-    gboolean reject = TRUE;
+    gboolean accept = FALSE;
     switch (response)
     {
         case ROXTERM_CLIPBOARD_REJECT:
             roxterm->allow_osc52 = 0;
             break;
         case ROXTERM_CLIPBOARD_ACCEPT_ONCE:
-            reject = FALSE;
+            accept = TRUE;
             break;
         case ROXTERM_CLIPBOARD_ACCEPT_IN_SESSION:
-            reject = FALSE;
+            accept = TRUE;
             roxterm->allow_osc52 = 2;
             break;
         default:
             break;
     }
-    if (!reject)
-        roxterm_write_clipboard(roxterm,
-                                closure->content, closure->len,
-                                closure->primary);
-    g_free(closure->content);
-    g_free(closure);
-    return FALSE;
+    if (accept)
+        roxterm_write_clipboard(closure);
+    else
+        roxterm_clipboard_closure_free(closure);
+    return G_SOURCE_REMOVE;
 }
 
 static void roxterm_osc52_handler(VteTerminal *vte, const char *clipboards,
-                                  const guchar *text, gsize text_len,
+                                  const gchar *base64, gsize base64_len,
                                   ROXTermData * roxterm)
 {
     if (!gtk_widget_has_focus(roxterm->widget)) return;
@@ -2948,26 +2960,25 @@ static void roxterm_osc52_handler(VteTerminal *vte, const char *clipboards,
     gboolean primary = strchr(clipboards, 'p') != NULL;
     gboolean clipboard = strchr(clipboards, 'c') != NULL;
     if (!primary && !clipboard) return;
+    GSourceFunc callback;
     switch (roxterm->allow_osc52)
     {
         case 0:
             return;
         case 1:
-        {
-            ROXTermClipboardClosure *closure =
-                    g_new0(ROXTermClipboardClosure, 1);
-            closure->roxterm = roxterm;
-            closure->content = g_malloc(text_len);
-            memcpy(closure->content, text, text_len);
-            closure->len = text_len;
-            closure->primary = primary;
-            g_idle_add(G_SOURCE_FUNC(roxterm_run_osc52_dialog), closure);
+            callback = G_SOURCE_FUNC(roxterm_run_osc52_dialog);
             break;
-        }
         case 2:
-            roxterm_write_clipboard(roxterm, text, text_len, primary);
+            callback = G_SOURCE_FUNC(roxterm_write_clipboard);
             break;
     }
+    ROXTermClipboardClosure *closure = g_new0(ROXTermClipboardClosure, 1);
+    closure->roxterm = roxterm;
+    closure->base64 = g_malloc(base64_len);
+    memcpy(closure->base64, base64, base64_len);
+    closure->len = base64_len;
+    closure->primary = primary;
+    g_idle_add(callback, closure);
 }
 
 static void roxterm_connect_misc_signals(ROXTermData * roxterm)

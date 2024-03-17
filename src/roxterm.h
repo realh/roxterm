@@ -91,6 +91,7 @@ gboolean roxterm_set_search(ROXTermData *roxterm,
 const char *roxterm_get_search_pattern(ROXTermData *roxterm);
 guint roxterm_get_search_flags(ROXTermData *roxterm);
 
+/* Can be safely called from another thread */
 void roxterm_set_clipboard_from_osc52(ROXTermData *roxterm,
                                       const char *clipboards,
                                       const char *base64);
