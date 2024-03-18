@@ -201,10 +201,10 @@ static gpointer main_context_listener(RoxtermMainContext *ctx)
 }
 
 /*
- * Closes all files open in the current process except for 0, 1, 2 and
- * keep_pipe.
+ * Closes all files open in the current process except for 0, 1, 2, keep_pipe
+ * and keep_pty.
  */
-static void close_fds(int keep_pipe)
+static void close_fds(int keep_pipe, int keep_pty)
 {
     // /dev/fd should exist on most systems, but isn't guaranteed on Linux, so
     // check /dev/fd first, and if it doesn't exist try /proc/self/fd.
@@ -233,7 +233,7 @@ static void close_fds(int keep_pipe)
         if (!isdigit(entry_name[0]))
             continue;
         int fd = strtol(entry_name, NULL, 10);
-        if (fd > 2 && fd != keep_pipe)
+        if (fd > 2 && fd != keep_pipe && fd != keep_pty)
         {
             g_debug("close_fds closing %d", fd);
             close(fd);
@@ -252,7 +252,9 @@ static void close_fds(int keep_pipe)
 static void launch_child(VtePty *pty, const char *working_directory,
                          char **argv, char **envv, int pipe_to_main)
 {
-    close_fds(pipe_to_main);
+    int keep_pty = vte_pty_get_fd(pty);
+    g_debug("launch_child: keeping pipe %d and pty %d", pipe_to_main, keep_pty);
+    close_fds(pipe_to_main, keep_pty);
 
     if (working_directory && working_directory[0])
     {
@@ -270,11 +272,13 @@ static void launch_child(VtePty *pty, const char *working_directory,
 
     g_debug("launch_child: calling vte_pty_child_setup");
     vte_pty_child_setup(pty);
-    g_debug("launch_child: called vte_pty_child_setup");
+    
+    // After this we don't want to call g_debug because it will come out
+    // in the terminal we just launched.
 
     // This doesn't return if it succeeds
     execve(argv[0], argv, envv);
-    g_debug("launch_child: execve failed");
+    //g_debug("launch_child: execve failed");
     char *msg = g_strdup_printf("ERR %u,%u,%s: %s", ROXTERM_SPAWN_ERROR,
         ROXTermSpawnError, _("Unable to spawn child process"),
         strerror(errno));
