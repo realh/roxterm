@@ -234,7 +234,14 @@ static void close_fds(int keep_pipe)
             continue;
         int fd = strtol(entry_name, NULL, 10);
         if (fd > 2 && fd != keep_pipe)
+        {
+            g_debug("close_fds closing %d", fd);
             close(fd);
+        }
+        else
+        {
+            g_debug("close_fds skipping %d", fd);
+        }
     }
     g_dir_close(dir);
 }
@@ -246,14 +253,28 @@ static void launch_child(VtePty *pty, const char *working_directory,
                          char **argv, char **envv, int pipe_to_main)
 {
     close_fds(pipe_to_main);
-    argv[1] = g_strdup_printf("%d", pipe_to_main);
 
-    g_chdir(working_directory);
+    if (working_directory && working_directory[0])
+    {
+        g_debug("launch_child: cd '%s'", working_directory);
+        g_chdir(working_directory);
+    }
+    else
+    {
+        g_debug("launch_child: no working_directory");
+    }
 
+    char *cmd = g_strjoinv(" ", argv);
+    g_debug("launch_child: cmd %s", cmd);
+    g_free(cmd);
+
+    g_debug("launch_child: calling vte_pty_child_setup");
     vte_pty_child_setup(pty);
+    g_debug("launch_child: called vte_pty_child_setup");
 
     // This doesn't return if it succeeds
     execve(argv[0], argv, envv);
+    g_debug("launch_child: execve failed");
     char *msg = g_strdup_printf("ERR %u,%u,%s: %s", ROXTERM_SPAWN_ERROR,
         ROXTermSpawnError, _("Unable to spawn child process"),
         strerror(errno));
@@ -289,12 +310,17 @@ void roxterm_spawn_child(ROXTermData *roxterm, VteTerminal *vte,
         vte_terminal_set_pty(vte, pty);
         if (g_unix_open_pipe(pipe_pair, 0, &error))
         {
+            g_debug("roxterm_spawn_child: Opened pipes %d (r) and %d (w)",
+                    pipe_pair[0], pipe_pair[1]);
+            argv[1] = g_strdup_printf("%d", pipe_pair[1]);
             pid = fork();
             if (pid != 0)   /* Parent */
             {
                 g_debug("roxterm_spawn_child: main context (parent) waiting "
                     "for pid of %d's child", pid);
+                g_debug("r_s_c parent: closing pipe/w %d", pipe_pair[1]);
                 close(pipe_pair[1]);
+                g_debug("r_s_c parent: closed pipe/w %d", pipe_pair[1]);
                 RoxtermMainContext *context = g_new(RoxtermMainContext, 1);
                 context->roxterm = roxterm;
                 context->vte = vte;
@@ -319,7 +345,9 @@ void roxterm_spawn_child(ROXTermData *roxterm, VteTerminal *vte,
             }
             else    /* Child */
             {
+                g_debug("r_s_c child: closing pipe/w %d", pipe_pair[0]);
                 close(pipe_pair[0]);
+                g_debug("r_s_c child: closed pipe/w %d", pipe_pair[0]);
                 launch_child(pty, working_directory, argv, envv,
                                          pipe_pair[1]);
             }
