@@ -2852,7 +2852,7 @@ roxterm_clipboard_closure_free(ROXTermClipboardClosure *closure)
     }
 }
 
-    static gboolean roxterm_write_clipboard(ROXTermClipboardClosure *closure)
+static gboolean roxterm_write_clipboard(ROXTermClipboardClosure *closure)
 {
     ROXTermData *roxterm = closure->roxterm;
     GdkDisplay *display = gtk_widget_get_display(roxterm->widget);
@@ -2866,11 +2866,14 @@ roxterm_clipboard_closure_free(ROXTermClipboardClosure *closure)
         decoded = g_base64_decode(closure->base64, &decoded_len);
     if (decoded && decoded_len > 1)
     {
+        g_debug("roxterm_write_clipboard: Decoded base64 to %ld '%s'",
+            decoded_len, decoded);
         gtk_clipboard_set_text(cb, (const char *) decoded, decoded_len);
         multi_win_show_clipboard_indicator(roxterm_get_win(roxterm));
     }
     else
     {
+        g_debug("roxterm_write_clipboard: No data, clearing clipboard");
         gtk_clipboard_clear(cb);
         multi_win_flash_clipboard_indicator(roxterm_get_win(roxterm), FALSE);
     }
@@ -2954,7 +2957,7 @@ static gboolean roxterm_run_osc52_dialog(ROXTermClipboardClosure *closure)
 
 static void roxterm_osc52_handler(VteTerminal *vte, const char *clipboards,
                                   const gchar *base64, gsize base64_len,
-                                  ROXTermData * roxterm)
+                                  ROXTermData *roxterm)
 {
     if (!gtk_widget_has_focus(roxterm->widget)) return;
     if (vte_terminal_get_has_selection(vte)) return;
@@ -2973,9 +2976,17 @@ static void roxterm_osc52_handler(VteTerminal *vte, const char *clipboards,
             callback = G_SOURCE_FUNC(roxterm_write_clipboard);
             break;
     }
+
+    if (base64_len < 0)
+    {
+        base64_len = strlen(base64);
+    }
+
     ROXTermClipboardClosure *closure = g_new0(ROXTermClipboardClosure, 1);
     closure->roxterm = roxterm;
-    closure->base64 = g_malloc(base64_len);
+    // The forced terminator should be superfluous, but be defensive
+    closure->base64 = g_malloc(base64_len + 1);
+    closure->base64[base64_len] = 0;
     memcpy(closure->base64, base64, base64_len);
     closure->len = base64_len;
     closure->primary = primary;
@@ -5591,14 +5602,8 @@ void roxterm_set_clipboard_from_osc52(ROXTermData *roxterm,
                                       const char *clipboards,
                                       const char *base64)
 {
-    gsize decoded_len;
-    guchar *decoded = g_base64_decode(base64, &decoded_len);
-    if (decoded && decoded_len > 1)
-    {
-      roxterm_osc52_handler(VTE_TERMINAL(roxterm->widget), clipboards,
-                            (const char *) decoded, decoded_len, roxterm);
-    }
-    g_free(decoded);
+    roxterm_osc52_handler(VTE_TERMINAL(roxterm->widget), clipboards, base64, 
+                          strlen(base64), roxterm);
 }
 
 /* vi:set sw=4 ts=4 et cindent cino= */
