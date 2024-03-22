@@ -17,6 +17,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+
 #define G_LOG_DOMAIN "roxterm-shim"
 
 #include <glib.h>
@@ -317,12 +318,28 @@ static gssize write_output(OutputQueue *oq, OutputItem *item,
 }
 
 // As write_item_to_fd but prefixes data with its length by using send_to_pipe.
-// No logging, because handle is NULL in the thread this is called from.
 static gssize send_with_size(OutputQueue *oq, OutputItem *item,
-                             G_GNUC_UNUSED gpointer handle)
+                             gpointer handle)
 {
-    return send_to_pipe(oq->fd, (const char *) item->buf + item->start,
+    Osc52FilterContext *ofc = handle;
+    if (ofc)
+    {
+        ofc_debug(ofc, "SWS: Sending %d bytes of OSC52 data", item->size);
+    }
+    int n = send_to_pipe(oq->fd, (const char *) item->buf + item->start,
                             item->size);
+    if (!ofc) return n;
+    if (n == 0)
+    {
+        ofc_debug(ofc, "SWS: No bytes written to %s (EOF?)\n",
+            oq->name);
+    }
+    else if (n < 0)
+    {
+        ofc_debug(ofc, "SWS: Error writing to %s: %s\n",
+                oq->name, strerror(errno));
+    }
+    return n;
 }
 
 inline static guint8 ofc_char(Osc52FilterContext *ofc, gsize index)
@@ -801,11 +818,22 @@ static gssize find_osc52_end(Osc52FilterContext *ofc, gboolean skip)
 static void queue_osc52_message(Osc52FilterContext *ofc, gssize len)
 {
     OutputItem *item = g_new(OutputItem, 1);
-    item->size = len;
-    item->buf = g_malloc(len);
+
+    // Skip one or two chars of leading ESC + "52;"
+    int offset = (ofc_char(ofc, 0) == ESC_CODE) ? 5 : 4;
+    len -= offset;
+
+    // Message must be 0-terminated
+    item->size = len + 1;
+
+    item->buf = g_malloc(len + 1);
     item->start = 0;
     item->next = NULL;
-    memcpy(item->buf, ofc->buf + ofc->start, len);
+    item->buf[len] = 0;
+    memcpy(item->buf, ofc->buf + ofc->start + offset, len);
+    ofc_debug(ofc, "Sending OSC52 message %ld '%s'", len, item->buf);
+    ofc_debug(ofc, "Original followed by %d",
+        ofc->buf[ofc->start + len + offset]);
     g_mutex_lock(&ofc->ptp_queue->lock);
     queue_item_for_writing(ofc->ptp_queue, item);
     g_mutex_unlock(&ofc->ptp_queue->lock);
@@ -873,9 +901,9 @@ static gpointer output_writer(Osc52FilterContext *ofc)
     return NULL;
 }
 
-static gpointer ptp_writer(OutputQueue *ptp_queue)
+static gpointer ptp_writer(Osc52FilterContext *ofc)
 {
-    queue_processor(ptp_queue, send_with_size, NULL);
+    queue_processor(ofc->ptp_queue, send_with_size, ofc);
     return NULL;
 }
 
@@ -983,7 +1011,7 @@ int main(int argc, char **argv)
         g_mutex_lock(&ptp_queue->lock);
 
         ptp_queue->thread =
-            g_thread_new("ptp-writer", (GThreadFunc) ptp_writer, ptp_queue);
+            g_thread_new("ptp-writer", (GThreadFunc) ptp_writer, ofc_stderr);
 
         if (!ptp_queue->thread || !start_threads(ofc_stderr))
         {

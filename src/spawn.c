@@ -147,6 +147,16 @@ static gpointer main_context_listener(RoxtermMainContext *ctx)
         gint32 msg_len;
         char *msg = receive_from_pipe(ctx->pipe_from_fork, &msg_len);
 
+        if (msg)
+        {
+            g_debug("main_context_listener: received %u '%s'",
+                msg_len, msg);
+        }
+        else
+        {
+            g_debug("main_context_listener: received null");
+        }
+
         if (msg_len < 0)
         {
             ctx->error = g_error_new(G_IO_ERROR,
