@@ -97,6 +97,11 @@ void roxterm_set_clipboard_from_osc52(ROXTermData *roxterm,
                                       const char *clipboards,
                                       const char *base64);
 
+/* Used to update record of pid with child of shim. This pid should be used
+ * to get the cwd etc.
+ */
+ void roxterm_update_pid(ROXTermData *roxterm, GPid pid);
+
 #endif /* ROXTERM_H */
 
 /* vi:set sw=4 ts=4 et cindent cino= */

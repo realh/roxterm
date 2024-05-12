@@ -639,7 +639,8 @@ static void roxterm_fork_callback(VteTerminal *vte,
 {
     ROXTermData *roxterm = user_data;
 
-    roxterm->pid = pid;
+    if (pid > 0 && roxterm->pid <= 0)
+        roxterm->pid = pid;
     if (!vte)
     {
         roxterm->widget = NULL;
@@ -655,6 +656,12 @@ static void roxterm_fork_callback(VteTerminal *vte,
         roxterm->env_for_spawn = NULL;
     }
 }
+
+ void roxterm_update_pid(ROXTermData *roxterm, GPid pid)
+ {
+    if (pid > 0)
+    roxterm->pid = pid;
+ }
 
 static void roxterm_fork_command(ROXTermData *roxterm, VteTerminal *vte,
         char **argv, char **envv,

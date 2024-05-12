@@ -188,6 +188,7 @@ static gpointer main_context_listener(RoxtermMainContext *ctx)
         {
             GPid pid = strtol(msg + 3, NULL, 10);
             g_debug("Pid of shim's child is %d", pid);
+            roxterm_update_pid(ctx->roxterm, pid);
         }
         else
         {
