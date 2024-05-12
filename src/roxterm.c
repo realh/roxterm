@@ -731,7 +731,7 @@ static void roxterm_fork_command(ROXTermData *roxterm, VteTerminal *vte,
     if (arg_offset)
     {
         roxterm_spawn_child(roxterm, vte, working_directory, argv, envv,
-                            roxterm_fork_callback, login);
+                            roxterm_fork_callback);
     }
     else
     {

@@ -187,7 +187,7 @@ static gpointer main_context_listener(RoxtermMainContext *ctx)
         if (g_str_has_prefix(msg, "OK "))
         {
             GPid pid = strtol(msg + 3, NULL, 10);
-            ctx->callback(ctx->vte, pid, NULL, ctx->roxterm);
+            g_debug("Pid of shim's child is %d", pid);
         }
         else
         {
@@ -210,173 +210,54 @@ static gpointer main_context_listener(RoxtermMainContext *ctx)
     return NULL;
 }
 
-/*
- * Closes all files open in the current process except for 0, 1, 2, keep_pipe
- * and keep_pty.
- */
-static void close_fds(int keep_pipe, int keep_pty)
-{
-    // /dev/fd should exist on most systems, but isn't guaranteed on Linux, so
-    // check /dev/fd first, and if it doesn't exist try /proc/self/fd.
-    const char *fd_dir = "/dev/fd";
-    if (!g_file_test(fd_dir, G_FILE_TEST_EXISTS))
-        fd_dir = "/proc/self/fd";
-    if (!g_file_test(fd_dir, G_FILE_TEST_EXISTS))
-    {
-        g_warning("Unable to locate /dev/fd or /proc/self/fd");
-        return;
-    }
-
-    GError *error = NULL;
-    GDir *dir = g_dir_open(fd_dir, 0, &error);
-    if (!dir)
-    {
-        g_critical("Unable to read contents of %s: %s", fd_dir,
-            (error && error->message) ? error->message : "unknown error");
-        return;
-    }
-
-    const char *entry_name;
-    while ((entry_name = g_dir_read_name(dir)) != NULL)
-    {
-        // POSIX should skip '.' and '..', but play it safe 
-        if (!isdigit(entry_name[0]))
-            continue;
-        int fd = strtol(entry_name, NULL, 10);
-        if (fd > 2 && fd != keep_pipe && fd != keep_pty)
-        {
-            g_debug("close_fds closing %d", fd);
-            close(fd);
-        }
-        else
-        {
-            g_debug("close_fds skipping %d", fd);
-        }
-    }
-    g_dir_close(dir);
-}
-
-/*
- * If this fails it sends an error message down pipe_to_main.
- */
-static void launch_child(VtePty *pty, const char *working_directory,
-                         char **argv, char **envv, int pipe_to_main)
-{
-    int keep_pty = vte_pty_get_fd(pty);
-    g_debug("launch_child: keeping pipe %d and pty %d", pipe_to_main, keep_pty);
-    close_fds(pipe_to_main, keep_pty);
-
-    if (working_directory && working_directory[0])
-    {
-        g_debug("launch_child: cd '%s'", working_directory);
-        g_chdir(working_directory);
-    }
-    else
-    {
-        g_debug("launch_child: no working_directory");
-    }
-
-    char *cmd = g_strjoinv(" ", argv);
-    g_debug("launch_child: cmd %s", cmd);
-    g_free(cmd);
-
-    g_debug("launch_child: calling vte_pty_child_setup");
-    vte_pty_child_setup(pty);
-    
-    // After this we don't want to call g_debug because it will come out
-    // in the terminal we just launched.
-
-    // This doesn't return if it succeeds
-    execve(argv[0], argv, envv);
-    //g_debug("launch_child: execve failed");
-    char *msg = g_strdup_printf("ERR %u,%u,%s: %s", ROXTERM_SPAWN_ERROR,
-        ROXTermSpawnError, _("Unable to spawn child process"),
-        strerror(errno));
-    int nwrit = send_to_pipe(pipe_to_main, msg, -1);
-    if (nwrit <= 0)
-    {
-        g_critical("Failed to send '%s' message to main: %s",
-            msg, nwrit ? strerror(-nwrit) : "EOF");
-    }
-    g_free(msg);
-    exit(1);
-}
-
 void roxterm_spawn_child(ROXTermData *roxterm, VteTerminal *vte,
                          const char *working_directory,
                          char **argv, char **envv,
-                         VteTerminalSpawnAsyncCallback callback,
-                         gboolean free_argv2)
+                         VteTerminalSpawnAsyncCallback callback)
 {
     GError *error = NULL;
-    VtePty *pty = vte_terminal_pty_new_sync(vte, VTE_PTY_DEFAULT,
-                                            NULL, &error);
     GPid pid = -1;
 
-    if (pty)
+    /*
+        * This pipe is used to send messages from the child of the fork to
+        * the parent (calling/main context).
+        * index 0 = read, 1 = write.
+        */
+    int pipe_pair[2];
+    if (g_unix_open_pipe(pipe_pair, 0, &error))
     {
-        /*
-         * This pipe is used to send messages from the child of the fork to
-         * the parent (calling/main context).
-         * index 0 = read, 1 = write.
-         */
-        int pipe_pair[2];
-        vte_terminal_set_pty(vte, pty);
-        if (g_unix_open_pipe(pipe_pair, 0, &error))
-        {
-            g_debug("roxterm_spawn_child: Opened pipes %d (r) and %d (w)",
-                    pipe_pair[0], pipe_pair[1]);
-            argv[1] = g_strdup_printf("%d", pipe_pair[1]);
-            pid = fork();
-            if (pid != 0)   /* Parent */
-            {
-                g_debug("roxterm_spawn_child: main context (parent) waiting "
-                    "for pid of %d's child", pid);
-                g_debug("r_s_c parent: closing pipe/w %d", pipe_pair[1]);
-                close(pipe_pair[1]);
-                g_debug("r_s_c parent: closed pipe/w %d", pipe_pair[1]);
-                RoxtermMainContext *context = g_new(RoxtermMainContext, 1);
-                context->roxterm = roxterm;
-                context->vte = vte;
-                context->pipe_from_fork = pipe_pair[0];
-                context->callback = callback;
-                context->pid = -1;
-                context->error = NULL;
-                context->thread = g_thread_try_new(
-                    "osc52-listener", (GThreadFunc) main_context_listener,
-                    context, &error);
+        g_debug("roxterm_spawn_child: Opened pipes %d (r) and %d (w)",
+                pipe_pair[0], pipe_pair[1]);
+        argv[1] = g_strdup_printf("%d", pipe_pair[1]);
 
-                /* Not sure whether it's better to make vte wait for this pid
-                 * or the child it's about to spawn, but this is easier. */
-                vte_terminal_watch_child(vte, pid);
+        fcntl(pipe_pair[1], F_SETFD, FD_CLOEXEC);
+        
+        RoxtermMainContext *context = g_new(RoxtermMainContext, 1);
+        context->roxterm = roxterm;
+        context->vte = vte;
+        context->pipe_from_fork = pipe_pair[0];
+        context->callback = callback;
+        context->pid = -1;
+        context->error = NULL;
+        context->thread = g_thread_try_new(
+            "osc52-listener", (GThreadFunc) main_context_listener,
+            context, &error);
 
-                /* We can go ahead and free argv now because the fork's child
-                 * has a copy.
-                 */
-                if (free_argv2)
-                    g_free(argv[2]);
-                g_free(argv);
-            }
-            else    /* Child */
-            {
-                g_debug("r_s_c child: closing pipe/w %d", pipe_pair[0]);
-                close(pipe_pair[0]);
-                g_debug("r_s_c child: closed pipe/w %d", pipe_pair[0]);
-                launch_child(pty, working_directory, argv, envv,
-                                         pipe_pair[1]);
-            }
-        }
-        else if (!error)
-        {
-            error = g_error_new(ROXTERM_SPAWN_ERROR, ROXTermSpawnPipeError,
-                                _("Unable to open pipe to monitor child"));
-        }
+        vte_terminal_spawn_with_fds_async(
+            vte, VTE_PTY_DEFAULT,
+            working_directory, (char const * const *) argv,
+            (char const * const *) envv,
+            pipe_pair + 1, 1, pipe_pair + 1, 1,
+            VTE_SPAWN_NO_PARENT_ENVV,
+            NULL, NULL, NULL, -1, NULL,
+            callback, roxterm);
     }
     else if (!error)
     {
-        error = g_error_new(ROXTERM_SPAWN_ERROR, ROXTermSpawnPtyError,
-                            _("Unable to create PTY"));
+        error = g_error_new(ROXTERM_SPAWN_ERROR, ROXTermSpawnPipeError,
+                            _("Unable to open pipe to monitor child"));
     }
+
     if (error)
     {
         pid = -1;
