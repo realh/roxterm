@@ -127,3 +127,51 @@ func (sp *StreamProcessor) childReaderThread() {
 		}
 	}
 }
+
+// chunkProcessorThread reads from the unprocessed chunks queue, and passes
+// the chunks on to the processed chunk queue.
+// Later it will filter out OSC51 sequences and send them to the parent via
+// the special channel.
+func (sp *StreamProcessor) chunkProcessorThread() {
+	chin := sp.unprocessedChunks
+	if chin == nil {
+		sp.closeProcessedChunksChan()
+		return
+	}
+	chout := sp.processedChunks
+	if chout == nil {
+		sp.closeUnprocessedChunksChan()
+		return
+	}
+	for {
+		chunk := <-chin
+		if chunk == nil {
+			sp.closeProcessedChunksChan()
+			return
+		}
+		chout <- chunk
+	}
+}
+
+// chunkWriterThread reads from the unprocessed chunks queue, and passes
+// the chunks on to the processed chunk queue.
+func (sp *StreamProcessor) chunkWriterThread() {
+	ch := sp.processedChunks
+	if ch == nil {
+		return
+	}
+	for {
+		chunk := <-ch
+		if chunk == nil {
+			return
+		}
+		for len(chunk) > -1 {
+			nWritten, err := sp.parentWriter.Write(chunk)
+			if err != nil {
+				// TODO: Can't realistically log this unless we use a file
+				return
+			}
+			chunk = chunk[nWritten:]
+		}
+	}
+}
