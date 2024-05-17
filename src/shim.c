@@ -976,8 +976,8 @@ int main(int argc, char **argv)
 
     // g_spawn_async_with_pipes requires that argv is null-terminated and
     // there's no guarantee that the main argument is.
-    char **argv2 = g_new(char *, argc - 1);
-    memcpy(argv2, argv, (argc - 2) * sizeof(char *));
+    char **argv2 = g_new(char *, argc + 1);
+    memcpy(argv2, argv, argc * sizeof(char *));
     argv2[argc] = NULL;
 
     //int stdout_pipe = -1;
