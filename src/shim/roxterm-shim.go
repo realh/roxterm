@@ -165,7 +165,7 @@ func (sp *StreamProcessor) chunkWriterThread() {
 		if chunk == nil {
 			return
 		}
-		for len(chunk) > -1 {
+		for len(chunk) > 0 {
 			nWritten, err := sp.output.Write(chunk)
 			if err != nil {
 				// TODO: Can't realistically log this unless we use a file
