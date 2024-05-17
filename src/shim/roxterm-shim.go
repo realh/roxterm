@@ -2,6 +2,7 @@ package main
 
 import (
 	"io"
+	"sync"
 )
 
 const (
@@ -59,6 +60,7 @@ type StreamProcessor struct {
 	output            io.Writer
 	unprocessedChunks chan []byte
 	processedChunks   chan []byte
+	wg                sync.WaitGroup
 }
 
 func NewStreamProcessor(input io.Reader, output io.Writer,
@@ -91,10 +93,12 @@ func (sp *StreamProcessor) closeProcessedChunksChan() {
 // inputReaderThread reads data from the input stream and feeds it to the
 // unprocessed chunks queue.
 func (sp *StreamProcessor) inputReaderThread() {
-	for {
+	running := true
+	for running {
 		buf := NewShimBuffer()
 		if buf == nil {
-			return
+			running = false
+			break
 		}
 		for {
 			chunk := buf.NextFillableSlice()
@@ -103,17 +107,20 @@ func (sp *StreamProcessor) inputReaderThread() {
 			}
 			reader := sp.input
 			if reader == nil {
-				return
+				running = false
+				break
 			}
 			nFilled, err := reader.Read(chunk)
 			if err != nil {
 				//log.Printf("Error reading stream: %v", err)
 				sp.closeUnprocessedChunksChan()
-				return
+				running = false
+				break
 			}
 			if nFilled == 0 {
 				sp.closeUnprocessedChunksChan()
-				return
+				running = false
+				break
 			}
 			buf.Filled(nFilled)
 			chunk = chunk[:nFilled]
@@ -121,10 +128,12 @@ func (sp *StreamProcessor) inputReaderThread() {
 			if ch != nil {
 				ch <- chunk
 			} else {
-				return
+				running = false
+				break
 			}
 		}
 	}
+	sp.wg.Done()
 }
 
 // chunkProcessorThread reads from the unprocessed chunks queue, and passes
@@ -134,44 +143,42 @@ func (sp *StreamProcessor) inputReaderThread() {
 // response to XTGETTCAP to indicate OSC 52 is supported.
 func (sp *StreamProcessor) chunkProcessorThread() {
 	chin := sp.unprocessedChunks
+	var chout chan []byte
 	if chin == nil {
 		sp.closeProcessedChunksChan()
-		return
-	}
-	chout := sp.processedChunks
-	if chout == nil {
+	} else if chout = sp.processedChunks; chout == nil {
 		sp.closeUnprocessedChunksChan()
-		return
-	}
-	for {
-		chunk := <-chin
-		if chunk == nil {
-			sp.closeProcessedChunksChan()
-			return
+	} else {
+		for {
+			chunk := <-chin
+			if chunk == nil {
+				sp.closeProcessedChunksChan()
+				break
+			}
+			chout <- chunk
 		}
-		chout <- chunk
 	}
+	sp.wg.Done()
 }
 
 // chunkWriterThread reads from the processed chunks queue, and writes them to
 // the output stream.
 func (sp *StreamProcessor) chunkWriterThread() {
 	ch := sp.processedChunks
-	if ch == nil {
-		return
-	}
-	for {
+	for ch != nil {
 		chunk := <-ch
 		if chunk == nil {
-			return
+			break
 		}
 		for len(chunk) > 0 {
 			nWritten, err := sp.output.Write(chunk)
 			if err != nil {
 				// TODO: Can't realistically log this unless we use a file
-				return
+				ch = nil
+				break
 			}
 			chunk = chunk[nWritten:]
 		}
 	}
+	sp.wg.Done()
 }
