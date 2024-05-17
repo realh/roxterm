@@ -60,16 +60,17 @@ type StreamProcessor struct {
 	output            io.Writer
 	unprocessedChunks chan []byte
 	processedChunks   chan []byte
-	wg                sync.WaitGroup
+	wg                *sync.WaitGroup
 }
 
-func NewStreamProcessor(input io.Reader, output io.Writer,
+func NewStreamProcessor(input io.Reader, output io.Writer, wg *sync.WaitGroup,
 ) *StreamProcessor {
 	sp := &StreamProcessor{
 		input:             input,
 		output:            output,
 		unprocessedChunks: make(chan []byte, MaxChunkQueueLength),
 		processedChunks:   make(chan []byte, MaxChunkQueueLength),
+		wg:                wg,
 	}
 	return sp
 }
@@ -181,4 +182,11 @@ func (sp *StreamProcessor) chunkWriterThread() {
 		}
 	}
 	sp.wg.Done()
+}
+
+func (sp *StreamProcessor) Start() {
+	sp.wg.Add(3)
+	go sp.inputReaderThread()
+	go sp.chunkProcessorThread()
+	go sp.chunkWriterThread()
 }
