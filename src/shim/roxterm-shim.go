@@ -2,7 +2,6 @@ package main
 
 import (
 	"io"
-	"log"
 )
 
 const (
@@ -19,8 +18,8 @@ const (
 	BelCode = 7
 )
 
-// ShimBuffer holds data as it's read from the child's stdin/stderr until it's
-// ready to be sent to the parent.
+// ShimBuffer holds data as it's read from the input until it's ready to be
+// sent downstream.
 type ShimBuffer struct {
 	buf     []byte
 	nFilled int // Number of bytes stored in the buffer
@@ -56,17 +55,17 @@ func (buf *ShimBuffer) IsEmpty() bool {
 }
 
 type StreamProcessor struct {
-	childReader       io.Reader
-	parentWriter      io.Writer
+	input             io.Reader
+	output            io.Writer
 	unprocessedChunks chan []byte
 	processedChunks   chan []byte
 }
 
-func NewStreamProcessor(childReader io.Reader, parentWriter io.Writer,
+func NewStreamProcessor(input io.Reader, output io.Writer,
 ) *StreamProcessor {
 	sp := &StreamProcessor{
-		childReader:       childReader,
-		parentWriter:      parentWriter,
+		input:             input,
+		output:            output,
 		unprocessedChunks: make(chan []byte, MaxChunkQueueLength),
 		processedChunks:   make(chan []byte, MaxChunkQueueLength),
 	}
@@ -89,9 +88,9 @@ func (sp *StreamProcessor) closeProcessedChunksChan() {
 	}
 }
 
-// childReaderThread reads data from the child stream and feeds it to the
-// unprocessed chunks queue
-func (sp *StreamProcessor) childReaderThread() {
+// inputReaderThread reads data from the input stream and feeds it to the
+// unprocessed chunks queue.
+func (sp *StreamProcessor) inputReaderThread() {
 	for {
 		buf := NewShimBuffer()
 		if buf == nil {
@@ -102,13 +101,13 @@ func (sp *StreamProcessor) childReaderThread() {
 			if chunk == nil {
 				break
 			}
-			reader := sp.childReader
+			reader := sp.input
 			if reader == nil {
 				return
 			}
 			nFilled, err := reader.Read(chunk)
 			if err != nil {
-				log.Printf("Error reading from child process: %v", err)
+				//log.Printf("Error reading stream: %v", err)
 				sp.closeUnprocessedChunksChan()
 				return
 			}
@@ -130,8 +129,9 @@ func (sp *StreamProcessor) childReaderThread() {
 
 // chunkProcessorThread reads from the unprocessed chunks queue, and passes
 // the chunks on to the processed chunk queue.
-// Later it will filter out OSC51 sequences and send them to the parent via
-// the special channel.
+// Later there will be two versions, one to filter out OSC 52 and send clipboard
+// write requests to the parent out of band, another to intercept the parent's
+// response to XTGETTCAP to indicate OSC 52 is supported.
 func (sp *StreamProcessor) chunkProcessorThread() {
 	chin := sp.unprocessedChunks
 	if chin == nil {
@@ -153,8 +153,8 @@ func (sp *StreamProcessor) chunkProcessorThread() {
 	}
 }
 
-// chunkWriterThread reads from the unprocessed chunks queue, and passes
-// the chunks on to the processed chunk queue.
+// chunkWriterThread reads from the processed chunks queue, and writes them to
+// the output stream.
 func (sp *StreamProcessor) chunkWriterThread() {
 	ch := sp.processedChunks
 	if ch == nil {
@@ -166,7 +166,7 @@ func (sp *StreamProcessor) chunkWriterThread() {
 			return
 		}
 		for len(chunk) > -1 {
-			nWritten, err := sp.parentWriter.Write(chunk)
+			nWritten, err := sp.output.Write(chunk)
 			if err != nil {
 				// TODO: Can't realistically log this unless we use a file
 				return
