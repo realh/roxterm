@@ -2,6 +2,8 @@ package main
 
 import (
 	"io"
+	"os"
+	"strconv"
 	"sync"
 )
 
@@ -171,14 +173,11 @@ func (sp *StreamProcessor) chunkWriterThread() {
 		if chunk == nil {
 			break
 		}
-		for len(chunk) > 0 {
-			nWritten, err := sp.output.Write(chunk)
-			if err != nil {
-				// TODO: Can't realistically log this unless we use a file
-				ch = nil
-				break
-			}
-			chunk = chunk[nWritten:]
+		// Write is guaranteed to write the entire slice or return an error
+		_, err := sp.output.Write(chunk)
+		if err != nil {
+			// TODO: Can't realistically log this unless we use a file
+			break
 		}
 	}
 	sp.wg.Done()
@@ -189,4 +188,16 @@ func (sp *StreamProcessor) Start() {
 	go sp.inputReaderThread()
 	go sp.chunkProcessorThread()
 	go sp.chunkWriterThread()
+}
+
+func main() {
+	pipeNum, _ := strconv.Atoi(os.Args[1])
+	osc52Pipe := os.NewFile(uintptr(pipeNum), "OSC52Pipe")
+	command := os.Args[2]
+	loginShell := false
+	var args []string
+	if os.Args[3][0] == '-' && os.Args[3][1:] == os.Args[2] {
+		loginShell = true
+	}
+
 }
