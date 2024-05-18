@@ -249,6 +249,10 @@ void roxterm_spawn_child(ROXTermData *roxterm, VteTerminal *vte,
             "osc52-listener", (GThreadFunc) main_context_listener,
             context, &error);
 
+        char *cmd_str = g_strjoinv(" ", argv);
+        g_debug("Launching %s", cmd_str);
+        g_free(cmd_str);
+
         vte_terminal_spawn_with_fds_async(
             vte, VTE_PTY_DEFAULT,
             working_directory, (char const * const *) argv,
