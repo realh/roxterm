@@ -713,16 +713,9 @@ static void roxterm_fork_command(ROXTermData *roxterm, VteTerminal *vte,
 
         if (login)
         {
-            /* If login_shell, make sure argv[1] is the
-             * shell base name (== leaf name) prepended by "-" */
-            char *leaf = strrchr(filename, G_DIR_SEPARATOR);
-
-            if (leaf)
-                ++leaf;
-            else
-                leaf = argv[0];
+            /* If login_shell, insert "-l" as argv[1] */
             new_argv[arg_offset] = filename;
-            new_argv[arg_offset + 1] = g_strconcat("-", leaf, NULL);
+            new_argv[arg_offset + 1] = g_strdup("-l");
             dest += 2;
             /* src == 1 so memcpy(...old_len) now includes the terminator */
         }
