@@ -3,6 +3,7 @@ package main
 import (
 	"io"
 	"os"
+	"os/exec"
 	"strconv"
 	"sync"
 )
@@ -62,16 +63,21 @@ type StreamProcessor struct {
 	output            io.Writer
 	unprocessedChunks chan []byte
 	processedChunks   chan []byte
+	osc52Chan         chan []byte
+	osc52Pipe         io.Writer
 	wg                *sync.WaitGroup
 }
 
 func NewStreamProcessor(input io.Reader, output io.Writer, wg *sync.WaitGroup,
+	osc52Chan chan []byte, osc52Pipe io.Writer,
 ) *StreamProcessor {
 	sp := &StreamProcessor{
 		input:             input,
 		output:            output,
 		unprocessedChunks: make(chan []byte, MaxChunkQueueLength),
 		processedChunks:   make(chan []byte, MaxChunkQueueLength),
+		osc52Chan:         osc52Chan,
+		osc52Pipe:         osc52Pipe,
 		wg:                wg,
 	}
 	return sp
@@ -183,6 +189,11 @@ func (sp *StreamProcessor) chunkWriterThread() {
 	sp.wg.Done()
 }
 
+// osc52Thread reads data from osc52Chan and sends it to osc52Pipe. Each chunk
+// of data has its length prepended, encoded as uint32 little-endian.
+func (sp *StreamProcessor) osc52Thread() {
+}
+
 func (sp *StreamProcessor) Start() {
 	sp.wg.Add(3)
 	go sp.inputReaderThread()
@@ -193,11 +204,7 @@ func (sp *StreamProcessor) Start() {
 func main() {
 	pipeNum, _ := strconv.Atoi(os.Args[1])
 	osc52Pipe := os.NewFile(uintptr(pipeNum), "OSC52Pipe")
-	command := os.Args[2]
-	loginShell := false
-	var args []string
-	if os.Args[3][0] == '-' && os.Args[3][1:] == os.Args[2] {
-		loginShell = true
-	}
+
+	cmd := exec.Command(os.Args[2], os.Args[3:])
 
 }
