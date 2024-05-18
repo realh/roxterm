@@ -1,11 +1,13 @@
 package main
 
 import (
+	"fmt"
 	"io"
 	"os"
 	"os/exec"
 	"strconv"
 	"sync"
+	"time"
 )
 
 const (
@@ -64,12 +66,11 @@ type StreamProcessor struct {
 	unprocessedChunks chan []byte
 	processedChunks   chan []byte
 	osc52Chan         chan []byte
-	osc52Pipe         io.Writer
 	wg                *sync.WaitGroup
 }
 
 func NewStreamProcessor(input io.Reader, output io.Writer, wg *sync.WaitGroup,
-	osc52Chan chan []byte, osc52Pipe io.Writer,
+	osc52Chan chan []byte,
 ) *StreamProcessor {
 	sp := &StreamProcessor{
 		input:             input,
@@ -77,7 +78,6 @@ func NewStreamProcessor(input io.Reader, output io.Writer, wg *sync.WaitGroup,
 		unprocessedChunks: make(chan []byte, MaxChunkQueueLength),
 		processedChunks:   make(chan []byte, MaxChunkQueueLength),
 		osc52Chan:         osc52Chan,
-		osc52Pipe:         osc52Pipe,
 		wg:                wg,
 	}
 	return sp
@@ -191,9 +191,29 @@ func (sp *StreamProcessor) chunkWriterThread() {
 
 // osc52Thread reads data from osc52Chan and sends it to osc52Pipe. Each chunk
 // of data has its length prepended, encoded as uint32 little-endian.
-func (sp *StreamProcessor) osc52Thread() {
+func osc52Thread(osc52Chan chan []byte, osc52Pipe io.Writer, wg *sync.WaitGroup,
+) {
+	dataLen := make([]byte, 4)
+	var err error = nil
+	for err == nil {
+		chunk := <-osc52Chan
+		if chunk == nil {
+			break
+		}
+		l := len(chunk)
+		dataLen[0] = byte(l & 0xff)
+		dataLen[1] = byte((l >> 8) & 0xff)
+		dataLen[2] = byte((l >> 16) & 0xff)
+		dataLen[3] = byte((l >> 24) & 0xff)
+		_, err := osc52Pipe.Write(dataLen)
+		if err == nil {
+			_, err = osc52Pipe.Write(chunk)
+		}
+	}
+	wg.Done()
 }
 
+// Start starts all of a StreamProcessor's goroutines.
 func (sp *StreamProcessor) Start() {
 	sp.wg.Add(3)
 	go sp.inputReaderThread()
@@ -201,10 +221,107 @@ func (sp *StreamProcessor) Start() {
 	go sp.chunkWriterThread()
 }
 
-func main() {
+func reportErrorOnStderr(message string) {
+	os.Stderr.WriteString(message)
+	os.Stderr.WriteString("\n")
+}
+
+func openPipe(name string) (r *os.File, w *os.File, err error) {
+	r, w, err = os.Pipe()
+	if err != nil {
+		err = fmt.Errorf("unable to open pipe for %s: %v", name, err)
+	}
+	return
+}
+
+func runStreamProcessor(r io.Reader, w io.Writer,
+	osc52Chan chan []byte, wg *sync.WaitGroup,
+) *StreamProcessor {
+	sp := NewStreamProcessor(r, w, wg, osc52Chan)
+	sp.Start()
+	return sp
+}
+
+func run() (wg *sync.WaitGroup, err error) {
+	var stdinReader, stdoutReader, stderrReader io.Reader
+	var stdinWriter, stdoutWriter, stderrWriter io.Writer
+	stdinReader, stdinWriter, err =
+		openPipe("stdin")
+	if err != nil {
+		return
+	}
+	stdoutReader, stdoutWriter, err =
+		openPipe("stdout")
+	if err != nil {
+		return
+	}
+	stderrReader, stderrWriter, err =
+		openPipe("stdout")
+	if err != nil {
+		return
+	}
+
+	cmd := exec.Cmd{
+		Path:   os.Args[2],
+		Args:   os.Args[3:],
+		Stdin:  stdinReader,
+		Stdout: stdoutWriter,
+		Stderr: stderrWriter,
+	}
+	err = cmd.Start()
+	if err != nil {
+		err = fmt.Errorf("failed to run shell/command: %v", err)
+		return
+	}
+
+	wg = &sync.WaitGroup{}
 	pipeNum, _ := strconv.Atoi(os.Args[1])
 	osc52Pipe := os.NewFile(uintptr(pipeNum), "OSC52Pipe")
+	osc52Chan := make(chan []byte, 2)
+	wg.Add(1)
+	go osc52Thread(osc52Chan, osc52Pipe, wg)
 
-	cmd := exec.Command(os.Args[2], os.Args[3:])
+	// Use a separate WaitGroup for the stream processors so we can wait for
+	// them to finish before closing osc52Chan
+	spWg := &sync.WaitGroup{}
+	spIn := runStreamProcessor(os.Stdin, stdinWriter, osc52Chan, spWg)
+	spOut := runStreamProcessor(stdoutReader, os.Stdout, osc52Chan, spWg)
+	spErr := runStreamProcessor(stderrReader, os.Stderr, osc52Chan, spWg)
 
+	go func() {
+		cmd.Wait()
+		spIn.closeProcessedChunksChan()
+		spIn.closeUnprocessedChunksChan()
+		spOut.closeUnprocessedChunksChan()
+		spErr.closeUnprocessedChunksChan()
+
+		// Make sure we exit after a few seconds in case the pipes are blocked.
+		waiter := make(chan bool)
+		go func() {
+			spWg.Wait()
+			osc52Chan <- []byte("END")
+			close(osc52Chan)
+			wg.Wait()
+			close(waiter)
+		}()
+		select {
+		case <-waiter:
+		case <-time.After(time.Second * 5):
+			wg.Done()
+		}
+	}()
+
+	osc52Chan <- []byte(fmt.Sprintf("OK %d", cmd.Process.Pid))
+
+	return
+}
+
+func main() {
+	wg, err := run()
+	if err != nil {
+		reportErrorOnStderr(err.Error())
+	}
+	if wg != nil {
+		wg.Wait()
+	}
 }
