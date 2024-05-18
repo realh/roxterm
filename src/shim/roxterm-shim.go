@@ -110,14 +110,14 @@ func (sp *StreamProcessor) inputReaderThread() {
 	for running {
 		buf := NewShimBuffer()
 		if buf == nil {
-			log.Printf("%s CPT: NewShimBuffer returned nil", sp.name)
+			log.Printf("%s IRT: NewShimBuffer returned nil", sp.name)
 			running = false
 			break
 		}
 		for {
 			chunk := buf.NextFillableSlice()
 			if chunk == nil {
-				log.Printf("%s CPT: Buffer was full", sp.name)
+				log.Printf("%s IRT: Buffer was full", sp.name)
 				break
 			}
 			reader := sp.input
@@ -284,20 +284,24 @@ func run() (wg *sync.WaitGroup, err error) {
 		return
 	}
 
+	path := "/home/tony/bin/ptywrap"
+	args := append([]string{path, path}, os.Args[2:]...)
+	joinedArgs := strings.Join(args, " ")
+	log.Printf("Starting command %s %s", path, joinedArgs)
 	cmd := exec.Cmd{
-		Path:   os.Args[2],
-		Args:   os.Args[3:],
+		Path:   path,
+		Args:   args,
 		Stdin:  stdinReader,
 		Stdout: stdoutWriter,
 		Stderr: stderrWriter,
 	}
 	err = cmd.Start()
 	if err != nil {
-		err = fmt.Errorf("failed to run shell/command: %v", err)
+		err = fmt.Errorf("failed to run shell/command %s %s: %v",
+			path, joinedArgs, err)
 		return
 	} else {
-		log.Printf("Started command %s %s", os.Args[2],
-			strings.Join(os.Args[3:], " "))
+		log.Printf("Started command %s %s", path, joinedArgs)
 	}
 
 	wg = &sync.WaitGroup{}
@@ -350,7 +354,7 @@ func run() (wg *sync.WaitGroup, err error) {
 	}()
 
 	ok := fmt.Sprintf("OK %d", cmd.Process.Pid)
-	log.Println("Sending pid message '%s' to roxterm back-channel", ok)
+	log.Printf("Sending pid message '%s' to roxterm back-channel", ok)
 	osc52Chan <- []byte(ok)
 
 	return
@@ -364,7 +368,7 @@ func main() {
 	}
 	wg, err := run()
 	if err != nil {
-		reportErrorOnStderr(err.Error())
+		log.Printf("Error from run(): %v", err)
 	}
 	if wg != nil {
 		wg.Wait()
