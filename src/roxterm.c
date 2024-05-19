@@ -54,9 +54,7 @@
 #include "uri.h"
 #include "resources.h"
 
-#if RT_HAVE_SHIM
 #include "spawn.h"
-#endif
 
 #ifndef VTE_VERSION_NUMERIC 
 #define VTE_VERSION_NUMERIC ((VTE_MAJOR_VERSION) * 10000 + \
@@ -673,7 +671,6 @@ static void roxterm_fork_command(ROXTermData *roxterm, VteTerminal *vte,
 {
     char *filename = argv[0];
     char **new_argv = NULL;
-#if RT_HAVE_SHIM
     static char *shim = NULL;
     int arg_offset = 2;         // TODO: Set to 0 or 2 depending on whether
                                 // OSC 52 option is enabled.
@@ -696,9 +693,6 @@ static void roxterm_fork_command(ROXTermData *roxterm, VteTerminal *vte,
             }
         }
     }
-#else
-    int arg_offset = 0;
-#endif
 
     working_directory = roxterm_check_cwd(working_directory);
 
@@ -711,14 +705,12 @@ static void roxterm_fork_command(ROXTermData *roxterm, VteTerminal *vte,
            add an extra 1 */
         new_argv = g_new(char *, old_len + (login ? 1 : 0) + arg_offset + 1);
 
-#if RT_HAVE_SHIM
         if (arg_offset)
         {
             new_argv[0] = shim;
             new_argv[1] = NULL;
             // new_argv[1] will contain pipe fd number
         }
-#endif
 
         if (login)
         {
@@ -737,14 +729,12 @@ static void roxterm_fork_command(ROXTermData *roxterm, VteTerminal *vte,
         argv = new_argv;
     }
 
-#if RT_HAVE_SHIM
     if (arg_offset)
     {
         roxterm_spawn_child(roxterm, vte, working_directory, argv, envv,
                             roxterm_fork_callback);
     }
     else
-#endif
     {
         vte_terminal_spawn_async(
             vte, VTE_PTY_DEFAULT, working_directory, argv, envv,

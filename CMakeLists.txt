@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(roxterm C C++)
+project(roxterm C CXX)
+
+set(CMAKE_CXX_STANDARD 17)
 
 include(FindPkgConfig)
 include(GNUInstallDirs)

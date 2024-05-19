@@ -105,8 +105,9 @@ while [ "$RECOGNISED" = "1" ] ; do
             cmd="$1"
             shift
             export CFLAGS="-Wall -Wextra"
-            export CC='clang'
             configure -DCMAKE_BUILD_TYPE=DEBUG \
+                    -DCMAKE_C_COMPILER=`which clang` \
+                    -DCMAKE_CXX_COMPILER=`which clang++` \
                     -DCMAKE_EXPORT_COMPILE_COMMANDS=1 "$@" \
                     -G Ninja && \
                     ( [ "$cmd" = "--build" ] && ninja || true ) && \

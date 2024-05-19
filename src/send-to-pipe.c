@@ -36,6 +36,20 @@ int blocking_write(int fd, const void *data, uint32_t length)
     return nwritten;
 }
 
+int blocking_read(int fd, void *data, uint32_t length)
+{
+    int nread = 0;
+    while (nread < (ssize_t) length)
+    {
+        ssize_t n = read(fd, data + nread, length - nread);
+        if (n <= 0)
+            return (int) n;
+        else
+            nread += n;
+    }
+    return nread;
+}
+
 // Sends the data length encoded as uint32_t immediately before the data
 int send_to_pipe(int fd, const char *data, uint32_t length)
 {

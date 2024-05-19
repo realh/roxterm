@@ -6,13 +6,14 @@ else()
     add_compile_options(-Wall -Wextra)
 endif()
 
-find_program(GO go)
-if (NOT "${GO}" EQUAL "GO-NOTFOUND")
-    set(RT_HAVE_SHIM 1)
-    set(RT_SPAWN_SHIM_SRC spawn.c)
-else()
-    set(RT_HAVE_SHIM 0)
-endif()
+# find_program(GO go)
+# if (NOT "${GO}" EQUAL "GO-NOTFOUND")
+#     set(RT_HAVE_SHIM 1)
+#     set(RT_SPAWN_SHIM_SRC spawn.c)
+# else()
+#     set(RT_HAVE_SHIM 0)
+# endif()
+set(RT_SPAWN_SHIM_SRC spawn.c)
 
 # roxterm and roxterm-config both depend on these
 pkg_check_modules(RTCOMMON REQUIRED
