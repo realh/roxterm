@@ -109,10 +109,6 @@ static char *receive_from_pipe(int fd, gint32 *p_nread)
         *p_nread = 0;
         return NULL;
     }
-    /* With the go shim it's easier to hardwire LE, but with the C shim it's
-       easier to use native byte order, so this bit of code needs altering if
-       we use C/C++ for the shim. */
-    len = GUINT32_FROM_LE(len);
     if (len > OSC52_SIZE_LIMIT)
     {
         *p_nread = -EMSGSIZE;
