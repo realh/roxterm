@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(roxterm C)
+project(roxterm C C++)
 
 include(FindPkgConfig)
 include(GNUInstallDirs)
@@ -25,7 +25,7 @@ configure_file(${PROJECT_SOURCE_DIR}/roxterm-config.1.xml.in
 
 add_subdirectory(src)
 
-install(FILES src/icons/roxterm.svg
+install(FILES src/icons/roxterm.svgstatic 
     DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/apps)
 
 install(DIRECTORY Config

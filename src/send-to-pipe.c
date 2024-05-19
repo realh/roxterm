@@ -22,7 +22,7 @@
 
 #include "send-to-pipe.h"
 
-static int blocking_write(int fd, const void *data, uint32_t length)
+int blocking_write(int fd, const void *data, uint32_t length)
 {
     int nwritten = 0;
     while (nwritten < (ssize_t) length)

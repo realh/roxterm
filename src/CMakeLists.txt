@@ -158,30 +158,32 @@ target_link_libraries(roxterm-config ${RTCONFIG_LIBRARIES})
 target_link_directories(roxterm-config PRIVATE ${RTCONFIG_LIBRARY_DIRS})
 target_link_options(roxterm-config PRIVATE ${RTCONFIG_LDFLAGS_OTHER})
 
-# add_executable(roxterm-shim send-to-pipe.c shim.c)
-# target_include_directories(roxterm-shim PRIVATE
-    # ${RTSHIM_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})
-# target_compile_options(roxterm-shim PRIVATE ${RTSHIM_CFLAGS_OTHER})
-# target_link_libraries(roxterm-shim ${RTSHIM_LIBRARIES})
-# target_link_directories(roxterm-shim PRIVATE ${RTSHIM_LIBRARY_DIRS})
-# target_link_options(roxterm-shim PRIVATE ${RTSHIM_LDFLAGS_OTHER})
+add_executable(roxterm-shim send-to-pipe.c shim.cpp)
+target_include_directories(roxterm-shim PRIVATE
+    ${RTSHIM_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})
+target_compile_options(roxterm-shim PRIVATE ${RTSHIM_CFLAGS_OTHER})
+target_link_libraries(roxterm-shim ${RTSHIM_LIBRARIES})
+target_link_directories(roxterm-shim PRIVATE ${RTSHIM_LIBRARY_DIRS})
+target_link_options(roxterm-shim PRIVATE ${RTSHIM_LDFLAGS_OTHER})
+
 install(TARGETS roxterm roxterm-config RUNTIME DESTINATION bin)
+
 #install(FILES roxterm-config.ui DESTINATION share/roxterm)
 
-if (NOT "${GO}" EQUAL "GO-NOTFOUND")
-    set(GO_SHIM_EXE ${CMAKE_CURRENT_BINARY_DIR}/roxterm-shim)
-    set(GO_SHIM_SRC ${CMAKE_SOURCE_DIR}/src/shim/roxterm-shim.go)
-    add_custom_command(
-        OUTPUT ${GO_SHIM_EXE}
-        DEPENDS ${GO_SHIM_SRC}
-        COMMAND ${GO} build -o ${GO_SHIM_EXE} ${GO_SHIM_SRC}
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        COMMENT "Building roxterm-shim"
-        VERBATIM
-    )
-    add_custom_target(
-        RoxTermShim ALL
-        DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/roxterm-shim
-    )
-    install(PROGRAMS ${GO_SHIM_EXE} RUNTIME DESTINATION libexec)
-endif()
+# if (NOT "${GO}" EQUAL "GO-NOTFOUND")
+#     set(GO_SHIM_EXE ${CMAKE_CURRENT_BINARY_DIR}/roxterm-shim)
+#     set(GO_SHIM_SRC ${CMAKE_SOURCE_DIR}/src/shim/roxterm-shim.go)
+#     add_custom_command(
+#         OUTPUT ${GO_SHIM_EXE}
+#         DEPENDS ${GO_SHIM_SRC}
+#         COMMAND ${GO} build -o ${GO_SHIM_EXE} ${GO_SHIM_SRC}
+#         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+#         COMMENT "Building roxterm-shim"
+#         VERBATIM
+#     )
+#     add_custom_target(
+#         RoxTermShim ALL
+#         DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/roxterm-shim
+#     )
+#     install(PROGRAMS ${GO_SHIM_EXE} RUNTIME DESTINATION libexec)
+# endif()
