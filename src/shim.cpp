@@ -64,21 +64,26 @@ auto shimlog = std::ofstream("/home/tony/.cache/roxterm/shimlog");
 
 /*************************************************************/
 
-class ShimBuffer : public std::enable_shared_from_this<ShimBuffer> {
+class ShimBuffer {
 private:
     std::array<uint8_t, BufferSize> buf{};
     int n_filled{0};
-    std::mutex mut{};
 
     ShimBuffer() = default;
 public:
-    // Gets an empty slice if the buffer isn't full. If it is full, the slice
-    // will have zero length.
-    class ShimSlice next_fillable_slice();
+    // Gets the number of bytes filled in the buffer so far.
+    int get_filled() const
+    {
+        return n_filled;
+    }
 
     // Marks that the last slice was filled with n bytes, which need not be
     // the slice's capacity. Returns true if the buffer is now full.
-    bool filled(int n);
+    bool bytes_added(int n)
+    {
+        n_filled += n;
+        return is_full();
+    }
 
     bool is_full() const
     {
@@ -94,11 +99,6 @@ public:
     {
         return &buf[offset];
     }
-
-    static std::shared_ptr<ShimBuffer> make_new()
-    {
-        return (new ShimBuffer())->shared_from_this();
-    }
 };
 
 /*************************************************************/
@@ -111,6 +111,10 @@ private:
 public:
     ShimSlice(std::shared_ptr<ShimBuffer> buf, int offset, int length) :
         buf(buf), offset(offset), length(length) {}
+
+    // This creates a slice from buf's current filled position to its end
+    ShimSlice(std::shared_ptr<ShimBuffer> buf) :
+        buf(buf), offset(buf->get_filled()), length(BufferSize - offset) {}
     
     ShimSlice(const ShimSlice &) = default;
 
@@ -126,8 +130,11 @@ public:
         return (*buf)[index];
     }
 
+    // This reads as many bytes as it can and automatically calls
+    // buf->bytes_added.
     bool read_from_fd(int fd);
 
+    // Blocks until all bytes have been written.
     bool write_to_fd(int fd) const;
 
     ShimSlice sub_slice(int offset, int length) const
@@ -295,30 +302,13 @@ public:
 /*************************************************************/
 /*************************************************************/
 
-ShimSlice ShimBuffer::next_fillable_slice()
-{
-    std::scoped_lock lock{mut};
-    if (is_full())
-        return ShimSlice(shared_from_this(), 0, 0);
-    return ShimSlice(shared_from_this(), n_filled, BufferSize - n_filled);
-}
-
-bool ShimBuffer::filled(int n)
-{
-    std::scoped_lock lock{mut};
-    n_filled += n;
-    return is_full();
-}
-
-/*************************************************************/
-
 bool ShimSlice::read_from_fd(int fd)
 {
     int nread = read(fd, buf->address(offset), length) > 0;
     if (nread > 0)
     {
         length = nread;
-        buf->filled(length);
+        buf->bytes_added(length);
         return true;
     }
     length = 0;
@@ -413,10 +403,10 @@ void ShimStreamProcessor::get_slices_from_input()
 {
     while (true)
     {
-        auto buf = ShimBuffer::make_new();
+        auto buf = std::make_shared<ShimBuffer>();
         while (!buf->is_full())
         {
-            auto slice = buf->next_fillable_slice();
+            auto slice = ShimSlice(buf);
             if (slice.size() == 0)
                 break;
             bool ok = slice.read_from_fd(input_fd);
@@ -446,7 +436,15 @@ void ShimStreamProcessor::write_slices_to_output()
     {
         auto slice = processed_slices.pop();
         ok = slice.size() != 0;
-        processed_slices.push(slice);
+        if (ok)
+        {
+            ok = slice.write_to_fd(output_fd);
+            if (!ok)
+            {
+                shimlog << "Failed to write slice to output: " <<
+                    strerror(errno) << std::endl;
+            }
+        }
     }
 }
 
@@ -534,6 +532,10 @@ int Pipes::remap_parent(int target_fd)
 int Pipes::remap_child(int target_fd)
 {
     int *remap_fd = (target_fd == FdStdin) ? &child_r : &child_w;
+    auto remapped_name =
+        (target_fd == FdStdin) ? "child_r " : "child_w ";
+    shimlog << "remap_child remapping " << remapped_name << *remap_fd <<
+        " to " << target_fd << std::endl;
     if (dup2(*remap_fd, target_fd))
     {
         err_code = errno;
