@@ -76,24 +76,9 @@ GError *parse_error(const char *s)
     return g_error_new((GQuark) domain, (int) code, "%s", endptr + 1);
 }
 
-/* Reads from fd into buffer, blocking until it's received length bytes. */
-static gssize blocking_read(int fd, void *buffer, guint32 length)
-{
-    guint32 nread = 0;
-    while (nread < length)
-    {
-        gssize n = read(fd, buffer + nread, length - nread);
-        if (n <= 0)
-            return n;
-        else
-            nread += n;
-    }
-    return nread;
-}
-
 /*
  * Counterpart to send_to_pipe. Result should be freed. p_nread will be updated
- * to -errno on error.
+ * to -errno on error. The result is 0-terminated.
  */
 static char *receive_from_pipe(int fd, gint32 *p_nread)
 {
@@ -114,7 +99,7 @@ static char *receive_from_pipe(int fd, gint32 *p_nread)
         *p_nread = -EMSGSIZE;
         return NULL;
     }
-    char *buffer = g_malloc(len);
+    char *buffer = g_malloc(len + 1);
     if (!buffer)
     {
         *p_nread = -ENOMEM;
@@ -133,6 +118,7 @@ static char *receive_from_pipe(int fd, gint32 *p_nread)
         *p_nread = 0;
         return NULL;
     }
+    buffer[nread] = 0;
     *p_nread = nread;
     return buffer;
 }
@@ -202,7 +188,9 @@ static gpointer main_context_listener(RoxtermMainContext *ctx)
             }
             else
             {
-                g_critical("Badly formed OSC52 message piped from shim");
+                g_critical(
+                    "Badly formed OSC52 message piped from shim: '%s'",
+                    msg);
             }
         }
 

@@ -17,6 +17,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+#include <cstdlib>
 extern "C" {
 #include "send-to-pipe.h"
 }
@@ -31,12 +32,18 @@ extern "C" {
 #include <mutex>
 #include <optional>
 #include <queue>
+#include <sstream>
 #include <string>
+#include <thread>
 #include <vector>
 
 extern "C" {
+//#include <fcntl.h>
 #include <unistd.h>
+#include <sys/wait.h>
 }
+
+using std::uint8_t;
 
 constexpr int BufferSize = 16384;
 constexpr int BufferMinChunkSize = 256;
@@ -136,6 +143,11 @@ public:
     // Excludes the extra 4 bytes representing this size that are sent up the
     // pipe.
     int total_length() const;
+
+    bool is_empty() const
+    {
+        return total_length() == 0;
+    }
 };
 
 /*************************************************************/
@@ -146,13 +158,24 @@ private:
     std::mutex mut{};
     std::condition_variable cond{};
 public:
-    void push(T &&item)
+    void push(const T &item)
     {
         std::unique_lock lock{mut};
         bool was_empty = !q.size();
         while (q.size() >= size_limit)
             cond.wait(lock);
         q.push(item);
+        if (was_empty)
+            cond.notify_one();
+    }
+
+    void push(T &&item)
+    {
+        std::unique_lock lock{mut};
+        bool was_empty = !q.size();
+        while (q.size() >= size_limit)
+            cond.wait(lock);
+        q.emplace(item);
         if (was_empty)
             cond.notify_one();
     }
@@ -166,7 +189,7 @@ public:
         q.pop();
         if (q.size() == MaxSliceQueueLength - 1)
             cond.notify_one();
-        return item;
+        return std::move(item);
     }
 };
 
@@ -179,7 +202,37 @@ using BackChannelQueue =
 
 class BackChannelProcessor {
 private:
+    int fd;
     BackChannelQueue q{};
+    std::mutex mut{};
+    std::condition_variable cond{};
+    std::thread thread;
+
+    void execute();
+public:
+    BackChannelProcessor(int fd) :
+        fd(fd), thread(&BackChannelProcessor::execute, this)
+    {}
+
+    void push_message(const BackChannelMessage &message)
+    {
+        q.push(message);
+    }
+
+    void push_message(BackChannelMessage &&message)
+    {
+        q.push(message);
+    }
+
+    void stop()
+    {
+        q.push(BackChannelMessage(""));
+    }
+
+    void join()
+    {
+        thread.join();
+    }
 };
 
 /*************************************************************/
@@ -263,26 +316,73 @@ bool BackChannelMessage::send_to_pipe(int fd) const
 
 /*************************************************************/
 
+void BackChannelProcessor::execute()
+{
+    while (true)
+    {
+        auto message = q.pop();
+        if (message.is_empty())
+            return;
+        message.send_to_pipe(fd);
+    }
+}
+
+/*************************************************************/
+
+int launch_child(const std::vector<char *> &args, int back_channel_pipe)
+{
+    //fcntl(back_channel_pipe, F_SETFD, FD_CLOEXEC);
+    close(back_channel_pipe);
+    int exec_result = execvp(args[0], &args[0]);
+
+    // This is never reached if execvp is successful
+    std::cerr << "Failed to exec";
+    for (auto arg : args)
+    {
+        if (arg)
+            std::cerr << ' ' << arg;
+    }
+    std::cerr << std::endl;
+    std::cerr << std::strerror(errno) << std::endl;
+    return exec_result;
+}
+
+int run_stream_processors(pid_t pid, int back_channel_pipe)
+{
+    BackChannelProcessor bcp{back_channel_pipe};
+    std::stringstream ss;
+    ss << "OK " << pid;
+    bcp.push_message(BackChannelMessage (ss.str()));
+
+    int exit_status;
+    waitpid(pid, &exit_status, 0);
+    bcp.push_message(BackChannelMessage("END"));
+    bcp.stop();
+    bcp.join();
+    if (WIFEXITED(exit_status))
+        return WEXITSTATUS(exit_status);
+    else
+        return 1;
+}
+
 int main(int argc, char **argv)
 {
-    // pipe is argv[1]
+    int back_channel_pipe = std::atoi(argv[1]);
+
     // Copy argv from element 2 onwards to make sure the std::vector is
     // null-terminated.
     std::vector<char *> args{argv + 2, argv + argc};
     args.push_back(nullptr);
 
-    int exec_result = execvp(args[0], &args[0]);
-    if (exec_result)
+    auto pid = fork();
+
+    if (!pid)
     {
-        std::cerr << "Failed to exec";
-        for (auto arg : args)
-        {
-            if (arg)
-                std::cerr << ' ' << arg;
-        }
-        std::cerr << std::endl;
-        std::cerr << std::strerror(errno) << std::endl;
-        return exec_result;
+        return launch_child(args, back_channel_pipe);
+    }
+    else
+    {
+        return run_stream_processors(pid, back_channel_pipe);
     }
 
     return 0;
