@@ -30,18 +30,15 @@ extern "C" {
 #include <iostream>
 #include <memory>
 #include <mutex>
-#include <optional>
 #include <queue>
 #include <sstream>
 #include <string>
 #include <thread>
 #include <vector>
 
-extern "C" {
-//#include <fcntl.h>
+#include <fcntl.h>
 #include <unistd.h>
 #include <sys/wait.h>
-}
 
 using std::uint8_t;
 
@@ -50,6 +47,10 @@ constexpr int BufferMinChunkSize = 256;
 constexpr int MaxBufferSizeForTopUp = BufferSize - BufferMinChunkSize;
 constexpr int MaxSliceQueueLength = 16;
 constexpr int MaxBackChannelQueueLength = 8;
+
+constexpr int FdStdin = 0;
+constexpr int FdStdout = 1;
+constexpr int FdStderr = 2;
 
 constexpr int EscCode = 0x1b;
 constexpr int OscCode = 0x9d;
@@ -65,9 +66,12 @@ private:
     std::array<uint8_t, BufferSize> buf{};
     int n_filled{0};
     std::mutex mut{};
+
+    ShimBuffer() = default;
 public:
-    // Gets an empty slice if the buffer isn't full
-    std::optional<class ShimSlice> next_fillable_slice();
+    // Gets an empty slice if the buffer isn't full. If it is full, the slice
+    // will have zero length.
+    class ShimSlice next_fillable_slice();
 
     // Marks that the last slice was filled with n bytes, which need not be
     // the slice's capacity. Returns true if the buffer is now full.
@@ -86,6 +90,11 @@ public:
     uint8_t *address(int offset = 0)
     {
         return &buf[offset];
+    }
+
+    static std::shared_ptr<ShimBuffer> make_new()
+    {
+        return (new ShimBuffer())->shared_from_this();
     }
 };
 
@@ -142,16 +151,18 @@ public:
 
     // Excludes the extra 4 bytes representing this size that are sent up the
     // pipe.
-    int total_length() const;
+    int size() const;
 
     bool is_empty() const
     {
-        return total_length() == 0;
+        return size() == 0;
     }
 };
 
 /*************************************************************/
 
+// A queue item T must have a size() method. If it returns 0 it's allowed to
+// override size_limit.
 template<class T, int size_limit> class ShimQueue {
 private:
     std::queue<T> q{};
@@ -162,7 +173,8 @@ public:
     {
         std::unique_lock lock{mut};
         bool was_empty = !q.size();
-        while (q.size() >= size_limit)
+        int item_size = item.size();
+        while (item_size && q.size() >= size_limit)
             cond.wait(lock);
         q.push(item);
         if (was_empty)
@@ -173,7 +185,8 @@ public:
     {
         std::unique_lock lock{mut};
         bool was_empty = !q.size();
-        while (q.size() >= size_limit)
+        int item_size = item.size();
+        while (item_size && q.size() >= size_limit)
             cond.wait(lock);
         q.emplace(item);
         if (was_empty)
@@ -239,17 +252,42 @@ public:
 
 class ShimStreamProcessor {
 private:
+	int input_fd;
+	int output_fd;
+	ShimSliceQueue unprocessed_slices{};
+	ShimSliceQueue processed_slices{};
+	BackChannelProcessor &back_channel;
+    std::thread input_thread;
+    std::thread process_thread;
+    std::thread output_thread;
 
+    void get_slices_from_input();
+
+    void process_slices();
+
+    void write_slices_to_output();
+public:
+    ShimStreamProcessor(int input_fd, int output_fd,
+        BackChannelProcessor &back_channel) :
+        input_fd(input_fd),
+        output_fd(output_fd),
+        back_channel(back_channel),
+        input_thread(&ShimStreamProcessor::get_slices_from_input, this),
+        process_thread(&ShimStreamProcessor::process_slices, this),
+        output_thread(&ShimStreamProcessor::write_slices_to_output, this)
+    {}
+
+    void join();
 };
 
 /*************************************************************/
 /*************************************************************/
 
-std::optional<class ShimSlice> ShimBuffer::next_fillable_slice()
+ShimSlice ShimBuffer::next_fillable_slice()
 {
     std::scoped_lock lock{mut};
     if (is_full())
-        return std::nullopt;
+        return ShimSlice(shared_from_this(), 0, 0);
     return ShimSlice(shared_from_this(), n_filled, BufferSize - n_filled);
 }
 
@@ -265,12 +303,13 @@ bool ShimBuffer::filled(int n)
 bool ShimSlice::read_from_fd(int fd)
 {
     int nread = read(fd, buf->address(offset), length) > 0;
-    length = nread;
-    if (length > 0)
+    if (nread > 0)
     {
+        length = nread;
         buf->filled(length);
         return true;
     }
+    length = 0;
     return false;
 }
 
@@ -281,7 +320,7 @@ bool ShimSlice::write_to_fd(int fd) const
 
 /*************************************************************/
 
-int BackChannelMessage::total_length() const
+int BackChannelMessage::size() const
 {
     auto length = prefix.size();
     for (const auto &slice: get_data())
@@ -298,7 +337,7 @@ std::vector<ShimSlice> BackChannelMessage::get_data() const
 
 bool BackChannelMessage::send_to_pipe(int fd) const
 {
-    auto length = total_length();
+    auto length = size();
     if (blocking_write(fd, &length, sizeof length) <= 0)
         return false;
     if (prefix.length() &&
@@ -329,6 +368,128 @@ void BackChannelProcessor::execute()
 
 /*************************************************************/
 
+void ShimStreamProcessor::get_slices_from_input()
+{
+    while (true)
+    {
+        auto buf = ShimBuffer::make_new();
+        while (!buf->is_full())
+        {
+            auto slice = buf->next_fillable_slice();
+            if (slice.size() == 0)
+                break;
+            bool ok = slice.read_from_fd(input_fd);
+            // If ok is false the slice has length 0 so pushing it will cause
+            // the reader to stop.
+            unprocessed_slices.push(slice);
+            if (!ok) return;
+        }
+    }
+}
+
+void ShimStreamProcessor::process_slices()
+{
+    bool ok = true;
+    while (ok)
+    {
+        auto slice = unprocessed_slices.pop();
+        ok = slice.size() != 0;
+        processed_slices.push(slice);
+    }
+}
+
+void ShimStreamProcessor::write_slices_to_output()
+{
+    bool ok = true;
+    while (ok)
+    {
+        auto slice = processed_slices.pop();
+        ok = slice.size() != 0;
+        processed_slices.push(slice);
+    }
+}
+
+void ShimStreamProcessor::join()
+{
+    input_thread.join();
+    process_thread.join();
+    output_thread.join();
+}
+
+/*************************************************************/
+
+struct Pipes {
+    int parent_r;
+    int parent_w;
+    int child_r;
+    int child_w;
+
+    int err_code{0};
+
+    Pipes();
+    
+    // Call in the parent after forking. If target_fd is stdin, parent_w is
+    // remapped, child_r is closed, and the StreamProcessor will read from
+    // parent_r and write to child_w. Otherwise parent_r is remapped, child_w
+    // is closed, and the StreamProcessor will read from child_r and write to
+    // parent_w.
+    int remap_parent(int target_fd);
+
+    // Call in the child after forking. If target_fd is stdin, child_r is
+    // remapped, otherwise child_w is remapped. The other pipe ends will be
+    // closed automatically if exec succeeds, due to the use of CLOEXEC.
+    int remap_child(int target_fd);
+};
+
+Pipes::Pipes()
+{
+    if (pipe2(&parent_r, O_CLOEXEC))
+    {
+        err_code = errno;
+        return;
+    }
+    if (pipe2(&child_r, O_CLOEXEC))
+        err_code = errno;
+}
+
+int Pipes::remap_parent(int target_fd)
+{
+    if (err_code)
+        return err_code;
+    int *remap_fd, *close_fd;
+    if (target_fd == FdStdin)
+    {
+        remap_fd = &parent_w;
+        close_fd = &child_r;
+    }
+    else
+    {
+        remap_fd = &parent_r;
+        close_fd = &child_w;
+    }
+    if (dup2(*remap_fd, target_fd))
+    {
+        err_code = errno;
+        return err_code;
+    }
+    *remap_fd = target_fd;
+    close(*close_fd);
+    *close_fd = -1; 
+    return 0;
+}
+
+int Pipes::remap_child(int target_fd)
+{
+    int *remap_fd = (target_fd == FdStdin) ? &child_r : &child_w;
+    if (dup2(*remap_fd, target_fd))
+    {
+        err_code = errno;
+        return err_code;
+    }
+    *remap_fd = target_fd;
+    return 0;
+}
+
 int launch_child(const std::vector<char *> &args, int back_channel_pipe)
 {
     //fcntl(back_channel_pipe, F_SETFD, FD_CLOEXEC);
@@ -347,12 +508,16 @@ int launch_child(const std::vector<char *> &args, int back_channel_pipe)
     return exec_result;
 }
 
-int run_stream_processors(pid_t pid, int back_channel_pipe)
+int run_stream_processors(pid_t pid,
+    int back_channel_pipe, Pipes &stderr_pipes)
 {
     BackChannelProcessor bcp{back_channel_pipe};
     std::stringstream ss;
     ss << "OK " << pid;
     bcp.push_message(BackChannelMessage (ss.str()));
+
+    ShimStreamProcessor stderr_proc(stderr_pipes.child_r,
+        stderr_pipes.parent_w, bcp);
 
     int exit_status;
     waitpid(pid, &exit_status, 0);
@@ -374,15 +539,25 @@ int main(int argc, char **argv)
     std::vector<char *> args{argv + 2, argv + argc};
     args.push_back(nullptr);
 
+    Pipes stderr_pipes;
+    if (stderr_pipes.err_code)
+    {
+        std::cerr << "Error opening shim pipes: " <<
+            std::strerror(errno) << std::endl;
+        return stderr_pipes.err_code;
+    }
+
     auto pid = fork();
 
     if (!pid)
     {
+        stderr_pipes.remap_child(FdStderr);
         return launch_child(args, back_channel_pipe);
     }
     else
     {
-        return run_stream_processors(pid, back_channel_pipe);
+        stderr_pipes.remap_parent(FdStderr);
+        return run_stream_processors(pid, back_channel_pipe, stderr_pipes);
     }
 
     return 0;
