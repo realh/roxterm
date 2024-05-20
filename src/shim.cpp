@@ -38,8 +38,6 @@ extern "C" {
 #include <unistd.h>
 }
 
-using namespace std;
-
 constexpr int BufferSize = 16384;
 constexpr int BufferMinChunkSize = 256;
 constexpr int MaxBufferSizeForTopUp = BufferSize - BufferMinChunkSize;
@@ -55,14 +53,14 @@ constexpr int BelCode = 7;
 
 /*************************************************************/
 
-class ShimBuffer : public enable_shared_from_this<ShimBuffer> {
+class ShimBuffer : public std::enable_shared_from_this<ShimBuffer> {
 private:
-    array<uint8_t, BufferSize> buf{};
+    std::array<uint8_t, BufferSize> buf{};
     int n_filled{0};
-    mutex mut{};
+    std::mutex mut{};
 public:
     // Gets an empty slice if the buffer isn't full
-    optional<class ShimSlice> next_fillable_slice();
+    std::optional<class ShimSlice> next_fillable_slice();
 
     // Marks that the last slice was filled with n bytes, which need not be
     // the slice's capacity. Returns true if the buffer is now full.
@@ -88,11 +86,11 @@ public:
 
 class ShimSlice {
 private:
-    mutable shared_ptr<ShimBuffer> buf;
+    mutable std::shared_ptr<ShimBuffer> buf;
     int offset;
     int length;
 public:
-    ShimSlice(shared_ptr<ShimBuffer> buf, int offset, int length) :
+    ShimSlice(std::shared_ptr<ShimBuffer> buf, int offset, int length) :
         buf(buf), offset(offset), length(length) {}
     
     ShimSlice(const ShimSlice &) = default;
@@ -123,13 +121,13 @@ public:
 
 class BackChannelMessage {
 private:
-    string prefix;
+    std::string prefix;
 protected:
-    virtual vector<ShimSlice> get_data() const;
+    virtual std::vector<ShimSlice> get_data() const;
 public:
-    BackChannelMessage(const string &prefix) : prefix(prefix) {}
+    BackChannelMessage(const std::string &prefix) : prefix(prefix) {}
 
-    BackChannelMessage(string &&prefix) : prefix(prefix) {}
+    BackChannelMessage(std::string &&prefix) : prefix(prefix) {}
 
     virtual ~BackChannelMessage() = default;
 
@@ -144,13 +142,13 @@ public:
 
 template<class T, int size_limit> class ShimQueue {
 private:
-    queue<T> q{};
-    mutex mut{};
-    condition_variable cond{};
+    std::queue<T> q{};
+    std::mutex mut{};
+    std::condition_variable cond{};
 public:
     void push(T &&item)
     {
-        unique_lock lock{mut};
+        std::unique_lock lock{mut};
         bool was_empty = !q.size();
         while (q.size() >= size_limit)
             cond.wait(lock);
@@ -161,7 +159,7 @@ public:
 
     T pop()
     {
-        unique_lock lock{mut};
+        std::unique_lock lock{mut};
         while (q.size() == 0)
             cond.wait(lock);
         auto item = q.front();
@@ -179,6 +177,13 @@ using BackChannelQueue =
 
 /*************************************************************/
 
+class BackChannelProcessor {
+private:
+    BackChannelQueue q{};
+};
+
+/*************************************************************/
+
 class ShimStreamProcessor {
 private:
 
@@ -187,17 +192,17 @@ private:
 /*************************************************************/
 /*************************************************************/
 
-optional<class ShimSlice> ShimBuffer::next_fillable_slice()
+std::optional<class ShimSlice> ShimBuffer::next_fillable_slice()
 {
-    scoped_lock lock{mut};
+    std::scoped_lock lock{mut};
     if (is_full())
-        return nullopt;
+        return std::nullopt;
     return ShimSlice(shared_from_this(), n_filled, BufferSize - n_filled);
 }
 
 bool ShimBuffer::filled(int n)
 {
-    scoped_lock lock{mut};
+    std::scoped_lock lock{mut};
     n_filled += n;
     return is_full();
 }
@@ -233,7 +238,7 @@ int BackChannelMessage::total_length() const
     return length;
 }
 
-vector<ShimSlice> BackChannelMessage::get_data() const
+std::vector<ShimSlice> BackChannelMessage::get_data() const
 {
     return {};
 }
@@ -261,22 +266,22 @@ bool BackChannelMessage::send_to_pipe(int fd) const
 int main(int argc, char **argv)
 {
     // pipe is argv[1]
-    // Copy argv from element 2 onwards to make sure the vector is
+    // Copy argv from element 2 onwards to make sure the std::vector is
     // null-terminated.
-    vector<char *> args{argv + 2, argv + argc};
+    std::vector<char *> args{argv + 2, argv + argc};
     args.push_back(nullptr);
 
     int exec_result = execvp(args[0], &args[0]);
     if (exec_result)
     {
-        cerr << "Failed to exec";
+        std::cerr << "Failed to exec";
         for (auto arg : args)
         {
             if (arg)
-                cerr << ' ' << arg;
+                std::cerr << ' ' << arg;
         }
-        cerr << endl;
-        cerr << strerror(errno) << endl;
+        std::cerr << std::endl;
+        std::cerr << std::strerror(errno) << std::endl;
         return exec_result;
     }
 
