@@ -20,7 +20,7 @@
 #include <stdint.h>
 
 /* Writes data to a pipe (or any file descriptor), blocking until all the
- * data is sent. The result is length on success), 0 for EOF, < 0 for error
+ * data is sent. The result is length on success, 0 for EOF, < 0 for error
  * (result of write()).
  */
 int blocking_write(int fd, const void *data, uint32_t length);
