@@ -490,7 +490,14 @@ Pipes::Pipes()
         return;
     }
     if (pipe2(&child_r, O_CLOEXEC))
+    {
         err_code = errno;
+        return;
+    }
+    shimlog << "Created Pipes: parent_r " << parent_r <<
+        ", parent_w " << parent_w <<
+        ", child_r " << child_r <<
+        ", child_w " << child_w << std::endl;
 }
 
 int Pipes::remap_parent(int target_fd)
@@ -502,11 +509,15 @@ int Pipes::remap_parent(int target_fd)
     {
         remap_fd = &parent_w;
         close_fd = &child_r;
+        shimlog << "remap_parent remapping parent_w " << parent_w <<
+            " to " << target_fd << ", closing child_r " << child_r << std::endl;
     }
     else
     {
         remap_fd = &parent_r;
         close_fd = &child_w;
+        shimlog << "remap_parent remapping parent_r " << parent_r <<
+            " to " << target_fd << ", closing child_w " << child_w << std::endl;
     }
     if (dup2(*remap_fd, target_fd))
     {
@@ -514,6 +525,7 @@ int Pipes::remap_parent(int target_fd)
         return err_code;
     }
     *remap_fd = target_fd;
+    shimlog << "remap_parent closing " << *close_fd << std::endl;
     close(*close_fd);
     *close_fd = -1; 
     return 0;
@@ -534,7 +546,10 @@ int Pipes::remap_child(int target_fd)
 int launch_child(const std::vector<char *> &args, int back_channel_pipe)
 {
     //fcntl(back_channel_pipe, F_SETFD, FD_CLOEXEC);
+    shimlog << "launch_child closing back_channel_pipe " <<
+        back_channel_pipe << std::endl;
     close(back_channel_pipe);
+    shimlog << "launch_child launching" << std::endl;
     int exec_result = execvp(args[0], &args[0]);
 
     // This is never reached if execvp is successful
@@ -564,6 +579,8 @@ int run_stream_processors(pid_t pid,
     bcp.push_message(BackChannelMessage (ss.str()));
     shimlog << "Sent '" << ss.str() << "' to back channel" << std::endl;
 
+    shimlog << "stderr StreamProcessor piping from " << stderr_pipes.child_r <<
+        " to " << stderr_pipes.parent_w << std::endl;
     ShimStreamProcessor stderr_proc(stderr_pipes.child_r,
         stderr_pipes.parent_w, bcp);
 
