@@ -18,6 +18,7 @@
 */
 
 #include <cstdlib>
+#include <fstream>
 extern "C" {
 #include "send-to-pipe.h"
 }
@@ -58,6 +59,8 @@ constexpr int OscEsc  = ']';
 constexpr int StCode  = 0x9c;
 constexpr int StEsc   = '\\';
 constexpr int BelCode = 7;
+
+auto shimlog = std::ofstream("/home/tony/.cache/roxterm/shimlog");
 
 /*************************************************************/
 
@@ -131,6 +134,13 @@ public:
     {
         return ShimSlice(buf, this->offset + offset, length);
     }
+
+    std::string content_as_string() const
+    {
+        const char *begin = (const char *) buf->address(offset);
+        const char *end = begin + length;
+        return std::string(begin, end);
+    }
 };
 
 /*************************************************************/
@@ -157,6 +167,8 @@ public:
     {
         return size() == 0;
     }
+
+    operator std::string() const;
 };
 
 /*************************************************************/
@@ -338,19 +350,43 @@ std::vector<ShimSlice> BackChannelMessage::get_data() const
 bool BackChannelMessage::send_to_pipe(int fd) const
 {
     auto length = size();
-    if (blocking_write(fd, &length, sizeof length) <= 0)
-        return false;
-    if (prefix.length() &&
-        blocking_write(fd, prefix.c_str(), prefix.length()) <= 0)
+    shimlog << "Sending '" << std::string(*this) << "' to pipe, length " <<
+        length << std::endl;
+    int write_result = blocking_write(fd, &length, sizeof length);
+    if (write_result <= 0)
     {
+        shimlog << "Writing length failed: " << write_result << std::endl;
         return false;
     }
-    for (const auto &slice: get_data())
+    if (prefix.length() &&
+        (write_result = blocking_write(fd, prefix.c_str(),
+            prefix.length())) <= 0)
+    {
+        shimlog << "Writing prefix failed: " << write_result << std::endl;
+        return false;
+    }
+    auto data = get_data();
+    shimlog << data.size() << " data elements" << std::endl;
+    for (const auto &slice: data)
     {
         if (!slice.write_to_fd(fd))
+        {
+            shimlog << "Writing slice failed" << std::endl;
             return false;
+        }
     }
     return true;
+}
+
+BackChannelMessage::operator std::string() const
+{
+    std::stringstream ss;
+    ss << prefix;
+    for (const auto &slice: get_data())
+    {
+        ss << slice.content_as_string();
+    }
+    return ss.str();
 }
 
 /*************************************************************/
@@ -361,7 +397,12 @@ void BackChannelProcessor::execute()
     {
         auto message = q.pop();
         if (message.is_empty())
+        {
+            shimlog << "BackChannelProcessor: empty message";
             return;
+        }
+        shimlog << "BackChannelProcessor sending '" <<
+            std::string(message) << '\'' << std::endl;
         message.send_to_pipe(fd);
     }
 }
@@ -498,13 +539,19 @@ int launch_child(const std::vector<char *> &args, int back_channel_pipe)
 
     // This is never reached if execvp is successful
     std::cerr << "Failed to exec";
+    shimlog << "Failed to exec";
     for (auto arg : args)
     {
         if (arg)
+        {
             std::cerr << ' ' << arg;
+            shimlog << ' ' << arg;
+        }
     }
     std::cerr << std::endl;
+    shimlog << std::endl;
     std::cerr << std::strerror(errno) << std::endl;
+    shimlog << std::strerror(errno) << std::endl;
     return exec_result;
 }
 
@@ -515,15 +562,24 @@ int run_stream_processors(pid_t pid,
     std::stringstream ss;
     ss << "OK " << pid;
     bcp.push_message(BackChannelMessage (ss.str()));
+    shimlog << "Sent '" << ss.str() << "' to back channel" << std::endl;
 
     ShimStreamProcessor stderr_proc(stderr_pipes.child_r,
         stderr_pipes.parent_w, bcp);
 
+    shimlog << "Started stderr stream processor, waiting for child" << std::endl;
+
     int exit_status;
     waitpid(pid, &exit_status, 0);
+    shimlog << "Child exited" << std::endl;
     bcp.push_message(BackChannelMessage("END"));
+    shimlog << "Sent 'END' to back channel" << std::endl;
     bcp.stop();
+    shimlog << "Stopped back channel" << std::endl;
     bcp.join();
+    shimlog << "Joined back channel thread" << std::endl;
+    stderr_proc.join();
+    shimlog << "Joined stderr thread" << std::endl;
     if (WIFEXITED(exit_status))
         return WEXITSTATUS(exit_status);
     else
@@ -544,6 +600,8 @@ int main(int argc, char **argv)
     {
         std::cerr << "Error opening shim pipes: " <<
             std::strerror(errno) << std::endl;
+        shimlog << "Error opening shim pipes: " <<
+            std::strerror(errno) << std::endl;
         return stderr_pipes.err_code;
     }
 
@@ -552,11 +610,13 @@ int main(int argc, char **argv)
     if (!pid)
     {
         stderr_pipes.remap_child(FdStderr);
+        shimlog << "Remapped stderr child pipes" << std::endl;
         return launch_child(args, back_channel_pipe);
     }
     else
     {
         stderr_pipes.remap_parent(FdStderr);
+        shimlog << "Remapped stderr parent pipes" << std::endl;
         return run_stream_processors(pid, back_channel_pipe, stderr_pipes);
     }
 
