@@ -214,7 +214,7 @@ void roxterm_spawn_child(ROXTermData *roxterm, VteTerminal *vte,
         * index 0 = read, 1 = write.
         */
     int pipe_pair[2];
-    if (pipe(pipe_pair) == 0)
+    if (g_unix_open_pipe(pipe_pair, 0, &error))
     {
         g_debug("roxterm_spawn_child: Opened pipes %d (r) and %d (w)",
                 pipe_pair[0], pipe_pair[1]);
@@ -246,22 +246,10 @@ void roxterm_spawn_child(ROXTermData *roxterm, VteTerminal *vte,
             NULL, NULL, NULL, -1, NULL,
             callback, roxterm);
     }
-    else
+    else if (!error)
     {
-        GQuark domain;
-        int code;
-        if (errno)
-        {
-            domain = G_IO_ERROR;
-            code = g_io_error_from_errno(errno);
-        }
-        else
-        {
-            domain = ROXTERM_SPAWN_ERROR;
-            code = ROXTermSpawnPipeError;
-        }
-        error = g_error_new(domain, code,
-            _("Unable to open pipe to monitor child"));
+        error = g_error_new(ROXTERM_SPAWN_ERROR, ROXTermSpawnPipeError,
+                            _("Unable to open pipe to monitor child"));
     }
 
     if (error)
