@@ -41,7 +41,7 @@ void send_test_message_to_pipe(int fd)
     if (n != (int) l)
     {
         std::cerr << "Result of sending test message is " << n
-            << ", should be " << l << endlog;
+            << ", should be " << l << std::endl;
     }
 }
 
@@ -52,13 +52,13 @@ void shim_main()
     ShimStreamProcessor sproc{"stdin", pipe.r, 1};
     sproc.start();
     
-    std::cerr << "Sending test message" << endlog;
+    std::cerr << "Sending test message" << std::endl;
     send_test_message_to_pipe(pipe.w);
-    std::cerr << "OK, napping" << endlog;
+    std::cerr << "OK, napping" << std::endl;
     sleep(2);
-    std::cerr << "OK, closing pipe" << endlog;
+    std::cerr << "OK, closing pipe" << std::endl;
     close(pipe.w);
-    std::cerr << "Waiting for thread" << endlog;
+    std::cerr << "Waiting for thread" << std::endl;
     sproc.join();
 }
 

@@ -39,8 +39,10 @@ class LockedLogOwner {
 protected:
     virtual std::mutex &mutex() = 0;
     virtual std::ostream &output() = 0;
-    virtual class ShimLog &self();
+    virtual class ShimLog &self() = 0;
 public:
+    virtual ~LockedLogOwner() = default;
+
     friend class LockedLog;
 };
 
