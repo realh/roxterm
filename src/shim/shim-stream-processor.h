@@ -18,39 +18,74 @@
 */
 #pragma once
 
+#include <memory>
+
 #include "shim-back-channel.h"
 #include "shim-slice.h"
 
 namespace shim {
 
+enum StreamProcessorState {
+    // Copying from input to output, but checking for start of control sequence
+    // of interest.
+    Copying,
+
+    // Got the start of a control sequence, but we don't know whether it's of
+    // interest yet.
+    PotentialMatch,
+
+    // Processing a control sequence of interest.
+    ProcessingMatchedSequence,
+
+    // Sequence was of interest, but it's too long, so the rest of it will be
+    // discarded until we get a terminator.
+    Discarding,
+
+};
+
 class ShimStreamProcessor {
-private:
+protected:
 	int input_fd;
 	int output_fd;
 	ShimSliceQueue unprocessed_slices{};
 	ShimSliceQueue processed_slices{};
-	BackChannelProcessor &back_channel;
-    std::thread input_thread;
-    std::thread process_thread;
-    std::thread output_thread;
+    std::thread *input_thread;
+    std::thread *process_thread;
+    std::thread *output_thread;
 
     void get_slices_from_input();
 
-    void process_slices();
-
     void write_slices_to_output();
-public:
-    ShimStreamProcessor(int input_fd, int output_fd,
-        BackChannelProcessor &back_channel) :
+
+    std::unique_ptr<ShimSlice> current_slice{};
+
+    ShimStreamProcessor(int input_fd, int output_fd) :
         input_fd(input_fd),
-        output_fd(output_fd),
-        back_channel(back_channel),
-        input_thread(&ShimStreamProcessor::get_slices_from_input, this),
-        process_thread(&ShimStreamProcessor::process_slices, this),
-        output_thread(&ShimStreamProcessor::write_slices_to_output, this)
+        output_fd(output_fd)
     {}
 
+    virtual void process_slices() = 0;
+
+    void join_one_thread(std::thread **p_thread);
+public:
+    // We can't start from the constructor because the sub-class won't be
+    // set up yet.
+    void start();
+
     void join();
+};
+
+class Osc52StreamProcessor: public ShimStreamProcessor {
+private:
+	BackChannelProcessor &back_channel;
+protected:
+    virtual void process_slices();
+public:
+    Osc52StreamProcessor(int input_fd, int output_fd,
+        BackChannelProcessor &back_channel) :
+        ShimStreamProcessor(input_fd, output_fd),
+        back_channel(back_channel)
+    {}
 };
 
 }

@@ -43,6 +43,11 @@ public:
 
     ShimSlice(ShimSlice &&) = default;
 
+    // Makes a new slice with a subset of the other slice's data. offset is
+    // relative to the other slice's offset.
+    ShimSlice(const ShimSlice &slice, int offset, int length) :
+        buf(slice.buf), offset(slice.offset + offset), length(length) {}
+
     int size() const
     {
         return length;
@@ -60,9 +65,12 @@ public:
     // Blocks until all bytes have been written.
     bool write_to_fd(int fd) const;
 
-    ShimSlice sub_slice(int offset, int length) const
+    // Changes the range of data this slice refers to. offset is relative to
+    // the slice's old offset, as opposed to an absolute offset into buf.
+    void change(int offset, int length)
     {
-        return ShimSlice(buf, this->offset + offset, length);
+        this->offset += offset;
+        this->length = length;
     }
 
     std::string content_as_string() const

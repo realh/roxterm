@@ -18,12 +18,23 @@
 */
 
 #include <cerrno>
+#include <cstddef>
 #include <cstring>
 
 #include "shim-log.h"
 #include "shim-stream-processor.h"
 
 namespace shim {
+
+void ShimStreamProcessor::start()
+{
+    input_thread =
+        new std::thread(&ShimStreamProcessor::get_slices_from_input, this);
+    process_thread =
+        new std::thread(&ShimStreamProcessor::process_slices, this);
+    output_thread =
+        new std::thread(&ShimStreamProcessor::write_slices_to_output, this);
+}
 
 void ShimStreamProcessor::get_slices_from_input()
 {
@@ -41,17 +52,6 @@ void ShimStreamProcessor::get_slices_from_input()
             unprocessed_slices.push(slice);
             if (!ok) return;
         }
-    }
-}
-
-void ShimStreamProcessor::process_slices()
-{
-    bool ok = true;
-    while (ok)
-    {
-        auto slice = unprocessed_slices.pop();
-        ok = slice.size() != 0;
-        processed_slices.push(slice);
     }
 }
 
@@ -74,11 +74,34 @@ void ShimStreamProcessor::write_slices_to_output()
     }
 }
 
+void ShimStreamProcessor::join_one_thread(std::thread **p_thread)
+{
+    if (*p_thread)
+    {
+        (*p_thread)->join();
+        delete *p_thread;
+        *p_thread = nullptr;
+    }
+}
+
 void ShimStreamProcessor::join()
 {
-    input_thread.join();
-    process_thread.join();
-    output_thread.join();
+    join_one_thread(&input_thread);
+    join_one_thread(&process_thread);
+    join_one_thread(&output_thread);
+}
+
+void Osc52StreamProcessor::process_slices()
+{
+    bool ok = true;
+    while (ok)
+    {
+        auto slice = unprocessed_slices.pop();
+        ok = slice.size() != 0;
+        if (ok)
+            current_slice.reset(&slice);
+        processed_slices.push(slice);
+    }
 }
 
 }

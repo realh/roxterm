@@ -75,7 +75,7 @@ int run_stream_processors(pid_t pid,
 
     shimlog << "stderr StreamProcessor piping from " << stderr_pipes.child_r <<
         " to " << stderr_pipes.parent_w << std::endl;
-    ShimStreamProcessor stderr_proc(stderr_pipes.child_r,
+    Osc52StreamProcessor stderr_proc(stderr_pipes.child_r,
         stderr_pipes.parent_w, bcp);
 
     shimlog << "Started stderr stream processor, waiting for child" << std::endl;
