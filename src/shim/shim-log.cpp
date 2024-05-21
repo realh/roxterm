@@ -20,6 +20,18 @@
 
 namespace shim {
 
-std::ofstream shimlog{"/home/tony/.cache/roxterm/shimlog"};
+ShimLog &LockedLog::operator<<(EndLog a)
+{
+    if (a.nl)
+        owner.output() << std::endl;
+    else
+        owner.output().flush();
+    owner.mutex().unlock();
+    return owner.self();
+}
+
+EndLog endlog;
+
+ShimLog shimlog;
 
 }

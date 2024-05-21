@@ -19,9 +19,80 @@
 #pragma once
 
 #include <fstream>
+#include <mutex>
+#include <ostream>
 
 namespace shim {
 
-extern std::ofstream shimlog;
+class EndLog {
+private:
+    bool nl;
+public:
+    EndLog(bool nl = true) : nl(nl) {}
+
+    friend class LockedLog;
+};
+
+extern EndLog endlog;
+
+class LockedLogOwner {
+protected:
+    virtual std::mutex &mutex() = 0;
+    virtual std::ostream &output() = 0;
+    virtual class ShimLog &self();
+public:
+    friend class LockedLog;
+};
+
+class LockedLog {
+private:
+    LockedLogOwner &owner;
+public:
+    LockedLog(LockedLogOwner &owner) : owner(owner) {}
+
+    template<class T> LockedLog &operator<<(T a)
+    {
+        owner.output() << a;
+        return *this;
+    }
+
+    class ShimLog &operator<<(EndLog a);
+};
+
+class ShimLog : LockedLogOwner {
+private:
+    std::mutex mut;
+    std::ofstream ostream{"/home/tony/.cache/roxterm/shimlog"};
+    LockedLog locked_log{*this};
+protected:
+    std::mutex &mutex()
+    {
+        return mut;
+    }
+
+    std::ostream &output()
+    {
+        return ostream;
+    }
+
+    class ShimLog &self()
+    {
+        return *this;
+    }
+public:
+    template<class T> LockedLog &operator<<(T a)
+    {
+        mut.lock();
+        return locked_log << a;
+    }
+
+    ShimLog &operator<<(EndLog a)
+    {
+        mut.lock();
+        return locked_log << a;
+    }
+};
+
+extern ShimLog shimlog;
 
 }
