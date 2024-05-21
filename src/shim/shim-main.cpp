@@ -65,7 +65,7 @@ int launch_child(const std::vector<char *> &args, int back_channel_pipe)
 }
 
 int run_stream_processors(pid_t pid,
-    int back_channel_pipe, Pipes &stderr_pipes)
+    int back_channel_pipe, Pipes &stderr_pipes, Pipes &stdout_pipes)
 {
     BackChannelProcessor bcp{back_channel_pipe};
     std::stringstream ss;
@@ -77,8 +77,10 @@ int run_stream_processors(pid_t pid,
         " to " << stderr_pipes.parent_w << std::endl;
     Osc52StreamProcessor stderr_proc(stderr_pipes.child_r,
         stderr_pipes.parent_w, bcp);
+    Osc52StreamProcessor stdout_proc(stdout_pipes.child_r,
+        stdout_pipes.parent_w, bcp);
 
-    shimlog << "Started stderr stream processor, waiting for child" << std::endl;
+    shimlog << "Started stream processors, waiting for child" << std::endl;
 
     int exit_status;
     waitpid(pid, &exit_status, 0);
@@ -90,11 +92,25 @@ int run_stream_processors(pid_t pid,
     bcp.join();
     shimlog << "Joined back channel thread" << std::endl;
     stderr_proc.join();
-    shimlog << "Joined stderr thread" << std::endl;
+    stdout_proc.join();
+    shimlog << "Joined stream processor threads" << std::endl;
     if (WIFEXITED(exit_status))
         return WEXITSTATUS(exit_status);
     else
         return 1;
+}
+
+Pipes open_and_check_pipes(const char *name)
+{
+    Pipes pipes;
+    if (pipes.err_code)
+    {
+        std::cerr << "Error opening shim " << name << " pipes: " <<
+            std::strerror(errno) << std::endl;
+        shim::shimlog << "Error opening shim " << name << " pipes: " <<
+            std::strerror(errno) << std::endl;
+    }
+    return pipes;
 }
 
 }
@@ -108,29 +124,32 @@ int main(int argc, char **argv)
     std::vector<char *> args{argv + 2, argv + argc};
     args.push_back(nullptr);
 
-    shim::Pipes stderr_pipes;
+    shim::Pipes stderr_pipes = shim::open_and_check_pipes("stderr");
     if (stderr_pipes.err_code)
-    {
-        std::cerr << "Error opening shim pipes: " <<
-            std::strerror(errno) << std::endl;
-        shim::shimlog << "Error opening shim pipes: " <<
-            std::strerror(errno) << std::endl;
         return stderr_pipes.err_code;
-    }
+    shim::Pipes stdout_pipes = shim::open_and_check_pipes("stdout");
+    if (stdout_pipes.err_code)
+        return stdout_pipes.err_code;
+    shim::Pipes stdin_pipes = shim::open_and_check_pipes("stdin");
+    if (stdin_pipes.err_code)
+        return stdin_pipes.err_code;
 
     auto pid = fork();
 
     if (!pid)
     {
         stderr_pipes.remap_child(shim::FdStderr);
-        shim::shimlog << "Remapped stderr child pipes" << std::endl;
+        stdout_pipes.remap_child(shim::FdStdout);
+        shim::shimlog << "Remapped child pipes" << std::endl;
         return shim::launch_child(args, back_channel_pipe);
     }
     else
     {
         stderr_pipes.remap_parent(shim::FdStderr);
-        shim::shimlog << "Remapped stderr parent pipes" << std::endl;
-        return run_stream_processors(pid, back_channel_pipe, stderr_pipes);
+        stdout_pipes.remap_parent(shim::FdStdout);
+        shim::shimlog << "Remapped parent pipes" << std::endl;
+        return run_stream_processors(pid, back_channel_pipe,
+            stderr_pipes, stdout_pipes);
     }
 
     return 0;
