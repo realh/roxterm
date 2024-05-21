@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 include(FindPkgConfig)
 include(GNUInstallDirs)
+find_package(Threads REQUIRED)
 
 execute_process(COMMAND ${PROJECT_SOURCE_DIR}/version.sh
     OUTPUT_VARIABLE ROXTERM_VERSION)

@@ -20,26 +20,27 @@
 
 namespace shim {
 
-struct Pipes {
-    int parent_r;
-    int parent_w;
-    int child_r;
-    int child_w;
+enum PipeDirection {
+    ChildToParent,
+    ParentToChild
+};
+
+struct Pipe {
+    int r;
+    int w;
 
     int err_code{0};
 
-    Pipes();
+    Pipe();
     
-    // Call in the parent after forking. If target_fd is stdin, parent_w is
-    // remapped, child_r is closed, and the StreamProcessor will read from
-    // parent_r and write to child_w. Otherwise parent_r is remapped, child_w
-    // is closed, and the StreamProcessor will read from child_r and write to
-    // parent_w.
+    // Call in the parent after forking. If target_fd is FdStdin, this pipe
+    // reads from the parent and writes to the child, so r is closed
+    // and its value replaced by FdStdin. Otherwise w is closed and its value
+    // replaced by target_fd.
     int remap_parent(int target_fd);
 
-    // Call in the child after forking. If target_fd is stdin, child_r is
-    // remapped, otherwise child_w is remapped. The other pipe ends will be
-    // closed automatically if exec succeeds, due to the use of CLOEXEC.
+    // Call in the child after forking. If target_fd is FdStdin, w is closed
+    // otherwise r is closed. Its counterpart is remapped to target_fd.
     int remap_child(int target_fd);
 };
 

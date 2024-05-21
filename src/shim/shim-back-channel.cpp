@@ -44,27 +44,27 @@ bool BackChannelMessage::send_to_pipe(int fd) const
 {
     auto length = size();
     shimlog << "Sending '" << std::string(*this) << "' to pipe, length " <<
-        length << std::endl;
+        length << endlog;
     int write_result = blocking_write(fd, &length, sizeof length);
     if (write_result <= 0)
     {
-        shimlog << "Writing length failed: " << write_result << std::endl;
+        shimlog << "Writing length failed: " << write_result << endlog;
         return false;
     }
     if (prefix.length() &&
         (write_result = blocking_write(fd, prefix.c_str(),
             prefix.length())) <= 0)
     {
-        shimlog << "Writing prefix failed: " << write_result << std::endl;
+        shimlog << "Writing prefix failed: " << write_result << endlog;
         return false;
     }
     auto data = get_data();
-    shimlog << data.size() << " data elements" << std::endl;
+    shimlog << data.size() << " data elements" << endlog;
     for (const auto &slice: data)
     {
         if (!slice.write_to_fd(fd))
         {
-            shimlog << "Writing slice failed" << std::endl;
+            shimlog << "Writing slice failed" << endlog;
             return false;
         }
     }
@@ -91,11 +91,11 @@ void BackChannelProcessor::execute()
         auto message = q.pop();
         if (message.is_empty())
         {
-            shimlog << "BackChannelProcessor: empty message" << std::endl;
+            shimlog << "BackChannelProcessor: empty message" << endlog;
             return;
         }
         shimlog << "BackChannelProcessor sending '" <<
-            std::string(message) << '\'' << std::endl;
+            std::string(message) << '\'' << endlog;
         message.send_to_pipe(fd);
     }
 }

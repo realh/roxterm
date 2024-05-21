@@ -63,7 +63,7 @@ const char *name;
 
     void write_slices_to_output();
 
-    std::unique_ptr<ShimSlice> current_slice{};
+    std::unique_ptr<ShimSlice> current_slice{nullptr};
 
     virtual void process_slices();
 

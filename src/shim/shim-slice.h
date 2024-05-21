@@ -55,7 +55,7 @@ public:
 
     uint8_t operator[](int index) const
     {
-        return (*buf)[index];
+        return (*buf)[offset + index];
     }
 
     // This reads as many bytes as it can and automatically calls

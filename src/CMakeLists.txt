@@ -163,16 +163,16 @@ add_executable(roxterm-shim send-to-pipe.c
     shim/shim-back-channel.cpp
     shim/shim-log.cpp
     shim/shim-main.cpp
-    shim/shim-pipes.cpp
+    shim/shim-pipe.cpp
     shim/shim-slice.cpp
     shim/shim-stream-processor.cpp)
 
-target_include_directories(roxterm-shim PRIVATE
-    ${RTSHIM_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})
-target_compile_options(roxterm-shim PRIVATE ${RTSHIM_CFLAGS_OTHER})
-target_link_libraries(roxterm-shim ${RTSHIM_LIBRARIES})
-target_link_directories(roxterm-shim PRIVATE ${RTSHIM_LIBRARY_DIRS})
-target_link_options(roxterm-shim PRIVATE ${RTSHIM_LDFLAGS_OTHER})
+target_compile_options(roxterm-shim PRIVATE -pthread)
+target_link_libraries(roxterm-shim Threads::Threads)
+# target_include_directories(roxterm-shim PRIVATE
+#     ${RTSHIM_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})
+# target_link_directories(roxterm-shim PRIVATE ${RTSHIM_LIBRARY_DIRS})
+# target_link_options(roxterm-shim PRIVATE ${RTSHIM_LDFLAGS_OTHER})
 
 install(TARGETS roxterm roxterm-config RUNTIME DESTINATION bin)
 

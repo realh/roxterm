@@ -19,9 +19,9 @@
 
 #include <cerrno>
 #include <cstring>
-#include <mutex>
 
 #include "shim-log.h"
+#include "shim-slice.h"
 #include "shim-stream-processor.h"
 
 namespace shim {
@@ -40,17 +40,36 @@ void ShimStreamProcessor::get_slices_from_input()
 {
     while (!is_stopping())
     {
+        shimlog << name << " stream processor making a new buffer"
+                        << endlog;
         auto buf = std::make_shared<ShimBuffer>();
         while (!buf->is_full())
         {
             auto slice = ShimSlice(buf);
             if (slice.size() == 0)
+            {
+                shimlog << name << " processor got empty slice from buf"
+                        << endlog;
                 break;
+            }
+            else
+            {
+                shimlog << name << " processor reading up to " << slice.size()
+                        << " bytes from input fd" << endlog;
+            }
             bool ok = slice.read_from_fd(input_fd);
             if (!ok)
             {
-                shimlog << name << " stream processor read empty or error"
-                        << std::endl;
+                shimlog << name << " processor read EOF or error"
+                        << endlog;
+            }
+            else
+            {
+                shimlog << name << " processor read " << slice.size()
+                        << " bytes from fd\n****\n"
+                        << int(slice[0]) << '\n'
+                        << slice.content_as_string()
+                        << "\n****" << endlog;
             }
             // If ok is false the slice has length 0 so pushing it will cause
             // the reader to stop.
@@ -71,7 +90,7 @@ void ShimStreamProcessor::write_slices_to_output()
         if (!ok)
         {
             shimlog << name << " stream processor output writer stopping"
-                    << std::endl;
+                    << endlog;
         }
         if (ok)
         {
@@ -79,7 +98,7 @@ void ShimStreamProcessor::write_slices_to_output()
             if (!ok)
             {
                 shimlog << "Failed to write slice to output: " <<
-                    strerror(errno) << std::endl;
+                    strerror(errno) << endlog;
             }
         }
     }
@@ -98,9 +117,13 @@ void ShimStreamProcessor::join_one_thread(std::thread **p_thread)
 void ShimStreamProcessor::join()
 {
     stop();
+    shimlog << name << " processor flagged stop" << endlog;
     join_one_thread(&input_thread);
+    shimlog << name << " processor joined input thread" << endlog;
     join_one_thread(&process_thread);
+    shimlog << name << " processor joined process thread" << endlog;
     join_one_thread(&output_thread);
+    shimlog << name << " processor joined output thread" << endlog;
 }
 
 void ShimStreamProcessor::process_slices()
@@ -110,14 +133,10 @@ void ShimStreamProcessor::process_slices()
     {
         auto slice = unprocessed_slices.pop();
         ok = slice.size() != 0;
-        if (ok)
-        {
-            current_slice.reset(&slice);
-        }
-        else
+        if (!ok)
         {
             shimlog << name << " stream processor slice processor stopping"
-                    << std::endl;
+                    << endlog;
         }
         processed_slices.push(slice);
     }
@@ -130,8 +149,8 @@ void Osc52StreamProcessor::process_slices()
     {
         auto slice = unprocessed_slices.pop();
         ok = slice.size() != 0;
-        if (ok)
-            current_slice.reset(&slice);
+        // if (ok)
+        //     current_slice.reset(new ShimSlice(slice));
         processed_slices.push(slice);
     }
 }

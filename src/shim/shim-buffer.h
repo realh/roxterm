@@ -18,7 +18,6 @@
 */
 #pragma once
 
-#include <array>
 #include <cstdint>
 
 #include "shim-constants.h"
@@ -27,7 +26,7 @@ namespace shim {
 
 class ShimBuffer {
 private:
-    std::array<std::uint8_t, BufferSize> buf{};
+    std::uint8_t buf[BufferSize];
     int n_filled{0};
 public:
     // Gets the number of bytes filled in the buffer so far.
@@ -56,7 +55,7 @@ public:
 
     uint8_t *address(int offset = 0)
     {
-        return &buf[offset];
+        return buf + offset;
     }
 };
 
