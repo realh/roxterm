@@ -18,8 +18,8 @@
 */
 
 #include <cerrno>
-#include <cstddef>
 #include <cstring>
+#include <mutex>
 
 #include "shim-log.h"
 #include "shim-stream-processor.h"
@@ -38,7 +38,7 @@ void ShimStreamProcessor::start()
 
 void ShimStreamProcessor::get_slices_from_input()
 {
-    while (true)
+    while (!is_stopping())
     {
         auto buf = std::make_shared<ShimBuffer>();
         while (!buf->is_full())
@@ -47,10 +47,16 @@ void ShimStreamProcessor::get_slices_from_input()
             if (slice.size() == 0)
                 break;
             bool ok = slice.read_from_fd(input_fd);
+            if (!ok)
+            {
+                shimlog << name << " stream processor read empty or error"
+                        << std::endl;
+            }
             // If ok is false the slice has length 0 so pushing it will cause
             // the reader to stop.
             unprocessed_slices.push(slice);
-            if (!ok) return;
+            if (!ok)
+                return;
         }
     }
 }
@@ -62,6 +68,11 @@ void ShimStreamProcessor::write_slices_to_output()
     {
         auto slice = processed_slices.pop();
         ok = slice.size() != 0;
+        if (!ok)
+        {
+            shimlog << name << " stream processor output writer stopping"
+                    << std::endl;
+        }
         if (ok)
         {
             ok = slice.write_to_fd(output_fd);
@@ -86,9 +97,30 @@ void ShimStreamProcessor::join_one_thread(std::thread **p_thread)
 
 void ShimStreamProcessor::join()
 {
+    stop();
     join_one_thread(&input_thread);
     join_one_thread(&process_thread);
     join_one_thread(&output_thread);
+}
+
+void ShimStreamProcessor::process_slices()
+{
+    bool ok = true;
+    while (ok)
+    {
+        auto slice = unprocessed_slices.pop();
+        ok = slice.size() != 0;
+        if (ok)
+        {
+            current_slice.reset(&slice);
+        }
+        else
+        {
+            shimlog << name << " stream processor slice processor stopping"
+                    << std::endl;
+        }
+        processed_slices.push(slice);
+    }
 }
 
 void Osc52StreamProcessor::process_slices()

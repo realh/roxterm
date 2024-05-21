@@ -19,6 +19,7 @@
 #pragma once
 
 #include <memory>
+#include <mutex>
 
 #include "shim-back-channel.h"
 #include "shim-slice.h"
@@ -45,13 +46,18 @@ enum StreamProcessorState {
 
 class ShimStreamProcessor {
 protected:
+const char *name;
 	int input_fd;
 	int output_fd;
+    bool stopping{false};
 	ShimSliceQueue unprocessed_slices{};
 	ShimSliceQueue processed_slices{};
     std::thread *input_thread;
     std::thread *process_thread;
     std::thread *output_thread;
+
+    // A mutex makes sure the thread sees the stopping flag updates.
+    std::mutex mut;
 
     void get_slices_from_input();
 
@@ -59,19 +65,33 @@ protected:
 
     std::unique_ptr<ShimSlice> current_slice{};
 
-    ShimStreamProcessor(int input_fd, int output_fd) :
+    virtual void process_slices();
+
+    void join_one_thread(std::thread **p_thread);
+
+    bool is_stopping()
+    {
+        std::scoped_lock lock{mut};
+        return stopping;
+    }
+
+    void stop()
+    {
+        std::scoped_lock lock{mut};
+        stopping = true;
+    }
+public:
+    ShimStreamProcessor(const char *name, int input_fd, int output_fd) :
+        name(name),
         input_fd(input_fd),
         output_fd(output_fd)
     {}
 
-    virtual void process_slices() = 0;
-
-    void join_one_thread(std::thread **p_thread);
-public:
     // We can't start from the constructor because the sub-class won't be
     // set up yet.
     void start();
 
+    // This also calls stop.
     void join();
 };
 
@@ -81,9 +101,9 @@ private:
 protected:
     virtual void process_slices();
 public:
-    Osc52StreamProcessor(int input_fd, int output_fd,
+    Osc52StreamProcessor(const char *name, int input_fd, int output_fd,
         BackChannelProcessor &back_channel) :
-        ShimStreamProcessor(input_fd, output_fd),
+        ShimStreamProcessor(name, input_fd, output_fd),
         back_channel(back_channel)
     {}
 };

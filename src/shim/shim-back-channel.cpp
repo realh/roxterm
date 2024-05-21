@@ -91,7 +91,7 @@ void BackChannelProcessor::execute()
         auto message = q.pop();
         if (message.is_empty())
         {
-            shimlog << "BackChannelProcessor: empty message";
+            shimlog << "BackChannelProcessor: empty message" << std::endl;
             return;
         }
         shimlog << "BackChannelProcessor sending '" <<
