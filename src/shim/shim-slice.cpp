@@ -17,27 +17,28 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#include <stdint.h>
+#include <unistd.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include "../send-to-pipe.h"
+#include "shim-slice.h"
 
-/* Writes data to a pipe (or any file descriptor), blocking until all the
- * data is sent. The result is length on success, 0 for EOF, < 0 for error
- * (result of write()).
- */
-int blocking_write(int fd, const void *data, uint32_t length);
-
-/* Read counterpart to blocking_write. */
-int blocking_read(int fd, void *data, uint32_t length);
-
-/* As blocking_write, but the data sent to the pipe is preceded by length encoded
- * in binary. If length < 0, the length of the string, including terminator,
- * is used. The result on success excludes the extra 4 bytes used * to encode it.
- */
-int send_to_pipe(int fd, const char *data, uint32_t length);
-
-#ifdef __cplusplus
+namespace shim {
+bool ShimSlice::read_from_fd(int fd)
+{
+    int nread = read(fd, buf->address(offset), length) > 0;
+    if (nread > 0)
+    {
+        length = nread;
+        buf->bytes_added(length);
+        return true;
+    }
+    length = 0;
+    return false;
 }
-#endif
+
+bool ShimSlice::write_to_fd(int fd) const
+{
+    return blocking_write(fd, buf->address(offset), length) > 0;
+}
+
+}

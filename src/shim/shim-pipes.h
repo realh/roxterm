@@ -16,28 +16,31 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
+#pragma once
 
-#include <stdint.h>
+namespace shim {
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+struct Pipes {
+    int parent_r;
+    int parent_w;
+    int child_r;
+    int child_w;
 
-/* Writes data to a pipe (or any file descriptor), blocking until all the
- * data is sent. The result is length on success, 0 for EOF, < 0 for error
- * (result of write()).
- */
-int blocking_write(int fd, const void *data, uint32_t length);
+    int err_code{0};
 
-/* Read counterpart to blocking_write. */
-int blocking_read(int fd, void *data, uint32_t length);
+    Pipes();
+    
+    // Call in the parent after forking. If target_fd is stdin, parent_w is
+    // remapped, child_r is closed, and the StreamProcessor will read from
+    // parent_r and write to child_w. Otherwise parent_r is remapped, child_w
+    // is closed, and the StreamProcessor will read from child_r and write to
+    // parent_w.
+    int remap_parent(int target_fd);
 
-/* As blocking_write, but the data sent to the pipe is preceded by length encoded
- * in binary. If length < 0, the length of the string, including terminator,
- * is used. The result on success excludes the extra 4 bytes used * to encode it.
- */
-int send_to_pipe(int fd, const char *data, uint32_t length);
+    // Call in the child after forking. If target_fd is stdin, child_r is
+    // remapped, otherwise child_w is remapped. The other pipe ends will be
+    // closed automatically if exec succeeds, due to the use of CLOEXEC.
+    int remap_child(int target_fd);
+};
 
-#ifdef __cplusplus
 }
-#endif

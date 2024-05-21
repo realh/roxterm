@@ -16,28 +16,48 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
+#pragma once
 
-#include <stdint.h>
+#include <array>
+#include <cstdint>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include "shim-constants.h"
 
-/* Writes data to a pipe (or any file descriptor), blocking until all the
- * data is sent. The result is length on success, 0 for EOF, < 0 for error
- * (result of write()).
- */
-int blocking_write(int fd, const void *data, uint32_t length);
+namespace shim {
 
-/* Read counterpart to blocking_write. */
-int blocking_read(int fd, void *data, uint32_t length);
+class ShimBuffer {
+private:
+    std::array<std::uint8_t, BufferSize> buf{};
+    int n_filled{0};
+public:
+    // Gets the number of bytes filled in the buffer so far.
+    int get_filled() const
+    {
+        return n_filled;
+    }
 
-/* As blocking_write, but the data sent to the pipe is preceded by length encoded
- * in binary. If length < 0, the length of the string, including terminator,
- * is used. The result on success excludes the extra 4 bytes used * to encode it.
- */
-int send_to_pipe(int fd, const char *data, uint32_t length);
+    // Marks that the last slice was filled with n bytes, which need not be
+    // the slice's capacity. Returns true if the buffer is now full.
+    bool bytes_added(int n)
+    {
+        n_filled += n;
+        return is_full();
+    }
 
-#ifdef __cplusplus
+    bool is_full() const
+    {
+        return n_filled >= MaxBufferSizeForTopUp;
+    }
+
+    uint8_t operator[](int index) const
+    {
+        return buf[index];
+    }
+
+    uint8_t *address(int offset = 0)
+    {
+        return &buf[offset];
+    }
+};
+
 }
-#endif

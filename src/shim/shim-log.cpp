@@ -16,28 +16,10 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
+#include "shim-log.h"
 
-#include <stdint.h>
+namespace shim {
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+std::ofstream shimlog{"/home/tony/.cache/roxterm/shimlog"};
 
-/* Writes data to a pipe (or any file descriptor), blocking until all the
- * data is sent. The result is length on success, 0 for EOF, < 0 for error
- * (result of write()).
- */
-int blocking_write(int fd, const void *data, uint32_t length);
-
-/* Read counterpart to blocking_write. */
-int blocking_read(int fd, void *data, uint32_t length);
-
-/* As blocking_write, but the data sent to the pipe is preceded by length encoded
- * in binary. If length < 0, the length of the string, including terminator,
- * is used. The result on success excludes the extra 4 bytes used * to encode it.
- */
-int send_to_pipe(int fd, const char *data, uint32_t length);
-
-#ifdef __cplusplus
 }
-#endif
