@@ -67,7 +67,6 @@ void ShimStreamProcessor::get_slices_from_input()
             {
                 shimlog << name << " processor read " << slice.size()
                         << " bytes from fd\n****\n"
-                        << int(slice[0]) << '\n'
                         << slice.content_as_string()
                         << "\n****" << endlog;
             }

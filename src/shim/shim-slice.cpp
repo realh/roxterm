@@ -25,9 +25,7 @@
 #include "shim-log.h"
 #include "shim-slice.h"
 
-namespace unistd {
 #include <unistd.h>
-}
 
 namespace shim {
 
@@ -39,7 +37,7 @@ bool ShimSlice::read_from_fd(int fd)
     shimlog << "read_from_fd: attempting to read up to " << nread
             << " bytes from fd " << fd << " to offset " << offset
             << ", addr " << (void *) addr << endlog;
-    nread = unistd::read(fd, addr, nread) > 0;
+    nread = read(fd, addr, nread);
     shimlog << "read " << nread << " bytes " << (char *) addr << endlog;
     if (nread > 0)
     {
