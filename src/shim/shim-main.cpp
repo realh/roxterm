@@ -39,7 +39,6 @@ namespace shim {
 
 int launch_child(const std::vector<char *> &args, int back_channel_pipe)
 {
-    //fcntl(back_channel_pipe, F_SETFD, FD_CLOEXEC);
     shimlog << "launch_child closing back_channel_pipe " <<
         back_channel_pipe << endlog;
     close(back_channel_pipe);
@@ -74,7 +73,7 @@ int run_stream_processors(pid_t pid,
         " to " << stderr_pipe.w << endlog;
     Osc52StreamProcessor stderr_proc("stderr", stderr_pipe.r,
         stderr_pipe.w, bcp);
-    //stderr_proc.start();
+    stderr_proc.start();
 
     shimlog << "stdout StreamProcessor piping from " << stdout_pipe.r <<
         " to " << stdout_pipe.w << endlog;
@@ -95,7 +94,7 @@ int run_stream_processors(pid_t pid,
     bcp.join();
 
     shimlog << "Joined back channel thread" << endlog;
-    //stderr_proc.join();
+    stderr_proc.join();
     shimlog << "Joined stderr processor thread" << endlog;
     stdout_proc.join();
     shimlog << "Joined stream processor threads" << endlog;
@@ -141,13 +140,13 @@ int main(int argc, char **argv)
 
     if (!pid)
     {
-        //stderr_pipe.remap_child(shim::FdStderr);
+        stderr_pipe.remap_child(shim::FdStderr);
         stdout_pipe.remap_child(shim::FdStdout);
         return shim::launch_child(args, back_channel_pipe);
     }
     else
     {
-        //stderr_pipe.remap_parent(shim::FdStderr);
+        stderr_pipe.remap_parent(shim::FdStderr);
         stdout_pipe.remap_parent(shim::FdStdout);
         return run_stream_processors(pid, back_channel_pipe,
             stderr_pipe, stdout_pipe);
