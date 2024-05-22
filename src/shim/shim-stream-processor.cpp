@@ -40,8 +40,8 @@ void ShimStreamProcessor::get_slices_from_input()
 {
     while (!is_stopping())
     {
-        shimlog << name << " stream processor making a new buffer"
-                        << endlog;
+        // shimlog << name << " stream processor making a new buffer"
+        //                 << endlog;
         auto buf = std::make_shared<ShimBuffer>();
         while (!buf->is_full())
         {
@@ -52,24 +52,26 @@ void ShimStreamProcessor::get_slices_from_input()
                         << endlog;
                 break;
             }
-            else
-            {
-                shimlog << name << " processor reading up to " << slice.size()
-                        << " bytes from input fd" << endlog;
-            }
+            // else
+            // {
+            //     shimlog << name << " processor reading up to " << slice.size()
+            //             << " bytes from input fd" << endlog;
+            // }
+
             bool ok = slice.read_from_fd(input_fd);
             if (!ok)
             {
                 shimlog << name << " processor read EOF or error"
                         << endlog;
             }
-            else
-            {
-                shimlog << name << " processor read " << slice.size()
-                        << " bytes from fd\n****\n"
-                        << slice.content_as_string()
-                        << "\n****" << endlog;
-            }
+            // else
+            // {
+            //     shimlog << name << " processor read " << slice.size()
+            //             << " bytes from fd\n****\n"
+            //             << slice.content_as_string()
+            //             << "\n****" << endlog;
+            // }
+
             // If ok is false the slice has length 0 so pushing it will cause
             // the reader to stop.
             unprocessed_slices.push(slice);

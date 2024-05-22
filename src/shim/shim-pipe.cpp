@@ -57,8 +57,8 @@ int Pipe::remap_parent(int target_fd)
     }
     shimlog << "remap_parent replacing " << replace_name << *replace_fd <<
         " with " << target_fd << endlog;
-    //close(*replace_fd);
-    //*replace_fd = target_fd;
+    close(*replace_fd);
+    *replace_fd = target_fd;
     return 0;
 }
 

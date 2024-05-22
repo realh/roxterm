@@ -32,13 +32,18 @@ namespace shim {
 bool ShimSlice::read_from_fd(int fd)
 {
     auto addr = buf->address(offset);
-    ssize_t nread = std::min(length, PIPE_BUF);
-    memset(addr, 0, nread);
-    shimlog << "read_from_fd: attempting to read up to " << nread
-            << " bytes from fd " << fd << " to offset " << offset
-            << ", addr " << (void *) addr << endlog;
-    nread = read(fd, addr, nread);
-    shimlog << "read " << nread << " bytes " << (char *) addr << endlog;
+    ssize_t limit = std::min(length, PIPE_BUF);
+
+    // memset(addr, 0, nread);
+    // shimlog << "read_from_fd: attempting to read up to " << nread
+    //         << " bytes from fd " << fd << " to offset " << offset
+    //         << ", addr " << (void *) addr << endlog;
+
+    ssize_t nread = read(fd, addr, limit);
+    
+    // shimlog << "read " << nread << '/' << limit << " bytes\n"
+    //     << content_as_string() << endlog;
+
     if (nread > 0)
     {
         length = nread;
