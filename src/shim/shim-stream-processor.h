@@ -46,18 +46,14 @@ enum StreamProcessorState {
 
 class ShimStreamProcessor {
 protected:
-const char *name;
+    const char *name;
 	int input_fd;
 	int output_fd;
-    bool stopping{false};
 	ShimSliceQueue unprocessed_slices{};
 	ShimSliceQueue processed_slices{};
     std::thread *input_thread;
     std::thread *process_thread;
     std::thread *output_thread;
-
-    // A mutex makes sure the thread sees the stopping flag updates.
-    std::mutex mut;
 
     void get_slices_from_input();
 
@@ -68,18 +64,6 @@ const char *name;
     virtual void process_slices();
 
     void join_one_thread(std::thread **p_thread);
-
-    bool is_stopping()
-    {
-        std::scoped_lock lock{mut};
-        return stopping;
-    }
-
-    void stop()
-    {
-        std::scoped_lock lock{mut};
-        stopping = true;
-    }
 public:
     ShimStreamProcessor(const char *name, int input_fd, int output_fd) :
         name(name),

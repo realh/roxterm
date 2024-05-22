@@ -118,8 +118,6 @@ void ShimStreamProcessor::join_one_thread(std::thread **p_thread)
 
 void ShimStreamProcessor::join()
 {
-    stop();
-    shimlog << name << " processor flagged stop" << endlog;
     join_one_thread(&input_thread);
     shimlog << name << " processor joined input thread" << endlog;
     join_one_thread(&process_thread);
