@@ -38,7 +38,8 @@ void ShimStreamProcessor::start()
 
 void ShimStreamProcessor::get_slices_from_input()
 {
-    while (!is_stopping())
+    bool ok = true;
+    while (ok)
     {
         // shimlog << name << " stream processor making a new buffer"
         //                 << endlog;
@@ -58,7 +59,7 @@ void ShimStreamProcessor::get_slices_from_input()
             //             << " bytes from input fd" << endlog;
             // }
 
-            bool ok = slice.read_from_fd(input_fd);
+            ok = slice.read_from_fd(input_fd);
             if (!ok)
             {
                 shimlog << name << " processor read EOF or error"

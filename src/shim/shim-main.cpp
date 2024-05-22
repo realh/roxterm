@@ -62,7 +62,7 @@ int launch_child(const std::vector<char *> &args, int back_channel_pipe)
 }
 
 int run_stream_processors(pid_t pid,
-    int back_channel_pipe, Pipe &stderr_pipe)//, Pipes &stdout_pipes)
+    int back_channel_pipe, Pipe &stderr_pipe, Pipe &stdout_pipe)
 {
     BackChannelProcessor bcp{back_channel_pipe};
     std::stringstream ss;
@@ -72,11 +72,15 @@ int run_stream_processors(pid_t pid,
 
     shimlog << "stderr StreamProcessor piping from " << stderr_pipe.r <<
         " to " << stderr_pipe.w << endlog;
-
     Osc52StreamProcessor stderr_proc("stderr", stderr_pipe.r,
         stderr_pipe.w, bcp);
+    //stderr_proc.start();
 
-    stderr_proc.start();
+    shimlog << "stdout StreamProcessor piping from " << stdout_pipe.r <<
+        " to " << stdout_pipe.w << endlog;
+    Osc52StreamProcessor stdout_proc("stdout", stdout_pipe.r,
+        stdout_pipe.w, bcp);
+    stdout_proc.start();
 
     shimlog << "Started stream processors, waiting for child" << endlog;
 
@@ -91,9 +95,9 @@ int run_stream_processors(pid_t pid,
     bcp.join();
 
     shimlog << "Joined back channel thread" << endlog;
-    stderr_proc.join();
+    //stderr_proc.join();
     shimlog << "Joined stderr processor thread" << endlog;
-    //stdout_proc.join();
+    stdout_proc.join();
     shimlog << "Joined stream processor threads" << endlog;
     if (WIFEXITED(exit_status))
         return WEXITSTATUS(exit_status);
@@ -126,9 +130,9 @@ int main(int argc, char **argv)
     shim::Pipe stderr_pipe = shim::open_and_check_pipe("stderr");
     if (stderr_pipe.err_code)
         return stderr_pipe.err_code;
-    // shim::Pipes stdout_pipes = shim::open_and_check_pipes("stdout");
-    // if (stdout_pipes.err_code)
-    //     return stdout_pipes.err_code;
+    shim::Pipe stdout_pipe = shim::open_and_check_pipe("stdout");
+    if (stdout_pipe.err_code)
+        return stdout_pipe.err_code;
     // shim::Pipes stdin_pipes = shim::open_and_check_pipes("stdin");
     // if (stdin_pipes.err_code)
     //     return stdin_pipes.err_code;
@@ -137,16 +141,16 @@ int main(int argc, char **argv)
 
     if (!pid)
     {
-        stderr_pipe.remap_child(shim::FdStderr);
-        //stdout_pipes.remap_child(shim::FdStdout);
+        //stderr_pipe.remap_child(shim::FdStderr);
+        stdout_pipe.remap_child(shim::FdStdout);
         return shim::launch_child(args, back_channel_pipe);
     }
     else
     {
-        stderr_pipe.remap_parent(shim::FdStderr);
-        //stdout_pipes.remap_parent(shim::FdStdout);
+        //stderr_pipe.remap_parent(shim::FdStderr);
+        stdout_pipe.remap_parent(shim::FdStdout);
         return run_stream_processors(pid, back_channel_pipe,
-            stderr_pipe); //, stdout_pipes);
+            stderr_pipe, stdout_pipe);
     }
 
     return 0;
