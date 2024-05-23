@@ -54,10 +54,12 @@ private:
 public:
     LockedLog(LockedLogOwner &owner) : owner(owner) {}
 
-    template<class T> LockedLog &operator<<(T a)
+    LockedLog(LockedLog &&src) : owner(src.owner), ss(std::move(src.ss)) {}
+
+    template<class T> LockedLog operator<<(T a)
     {
         ss << a;
-        return *this;
+        return std::move(*this);
     }
 
     class ShimLog &operator<<(EndLog a);
