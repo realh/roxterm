@@ -38,6 +38,7 @@ void ShimStreamProcessor::start()
 
 void ShimStreamProcessor::get_slices_from_input()
 {
+    bool is_stdin = !strcmp(name, "stdin");
     bool ok = true;
     while (ok)
     {
@@ -65,13 +66,13 @@ void ShimStreamProcessor::get_slices_from_input()
                 shimlog << name << " processor read EOF or error"
                         << endlog;
             }
-            // else
-            // {
-            //     shimlog << name << " processor read " << slice.size()
-            //             << " bytes from fd\n****\n"
-            //             << slice.content_as_string()
-            //             << "\n****" << endlog;
-            // }
+            else if (is_stdin)
+            {
+                shimlog << name << " processor read " << slice.size()
+                        << " bytes from fd\n****\n"
+                        << slice.content_as_string()
+                        << "\n****" << endlog;
+            }
 
             // If ok is false the slice has length 0 so pushing it will cause
             // the reader to stop.
@@ -84,6 +85,7 @@ void ShimStreamProcessor::get_slices_from_input()
 
 void ShimStreamProcessor::write_slices_to_output()
 {
+    bool is_stdin = !strcmp(name, "stdin");
     bool ok = true;
     while (ok)
     {
@@ -96,6 +98,13 @@ void ShimStreamProcessor::write_slices_to_output()
         }
         if (ok)
         {
+            if (is_stdin)
+            {
+                shimlog << name << " processor writing " << slice.size()
+                        << " bytes to fd\n****\n"
+                        << slice.content_as_string()
+                        << "\n****" << endlog;
+            }
             ok = slice.write_to_fd(output_fd);
             if (!ok)
             {
@@ -137,6 +146,11 @@ void ShimStreamProcessor::process_slices()
         {
             shimlog << name << " stream processor slice processor stopping"
                     << endlog;
+        }
+        else
+        {
+            shimlog << name << " processing\n****" << slice.content_as_string()
+                << "\n****" << endlog;
         }
         processed_slices.push(slice);
     }

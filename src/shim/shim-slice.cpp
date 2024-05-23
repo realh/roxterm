@@ -45,10 +45,6 @@ bool ShimSlice::read_from_fd(int fd)
     {
         length = nread;
         buf->bytes_added(length);
-
-        shimlog << "read " << nread << '/' << limit << " bytes\n"
-            << content_as_string() << endlog;
-
         return true;
     } else {
         shimlog << "read failed (" << nread << '/' << limit << ')' << endlog;

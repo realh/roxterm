@@ -61,7 +61,7 @@ int launch_child(const std::vector<char *> &args, int back_channel_pipe)
 }
 
 int run_stream_processors(pid_t pid,
-    int back_channel_pipe, Pipe &stderr_pipe, Pipe &stdout_pipe)
+    int back_channel_pipe, Pipe &stderr_pipe, Pipe &stdin_pipe)
 {
     BackChannelProcessor bcp{back_channel_pipe};
     std::stringstream ss;
@@ -75,11 +75,10 @@ int run_stream_processors(pid_t pid,
         stderr_pipe.w, bcp);
     stderr_proc.start();
 
-    shimlog << "stdout StreamProcessor piping from " << stdout_pipe.r <<
-        " to " << stdout_pipe.w << endlog;
-    Osc52StreamProcessor stdout_proc("stdout", stdout_pipe.r,
-        stdout_pipe.w, bcp);
-    stdout_proc.start();
+    shimlog << "stdin StreamProcessor piping from " << stdin_pipe.r <<
+        " to " << stdin_pipe.w << endlog;
+    ShimStreamProcessor stdin_proc("stdin", stdin_pipe.r, stdin_pipe.w);
+    stdin_proc.start();
 
     shimlog << "Started stream processors, waiting for child" << endlog;
 
@@ -96,8 +95,8 @@ int run_stream_processors(pid_t pid,
     shimlog << "Joined back channel thread" << endlog;
     stderr_proc.join();
     shimlog << "Joined stderr processor thread" << endlog;
-    stdout_proc.join();
-    shimlog << "Joined stream processor threads" << endlog;
+    stdin_proc.join();
+    shimlog << "Joined stdin processor thread" << endlog;
     if (WIFEXITED(exit_status))
         return WEXITSTATUS(exit_status);
     else
@@ -129,27 +128,24 @@ int main(int argc, char **argv)
     shim::Pipe stderr_pipe = shim::open_and_check_pipe("stderr");
     if (stderr_pipe.err_code)
         return stderr_pipe.err_code;
-    shim::Pipe stdout_pipe = shim::open_and_check_pipe("stdout");
-    if (stdout_pipe.err_code)
-        return stdout_pipe.err_code;
-    // shim::Pipes stdin_pipes = shim::open_and_check_pipes("stdin");
-    // if (stdin_pipes.err_code)
-    //     return stdin_pipes.err_code;
+    shim::Pipe stdin_pipe = shim::open_and_check_pipe("stdin");
+    if (stdin_pipe.err_code)
+        return stdin_pipe.err_code;
 
     auto pid = fork();
 
     if (!pid)
     {
         stderr_pipe.remap_child(shim::FdStderr);
-        stdout_pipe.remap_child(shim::FdStdout);
+        stdin_pipe.remap_child(shim::FdStdin);
         return shim::launch_child(args, back_channel_pipe);
     }
     else
     {
         stderr_pipe.remap_parent(shim::FdStderr);
-        stdout_pipe.remap_parent(shim::FdStdout);
+        stdin_pipe.remap_parent(shim::FdStdin);
         return run_stream_processors(pid, back_channel_pipe,
-            stderr_pipe, stdout_pipe);
+            stderr_pipe, stdin_pipe);
     }
 
     return 0;
