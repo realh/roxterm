@@ -43,7 +43,7 @@ void report_errno_to_shimlog_and_stderr(const char *message)
     ss << message << ": " << std::strerror(errno);
     auto s = ss.str();
     std::cerr << s << std::endl;
-    shimlog << s;
+    shimlog << s << endlog;
 }
 
 bool remap_fd(int orig, int target)

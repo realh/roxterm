@@ -56,7 +56,7 @@ public:
 
     LockedLog(LockedLog &&src) : owner(src.owner), ss(std::move(src.ss)) {}
 
-    template<class T> LockedLog operator<<(T a)
+    template<class T> LockedLog &&operator<<(T a)
     {
         ss << a;
         return std::move(*this);
