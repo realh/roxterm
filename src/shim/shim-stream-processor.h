@@ -54,6 +54,7 @@ protected:
     std::thread *input_thread;
     std::thread *process_thread;
     std::thread *output_thread;
+	BackChannelProcessor &back_channel;
 
     void get_slices_from_input();
 
@@ -61,35 +62,25 @@ protected:
 
     std::unique_ptr<ShimSlice> current_slice{nullptr};
 
-    virtual void process_slices();
+    void process_slices();
 
     void join_one_thread(std::thread **p_thread);
 public:
-    ShimStreamProcessor(const char *name, int input_fd, int output_fd) :
+    ShimStreamProcessor(const char *name, int input_fd, int output_fd,
+        BackChannelProcessor &back_channel) :
         name(name),
         input_fd(input_fd),
-        output_fd(output_fd)
+        output_fd(output_fd),
+        back_channel(back_channel)
     {}
 
-    // We can't start from the constructor because the sub-class won't be
-    // set up yet.
+    // Having a separate start() method is more flexible than starting the
+    // threads from the constructor, which would probably cause problems if
+    // we wanted to subclass this.
     void start();
 
     // This also calls stop.
     void join();
-};
-
-class Osc52StreamProcessor: public ShimStreamProcessor {
-private:
-	BackChannelProcessor &back_channel;
-protected:
-    virtual void process_slices();
-public:
-    Osc52StreamProcessor(const char *name, int input_fd, int output_fd,
-        BackChannelProcessor &back_channel) :
-        ShimStreamProcessor(name, input_fd, output_fd),
-        back_channel(back_channel)
-    {}
 };
 
 }

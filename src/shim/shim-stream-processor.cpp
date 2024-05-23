@@ -156,17 +156,4 @@ void ShimStreamProcessor::process_slices()
     }
 }
 
-void Osc52StreamProcessor::process_slices()
-{
-    bool ok = true;
-    while (ok)
-    {
-        auto slice = unprocessed_slices.pop();
-        ok = slice.size() != 0;
-        // if (ok)
-        //     current_slice.reset(new ShimSlice(slice));
-        processed_slices.push(slice);
-    }
-}
-
 }
