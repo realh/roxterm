@@ -29,19 +29,25 @@ namespace shim {
 enum StreamProcessorState {
     // Copying from input to output, but checking for start of control sequence
     // of interest.
-    Copying,
+    Filtering,
 
     // Got the start of a control sequence, but we don't know whether it's of
     // interest yet.
     PotentialMatch,
 
-    // Processing a control sequence of interest.
+    // Processing a control sequence of interest (OSC52), but not sure yet
+    // whether we're going to act on it.
     ProcessingMatchedSequence,
+
+    // Comes after ProcessingMatchedSequence.
+    CollectingOsc52,
 
     // Sequence was of interest, but it's too long, so the rest of it will be
     // discarded until we get a terminator.
     Discarding,
 
+    // Copying until we get to an Esc terminator.
+    CopyingIgnoredEsc,
 };
 
 class ShimStreamProcessor {
@@ -50,12 +56,12 @@ private:
 	int input_fd;
 	int output_fd;
 	ShimSliceQueue unprocessed_slices{};
-	ShimSliceQueue processed_slices{};
+	SliceWriterQueue processed_slices{};
     std::thread *input_thread;
     std::thread *process_thread;
     std::thread *output_thread;
 	BackChannelProcessor &back_channel;
-    StreamProcessorState state{Copying};
+    StreamProcessorState state{Filtering};
     std::vector<std::uint8_t> esc_start;
     
     // captured during ProcessingMatchedSequence
@@ -69,10 +75,14 @@ private:
 
     void process_slices();
 
-    bool process_slice_in_copying_state(ShimSlice &slice);
+    bool process_slice_in_filtering_state(ShimSlice &slice);
     bool process_slice_in_potential_match_state(ShimSlice &slice);
     bool process_slice_in_processing_matched_sequence_state(ShimSlice &slice);
     bool process_slice_in_discard_state(ShimSlice &slice);
+    bool process_slice_in_copying_esc_state(ShimSlice &slice);
+    bool process_slice_in_collect_osc52_state(ShimSlice &slice);
+    bool process_rest_of_slice_in_copying_esc_state(ShimSlice &slice,
+        int offset);
 
     void join_one_thread(std::thread **p_thread);
 public:

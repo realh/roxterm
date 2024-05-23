@@ -48,7 +48,7 @@ public:
         return n_filled >= MaxBufferSizeForTopUp;
     }
 
-    uint8_t operator[](int index) const
+    const uint8_t &operator[](int index) const
     {
         return buf[index];
     }

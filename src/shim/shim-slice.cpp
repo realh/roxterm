@@ -18,7 +18,6 @@
 */
 
 #include <algorithm>
-#include <cstring>
 #include <climits>
 
 #include "../send-to-pipe.h"
@@ -28,6 +27,31 @@
 #include <unistd.h>
 
 namespace shim {
+
+bool SliceWriter::write_to_fd(int fd) const
+{
+    return blocking_write(fd, &(*this)[0], size()) > 0;
+}
+
+const uint8_t &IndependentSlice::operator[](int index) const
+{
+    return vec[index];
+}
+
+int IndependentSlice::size() const
+{
+    return vec.size();
+}
+
+const uint8_t &ShimSlice::operator[](int index) const
+{
+    return (*buf)[offset + index];
+}
+
+int ShimSlice::size() const
+{
+    return length;
+}
 
 bool ShimSlice::read_from_fd(int fd)
 {
@@ -51,11 +75,6 @@ bool ShimSlice::read_from_fd(int fd)
     }
     length = 0;
     return false;
-}
-
-bool ShimSlice::write_to_fd(int fd) const
-{
-    return blocking_write(fd, buf->address(offset), length) > 0;
 }
 
 }

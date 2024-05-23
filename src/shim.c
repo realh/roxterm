@@ -565,7 +565,10 @@ static EscStatus buf_contains_52(Osc52FilterContext *ofc, gsize offset)
     {
         guint8 c = ofc_char(ofc, offset);
         if (have_semi)
+        {
+            // '?' means read clipboard, not allowed
             return c == '?' ? IsOtherOsc : IsOsc52;
+        }
         if (c == ';')
         {
             if (have_c || have_p)

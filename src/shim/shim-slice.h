@@ -18,6 +18,7 @@
 */
 #pragma once
 
+#include <cstdint>
 #include <memory>
 #include <string>
 
@@ -26,7 +27,41 @@
 
 namespace shim {
 
-class ShimSlice {
+using std::uint8_t;
+
+class SliceWriter {
+public:
+    virtual ~SliceWriter() = default;
+
+    // Blocks until all bytes have been written.
+    bool write_to_fd(int fd) const;
+
+    virtual const uint8_t &operator[](int index) const;
+
+    virtual int size() const;
+
+    std::string content_as_string() const
+    {
+        const char *begin = (const char *) &(*this)[0];
+        const char *end = begin + size();
+        return std::string(begin, end);
+    }
+};
+
+class IndependentSlice: public SliceWriter {
+private:
+    std::vector<uint8_t> vec;
+public:
+    IndependentSlice(std::vector<uint8_t> &&src_vec) : vec(src_vec) {}
+
+    IndependentSlice(const std::vector<uint8_t> &src_vec) : vec(src_vec) {}
+
+    const uint8_t &operator[](int index) const;
+
+    int size() const;
+};
+
+class ShimSlice: public SliceWriter {
 private:
     mutable std::shared_ptr<ShimBuffer> buf;
     int offset;
@@ -48,22 +83,13 @@ public:
     ShimSlice(const ShimSlice &slice, int offset, int length) :
         buf(slice.buf), offset(slice.offset + offset), length(length) {}
 
-    int size() const
-    {
-        return length;
-    }
+    const uint8_t &operator[](int index) const;
 
-    uint8_t operator[](int index) const
-    {
-        return (*buf)[offset + index];
-    }
+    int size() const;
 
     // This reads as many bytes as it can and automatically calls
     // buf->bytes_added.
     bool read_from_fd(int fd);
-
-    // Blocks until all bytes have been written.
-    bool write_to_fd(int fd) const;
 
     // Changes the range of data this slice refers to. offset is relative to
     // the slice's old offset, as opposed to an absolute offset into buf.
@@ -72,15 +98,9 @@ public:
         this->offset += offset;
         this->length = length;
     }
-
-    std::string content_as_string() const
-    {
-        const char *begin = (const char *) buf->address(offset);
-        const char *end = begin + length;
-        return std::string(begin, end);
-    }
 };
 
+using SliceWriterQueue = ShimQueue<SliceWriter, MaxSliceQueueLength>;
 using ShimSliceQueue = ShimQueue<ShimSlice, MaxSliceQueueLength>;
 
 }
