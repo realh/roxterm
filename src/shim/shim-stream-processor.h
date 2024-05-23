@@ -45,7 +45,7 @@ enum StreamProcessorState {
 };
 
 class ShimStreamProcessor {
-protected:
+private:
     const char *name;
 	int input_fd;
 	int output_fd;
@@ -55,6 +55,11 @@ protected:
     std::thread *process_thread;
     std::thread *output_thread;
 	BackChannelProcessor &back_channel;
+    StreamProcessorState state{Copying};
+    std::vector<std::uint8_t> esc_start;
+    
+    // captured during ProcessingMatchedSequence
+    std::vector<ShimSlice> captured_slices;
 
     void get_slices_from_input();
 
@@ -63,6 +68,11 @@ protected:
     std::unique_ptr<ShimSlice> current_slice{nullptr};
 
     void process_slices();
+
+    bool process_slice_in_copying_state(ShimSlice &slice);
+    bool process_slice_in_potential_match_state(ShimSlice &slice);
+    bool process_slice_in_processing_matched_sequence_state(ShimSlice &slice);
+    bool process_slice_in_discard_state(ShimSlice &slice);
 
     void join_one_thread(std::thread **p_thread);
 public:

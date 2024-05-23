@@ -20,6 +20,7 @@
 #include <cerrno>
 #include <cstring>
 
+#include "shim-constants.h"
 #include "shim-log.h"
 #include "shim-slice.h"
 #include "shim-stream-processor.h"
@@ -131,8 +132,67 @@ void ShimStreamProcessor::process_slices()
             shimlog << name << " stream processor slice processor stopping"
                     << endlog;
         }
-        processed_slices.push(slice);
+        else
+        {
+            switch (state)
+            {
+            case Copying:
+                ok = process_slice_in_copying_state(slice);
+                break;
+            case PotentialMatch:
+                ok = process_slice_in_potential_match_state(slice);
+                break;
+            case ProcessingMatchedSequence:
+                ok = process_slice_in_processing_matched_sequence_state(slice);
+                break;
+            case Discarding:
+                ok = process_slice_in_discard_state(slice);
+                break;
+            }
+        }
     }
+}
+
+bool ShimStreamProcessor::process_slice_in_copying_state(ShimSlice &slice)
+{
+    for (int i = 0; i < slice.size(); ++i)
+    {
+        auto c = slice[i];
+        if (c == EscCode || c == OscCode)
+        {
+            shimlog << "Got potential OSC 52 start " << int(c) << endlog;
+            esc_start.push_back(c);
+            auto pre_esc = ShimSlice(slice, 0, i);
+            ++i;
+            auto remainder = ShimSlice(slice, i, slice.size() - i);
+            processed_slices.push(pre_esc);
+            state = PotentialMatch;
+            return process_slice_in_potential_match_state(remainder);
+        }
+    }
+    processed_slices.push(slice);
+    return true;
+}
+
+bool ShimStreamProcessor::process_slice_in_potential_match_state(
+    ShimSlice &slice)
+{
+    processed_slices.push(slice);
+    return true;
+}
+
+bool ShimStreamProcessor::process_slice_in_processing_matched_sequence_state(
+    ShimSlice &slice)
+{
+    processed_slices.push(slice);
+    return true;
+}
+
+bool ShimStreamProcessor::process_slice_in_discard_state(
+    ShimSlice &slice)
+{
+    processed_slices.push(slice);
+    return true;
 }
 
 }
