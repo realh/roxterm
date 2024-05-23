@@ -21,6 +21,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
+#include <ostream>
 #include <sstream>
 
 #include <fcntl.h>
@@ -32,36 +33,62 @@
 #include "shim-back-channel.h"
 #include "shim-constants.h"
 #include "shim-log.h"
-#include "shim-pipe.h"
 #include "shim-stream-processor.h"
 
 namespace shim {
 
-int launch_child(const std::vector<char *> &args, int back_channel_pipe)
+void report_errno_to_shimlog_and_stderr(const char *message)
 {
-    shimlog << "launch_child closing back_channel_pipe " <<
-        back_channel_pipe << endlog;
-    close(back_channel_pipe);
+    std::stringstream ss;
+    ss << message << ": " << std::strerror(errno);
+    auto s = ss.str();
+    std::cerr << s << std::endl;
+    shimlog << s;
+}
+
+bool remap_fd(int orig, int target)
+{
+    if (orig == target)
+        return true;
+    if (dup2(orig, target) < 0)
+    {
+        std::stringstream ss;
+        ss << "Unable to map pts " << orig << " to fd " << target;
+        report_errno_to_shimlog_and_stderr(ss.str().c_str());
+        return false;
+    }
+    return true;
+}
+
+int launch_child(const std::vector<char *> &args, int pts)
+{
+    if (!remap_fd(pts, FdStdin))
+        return 1;
+    if (!remap_fd(pts, FdStdout))
+        return 1;
+    if (!remap_fd(pts, FdStderr))
+        return 1;
+    if (pts > 2)
+        close(pts);
+
     shimlog << "launch_child launching" << endlog;
     int exec_result = execvp(args[0], &args[0]);
 
     // This is never reached if execvp is successful
-    std::cerr << "Failed to exec";
-    shimlog << "Failed to exec";
+    std::stringstream ss;
+    ss << "Failed to exec";
     for (auto arg : args)
     {
         if (arg)
         {
-            std::cerr << ' ' << arg;
-            shimlog << ' ' << arg;
+            ss << ' ' << arg;
         }
     }
-    shimlog << '\n' << std::strerror(errno) << endlog;
+    report_errno_to_shimlog_and_stderr(ss.str().c_str());
     return exec_result;
 }
 
-int run_stream_processors(pid_t pid,
-    int back_channel_pipe, Pipe &stderr_pipe, Pipe &stdout_pipe)
+int run_stream_processors(pid_t pid, int back_channel_pipe, int pty_master)
 {
     BackChannelProcessor bcp{back_channel_pipe};
     std::stringstream ss;
@@ -69,17 +96,16 @@ int run_stream_processors(pid_t pid,
     bcp.push_message(BackChannelMessage (ss.str()));
     shimlog << "Sent '" << ss.str() << "' to back channel" << endlog;
 
-    shimlog << "stderr StreamProcessor piping from " << stderr_pipe.r <<
-        " to " << stderr_pipe.w << endlog;
-    Osc52StreamProcessor stderr_proc("stderr", stderr_pipe.r,
-        stderr_pipe.w, bcp);
-    stderr_proc.start();
+    // stdout and stderr are both bound to the parent's pts
+    shimlog << "stdout/stderr StreamProcessor piping from " << pty_master
+            << " to stdout " << endlog;
+    Osc52StreamProcessor out_proc("stdout", pty_master, 1, bcp);
+    out_proc.start();
 
-    shimlog << "stdout StreamProcessor piping from " << stdout_pipe.r <<
-        " to " << stdout_pipe.w << endlog;
-    Osc52StreamProcessor stdout_proc("stdout", stdout_pipe.r,
-        stdout_pipe.w, bcp);
-    stdout_proc.start();
+    shimlog << "stdin StreamProcessor piping from stdin "
+            << " to " << pty_master << endlog;
+    Osc52StreamProcessor in_proc("stdin", 1, pty_master, bcp);
+    out_proc.start();
 
     shimlog << "Started stream processors, waiting for child" << endlog;
 
@@ -92,27 +118,15 @@ int run_stream_processors(pid_t pid,
     bcp.stop();
     shimlog << "Stopped back channel" << endlog;
     bcp.join();
-
     shimlog << "Joined back channel thread" << endlog;
-    stderr_proc.join();
-    shimlog << "Joined stderr processor thread" << endlog;
-    stdout_proc.join();
-    shimlog << "Joined stream processor threads" << endlog;
+    out_proc.join();
+    shimlog << "Joined output processor thread" << endlog;
+    in_proc.join();
+    shimlog << "Joined input processor thread" << endlog;
     if (WIFEXITED(exit_status))
         return WEXITSTATUS(exit_status);
     else
         return 1;
-}
-
-Pipe open_and_check_pipe(const char *name)
-{
-    Pipe pipe;
-    if (pipe.err_code)
-    {
-        shim::shimlog << "Error opening shim " << name << " pipe: " <<
-            std::strerror(errno) << endlog;
-    }
-    return pipe;
 }
 
 }
@@ -126,30 +140,39 @@ int main(int argc, char **argv)
     std::vector<char *> args{argv + 2, argv + argc};
     args.push_back(nullptr);
 
-    shim::Pipe stderr_pipe = shim::open_and_check_pipe("stderr");
-    if (stderr_pipe.err_code)
-        return stderr_pipe.err_code;
-    shim::Pipe stdout_pipe = shim::open_and_check_pipe("stdout");
-    if (stdout_pipe.err_code)
-        return stdout_pipe.err_code;
-    // shim::Pipes stdin_pipes = shim::open_and_check_pipes("stdin");
-    // if (stdin_pipes.err_code)
-    //     return stdin_pipes.err_code;
+    int pty_master = ::posix_openpt(O_RDWR | O_NOCTTY | O_CLOEXEC);
+    if (pty_master < 0)
+    {
+        shim::report_errno_to_shimlog_and_stderr("Unable to open shim pty");
+        return 1;
+    }
+
+    const char *slave_dev = ptsname(pty_master);
+    if (!slave_dev)
+    {
+        shim::report_errno_to_shimlog_and_stderr(
+            "Unable to get device name of shim pty slave");
+        return 1;
+    }
+    int pts = ::open(slave_dev, O_RDWR);
+    if (pts < 0)
+    {
+        shim::report_errno_to_shimlog_and_stderr(
+            "Unable to open shim pty slave");
+        return 1;
+    }
+    
 
     auto pid = fork();
 
     if (!pid)
     {
-        stderr_pipe.remap_child(shim::FdStderr);
-        stdout_pipe.remap_child(shim::FdStdout);
-        return shim::launch_child(args, back_channel_pipe);
+        close(back_channel_pipe);
+        return shim::launch_child(args, pts);
     }
     else
     {
-        stderr_pipe.remap_parent(shim::FdStderr);
-        stdout_pipe.remap_parent(shim::FdStdout);
-        return run_stream_processors(pid, back_channel_pipe,
-            stderr_pipe, stdout_pipe);
+        return shim::run_stream_processors(pid, back_channel_pipe, pty_master);
     }
 
     return 0;
