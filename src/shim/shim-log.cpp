@@ -17,16 +17,17 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 #include "shim-log.h"
+#include <mutex>
 
 namespace shim {
 
 ShimLog &LockedLog::operator<<(EndLog a)
 {
+    std::scoped_lock lock{owner.mutex()};
     if (a.nl)
-        owner.output() << std::endl;
+        owner.output() << ss.str() << std::endl;
     else
-        owner.output().flush();
-    owner.mutex().unlock();
+        owner.output() << ss.str() << std::flush;
     return owner.self();
 }
 

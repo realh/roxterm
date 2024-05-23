@@ -21,6 +21,7 @@
 #include <fstream>
 #include <mutex>
 #include <ostream>
+#include <sstream>
 
 namespace shim {
 
@@ -49,12 +50,13 @@ public:
 class LockedLog {
 private:
     LockedLogOwner &owner;
+    std::stringstream ss;
 public:
     LockedLog(LockedLogOwner &owner) : owner(owner) {}
 
     template<class T> LockedLog &operator<<(T a)
     {
-        owner.output() << a;
+        ss << a;
         return *this;
     }
 
@@ -65,7 +67,6 @@ class ShimLog : LockedLogOwner {
 private:
     std::mutex mut;
     std::ofstream ostream{"/home/tony/.cache/roxterm/shimlog"};
-    LockedLog locked_log{*this};
 protected:
     std::mutex &mutex()
     {
@@ -82,16 +83,14 @@ protected:
         return *this;
     }
 public:
-    template<class T> LockedLog &operator<<(T a)
+    template<class T> LockedLog operator<<(T a)
     {
-        mut.lock();
-        return locked_log << a;
+        return LockedLog(*this) << a;
     }
 
     ShimLog &operator<<(EndLog a)
     {
-        mut.lock();
-        return locked_log << a;
+        return LockedLog(*this) << a;
     }
 };
 
