@@ -2967,7 +2967,7 @@ static gboolean roxterm_run_osc52_dialog(ROXTermClipboardClosure *closure)
 }
 
 static void roxterm_osc52_handler(VteTerminal *vte, const char *clipboards,
-                                  const gchar *base64, gsize base64_len,
+                                  const gchar *base64, gssize base64_len,
                                   ROXTermData *roxterm)
 {
     if (!gtk_widget_has_focus(roxterm->widget)) return;
