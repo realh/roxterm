@@ -183,5 +183,5 @@ if (NOT "${GO}" EQUAL "GO-NOTFOUND")
         RoxTermShim ALL
         DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/roxterm-shim
     )
-    install(PROGRAMS ${GO_SHIM_EXE} RUNTIME DESTINATION libexec)
+    install(PROGRAMS ${GO_SHIM_EXE} DESTINATION libexec)
 endif()
