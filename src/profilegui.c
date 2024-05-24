@@ -561,7 +561,7 @@ static void profilegui_fill_in_dialog(ProfileGUI * pg)
     capplet_set_spin_button_float(&pg->capp, "exit_pause");
     capplet_set_text_entry(&pg->capp, "title_string", "%t. %s");
     capplet_set_text_entry(&pg->capp, "win_title", "%s");
-    capplet_set_radio(&pg->capp, "allow_osc52", 1);
+    capplet_set_radio(&pg->capp, "allow_osc52", 0);
     exit_action_changed(
         GTK_COMBO_BOX(capplet_lookup_widget(&pg->capp, "exit_action")),
         pg);
@@ -588,8 +588,9 @@ static gboolean page_selected(GtkTreeSelection *selection,
 static void profilegui_setup_list_store(ProfileGUI *pg)
 {
     static char const *labels[] = {
-            N_("Text"), N_("Appearance"), N_("Command"), N_("General"),
-            N_("Scrolling"), N_("Keyboard"), N_("Tabs")
+            N_("Text"), N_("Appearance"), N_("Command"),
+            N_("General"), N_("Scrolling"), N_("Keyboard"),
+            N_("Tabs"), N_("Clibpoard")
     };
     GtkTreeIter iter;
     guint n;

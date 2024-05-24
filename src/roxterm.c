@@ -150,7 +150,7 @@ struct ROXTermData {
     gboolean scroll_at_bottom;
     gboolean override_exit_action;
     char *buffer_file_name;
-    int allow_osc52;    /* 0 = reject, 1, = ask, 2 = allow */
+    int allow_osc52;    /* 0 = disabled, 1 = ask, 2 = reject, 3 = allow */
 };
 
 #define PROFILE_NAME_KEY "roxterm_profile_name"
@@ -342,10 +342,8 @@ static ROXTermData *roxterm_data_clone(ROXTermData *old_gt)
     new_gt->win_state_changed_tag = 0;
     new_gt->buffer_file_name = NULL;
 
-    // TODO: Get from profile
-    new_gt->allow_osc52 = 1;
     new_gt->allow_osc52 = options_lookup_int_with_default(new_gt->profile,
-                                                          "allow_osc52", 1);
+                                                          "allow_osc52", 0);
 
     if (old_gt->colour_scheme)
     {
@@ -2947,14 +2945,14 @@ static gboolean roxterm_run_osc52_dialog(ROXTermClipboardClosure *closure)
     switch (response)
     {
         case ROXTERM_CLIPBOARD_REJECT:
-            roxterm->allow_osc52 = 0;
+            roxterm->allow_osc52 = 2;
             break;
         case ROXTERM_CLIPBOARD_ACCEPT_ONCE:
             accept = TRUE;
             break;
         case ROXTERM_CLIPBOARD_ACCEPT_IN_SESSION:
             accept = TRUE;
-            roxterm->allow_osc52 = 2;
+            roxterm->allow_osc52 = 3;
             break;
         default:
             break;
@@ -2979,11 +2977,12 @@ static void roxterm_osc52_handler(VteTerminal *vte, const char *clipboards,
     switch (roxterm->allow_osc52)
     {
         case 0:
+        case 2:
             return;
         case 1:
             callback = G_SOURCE_FUNC(roxterm_run_osc52_dialog);
             break;
-        case 2:
+        case 3:
             callback = G_SOURCE_FUNC(roxterm_write_clipboard);
             break;
     }
@@ -2995,7 +2994,7 @@ static void roxterm_osc52_handler(VteTerminal *vte, const char *clipboards,
 
     ROXTermClipboardClosure *closure = g_new0(ROXTermClipboardClosure, 1);
     closure->roxterm = roxterm;
-    // The forced terminator should be superfluous, but be defensive
+    // Make sure the string is terminated
     closure->base64 = g_malloc(base64_len + 1);
     closure->base64[base64_len] = 0;
     memcpy(closure->base64, base64, base64_len);
