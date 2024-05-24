@@ -51,7 +51,7 @@ int blocking_read(int fd, void *data, uint32_t length)
 }
 
 // Sends the data length encoded as uint32_t immediately before the data
-int send_to_pipe(int fd, const char *data, uint32_t length)
+int send_to_pipe(int fd, const char *data, int length)
 {
     if (length < 0) length = strlen(data) + 1;
     int nwritten = blocking_write(fd, &length, sizeof length);

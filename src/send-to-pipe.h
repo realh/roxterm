@@ -36,7 +36,7 @@ int blocking_read(int fd, void *data, uint32_t length);
  * in binary. If length < 0, the length of the string, including terminator,
  * is used. The result on success excludes the extra 4 bytes used * to encode it.
  */
-int send_to_pipe(int fd, const char *data, uint32_t length);
+int send_to_pipe(int fd, const char *data, int length);
 
 #ifdef __cplusplus
 }

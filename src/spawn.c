@@ -76,21 +76,6 @@ GError *parse_error(const char *s)
     return g_error_new((GQuark) domain, (int) code, "%s", endptr + 1);
 }
 
-/* Reads from fd into buffer, blocking until it's received length bytes. */
-static gssize blocking_read(int fd, void *buffer, guint32 length)
-{
-    guint32 nread = 0;
-    while (nread < length)
-    {
-        gssize n = read(fd, buffer + nread, length - nread);
-        if (n <= 0)
-            return n;
-        else
-            nread += n;
-    }
-    return nread;
-}
-
 /*
  * Counterpart to send_to_pipe. Result should be freed. p_nread will be updated
  * to -errno on error.
