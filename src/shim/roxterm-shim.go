@@ -155,9 +155,6 @@ func (sp *StreamProcessor) inputReaderThread() {
 
 // chunkProcessorThread reads from the unprocessed chunks queue, and passes
 // the chunks on to the processed chunk queue.
-// Later there will be two versions, one to filter out OSC 52 and send clipboard
-// write requests to the parent out of band, another to intercept the parent's
-// response to XTGETTCAP to indicate OSC 52 is supported.
 func (sp *StreamProcessor) chunkProcessorThread() {
 	chin := sp.unprocessedChunks
 	var chout chan []byte
@@ -266,20 +263,9 @@ func runStreamProcessor(r io.Reader, w io.Writer,
 }
 
 func run() (wg *sync.WaitGroup, err error) {
-	var stdinReader, stdoutReader, stderrReader io.Reader
-	var stdinWriter, stdoutWriter, stderrWriter io.Writer
-	stdinReader, stdinWriter, err =
-		openPipe("stdin")
-	if err != nil {
-		return
-	}
-	stdoutReader, stdoutWriter, err =
-		openPipe("stdout")
-	if err != nil {
-		return
-	}
-	stderrReader, stderrWriter, err =
-		openPipe("stdout")
+	stdinReader := os.NewFile(0, "stdin")
+	stdoutWriter := os.NewFile(0, "stdout")
+	stderrReader, stderrWriter, err := openPipe("stderr")
 	if err != nil {
 		return
 	}
@@ -307,13 +293,9 @@ func run() (wg *sync.WaitGroup, err error) {
 	wg.Add(1)
 	go osc52Thread(osc52Chan, osc52Pipe, wg)
 
-	// Use a separate WaitGroup for the stream processors so we can wait for
-	// them to finish before closing osc52Chan
+	// Use a separate WaitGroup for the stream processor so we can wait for
+	// it to finish before closing osc52Chan
 	spWg := &sync.WaitGroup{}
-	spIn := runStreamProcessor(os.Stdin, stdinWriter, osc52Chan, spWg,
-		"stdin")
-	spOut := runStreamProcessor(stdoutReader, os.Stdout, osc52Chan, spWg,
-		"stdout")
 	spErr := runStreamProcessor(stderrReader, os.Stderr, osc52Chan, spWg,
 		"stderr")
 
@@ -322,15 +304,12 @@ func run() (wg *sync.WaitGroup, err error) {
 		err := cmd.Wait()
 		exitCode := cmd.ProcessState.ExitCode()
 		log.Printf("Child exited with code %d error %s", exitCode, err.Error())
-		spIn.closeProcessedChunksChan()
-		spIn.closeUnprocessedChunksChan()
-		spOut.closeUnprocessedChunksChan()
 		spErr.closeUnprocessedChunksChan()
 
 		// Make sure we exit after a few seconds in case the pipes are blocked.
 		waiter := make(chan bool)
 		go func() {
-			log.Println("Waiting for stream processors to finish")
+			log.Println("Waiting for stream processor to finish")
 			spWg.Wait()
 			log.Println("Sending END to roxterm over back-channel")
 			osc52Chan <- []byte("END")
@@ -350,7 +329,7 @@ func run() (wg *sync.WaitGroup, err error) {
 	}()
 
 	ok := fmt.Sprintf("OK %d", cmd.Process.Pid)
-	log.Println("Sending pid message '%s' to roxterm back-channel", ok)
+	log.Printf("Sending pid message '%s' to roxterm back-channel", ok)
 	osc52Chan <- []byte(ok)
 
 	return
