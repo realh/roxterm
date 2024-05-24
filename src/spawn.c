@@ -118,7 +118,7 @@ static char *receive_from_pipe(int fd, gint32 *p_nread)
         *p_nread = -EMSGSIZE;
         return NULL;
     }
-    char *buffer = g_malloc(len);
+    char *buffer = g_malloc(len + 1);
     if (!buffer)
     {
         *p_nread = -ENOMEM;
@@ -137,6 +137,7 @@ static char *receive_from_pipe(int fd, gint32 *p_nread)
         *p_nread = 0;
         return NULL;
     }
+    buffer[nread] = 0;
     *p_nread = nread;
     return buffer;
 }
