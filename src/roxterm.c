@@ -2975,10 +2975,10 @@ static void roxterm_apply_css_class(ROXTermData *roxterm)
     GList *l;
     for (l = classes; l; l = l->next)
     {
-        const char *class = l->data;
-        if (g_str_has_prefix(class, "roxterm-"))
+        const char *class_name = l->data;
+        if (g_str_has_prefix(class_name, "roxterm-"))
         {
-            gtk_style_context_remove_class(context, class);
+            gtk_style_context_remove_class(context, class_name);
         }
     }
 
