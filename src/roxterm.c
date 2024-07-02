@@ -2970,7 +2970,7 @@ static void roxterm_apply_css_class(ROXTermData *roxterm)
     GtkStyleContext *context = gtk_widget_get_style_context(roxterm->widget);
     const char *profile_name = options_get_leafname(roxterm->profile);
 
-    // remove any existing roxterm profile classes
+    // Remove any existing roxterm profile classes
     GList *classes = gtk_style_context_list_classes(context);
     GList *l;
     for (l = classes; l; l = l->next)
@@ -2982,14 +2982,12 @@ static void roxterm_apply_css_class(ROXTermData *roxterm)
         }
     }
 
-    /* make sure the generated class name is roxterm specific with a prefix,
-    and does not contain any whitespaces so that it's a valid CSS class name */
-    char *profile_class = g_strconcat(
-        "roxterm-",
-        g_strdelimit(g_strdup(profile_name), " ", '-'),
-        NULL
-    );
+    // Make sure the generated class name is roxterm specific with a prefix,
+    // and does not contain any whitespaces so that it's a valid CSS class name
+    char *profile_class = g_strconcat("roxterm-", profile_name, NULL);
+    g_strdelimit(profile_class, " ", '-');
     gtk_style_context_add_class(context, profile_class);
+    g_free(profile_class);
 }
 
 static void
