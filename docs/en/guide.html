@@ -43,6 +43,7 @@
 				<li><a href="#KeyboardShortcuts">Keyboard Shortcuts</a></li>
 				<li><a href="#ConfigurationManagement">Configuration Management</a></li>
 				<li><a href="#CommandlineOptions">Command-line Options</a></li>
+				<li><a href="#GtkStyling">GTK Styling</a></li>
 				<li><a href="#AdvancedDbusUsage">Advanced D-bus Usage</a></li>
 			</ol>
 
@@ -192,6 +193,32 @@
 				--shortcut-scheme respectively in 1.7.0 (underscores changed to hyphens) but the old versions remain usable for
 				backwards compatibility.</p>
 
+
+				<h2>GTK Styling <a class="pageAnchor" name="GtkStyling">:</a></h2>
+
+				<p>Like any VTE-based terminal, you can apply custom GTK styles on ROXTerm terminals.</p>
+
+				<p>A common use-case is to add padding around the terminal content. You can do this by adding the following to your global GTK stylesheet in ~/.config/gtk-3.0/gtk.css:</p>
+
+				<p class="snippet">
+					<span>VteTerminal,</span>
+					<span>vte-terminal {</span>
+					<span>&nbsp;&nbsp;-VteTerminal-inner-border: 20px;</span>
+					<span>&nbsp;&nbsp;padding: 20px;</span>
+					<span>}</span>
+				</p>
+
+				<p>Per-profile styling is possible by targeting specific classes in the GTK stylesheet. For example, if you want to apply a different padding to a profile named "Minimal", while still keeping your default padding, you can add this style rule after the previous one:</p>
+
+				<p class="snippet">
+					<span>VteTerminal.roxterm-Minimal,</span>
+					<span>vte-terminal.roxterm-Minimal {</span>
+					<span>&nbsp;&nbsp;-VteTerminal-inner-border: 2px;</span>
+					<span>&nbsp;&nbsp;padding: 2px;</span>
+					<span>}</span>
+				</p>
+
+				<p>When a profile name contains spaces, the generated class replaces them with hyphens.</p>
 
 				<h2>Advanced D-Bus Usage <a class="pageAnchor" name="AdvancedDbusUsage">:</a></h2>
 

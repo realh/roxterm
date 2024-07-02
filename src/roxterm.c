@@ -2965,6 +2965,33 @@ static void roxterm_apply_show_add_tab_btn(ROXTermData *roxterm)
     }
 }
 
+static void roxterm_apply_css_class(ROXTermData *roxterm)
+{
+    GtkStyleContext *context = gtk_widget_get_style_context(roxterm->widget);
+    const char *profile_name = options_get_leafname(roxterm->profile);
+
+    // remove any existing roxterm profile classes
+    GList *classes = gtk_style_context_list_classes(context);
+    GList *l;
+    for (l = classes; l; l = l->next)
+    {
+        const char *class = l->data;
+        if (g_str_has_prefix(class, "roxterm-"))
+        {
+            gtk_style_context_remove_class(context, class);
+        }
+    }
+
+    /* make sure the generated class name is roxterm specific with a prefix,
+    and does not contain any whitespaces so that it's a valid CSS class name */
+    char *profile_class = g_strconcat(
+        "roxterm-",
+        g_strdelimit(g_strdup(profile_name), " ", '-'),
+        NULL
+    );
+    gtk_style_context_add_class(context, profile_class);
+}
+
 static void
 roxterm_apply_bold_is_bright(ROXTermData *roxterm, VteTerminal *vte)
 {
@@ -3118,6 +3145,8 @@ static void roxterm_apply_profile(ROXTermData *roxterm, VteTerminal *vte,
     roxterm_apply_colour_scheme_from_profile(roxterm);
 
     roxterm_apply_show_add_tab_btn(roxterm);
+
+    roxterm_apply_css_class(roxterm);
 }
 
 static gboolean
