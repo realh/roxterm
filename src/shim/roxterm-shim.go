@@ -173,7 +173,7 @@ func (sp *StreamProcessor) inputReaderThread() {
 			}
 			buf.Filled(nFilled)
 			chunk = chunk[:nFilled]
-			log.Printf("%s IRT: Read chunk from stdin: '%s'", sp.name, chunk)
+			log.Printf("%s IRT: Read chunk from input: '%s'", sp.name, chunk)
 			ch := sp.unprocessedChunks
 			if ch != nil {
 				ch <- chunk
