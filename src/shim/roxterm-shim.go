@@ -173,6 +173,7 @@ func (sp *StreamProcessor) inputReaderThread() {
 			}
 			buf.Filled(nFilled)
 			chunk = chunk[:nFilled]
+			log.Printf("%s IRT: Read chunk from stdin: '%s'", sp.name, chunk)
 			ch := sp.unprocessedChunks
 			if ch != nil {
 				ch <- chunk
@@ -432,7 +433,6 @@ func (sp *StreamProcessor) chunkWriterThread() {
 		// Write is guaranteed to write the entire slice or return an error
 		_, err := sp.output.Write(chunk)
 		if err != nil {
-			// TODO: Can't realistically log this unless we use a file
 			log.Printf("%s CWT: Error writing stream: %v", sp.name, err)
 			break
 		}
