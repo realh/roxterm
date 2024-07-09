@@ -588,7 +588,9 @@ func run() (wg *sync.WaitGroup, err error) {
 
 func main() {
 	cacheDir, _ := os.UserCacheDir()
-	logOutput, err := os.Create(cacheDir + "/roxterm-shim.log")
+	cacheDir += "/roxterm"
+	os.MkdirAll(cacheDir, 0755)
+	logOutput, err := os.Create(cacheDir + "/goshim.log")
 	if err == nil {
 		log.SetOutput(logOutput)
 	}
