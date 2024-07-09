@@ -590,7 +590,11 @@ func main() {
 	cacheDir, _ := os.UserCacheDir()
 	cacheDir += "/roxterm"
 	os.MkdirAll(cacheDir, 0755)
-	logOutput, err := os.Create(cacheDir + "/goshim.log")
+	timeStamp := time.Now().UTC().Format(time.RFC3339)
+	timeStamp = strings.Replace(timeStamp, ":", "-", -1)
+	logName := fmt.Sprintf("%s/goshim-%s-%d.log",
+		cacheDir, timeStamp, os.Getpid())
+	logOutput, err := os.Create(logName)
 	if err == nil {
 		log.SetOutput(logOutput)
 	}
