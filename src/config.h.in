@@ -22,26 +22,25 @@
 
 #include <glib.h>
 
-#define BIN_DIR "@CMAKE_INSTALL_FULL_BINDIR@"
+#define BIN_DIR "@prefix@/@bindir@"
 
-#define DATA_DIR "@CMAKE_INSTALL_FULL_DATADIR@"
+#define DATA_DIR "@prefix@/@datadir@"
 
 #undef ENABLE_NLS
 
-#define HTML_DIR "@CMAKE_INSTALL_FULL_DOCDIR@"
+#define HTML_DIR DATA_DIR "/doc/roxterm"
 
-#define ICON_DIR "@CMAKE_INSTALL_FULL_DATADIR@/icons/hicolor/scalable/apps"
+#define ICON_DIR DATA_DIR "/icons/hicolor/scalable/apps"
 
-#define LOCALEDIR "@CMAKE_INSTALL_FULL_LOCALEDIR@"
+#define LOCALEDIR "@prefix@/@localedir@"
 
 #define PACKAGE "roxterm"
 
-#define PKG_DATA_DIR "@CMAKE_INSTALL_FULL_DATADIR@/roxterm"
+#define PKG_DATA_DIR DATA_DIR "/roxterm"
 
-#define SYS_CONF_DIR "@CMAKE_INSTALL_FULL_SYSCONFDIR@"
+#define SYS_CONF_DIR "@prefix@/@sysconfdir@"
 
-//#cmakedefine HAVE_VTE_HANDLE_SCROLL
-#define RT_VTE_LIBDIR "@RT_VTE_LIBDIR@"
+#define RT_VTE_LIBDIR "@vte_libdir@"
 
 #if GLIB_MAJOR_VERSION < 2 || \
     (GLIB_MAJOR_VERSION == 2 && GLIB_MINOR_VERSION < 74)

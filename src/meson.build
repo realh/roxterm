@@ -4,19 +4,20 @@ conf_data = configuration_data()
 foreach a: ['prefix', 'bindir', 'datadir', 'localedir', 'sysconfdir']
     conf_data.set(a, get_option(a))
 endforeach
+conf_data.set('vte_libdir', vtedep.get_variable('libdir'))
 configure_file(input: 'config.h.in',
     output: 'config.h',
     configuration: conf_data)
 
 version_data = configuration_data()
-version_data.set('version', version)
+version_data.set('ROXTERM_VERSION', roxterm_version)
 configure_file(input: 'version.h.in',
     output: 'version.h',
     configuration: version_data)
 
 common_deps = [gtkdep, dbusdep, gdbusdep]
 
-gnome.compile_resources('gresources', 'gresources.xml',
+gresources = gnome.compile_resources('gresources', 'gresources.xml',
     c_name: 'roxterm_resource')
 
 rtlib = static_library('roxterm', ['colourscheme.c', 'dlg.c', 'dragrcv.c',
@@ -36,5 +37,3 @@ roxterm = executable('roxterm', ['about.c', 'main.c', 'multitab.c',
     'shortcuts.c', 'uri.c'],
     dependencies: common_deps + [vtedep, pcredep],
     link_with: rtlib)
-
-install_data('roxterm-config.ui', '@prefix@/@datadir@/roxterm')

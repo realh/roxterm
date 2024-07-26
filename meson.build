@@ -14,16 +14,15 @@ gdbusdep = dependency('dbus-glib-1', version: '>=0.22')
 gmoddep = dependency('gmodule-export-2.0')
 
 # Configure-time substitutions
-doc_srcdir = '@srcdir@/Help'
-doc_installdir = '@prefix@/@datadir@/doc/roxterm'
+docdir = get_option('prefix') / get_option('datadir') / 'doc' / 'roxterm'
 
-version = run_command('./version.sh', check: true).stdout()
+roxterm_version = run_command('./version.sh', check: true).stdout()
 date = run_command('date', '+%Y-%m-%d', check: true).stdout()
 
 conf_data = configuration_data()
-conf_data.set('VERSION', version)
-conf_data.set('APPINFO_VERSION', version + ' ' + date)
-conf_data.set('INSTALL_DOCDIR', doc_installdir)
+conf_data.set('ROXTERM_VERSION', roxterm_version)
+conf_data.set('APPINFO_VERSION', roxterm_version + ' ' + date)
+conf_data.set('INSTALL_DOCDIR', docdir)
 
 roxterm_man_xml = configure_file(input: 'roxterm.1.xml.in',
     output: 'roxterm.1.xml', configuration: conf_data)
@@ -47,11 +46,22 @@ custom_target('roxterm-config.1', capture: true,
     command: ['xmltoman', '@INPUT@'])
 
 # Stuff to be installed
-install_data('roxterm.desktop', install_dir: '@prefix@/@datadir@/applications')
-install_data(meta_info, install_dir: '@prefix@/@datadir@/metainfo')
+dd = get_option('prefix') / get_option('datadir')
+install_data('roxterm.desktop', install_dir: dd / 'applications')
+install_data(meta_info, install_dir: dd / 'metainfo')
 install_data('src/icons/roxterm.svg',
-             install_dir: '@prefix@/@datadir@/icons/hicolor/scalabale.apps')
-install_subdir('Config', install_dir: '@prefix@/@datadir@/roxterm')
+             install_dir: dd / 'icons/hicolor/scalabale.apps')
+install_subdir('Config', install_dir: dd / '/roxterm')
+
+# Docs
+install_emptydir(docdir)
+foreach a: ['AUTHORS', 'Changes', 'COPYING', 'index.html', 'index.php',
+    'NEWS', 'README']
+    install_data('docs' / a, install_dir: docdir)
+endforeach
+foreach a: ['en', 'lib']
+    install_subdir('docs' / a, install_dir: docdir)
+endforeach
 
 subdir('src')
 subdir('Config')
