@@ -35,10 +35,12 @@ configure() {
         exit 1
     fi
     echo "Configuring/compiling $APP_DIR... please wait..." >&2
-    mkdir -p "$APP_DIR/build"
-    cd "$APP_DIR/build"
+    cd "$APP_DIR"
+    if [ -d build ] && ![ -d build/meson-info ] ; then 
+        rm -rf build
+    fi
     export CFLAGS="-Wall -Wextra"
-    cmake "$@" ..
+    meson setup --reconfigure --buildtype=debugoptimized build
 }
 
 RECOGNISED=1
@@ -89,33 +91,21 @@ while [ "$RECOGNISED" = "1" ] ; do
             DEBUGGER="$DEBUGGER --leak-check=full --num-callers=80"
             DBGENV='G_SLICE=always-malloc G_MESSAGES_DEBUG=all'
             ;;
-        --compile|--configure)
+        --compile|--configure|--build|--develop)
             cmd="$1"
             shift
-            configure -DCMAKE_BUILD_TYPE=RELWITHDEBINFO "$@" && \
-                    ( [ "$cmd" = "--compile" ] && make || true ) && \
+            if [ "$cmd" = "--develop" ] || [ "$cmd" = "--build" ] ; then
+                echo "Using clang"
+                export CC='clang'
+            fi
+            configure && \
+                [ "$cmd" = "--compile" -o "$cmd" = "--build" ] && \
+                ninja -C build && \
                 echo Done >&2 && exit 0
             echo Compile/configure failed >&2
             echo Press Return... >&2
             read WAIT
             exit 1 ;;
-
-        # Counterparts to compile/configure with developer flags etc
-        --build|--develop)
-            cmd="$1"
-            shift
-            export CFLAGS="-Wall -Wextra"
-            export CC='clang'
-            configure -DCMAKE_BUILD_TYPE=DEBUG \
-                    -DCMAKE_EXPORT_COMPILE_COMMANDS=1 "$@" \
-                    -G Ninja && \
-                    ( [ "$cmd" = "--build" ] && ninja || true ) && \
-                echo Done >&2 && exit 0
-            echo Configure failed >&2
-            echo Press Return... >&2
-            read WAIT
-            exit 1 ;;
-
         *)
             RECOGNISED=0
             ;;
