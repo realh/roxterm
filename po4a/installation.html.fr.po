@@ -1,0 +1,401 @@
+# Translations for roxterm docs
+# Copyright (C) 2010 Tony Houghton
+# This file is distributed under the same license as the roxterm package.
+#
+# Translators:
+# Philippe Etienne <petienne@laposte.net>, 2013-2015
+# Stéphane Aulery, 2012
+# Tony Houghton <h@realh.co.uk>, 2010
+msgid ""
+msgstr ""
+"Project-Id-Version: roxterm\n"
+"Report-Msgid-Bugs-To: http://sourceforge.net/tracker/?group_id=124080\n"
+"POT-Creation-Date: 2014-06-24 16:56+0100\n"
+"PO-Revision-Date: 2014-01-26 12:36+0000\n"
+"Last-Translator: Philippe Etienne <petienne@laposte.net>\n"
+"Language-Team: French (http://www.transifex.com/projects/p/roxterm/language/"
+"fr/)\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. type: Attribute 'lang' of: <html>
+#: ../Help/en/installation.html:3
+msgid "en-US"
+msgstr "fr-FR"
+
+#. type: Attribute 'alt' of: <html><body><div><div><div><a><img>
+#: ../Help/en/installation.html:8 ../Help/en/installation.html:20
+msgid "ROXTerm"
+msgstr "ROXTerm"
+
+#. type: Content of: <html><body><div><div><div><a>
+#: ../Help/en/installation.html:19
+msgid "<a id=\"Logo\" href=\"index.html\">"
+msgstr "<a id=\"Logo\" href=\"index.html\">"
+
+#. type: Content of: <html><body><div><div><div>
+#: ../Help/en/installation.html:21
+msgid "</a>"
+msgstr "</a>"
+
+#. type: Content of: <html><body><div><div><div><ul><li>
+#: ../Help/en/installation.html:24
+msgid "<a id=\"MainNav_Home\" href=\"index.html\">Home</a>"
+msgstr "<a id=\"MainNav_Home\" href=\"index.html\">Accueil</a>"
+
+#. type: Content of: <html><body><div><div><div><ul><li>
+#: ../Help/en/installation.html:25
+msgid "<a id=\"MainNav_News\" href=\"news.html\">News</a>"
+msgstr "<a id=\"MainNav_News\" href=\"news.html\">Nouveautés</a>"
+
+#. type: Content of: <html><body><div><div><div><ul><li>
+#: ../Help/en/installation.html:26
+msgid ""
+"<a id=\"MainNav_Installation\" class=\"active\" href=\"#\">Installation</a>"
+msgstr ""
+"<a id=\"MainNav_Installation\" class=\"active\" href=\"#\">Installation</a>"
+
+#. type: Content of: <html><body><div><div><div><ul><li>
+#: ../Help/en/installation.html:27
+msgid "<a id=\"MainNav_UserGuide\" href=\"guide.html\">User Guide</a>"
+msgstr "<a id=\"MainNav_UserGuide\" href=\"guide.html\">Guide utilisateur</a>"
+
+#. type: Content of: <html><body><div><div><div><ul><li>
+#: ../Help/en/installation.html:28
+msgid ""
+"<a id=\"MainNav_Forums\" href=\"https://sourceforge.net/projects/roxterm/"
+"forums\">Forums</a>"
+msgstr ""
+"<a id=\"MainNav_Forums\" href=\"https://sourceforge.net/projects/roxterm/"
+"forums\">Forums</a>"
+
+#. type: Content of: <html><body><div><div><ol><li>
+#: ../Help/en/installation.html:36
+msgid "<a href=\"#Download\">Download</a>"
+msgstr "<a href=\"#Download\">Téléchargement</a>"
+
+#. type: Content of: <html><body><div><div><ol><li>
+#: ../Help/en/installation.html:37
+msgid "<a href=\"#Requirements\">Requirements</a>"
+msgstr "<a href=\"#Requirements\">Configuration nécessaire</a>"
+
+#. type: Content of: <html><body><div><div><ol><li>
+#: ../Help/en/installation.html:38
+msgid "<a href=\"#Installing\">Installing</a>"
+msgstr "<a href=\"#Installing\">Installation</a>"
+
+#. type: Content of: <html><body><div><div><div><h1>
+#: ../Help/en/installation.html:42
+msgid "Installation"
+msgstr "Installation"
+
+#. type: Content of: <html><body><div><div><div><h2>
+#: ../Help/en/installation.html:45
+msgid "Download <a class=\"pageAnchor\" name=\"Download\">:</a>"
+msgstr "Téléchargement <a class=\"pageAnchor\" name=\"Download\">:</a>"
+
+#. type: Content of: <html><body><div><div><div><p>
+#: ../Help/en/installation.html:47
+msgid ""
+"Visit the <a href=\"http://sourceforge.net/projects/roxterm\">SourceForge "
+"project page</a> to download release files or use other Sourceforge tools. "
+"If you want to get developmental versions ahead of releases, use git.  For "
+"versions prior to 1.19.0 use svn (subversion). The actual command you will "
+"probably want to use to check out a snapshot is:"
+msgstr ""
+"Visitez la <a href=\"http://sourceforge.net/projects/roxterm\">page "
+"SourceForge du projet</a> pour télécharger les fichiers ou utiliser d'autres "
+"outils de Sourceforge. Si vous souhaitez obtenir les dernières versions de "
+"développement à venir, utilisez git. Pour les versions antérieures à 1.19.0 "
+"utilisez svn (Subversion). La commande actuelle, que vous voudrez "
+"probablement utiliser pour obtenir un instantané est la suivante :"
+
+#. type: Content of: <html><body><div><div><div><p>
+#: ../Help/en/installation.html:53
+msgid "<span>git clone git://git.code.sf.net/p/roxterm/code roxterm</span>"
+msgstr "<span>git clone git://git.code.sf.net/p/roxterm/code roxterm</span>"
+
+#. type: Content of: <html><body><div><div><div><h2>
+#: ../Help/en/installation.html:56
+msgid "Requirements <a class=\"pageAnchor\" name=\"Requirements\">:</a>"
+msgstr ""
+"Configuration nécessaire <a class=\"pageAnchor\" name=\"Requirements\">:</a>"
+
+#. type: Content of: <html><body><div><div><div><p>
+#: ../Help/en/installation.html:58
+msgid ""
+"You need the libraries for GTK+2 which is pretty much standard on all free "
+"Unix derivatives these days, and/or GTK+3.  It needs at least version 2.16 "
+"of glib and GTK+ 2.18. You will also need vte/libvte (at least version "
+"0.20), a Gnome component; most distros package separate versions for GTK+2 "
+"and GTK+3.  D-BUS is also required (see below)."
+msgstr ""
+"Vous avez besoin des bibliothèques pour GTK+2 qui est assez standard sur "
+"tous les dérivés d'Unix libre pour le moment, et / ou GTK+3.  Il faut au "
+"moins la version 2.16 de glib et GTK+ 2.18. Vous aurez aussi besoin de vte / "
+"libvte (au moins la version 0.20), un composant Gnome ; la plupart des "
+"paquets de distributions séparent les pour GTK+2 et GTK+3.  D-BUS est "
+"également nécessaire (voir ci-dessous)."
+
+#. type: Content of: <html><body><div><div><div><p>
+#: ../Help/en/installation.html:65
+msgid ""
+"To compile ROXTerm you will need the header files for the above libraries. "
+"In packaging systems they usually come in packages whose names end in \"-dev"
+"\" or \"-devel\"."
+msgstr ""
+"Pour compiler ROXTerm vous aurez besoin des fichiers d'en-tête pour les "
+"bibliothèques ci-dessus. Dans les systèmes d'empaquetage, ils sont "
+"généralement fournis dans des paquets dont les noms se terminent par \"-dev"
+"\" ou \"-devel\"."
+
+#. type: Content of: <html><body><div><div><div><p>
+#: ../Help/en/installation.html:69
+msgid ""
+"ROXTerm uses a new, bespoke build system called maitch. This requires python "
+"and the python 'lockfile' module."
+msgstr ""
+"ROXTerm utilise un nouveau système de compilation sur mesure appelé maitch "
+"qui nécessite python et le module 'lockfile\" pour python."
+
+#. type: Content of: <html><body><div><div><div><h3>
+#: ../Help/en/installation.html:72
+msgid "D-Bus"
+msgstr "D-Bus"
+
+#. type: Content of: <html><body><div><div><div><p>
+#: ../Help/en/installation.html:74
+msgid ""
+"D-Bus is a messaging system which ROXTerm uses to connect terminals with its "
+"configure tool. ROXTerm uses the \"session\" bus, which should be started "
+"along with your desktop environment. Current versions of ROX, GNOME and KDE "
+"session managers all launch D-Bus. If you use some other session/desktop/"
+"window manager which doesn't launch D-Bus you can start it by inserting "
+"something like this near the start of your .xinitrc or .xsession:"
+msgstr ""
+"D-Bus est un système de messagerie qu'utilise ROXTerm pour connecter les "
+"terminaux avec son outil de configuration. ROXTerm utilise le bus de "
+"\"session\", qui devrait avoir été lancé en même temps que votre "
+"environnement de bureau. Les versions actuelles des gestionnaires de session "
+"de ROX, GNOME et KDE lancement tous D-Bus. Si vous utilisez une autre "
+"session / bureau / gestionnaire de fenêtre qui ne lance pas D-Bus vous "
+"pouvez le démarrer en insérant quelque chose comme cela au début de votre ."
+"xinitrc ou .xsession :"
+
+#. type: Content of: <html><body><div><div><div><p>
+#: ../Help/en/installation.html:80
+msgid ""
+"<span>if test -z \"$DBUS_SESSION_BUS_ADDRESS\" ; then</span> <span class="
+"\"indented\">eval `dbus-launch --sh-syntax --exit-with-session`</span> <span "
+"class=\"indented\">export DBUS_SESSION_BUS_ADDRESS</span> <span>fi</span>"
+msgstr ""
+"<span>if test -z \"$DBUS_SESSION_BUS_ADDRESS\" ; then</span> <span class="
+"\"indented\">eval `dbus-launch --sh-syntax --exit-with-session`</span> <span "
+"class=\"indented\">export DBUS_SESSION_BUS_ADDRESS</span> <span>fi</span>"
+
+#. type: Content of: <html><body><div><div><div><p>
+#: ../Help/en/installation.html:86
+msgid ""
+"The reason for using a bespoke configuration messaging system over D-Bus "
+"instead of gconf is because gconf doesn't provide a way to map an arbitrary "
+"number of profiles onto configuration filenames."
+msgstr ""
+"La raison pour utiliser un système de configuration sur mesure de messagerie "
+"par dessus D-Bus au lieu de gconf est justifier du fait que gconf ne fournit "
+"pas de moyen d'allouer un nombre arbitraire de profils dans les fichiers de "
+"configuration."
+
+#. type: Content of: <html><body><div><div><div><h2>
+#: ../Help/en/installation.html:89
+msgid "Installing <a class=\"pageAnchor\" name=\"Installing\">:</a>"
+msgstr "Installation <a class=\"pageAnchor\" name=\"Installing\">:</a>"
+
+#. type: Content of: <html><body><div><div><div><p>
+#: ../Help/en/installation.html:91
+msgid ""
+"To install ROXTerm for ROX all you need to do is unpack the tarball in your "
+"Apps directory and run it from there, but you will probably want to rename "
+"the folder to ROXTerm. For other systems ROXTerm may be installed in a "
+"similar way to an autoconf-based source package, but using maitch's "
+"analogues:"
+msgstr ""
+"Pour installer ROXTerm pour ROX tout ce que vous devez faire est de "
+"décompresser l'archive dans votre répertoire d'applications et le lancer à "
+"partir de là, mais vous voudrez probablement renommer le dossier en ROXTerm. "
+"Pour les autres systèmes ROXTerm peut être installé d'une manière semblable "
+"à un paquet source basé sur autoconf, mais en utilisant maitch en parallèle :"
+
+#. type: Content of: <html><body><div><div><div><p>
+#: ../Help/en/installation.html:98
+msgid ""
+"<span>python ./mscript.py configure</span> <span>python ./mscript.py build</"
+"span> <span>python ./mscript.py install</span>"
+msgstr ""
+"<span>python ./mscript.py configure</span> <span>python ./mscript.py build</"
+"span> <span>python ./mscript.py install</span>"
+
+#. type: Content of: <html><body><div><div><div><p>
+#: ../Help/en/installation.html:103
+msgid "Various options are available, run"
+msgstr "Diverses options sont disponibles, lancer"
+
+#. type: Content of: <html><body><div><div><div><p><p>
+#: ../Help/en/installation.html:105
+msgid "<span>python ./mscript.py help</span>"
+msgstr "<span>python ./mscript.py help</span>"
+
+#. type: Content of: <html><body><div><div><div><p>
+#: ../Help/en/installation.html:107
+msgid "for details."
+msgstr "pour les détails."
+
+#. type: Content of: <html><body><div><div><div><p>
+#: ../Help/en/installation.html:109
+msgid "Autoconf builds are no longer supported."
+msgstr "La compilation par autoconf n'est plus prise en charge."
+
+#. type: Content of: <html><body><div><div><div><h3>
+#: ../Help/en/installation.html:111
+msgid "Debian &amp; Ubuntu"
+msgstr "Debian &amp; Ubuntu"
+
+#. type: Content of: <html><body><div><div><div><p>
+#: ../Help/en/installation.html:113
+msgid ""
+"Up-to-date official Debian packages are now available. See <a href=\"http://"
+"packages.debian.org/roxterm\">http://packages.debian.org/roxterm</a>."
+msgstr ""
+"Une mise à jour du paquet Debian officiel est disponible. Consulter <a href="
+"\"http://packages.debian.org/roxterm\">http://packages.debian.org/roxterm</"
+"a>."
+
+#. type: Content of: <html><body><div><div><div><p>
+#: ../Help/en/installation.html:116
+msgid ""
+"Ubuntu also has official roxterm packages, but due to Ubuntu's release cycle "
+"these may lag behind the latest upstream releases. Therefore I have set up a "
+"<a href=\"https://launchpad.net/~h-realh/+archive/roxterm\">PPA</a> to "
+"provide the most recent releases of ROXTerm for Ubuntu's current release "
+"when appropriate."
+msgstr ""
+"Ubuntu a aussi les paquets officiels de ROXTerm, mais en raison du cycle de "
+"publication d'Ubuntu ceux-ci peuvent être en retard sur les dernières "
+"versions en amont. Par conséquent, j'ai mis en place un <a href=\"https://"
+"launchpad.net/~h-realh/+archive/roxterm\">PPA</ a> pour fournir les versions "
+"les plus récentes de ROXTerm pour la dernière version d'Ubuntu, le cas "
+"échéant."
+
+#. type: Content of: <html><body><div><div><div><p>
+#: ../Help/en/installation.html:123
+msgid ""
+"For those that want to build their own debian packages, the debian packaging "
+"files are no longer included in release tarballs, but they are included in "
+"git's master branch.  <a href=\"Download\">See above</a> for details of how "
+"to fetch roxterm from git."
+msgstr ""
+"Pour ceux qui veulent construire leurs propres paquets Debian, les fichiers "
+"de paquets Debian ne sont plus inclus dans des archives compressées "
+"publiées, mais elles sont incluses dans la branche master de git.  <a href="
+"\"Download\">Voir ci-dessus</ a> pour plus de détails sur la façon de "
+"d'obtenir ROXTerm à partir de git."
+
+#. type: Content of: <html><body><div><div><div><p>
+#: ../Help/en/installation.html:127
+msgid "If you want to build a particular version:"
+msgstr "Si vous souhaitez compiler une version particulière :"
+
+#. type: Content of: <html><body><div><div><div><p>
+#: ../Help/en/installation.html:128
+msgid "<code>git checkout</code> <i>version</i>"
+msgstr "<code>git checkout</code> <i>version</i>"
+
+#. type: Content of: <html><body><div><div><div><p>
+#: ../Help/en/installation.html:130
+msgid "For older distros which do not include packages of GTK3 etc:"
+msgstr ""
+"Pour les anciennes distributions qui n'incluent pas les paquets pour GTK3 "
+"etc :"
+
+#. type: Content of: <html><body><div><div><div><p><code>
+#: ../Help/en/installation.html:131
+msgid "<code>git fetch origin lucid:lucid"
+msgstr "<code>git fetch origin lucid:lucid"
+
+#. type: Content of: <html><body><div><div><div><p>
+#: ../Help/en/installation.html:132
+msgid "git checkout lucid</code>"
+msgstr "git checkout lucid</code>"
+
+#. type: Content of: <html><body><div><div><div><p>
+#: ../Help/en/installation.html:134
+msgid ""
+"You can use <code>sudo apt-get build-dep</code> at this point, but depending "
+"on the version already in your distro the set of packages may be out-of-"
+"date, so be prepared for dependency errors later and install the necessary "
+"packages at that point. You should install imagemagick and librsvg2-bin at "
+"this point, but these are bugged in Ubuntu Lucid (and earlier?), so before "
+"building you will have to copy these files from <code>Help/lib</code> in a "
+"tarball: <code>roxterm_logo.png favicon.ico logo_text.png</code>."
+msgstr ""
+"A ce stade, vous pouvez utiliser <code>sudo apt-get build-dep</ code> mais, "
+"en fonction de la version déjà dans votre distribution, les paquets peuvent "
+"ne pas être à jour, alors attendez-vous à des erreurs de dépendance et à "
+"devoir installer les paquets nécessaires à ce moment. Vous devez installer "
+"imagemagick et librsvg2-bin à ce point, mais ceux-ci sont bogués dans Ubuntu "
+"Lucid (et avant ?) donc, avant de faire le build, vous devrez copier ces "
+"fichiers à partir <code>Help/lib</ code> dans une archive : "
+"<code>roxterm_logo.png favicon.ico logo_text.png</ code>."
+
+#. type: Content of: <html><body><div><div><div><p>
+#: ../Help/en/installation.html:141
+msgid ""
+"If not using a release snapshot it's a good idead to use <code>dch</code> to "
+"ensure the newest version number in <code>debian/changelog</code> has an "
+"appropriate version number eg what <code>./mscript.py configure</code> "
+"generates in the file <code>version</code>, based on the output of <code>git "
+"describe</code>. Now you can build the packages eg with <code>debuild -b -uc "
+"-us</code>. Note the <code>-b</code>:- only binary packages can be built in "
+"the absence of an orig tarball."
+msgstr ""
+"Si vous n'utilisez pas une release snapshot, c'est une bonne idée d'utiliser "
+"<code>dch</code> pour s'assurer que le numéro de version le plus récent dans "
+"<code>debian/changelog</code> a un numéro de version approprié, par exemple "
+"ce que <code>./mscript.py configure</code> génère dans le fichier "
+"<code>version</code>, basé sur la sortie de <code>git describe</ code>. "
+"Maintenant, vous pouvez construire les paquets par exemple avec "
+"<code>debuild -b -uc -us</ code>. Remarque <code>-b</code> : - seuls les "
+"paquets binaires peuvent être construits en l'absence d'une archive orig."
+
+#. type: Content of: <html><body><div><div><div>
+#: ../Help/en/installation.html:153
+msgid ""
+"<a id=\"SourceforgeLink\" href=\"http://sourceforge.net/projects/roxterm\" "
+"title=\"RoxTerm Sourceforge\"> roxterm @ sourceforge </a>"
+msgstr ""
+"<a id=\"SourceforgeLink\" href=\"http://sourceforge.net/projects/roxterm\" "
+"title=\"RoxTerm Sourceforge\"> roxterm @ sourceforge </a>"
+
+#. type: Content of: <html><body><div><div><div>
+#: ../Help/en/installation.html:159
+msgid ""
+"<a id=\"DonationLink\" class=\"spriteLink\" href=\"http://sourceforge.net/"
+"donate/index.php?group_id=124080\">Donate</a> <a id=\"ValidMarkupLink\" "
+"class=\"spriteLink\" href=\"http://validator.w3.org/check?uri=referer"
+"\">Valid XHTML</a>"
+msgstr ""
+"<a id=\"DonationLink\" class=\"spriteLink\" href=\"http://sourceforge.net/"
+"donate/index.php?group_id=124080\">Faire un don</a> <a id=\"ValidMarkupLink"
+"\" class=\"spriteLink\" href=\"http://validator.w3.org/check?uri=referer"
+"\">XHTML valide</a>"
+
+#. type: Content of: <html><body><div><div><p>
+#: ../Help/en/installation.html:163
+msgid ""
+"ROXTerm is licensed under the <a href=\"http://www.gnu.org/licenses/gpl-3.0-"
+"standalone.html\">GPL</a> | Site design by Adrian Sampson"
+msgstr ""
+"ROXTerm est publié sous licence <a href=\"http://www.gnu.org/licenses/"
+"gpl-3.0-standalone.html\">GPL</a> | Site conçu par Adrian Sampson"

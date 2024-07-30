@@ -1,11 +1,24 @@
-roxterm (3.15.0-3) UNRELEASED; urgency=medium
+roxterm (3.20.1-1) UNRELEASED; urgency=medium
 
   * New upstream version:
     + Support for OSC52 with VTE patch.
 
- -- Tony Houghton <h@realh.co.uk>  Mon, 5 Feb 2024 18:17:23 +0000
+ -- Tony Houghton <h@realh.co.uk>  Mon, 30 Jul 2024 23:36:30 +0000
 
-roxterm (3.14.3-1) unstable; urgency=medium
+roxterm (3.15.1-1) UNRELEASED; urgency=medium
+
+  * New upstream version:
+    + Added translations by marcelocipe (pt_BR) and Wallon (fr_BE) to
+      roxterm.desktop.
+    + Added/restored other translation files, even though they're relics from
+      SourceForge and Transifex days.
+    + Vte widgets have a class name based on their profile name (implemented
+      by Emmanuel Pelletier).
+    + Various changes to help development.
+
+ -- Tony Houghton <h@realh.co.uk>  Thu, 25 Jul 2024 17:43:21 +0100
+
+roxterm (3.14.3-1) UNRELEASED; urgency=medium
 
   * New upstream version:
     + Prevent error messages caused by roxterm-config trying to parse

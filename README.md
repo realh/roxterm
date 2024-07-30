@@ -44,6 +44,15 @@ Each time the clipboard is written, an indicator flashes in the tab bar, then
 stays visible until cleared by clicking it or by performing a copy operation
 in ROXTerm's GUI.
 
+CSS styling
+-----------
+
+Version 3.15.1 onwards apply a CSS class name to ROXTerm's vte widget, based on
+the profile name. For example, a profile name of "My Profile" applies the CSS
+class name "roxterm-My-Profile". Use with care, because using different values
+of properties such as "padding" in the same window could cause problems with
+window geometry.
+
 Kinetic scrolling
 -----------------
 

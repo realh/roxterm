@@ -8,7 +8,7 @@ if [ -d ".git" ] ; then
     if echo $v | grep -qv '~' ; then
         printf $v > release_version
     fi
-elif [ - f version ] ; then
+elif [ -f version ] ; then
     cat version
 else
     cat release_version
