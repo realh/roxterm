@@ -35,14 +35,14 @@ restrictions and security measures:
 * VTE has an escape sequence length limit which means you can't paste more
   than approximately 3000 bytes at a time.
 * Apps can only write the clipboard, not read it.
-* You have to confirm each clipboard write unless you change a profile
-  setting.
+* You have to confirm each clipboard write by clicking a button unless you
+  change a profile setting.
 * OSC 52 is ignored if the originating terminal is not focused.
 * OSC 52 is ignored if the terminal has a selection made with its GUI.
 
-Each time the clipboard is written, an indicator flashes in the tab bar, then
-stays visible until cleared by clicking it or by performing a copy operation
-in ROXTerm's GUI.
+Each time the clipboard is written, an indicator flashes in the tab bar;
+further behaviour of the indicator/button can be configured in a new section of
+the profile settings.
 
 CSS styling
 -----------
