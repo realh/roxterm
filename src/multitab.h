@@ -433,14 +433,22 @@ void multi_win_set_initial_geometry(MultiWin *win, const char *geom,
 void multi_win_apply_new_geometry(MultiWin *win, int columns, int rows,
         MultiTab *tab);
 
-void multi_win_flash_clipboard_indicator(MultiWin *win, gboolean show);
+/* If show is TRUE, the indicator stays on after flashing. If len is not zero,
+ * the clipboard is not written/cleared until the button is pressed.
+ * clipboard_content will be freed then. Set len to a non-zero value and
+ * clipboard_content to NULL to clear the clipboard.
+ */
+void multi_win_flash_clipboard_indicator(MultiWin *win, gboolean show,
+                                         guchar *clipboard_content,
+                                         gsize len, gboolean primary);
 
-inline static void multi_win_show_clipboard_indicator(MultiWin *win)
-{
-    multi_win_flash_clipboard_indicator(win, TRUE);
-}
-
+/* Also writes to the clipboard if state indicates it's pending. */
 void multi_win_hide_clipboard_indicator(MultiWin *win);
+
+/* Writes or clears the clipboard */
+void multi_win_write_clipboard(MultiWin *win,
+                               const guchar *clipboard_content, gsize len,
+                               gboolean primary);
 
 #endif /* MULTITAB_H */
 

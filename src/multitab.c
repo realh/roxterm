@@ -103,6 +103,9 @@ struct MultiWin {
     int clipboard_flash_frame;
     gulong clipboard_flash_tag;
     GtkWidget *clipboard_indicator_button;
+    guchar *clipboard_content;
+    gsize clipboard_len;
+    gboolean clipboard_primary;
 };
 
 static double multi_win_zoom_factors[] = {
@@ -2157,6 +2160,7 @@ static void multi_win_destructor(MultiWin *win, gboolean destroy_widgets)
     UNREF_LOG(options_unref(win->shortcuts));
     g_free(win->title_template);
     g_free(win->child_title);
+    g_free(win->clipboard_content);
     g_free(win);
     multi_win_all = g_list_remove(multi_win_all, win);
     if (!multi_win_all)
@@ -2840,10 +2844,16 @@ static gboolean multi_win_toggle_clipboard_indicator(MultiWin *win)
     return TRUE;
 }
 
-void multi_win_flash_clipboard_indicator(MultiWin *win, gboolean show)
+void multi_win_flash_clipboard_indicator(MultiWin *win, gboolean show,
+                                         guchar *clipboard_content,
+                                         gsize len, gboolean primary)
 {
     gboolean already_showing = win->show_clipboard_indicator;
     win->show_clipboard_indicator = show;
+    g_free(win->clipboard_content);
+    win->clipboard_content = clipboard_content;
+    win->clipboard_len = len;
+    win->clipboard_primary = primary;
     if (!win->clipboard_flash_tag)
     {
         win->clipboard_flash_frame = already_showing ? 5 : 4;
@@ -2861,6 +2871,34 @@ void multi_win_hide_clipboard_indicator(MultiWin *win)
     if (!win->clipboard_flash_tag)
     {
         gtk_widget_hide(win->clipboard_indicator_button);
+    }
+    if (win->clipboard_len)
+    {
+        multi_win_write_clipboard(win,
+                                  win->clipboard_content,
+                                  win->clipboard_len, win->clipboard_primary);
+        g_free(win->clipboard_content);
+        win->clipboard_content = NULL;
+        win->clipboard_len = 0;
+        win->clipboard_primary = FALSE;
+    }
+}
+
+void multi_win_write_clipboard(MultiWin *win,
+                               const guchar *clipboard_content, gsize len,
+                               gboolean primary)
+{
+    GdkDisplay *display = gtk_widget_get_display(win->gtkwin);
+    GdkAtom sel_type = primary ?
+        GDK_SELECTION_PRIMARY : GDK_SELECTION_CLIPBOARD;
+    GtkClipboard *cb = gtk_clipboard_get_for_display(display, sel_type);
+    if (!clipboard_content || !len)
+    {
+        gtk_clipboard_clear(cb);
+    }
+    else
+    {
+        gtk_clipboard_set_text(cb, (const char *) clipboard_content, len);
     }
 }
 
