@@ -42,7 +42,8 @@ restrictions and security measures:
 
 Each time the clipboard is written, an indicator flashes in the tab bar;
 further behaviour of the indicator/button can be configured in a new section of
-the profile settings.
+the profile settings. The indicator and button are also used if the clipboard
+is cleared.
 
 CSS styling
 -----------
