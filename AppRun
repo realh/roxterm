@@ -36,7 +36,7 @@ configure() {
     fi
     echo "Configuring/compiling $APP_DIR... please wait..." >&2
     cd "$APP_DIR"
-    if [ -d build ] && ![ -d build/meson-info ] ; then 
+    if [ -d build ] && ! [ -d build/meson-info ] ; then 
         rm -rf build
     fi
     export CFLAGS="-Wall -Wextra"
