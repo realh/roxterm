@@ -42,6 +42,7 @@ configure() {
     fi
     export CFLAGS="-Wall -Wextra"
     meson setup --reconfigure --buildtype=debugoptimized build
+    return $?
 }
 
 RECOGNISED=1
@@ -99,10 +100,14 @@ while [ "$RECOGNISED" = "1" ] ; do
                 echo "Using clang"
                 export CC='clang'
             fi
-            configure && \
-                [ "$cmd" = "--compile" -o "$cmd" = "--build" ] && \
-                ninja -C build && \
-                echo Done >&2 && exit 0
+            if configure ; then
+                if [ "$cmd" = "--compile" -o "$cmd" = "--build" ] ; then
+                    ninja -C build && \
+                    echo Done >&2 && exit 0
+                else
+                    echo Done >&2 && exit 0
+                fi
+            fi
             echo Compile/configure failed >&2
             echo Press Return... >&2
             read WAIT
