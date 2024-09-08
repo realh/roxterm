@@ -12,7 +12,8 @@ APPRUN="${APP_DIR}/AppRun"
 for f in AUTHORS COPYING NEWS README ; do
     [ -f "$APP_DIR/Help/$f" ] || ln -nfs ../$f "$APP_DIR/Help/$f"
 done
-[ -f "$APP_DIR/Help/Changes" ] || ln -nfs ../ChangeLog "$APP_DIR/Help/Changes"
+[ -f "$APP_DIR/Help/Changes" ] || ln -nfs ../debian/changeLog \
+    "$APP_DIR/Help/Changes"
 
 MAINTAIN="--enable-maintainer-mode"
 if [ -f "$APP_DIR/tony" ]; then
