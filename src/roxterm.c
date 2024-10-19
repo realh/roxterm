@@ -427,6 +427,8 @@ static char **roxterm_get_environment(ROXTermData *roxterm, const char *term)
 
     if (term)
         g_hash_table_replace(env, g_strdup("TERM"), g_strdup(term));
+    else
+        g_hash_table_remove(env, "TERM");
     g_hash_table_replace(env, g_strdup("ROXTERM_ID"),
             g_strdup_printf("%p", roxterm));
     g_hash_table_replace(env, g_strdup("ROXTERM_NUM"),
