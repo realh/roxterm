@@ -554,7 +554,11 @@ func run() (wg *sync.WaitGroup, err error) {
 		log.Println("Waiting for child command to exit")
 		err := cmd.Wait()
 		exitCode := cmd.ProcessState.ExitCode()
-		log.Printf("Child exited with code %d error %s", exitCode, err.Error())
+		errmsg := ""
+		if err != nil {
+			errmsg = ", error " + err.Error()
+		}
+		log.Printf("Child exited with code %d%s", exitCode, errmsg)
 		spErr.closeUnprocessedChunksChan()
 
 		// Make sure we exit after a few seconds in case the pipes are blocked.
