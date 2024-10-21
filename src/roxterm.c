@@ -45,6 +45,7 @@
 #include "globalopts.h"
 #include "optsfile.h"
 #include "optsdbus.h"
+#include "osc52filter.h"
 #include "roxterm.h"
 #include "multitab.h"
 #include "roxterm-regex.h"
@@ -145,6 +146,8 @@ struct ROXTermData {
     gboolean scroll_at_bottom;
     gboolean override_exit_action;
     char *buffer_file_name;
+
+    Osc52Filter *osc52_filter;
 };
 
 #define PROFILE_NAME_KEY "roxterm_profile_name"
@@ -334,6 +337,7 @@ static ROXTermData *roxterm_data_clone(ROXTermData *old_gt)
     new_gt->post_exit_tag = 0;
     new_gt->win_state_changed_tag = 0;
     new_gt->buffer_file_name = NULL;
+    new_gt->osc52_filter = NULL;
 
     if (old_gt->colour_scheme)
     {
@@ -601,6 +605,7 @@ static void roxterm_fork_command(ROXTermData *roxterm, VteTerminal *vte,
      * appears to prevent our process' env from being merged into the envv we're
      * passing in here, which is behaviour we want.
      */
+    roxterm->osc52_filter = osc52filter_create(roxterm);
     vte_terminal_spawn_async(vte, VTE_PTY_DEFAULT,
             working_directory, argv, envv, 
             (login ? G_SPAWN_FILE_AND_ARGV_ZERO : G_SPAWN_SEARCH_PATH) |
@@ -916,6 +921,11 @@ static void roxterm_data_delete(ROXTermData *roxterm)
     if (roxterm->pango_desc)
         pango_font_description_free(roxterm->pango_desc);
     g_free(roxterm->buffer_file_name);
+    if (roxterm->osc52_filter)
+    {
+        osc52filter_remove(roxterm->osc52_filter);
+        roxterm->osc52_filter = NULL;
+    }
     if (roxterm->replace_task_dialog)
     {
         roxterm->postponed_free = TRUE;

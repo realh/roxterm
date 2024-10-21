@@ -126,7 +126,8 @@ target_compile_options(rtlib PRIVATE ${RTLIB_CFLAGS_OTHER})
 
 add_executable(roxterm $<TARGET_OBJECTS:rtlib>
     about.c main.c multitab.c multitab-close-button.c
-    multitab-label.c menutree.c optsdbus.c roxterm.c roxterm-regex.c search.c
+    multitab-label.c menutree.c optsdbus.c osc52filter.c
+    roxterm.c roxterm-regex.c search.c
     session-file.c shortcuts.c uri.c)
 add_dependencies(roxterm rtlib)
 target_include_directories(roxterm PRIVATE
@@ -135,6 +136,7 @@ target_compile_options(roxterm PRIVATE ${RTMAIN_CFLAGS_OTHER})
 target_link_libraries(roxterm ${RTMAIN_LIBRARIES})
 target_link_directories(roxterm PRIVATE ${RTMAIN_LIBRARY_DIRS})
 target_link_options(roxterm PRIVATE ${RTMAIN_LDFLAGS_OTHER})
+target_link_options(roxterm BEFORE -Wl,--wrap=posix_openpt -Wl,--wrap=read)
 
 add_executable(roxterm-config $<TARGET_OBJECTS:rtlib>
     capplet.c colourgui.c configlet.c getname.c optsdbus.c
