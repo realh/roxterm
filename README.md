@@ -33,6 +33,23 @@ class name "roxterm-My-Profile". Use with care, because using different values
 of properties such as "padding" in the same window could cause problems with
 window geometry.
 
+OSC 52 Clipboard writing
+------------------------
+
+OSC 52 is an escape sequence that allows programs in the terminal to access
+the desktop's clipboard. This is now supported in ROXTerm, with some
+security measures:
+
+* Apps can only write the clipboard, not read it.
+* You have to confirm each clipboard write unless you change a profile
+  setting.
+* OSC 52 is ignored if the originating terminal is not focused.
+* OSC 52 is ignored if the terminal has a selection made with its GUI.
+
+Each time the clipboard is written, an indicator flashes in the tab bar, then
+stays visible until cleared by clicking it or by performing a copy operation
+in ROXTerm's GUI.
+
 Kinetic scrolling
 -----------------
 
