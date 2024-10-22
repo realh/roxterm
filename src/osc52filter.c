@@ -18,13 +18,13 @@
 */
 
 #include "intptrmap.h"
+#include "roxterm.h"
+#include "vte/vte.h"
 #include "osc52filter.h"
 
 typedef struct {
     IntPointerMap fd_map;
     GMutex map_mutex;
-    GMutex launch_mutex;
-    Osc52Filter *being_launched;
 } Osc52Global;
 
 static Osc52Global osc52filter_global;
@@ -35,8 +35,8 @@ static Osc52Global *
 osc52filter_global_init(Osc52Global *og)
 {
     int_pointer_map_init(&og->fd_map);
-    g_mutex_init(&og->launch_mutex);
-    og->being_launched = NULL;
+    g_mutex_init(&og->map_mutex);
+    return og;
 }
 
 Osc52Filter *osc52filter_create(ROXTermData *roxterm)
@@ -46,11 +46,17 @@ Osc52Filter *osc52filter_create(ROXTermData *roxterm)
         osc52filter_global_init(&osc52filter_global);
         osc52filter_global_initialised = TRUE;
     }
-    Osc52Filter *og = g_new(Osc52Filter, 1);
-    og->roxterm = roxterm;
-    g_debug("osc52: Launching roxterm %p", roxterm);
-    g_mutex_lock(&osc52filter_global.launch_mutex);
-    osc52filter_global.being_launched = og;
+    Osc52Filter *oflt = g_new(Osc52Filter, 1);
+    oflt->roxterm = roxterm;
+    VteTerminal *vte = roxterm_get_vte_terminal(roxterm);
+    VtePty *pty = vte_terminal_get_pty(vte);
+    int fd = vte_pty_get_fd(pty);
+    oflt->pts_fd = fd;
+    g_mutex_lock(&osc52filter_global.map_mutex);
+    int_pointer_map_insert(&osc52filter_global.fd_map, fd, oflt);
+    g_mutex_unlock(&osc52filter_global.map_mutex);
+    g_debug("osc52: Launching roxterm %p with pty fd %d", roxterm, fd);
+    return oflt;
 }
 
 void osc52filter_remove(Osc52Filter *oflt)
@@ -61,29 +67,19 @@ void osc52filter_remove(Osc52Filter *oflt)
     g_free(oflt);
 }
 
-extern int __real_posix_openpt(int oflag);
-int __wrap_posix_openpt(int oflag)
-{
-    Osc52Filter *og = osc52filter_global.being_launched;
-    g_mutex_unlock(&osc52filter_global.launch_mutex);
-    int fd = __real_posix_openpt(oflag);
-    g_debug("osc52: posix_openpt opened fd %d for roxterm %p", fd, og->roxterm);
-    g_mutex_lock(&osc52filter_global.map_mutex);
-    int_pointer_map_insert(&osc52filter_global.fd_map, fd, og);
-    g_mutex_unlock(&osc52filter_global.map_mutex);
-}
+extern ssize_t __real_read(int fd, void *buf, size_t nbyte);
 
- extern ssize_t __real_read(int fd, void *buf, size_t nbyte);
- ssize_t __wrap_read(int fd, void *buf, size_t nbyte)
+ssize_t __wrap_read(int fd, void *buf, size_t nbyte)
 {
+    g_debug("osc52: read called");
     ssize_t n = __real_read(fd, buf, nbyte);
     if (n <= 0 || !int_pointer_map_contains(&osc52filter_global.fd_map, fd))
         return n;
-    Osc52Filter *og =
+    Osc52Filter *oflt =
         int_pointer_map_lookup(&osc52filter_global.fd_map, fd);
-    g_return_val_if_fail(og != NULL, n);
+    g_return_val_if_fail(oflt != NULL, n);
     g_debug("osc52: read %ld bytes from fd %d for roxterm %p",
-            n, fd, og->roxterm);
+            n, fd, oflt->roxterm);
     return n;
 }
 

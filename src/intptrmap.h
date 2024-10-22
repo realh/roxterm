@@ -26,10 +26,10 @@
  */
 typedef struct {
     GHashTable *hash;
-    uint64_t bits[4];
+    guint64 bits[4];
 } IntPointerMap;
 
-#define ONE64 ((uint64_t) 1)
+#define ONE64 ((guint64) 1)
 
 static inline IntPointerMap *int_pointer_map_init(IntPointerMap *ipm)
 {

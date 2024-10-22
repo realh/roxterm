@@ -563,6 +563,10 @@ static void roxterm_fork_callback(VteTerminal *vte,
     {
         roxterm->widget = NULL;
     }
+    else
+    {
+        roxterm->osc52_filter = osc52filter_create(roxterm);
+    }
     if (pid == -1)
     {
         roxterm_report_launch_error_async(roxterm,
@@ -605,7 +609,6 @@ static void roxterm_fork_command(ROXTermData *roxterm, VteTerminal *vte,
      * appears to prevent our process' env from being merged into the envv we're
      * passing in here, which is behaviour we want.
      */
-    roxterm->osc52_filter = osc52filter_create(roxterm);
     vte_terminal_spawn_async(vte, VTE_PTY_DEFAULT,
             working_directory, argv, envv, 
             (login ? G_SPAWN_FILE_AND_ARGV_ZERO : G_SPAWN_SEARCH_PATH) |
