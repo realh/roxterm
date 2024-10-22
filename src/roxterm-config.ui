@@ -2530,7 +2530,7 @@
                         <property name="margin-start">12</property>
                         <property name="margin-top">8</property>
                         <child>
-                          <!-- n-columns=4 n-rows=10 -->
+                          <!-- n-columns=4 n-rows=6 -->
                           <object class="GtkGrid" id="grid16">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
@@ -2792,83 +2792,6 @@
                                 <property name="left-attach">2</property>
                                 <property name="top-attach">5</property>
                                 <property name="width">2</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkLabel">
-                                <property name="visible">True</property>
-                                <property name="can-focus">False</property>
-                                <property name="halign">start</property>
-                                <property name="label" translatable="yes">Allow programs to write to the clipboard with OSC 52</property>
-                                <attributes>
-                                  <attribute name="weight" value="bold"/>
-                                </attributes>
-                              </object>
-                              <packing>
-                                <property name="left-attach">0</property>
-                                <property name="top-attach">6</property>
-                                <property name="width">4</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkRadioButton" id="allow_osc520">
-                                <property name="label" translatable="yes">Ne_ver</property>
-                                <property name="visible">True</property>
-                                <property name="can-focus">True</property>
-                                <property name="receives-default">False</property>
-                                <property name="has-tooltip">True</property>
-                                <property name="tooltip-text" translatable="yes">Whether the terminal cursor blinks depends on the GTK system setting.</property>
-                                <property name="halign">start</property>
-                                <property name="use-underline">True</property>
-                                <property name="active">True</property>
-                                <property name="draw-indicator">True</property>
-                                <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
-                              </object>
-                              <packing>
-                                <property name="left-attach">0</property>
-                                <property name="top-attach">7</property>
-                                <property name="width">4</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkRadioButton" id="allow_osc521">
-                                <property name="label" translatable="yes">Ask ever_y time</property>
-                                <property name="visible">True</property>
-                                <property name="can-focus">True</property>
-                                <property name="receives-default">False</property>
-                                <property name="has-tooltip">True</property>
-                                <property name="tooltip-text" translatable="yes">Whether the terminal cursor blinks depends on the GTK system setting.</property>
-                                <property name="halign">start</property>
-                                <property name="use-underline">True</property>
-                                <property name="active">True</property>
-                                <property name="draw-indicator">True</property>
-                                <property name="group">allow_osc520</property>
-                                <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
-                              </object>
-                              <packing>
-                                <property name="left-attach">0</property>
-                                <property name="top-attach">8</property>
-                                <property name="width">4</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkRadioButton" id="allow_osc522">
-                                <property name="label" translatable="yes">_Always</property>
-                                <property name="visible">True</property>
-                                <property name="can-focus">True</property>
-                                <property name="receives-default">False</property>
-                                <property name="has-tooltip">True</property>
-                                <property name="tooltip-text" translatable="yes">Whether the terminal cursor blinks depends on the GTK system setting.</property>
-                                <property name="halign">start</property>
-                                <property name="use-underline">True</property>
-                                <property name="draw-indicator">True</property>
-                                <property name="group">allow_osc520</property>
-                                <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
-                              </object>
-                              <packing>
-                                <property name="left-attach">0</property>
-                                <property name="top-attach">9</property>
-                                <property name="width">4</property>
                               </packing>
                             </child>
                           </object>
@@ -3764,6 +3687,145 @@ but can be &lt;a href="https://gitlab.gnome.org/GNOME/vte/-/issues/336"&gt;buggy
                   </object>
                   <packing>
                     <property name="position">6</property>
+                  </packing>
+                </child>
+                <child type="tab">
+                  <placeholder/>
+                </child>
+                <child>
+                  <object class="GtkFrame" id="clipboard_frame">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="border-width">8</property>
+                    <property name="label-xalign">0</property>
+                    <property name="shadow-type">none</property>
+                    <child>
+                      <object class="GtkAlignment" id="clipboard_alignment">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="margin-start">12</property>
+                        <property name="margin-top">8</property>
+                        <child>
+                          <object class="GtkBox">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="orientation">vertical</property>
+                            <property name="spacing">4</property>
+                            <child>
+                              <object class="GtkRadioButton" id="allow_osc520">
+                                <property name="label" translatable="yes">_Disabled</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                                <property name="receives-default">False</property>
+                                <property name="tooltip-text" translatable="yes">Ignore all OSC52 sequences</property>
+                                <property name="halign">start</property>
+                                <property name="use-underline">True</property>
+                                <property name="active">True</property>
+                                <property name="draw-indicator">True</property>
+                                <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkRadioButton" id="allow_osc521">
+                                <property name="label" translatable="yes">Requires _confirmation</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                                <property name="receives-default">False</property>
+                                <property name="tooltip-text" translatable="yes">Text will not be pasted to the clipboard until you click the confirmation button.</property>
+                                <property name="halign">start</property>
+                                <property name="use-underline">True</property>
+                                <property name="draw-indicator">True</property>
+                                <property name="group">allow_osc520</property>
+                                <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkRadioButton" id="allow_osc522">
+                                <property name="label" translatable="yes">_Accept</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                                <property name="receives-default">False</property>
+                                <property name="tooltip-text" translatable="yes">Clipboard writes occur automatically, but the indicator/button will flash.</property>
+                                <property name="halign">start</property>
+                                <property name="use-underline">True</property>
+                                <property name="draw-indicator">True</property>
+                                <property name="group">allow_osc520</property>
+                                <signal name="toggled" handler="on_radio_toggled" swapped="no"/>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">2</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkBox">
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="spacing">10</property>
+                                <child>
+                                  <object class="GtkLabel">
+                                    <property name="visible">True</property>
+                                    <property name="can-focus">False</property>
+                                    <property name="label" translatable="yes">_Buffer size</property>
+                                    <property name="use-underline">True</property>
+                                    <property name="mnemonic-widget">osc52_buffer_size</property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkEntry" id="osc52_buffer_size">
+                                    <property name="visible">True</property>
+                                    <property name="can-focus">True</property>
+                                    <property name="tooltip-text" translatable="yes">The amount of text that can be pasted will be limited to less than 75% of this value due to encoding and other overhead. Longer sequences are dropped rather than truncated.</property>
+                                    <property name="max-length">8</property>
+                                    <property name="input-purpose">digits</property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">3</property>
+                              </packing>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child type="label">
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="label" translatable="yes">Allow programs to write to the clipboard with OSC 52</property>
+                        <attributes>
+                          <attribute name="weight" value="bold"/>
+                        </attributes>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="position">7</property>
                   </packing>
                 </child>
                 <child type="tab">
