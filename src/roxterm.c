@@ -2720,6 +2720,41 @@ static void roxterm_composited_changed_handler(VteTerminal *vte,
     roxterm_apply_colour_scheme(roxterm, vte);
 }
 
+
+#if VTE_CHECK_VERSION(0, 78, 0)
+void roxterm_termprop_window_title_changed(VteTerminal *vte,
+                                           char *name,
+                                           ROXTermData *roxterm)
+{
+    if (strcmp(name, VTE_TERMPROP_XTERM_TITLE))
+    {
+        g_warning("termprop-changed handler called with prop '%s'; "
+                  "expected only '%s'", name, VTE_TERMPROP_XTERM_TITLE);
+        return;
+    }
+    roxterm_window_title_handler(vte, roxterm);
+}
+
+static inline void
+roxterm_connect_window_title_changed_handler(ROXTermData *roxterm)
+{
+    g_signal_connect(roxterm->widget,
+                     "termprop-changed::" VTE_TERMPROP_XTERM_TITLE,
+                     G_CALLBACK(roxterm_termprop_window_title_changed),
+                     roxterm);
+}
+
+#else
+
+static inline void
+roxterm_connect_window_title_changed_handler(ROXTermData *roxterm)
+{
+    g_signal_connect(roxterm->widget, "window-title-changed",
+        G_CALLBACK(roxterm_window_title_handler), roxterm);
+}
+
+#endif
+
 static void roxterm_connect_misc_signals(ROXTermData * roxterm)
 {
     roxterm->child_exited_tag = g_signal_connect(roxterm->widget,
@@ -2730,8 +2765,7 @@ static void roxterm_connect_misc_signals(ROXTermData * roxterm)
             G_CALLBACK (roxterm_click_handler), roxterm);
     g_signal_connect(roxterm->widget, "button-release-event",
             G_CALLBACK (roxterm_release_handler), roxterm);
-    g_signal_connect(roxterm->widget, "window-title-changed",
-        G_CALLBACK(roxterm_window_title_handler), roxterm);
+    roxterm_connect_window_title_changed_handler(roxterm);
     //g_signal_connect(roxterm->widget, "style-updated",
         //G_CALLBACK(roxterm_style_change_handler), roxterm);
     g_signal_connect(roxterm->widget, "char-size-changed",
