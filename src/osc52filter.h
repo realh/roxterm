@@ -21,10 +21,7 @@
 
 #include "roxterm.h"
 
-typedef struct {
-    ROXTermData *roxterm;
-    int pts_fd;
-} Osc52Filter;
+typedef struct Osc52Filter Osc52Filter;
 
 Osc52Filter *osc52filter_create(ROXTermData *roxterm);
 
