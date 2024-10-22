@@ -1543,11 +1543,20 @@ static gboolean roxterm_release_handler(GtkWidget *widget,
     return result;
 }
 
+inline static const char *roxterm_get_vte_window_title(VteTerminal *vte)
+{
+#if VTE_CHECK_VERSION(0, 78, 0)
+    return vte_terminal_get_termprop_string(vte,
+                                            VTE_TERMPROP_XTERM_TITLE, NULL);
+#else
+    return vte_terminal_get_window_title(vte);
+#endif
+}
+
 static void roxterm_window_title_handler(VteTerminal *vte,
         ROXTermData * roxterm)
 {
-    const char *t = vte_terminal_get_window_title(vte);
-
+    const char *t = roxterm_get_vte_window_title(vte);
     multi_tab_set_window_title(roxterm->tab, t ? t : _("ROXTerm"));
 }
 
@@ -3332,7 +3341,7 @@ static GtkWidget *roxterm_multi_tab_filler(MultiWin * win, MultiTab * tab,
         global_options_reset_string("tab-name");
     }
     g_free(tab_name);
-    title_orig = vte_terminal_get_window_title(vte);
+    title_orig = roxterm_get_vte_window_title(vte);
     multi_tab_set_window_title(tab, title_orig ? title_orig : _("ROXTerm"));
 
     //g_debug("call roxterm_set_vte_size from line %d", __LINE__);
