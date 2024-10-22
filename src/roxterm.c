@@ -148,7 +148,7 @@ struct ROXTermData {
     char *buffer_file_name;
 
     Osc52Filter *osc52_filter;
-    int allow_osc52;    /* 0 = reject, 1, = ask, 2 = allow */
+    int allow_osc52;    /* 0 = reject, 1 = confirm, 2 = allow */
 };
 
 #define PROFILE_NAME_KEY "roxterm_profile_name"
@@ -339,11 +339,8 @@ static ROXTermData *roxterm_data_clone(ROXTermData *old_gt)
     new_gt->win_state_changed_tag = 0;
     new_gt->buffer_file_name = NULL;
     new_gt->osc52_filter = NULL;
-
-    // TODO: Get from profile
-    new_gt->allow_osc52 = 1;
     new_gt->allow_osc52 = options_lookup_int_with_default(new_gt->profile,
-                                                          "allow_osc52", 1);
+                                                          "allow_osc52", 0);
 
     if (old_gt->colour_scheme)
     {

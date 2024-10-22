@@ -63,16 +63,6 @@ struct _ProfileGUI {
 
 static GHashTable *profilegui_being_edited = NULL;
 
-#if 0
-inline static
-GtkWidget *profilegui_widget(ProfileGUI *pg, const char *name)
-{
-    /* Result will often be cast to a specialised widget so use static
-     * cast here to avoid double GObject cast.
-     */
-    return (GtkWidget *) gtk_builder_get_object(pg->capp.builder, name);
-}
-#endif
 static
 GtkWidget *profilegui_widget(ProfileGUI *pg, const char *name)
 {
@@ -561,7 +551,8 @@ static void profilegui_fill_in_dialog(ProfileGUI * pg)
     capplet_set_spin_button_float(&pg->capp, "exit_pause");
     capplet_set_text_entry(&pg->capp, "title_string", "%t. %s");
     capplet_set_text_entry(&pg->capp, "win_title", "%s");
-    capplet_set_radio(&pg->capp, "allow_osc52", 1);
+    capplet_set_radio(&pg->capp, "allow_osc52", 0);
+    capplet_set_text_entry(&pg->capp, "osc52_buffer_size", "100000");
     exit_action_changed(
         GTK_COMBO_BOX(capplet_lookup_widget(&pg->capp, "exit_action")),
         pg);
