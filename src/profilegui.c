@@ -552,7 +552,7 @@ static void profilegui_fill_in_dialog(ProfileGUI * pg)
     capplet_set_text_entry(&pg->capp, "title_string", "%t. %s");
     capplet_set_text_entry(&pg->capp, "win_title", "%s");
     capplet_set_radio(&pg->capp, "allow_osc52", 0);
-    capplet_set_text_entry(&pg->capp, "osc52_buffer_size", "100000");
+    capplet_set_spin_button(&pg->capp, "osc52_buffer_size", 100);
     exit_action_changed(
         GTK_COMBO_BOX(capplet_lookup_widget(&pg->capp, "exit_action")),
         pg);
@@ -622,6 +622,7 @@ ProfileGUI *profilegui_open(const char *profile_name)
             "exit_pause_adjustment", "scrollback_lines_adjustment",
             "saturation_adjustment", "ssh_port_adjustment",
             "hspacing_adjustment", "vspacing_adjustment",
+            "osc52_buffer_adjustment",
             NULL };
     static const char *obj_names[] = {
             "Profile_Editor", "ssh_dialog",
