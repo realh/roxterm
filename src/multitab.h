@@ -112,6 +112,9 @@ typedef gboolean (*MultiTabGetNewTabAdjacent)(gpointer user_data);
 /* Connects signals after a new tab has been shown */
 typedef void (*MultiTabConnectMiscSignals)(gpointer user_data);
 
+/* Called when the clipboard button is pressed */
+typedef void (*MultiWinClipboardButtonHandler)(gpointer user_data);
+
 /* Call to set up function hooks. See MultiTabFiller etc above.
  * menu_signal_connector is called each time a new window is created to give
  * the client a chance to connect its signal handlers; each handler will
@@ -123,7 +126,8 @@ multi_tab_init(MultiTabFiller filler, MultiTabDestructor destructor,
     MultiTabToNewWindowHandler,
     MultiWinZoomHandler, MultiWinGetDisableMenuShortcuts, MultiWinGetTabPos,
     MultiWinDeleteHandler, MultiTabGetShowCloseButton,
-    MultiTabGetNewTabAdjacent, MultiTabConnectMiscSignals);
+    MultiTabGetNewTabAdjacent, MultiTabConnectMiscSignals,
+    MultiWinClipboardButtonHandler);
 
 /* Register a MultiTabSelectionHandler (see above) */
 void

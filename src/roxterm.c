@@ -149,6 +149,9 @@ struct ROXTermData {
 
     Osc52Filter *osc52_filter;
     int allow_osc52;    /* 0 = reject, 1 = confirm, 2 = allow */
+    guint8 *pending_clipboard;
+    gsize clipboard_size;
+    gboolean clipboard_primary;
 };
 
 #define PROFILE_NAME_KEY "roxterm_profile_name"
@@ -341,6 +344,8 @@ static ROXTermData *roxterm_data_clone(ROXTermData *old_gt)
     new_gt->osc52_filter = NULL;
     new_gt->allow_osc52 = options_lookup_int_with_default(new_gt->profile,
                                                           "allow_osc52", 0);
+    new_gt->pending_clipboard = NULL;
+    new_gt->clipboard_size = 0;
 
     if (old_gt->colour_scheme)
     {
@@ -555,6 +560,15 @@ static void roxterm_report_launch_error_async(ROXTermData *roxterm,
     g_idle_add((GSourceFunc) roxterm_command_failed, roxterm);
 }
 
+static Osc52Filter *roxterm_create_osc52_filter(ROXTermData *roxterm)
+{
+    int buflen = options_lookup_int_with_default(roxterm->profile,
+                                                 "osc52_buffer_size", 100);
+    roxterm->osc52_filter = osc52filter_create(roxterm,
+                                               (size_t) buflen * 1024);
+    return roxterm->osc52_filter;
+}
+
 /* Mustn't free this error: https://bugzilla.gnome.org/show_bug.cgi?id=793675 */
 static void roxterm_fork_callback(VteTerminal *vte,
         GPid pid, GError *error, gpointer user_data)
@@ -566,9 +580,9 @@ static void roxterm_fork_callback(VteTerminal *vte,
     {
         roxterm->widget = NULL;
     }
-    else
+    else if (roxterm->allow_osc52)
     {
-        roxterm->osc52_filter = osc52filter_create(roxterm);
+        roxterm_create_osc52_filter(roxterm);
     }
     if (pid == -1)
     {
@@ -2773,7 +2787,7 @@ typedef struct {
 } ROXTermClipboardClosure;
 
 static void roxterm_write_clipboard(ROXTermData *roxterm,
-                                    const guchar *clipboard_content,
+                                    const guint8 *clipboard_content,
                                     gsize len,
                                     gboolean primary)
 {
@@ -2794,84 +2808,20 @@ static void roxterm_write_clipboard(ROXTermData *roxterm,
     }
 }
 
-/* This runs via g_idle_add */
-static gboolean roxterm_run_osc52_dialog(ROXTermClipboardClosure *closure)
+static void roxterm_cache_clipboard(ROXTermData *roxterm,
+                                    guint8 *clipboard_content,
+                                    gsize len,
+                                    gboolean primary)
 {
-    ROXTermData *roxterm = closure->roxterm;
-    GtkWidget *parent = gtk_widget_get_toplevel(roxterm->widget);
-    GtkDialog *dialog = GTK_DIALOG(gtk_dialog_new_with_buttons(
-        _("Clipboard"),
-        GTK_WINDOW(parent),
-        GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-        _("_Reject"), ROXTERM_CLIPBOARD_REJECT,
-        _("_Accept This Time"), ROXTERM_CLIPBOARD_ACCEPT_ONCE,
-        _("_Accept For This Tab"), ROXTERM_CLIPBOARD_ACCEPT_IN_SESSION,
-        NULL));
-    // GtkLabel is hardwired to take up as much width as possible before
-    // wrapping, even ignoring gtk_widget_set_size_request, so we either
-    // have to override it (yuk), or use three labels to make it look nice.
-    GtkWidget *label1 = gtk_label_new(
-        _("The program running in this terminal wants to write to the "
-          "clipboard.")
-    );
-    GtkWidget *label2 = gtk_label_new(
-        _("You can prevent this confirmation in future by editing "
-          "your profile.")
-    );
-    GtkWidget *label3 = gtk_label_new(
-        _("The relevant settings are in the 'General' section.")
-    );
-    GtkWidget *icon = gtk_image_new_from_icon_name("edit-paste-symbolic",
-                                                   GTK_ICON_SIZE_DIALOG);
-
-    GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 16);
-    GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 2);
-    gtk_widget_set_halign(label1, GTK_ALIGN_START);
-    gtk_widget_set_halign(label2, GTK_ALIGN_START);
-    gtk_widget_set_halign(label3, GTK_ALIGN_START);
-    gtk_box_pack_start(GTK_BOX(vbox), label1, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox), label2, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox), label3, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(hbox), icon, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(hbox), vbox, TRUE, TRUE, 0);
-
-    GtkWidget *content_area = gtk_dialog_get_content_area(dialog);
-    gtk_widget_set_margin_start(hbox, 16);
-    gtk_widget_set_margin_end(hbox, 16);
-    gtk_widget_set_margin_top(hbox, 16);
-    gtk_widget_set_margin_bottom(hbox, 16);
-    gtk_container_add(GTK_CONTAINER(content_area), hbox);
-
-    gtk_widget_show_all(content_area);
-    int response = gtk_dialog_run(dialog);
-    gtk_widget_destroy(GTK_WIDGET(dialog));
-    gboolean reject = TRUE;
-    switch (response)
-    {
-        case ROXTERM_CLIPBOARD_REJECT:
-            roxterm->allow_osc52 = 0;
-            break;
-        case ROXTERM_CLIPBOARD_ACCEPT_ONCE:
-            reject = FALSE;
-            break;
-        case ROXTERM_CLIPBOARD_ACCEPT_IN_SESSION:
-            reject = FALSE;
-            roxterm->allow_osc52 = 2;
-            break;
-        default:
-            break;
-    }
-    if (!reject)
-        roxterm_write_clipboard(roxterm,
-                                closure->content, closure->len,
-                                closure->primary);
-    g_free(closure->content);
-    g_free(closure);
-    return FALSE;
+    g_free(roxterm->pending_clipboard);
+    roxterm->pending_clipboard = clipboard_content;
+    roxterm->clipboard_size = len;
+    roxterm->clipboard_primary = primary;
+    multi_win_show_clipboard_indicator(roxterm_get_win(roxterm));
 }
 
 static void roxterm_osc52_handler(VteTerminal *vte, const char *clipboards,
-                                  const guchar *text, gsize text_len,
+                                  guchar *text, gsize text_len,
                                   ROXTermData * roxterm)
 {
     if (!gtk_widget_has_focus(roxterm->widget)) return;
@@ -2884,20 +2834,28 @@ static void roxterm_osc52_handler(VteTerminal *vte, const char *clipboards,
         case 0:
             return;
         case 1:
-        {
-            ROXTermClipboardClosure *closure =
-                    g_new0(ROXTermClipboardClosure, 1);
-            closure->roxterm = roxterm;
-            closure->content = g_malloc(text_len);
-            memcpy(closure->content, text, text_len);
-            closure->len = text_len;
-            closure->primary = primary;
-            g_idle_add(G_SOURCE_FUNC(roxterm_run_osc52_dialog), closure);
+            roxterm_cache_clipboard(roxterm, text, text_len, primary);
             break;
-        }
         case 2:
+            g_free(roxterm->pending_clipboard);
+            roxterm->pending_clipboard = NULL;
+            roxterm->clipboard_size = 0;
             roxterm_write_clipboard(roxterm, text, text_len, primary);
+            g_free(text);
             break;
+    }
+}
+
+static void roxterm_clipboard_button_handler(ROXTermData *roxterm)
+{
+    if (roxterm->allow_osc52 == 1)
+    {
+        roxterm_write_clipboard(roxterm, roxterm->pending_clipboard,
+                                roxterm->clipboard_size,
+                                roxterm->clipboard_primary);
+        g_free(roxterm->pending_clipboard);
+        roxterm->pending_clipboard = NULL;
+        roxterm->clipboard_size = 0;
     }
 }
 
@@ -2939,13 +2897,6 @@ static void roxterm_connect_misc_signals(ROXTermData * roxterm)
             G_CALLBACK(roxterm_composited_changed_handler), roxterm);
     g_signal_connect(roxterm->widget, "key-press-event",
             G_CALLBACK(roxterm_key_press_handler), roxterm);
-
-    static gboolean support_osc52 = TRUE;
-    if (support_osc52 && !g_signal_connect(roxterm->widget, "write-clipboard",
-            G_CALLBACK(roxterm_osc52_handler), roxterm))
-    {
-        support_osc52 = FALSE;
-    }
 }
 
 inline static void
@@ -3225,13 +3176,32 @@ roxterm_apply_text_blink_mode(ROXTermData *roxterm, VteTerminal *vte)
     vte_terminal_set_text_blink_mode(vte, modes[i]);
 }
 
-inline static void
-roxterm_update_allow_osc52(ROXTermData * roxterm)
+static void
+roxterm_update_osc52_options(ROXTermData * roxterm)
 {
     roxterm->allow_osc52 = options_lookup_int_with_default(roxterm->profile,
-                                                           "allow_osc52", 1);
+                                                           "allow_osc52", 0);
+    if (roxterm->allow_osc52 == 0 && roxterm->osc52_filter)
+    {
+        osc52filter_remove(roxterm->osc52_filter);
+        roxterm->osc52_filter = NULL;
+    }
+    else if (roxterm->allow_osc52)
+    {
+        if (!roxterm->osc52_filter)
+        {
+            roxterm_create_osc52_filter(roxterm);
+        }
+        else
+        {
+            int buflen = options_lookup_int_with_default(roxterm->profile,
+                                                         "osc52_buffer_size",
+                                                         100);
+            osc52filter_set_buffer_size(roxterm->osc52_filter,
+                                        (size_t) buflen * 1024);
+        }
+    }
 }
-
 
 static void
 roxterm_scroll_value_handler(GtkAdjustment *adj, ROXTermData *roxterm)
@@ -3364,7 +3334,7 @@ static void roxterm_apply_profile(ROXTermData *roxterm, VteTerminal *vte,
     roxterm_apply_show_add_tab_btn(roxterm);
 
     roxterm_apply_css_class(roxterm);
-    roxterm_update_allow_osc52(roxterm);
+    roxterm_update_osc52_options(roxterm);
 }
 
 static gboolean
@@ -3824,9 +3794,10 @@ static void roxterm_reflect_profile_change(Options * profile, const char *key)
         {
             roxterm_apply_colour_scheme_from_profile(roxterm);
         }
-        else if (!strcmp(key, "osc52"))
+        else if (!strcmp(key, "allow_osc52") ||
+            !strcmp(key, "osc52_buffer_size"))
         {
-            roxterm_update_allow_osc52(roxterm);
+            roxterm_update_osc52_options(roxterm);
         }
         if (apply_to_win)
         {
@@ -4766,7 +4737,8 @@ void roxterm_init(void)
         (MultiWinDeleteHandler) roxterm_delete_handler,
         (MultiTabGetShowCloseButton) roxterm_get_show_tab_close_button,
         (MultiTabGetNewTabAdjacent) roxterm_get_new_tab_adjacent,
-        (MultiTabConnectMiscSignals) roxterm_connect_misc_signals
+        (MultiTabConnectMiscSignals) roxterm_connect_misc_signals,
+        (MultiWinClipboardButtonHandler) roxterm_clipboard_button_handler
     );
 
     global_options_register_dark_theme_change_handler(

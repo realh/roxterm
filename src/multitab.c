@@ -142,6 +142,7 @@ static MultiWinDeleteHandler multi_win_delete_handler;
 static MultiTabGetShowCloseButton multi_tab_get_show_close_button;
 static MultiTabGetNewTabAdjacent multi_tab_get_new_tab_adjacent;
 static MultiTabConnectMiscSignals multi_tab_connect_misc_signals;
+static MultiWinClipboardButtonHandler multi_win_clipboard_button_handler;
 
 static gboolean multi_win_notify_tab_removed(MultiWin *, MultiTab *);
 
@@ -255,8 +256,8 @@ void multi_tab_init(MultiTabFiller filler, MultiTabDestructor destructor,
     MultiWinDeleteHandler delete_handler,
     MultiTabGetShowCloseButton get_show_close_button,
     MultiTabGetNewTabAdjacent get_new_tab_adjacent,
-    MultiTabConnectMiscSignals connect_misc_signals
-    )
+    MultiTabConnectMiscSignals connect_misc_signals,
+    MultiWinClipboardButtonHandler clipboard_button_handler)
 {
     multi_tab_filler = filler;
     multi_tab_destructor = destructor;
@@ -272,6 +273,7 @@ void multi_tab_init(MultiTabFiller filler, MultiTabDestructor destructor,
     multi_tab_get_show_close_button = get_show_close_button;
     multi_tab_get_new_tab_adjacent = get_new_tab_adjacent;
     multi_tab_connect_misc_signals = connect_misc_signals;
+    multi_win_clipboard_button_handler = clipboard_button_handler;
 }
 
 // Doesn't connect client's signal handlers
@@ -1879,6 +1881,22 @@ static void multi_win_size_allocate(GtkWidget *widget, GdkRectangle *alloc,
     }
 }
 
+static void multi_win_on_clipboard_button_clicked(MultiWin *win)
+{
+    MultiTab *tab = win ? win->current_tab : NULL;
+    gpointer data = tab ? tab->user_data : NULL;
+    if (data)
+    {
+        multi_win_clipboard_button_handler(data);
+    }
+    else
+    {
+        g_critical("Clipboard button clicked for NULL tab data");
+    }
+    if (win)
+        multi_win_hide_clipboard_indicator(win);
+}
+
 MultiWin *multi_win_new_blank(Options *shortcuts,
         int zoom_index,
         gboolean disable_menu_shortcuts, gboolean disable_tab_shortcuts,
@@ -2011,7 +2029,7 @@ MultiWin *multi_win_new_blank(Options *shortcuts,
     win->clipboard_indicator_button =
         multitab_close_button_new("edit-paste-symbolic");
     g_signal_connect_swapped(win->clipboard_indicator_button, "clicked",
-            G_CALLBACK(multi_win_hide_clipboard_indicator), win);
+            G_CALLBACK(multi_win_on_clipboard_button_clicked), win);
     gtk_box_pack_start(GTK_BOX(action_box), win->clipboard_indicator_button,
                        FALSE, FALSE, 0);
     win->add_tab_button = multitab_close_button_new("tab-new-symbolic");

@@ -23,9 +23,11 @@
 
 typedef struct Osc52Filter Osc52Filter;
 
-Osc52Filter *osc52filter_create(ROXTermData *roxterm);
+Osc52Filter *osc52filter_create(ROXTermData *roxterm, size_t buflen);
 
 void osc52filter_remove(Osc52Filter *oflt);
+
+void osc52filter_set_buffer_size(Osc52Filter *oflt, size_t buflen);
 
 #endif /* OSC52FILTER_H */
 

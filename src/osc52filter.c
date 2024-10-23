@@ -28,6 +28,7 @@
 struct Osc52Filter {
     ROXTermData *roxterm;
     int pts_fd;
+    size_t max_buflen;
 };
 
 static inline void osc52filter_free(Osc52Filter *oflt)
@@ -148,20 +149,33 @@ static inline void osc52filter_ensure_global_init()
     }
 }
 
-Osc52Filter *osc52filter_create(ROXTermData *roxterm)
+Osc52Filter *osc52filter_create(ROXTermData *roxterm, size_t buflen)
 {
+    VteTerminal *vte = roxterm_get_vte_terminal(roxterm);
+    VtePty *pty = vte ? vte_terminal_get_pty(vte) : NULL;
+    int fd = pty ? vte_pty_get_fd(pty) : -1;
+    if (fd <= 0)
+    {
+        g_debug("Pty not available yet for roxterm %p", roxterm);
+        return NULL;
+    }
     osc52filter_ensure_global_init();
     Osc52Filter *oflt = g_new(Osc52Filter, 1);
     oflt->roxterm = roxterm;
-    VteTerminal *vte = roxterm_get_vte_terminal(roxterm);
-    VtePty *pty = vte_terminal_get_pty(vte);
-    int fd = vte_pty_get_fd(pty);
     oflt->pts_fd = fd;
+    oflt->max_buflen = buflen;
     g_mutex_lock(&osc52filter_global.map_mutex);
     int_pointer_map_insert(&osc52filter_global.fd_map, fd, oflt);
     g_mutex_unlock(&osc52filter_global.map_mutex);
     g_debug("osc52: Launching roxterm %p with pty fd %d", roxterm, fd);
     return oflt;
+}
+
+void osc52filter_set_buffer_size(Osc52Filter *oflt, size_t buflen)
+{
+    oflt->max_buflen = buflen;
+    // TODO: If the filter already contains data longer than this,
+    // discard it.
 }
 
 void osc52filter_remove(Osc52Filter *oflt)
