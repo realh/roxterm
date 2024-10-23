@@ -2551,6 +2551,11 @@ void multi_win_foreach_tab(MultiWin *win, MultiWinForEachTabFunc func,
     }
 }
 
+GList *multi_win_get_tabs(MultiWin *win)
+{
+    return win->tabs;
+}
+
 GtkPositionType multi_win_get_tab_pos(MultiWin *win)
 {
     return win->tab_pos;

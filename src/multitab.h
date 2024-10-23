@@ -446,6 +446,8 @@ inline static void multi_win_show_clipboard_indicator(MultiWin *win)
 
 void multi_win_hide_clipboard_indicator(MultiWin *win);
 
+GList *multi_win_get_tabs(MultiWin *win);
+
 #endif /* MULTITAB_H */
 
 /* vi:set sw=4 ts=4 et cindent cino= */

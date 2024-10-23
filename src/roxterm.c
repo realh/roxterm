@@ -150,6 +150,7 @@ struct ROXTermData {
     Osc52Filter *osc52_filter;
     int allow_osc52;    /* 0 = reject, 1 = confirm, 2 = allow */
     guint8 *pending_clipboard;
+    gsize clipboard_offset;
     gsize clipboard_size;
     gboolean clipboard_primary;
 };
@@ -345,6 +346,7 @@ static ROXTermData *roxterm_data_clone(ROXTermData *old_gt)
     new_gt->allow_osc52 = options_lookup_int_with_default(new_gt->profile,
                                                           "allow_osc52", 0);
     new_gt->pending_clipboard = NULL;
+    new_gt->clipboard_offset = 0;
     new_gt->clipboard_size = 0;
 
     if (old_gt->colour_scheme)
@@ -2810,22 +2812,24 @@ static void roxterm_write_clipboard(ROXTermData *roxterm,
 
 static void roxterm_cache_clipboard(ROXTermData *roxterm,
                                     guint8 *clipboard_content,
-                                    gsize len,
+                                    gsize offset, gsize len,
                                     gboolean primary)
 {
     g_free(roxterm->pending_clipboard);
     roxterm->pending_clipboard = clipboard_content;
+    roxterm->clipboard_offset = offset;
     roxterm->clipboard_size = len;
     roxterm->clipboard_primary = primary;
     multi_win_show_clipboard_indicator(roxterm_get_win(roxterm));
 }
 
-static void roxterm_osc52_handler(VteTerminal *vte, const char *clipboards,
-                                  guchar *text, gsize text_len,
-                                  ROXTermData * roxterm)
+void roxterm_osc52_handler(ROXTermData * roxterm, const char *clipboards,
+                           guchar *text, gsize text_offset,
+                           gsize text_len)
 {
     if (!gtk_widget_has_focus(roxterm->widget)) return;
-    if (vte_terminal_get_has_selection(vte)) return;
+    if (vte_terminal_get_has_selection(VTE_TERMINAL(roxterm->widget)))
+        return;
     gboolean primary = strchr(clipboards, 'p') != NULL;
     gboolean clipboard = strchr(clipboards, 'c') != NULL;
     if (!primary && !clipboard) return;
@@ -2834,13 +2838,16 @@ static void roxterm_osc52_handler(VteTerminal *vte, const char *clipboards,
         case 0:
             return;
         case 1:
-            roxterm_cache_clipboard(roxterm, text, text_len, primary);
+            roxterm_cache_clipboard(roxterm, text, text_offset,
+                                    text_len, primary);
             break;
         case 2:
             g_free(roxterm->pending_clipboard);
             roxterm->pending_clipboard = NULL;
+            roxterm->clipboard_offset = 0;
             roxterm->clipboard_size = 0;
-            roxterm_write_clipboard(roxterm, text, text_len, primary);
+            roxterm_write_clipboard(roxterm, text + text_offset,
+                                    text_len, primary);
             g_free(text);
             break;
     }
@@ -2848,9 +2855,10 @@ static void roxterm_osc52_handler(VteTerminal *vte, const char *clipboards,
 
 static void roxterm_clipboard_button_handler(ROXTermData *roxterm)
 {
-    if (roxterm->allow_osc52 == 1)
+    if (roxterm->allow_osc52 == 1 && roxterm->pending_clipboard)
     {
-        roxterm_write_clipboard(roxterm, roxterm->pending_clipboard,
+        roxterm_write_clipboard(roxterm, roxterm->pending_clipboard +
+                                    roxterm->clipboard_offset,
                                 roxterm->clipboard_size,
                                 roxterm->clipboard_primary);
         g_free(roxterm->pending_clipboard);
@@ -5536,6 +5544,20 @@ const char *roxterm_get_search_pattern(ROXTermData *roxterm)
 guint roxterm_get_search_flags(ROXTermData *roxterm)
 {
     return roxterm->search_flags;
+}
+
+gboolean roxterm_is_valid(ROXTermData *roxterm)
+{
+    for (GList *link = multi_win_all; link; link = g_list_next(link))
+    {
+        MultiWin *win = link->data;
+        for (GList *tab = multi_win_get_tabs(win); tab; tab = g_list_next(tab))
+        {
+            if (multi_tab_get_user_data(tab->data) == roxterm)
+                return TRUE;
+        }
+    }
+    return FALSE;
 }
 
 /* vi:set sw=4 ts=4 et cindent cino= */

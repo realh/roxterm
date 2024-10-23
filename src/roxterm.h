@@ -96,6 +96,16 @@ gboolean roxterm_set_search(ROXTermData *roxterm,
 const char *roxterm_get_search_pattern(ROXTermData *roxterm);
 guint roxterm_get_search_flags(ROXTermData *roxterm);
 
+/* text points to the start of the block that this function should free.
+ * The base64 comes at text_offset after this.
+ */
+void roxterm_osc52_handler(ROXTermData * roxterm, const char *clipboards,
+                           guchar *text, gsize text_offset,
+                           gsize text_len);
+
+/* Returns FALSE if this roxterm has been destroyed */
+gboolean roxterm_is_valid(ROXTermData *roxterm);
+
 #endif /* ROXTERM_H */
 
 /* vi:set sw=4 ts=4 et cindent cino= */
