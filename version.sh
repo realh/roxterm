@@ -6,12 +6,13 @@ if [ -d ".git" ] ; then
     [ -z "$v" ] && v=`git describe --match 'beta-[0-9]*'`
     v=${v/-/.}
     v="${v/-/\~}"
-    printf $v | tee version
+    printf $v > version
     if echo $v | grep -qv '~' ; then
         printf $v > release_version
     fi
 elif [ -f version ] ; then
-    cat version
+    v=`cat version`
 else
-    cat release_version
+    v=`cat release_version`
 fi
+printf "${v/beta./}"
