@@ -59,17 +59,17 @@ struct Osc52Filter {
     size_t buflen;          // number of bytes remaining in buf
 };
 
-static char const *osc52_state_names[] = {
-    "DEFAULT",
-    "ESC_RECEIVED",
-    "OSC_RECEIVED",
-    "5_RECEIVED",
-    "52_RECEIVED",
-    "CAPTURE_OSC52",
-    "CAPTURE_TERM_ESC",
-    "OTHER_ESC",
-    "OTHER_TERM",
-};
+// static char const *osc52_state_names[] = {
+//     "DEFAULT",
+//     "ESC_RECEIVED",
+//     "OSC_RECEIVED",
+//     "5_RECEIVED",
+//     "52_RECEIVED",
+//     "CAPTURE_OSC52",
+//     "CAPTURE_TERM_ESC",
+//     "OTHER_ESC",
+//     "OTHER_TERM",
+// };
 
 static inline void osc52filter_free(Osc52Filter *oflt)
 {
