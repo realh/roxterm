@@ -17,6 +17,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+#include <ctype.h>
 #include <dlfcn.h>
 
 #include "glib.h"
@@ -30,7 +31,7 @@
 #define OSC_AFTER_ESC ']'
 #define TERM_CODE 0x9c
 #define TERM_AFTER_ESC '\\'
-#define BEL_CODE '\\'
+#define BEL_CODE 7
 
 typedef enum {
     STATE_DEFAULT,          // Default state, wait for start of Escape sequence
@@ -56,6 +57,18 @@ struct Osc52Filter {
     size_t data_len;
     const guint8 *buf;      // points to next byte to be read from `read` buf
     size_t buflen;          // number of bytes remaining in buf
+};
+
+static char const *osc52_state_names[] = {
+    "DEFAULT",
+    "ESC_RECEIVED",
+    "OSC_RECEIVED",
+    "5_RECEIVED",
+    "52_RECEIVED",
+    "CAPTURE_OSC52",
+    "CAPTURE_TERM_ESC",
+    "OTHER_ESC",
+    "OTHER_TERM",
 };
 
 static inline void osc52filter_free(Osc52Filter *oflt)
@@ -133,33 +146,29 @@ inline static void osc52filter_unpeek(Osc52Filter *oflt)
     oflt->buf--;
 }
 
-static void osc52filter_capture_buffer(Osc52Filter *oflt)
+static inline const char *osc52filter_code_desc(guint8 byte)
 {
-    const guint8 *buf_start = oflt->buf;
-    while (oflt->buflen)
-    {
-        guint8 byte = osc52filter_get_next_byte(oflt);
-        if (byte == ESC_CODE)
-        {
-            oflt->state = STATE_CAPTURE_TERM_ESC;
-            break;
-        }
-        else if (byte == TERM_CODE || byte == BEL_CODE)
-        {
-            oflt->state = STATE_DEFAULT;
-            break;
-        }
-    }
-    size_t caplen = oflt->buf - buf_start;
-    if (!caplen)
-        return;
-    oflt->data = g_realloc(oflt->data, oflt->data_len + caplen);
-    memcpy(oflt->data + oflt->data_len, buf_start, caplen);
-    oflt->data_len += caplen;
+    static char bdesc[32];
+    if (isprint(byte))
+        sprintf(bdesc, "%d '%c'", byte, byte);
+    else
+        sprintf(bdesc, "%d", byte);
+    return bdesc;
+}
+
+static inline void osc52filter_set_state(Osc52Filter *oflt, guint8 byte,
+                                         Osc52State state)
+{
+    g_debug("osc52: Code %s triggered state change from %s to %s",
+            osc52filter_code_desc(byte),
+            osc52_state_names[oflt->state],
+            osc52_state_names[state]);
+    oflt->state = state;
 }
 
 static void osc52filter_cancel_paste(Osc52Filter *oflt)
 {
+    g_debug("osc52: cancelling");
     g_free(oflt->data);
     oflt->data = NULL;
     oflt->data_len = 0;
@@ -209,6 +218,7 @@ static int osc52_deferred_paste(Osc52PasteClosure *closure)
 
 static void osc52filter_complete_paste(Osc52Filter *oflt)
 {
+    g_debug("osc52: completing");
     Osc52PasteClosure *closure = g_new(Osc52PasteClosure, 1);
     closure->roxterm = oflt->roxterm;
     closure->data = oflt->data;
@@ -216,6 +226,67 @@ static void osc52filter_complete_paste(Osc52Filter *oflt)
     oflt->data = NULL;
     oflt->data_len = 0;
     g_idle_add((GSourceFunc) osc52_deferred_paste, closure);
+}
+
+static void osc52filter_capture_buffer(Osc52Filter *oflt)
+{
+    g_debug("osc52: Capturing up to %ld bytes", oflt->buflen);
+    const guint8 *buf_start = oflt->buf;
+    guint8 byte = 0;
+    while (oflt->buflen)
+    {
+        byte = osc52filter_get_next_byte(oflt);
+        if (byte == ESC_CODE)
+        {
+            osc52filter_set_state(oflt, byte, STATE_CAPTURE_TERM_ESC);
+            break;
+        }
+        else if (byte == TERM_CODE || byte == BEL_CODE)
+        {
+            osc52filter_set_state(oflt, byte, STATE_DEFAULT);
+            break;
+        }
+    }
+    size_t caplen = oflt->buf - buf_start;
+    if (oflt->state == STATE_CAPTURE_OSC52)
+    {
+        g_debug("osc52: No terminator in this buf");
+    } else {
+        --caplen;
+        if (byte == ESC_CODE)
+        {
+            g_debug("osc52: captured buf contains ESC @ %ld", caplen);
+            if (oflt->buflen)
+            {
+                g_debug("osc52: ESC followed by %s",
+                        osc52filter_code_desc(*oflt->buf));
+            } else {
+                g_debug("osc52: ESC is at end of buf");
+            }
+        }
+        else if (byte == TERM_CODE)
+        {
+            g_debug("osc52: captured buf contains TERM_CODE @ %ld", caplen);
+        }
+        else if (byte == BEL_CODE)
+        {
+            g_debug("osc52: captured buf contains BEL_CODE @ %ld", caplen);
+        }
+    }
+    g_debug("osc52: %ld bytes can be captured, new total %ld",
+            caplen, oflt->data_len + caplen);
+    if (caplen)
+    {
+        oflt->data = g_realloc(oflt->data, oflt->data_len + caplen + 1);
+        memcpy(oflt->data + oflt->data_len, buf_start, caplen);
+        oflt->data_len += caplen;
+        oflt->data[caplen] = 0;
+    }
+    g_debug("osc52: total captured data: %s", (const char *) oflt->data);
+    if (oflt->state == STATE_DEFAULT)
+    {
+        osc52filter_complete_paste(oflt);
+    }
 }
 
 // This overrides the system read. When it's called on an fd in the map of
@@ -243,47 +314,47 @@ ssize_t read(int fd, void *buf, size_t nbyte)
         {
             case STATE_DEFAULT:
                 if (byte == ESC_CODE)
-                    oflt->state = STATE_ESC_RECEIVED;
+                    osc52filter_set_state(oflt, byte, STATE_ESC_RECEIVED);
                 else if (byte == OSC_CODE)
-                    oflt->state = STATE_OSC_RECEIVED;
+                    osc52filter_set_state(oflt, byte, STATE_OSC_RECEIVED);
                 break;
             case STATE_ESC_RECEIVED:
                 if (byte == OSC_AFTER_ESC)
-                    oflt->state = STATE_OSC_RECEIVED;
+                    osc52filter_set_state(oflt, byte, STATE_OSC_RECEIVED);
                 else if (byte != ESC_CODE)
-                    oflt->state = STATE_OTHER_ESC;
+                    osc52filter_set_state(oflt, byte, STATE_OTHER_ESC);
                 break;
             case STATE_OSC_RECEIVED:
                 if (byte == '5')
                 {
-                    oflt->state = STATE_5_RECEIVED;
+                    osc52filter_set_state(oflt, byte, STATE_5_RECEIVED);
                 }
                 else
                 {
                     osc52filter_unpeek(oflt);
-                    oflt->state = STATE_OTHER_ESC;
+                    osc52filter_set_state(oflt, byte, STATE_OTHER_ESC);
                 }
                 break;
             case STATE_5_RECEIVED:
                 if (byte == '2')
                 {
-                    oflt->state = STATE_52_RECEIVED;
+                    osc52filter_set_state(oflt, byte, STATE_52_RECEIVED);
                 }
                 else
                 {
                     osc52filter_unpeek(oflt);
-                    oflt->state = STATE_OTHER_ESC;
+                    osc52filter_set_state(oflt, byte, STATE_OTHER_ESC);
                 }
                 break;
             case STATE_52_RECEIVED:
                 if (byte == ';')
                 {
-                    oflt->state = STATE_CAPTURE_OSC52;
+                    osc52filter_set_state(oflt, byte, STATE_CAPTURE_OSC52);
                     osc52filter_capture_buffer(oflt);
                 }
                 else
                 {
-                    oflt->state = STATE_OTHER_ESC;
+                    osc52filter_set_state(oflt, byte, STATE_OTHER_ESC);
                 }
                 break;
             case STATE_CAPTURE_OSC52:
@@ -298,24 +369,24 @@ ssize_t read(int fd, void *buf, size_t nbyte)
                 {
                     osc52filter_cancel_paste(oflt);
                     osc52filter_unpeek(oflt);
-                    oflt->state = STATE_ESC_RECEIVED;
+                    osc52filter_set_state(oflt, byte, STATE_ESC_RECEIVED);
                 }
                 break;
             case STATE_OTHER_ESC:
                 if (byte == ESC_CODE)
-                    oflt->state = STATE_OTHER_TERM;
+                    osc52filter_set_state(oflt, byte, STATE_OTHER_TERM);
                 else if (byte == TERM_CODE || byte == BEL_CODE)
-                    oflt->state = STATE_DEFAULT;
+                    osc52filter_set_state(oflt, byte, STATE_DEFAULT);
                 break;
             case STATE_OTHER_TERM:
                 if (byte == TERM_AFTER_ESC)
                 {
-                    oflt->state = STATE_DEFAULT;
+                    osc52filter_set_state(oflt, byte, STATE_DEFAULT);
                 }
                 else
                 {
                     osc52filter_unpeek(oflt);
-                    oflt->state = STATE_ESC_RECEIVED;
+                    osc52filter_set_state(oflt, byte, STATE_ESC_RECEIVED);
                 }
                 break;
         }
