@@ -34,13 +34,9 @@ static GtkWidget *about_dialog_create(void)
     char const *authors[] = { _("Tony Houghton <h@realh.co.uk>"),
         _("Thanks to the developers of VTE"),
         NULL };
-    const char *version = VERSION;
-
-    if (g_str_has_prefix(version, "beta-"))
-        version += 5;
 
     gtk_about_dialog_set_program_name(ad, "ROXTerm");
-    gtk_about_dialog_set_version(ad, version);
+    gtk_about_dialog_set_version(ad, VERSION);
     gtk_about_dialog_set_copyright(ad, _("(c) 2005-2018 Tony Houghton"));
     gtk_about_dialog_set_website(ad, "https://realh.github.io/roxterm");
     gtk_about_dialog_set_authors(ad, authors);
