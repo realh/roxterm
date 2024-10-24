@@ -247,6 +247,13 @@ static void osc52filter_capture_buffer(Osc52Filter *oflt)
             osc52filter_set_state(oflt, byte, STATE_DEFAULT);
             break;
         }
+        else if (byte == '?')
+        {
+            // Clipboard query is not supported
+            osc52filter_set_state(oflt, byte, STATE_OTHER_ESC);
+            osc52filter_cancel_paste(oflt);
+            return;
+        }
     }
     size_t caplen = oflt->buf - buf_start;
     if (oflt->state != STATE_CAPTURE_OSC52)
