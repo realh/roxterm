@@ -5,7 +5,7 @@ if [ -z "$RELEASE" ] ; then
 	echo "You forgot the version number" >&2
 	exit 1
 fi
-if echo "$RELEASE" grep -q 'beta' ; then
+if echo "$RELEASE" | grep -q 'beta' ; then
     TAG="Beta"
 else
     TAG="Release"
@@ -14,9 +14,9 @@ else
     git commit release_version -m "Version $RELEASE"
 fi
 git tag -s --force $RELEASE -m "$TAG $RELEASE" $2
-if [ $TAG = "Release"] ; then
+if [ $TAG = "Release" ] ; then
     git checkout stable
     git merge $MAIN
     git push origin stable:stable
+    git checkout $MAIN
 fi
-git checkout $MAIN
