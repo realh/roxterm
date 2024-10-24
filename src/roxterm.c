@@ -18,6 +18,7 @@
 */
 
 #include "defns.h"
+#include "glib.h"
 #include "options.h"
 
 #include <sys/types.h>
@@ -2789,10 +2790,12 @@ typedef struct {
 } ROXTermClipboardClosure;
 
 static void roxterm_write_clipboard(ROXTermData *roxterm,
-                                    const guint8 *clipboard_content,
+                                    guint8 *clipboard_content,
                                     gsize len,
                                     gboolean primary)
 {
+    clipboard_content = g_base64_decode_inplace((char *) clipboard_content,
+                                                &len);
     GdkDisplay *display = gtk_widget_get_display(roxterm->widget);
     GdkAtom sel_type = primary ?
         GDK_SELECTION_PRIMARY : GDK_SELECTION_CLIPBOARD;
@@ -2805,7 +2808,7 @@ static void roxterm_write_clipboard(ROXTermData *roxterm,
     }
     else
     {
-        gtk_clipboard_set_text(cb, (const char *) clipboard_content, len);
+        gtk_clipboard_set_text(cb, (char *) clipboard_content, len);
         multi_win_show_clipboard_indicator(roxterm_get_win(roxterm));
     }
 }

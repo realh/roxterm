@@ -280,6 +280,8 @@ static void osc52filter_capture_buffer(Osc52Filter *oflt)
     //         caplen, oflt->data_len + caplen);
     if (caplen)
     {
+        // Make sure the capture is terminated by 0 so GLib's base64 decoder
+        // can handle it
         oflt->data = g_realloc(oflt->data, oflt->data_len + caplen + 1);
         memcpy(oflt->data + oflt->data_len, buf_start, caplen);
         oflt->data_len += caplen;
