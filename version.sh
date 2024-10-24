@@ -2,6 +2,7 @@
 cd `dirname "$0"`
 if [ -d ".git" ] ; then
     v=`git describe --match '[0-9]*'`
+    [ -z "$v" ] && v=`git describe --match 'beta-[0-9]*'`
     v=${v/-/.}
     v="${v/-/\~}"
     printf $v | tee version
