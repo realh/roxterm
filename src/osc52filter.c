@@ -159,10 +159,11 @@ static inline const char *osc52filter_code_desc(guint8 byte)
 static inline void osc52filter_set_state(Osc52Filter *oflt, guint8 byte,
                                          Osc52State state)
 {
-    g_debug("osc52: Code %s triggered state change from %s to %s",
-            osc52filter_code_desc(byte),
-            osc52_state_names[oflt->state],
-            osc52_state_names[state]);
+    (void) byte;
+    // g_debug("osc52: Code %s triggered state change from %s to %s",
+    //         osc52filter_code_desc(byte),
+    //         osc52_state_names[oflt->state],
+    //         osc52_state_names[state]);
     oflt->state = state;
 }
 
@@ -230,7 +231,7 @@ static void osc52filter_complete_paste(Osc52Filter *oflt)
 
 static void osc52filter_capture_buffer(Osc52Filter *oflt)
 {
-    g_debug("osc52: Capturing up to %ld bytes", oflt->buflen);
+    // g_debug("osc52: Capturing up to %ld bytes", oflt->buflen);
     const guint8 *buf_start = oflt->buf;
     guint8 byte = 0;
     while (oflt->buflen)
@@ -248,33 +249,35 @@ static void osc52filter_capture_buffer(Osc52Filter *oflt)
         }
     }
     size_t caplen = oflt->buf - buf_start;
-    if (oflt->state == STATE_CAPTURE_OSC52)
+    if (oflt->state != STATE_CAPTURE_OSC52)
     {
-        g_debug("osc52: No terminator in this buf");
-    } else {
         --caplen;
-        if (byte == ESC_CODE)
-        {
-            g_debug("osc52: captured buf contains ESC @ %ld", caplen);
-            if (oflt->buflen)
-            {
-                g_debug("osc52: ESC followed by %s",
-                        osc52filter_code_desc(*oflt->buf));
-            } else {
-                g_debug("osc52: ESC is at end of buf");
-            }
-        }
-        else if (byte == TERM_CODE)
-        {
-            g_debug("osc52: captured buf contains TERM_CODE @ %ld", caplen);
-        }
-        else if (byte == BEL_CODE)
-        {
-            g_debug("osc52: captured buf contains BEL_CODE @ %ld", caplen);
-        }
+        // if (byte == ESC_CODE)
+        // {
+        //     g_debug("osc52: captured buf contains ESC @ %ld", caplen);
+        //     if (oflt->buflen)
+        //     {
+        //         g_debug("osc52: ESC followed by %s",
+        //                 osc52filter_code_desc(*oflt->buf));
+        //     } else {
+        //         g_debug("osc52: ESC is at end of buf");
+        //     }
+        // }
+        // else if (byte == TERM_CODE)
+        // {
+        //     g_debug("osc52: captured buf contains TERM_CODE @ %ld", caplen);
+        // }
+        // else if (byte == BEL_CODE)
+        // {
+        //     g_debug("osc52: captured buf contains BEL_CODE @ %ld", caplen);
+        // }
     }
-    g_debug("osc52: %ld bytes can be captured, new total %ld",
-            caplen, oflt->data_len + caplen);
+    // else
+    // {
+    //     g_debug("osc52: No terminator in this buf");
+    // }
+    // g_debug("osc52: %ld bytes can be captured, new total %ld",
+    //         caplen, oflt->data_len + caplen);
     if (caplen)
     {
         oflt->data = g_realloc(oflt->data, oflt->data_len + caplen + 1);
@@ -282,7 +285,7 @@ static void osc52filter_capture_buffer(Osc52Filter *oflt)
         oflt->data_len += caplen;
         oflt->data[caplen] = 0;
     }
-    g_debug("osc52: total captured data: %s", (const char *) oflt->data);
+    // g_debug("osc52: total captured data: %s", (const char *) oflt->data);
     if (oflt->state == STATE_DEFAULT)
     {
         osc52filter_complete_paste(oflt);
