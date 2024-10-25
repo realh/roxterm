@@ -121,7 +121,7 @@ Osc52Filter *osc52filter_create(ROXTermData *roxterm, size_t buflen)
     return oflt;
 }
 
-static void osc52filter_cancel_paste(Osc52Filter *oflt)
+static void osc52filter_cancel_copy(Osc52Filter *oflt)
 {
     g_debug("osc52: cancelling");
     g_free(oflt->data);
@@ -139,7 +139,7 @@ void osc52filter_set_buffer_size(Osc52Filter *oflt, size_t buflen)
     if (oflt->data_len >= buflen && oflt->state == STATE_CAPTURE_OSC52)
     {
         g_debug("osc52: existing capture exceeds new size limit");
-        osc52filter_cancel_paste(oflt);
+        osc52filter_cancel_copy(oflt);
     }
 }
 
@@ -186,9 +186,9 @@ typedef struct {
     ROXTermData *roxterm;
     guint8 *data;
     size_t data_len;
-} Osc52PasteClosure;
+} Osc52CopyClosure;
 
-static int osc52_deferred_paste(Osc52PasteClosure *closure)
+static int osc52_deferred_copy(Osc52CopyClosure *closure)
 {
     // Make sure this terminal hasn't been destroyed in the meantime
     gboolean ok = roxterm_is_valid(closure->roxterm);
@@ -224,16 +224,16 @@ static int osc52_deferred_paste(Osc52PasteClosure *closure)
     return G_SOURCE_REMOVE;
 }
 
-static void osc52filter_complete_paste(Osc52Filter *oflt)
+static void osc52filter_complete_copy(Osc52Filter *oflt)
 {
     g_debug("osc52: completing");
-    Osc52PasteClosure *closure = g_new(Osc52PasteClosure, 1);
+    Osc52CopyClosure *closure = g_new(Osc52CopyClosure, 1);
     closure->roxterm = oflt->roxterm;
     closure->data = oflt->data;
     closure->data_len = oflt->data_len;
     oflt->data = NULL;
     oflt->data_len = 0;
-    g_idle_add((GSourceFunc) osc52_deferred_paste, closure);
+    g_idle_add((GSourceFunc) osc52_deferred_copy, closure);
 }
 
 static void osc52filter_capture_buffer(Osc52Filter *oflt)
@@ -258,7 +258,7 @@ static void osc52filter_capture_buffer(Osc52Filter *oflt)
         {
             // Clipboard query is not supported
             g_debug("osc52: Rejecting query ('?')");
-            osc52filter_cancel_paste(oflt);
+            osc52filter_cancel_copy(oflt);
             return;
         }
     }
@@ -298,7 +298,7 @@ static void osc52filter_capture_buffer(Osc52Filter *oflt)
         if (new_size >= oflt->max_buflen)
         {
             g_debug("osc52: buffer limit exceeded");
-            osc52filter_cancel_paste(oflt);
+            osc52filter_cancel_copy(oflt);
             return;
         }
         // Make sure the capture is terminated by 0 so GLib's base64 decoder
@@ -311,7 +311,7 @@ static void osc52filter_capture_buffer(Osc52Filter *oflt)
     // g_debug("osc52: total captured data: %s", (const char *) oflt->data);
     if (oflt->state == STATE_DEFAULT)
     {
-        osc52filter_complete_paste(oflt);
+        osc52filter_complete_copy(oflt);
     }
 }
 
@@ -389,12 +389,12 @@ ssize_t read(int fd, void *buf, size_t nbyte)
             case STATE_CAPTURE_TERM_ESC:
                 if (byte == TERM_AFTER_ESC)
                 {
-                    osc52filter_complete_paste(oflt);
+                    osc52filter_complete_copy(oflt);
                     osc52filter_set_state(oflt, byte, STATE_DEFAULT);
                 }
                 else
                 {
-                    osc52filter_cancel_paste(oflt);
+                    osc52filter_cancel_copy(oflt);
                     osc52filter_unpeek(oflt);
                     osc52filter_set_state(oflt, byte, STATE_ESC_RECEIVED);
                 }
