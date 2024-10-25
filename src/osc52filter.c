@@ -127,6 +127,10 @@ static void osc52filter_cancel_paste(Osc52Filter *oflt)
     g_free(oflt->data);
     oflt->data = NULL;
     oflt->data_len = 0;
+    if (oflt->state == STATE_CAPTURE_OSC52)
+        oflt->state = STATE_OTHER_ESC;
+    else if (oflt->state == STATE_CAPTURE_TERM_ESC)
+        oflt->state = STATE_OTHER_TERM;
 }
 
 void osc52filter_set_buffer_size(Osc52Filter *oflt, size_t buflen)
@@ -134,9 +138,8 @@ void osc52filter_set_buffer_size(Osc52Filter *oflt, size_t buflen)
     oflt->max_buflen = buflen;
     if (oflt->data_len >= buflen && oflt->state == STATE_CAPTURE_OSC52)
     {
-        g_debug("osc52: capture cancelled by new size limit");
+        g_debug("osc52: existing capture exceeds new size limit");
         osc52filter_cancel_paste(oflt);
-        oflt->state = STATE_OTHER_ESC;
     }
 }
 
@@ -254,7 +257,7 @@ static void osc52filter_capture_buffer(Osc52Filter *oflt)
         else if (byte == '?')
         {
             // Clipboard query is not supported
-            osc52filter_set_state(oflt, byte, STATE_OTHER_ESC);
+            g_debug("osc52: Rejecting query ('?')");
             osc52filter_cancel_paste(oflt);
             return;
         }
@@ -296,8 +299,6 @@ static void osc52filter_capture_buffer(Osc52Filter *oflt)
         {
             g_debug("osc52: buffer limit exceeded");
             osc52filter_cancel_paste(oflt);
-            if (oflt->state == STATE_CAPTURE_OSC52)
-                oflt->state = STATE_OTHER_ESC;
             return;
         }
         // Make sure the capture is terminated by 0 so GLib's base64 decoder
@@ -389,6 +390,7 @@ ssize_t read(int fd, void *buf, size_t nbyte)
                 if (byte == TERM_AFTER_ESC)
                 {
                     osc52filter_complete_paste(oflt);
+                    osc52filter_set_state(oflt, byte, STATE_DEFAULT);
                 }
                 else
                 {
