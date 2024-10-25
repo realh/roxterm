@@ -121,11 +121,23 @@ Osc52Filter *osc52filter_create(ROXTermData *roxterm, size_t buflen)
     return oflt;
 }
 
+static void osc52filter_cancel_paste(Osc52Filter *oflt)
+{
+    g_debug("osc52: cancelling");
+    g_free(oflt->data);
+    oflt->data = NULL;
+    oflt->data_len = 0;
+}
+
 void osc52filter_set_buffer_size(Osc52Filter *oflt, size_t buflen)
 {
     oflt->max_buflen = buflen;
-    // TODO: If the filter already contains data longer than this,
-    // discard it.
+    if (oflt->data_len >= buflen && oflt->state == STATE_CAPTURE_OSC52)
+    {
+        g_debug("osc52: capture cancelled by new size limit");
+        osc52filter_cancel_paste(oflt);
+        oflt->state = STATE_OTHER_ESC;
+    }
 }
 
 void osc52filter_remove(Osc52Filter *oflt)
@@ -146,15 +158,15 @@ inline static void osc52filter_unpeek(Osc52Filter *oflt)
     oflt->buf--;
 }
 
-static inline const char *osc52filter_code_desc(guint8 byte)
-{
-    static char bdesc[32];
-    if (isprint(byte))
-        sprintf(bdesc, "%d '%c'", byte, byte);
-    else
-        sprintf(bdesc, "%d", byte);
-    return bdesc;
-}
+// static inline const char *osc52filter_code_desc(guint8 byte)
+// {
+//     static char bdesc[32];
+//     if (isprint(byte))
+//         sprintf(bdesc, "%d '%c'", byte, byte);
+//     else
+//         sprintf(bdesc, "%d", byte);
+//     return bdesc;
+// }
 
 static inline void osc52filter_set_state(Osc52Filter *oflt, guint8 byte,
                                          Osc52State state)
@@ -165,14 +177,6 @@ static inline void osc52filter_set_state(Osc52Filter *oflt, guint8 byte,
     //         osc52_state_names[oflt->state],
     //         osc52_state_names[state]);
     oflt->state = state;
-}
-
-static void osc52filter_cancel_paste(Osc52Filter *oflt)
-{
-    g_debug("osc52: cancelling");
-    g_free(oflt->data);
-    oflt->data = NULL;
-    oflt->data_len = 0;
 }
 
 typedef struct {
@@ -287,12 +291,21 @@ static void osc52filter_capture_buffer(Osc52Filter *oflt)
     //         caplen, oflt->data_len + caplen);
     if (caplen)
     {
+        size_t new_size = oflt->data_len + caplen;
+        if (new_size >= oflt->max_buflen)
+        {
+            g_debug("osc52: buffer limit exceeded");
+            osc52filter_cancel_paste(oflt);
+            if (oflt->state == STATE_CAPTURE_OSC52)
+                oflt->state = STATE_OTHER_ESC;
+            return;
+        }
         // Make sure the capture is terminated by 0 so GLib's base64 decoder
         // can handle it
-        oflt->data = g_realloc(oflt->data, oflt->data_len + caplen + 1);
+        oflt->data = g_realloc(oflt->data, new_size + 1);
         memcpy(oflt->data + oflt->data_len, buf_start, caplen);
-        oflt->data_len += caplen;
-        oflt->data[caplen] = 0;
+        oflt->data_len = new_size;
+        oflt->data[new_size] = 0;
     }
     // g_debug("osc52: total captured data: %s", (const char *) oflt->data);
     if (oflt->state == STATE_DEFAULT)
