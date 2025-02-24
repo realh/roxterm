@@ -3,7 +3,7 @@
 # Copyright (c) 2004-2015 Tony Houghton h@realh.co.uk
 #
 %define name roxterm
-%define version ${VERSION}
+%define version ${ROXTERM_VERSION}
 %define release 1
 %define manifest %{_builddir}/%{name}-%{version}-%{release}.manifest
 %define debug_package %{nil}
@@ -23,7 +23,7 @@ Group: Application/Misc
 #Packager: Tony Houghton h@realh.co.uk
 
 # source + patches
-Source: %{name}-%{version}.tar.xz
+Source: %{name}-%{version}.tar.gz
 #Source1:
 #Patch:
 #Patch1:
@@ -50,16 +50,14 @@ than gnome-terminal provides.
 #%patch0 -p1
 
 %build
-./mscript.py configure PREFIX=/usr
-./mscript.py build
-# Deprecated autoconf rules:
-#%configure
-#make
+cmake -DCMAKE_INSTALL_PREFIX=/usr
+make -j 4
+
 
 %install
 rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT
-./mscript.py install DESTDIR=$RPM_BUILD_ROOT
+make install DESTDIR=$RPM_BUILD_ROOT
 # Deprecated autoconf:
 #%makeinstall
 
