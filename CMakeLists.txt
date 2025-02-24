@@ -5,7 +5,7 @@ project(roxterm C)
 include(FindPkgConfig)
 include(GNUInstallDirs)
 
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/version.sh
+execute_process(COMMAND cat ${PROJECT_SOURCE_DIR}/release_version
     OUTPUT_VARIABLE ROXTERM_VERSION)
 execute_process(COMMAND date "+%Y-%m-%d"
     OUTPUT_VARIABLE ROXTERM_DATE)
