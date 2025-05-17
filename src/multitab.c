@@ -17,6 +17,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+#include "gdk/gdk.h"
 #ifndef DEFNS_H
 #include "defns.h"
 #endif
@@ -2661,29 +2662,34 @@ static const char *parse_digits(const char *geom, int *num)
 
 /* Parse a signed integer, which might be preceded by a plus or minus.
  * Return NULL if invalid, or a pointer to where the parsing ended. */
-static const char *parse_signed(const char *geom, int *num)
+static const char *parse_signed(const char *geom, int *num, int *sign)
 {
     char c = *geom;
     if (c == '+' || c == '-')
         geom++;
     geom = parse_digits(geom, num);
+    if (geom && c == '+')
+    {
+        *sign = +1;
+    }
     if (geom && c == '-')
     {
         *num = (0 - *num);
+        *sign = -1;
     }
     return geom;
 }
 
-/* Parse a pair of signed integers, each must be preceded by a plus-sign.
+/* Parse a pair of signed integers, each must be preceded by a plus or minus.
  * Return NULL if invalid, or a pointer to where the parsing ended. */
-static const char *parse_geom_offsets(const char *g, int *x, int *y)
+static const char *parse_geom_offsets(const char *g, int *x, int *y, int *sign_x, int *sign_y)
 {
-    if (g && *g == '+')
+    if (g && ( *g == '+' || *g == '-' ) )
     {
-        g = parse_signed(g + 1, x);
-        if (g && *g == '+')
+        g = parse_signed(g, x, sign_x);
+        if (g && ( *g == '+' || *g == '-' ))
         {
-            return parse_signed(g + 1, y);
+            return parse_signed(g, y, sign_y);
         }
     }
     return NULL;
@@ -2692,7 +2698,7 @@ static const char *parse_geom_offsets(const char *g, int *x, int *y)
 /* Parse a geometry string WxH[+X+Y]. If pxy is non-null, then also
  * parse a position +X+Y. Return TRUE for WxH and set pxy for +X+Y. */
 gboolean multi_win_parse_geometry(const char *geom,
-        int *width, int *height, int *x, int *y, gboolean *pxy)
+        int *width, int *height, int *x, int *y, int *sign_x, int *sign_y, gboolean *pxy)
 {
     geom = parse_digits(geom, width);
     if (geom && strchr("xX", *geom))
@@ -2702,7 +2708,7 @@ gboolean multi_win_parse_geometry(const char *geom,
         {
             if (pxy)
             {
-                *pxy = (parse_geom_offsets(geom, x, y) != NULL);
+                *pxy = (parse_geom_offsets(geom, x, y, sign_x, sign_y) != NULL);
             }
             return TRUE;
         }
@@ -2789,10 +2795,12 @@ static gboolean multi_win_process_geometry(MultiWin *win,
 void multi_win_set_initial_geometry(MultiWin *win, const char *geom,
         MultiTab *tab)
 {
-    int columns, rows, x, y, width, height;
+    int columns, rows, x, y, sign_x, sign_y, width, height;
     gboolean xy;
+    GdkGravity pos_gravity;
+    int move_to_x, move_to_y;
 
-    if (multi_win_parse_geometry(geom, &columns, &rows, &x, &y, &xy))
+    if (multi_win_parse_geometry(geom, &columns, &rows, &x, &y, &sign_x, &sign_y, &xy))
     {
         //g_debug("multi_win_set_initial_geometry: %d columns, %d rows",
         //        columns, rows);
@@ -2807,10 +2815,43 @@ void multi_win_set_initial_geometry(MultiWin *win, const char *geom,
         {
             g_warning("Unable to determine geometry");
         }
-        /* Honor initial position on launch: it is indispensable and ubiquitous */
+        /* Honour initial position from --geometry on launch. This probably
+         * won't work on Wayland, but some people still find it useful on
+         * X11. The support for negative positioning and gravity is based on
+         * a patch by github user BMJ-pdx (issue #272). This could go wrong on
+         * multi monitor set-ups; GTK3 does not support it very well.
+         */
         if (xy)
         {
-            gtk_window_move(GTK_WINDOW(win->gtkwin), x, y);
+            /* See:
+             * https://developer.gnome.org/gtk3/stable/GtkWindow.html#gtk-window-move
+             * And example code in mate-terminal src/terminal-window.c.
+             */
+            GdkDisplay *display = gdk_display_get_default();
+            GdkMonitor *monitor = gdk_display_get_primary_monitor(display);
+            GdkRectangle monitor_geom;
+            gdk_monitor_get_geometry(monitor, &monitor_geom);
+            if (sign_x >= 0) {
+                move_to_x = x;
+                if (sign_y >= 0) {
+                    pos_gravity = GDK_GRAVITY_NORTH_WEST;
+                    move_to_y = y;
+                } else {
+                    pos_gravity = GDK_GRAVITY_SOUTH_WEST;
+                    move_to_y = monitor_geom.height - height + y;
+                }
+            } else {
+                move_to_x = monitor_geom.width - width + x;
+                if (sign_y >= 0) {
+                    pos_gravity = GDK_GRAVITY_NORTH_EAST;
+                    move_to_y = y;
+                } else {
+                    pos_gravity = GDK_GRAVITY_SOUTH_EAST;
+                    move_to_y = monitor_geom.height - height + y;
+                }
+            }
+            gtk_window_set_gravity(GTK_WINDOW(win->gtkwin), pos_gravity);
+            gtk_window_move(GTK_WINDOW(win->gtkwin), move_to_x, move_to_y);
         }
     }
 }

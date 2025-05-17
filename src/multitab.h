@@ -427,7 +427,7 @@ guint multi_win_get_num_tabs(MultiWin *win);
  * whether x and y were present.
  */
 gboolean multi_win_parse_geometry(const char *geom,
-        int *width, int *height, int *x, int *y, gboolean *xy);
+        int *width, int *height, int *x, int *y, int *sign_x, int *sign_y, gboolean *xy);
 
 /* tab may be NULL to use the currently active tab */
 void multi_win_set_initial_geometry(MultiWin *win, const char *geom,
