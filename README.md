@@ -1,5 +1,4 @@
-ROXTerm
-=======
+# ROXTerm
 
 After a long break (literally) ROXTerm is making a comeback on
 [github](https://github.com/realh/roxterm). Its original home was on
@@ -18,14 +17,12 @@ It still supports the ROX desktop application layout it was named after, but
 can also be installed in a more conventional manner for use in other desktop
 environments.
 
-What's new
-----------
+## What's new
 
 The [Debian changelog](./debian/changelog) provides a good summary of what's
 changed between versions.
 
-CSS styling
------------
+## CSS styling
 
 Version 3.15.1 onwards apply a CSS class name to ROXTerm's vte widget, based on
 the profile name. For example, a profile name of "My Profile" applies the CSS
@@ -33,8 +30,7 @@ class name "roxterm-My-Profile". Use with care, because using different values
 of properties such as "padding" in the same window could cause problems with
 window geometry.
 
-OSC 52 Clipboard writing
-------------------------
+## OSC 52 Clipboard writing
 
 OSC 52 is an escape sequence that allows programs in the terminal to access
 the desktop's clipboard. This is now supported in ROXTerm, with some
@@ -50,8 +46,35 @@ Each time the clipboard is written, an indicator flashes in the tab bar, then
 stays visible until cleared by clicking it or by performing a copy operation
 in ROXTerm's GUI.
 
-Kinetic scrolling
------------------
+ROXTerm has to resort to intercepting read operations on the pty device,
+because VTE doesn't provide support for this OSC. ROXTerm does not intercept
+terminfo/termcap sequences to indicate that it supports OSC 52, so you may need
+to take extra steps to enable it in some apps, for example in neovim:
+
+```
+if vim.env.SSH_TTY then
+  local function paste()
+    return {
+      vim.fn.split(vim.fn.getreg(""), "\n"),
+      vim.fn.getregtype(""),
+    }
+  end
+
+  vim.g.clipboard = {
+    name = "OSC 52",
+    copy = {
+      ["+"] = require("vim.ui.clipboard.osc52").copy("+"),
+      ["*"] = require("vim.ui.clipboard.osc52").copy("*"),
+    },
+    paste = {
+      ["+"] = paste,
+      ["*"] = paste,
+    },
+  }
+end
+```
+
+## Kinetic scrolling
 
 Recent versions of ROXTerm, in conjunction with recent versions of vte, support
 kinetic scrolling with libinput, which considerably improves the UX on laptops
@@ -60,8 +83,7 @@ deprecated synaptics driver. ROXTerm can detect whether the feature is
 supported in vte at run-time, so no re-compilation is necessary if you upgrade
 from an older vte.
 
-Related sites
--------------
+## Related sites
 
 * [User guide](https://realh.github.io/roxterm),
 * [Ubuntu PPA](https://launchpad.net/~h-realh/+archive/ubuntu/roxterm)
