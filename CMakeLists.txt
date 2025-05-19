@@ -16,8 +16,6 @@ configure_file(${PROJECT_SOURCE_DIR}/AppInfo.xml.in
 # metainfo should really be processed by i18n
 configure_file(${PROJECT_SOURCE_DIR}/roxterm.metainfo.xml.in
     ${PROJECT_BINARY_DIR}/roxterm.metainfo.xml)
-configure_file(${PROJECT_SOURCE_DIR}/roxterm.spec.in
-    ${PROJECT_SOURCE_DIR}/roxterm.spec)
 configure_file(${PROJECT_SOURCE_DIR}/roxterm.1.xml.in
     ${PROJECT_BINARY_DIR}/roxterm.1.xml)
 configure_file(${PROJECT_SOURCE_DIR}/roxterm-config.1.xml.in
@@ -97,8 +95,6 @@ add_custom_command(OUTPUT "${TARBALL_NAME}"
     roxterm-config.1.xml.in
     roxterm.desktop
     roxterm.lsm.in
-    roxterm.spec
-    roxterm.spec.in
     roxterm.xml
     src
     version
