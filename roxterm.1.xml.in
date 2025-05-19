@@ -198,11 +198,10 @@ and docbook-xsl in your Build-Depends control field.
         </term>
         <listitem>
             <para>
-                Set the size and/or position of the terminal window. One or
-                both of size and position may be specified. <literal>-</literal>
-                may be used in place of <literal>+</literal> to apply the
-                offsets to the right and/or bottom edge of the window relative
-                to the display instead of left and top.
+                Set the size and/or position of the terminal window. Position
+                is optional and <literal>-</literal>may be used in place of
+                <literal>+</literal> to apply the offsets to the right and/or
+                bottom edges instead of left and top.
           </para>
         </listitem>
       </varlistentry>

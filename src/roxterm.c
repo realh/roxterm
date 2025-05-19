@@ -4320,7 +4320,8 @@ static ROXTermData *roxterm_data_new(double zoom_factor, const char *directory,
         *size_on_cli = FALSE;
     if (*geom)
     {
-        if (multi_win_parse_geometry(*geom, &width, &height, &x, &y, &sign_x, &sign_y, NULL))
+        if (multi_win_parse_geometry(*geom, &width, &height, &x, &y,
+                    &sign_x, &sign_y, NULL))
         {
             roxterm->columns = width;
             roxterm->rows = height;
