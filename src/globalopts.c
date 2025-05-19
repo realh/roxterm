@@ -228,8 +228,9 @@ static GOptionEntry global_g_options[] = {
         N_("Set the terminal's working directory"), N_("DIRECTORY") },
     { "geometry", 'g', G_OPTION_FLAG_IN_MAIN,
         G_OPTION_ARG_CALLBACK, global_options_set_string,
-        N_("Set size of terminal"),
-        N_("COLUMNSxROWS") },
+        N_("Set size of terminal. GEOMETRY is WxH, +X+Y or WxH+X+Y; "
+                "'-' can be used instead of '+'"),
+        N_("GEOMETRY") },
     { "appdir", 0,  G_OPTION_FLAG_IN_MAIN,
         G_OPTION_ARG_CALLBACK, global_options_set_string,
         N_("Application directory when run as a ROX\n"

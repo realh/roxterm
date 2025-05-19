@@ -192,12 +192,17 @@ and docbook-xsl in your Build-Depends control field.
       </varlistentry>
       <varlistentry>
         <term>
-            <option>-g <replaceable>COLUMNSxROWS[+X+Y]</replaceable></option>
-            <option>--geometry=<replaceable>COLUMNSxROWS[+X+Y]</replaceable></option>
+            <option>-g <replaceable>COLUMNSxROWS+X+Y</replaceable></option>
+            <option>--geometry=<replaceable>COLUMNSxROWS+X+Y</replaceable>
+            </option>
         </term>
         <listitem>
-          <para>Set the size of the terminal window.
-            Optionally a position may be given as well.
+            <para>
+                Set the size and/or position of the terminal window. One or
+                both of size and position may be specified. <literal>-</literal>
+                may be used in place of <literal>+</literal> to apply the
+                offsets to the right and/or bottom edge of the window relative
+                to the display instead of left and top.
           </para>
         </listitem>
       </varlistentry>
