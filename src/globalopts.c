@@ -232,7 +232,7 @@ static GOptionEntry global_g_options[] = {
            "                                   "
            "WxH+X+Y (X11 only); '-' can be used\n"
            "                                   "
-           "instead of '+'.\n"),
+           "instead of '+'"),
         N_("GEOMETRY") },
     { "appdir", 0,  G_OPTION_FLAG_IN_MAIN,
         G_OPTION_ARG_CALLBACK, global_options_set_string,

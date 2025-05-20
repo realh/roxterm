@@ -198,14 +198,14 @@ and docbook-xsl in your Build-Depends control field.
         </term>
         <listitem>
             <para>
-                <replaceable>COLUMNSxROWS</replaceable>
-                specifies the size of the terminal window in units of
-                characters. <replaceable>+X+Y</replaceable> is optional and
-                specifies the offset in pixels of the left and top edges of the
-                window relative to the display.
-                <replaceable>-</replaceable> may be used in place of
-                <replaceable>+</replaceable> to use the right and/or bottom
-                edges. Offsets are generally only supported in X11.
+                <replaceable>COLUMNSxROWS</replaceable> specifies the size of
+                the terminal window in units of characters.
+                <replaceable>+X+Y</replaceable> is optional and specifies the
+                offset in DPI-scaled pixels of the left and top edges of the
+                window relative to the display. <quote>-</quote> may be used in
+                place of <quote>+</quote> to refer to the right and/or bottom
+                edges. Offsets are deprecated and generally only supported in
+                X11.
           </para>
         </listitem>
       </varlistentry>
