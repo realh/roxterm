@@ -1,10 +1,13 @@
 include(CheckSymbolExists)
+include(CheckCSourceCompiles)
 
 if (MSVC)
     add_compile_options(/W4)
 else()
     add_compile_options(-Wall -Wextra)
 endif()
+
+# find_package(PkgConfig REQUIRED)
 
 # roxterm and roxterm-config both depend on these
 pkg_check_modules(RTCOMMON REQUIRED
@@ -15,6 +18,19 @@ pkg_check_modules(GMODULE_EXPORT REQUIRED gmodule-export-2.0)
 
 # If VTE >= 0.50 this should include the necessary flags for libpcre
 pkg_check_modules(VTE REQUIRED vte-2.91>=0.52 libpcre2-8)
+
+# set(HAVE_RTLD_NEXT FALSE CACHE INTERNAL "RTLD_NEXT is available for dlsym.")
+# set(HAVE_LIBC_READ FALSE CACHE INTERNAL "__libc_read is available.")
+set(CMAKE_REQUIRED_LIBRARIES dl)
+set(CMAKE_REQUIRED_DEFINITIONS "-D_GNU_SOURCE")
+check_c_source_compiles(
+"#define _GNU_SOURCE
+#include <dlfcn.h>
+int main() {
+    void *ptr = dlsym(RTLD_NEXT, \"read\");
+    return ptr == 0;
+}" HAVE_RTLD_NEXT)
+unset(CMAKE_REQUIRED_DEFINITIONS)
 
 set(RTLIB_CFLAGS ${RTCOMMON_CFLAGS})
 if(RTLIB_CFLAGS MATCHES ";")
@@ -54,6 +70,9 @@ if(RTMAIN_INCLUDE_DIRS MATCHES ";")
     list(REMOVE_DUPLICATES RTMAIN_INCLUDE_DIRS)
 endif()
 set(RTMAIN_LIBRARIES ${RTCOMMON_LIBRARIES} ${VTE_LIBRARIES})
+if(HAVE_RTLD_NEXT)
+    set(RT_MAIN_LIBRARIES ${RTMAIN_LIBRARIES} dl)
+endif()
 if(RTMAIN_LIBRARIES MATCHES ";")
     list(REMOVE_DUPLICATES RTMAIN_LIBRARIES)
 endif()

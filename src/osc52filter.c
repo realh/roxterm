@@ -17,9 +17,17 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#include <ctype.h>
+#include "config.h"
+#include <stdio.h>
+#include <unistd.h>
+
+#ifdef HAVE_RTLD_NEXT
 #define _GNU_SOURCE
 #include <dlfcn.h>
+#endif
+#include <sys/uio.h>    // For struct iovec
+
+#include <ctype.h>
 
 #include "glib.h"
 #include "intptrmap.h"
@@ -316,15 +324,27 @@ static void osc52filter_capture_buffer(Osc52Filter *oflt)
     }
 }
 
+#ifndef HAVE_RTLD_NEXT
+static ssize_t real_read(int fd, void *buf, size_t nbytes)
+{
+    struct iovec iov;
+    iov.iov_base = buf;
+    iov.iov_len = nbytes;
+    return readv(fd, &iov, 1);
+}
+#endif // HAVE_RTLD_NEXT
+
 // This overrides the system read. When it's called on an fd in the map of
 // pts fds it pushes a chunk containing a copy of the data read.
-ssize_t read(int fd, void *buf, size_t nbyte)
+ssize_t read(int fd, void *buf, size_t nbytes)
 {
+#ifdef HAVE_RTLD_NEXT
     static ssize_t (*real_read)(int, void *, size_t) = NULL;
     if (!real_read) {
         real_read = dlsym(RTLD_NEXT, "read");
     }
-    ssize_t n = real_read(fd, buf, nbyte);
+#endif
+    ssize_t n = real_read(fd, buf, nbytes);
     if (!osc52filter_global_initialised)
         return n;
     if (n <= 0 || !int_pointer_map_contains(&osc52filter_global.fd_map, fd))
