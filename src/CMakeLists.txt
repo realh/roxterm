@@ -6,6 +6,7 @@ if (MSVC)
 else()
     add_compile_options(-Wall -Wextra)
 endif()
+add_compile_definitions(_GNU_SOURCE)
 
 # find_package(PkgConfig REQUIRED)
 
