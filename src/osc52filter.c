@@ -21,11 +21,7 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#ifdef HAVE_RTLD_NEXT
-#define _GNU_SOURCE
 #include <dlfcn.h>
-#endif
-#include <sys/uio.h>    // For struct iovec
 
 #include <ctype.h>
 
@@ -324,26 +320,14 @@ static void osc52filter_capture_buffer(Osc52Filter *oflt)
     }
 }
 
-#ifndef HAVE_RTLD_NEXT
-static ssize_t real_read(int fd, void *buf, size_t nbytes)
-{
-    struct iovec iov;
-    iov.iov_base = buf;
-    iov.iov_len = nbytes;
-    return readv(fd, &iov, 1);
-}
-#endif // HAVE_RTLD_NEXT
-
 // This overrides the system read. When it's called on an fd in the map of
 // pts fds it pushes a chunk containing a copy of the data read.
 ssize_t read(int fd, void *buf, size_t nbytes)
 {
-#ifdef HAVE_RTLD_NEXT
     static ssize_t (*real_read)(int, void *, size_t) = NULL;
     if (!real_read) {
         real_read = dlsym(RTLD_NEXT, "read");
     }
-#endif
     ssize_t n = real_read(fd, buf, nbytes);
     if (!osc52filter_global_initialised)
         return n;

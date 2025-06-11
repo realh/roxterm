@@ -20,13 +20,6 @@
 #ifndef ROXTERM__CONFIG_H
 #define ROXTERM__CONFIG_H
 
-// This check should come first to make sure we define _GNU_SOURCE before
-// including anything else.
-#cmakedefine HAVE_RTLD_NEXT
-#ifdef HAVE_RTLD_NEXT
-#define _GNU_SOURCE
-#endif
-
 #include <glib.h>
 
 #define BIN_DIR "@CMAKE_INSTALL_FULL_BINDIR@"
