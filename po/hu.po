@@ -1,111 +1,116 @@
-# SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
+# kempelen <kempelen@netengine.hu>, 2025.
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-08-18 21:35+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"PO-Revision-Date: 2025-08-18 23:23+0200\n"
+"Last-Translator: kempelen <kempelen@netengine.hu>\n"
+"Language-Team: Hungarian <kde-l10n-hu@kde.org>\n"
+"Language: hu_HU\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Lokalize 22.12.3\n"
 
 #: src/roxterm-config.ui:8
 msgid "ROXTerm Colour Scheme"
-msgstr ""
+msgstr "ROXTerm színséma"
 
 #: src/roxterm-config.ui:29
 msgid "_Revert"
-msgstr ""
+msgstr "_Visszaállítás"
 
 #: src/roxterm-config.ui:50
 msgid "Close this window"
-msgstr ""
+msgstr "Ablak bezárása"
 
 #: src/roxterm-config.ui:74
 msgid "_Set text and background colours"
-msgstr ""
+msgstr "_Szöveg és háttérszínek beállítása"
 
 #: src/roxterm-config.ui:79
 msgid ""
 "Whether to set terminals' text and background colours using the fields below"
 msgstr ""
+"Bekapcsolásakor a terminál szöveg és a háttérszínét az alább megadott mezők"
+" adják meg"
 
 #: src/roxterm-config.ui:102
 msgid "_Text colour"
-msgstr ""
+msgstr "S_zövegszín"
 
 #: src/roxterm-config.ui:117 src/roxterm-config.ui:118
 #: src/roxterm-config.ui:182 src/roxterm-config.ui:183
 msgid "Foreground colour of text; click to change"
-msgstr ""
+msgstr "A szöveg előtérszíne; kattintson a kiválasztáshoz"
 
 #: src/roxterm-config.ui:132
 msgid "_Background colour"
-msgstr ""
+msgstr "_Háttérszín"
 
 #: src/roxterm-config.ui:147 src/roxterm-config.ui:148
 msgid "Background colour of terminals; click to change"
-msgstr ""
+msgstr "A terminál háttérszíne; kattintson a kiválasztáshoz"
 
 #: src/roxterm-config.ui:159
 msgid "Set b_old colour"
-msgstr ""
+msgstr "_Félkövér szín"
 
 #: src/roxterm-config.ui:164 src/roxterm-config.ui:165
 #: src/roxterm-config.ui:257 src/roxterm-config.ui:258
 msgid "Set the cursor colour from the adjacent field"
 msgstr ""
+"Bekapcsolásakor a következő mező határozza meg a félkövér szöveg színét"
 
 #: src/roxterm-config.ui:194
 msgid "Use custom _palette"
-msgstr ""
+msgstr "Egyéni _paletta használata"
 
 #: src/roxterm-config.ui:199 src/roxterm-config.ui:200
 msgid "Whether to set the terminal's colours from the table below"
-msgstr ""
+msgstr "Bekapcsolásakor a terminál színeit az alábbi táblázat határozza meg"
 
 #: src/roxterm-config.ui:214
 msgid "_Get text and background colours from palette"
-msgstr ""
+msgstr "Háttér- és szövegszín _betöltése a palettából"
 
 #: src/roxterm-config.ui:219 src/roxterm-config.ui:220
 msgid ""
 "Whether to use the palette table below to set the background and text "
 "foreground colours"
 msgstr ""
+"Bekapcsolásakor az alábbi palettatáblázat határozza meg a háttér és a szöveg"
+" színét"
 
 #: src/roxterm-config.ui:252
 msgid "Set _cursor colour"
-msgstr ""
+msgstr "_Kurzor szín"
 
 #: src/roxterm-config.ui:275 src/roxterm-config.ui:276
 #: src/roxterm-config.ui:290 src/roxterm-config.ui:291
 msgid "Click to change the cursor colour"
-msgstr ""
+msgstr "Kattintson a kurzor színének kiválasztásához"
 
 #: src/roxterm-config.ui:304
 msgid "_Foreground"
-msgstr ""
+msgstr "_Előtér"
 
 #: src/roxterm-config.ui:538 src/roxterm-config.ui:539
 msgid "Set just the first 8 palette entries from this row"
-msgstr ""
+msgstr "Csak a palette első 8 színének meghatározása, ebből a sorból"
 
 #: src/roxterm-config.ui:556 src/roxterm-config.ui:557
 msgid "Set 16 palette entries from both rows"
-msgstr ""
+msgstr "A paletta mind a 16 színének meghatározása, mindkét sorból"
 
 #: src/roxterm-config.ui:591
 msgid "Configure ROXTerm"
-msgstr ""
+msgstr "A ROXTerm beállításai"
 
 #: src/roxterm-config.ui:673
 msgid ""
@@ -113,51 +118,56 @@ msgid ""
 "radio button to set the profile used when roxterm is run without a --profile "
 "option."
 msgstr ""
+"Jelöljön ki egy sort, hogy a lentebbi gombokkal módosíthassa. Vagy"
+"válassza ki az egyik rádiógombbal, hogy melyik profil töltődjön be,"
+"amikor a roxtermet a --profile kapcsoló nélkül indítja."
 
 #: src/roxterm-config.ui:690 src/roxterm-config.ui:900
 #: src/roxterm-config.ui:1151
 msgid "_Rename"
-msgstr ""
+msgstr "Át_nevezés"
 
 #: src/roxterm-config.ui:697
 msgid "Click to rename the selected profile"
-msgstr ""
+msgstr "Kattintson ide a kijelölt profil átnevezéséhez"
 
 #: src/roxterm-config.ui:709 src/roxterm-config.ui:881
 #: src/roxterm-config.ui:1132
 msgid "_Delete"
-msgstr ""
+msgstr "_Törlés"
 
 #: src/roxterm-config.ui:716 src/roxterm-config.ui:1139
 msgid "Click to delete the selected profile"
-msgstr ""
+msgstr "Kattintson ide a kijelölt profil törléséhez"
 
 #: src/roxterm-config.ui:728 src/roxterm-config.ui:862
 #: src/roxterm-config.ui:1113
 msgid "_Copy"
-msgstr ""
+msgstr "_Másolás"
 
 #: src/roxterm-config.ui:735
 msgid ""
 "Click to create a new profile with settings copied from the current selection"
 msgstr ""
+"Kattintson ide egy új profil létrehozásához, a kijelölt elemmel megegyező"
+" beállításokkal"
 
 #: src/roxterm-config.ui:747 src/roxterm-config.ui:843
 #: src/roxterm-config.ui:1097
 msgid "_Edit"
-msgstr ""
+msgstr "_Szerkesztés"
 
 #: src/roxterm-config.ui:754
 msgid "Click to edit the selected profile"
-msgstr ""
+msgstr "Kattintson ide a kijelölt profil szerkesztéséhez"
 
 #: src/roxterm-config.ui:772
 msgid "<b>Profiles</b>"
-msgstr ""
+msgstr "<b>Profilok</b>"
 
 #: src/roxterm-config.ui:782
 msgid "_Profiles"
-msgstr ""
+msgstr "_Profilok"
 
 #: src/roxterm-config.ui:826
 msgid ""
@@ -165,50 +175,58 @@ msgid ""
 "Select a radio button to set the colour scheme used when roxterm is run "
 "without a --colour-scheme option."
 msgstr ""
+"Jelöljön ki egy sort, hogy a lentebbi gombokkal módosíthassa  a sémát."
+"Vagy válassza ki az egyik rádiógombbal, hogy melyik színséma töltődjön be,"
+"amikor a roxtermet a --colour-scheme kapcsoló nélkül indítja."
 
 #: src/roxterm-config.ui:850
 msgid "Click to edit the selected colour scheme"
-msgstr ""
+msgstr "Kattintson ide a kijelölt színséma szerkesztéséhez"
 
 #: src/roxterm-config.ui:869
 msgid ""
 "Click to create a new colour scheme with settings copied from the current "
 "selection"
 msgstr ""
+"Kattintson ide egy új színséma létrehozásához, a kijelölt elemmel megegyező"
+" beállításokkal"
 
 #: src/roxterm-config.ui:888
 msgid "Click to delete the selected colour scheme"
-msgstr ""
+msgstr "Kattintson ide a kijelölt színséma törléséhez"
 
 #: src/roxterm-config.ui:907
 msgid "Click to rename the selected colour scheme"
-msgstr ""
+msgstr "Kattintson ide a kijelölt színséma átnevezéséhez"
 
 #: src/roxterm-config.ui:944
 msgid ""
 "You can now choose two different default colour schemes depending on whether "
 "the UI theme is light or dark."
 msgstr ""
+"Két alapértelmezett színsémát adhat meg, annak megfelelően, hogy a"
+" felhasználói felület "
+"sötét vagy világos témára van állítva"
 
 #: src/roxterm-config.ui:957
 msgid "Use GNOME dark theme setting"
-msgstr ""
+msgstr "A GNOME témabeállításának használata"
 
 #: src/roxterm-config.ui:974
 msgid "Use dark UI theme"
-msgstr ""
+msgstr "Sötét téma kiválasztása"
 
 #: src/roxterm-config.ui:992
 msgid "Use light UI theme"
-msgstr ""
+msgstr "Világos téma kiválasztása"
 
 #: src/roxterm-config.ui:1023
 msgid "<b>Colour Schemes</b>"
-msgstr ""
+msgstr "<b>Színsémák</b>"
 
 #: src/roxterm-config.ui:1036
 msgid "Co_lours"
-msgstr ""
+msgstr "_Színek"
 
 #: src/roxterm-config.ui:1080
 msgid ""
@@ -216,130 +234,146 @@ msgid ""
 "apply to. Select a radio button to set the shortcuts scheme used when "
 "roxterm is run without a --shortcut-scheme option."
 msgstr ""
+"Jelöljön ki egy sort, hogy a lentebbi gombokkal módosíthassa  a"
+" gyorsbillentyűket."
+"Vagy válassza ki az egyik rádiógombbal, hogy melyik gyorsbillentyű-készlet"
+" töltődjön be,"
+"amikor a roxtermet a --shortcut-scheme kapcsoló nélkül indítja."
 
 #: src/roxterm-config.ui:1101
 msgid "Click to edit the selected Shortcuts scheme in a text editor."
 msgstr ""
+"Kattintson ide a kijelölt gyorsbillentyű-készlet szövegszerkesztőben való"
+" szerkesztéséhez."
 
 #: src/roxterm-config.ui:1120
 msgid ""
 "Click to create a new keyboard shortcuts scheme with settings copied from "
 "the current selection"
 msgstr ""
+"Kattintson ide egy új gyorsbillentyű-készlet létrehozásához, a kijelölt"
+" elemmel "
+"megegyező beállításokkal"
 
 #: src/roxterm-config.ui:1158
 msgid "Click to rename the selected keyboard shortcuts scheme"
-msgstr ""
+msgstr "Kattintson ide a kijelölt gyorsbillentyű-készlet átnevezéséhez"
 
 #: src/roxterm-config.ui:1176
 msgid "<b>Keyboard Shortcuts</b>"
-msgstr ""
+msgstr "<b>Gyorsbillentyűk</b>"
 
 #: src/roxterm-config.ui:1189
 msgid "S_hortcuts"
-msgstr ""
+msgstr "_Gyorsbillentyűk"
 
 #: src/roxterm-config.ui:1219
 msgid "No warnings when closing windows/tabs"
-msgstr ""
+msgstr "Ne legyen figyelmeztetés ablakok és lapok bezárásakor"
 
 #: src/roxterm-config.ui:1235
 msgid "Warn when closing a window with multiple tabs"
-msgstr ""
+msgstr "Figyelmeztetés több lapot tartalmazó ablak bezárásakor"
 
 #: src/roxterm-config.ui:1252
 msgid "Warn when closing any window"
-msgstr ""
+msgstr "Figyelmeztetés minden ablak bezárásakor"
 
 #: src/roxterm-config.ui:1269
 msgid "Warn when closing any tab"
-msgstr ""
+msgstr "Figyelmeztetés minden lap bezárásakor"
 
 #: src/roxterm-config.ui:1286
 msgid "Only warn if tasks are still running"
-msgstr ""
+msgstr "Csak akkor, ha még fut valamilyen folyamat"
 
 #: src/roxterm-config.ui:1310
 msgid "<b>Miscellaneous global options</b>"
-msgstr ""
+msgstr "<b>Különféle globális beállítások</b>"
 
 #: src/roxterm-config.ui:1325
 msgid "_Options"
-msgstr ""
+msgstr "_Beállítások"
 
 #: src/roxterm-config.ui:1421
 msgid "ROXTerm profile"
-msgstr ""
+msgstr "ROXTerm profil"
 
 #: src/roxterm-config.ui:1519
 msgid "_Font:"
-msgstr ""
+msgstr "_Betűtípus:"
 
 #: src/roxterm-config.ui:1535
 msgid "Click to change the font; monospace fonts are recommended."
 msgstr ""
+"Kattintson a betűtípus kiválasztásához; fix szélességű betűtípus ajánlott."
 
 #: src/roxterm-config.ui:1549
 msgid "_Line spacing %:"
-msgstr ""
+msgstr "_Sorköz %:"
 
 #: src/roxterm-config.ui:1564
 msgid "Extra space between lines as a percentage of the font's line height."
-msgstr ""
+msgstr "Extra hely a sorok közt, a betűtípus sormagasságának százalékában."
 
 #: src/roxterm-config.ui:1565
 msgid "Extra spacing between lines as a fraction of the font's line height"
 msgstr ""
+"Extra hely a sorok közt, a betűtípus sormagasságának töredékében megadva"
 
 #: src/roxterm-config.ui:1580
 msgid "_Horizontal spacing %:"
-msgstr ""
+msgstr "_Vízszintes helyköz %:"
 
 #: src/roxterm-config.ui:1595
 msgid "0"
-msgstr ""
+msgstr "0"
 
 #: src/roxterm-config.ui:1596
 msgid "Extra horizontal space between characters as a percentage of 1 em."
 msgstr ""
+"Extra helyköz a karakterek közt, az 1 em szélesség százalékában megadva."
 
 #: src/roxterm-config.ui:1609
 msgid "_Bold is bright"
-msgstr ""
+msgstr "_Félkövér világosítása"
 
 #: src/roxterm-config.ui:1613
 msgid "Bold text is shown in a brighter colour, palette permitting."
 msgstr ""
+"A félkövér szöveg világosabb színnel jelenik meg, ha a paletta lehetővé teszi."
 
 #: src/roxterm-config.ui:1640
 msgid ""
 "These options control when text is allowed to blink in response to terminal "
 "control codes."
 msgstr ""
+"A lehetőségek megadják, hogy a szöveg mikor villoghat, a különböző terminál "
+"vezérlőkódok hatására."
 
 #: src/roxterm-config.ui:1645
 msgid "_Never"
-msgstr ""
+msgstr "_Soha"
 
 #: src/roxterm-config.ui:1663
 msgid "Only when _focused"
-msgstr ""
+msgstr "Csak ha _fókuszban van"
 
 #: src/roxterm-config.ui:1682
 msgid "Only when _unfocused"
-msgstr ""
+msgstr "Csak ha _nincs fókuszban"
 
 #: src/roxterm-config.ui:1700
 msgid "_Always"
-msgstr ""
+msgstr "_Mindig"
 
 #: src/roxterm-config.ui:1726
 msgid "<b>Blinking text</b>"
-msgstr ""
+msgstr "<b>Villogó szöveg</b>"
 
 #: src/roxterm-config.ui:1745
 msgid "<b>Text</b>"
-msgstr ""
+msgstr "<b>Szöveg</b>"
 
 #: src/roxterm-config.ui:1784
 msgid "_Maximise"
