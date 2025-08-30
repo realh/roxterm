@@ -161,8 +161,8 @@
                     <property name="can-focus">True</property>
                     <property name="receives-default">False</property>
                     <property name="has-tooltip">True</property>
-                    <property name="tooltip-markup" translatable="yes">Set the cursor colour from the adjacent field</property>
-                    <property name="tooltip-text" translatable="yes">Set the cursor colour from the adjacent field</property>
+                    <property name="tooltip-markup" translatable="yes">Set the bold text colour from the adjacent field</property>
+                    <property name="tooltip-text" translatable="yes">Set the bold text colour from the adjacent field</property>
                     <property name="halign">start</property>
                     <property name="use-underline">True</property>
                     <property name="draw-indicator">True</property>
@@ -179,8 +179,8 @@
                     <property name="can-focus">True</property>
                     <property name="receives-default">True</property>
                     <property name="has-tooltip">True</property>
-                    <property name="tooltip-markup" translatable="yes">Foreground colour of text; click to change</property>
-                    <property name="tooltip-text" translatable="yes">Foreground colour of text; click to change</property>
+                    <property name="tooltip-markup" translatable="yes">Colour of bold text; click to change</property>
+                    <property name="tooltip-text" translatable="yes">Colour of bold text; click to change</property>
                     <property name="halign">start</property>
                     <signal name="color-set" handler="on_color_set" swapped="no"/>
                   </object>
