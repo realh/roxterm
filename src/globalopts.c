@@ -391,7 +391,7 @@ static void global_options_parse_argv(int *argc, char ***argv, gboolean report)
     GOptionGroup *ogroup = gtk_get_option_group(FALSE);
     GError *err = NULL;
 
-#if ENABLE_NLS
+#ifdef ENABLE_NLS
     int n;
     GOptionEntry *o;
 

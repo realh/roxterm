@@ -1,9 +1,33 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.10)
 
 project(roxterm C)
 
 include(FindPkgConfig)
 include(GNUInstallDirs)
+
+find_package (Intl)
+if (Intl_FOUND)
+    message(STATUS "Internationalization (i18n) found:")
+    message(STATUS " INTL_INCLUDE_DIRS: ${Intl_INCLUDE_DIRS}")
+    message(STATUS " INTL_LIBRARIES: ${Intl_LIBRARIES}")
+    message(STATUS " Version: ${Intl_VERSION}")
+    include_directories(${Intl_INCLUDE_DIRS})
+    link_directories(${Intl_LIBRARY_DIRS})
+    set(ENABLE_NLS TRUE)
+else ()
+    message(STATUS "Internationalization (i18n) Not found!")
+    set(ENABLE_NLS FALSE)
+endif ()
+
+find_package(Gettext REQUIRED)
+if (Gettext_FOUND)
+    message(STATUS "Gettext found:")
+    message(STATUS " Version: ${GETTEXT_VERSION_STRING}")
+    add_subdirectory(po)
+else ()
+    message(STATUS "Gettext Not found!")
+endif ()
+
 
 execute_process(COMMAND cat ${PROJECT_SOURCE_DIR}/release_version
     OUTPUT_VARIABLE ROXTERM_VERSION)

@@ -28,7 +28,7 @@
 
 #include <gtk/gtk.h>
 
-#if ENABLE_NLS
+#ifdef ENABLE_NLS
 #include <libintl.h>
 #define _(s) ((const char *) gettext(s))
 #else
@@ -36,16 +36,6 @@
 #define gettext(s) s
 #endif
 #define N_(s) s
-
-/*
-#include "gettext.h"
-#ifndef _
-#define _(String) gettext (String)
-#endif
-#ifndef N_
-#define N_(String) gettext_noop (String)
-#endif
-*/
 
 #define ACCEL_PATH "<roxterm>"
 

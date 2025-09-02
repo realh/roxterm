@@ -1,21 +1,21 @@
+# SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-# kempelen <kempelen@netengine.hu>, 2025.
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-09-02 23:23+0100\n"
-"PO-Revision-Date: 2025-08-30 20:40+0200\n"
-"Last-Translator: kempelen <kempelen@netengine.hu>\n"
-"Language-Team: Hungarian <kde-l10n-hu@kde.org>\n"
-"Language: hu_HU\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Lokalize 22.12.3\n"
 
 #: ../src/about.c:35
 msgid "Thanks to the developers of VTE"
@@ -49,9 +49,9 @@ msgid "Unable to load 'Colour_Scheme_Editor' from UI defs: %s"
 msgstr ""
 
 #: ../src/colourgui.c:707
-#, fuzzy, c-format
+#, c-format
 msgid "ROXTerm Colour Scheme \"%s\""
-msgstr "ROXTerm színséma"
+msgstr ""
 
 #: ../src/colourgui.c:714
 msgid "Unable to back up colour scheme to revert"
@@ -68,24 +68,21 @@ msgid "Unable to parse colour '%s' for %s in scheme %s"
 msgstr ""
 
 #: ../src/colourscheme.c:173
-#, fuzzy, c-format
+#, c-format
 msgid "Invalid palette size %d in colour scheme %s"
-msgstr "Kattintson ide a kijelölt színséma törléséhez"
+msgstr ""
 
 #: ../src/configlet.c:96
-#, fuzzy
 msgid "Profile"
-msgstr "_Profilok"
+msgstr ""
 
 #: ../src/configlet.c:100
-#, fuzzy
 msgid "Colour Scheme"
-msgstr "ROXTerm színséma"
+msgstr ""
 
 #: ../src/configlet.c:104
-#, fuzzy
 msgid "Keyboard Shortcuts Scheme"
-msgstr "<b>Gyorsbillentyűk</b>"
+msgstr ""
 
 #: ../src/configlet.c:108
 #, c-format
@@ -120,23 +117,23 @@ msgid "Can't get iterator for activated item"
 msgstr ""
 
 #: ../src/configlet.c:701
-#, fuzzy, c-format
+#, c-format
 msgid "Copy %s"
-msgstr "_Másolás"
+msgstr ""
 
 #: ../src/configlet.c:703 ../src/menutree.c:136 ../src/roxterm-config.ui:728
 #: ../src/roxterm-config.ui:862 ../src/roxterm-config.ui:1113
 msgid "_Copy"
-msgstr "_Másolás"
+msgstr ""
 
 #: ../src/configlet.c:719 ../src/configlet.c:839
 msgid "No selection to copy"
 msgstr ""
 
 #: ../src/configlet.c:750
-#, fuzzy, c-format
+#, c-format
 msgid "You may not delete the selected default %s"
-msgstr "Kattintson ide a kijelölt profil törléséhez"
+msgstr ""
 
 #: ../src/configlet.c:757
 msgid "No selection to delete"
@@ -153,9 +150,9 @@ msgid "Unable to delete '%s'"
 msgstr ""
 
 #: ../src/configlet.c:822
-#, fuzzy, c-format
+#, c-format
 msgid "Rename %s"
-msgstr "Át_nevezés"
+msgstr ""
 
 #: ../src/configlet.c:828
 msgid "Apply"
@@ -179,9 +176,9 @@ msgid "Trying to decrease shortcuts_lock below 0"
 msgstr ""
 
 #: ../src/dlg.c:26
-#, fuzzy, c-format
+#, c-format
 msgid "%s from ROXTerm"
-msgstr "A ROXTerm beállításai"
+msgstr ""
 
 #: ../src/dlg.c:49
 msgid "Message"
@@ -267,9 +264,8 @@ msgid "_SSH to host"
 msgstr ""
 
 #: ../src/menutree.c:117
-#, fuzzy
 msgid "_Open link"
-msgstr "_Ne villogjon"
+msgstr ""
 
 #: ../src/menutree.c:118
 msgid "Send e_mail"
@@ -302,7 +298,7 @@ msgstr ""
 #: ../src/menutree.c:127 ../src/roxterm-config.ui:747
 #: ../src/roxterm-config.ui:843 ../src/roxterm-config.ui:1097
 msgid "_Edit"
-msgstr "_Szerkesztés"
+msgstr ""
 
 #: ../src/menutree.c:128
 msgid "_View"
@@ -345,14 +341,12 @@ msgid "Show Menu_bar"
 msgstr ""
 
 #: ../src/menutree.c:149
-#, fuzzy
 msgid "Select _Profile"
-msgstr "_Profilok"
+msgstr ""
 
 #: ../src/menutree.c:150
-#, fuzzy
 msgid "Select _Colour Scheme"
-msgstr "ROXTerm színséma"
+msgstr ""
 
 #: ../src/menutree.c:151
 msgid "Select _Shortcuts Scheme"
@@ -363,9 +357,8 @@ msgid "_Edit Current Profile"
 msgstr ""
 
 #: ../src/menutree.c:154
-#, fuzzy
 msgid "E_dit Current Colour Scheme"
-msgstr "ROXTerm színséma"
+msgstr ""
 
 #: ../src/menutree.c:159
 msgid "Configuration _Manager"
@@ -388,14 +381,12 @@ msgid "New Tab With _Profile"
 msgstr ""
 
 #: ../src/menutree.c:339
-#, fuzzy
 msgid "C_lose Tab"
-msgstr "Lap _bezárása"
+msgstr ""
 
 #: ../src/menutree.c:340
-#, fuzzy
 msgid "_Close Window"
-msgstr "Ablak bezárása"
+msgstr ""
 
 #: ../src/menutree.c:342
 msgid "Save Buffer _As..."
@@ -410,33 +401,28 @@ msgid "_Save Session..."
 msgstr ""
 
 #: ../src/menutree.c:353 ../src/menutree.c:364
-#, fuzzy
 msgid "Profiles"
-msgstr "_Profilok"
+msgstr ""
 
 #: ../src/menutree.c:376
-#, fuzzy
 msgid "_Set Window Title..."
-msgstr "Ablak _címsora:"
+msgstr ""
 
 #: ../src/menutree.c:379
-#, fuzzy
 msgid "Res_tart command"
-msgstr "A parancs újraindul"
+msgstr ""
 
 #: ../src/menutree.c:387
-#, fuzzy
 msgid "_Always Show Tab Bar"
-msgstr "_Lapok sora mindig jelenjen meg"
+msgstr ""
 
 #: ../src/menutree.c:388
-#, fuzzy
 msgid "_Full Screen"
-msgstr "_Teljes képernyő"
+msgstr ""
 
 #: ../src/menutree.c:389 ../src/roxterm-config.ui:1888
 msgid "_Borderless"
-msgstr "_Keret nélkül"
+msgstr ""
 
 #: ../src/menutree.c:391
 msgid "Zoom _In"
@@ -475,14 +461,12 @@ msgid "Scroll Down One Hal_f Page"
 msgstr ""
 
 #: ../src/menutree.c:401
-#, fuzzy
 msgid "Scroll To _Top"
-msgstr "Görgetés a _kimenettel"
+msgstr ""
 
 #: ../src/menutree.c:402
-#, fuzzy
 msgid "Scroll To _Bottom"
-msgstr "Görgetés a _kimenettel"
+msgstr ""
 
 #: ../src/menutree.c:409
 msgid "_Find..."
@@ -505,14 +489,12 @@ msgid "_Detach Tab"
 msgstr ""
 
 #: ../src/menutree.c:428
-#, fuzzy
 msgid "_Close Tab"
-msgstr "Lap _bezárása"
+msgstr ""
 
 #: ../src/menutree.c:429
-#, fuzzy
 msgid "Close _Other Tabs"
-msgstr "Lap _bezárása"
+msgstr ""
 
 #: ../src/menutree.c:430
 msgid "Na_me Tab..."
@@ -539,9 +521,8 @@ msgid "Show _Manual"
 msgstr ""
 
 #: ../src/menutree.c:444
-#, fuzzy
 msgid "_About ROXTerm"
-msgstr "A ROXTerm beállításai"
+msgstr ""
 
 #: ../src/menutree.c:680
 msgid "Move Tab _Up"
@@ -584,22 +565,16 @@ msgid "Unable to save session to file '%s': %s"
 msgstr ""
 
 #: ../src/multitab.c:1422
-#, fuzzy
 msgid "Set Window Title"
-msgstr "Ablak _címsora:"
+msgstr ""
 
 #: ../src/multitab.c:1433
-#, fuzzy
 msgid ""
 "The title string may include '%s' which is substituted with the active tab's "
 "name/window title, '%t' for the active tab's number, '%n' for the number of "
 "tabs and or '%%' for a literal '%'. Other '%' sequences are passed through. "
 "Apply an empty string here to use the profile's title string."
 msgstr ""
-"A címsor beállítás a következő behelyettesítéseket tartalmazhatja: '%s' "
-"azaktuális lap neve vagy ablakcíme, '%t' az aktív lap sorszáma, '%n' a "
-"megnyitott lapok száma, '%%' egy százalékjel. Más '%' parancsok továbbadásra "
-"kerülnek."
 
 #: ../src/options.c:75
 #, c-format
@@ -722,12 +697,11 @@ msgid "(Don't set)"
 msgstr ""
 
 #: ../src/profilegui.c:384 ../src/profilegui.c:385
-#, fuzzy
 msgid "Default"
-msgstr "Alap _parancsértelmező"
+msgstr ""
 
 #: ../src/profilegui.c:620
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Kinetic scrolling is available with vte 0.64 or later. It enhances the UX "
 "for touch pads and screens, but can be <a href=\"%s\">buggy</a>. Enabling "
@@ -735,13 +709,6 @@ msgid ""
 "scrollback\" (vte &lt; 0.66) is advised to mitigate against these bugs when "
 "Kinetic scrolling is enabled."
 msgstr ""
-"A kinetikus görgetés a vte 0.64 vagy későbbi verziótól érhető el, és javítja "
-"a felhasználói élményt érintőpaneleken és érintőképernyőn, \n"
-"de <a href=\"https://gitlab.gnome.org/GNOME/vte/-/issues/336\">hibás</a> "
-"lehet. A 'Görgetés képpontértékekben' (vte 0.66 vagy újabb) vagy a "
-"'Visszagörgetés korlátozása'\n"
-"(vte 0.66-nál újabb) használata javasolt a kinetikus görgetés hibáinak "
-"kiküszöböléséhez."
 
 #: ../src/profilegui.c:677
 #, c-format
@@ -749,9 +716,9 @@ msgid "Unable to load GTK UI definitions: %s"
 msgstr ""
 
 #: ../src/profilegui.c:682
-#, fuzzy, c-format
+#, c-format
 msgid "ROXTerm Profile \"%s\""
-msgstr "ROXTerm profil"
+msgstr ""
 
 #: ../src/profilegui.c:715
 msgid "Deleting edited profile that wasn't in list of profiles being edited"
@@ -763,9 +730,8 @@ msgid "Unable to look up login details: %s"
 msgstr ""
 
 #: ../src/roxterm.c:593
-#, fuzzy
 msgid "Failed to run command"
-msgstr "A parancs újraindul"
+msgstr ""
 
 #: ../src/roxterm.c:747
 #, c-format
@@ -788,9 +754,8 @@ msgid "Couldn't create a font from '%s'"
 msgstr ""
 
 #: ../src/roxterm.c:1593 ../src/roxterm.c:3535
-#, fuzzy
 msgid "ROXTerm"
-msgstr "ROXTerm profil"
+msgstr ""
 
 #: ../src/roxterm.c:1636
 #, c-format
@@ -815,18 +780,16 @@ msgid ""
 msgstr ""
 
 #: ../src/roxterm.c:2057
-#, fuzzy
 msgid "Close"
-msgstr "Lap _bezárása"
+msgstr ""
 
 #: ../src/roxterm.c:2059
 msgid "Leave open"
 msgstr ""
 
 #: ../src/roxterm.c:2061
-#, fuzzy
 msgid "Rerun command"
-msgstr "A parancs újraindul"
+msgstr ""
 
 #: ../src/roxterm.c:2113
 msgid ""
@@ -835,9 +798,9 @@ msgid ""
 msgstr ""
 
 #: ../src/roxterm.c:2177
-#, fuzzy, c-format
+#, c-format
 msgid "Unknown colour scheme '%s'"
-msgstr "_Sötét színséma:"
+msgstr ""
 
 #: ../src/roxterm.c:2205 ../src/roxterm.c:2262 ../src/roxterm.c:2305
 #: ../src/roxterm.c:2346
@@ -888,9 +851,8 @@ msgid "Changed options family '%s' not known"
 msgstr ""
 
 #: ../src/roxterm.c:4089
-#, fuzzy
 msgid "[Deleted]"
-msgstr "_Törlés"
+msgstr ""
 
 #: ../src/roxterm.c:4112
 #, c-format
@@ -932,18 +894,16 @@ msgid ""
 msgstr ""
 
 #: ../src/roxterm.c:4699
-#, fuzzy
 msgid "ROXTerm: Confirm close"
-msgstr "ROXTerm profil"
+msgstr ""
 
 #: ../src/roxterm.c:4704
 msgid "_Don't show this again"
 msgstr ""
 
 #: ../src/roxterm.c:4712
-#, fuzzy
 msgid "Only warn if tasks are still _running"
-msgstr "Csak akkor, ha még fut valamilyen folyamat"
+msgstr ""
 
 #: ../src/roxterm.c:4814
 #, c-format
@@ -956,9 +916,8 @@ msgid "Unknown <window> attribute '%s'"
 msgstr ""
 
 #: ../src/roxterm.c:5026
-#, fuzzy
 msgid "Session contains window with no valid tabs"
-msgstr "Figyelmeztetés több lapot tartalmazó ablak bezárásakor"
+msgstr ""
 
 #: ../src/roxterm.c:5161
 msgid "<command> with no arguments"
@@ -1174,9 +1133,8 @@ msgid "Find"
 msgstr ""
 
 #: ../src/search.c:315
-#, fuzzy
 msgid "_Close"
-msgstr "Lap _bezárása"
+msgstr ""
 
 #: ../src/search.c:316
 msgid "_Find"
@@ -1223,9 +1181,8 @@ msgid ""
 msgstr ""
 
 #: ../src/search.c:364
-#, fuzzy
 msgid "_Wrap Around"
-msgstr "_Előtér"
+msgstr ""
 
 #: ../src/search.c:365
 msgid ""
@@ -1269,98 +1226,93 @@ msgstr ""
 
 #: ../src/roxterm-config.ui:8
 msgid "ROXTerm Colour Scheme"
-msgstr "ROXTerm színséma"
+msgstr ""
 
 #: ../src/roxterm-config.ui:29
 msgid "_Revert"
-msgstr "_Visszaállítás"
+msgstr ""
 
 #: ../src/roxterm-config.ui:50
 msgid "Close this window"
-msgstr "Ablak bezárása"
+msgstr ""
 
 #: ../src/roxterm-config.ui:74
 msgid "_Set text and background colours"
-msgstr "_Szöveg és háttérszínek beállítása"
+msgstr ""
 
 #: ../src/roxterm-config.ui:79
 msgid ""
 "Whether to set terminals' text and background colours using the fields below"
 msgstr ""
-"Bekapcsolásakor a terminál szöveg és a háttérszínét az alább megadott mezők "
-"adják meg"
 
 #: ../src/roxterm-config.ui:102
 msgid "_Text colour"
-msgstr "S_zövegszín"
+msgstr ""
 
 #: ../src/roxterm-config.ui:117 ../src/roxterm-config.ui:118
 #: ../src/roxterm-config.ui:182 ../src/roxterm-config.ui:183
 msgid "Foreground colour of text; click to change"
-msgstr "A szöveg előtérszíne; kattintson a kiválasztáshoz"
+msgstr ""
 
 #: ../src/roxterm-config.ui:132
 msgid "_Background colour"
-msgstr "_Háttérszín"
+msgstr ""
 
 #: ../src/roxterm-config.ui:147 ../src/roxterm-config.ui:148
 msgid "Background colour of terminals; click to change"
-msgstr "A terminál háttérszíne; kattintson a kiválasztáshoz"
+msgstr ""
 
 #: ../src/roxterm-config.ui:159
 msgid "Set b_old colour"
-msgstr "_Félkövér szín"
+msgstr ""
 
 #: ../src/roxterm-config.ui:164 ../src/roxterm-config.ui:165
 #: ../src/roxterm-config.ui:257 ../src/roxterm-config.ui:258
 msgid "Set the cursor colour from the adjacent field"
 msgstr ""
-"Bekapcsolásakor a következő mező határozza meg a félkövér szöveg színét"
 
 #: ../src/roxterm-config.ui:194
 msgid "Use custom _palette"
-msgstr "Egyéni _paletta használata"
+msgstr ""
 
 #: ../src/roxterm-config.ui:199 ../src/roxterm-config.ui:200
 msgid "Whether to set the terminal's colours from the table below"
-msgstr "Bekapcsolásakor a terminál színeit az alábbi táblázat határozza meg"
+msgstr ""
 
 #: ../src/roxterm-config.ui:214
 msgid "_Get text and background colours from palette"
-msgstr "Háttér- és szövegszín _betöltése a palettából"
+msgstr ""
 
 #: ../src/roxterm-config.ui:219 ../src/roxterm-config.ui:220
 msgid ""
 "Whether to use the palette table below to set the background and text "
 "foreground colours"
 msgstr ""
-"Bekapcsolásakor az alábbi palettatáblázat határozza meg a háttér és a szöveg "
-"színét"
 
 #: ../src/roxterm-config.ui:252
 msgid "Set _cursor colour"
-msgstr "_Kurzor szín"
+msgstr ""
 
 #: ../src/roxterm-config.ui:275 ../src/roxterm-config.ui:276
 #: ../src/roxterm-config.ui:290 ../src/roxterm-config.ui:291
 msgid "Click to change the cursor colour"
-msgstr "Kattintson a kurzor színének kiválasztásához"
+msgstr ""
 
 #: ../src/roxterm-config.ui:304
 msgid "_Foreground"
-msgstr "_Előtér"
+msgstr ""
 
 #: ../src/roxterm-config.ui:538 ../src/roxterm-config.ui:539
 msgid "Set just the first 8 palette entries from this row"
-msgstr "Csak a palette első 8 színének meghatározása, ebből a sorból"
+msgstr ""
 
 #: ../src/roxterm-config.ui:556 ../src/roxterm-config.ui:557
 msgid "Set 16 palette entries from both rows"
-msgstr "A paletta mind a 16 színének meghatározása, mindkét sorból"
+msgstr ""
 
 #: ../src/roxterm-config.ui:591
 msgid "Configure ROXTerm"
-msgstr "A ROXTerm beállításai"
+msgstr ""
 
 #: ../src/roxterm-config.ui:673
 msgid ""
@@ -1368,46 +1320,41 @@ msgid ""
 "radio button to set the profile used when roxterm is run without a --profile "
 "option."
 msgstr ""
-"Jelöljön ki egy sort, hogy a lentebbi gombokkal módosíthassa. Vagy válassza "
-"ki az egyik rádiógombbal, hogy melyik profil töltődjön be, amikor a "
-"roxtermet a --profile kapcsoló nélkül indítja."
 
 #: ../src/roxterm-config.ui:690 ../src/roxterm-config.ui:900
 #: ../src/roxterm-config.ui:1151
 msgid "_Rename"
-msgstr "Át_nevezés"
+msgstr ""
 
 #: ../src/roxterm-config.ui:697
 msgid "Click to rename the selected profile"
-msgstr "Kattintson ide a kijelölt profil átnevezéséhez"
+msgstr ""
 
 #: ../src/roxterm-config.ui:709 ../src/roxterm-config.ui:881
 #: ../src/roxterm-config.ui:1132
 msgid "_Delete"
-msgstr "_Törlés"
+msgstr ""
 
 #: ../src/roxterm-config.ui:716 ../src/roxterm-config.ui:1139
 msgid "Click to delete the selected profile"
-msgstr "Kattintson ide a kijelölt profil törléséhez"
+msgstr ""
 
 #: ../src/roxterm-config.ui:735
 msgid ""
 "Click to create a new profile with settings copied from the current selection"
 msgstr ""
-"Kattintson ide egy új profil létrehozásához, a kijelölt elemmel megegyező "
-"beállításokkal"
 
 #: ../src/roxterm-config.ui:754
 msgid "Click to edit the selected profile"
-msgstr "Kattintson ide a kijelölt profil szerkesztéséhez"
+msgstr ""
 
 #: ../src/roxterm-config.ui:772
 msgid "<b>Profiles</b>"
-msgstr "<b>Profilok</b>"
+msgstr ""
 
 #: ../src/roxterm-config.ui:782
 msgid "_Profiles"
-msgstr "_Profilok"
+msgstr ""
 
 #: ../src/roxterm-config.ui:826
 msgid ""
@@ -1415,57 +1362,50 @@ msgid ""
 "Select a radio button to set the colour scheme used when roxterm is run "
 "without a --colour-scheme option."
 msgstr ""
-"Jelöljön ki egy sort, hogy a lentebbi gombokkal módosíthassa  a sémát. Vagy "
-"válassza ki az egyik rádiógombbal, hogy melyik színséma töltődjön be, amikor "
-"a roxtermet a --colour-scheme kapcsoló nélkül indítja."
 
 #: ../src/roxterm-config.ui:850
 msgid "Click to edit the selected colour scheme"
-msgstr "Kattintson ide a kijelölt színséma szerkesztéséhez"
+msgstr ""
 
 #: ../src/roxterm-config.ui:869
 msgid ""
 "Click to create a new colour scheme with settings copied from the current "
 "selection"
 msgstr ""
-"Kattintson ide egy új színséma létrehozásához, a kijelölt elemmel megegyező "
-"beállításokkal"
 
 #: ../src/roxterm-config.ui:888
 msgid "Click to delete the selected colour scheme"
-msgstr "Kattintson ide a kijelölt színséma törléséhez"
+msgstr ""
 
 #: ../src/roxterm-config.ui:907
 msgid "Click to rename the selected colour scheme"
-msgstr "Kattintson ide a kijelölt színséma átnevezéséhez"
+msgstr ""
 
 #: ../src/roxterm-config.ui:944
 msgid ""
 "You can now choose two different default colour schemes depending on whether "
 "the UI theme is light or dark."
 msgstr ""
-"Két alapértelmezett színsémát adhat meg, annak megfelelően, hogy a "
-"felhasználói felület sötét vagy világos témára van állítva"
 
 #: ../src/roxterm-config.ui:957
 msgid "Use GNOME dark theme setting"
-msgstr "A GNOME témabeállításának használata"
+msgstr ""
 
 #: ../src/roxterm-config.ui:974
 msgid "Use dark UI theme"
-msgstr "Sötét téma kiválasztása"
+msgstr ""
 
 #: ../src/roxterm-config.ui:992
 msgid "Use light UI theme"
-msgstr "Világos téma kiválasztása"
+msgstr ""
 
 #: ../src/roxterm-config.ui:1023
 msgid "<b>Colour Schemes</b>"
-msgstr "<b>Színsémák</b>"
+msgstr ""
 
 #: ../src/roxterm-config.ui:1036
 msgid "Co_lours"
-msgstr "_Színek"
+msgstr ""
 
 #: ../src/roxterm-config.ui:1080
 msgid ""
@@ -1473,241 +1413,220 @@ msgid ""
 "apply to. Select a radio button to set the shortcuts scheme used when "
 "roxterm is run without a --shortcut-scheme option."
 msgstr ""
-"Jelöljön ki egy sort, hogy a lentebbi gombokkal módosíthassa  a "
-"gyorsbillentyűket. Vagy válassza ki az egyik rádiógombbal, hogy melyik "
-"gyorsbillentyű-készlet töltődjön be, amikor a roxtermet a --shortcut-scheme "
-"kapcsoló nélkül indítja."
 
 #: ../src/roxterm-config.ui:1101
 msgid "Click to edit the selected Shortcuts scheme in a text editor."
 msgstr ""
-"Kattintson ide a kijelölt gyorsbillentyű-készlet szövegszerkesztőben való "
-"szerkesztéséhez."
 
 #: ../src/roxterm-config.ui:1120
 msgid ""
 "Click to create a new keyboard shortcuts scheme with settings copied from "
 "the current selection"
 msgstr ""
-"Kattintson ide egy új gyorsbillentyű-készlet létrehozásához, a kijelölt "
-"elemmel megegyező beállításokkal"
 
 #: ../src/roxterm-config.ui:1158
 msgid "Click to rename the selected keyboard shortcuts scheme"
-msgstr "Kattintson ide a kijelölt gyorsbillentyű-készlet átnevezéséhez"
+msgstr ""
 
 #: ../src/roxterm-config.ui:1176
 msgid "<b>Keyboard Shortcuts</b>"
-msgstr "<b>Gyorsbillentyűk</b>"
+msgstr ""
 
 #: ../src/roxterm-config.ui:1189
 msgid "S_hortcuts"
-msgstr "_Gyorsbillentyűk"
+msgstr ""
 
 #: ../src/roxterm-config.ui:1219
 msgid "No warnings when closing windows/tabs"
-msgstr "Ne legyen figyelmeztetés ablakok és lapok bezárásakor"
+msgstr ""
 
 #: ../src/roxterm-config.ui:1235
 msgid "Warn when closing a window with multiple tabs"
-msgstr "Figyelmeztetés több lapot tartalmazó ablak bezárásakor"
+msgstr ""
 
 #: ../src/roxterm-config.ui:1252
 msgid "Warn when closing any window"
-msgstr "Figyelmeztetés minden ablak bezárásakor"
+msgstr ""
 
 #: ../src/roxterm-config.ui:1269
 msgid "Warn when closing any tab"
-msgstr "Figyelmeztetés minden lap bezárásakor"
+msgstr ""
 
 #: ../src/roxterm-config.ui:1286
 msgid "Only warn if tasks are still running"
-msgstr "Csak akkor, ha még fut valamilyen folyamat"
+msgstr ""
 
 #: ../src/roxterm-config.ui:1310
 msgid "<b>Miscellaneous global options</b>"
-msgstr "<b>Különféle globális beállítások</b>"
+msgstr ""
 
 #: ../src/roxterm-config.ui:1325
 msgid "_Options"
-msgstr "_Beállítások"
+msgstr ""
 
 #: ../src/roxterm-config.ui:1421
 msgid "ROXTerm profile"
-msgstr "ROXTerm profil"
+msgstr ""
 
 #: ../src/roxterm-config.ui:1519
 msgid "_Font:"
-msgstr "_Betűtípus:"
+msgstr ""
 
 #: ../src/roxterm-config.ui:1535
 msgid "Click to change the font; monospace fonts are recommended."
 msgstr ""
-"Kattintson a betűtípus kiválasztásához; fix szélességű betűtípus ajánlott."
 
 #: ../src/roxterm-config.ui:1549
 msgid "_Line spacing %:"
-msgstr "_Sorköz %:"
+msgstr ""
 
 #: ../src/roxterm-config.ui:1564
 msgid "Extra space between lines as a percentage of the font's line height."
-msgstr "Extra hely a sorok közt, a betűtípus sormagasságának százalékában."
+msgstr ""
 
 #: ../src/roxterm-config.ui:1565
 msgid "Extra spacing between lines as a fraction of the font's line height"
 msgstr ""
-"Extra hely a sorok közt, a betűtípus sormagasságának töredékében megadva"
 
 #: ../src/roxterm-config.ui:1580
 msgid "_Horizontal spacing %:"
-msgstr "_Vízszintes helyköz %:"
+msgstr ""
 
 #: ../src/roxterm-config.ui:1595
 msgid "0"
-msgstr "0"
+msgstr ""
 
 #: ../src/roxterm-config.ui:1596
 msgid "Extra horizontal space between characters as a percentage of 1 em."
 msgstr ""
-"Extra helyköz a karakterek közt, az 1 em szélesség százalékában megadva."
 
 #: ../src/roxterm-config.ui:1609
 msgid "_Bold is bright"
-msgstr "_Félkövér világosítása"
+msgstr ""
 
 #: ../src/roxterm-config.ui:1613
 msgid "Bold text is shown in a brighter colour, palette permitting."
 msgstr ""
-"A félkövér szöveg világosabb színnel jelenik meg, ha a paletta lehetővé "
-"teszi."
 
 #: ../src/roxterm-config.ui:1640
 msgid ""
 "These options control when text is allowed to blink in response to terminal "
 "control codes."
 msgstr ""
-"A lehetőségek megadják, hogy a szöveg mikor villoghat, a különböző terminál "
-"vezérlőkódok hatására."
 
 #: ../src/roxterm-config.ui:1645
 msgid "_Never"
-msgstr "_Soha"
+msgstr ""
 
 #: ../src/roxterm-config.ui:1663
 msgid "Only when _focused"
-msgstr "Csak ha _fókuszban van"
+msgstr ""
 
 #: ../src/roxterm-config.ui:1682
 msgid "Only when _unfocused"
-msgstr "Csak ha _nincs fókuszban"
+msgstr ""
 
 #: ../src/roxterm-config.ui:1700
 msgid "_Always"
-msgstr "_Mindig"
+msgstr ""
 
 #: ../src/roxterm-config.ui:1726
 msgid "<b>Blinking text</b>"
-msgstr "<b>Villogó szöveg</b>"
+msgstr ""
 
 #: ../src/roxterm-config.ui:1745
 msgid "<b>Text</b>"
-msgstr "<b>Szöveg</b>"
+msgstr ""
 
 #: ../src/roxterm-config.ui:1784
 msgid "_Maximise"
-msgstr "_Maximalizálás"
+msgstr ""
 
 #: ../src/roxterm-config.ui:1790
 msgid "Use a maximised window."
-msgstr "Maximalizált ablak használata."
+msgstr ""
 
 #: ../src/roxterm-config.ui:1806
 msgid "F_ull screen"
-msgstr "_Teljes képernyő"
+msgstr ""
 
 #: ../src/roxterm-config.ui:1812
 msgid "Make the terminal take up the whole screen with no window borders."
-msgstr "A terminál töltse ki a teljes képernyőt, az ablakkeretek elrejtésével."
+msgstr ""
 
 #: ../src/roxterm-config.ui:1827
 msgid "Show _menubar by default"
-msgstr "_Menü megjelenítése"
+msgstr ""
 
 #: ../src/roxterm-config.ui:1833
 msgid ""
 "Whether new windows with this profile will have a menu bar. You can also "
 "turn the menu bar on and off from terminal menus."
 msgstr ""
-"Meghatározza, hogy a profil használatakor látható legyen-e a menüsor. A "
-"menüsort a terminálon előhívható helyi menüből is ki- és bekapcsolhatja."
 
 #: ../src/roxterm-config.ui:1847
 msgid "_Always show tab bar"
-msgstr "_Lapok sora mindig jelenjen meg"
+msgstr ""
 
 #: ../src/roxterm-config.ui:1854
 msgid ""
 "If this option is enabled the tabs at the top of each terminal are always "
 "shown, even in windows which only contain one tab"
 msgstr ""
-"Bekapcsolásakor a lapok minden terminálablak tetején láthatóak lesznek, "
-"akkor is, ha csak egy lap van megnyitva."
 
 #: ../src/roxterm-config.ui:1867
 msgid "Show a_dd tab button"
-msgstr "Lap _hozzáadása gomb"
+msgstr ""
 
 #: ../src/roxterm-config.ui:1874
 msgid "Enables a button in the tab bar which adds a new tab when clicked."
-msgstr "Bekapcsolásakor a lapok sorában megjelenik egy gomb új lap nyitásához."
+msgstr ""
 
 #: ../src/roxterm-config.ui:1895
 msgid ""
 "If this option is enabled and if the window manager supports it, then the "
 "window frame decorations will be disabled."
 msgstr ""
-"Bekapcsolásakor az ablak kerete és dekorációi nem lesznek láthatóak, ha ezt "
-"az aktuális ablakkezelő is támogatja."
 
 #: ../src/roxterm-config.ui:1908
 msgid "_Size"
-msgstr "Mé_ret"
+msgstr ""
 
 #: ../src/roxterm-config.ui:1913
 msgid "Set the terminal's size in characters from the adjacent values."
-msgstr "A terminál méretének beállítása a megadott karakterszámok alapján."
+msgstr ""
 
 #: ../src/roxterm-config.ui:1928
 msgid "_Width:"
-msgstr "_Szélesség:"
+msgstr ""
 
 #: ../src/roxterm-config.ui:1942 ../src/roxterm-config.ui:1986
 msgid "New windows with this profile will open at this size."
-msgstr "Az ezzel a profillal megnyitott új ablakok alapértelmezett szélessége."
+msgstr ""
 
 #: ../src/roxterm-config.ui:1944
 msgid "80"
-msgstr "80"
+msgstr ""
 
 #: ../src/roxterm-config.ui:1960
 msgid "columns"
-msgstr "oszlop"
+msgstr ""
 
 #: ../src/roxterm-config.ui:1972
 msgid "_Height:"
-msgstr "M_agasság:"
+msgstr ""
 
 #: ../src/roxterm-config.ui:1988
 msgid "32"
-msgstr "32"
+msgstr ""
 
 #: ../src/roxterm-config.ui:2004
 msgid "rows"
-msgstr "sor"
+msgstr ""
 
 #: ../src/roxterm-config.ui:2033
 msgid "Window _title:"
-msgstr "Ablak _címsora:"
+msgstr ""
 
 #: ../src/roxterm-config.ui:2048
 msgid ""
@@ -1715,199 +1634,192 @@ msgid ""
 "name/window title, '%t' for the active tab's number, '%n' for the number of "
 "tabs and or '%%' for a literal '%'. Other '%' sequences are passed through."
 msgstr ""
-"A címsor beállítás a következő behelyettesítéseket tartalmazhatja: '%s' "
-"azaktuális lap neve vagy ablakcíme, '%t' az aktív lap sorszáma, '%n' a "
-"megnyitott lapok száma, '%%' egy százalékjel. Más '%' parancsok továbbadásra "
-"kerülnek."
 
 #: ../src/roxterm-config.ui:2064
 msgid "_Light colour scheme:"
-msgstr "_Világos színséma:"
+msgstr ""
 
 #: ../src/roxterm-config.ui:2077 ../src/roxterm-config.ui:2145
 msgid "Edit"
-msgstr "Szerkesztés"
+msgstr ""
 
 #: ../src/roxterm-config.ui:2084 ../src/roxterm-config.ui:2152
 msgid "Click to edit this colour scheme."
-msgstr "Kattintson ide a színséma szerkesztéséhez."
+msgstr ""
 
 #: ../src/roxterm-config.ui:2114
 msgid "_Dark colour scheme:"
-msgstr "_Sötét színséma:"
+msgstr ""
 
 #: ../src/roxterm-config.ui:2176
 msgid "<i><small>Trans_parent</small></i>"
-msgstr "<i><small>Á_ttetszőség</small></i>"
+msgstr ""
 
 #: ../src/roxterm-config.ui:2191
 msgid "<i><small>Opaque</small></i>"
-msgstr "<i><small>Átlátszatlan</small></i>"
+msgstr ""
 
 #: ../src/roxterm-config.ui:2230
 msgid "<b>Appearance</b>"
-msgstr "<b>Megjelenés</b>"
+msgstr ""
 
 #: ../src/roxterm-config.ui:2264
 msgid "_Default shell"
-msgstr "Alap _parancsértelmező"
+msgstr ""
 
 #: ../src/roxterm-config.ui:2281
 msgid "_Login shell"
-msgstr "_Bejelentkezési parancsértelmező"
+msgstr ""
 
 #: ../src/roxterm-config.ui:2286
 msgid "Whether shells running in the terminal are login shells"
-msgstr "Minden parancsértelmező bejelentkezésiként lesz futtatva."
+msgstr ""
 
 #: ../src/roxterm-config.ui:2300
 msgid "_Custom command"
-msgstr "_Egyéni parancs"
+msgstr ""
 
 #: ../src/roxterm-config.ui:2305
 msgid "Enable the adjacent custom command for this profile."
-msgstr "Aktiválja a megadott egyéni parancsot ehhez a profilhoz."
+msgstr ""
 
 #: ../src/roxterm-config.ui:2323
 msgid "Command to run in place of a shell"
-msgstr "A parancsértelmező helyett futtatandó parancs"
+msgstr ""
 
 #: ../src/roxterm-config.ui:2338
 msgid "_Ssh"
-msgstr "_Ssh"
+msgstr ""
 
 #: ../src/roxterm-config.ui:2343
 msgid "Connect to a ssh (secure shell) with this profile."
 msgstr ""
-"Kapcsolódás egy ssh szerverhez (távoli bejelentkezés) ezzel a profillal."
 
 #: ../src/roxterm-config.ui:2361
 msgid "Ssh server address. Use the Edit... button to change it."
-msgstr "Ssh szerver címe. A Szerkesztés.. gombbal tudja megváltoztatni."
+msgstr ""
 
 #: ../src/roxterm-config.ui:2375
 msgid "When command e_xits:"
-msgstr "Parancs _befejezésekor:"
+msgstr ""
 
 #: ../src/roxterm-config.ui:2392
 msgid "Exit terminal"
-msgstr "A terminál bezárul"
+msgstr ""
 
 #: ../src/roxterm-config.ui:2393
 msgid "Hold terminal open"
-msgstr "A terminál nyitva marad"
+msgstr ""
 
 #: ../src/roxterm-config.ui:2394
 msgid "Restart command"
-msgstr "A parancs újraindul"
+msgstr ""
 
 #: ../src/roxterm-config.ui:2395
 msgid "Ask user"
-msgstr "Kérdezze meg a felhasználótól"
+msgstr ""
 
 #: ../src/roxterm-config.ui:2410
 msgid "_Pause:"
-msgstr "_Pillanatmegállítás:"
+msgstr ""
 
 #: ../src/roxterm-config.ui:2425
 msgid ""
 "Pause for this number of seconds after the command exits before performing "
 "the action above."
 msgstr ""
-"A parancs befejeződése után várakozás a megadott ideig, mielőtt a fentebb "
-"kiválasztott befejezés végrehajtódna."
 
 #: ../src/roxterm-config.ui:2429
 msgid "0.0"
-msgstr "0.0"
+msgstr ""
 
 #: ../src/roxterm-config.ui:2441
 msgid "_Edit..."
-msgstr "_Szerkesztés..."
+msgstr ""
 
 #: ../src/roxterm-config.ui:2446
 msgid "Click here to edit the ssh details."
-msgstr "Kattintson ide az ssh adatok szerkesztéséhez."
+msgstr ""
 
 #: ../src/roxterm-config.ui:2462
 msgid "secs"
-msgstr "mp"
+msgstr ""
 
 #: ../src/roxterm-config.ui:2475 ../src/roxterm-config.ui:2476
 msgid "SSH program to use when a host name is opened"
-msgstr "A használni kívánt SSH program a gépnév megnyitásakor"
+msgstr ""
 
 #: ../src/roxterm-config.ui:2478
 msgid "The command used to open ssh URIs."
-msgstr "Az ssh URI címek megnyitásához használni kívánt parancs."
+msgstr ""
 
 #: ../src/roxterm-config.ui:2496
 msgid "SSH Co_mmand"
-msgstr "SSH _parancs"
+msgstr ""
 
 #: ../src/roxterm-config.ui:2514
 msgid "<b>Command</b>"
-msgstr "<b>Parancs</b>"
+msgstr ""
 
 #: ../src/roxterm-config.ui:2550
 msgid "Blinking cursor:"
-msgstr "Kurzor villogása:"
+msgstr ""
 
 #: ../src/roxterm-config.ui:2560
 msgid "S_ystem"
-msgstr "_Rendszer"
+msgstr ""
 
 #: ../src/roxterm-config.ui:2565
 msgid "Whether the terminal cursor blinks depends on the GTK system setting."
-msgstr "A kurzor villogását a vonatkozó GTK rendszerbeállítás határozza meg."
+msgstr ""
 
 #: ../src/roxterm-config.ui:2579
 msgid "Blin_k"
-msgstr "_Villogjon"
+msgstr ""
 
 #: ../src/roxterm-config.ui:2584
 msgid "The terminal cursor blinks."
-msgstr "A terminálkurzor villog."
+msgstr ""
 
 #: ../src/roxterm-config.ui:2599
 msgid "Do_n't blink"
-msgstr "_Ne villogjon"
+msgstr ""
 
 #: ../src/roxterm-config.ui:2604
 msgid "The terminal cursor doesn't blink."
-msgstr "A terminálkurzor nem villog."
+msgstr ""
 
 #: ../src/roxterm-config.ui:2621
 msgid "Cursor shape:"
-msgstr "Kurzor alakja:"
+msgstr ""
 
 #: ../src/roxterm-config.ui:2631
 msgid "Bl_ock"
-msgstr "_Téglalap"
+msgstr ""
 
 #: ../src/roxterm-config.ui:2636
 msgid "The cursor is a rectangle taking up the whole of a character space."
-msgstr "A kurzor egy egy karakterhelyet elfoglaló téglalap alakú blokk."
+msgstr ""
 
 #: ../src/roxterm-config.ui:2650
 msgid "_I-beam"
-msgstr "_I-rúd"
+msgstr ""
 
 #: ../src/roxterm-config.ui:2655
 msgid "The cursor is a vertical line at the left of each character."
-msgstr "A kurzor egy függőleges vonal az aktuális karakter bal oldalán."
+msgstr ""
 
 #: ../src/roxterm-config.ui:2670
 msgid "_Underline"
-msgstr "_Aláhúzás"
+msgstr ""
 
 #: ../src/roxterm-config.ui:2675
 msgid "The cursor is a horizontal line at the bottom of each character."
-msgstr "A kurzor egy vízszintes vonal az aktuális karakter alatt."
+msgstr ""
 
 #: ../src/roxterm-config.ui:2692
 msgid "_Word characters:"
-msgstr "_Szó karakterek:"
+msgstr ""
 
 #: ../src/roxterm-config.ui:2709
 msgid ""
@@ -1915,220 +1827,198 @@ msgid ""
 "addition to alphanumerics, are considered part of a word. Do not add 0-9A-Za-"
 "z etc here. If including a minus sign it must come first."
 msgstr ""
-"A szavak dupla kattintással kijelölhetőek. Az alfanumerikus jeleken túl a "
-"kijelölés az itt megadott karaktereket is beleszámítja a szavakba. Ne adja "
-"meg a 0-9A-Za-z stb. karaktereket. Mínusz jel csak elsőként szerepelhet."
 
 #: ../src/roxterm-config.ui:2722
 msgid "Hide mouse _pointer when typing"
-msgstr "_Egérkurzor elrejtése írás közben"
+msgstr ""
 
 #: ../src/roxterm-config.ui:2739
 msgid "Audible bel_l"
-msgstr "_Hallható csippanás"
+msgstr ""
 
 #: ../src/roxterm-config.ui:2744
 msgid "If selected, \"printing\" an ASCII bell character will cause a beep."
 msgstr ""
-"Bekapcsolásakor a csippanásnak megfelelő ASCII karakter hallható jelet ad ki."
 
 #: ../src/roxterm-config.ui:2758
 msgid "Bell _highlights tab/window"
-msgstr "Csippanás fel_villantja az ablakot"
+msgstr ""
 
 #: ../src/roxterm-config.ui:2763
 msgid ""
 "If the \"bell rings\" in a terminal while it isn't the active tab or window, "
 "its tab label will flash and/or its window will be marked \"urgent\"."
 msgstr ""
-"Ha egy csippanás lenne hallható az egyik háttérben lévő lapon vagy ablakban, "
-"a lap címkéje villogni fog vagy az ablak \"sürgősként\" kerül megjelölésre."
 
 #: ../src/roxterm-config.ui:2779
 msgid "_TERM environment variable:"
-msgstr "_TERM környezeti változó:"
+msgstr ""
 
 #: ../src/roxterm-config.ui:2812
 msgid "<b>General</b>"
-msgstr "<b>Általános</b>"
+msgstr ""
 
 #: ../src/roxterm-config.ui:2848
 msgid "_No scrollbar"
-msgstr "_Görgetősáv elrejtése"
+msgstr ""
 
 #: ../src/roxterm-config.ui:2866
 msgid "Scrollbar on _left"
-msgstr "Görgetősáv a _bal oldalon"
+msgstr ""
 
 #: ../src/roxterm-config.ui:2883
 msgid "Scroll on _output"
-msgstr "Görgetés a _kimenettel"
+msgstr ""
 
 #: ../src/roxterm-config.ui:2888
 msgid ""
 "Whether to make the scrollbar jump to the bottom when new text is printed in "
 "the terminal"
 msgstr ""
-"Bekapcsolásakor az ablak görgetési pozíciója leugrik az aktuális "
-"tartalomhoz, amikor új tartalom jelenik meg a terminálban."
 
 #: ../src/roxterm-config.ui:2901
 msgid "Scroll on _keystroke"
-msgstr "Görgetés _billentyű lenyomáskor"
+msgstr ""
 
 #: ../src/roxterm-config.ui:2906
 msgid ""
 "Whether to make the scrollbar jump to the bottom when text is typed into a "
 "terminal"
 msgstr ""
-"Bekapcsolásakor az ablak görgetési pozíciója leugrik az aktuális "
-"tartalomhoz, amikor gépelni kezd az ablakba."
 
 #: ../src/roxterm-config.ui:2941
 msgid "Changes to the scrollbar position only take effect in new windows."
-msgstr "A görgetősáv beállítások csak újonnan nyitott ablakokra érvényesek."
+msgstr ""
 
 #: ../src/roxterm-config.ui:2966
 msgid "Li_mit scrollback:"
-msgstr "_Visszagörgetés korlátozása:"
+msgstr ""
 
 #: ../src/roxterm-config.ui:2985
 msgid ""
 "Number of lines of output text to retain in the buffer so that they can "
 "still be viewed by scrolling up"
 msgstr ""
-"Meghatározza, hogy hány sort jegyezzen meg a terminál, hogy visszagörgethető "
-"legyen."
 
 #: ../src/roxterm-config.ui:2988
 msgid "1000"
-msgstr "1000"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3005
 msgid "l_ines"
-msgstr "_sor"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3025
 msgid "Scrollbar on _right"
-msgstr "Görgetősáv a _jobb oldalon"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3042
 msgid "O_verlay scrollbar"
-msgstr "_Rátét görgetősáv"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3046
 msgid ""
 "Whether to superimpose the scrollbar over the terminal or allocate extra "
 "space for it."
 msgstr ""
-"Meghatározza, hogy a görgetősáv a terminál területe felett jelenjen meg, és "
-"ne foglaljon el külön területet."
 
 #: ../src/roxterm-config.ui:3059
 msgid "_Kinetic scrolling"
-msgstr "_Kinetikus görgetés"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3121
 msgid "Scroll in units of _pixels"
-msgstr "Görgetés _képpontértékekben"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3144
 msgid "<b>Scrolling</b>"
-msgstr "<b>Görgetés</b>"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3180
 msgid "_Backspace key generates:"
-msgstr "_Backspace billentyű hatása:"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3195 ../src/roxterm-config.ui:3226
 msgid "Automatic choice"
-msgstr "Automatikus választás"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3196 ../src/roxterm-config.ui:3227
 msgid "Ctrl-H"
-msgstr "Ctrl-H"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3197 ../src/roxterm-config.ui:3228
 msgid "ASCII DEL"
-msgstr "ASCII DEL"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3198 ../src/roxterm-config.ui:3229
 msgid "Escape sequence"
-msgstr "Escape sorozat"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3211
 msgid "_Delete key generates:"
-msgstr "_Delete billentyű hatása:"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3240
 msgid "_Reset to defaults"
-msgstr "_Vissza alapértékekre"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3245
 msgid "Reset the backspace and delete keys to their defaults"
 msgstr ""
-"Alapértékre állítja a backspace és a delete billentyűkre vonatkozó "
-"beállításokat."
 
 #: ../src/roxterm-config.ui:3258
 msgid "Disable menu _access key (F10 by default)"
-msgstr "Menübillentyű letiltása (alapértelmezetten F10)"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3264
 msgid ""
 "This option disables the keyboard shortcut for opening the first menu. The "
 "default shortcut is F10."
 msgstr ""
-"Kikapcsolja a menü első elemének gyorsbillentyűvel való megnyitását, ami "
-"alapértelmezetten az F10."
 
 #: ../src/roxterm-config.ui:3278
 msgid "Disable other menu _shortcut keys (Alt+...)"
-msgstr "További menübillentyűk kikapcsolása (Alt+..)"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3284
 msgid ""
 "This option disables the underlined shortcut keys in the menus (eg Alt+F for "
 "the File menu)."
 msgstr ""
-"Kikapcsolja a menük elérését az aláhúzott betűkkel (mint pl. Alt+F a fájl "
-"menü)."
 
 #: ../src/roxterm-config.ui:3298
 msgid "Disable _tab switching shortcut keys (Alt+number)"
-msgstr "Lapváltó billentyűk kikapcsolása (Alt+szám)"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3304
 msgid ""
 "This option disables the shortcut keys for switching tabs (Alt+1-9 and Alt+0 "
 "by default)"
 msgstr ""
-"Kikapcsolja a lapok között váltásra szolgál gyorsbillentyűket "
-"(alapértelmezetten Alt+1-9-ig és Alt+0)"
 
 #: ../src/roxterm-config.ui:3324
 msgid "<b>Keyboard</b>"
-msgstr "<b>Billentyűzet</b>"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3368
 msgid "<b>Middle click on label action</b>"
-msgstr "<b>A címkén való középső kattintás hatása</b>"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3379
 msgid "Do n_othing"
-msgstr "_Ne történjen semmi"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3397
 msgid "C_lose tab"
-msgstr "Lap _bezárása"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3415
 msgid "_Paste tab name"
-msgstr "L_ap nevének beillesztése"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3433
 msgid "_Wrap when switching tabs"
-msgstr "Lapváltáskor menjen _körbe"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3440
 msgid ""
@@ -2136,50 +2026,42 @@ msgid ""
 "around from the first and last tab to the opposite end of the row; the move "
 "tab left/right/up/down menu items are affected similarly."
 msgstr ""
-"Bekapcsolásakor az előző vagy a következő lapra váltáskor a szélső lapok "
-"esetén a túloldalon lévő lap aktiválódik. A lap balra, jobbra, fel és le "
-"mozgatása szolgáló menüelemekre hasonló hatással van."
 
 #: ../src/roxterm-config.ui:3453
 msgid "Show Close _buttons on tabs"
-msgstr "_Bezárógombok megjelenítése a lapon"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3460
 msgid "If this option is enabled close buttons are shown at the top of tabs."
 msgstr ""
-"Bekapcsolásakor a lapok tetején egy bezárásra szolgáló gomb is megjelenik."
 
 #: ../src/roxterm-config.ui:3474
 msgid "Show terminal _status in close buttons"
-msgstr "A állapot megjelenítése a bezárógombon"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3481
 msgid ""
 "If this option is enabled the icons in close buttons may be changed in "
 "inactive tabs to reflect the status of their terminals."
 msgstr ""
-"Bekapcsolásakor az inaktív lapok bezáróikonja megváltozhat, jelezve az adott "
-"terminál állapotát."
 
 #: ../src/roxterm-config.ui:3494
 msgid "Open new tabs _adjacent to current tab"
-msgstr "Új lapok megnyitsa az _aktuális mellett"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3524
 msgid "Use Ctrl-Tab keyboard shortcut"
-msgstr "A Ctrl-Tab gyorsbillentyű engedélyezése"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3528
 msgid ""
 "Use Ctrl-Tab to cycle through tabs. This shortcut wraps from last to first "
 "regardless of the above Wrap option."
 msgstr ""
-"Bekapcsolásakor a Ctrl-Tab billentyűkkel válthat a lapok közt. Ez a "
-"lehetőség akkor is körbefordul a szélső lapoknál, ha fentebb kikapcsolja."
 
 #: ../src/roxterm-config.ui:3561
 msgid "_Tab title:"
-msgstr "_Lap címe:"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3575
 msgid ""
@@ -2188,117 +2070,108 @@ msgid ""
 "active tab's number, '%n' for the number of tabs and or '%%' for a literal "
 "'%'. Other '%' sequences are passed through."
 msgstr ""
-"A címsor beállítás a következő behelyettesítéseket tartalmazhatja: '%s' az "
-"aktuálisan futó parancs által megadott érték (parancsértelmezőnél általában "
-"az aktuális könyvtár), '%t' az aktív lap sorszáma, '%n' a  megnyitott lapok "
-"száma, '%%' egy százalékjel. Más '%' parancsok továbbadásra kerülnek."
 
 #: ../src/roxterm-config.ui:3618
 msgid ""
 "The tab position option does not apply to windows that are already open; "
 "only to windows opened subsequently."
 msgstr ""
-"A lapok helye beállítás a már megnyitott ablakokra nincs hatással; csak a "
-"később megnyitottakra."
 
 #: ../src/roxterm-config.ui:3645
 msgid "Tab pos_ition:"
-msgstr "_Lapok helye:"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3663
 msgid "Top"
-msgstr "Fent"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3664
 msgid "Bottom"
-msgstr "Lent"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3665
 msgid "Left"
-msgstr "Balra"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3666
 msgid "Right"
-msgstr "Jobbra"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3667
 msgid "Hidden"
-msgstr "Elrejtve"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3691
 msgid "<b>Tabs</b>"
-msgstr "<b>Lapok</b>"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3724
 msgid "_Disabled"
-msgstr "Le_tiltva"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3728
 msgid "Ignore all OSC52 sequences"
-msgstr "OSC52 szekvenciák figyelmen kívül hagyása"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3743
 msgid "Requires _confirmation"
-msgstr "_Jóváhagyás szükséges"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3747
 msgid ""
 "Text will not be pasted to the clipboard until you click the confirmation "
 "button."
 msgstr ""
-"A szöveg csak egy jóváhagyó gomb megnyomása után elfogadása után kerül a "
-"vágólapra."
 
 #: ../src/roxterm-config.ui:3762
 msgid "_Accept"
-msgstr "_Elfogadás"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3766
 msgid ""
 "Clipboard writes occur automatically, but the indicator/button will flash."
-msgstr "A szöveg automatikusan a vágólapra kerül, de a jelölő gomb felvillan."
+msgstr ""
 
 #: ../src/roxterm-config.ui:3788
 msgid "_Buffer size"
-msgstr "_Puffer mérete"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3817
 msgid "KBytes"
-msgstr "Kilobájt"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3841
 msgid "Allow programs to write to the clipboard with OSC 52"
 msgstr ""
-"Engedélyezi, hogy a programok az OSC52 segítségével a vágólapra írjanak"
 
 #: ../src/roxterm-config.ui:3928
 msgid "_Address"
-msgstr "_Cím"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3942
 msgid "Ssh server address."
-msgstr "Ssh szerver címe."
+msgstr ""
 
 #: ../src/roxterm-config.ui:3959
 msgid "_User"
-msgstr "_Felhasználó"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3973
 msgid "Remote username."
-msgstr "A távoli felhasználónév."
+msgstr ""
 
 #: ../src/roxterm-config.ui:3988
 msgid "_Port"
-msgstr "_Port"
+msgstr ""
 
 #: ../src/roxterm-config.ui:4002
 msgid "Ssh server port."
-msgstr "Az ssh szerver kapcsolódási portja."
+msgstr ""
 
 #: ../src/roxterm-config.ui:4029
 msgid "_Other options"
-msgstr "További _kapcsolók"
+msgstr ""
 
 #: ../src/roxterm-config.ui:4043
 msgid "Miscellaneous options to add to the ssh command line."
-msgstr "Az ssh parancssorhoz hozzáadandó további kapcsolók."
+msgstr ""

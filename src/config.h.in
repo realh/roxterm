@@ -26,7 +26,7 @@
 
 #define DATA_DIR "@CMAKE_INSTALL_FULL_DATADIR@"
 
-#undef ENABLE_NLS
+#cmakedefine ENABLE_NLS
 
 #define HTML_DIR "@CMAKE_INSTALL_FULL_DOCDIR@"
 

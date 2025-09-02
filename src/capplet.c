@@ -310,12 +310,12 @@ int main(int argc, char **argv)
 
     g_set_application_name(_("roxterm-config"));
 
-#if ENABLE_NLS
+#ifdef ENABLE_NLS
     setlocale(LC_ALL, "");
     bindtextdomain(PACKAGE, global_options_appdir ?
-            g_strdup_printf("%s/locale", global_options_appdir) : LOCALEDIR);
+            g_strdup_printf("%s/po", global_options_appdir) : LOCALEDIR);
     textdomain(PACKAGE);
-#endif    
+#endif
 
     gtk_init(&argc, &argv);
     global_options_init(&argc, &argv, FALSE);
@@ -323,7 +323,7 @@ int main(int argc, char **argv)
 
     resources_access_icon();
     gtk_window_set_default_icon_name("roxterm");
-    
+
     for (n = 1; n < argc; ++n)
     {
         if (!strcmp(argv[n], "--listen"))
@@ -335,7 +335,7 @@ int main(int argc, char **argv)
         else if (!strcmp(argv[n], "--Configlet"))
             open_configlet = TRUE;
     }
-    
+
     if (!open_configlet)
         open_configlet = !profile && !colour_scheme && !listen;
 
