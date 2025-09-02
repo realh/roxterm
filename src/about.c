@@ -31,7 +31,7 @@ static GtkWidget *about_dialog_create(void)
 {
     GtkWidget *about = gtk_about_dialog_new();
     GtkAboutDialog *ad = GTK_ABOUT_DIALOG(about);
-    char const *authors[] = { _("Tony Houghton <h@realh.co.uk>"),
+    char const *authors[] = { "Tony Houghton <h@realh.co.uk>",
         _("Thanks to the developers of VTE"),
         NULL };
 
