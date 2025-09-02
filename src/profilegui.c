@@ -23,6 +23,7 @@
 #include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "capplet.h"
 #include "colourgui.h"
@@ -30,6 +31,8 @@
 #include "dlg.h"
 #include "dragrcv.h"
 #include "dynopts.h"
+#include "glib.h"
+#include "gtk/gtk.h"
 #include "options.h"
 #include "profilegui.h"
 #include "resources.h"
@@ -611,6 +614,21 @@ static void profilegui_setup_list_store(ProfileGUI *pg)
     gtk_widget_show(tvw);
 }
 
+static void profilegui_init_kinetic_warning(ProfileGUI *pg)
+{
+    const char *warning_template = _(
+        "Kinetic scrolling is available with vte 0.64 or later. It enhances "
+        "the UX for touch pads and screens, but can be <a href=\"%s\">"
+        "buggy</a>. Enabling \"Scroll in units of pixels\" (vte &gt;= 0.66) or "
+        "disabling \"Limit scrollback\" (vte &lt; 0.66) is advised to mitigate " "against these bugs when Kinetic scrolling is enabled.");
+    static const char *kinetic_bug_url =
+        "https://gitlab.gnome.org/GNOME/vte/-/issues/336";
+    GtkWidget *kinetic_warning_label = profilegui_widget(pg, "kinetic_warning");
+    char *warning = g_strdup_printf(warning_template, kinetic_bug_url);
+    gtk_label_set_markup(GTK_LABEL(kinetic_warning_label), warning);
+    g_free(warning);
+}
+
 /* Loads a Profile and creates a working dialog box for it */
 ProfileGUI *profilegui_open(const char *profile_name)
 {
@@ -671,6 +689,7 @@ ProfileGUI *profilegui_open(const char *profile_name)
 
     g_hash_table_insert(profilegui_being_edited, g_strdup(profile_name), pg);
 
+    profilegui_init_kinetic_warning(pg);
     profilegui_fill_in_dialog(pg);
     profilegui_connect_handlers(pg);
 
