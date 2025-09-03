@@ -287,6 +287,7 @@ a.pageAnchor {
 
 #Header {
      white-space:nowrap;
+     position:relative;
 }
 
 #Header form#LangForm {
@@ -294,3 +295,9 @@ a.pageAnchor {
      margin:3em 2em 0 0;
 }
 
+#lang-selector {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    text-align: right;
+}
