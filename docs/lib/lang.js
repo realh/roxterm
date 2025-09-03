@@ -26,3 +26,19 @@ function shortLang(l) {
 function redirectToLang(lang) {
     window.location.href = lang + '/index.html';
 }
+
+function matchLang(lang, availableLangs) {
+    for (let l of availableLangs) {
+        if (l === lang) {
+            return l;
+        }
+    }
+    lang = shortLang(lang);
+    for (let l of availableLangs) {
+        if (shortLang(l) === lang) {
+            return l;
+        }
+    }
+    return null;
+}
+

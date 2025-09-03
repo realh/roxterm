@@ -10,26 +10,10 @@ function getAvailableLangs() {
     return langs;
 }
 
-function pickLang() {
-    let lang = getLang();
-    let langs = getAvailableLangs();
-    for (let l of langs) {
-        if (l === lang) {
-            console.log(`pickLang: '${lang}' matched`);
-            return l;
-        }
-    }
-    lang = shortLang(lang);
-    for (let l of langs) {
-        if (shortLang(l) === lang)
-            console.log(`pickLang: '${lang}' matched shortLang('${l}')`);
-            return l;
-    }
-    return null;
-}
-
 function redirectToCurrentLang() {
-    let lang = pickLang();
+    let lang = getLang();
+    let availableLangs = getAvailableLangs();
+    lang = matchLang(lang, availableLangs);
     if (lang)
         redirectToLang(lang);
 }
