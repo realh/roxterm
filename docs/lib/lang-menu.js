@@ -7,7 +7,6 @@ const availableLangs = {
     pt_BR: 'Português (Brasil)',
     ru: 'Русский',
     uk: 'Український',
-    zh_CN: '简体中文',
 }
 
 function buildMenuItem(langCode, langName, matchedLang) {
