@@ -108,8 +108,8 @@ a img {
 	border-color:#4284C9;
 }
 
-#Middle {
-	padding: 2em 0 9em;
+.Middle {
+	padding: 2em 0 0;
 }
 
 a#TopAnchor {
@@ -117,7 +117,7 @@ a#TopAnchor {
 	top:0;
 }
 
-#SubNav {
+.SubNav {
 	list-style:none;
 	width:25%;
 	padding:0;
@@ -142,22 +142,22 @@ a#TopAnchor {
 	color:#4891DE;
 }
 
-#Content {
+.Content {
 	padding:0 4% 0 3%;
 }
 
-#Content.partialWidth {
+.Content.partialWidth {
 	width:70%;
 	padding-left:17.5em;
 }
 
-#Content li {
+.Content li {
 	color:#3A75B3;
 	font-size:0.9em;
 	font-weight:bold;
 }
 
-#Content li span {
+.Content li span {
 	color:#000;
 	font-weight:normal;
 }
