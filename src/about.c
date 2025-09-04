@@ -37,7 +37,7 @@ static GtkWidget *about_dialog_create(void)
 
     gtk_about_dialog_set_program_name(ad, "ROXTerm");
     gtk_about_dialog_set_version(ad, VERSION);
-    gtk_about_dialog_set_copyright(ad, _("(c) 2005-2018 Tony Houghton"));
+    gtk_about_dialog_set_copyright(ad, _("(c) 2005-2025 Tony Houghton"));
     gtk_about_dialog_set_website(ad, "https://realh.github.io/roxterm");
     gtk_about_dialog_set_authors(ad, authors);
     resources_access_icon();
