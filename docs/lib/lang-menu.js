@@ -1,9 +1,7 @@
 const availableLangs = {
-    de: 'Deutsch',
     en: 'English',
     es: 'Español',
     fr: 'Français',
-    gl: 'Galego',
     pt_BR: 'Português (Brasil)',
     ru: 'Русский',
     uk: 'Український',
