@@ -113,6 +113,7 @@ add_custom_command(OUTPUT "${TARBALL_NAME}"
     INSTALL.Debian
     mkycmflags
     NEWS
+    po
     README
     README.md
     README.translations
