@@ -19,6 +19,14 @@ else ()
     set(ENABLE_NLS FALSE)
 endif ()
 
+execute_process(COMMAND ${PROJECT_SOURCE_DIR}/version.sh
+    OUTPUT_VARIABLE ROXTERM_VERSION)
+execute_process(COMMAND date "+%Y-%m-%d"
+    OUTPUT_VARIABLE ROXTERM_DATE)
+
+message(STATUS "ROXTERM_VERSION: ${ROXTERM_VERSION}")
+message(STATUS "ROXTERM_DATE: ${ROXTERM_DATE}")
+
 find_package(Gettext REQUIRED)
 if (Gettext_FOUND)
     message(STATUS "Gettext found:")
@@ -27,12 +35,6 @@ if (Gettext_FOUND)
 else ()
     message(STATUS "Gettext Not found!")
 endif ()
-
-
-execute_process(COMMAND cat ${PROJECT_SOURCE_DIR}/release_version
-    OUTPUT_VARIABLE ROXTERM_VERSION)
-execute_process(COMMAND date "+%Y-%m-%d"
-    OUTPUT_VARIABLE ROXTERM_DATE)
 
 set(APPINFO_VERSION "${ROXTERM_VERSION} ${ROXTERM_DATE}")
 configure_file(${PROJECT_SOURCE_DIR}/AppInfo.xml.in

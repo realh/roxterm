@@ -31,6 +31,9 @@ if (GETTEXT_XGETTEXT_EXECUTABLE)
             --language=C
             --keyword=_
             --output=${POT_FILE}
+            --package-name=roxterm
+            --package-version=${ROXTERM_VERSION}
+            --msgid-bugs-address="https://github.com/realh/roxterm/issues"
             ${POT_SOURCES}
         COMMAND
             xgettext
@@ -38,6 +41,9 @@ if (GETTEXT_XGETTEXT_EXECUTABLE)
             --language=Glade
             --join-existing
             --output=${POT_FILE}
+            --package-name=roxterm
+            --package-version="${ROXTERM_VERSION}"
+            --msgid-bugs-address="https://github.com/realh/roxterm/issues"
             ${POT_UI}
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     )
