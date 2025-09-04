@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: roxterm\n"
 "Report-Msgid-Bugs-To: http://sourceforge.net/tracker/?group_id=124080\n"
-"POT-Creation-Date: 2014-06-24 16:56+0100\n"
+"POT-Creation-Date: 2025-09-04 18:19+0100\n"
 "PO-Revision-Date: 2014-01-15 15:33+0000\n"
 "Last-Translator: Tony Houghton <h@realh.co.uk>\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/roxterm/language/"
@@ -20,70 +20,79 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. type: Attribute 'lang' of: <html>
-#: ../Help/en/index.html:3
-msgid "en-US"
-msgstr "es-ES"
+#: ../docs/en/index.html:3 ../docs/en/guide.html:3
+#: ../docs/en/installation.html:3 ../docs/en/news.html:3
+msgid "en-GB"
+msgstr ""
 
 #. type: Attribute 'alt' of: <html><body><div><div><div><a><img>
-#: ../Help/en/index.html:8 ../Help/en/index.html:20
+#: ../docs/en/index.html:8 ../docs/en/index.html:22 ../docs/en/guide.html:8
+#: ../docs/en/guide.html:24 ../docs/en/installation.html:8
+#: ../docs/en/installation.html:22 ../docs/en/news.html:8
+#: ../docs/en/news.html:22
 msgid "ROXTerm"
 msgstr "ROXTerm"
 
 #. type: Content of: <html><body><div><div><div><a>
-#: ../Help/en/index.html:19
+#: ../docs/en/index.html:21 ../docs/en/guide.html:23
+#: ../docs/en/installation.html:21 ../docs/en/news.html:21
 msgid "<a id=\"Logo\" href=\"index.html\">"
 msgstr "<a id=\"Logo\" href=\"index.html\">"
 
 #. type: Content of: <html><body><div><div><div>
-#: ../Help/en/index.html:21
+#: ../docs/en/index.html:23 ../docs/en/guide.html:25
+#: ../docs/en/installation.html:23 ../docs/en/news.html:23
 msgid "</a>"
 msgstr "</a>"
 
 #. type: Content of: <html><body><div><div><div><ul><li>
-#: ../Help/en/index.html:24
+#: ../docs/en/index.html:26
 msgid "<a id=\"MainNav_Home\" class=\"active\" href=\"#\">Home</a>"
 msgstr "<a id=\"MainNav_Home\" class=\"active\" href=\"#\">Inicio</a>"
 
 #. type: Content of: <html><body><div><div><div><ul><li>
-#: ../Help/en/index.html:25
+#: ../docs/en/index.html:27 ../docs/en/guide.html:29
+#: ../docs/en/installation.html:27
 msgid "<a id=\"MainNav_News\" href=\"news.html\">News</a>"
 msgstr "<a id=\"MainNav_News\" href=\"news.html\">Noticias</a>"
 
 #. type: Content of: <html><body><div><div><div><ul><li>
-#: ../Help/en/index.html:26
+#: ../docs/en/index.html:28 ../docs/en/guide.html:30 ../docs/en/news.html:28
 msgid ""
 "<a id=\"MainNav_Installation\" href=\"installation.html\">Installation</a>"
 msgstr ""
 "<a id=\"MainNav_Installation\" href=\"installation.html\">Instalación</a>"
 
 #. type: Content of: <html><body><div><div><div><ul><li>
-#: ../Help/en/index.html:27
+#: ../docs/en/index.html:29 ../docs/en/installation.html:29
+#: ../docs/en/news.html:29
 msgid "<a id=\"MainNav_UserGuide\" href=\"guide.html\">User Guide</a>"
 msgstr "<a id=\"MainNav_UserGuide\" href=\"guide.html\">Guía de usuario</a>"
 
-#. type: Content of: <html><body><div><div><div><ul><li>
-#: ../Help/en/index.html:28
-msgid ""
-"<a id=\"MainNav_Forums\" href=\"https://sourceforge.net/projects/roxterm/"
-"forums\">Forums</a>"
-msgstr ""
-"<a id=\"MainNav_Forums\" href=\"https://sourceforge.net/projects/roxterm/"
-"forums\">Foros</a>"
-
 #. type: Content of: <html><body><div><div><div><h1>
-#: ../Help/en/index.html:36
+#: ../docs/en/index.html:37
 msgid "Welcome"
 msgstr "Bienvenido"
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/index.html:38
+#: ../docs/en/index.html:39
+#, fuzzy
+#| msgid ""
+#| "ROXTerm is a terminal emulator intended to provide similar features to "
+#| "gnome-terminal, based on the same VTE library. It was originally designed "
+#| "to have a smaller footprint and quicker start-up time by not using the "
+#| "Gnome libraries and by using a separate applet to provide the "
+#| "configuration GUI, but thanks to all the features it's acquired over the "
+#| "years ROXTerm can probably now be accused of bloat. However, it is more "
+#| "configurable than gnome-terminal and aimed more at \"power\" users who "
+#| "make heavy use of terminals."
 msgid ""
 "ROXTerm is a terminal emulator intended to provide similar features to gnome-"
 "terminal, based on the same VTE library. It was originally designed to have "
 "a smaller footprint and quicker start-up time by not using the Gnome "
 "libraries and by using a separate applet to provide the configuration GUI, "
 "but thanks to all the features it's acquired over the years ROXTerm can "
-"probably now be accused of bloat. However, it is more configurable than "
+"probably now be accused of bloat.  However, it is more configurable than "
 "gnome-terminal and aimed more at \"power\" users who make heavy use of "
 "terminals."
 msgstr ""
@@ -98,36 +107,38 @@ msgstr ""
 "uso de las terminales."
 
 #. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/index.html:44
+#: ../docs/en/index.html:47
 msgid ""
-"It can be used as a ROX application, as the name implies, or in any other X "
-"environment."
-msgstr ""
-"Se puede utilizar como una aplicación ROX, como su nombre indica, o con "
-"cualquier otro entorno X."
-
-#. type: Content of: <html><body><div><div><div><div>
-#: ../Help/en/index.html:49
-msgid ""
-"<a id=\"SourceforgeLink\" href=\"http://sourceforge.net/projects/roxterm\" "
-"title=\"RoxTerm Sourceforge\"> roxterm @ sourceforge </a>"
+"It still supports the ROX desktop application layout it was named after, but "
+"can also be installed in a more conventional manner for use in other desktop "
+"environments."
 msgstr ""
 
-#. type: Content of: <html><body><div><div><div><div>
-#: ../Help/en/index.html:55
+#. type: Content of: <html><body><div><div><div>
+#: ../docs/en/index.html:54 ../docs/en/guide.html:290
+#: ../docs/en/installation.html:137 ../docs/en/news.html:100
+msgid ""
+"<a id=\"GithubLink\" href=\"https://github.com/realh/roxterm\" "
+"title=\"RoxTerm Github\"> roxterm @ github </a>"
+msgstr ""
+
+#. type: Content of: <html><body><div><div><div>
+#: ../docs/en/index.html:60 ../docs/en/guide.html:296
+#: ../docs/en/installation.html:143 ../docs/en/news.html:106
 msgid ""
 "<a id=\"DonationLink\" class=\"spriteLink\" href=\"http://sourceforge.net/"
 "donate/index.php?group_id=124080\">Donate</a> <a id=\"ValidMarkupLink\" "
-"class=\"spriteLink\" href=\"http://validator.w3.org/check?uri=referer"
-"\">Valid XHTML</a>"
+"class=\"spriteLink\" href=\"http://validator.w3.org/check?"
+"uri=referer\">Valid XHTML</a>"
 msgstr ""
 "<a id=\"DonationLink\" class=\"spriteLink\" href=\"http://sourceforge.net/"
-"donate/index.php?group_id=124080\">Donar</a> <a id=\"ValidMarkupLink\" class="
-"\"spriteLink\" href=\"http://validator.w3.org/check?uri=referer\">XHTML "
-"Válido</a>"
+"donate/index.php?group_id=124080\">Donar</a> <a id=\"ValidMarkupLink\" "
+"class=\"spriteLink\" href=\"http://validator.w3.org/check?"
+"uri=referer\">XHTML Válido</a>"
 
-#. type: Content of: <html><body><div><div><div><p>
-#: ../Help/en/index.html:59
+#. type: Content of: <html><body><div><div><p>
+#: ../docs/en/index.html:64 ../docs/en/guide.html:300
+#: ../docs/en/installation.html:147 ../docs/en/news.html:110
 msgid ""
 "ROXTerm is licensed under the <a href=\"http://www.gnu.org/licenses/gpl-3.0-"
 "standalone.html\">GPL</a> | Site design by Adrian Sampson"
