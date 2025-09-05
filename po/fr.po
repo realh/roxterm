@@ -10,8 +10,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: roxterm\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-02 23:23+0100\n"
+"Report-Msgid-Bugs-To: https://github.com/realh/roxterm/issues\n"
+"POT-Creation-Date: 2025-09-05 13:09+0100\n"
 "PO-Revision-Date: 2015-10-24 18:50+0000\n"
 "Last-Translator: Tony Houghton <h@realh.co.uk>\n"
 "Language-Team: French (http://www.transifex.com/realh/roxterm/language/fr/)\n"
@@ -26,7 +26,7 @@ msgid "Thanks to the developers of VTE"
 msgstr "Remerciements aux développeurs de VTE"
 
 #: ../src/about.c:40
-msgid "(c) 2005-2018 Tony Houghton"
+msgid "(c) 2005-2025 Tony Houghton"
 msgstr ""
 
 #: ../src/capplet.c:181
@@ -43,14 +43,14 @@ msgid "Illegal palette size %d"
 msgstr "Taille de palette %d illégale"
 
 #: ../src/colourgui.c:499
-#, c-format
+#, fuzzy, c-format
 msgid "Unable to get colour option name from widget name '%s'"
-msgstr ""
+msgstr "Impossible de générer le fichier d'options %s"
 
 #: ../src/colourgui.c:702
-#, c-format
+#, fuzzy, c-format
 msgid "Unable to load 'Colour_Scheme_Editor' from UI defs: %s"
-msgstr ""
+msgstr "Impossible de sauvegarder le fichier d'options %s : %s"
 
 #: ../src/colourgui.c:707
 #, c-format
@@ -67,9 +67,9 @@ msgid ""
 msgstr ""
 
 #: ../src/colourscheme.c:121
-#, c-format
+#, fuzzy, c-format
 msgid "Unable to parse colour '%s' for %s in scheme %s"
-msgstr ""
+msgstr "Impossible de créer le répertoire '%s'"
 
 #: ../src/colourscheme.c:173
 #, c-format
@@ -94,9 +94,9 @@ msgid "Full name for family '%s' not known"
 msgstr "Nom complet pour la famille '%s' inconnu"
 
 #: ../src/configlet.c:146
-#, c-format
+#, fuzzy, c-format
 msgid "Bad options family basename '%s'"
-msgstr ""
+msgstr "Ne peut lire le fichier d'options %s"
 
 #: ../src/configlet.c:526
 #, c-format
@@ -104,8 +104,9 @@ msgid "'%s' will now refer to a %s provided by the system"
 msgstr ""
 
 #: ../src/configlet.c:602
+#, fuzzy
 msgid "Unable to rename profile/scheme"
-msgstr ""
+msgstr "Impossible de générer le fichier d'options %s"
 
 #: ../src/configlet.c:622
 #, c-format
@@ -135,9 +136,9 @@ msgid "No selection to copy"
 msgstr "Pas de sélection à copier"
 
 #: ../src/configlet.c:750
-#, c-format
+#, fuzzy, c-format
 msgid "You may not delete the selected default %s"
-msgstr ""
+msgstr "Cliquer pour supprimer le profil sélectionné"
 
 #: ../src/configlet.c:757
 msgid "No selection to delete"
@@ -163,9 +164,9 @@ msgid "Apply"
 msgstr ""
 
 #: ../src/configlet.c:977
-#, c-format
+#, fuzzy, c-format
 msgid "Unable to create 'Configlet' from UI definition: %s"
-msgstr ""
+msgstr "Impossible de créer le répertoire '%s'"
 
 #: ../src/configlet.c:1056
 msgid "Trying to decrease profile_lock below 0"
@@ -197,9 +198,11 @@ msgid "Error"
 msgstr "Erreur"
 
 #: ../src/dragrcv.c:75
-#, c-format
+#, fuzzy, c-format
 msgid "text/plain dropped on widget had wrong format (%d) or length (%d)"
 msgstr ""
+"La liste URI déposée sur le widget a un mauvais format (%d) ou une mauvaise "
+"longueur (%d)"
 
 #: ../src/dragrcv.c:101
 #, c-format
@@ -254,14 +257,14 @@ msgid "Child failed to signal parent for --fork: %s"
 msgstr ""
 
 #: ../src/main.c:251
-#, c-format
+#, fuzzy, c-format
 msgid "Unable to open pipe to implement --fork: %s"
-msgstr ""
+msgstr "Impossible de sauvegarder le fichier d'options %s : %s"
 
 #: ../src/main.c:267
-#, c-format
+#, fuzzy, c-format
 msgid "Unable to fork to implement --fork: %s"
-msgstr ""
+msgstr "Impossible de sauvegarder le fichier d'options %s : %s"
 
 #: ../src/main.c:286
 msgid "Missing command after -e/--execute option"
@@ -327,8 +330,9 @@ msgid "_Help"
 msgstr "_Aide"
 
 #: ../src/menutree.c:135
+#, fuzzy
 msgid "Select _All"
-msgstr ""
+msgstr "Sélectionner _Profil"
 
 #: ../src/menutree.c:137
 msgid "_Paste"
@@ -491,8 +495,9 @@ msgid "Find _Previous"
 msgstr "Chercher _Précédent"
 
 #: ../src/menutree.c:419
+#, fuzzy
 msgid "Edi_t Current Shortcuts Scheme"
-msgstr ""
+msgstr "É_diter Jeu de Couleurs Courant"
 
 #: ../src/menutree.c:427
 msgid "_Detach Tab"
@@ -570,9 +575,9 @@ msgid ""
 msgstr ""
 
 #: ../src/multitab.c:1407
-#, c-format
+#, fuzzy, c-format
 msgid "Unable to save session to file '%s': %s"
-msgstr ""
+msgstr "Impossible de sauvegarder le fichier d'options %s : %s"
 
 #: ../src/multitab.c:1422
 msgid "Set Window Title"
@@ -591,9 +596,9 @@ msgstr ""
 "autorisé, excepté '%%' qui est affiché comme un % simple."
 
 #: ../src/options.c:75
-#, c-format
+#, fuzzy, c-format
 msgid "Unable to copy options keyfile data: %s"
-msgstr ""
+msgstr "Impossible de sauvegarder le fichier d'options %s : %s"
 
 #: ../src/options.c:163
 #, c-format
@@ -693,9 +698,9 @@ msgid "Unable to create directory '%s'"
 msgstr "Impossible de créer le répertoire '%s'"
 
 #: ../src/optsfile.c:465
-#, c-format
+#, fuzzy, c-format
 msgid "Unable to copy profile/scheme: %s"
-msgstr ""
+msgstr "Impossible de sauvegarder le fichier d'options %s : %s"
 
 #: ../src/optsfile.c:466 ../src/shortcuts.c:202
 msgid "unknown reason"
@@ -724,24 +729,24 @@ msgid ""
 "Kinetic scrolling is enabled."
 msgstr ""
 
-#: ../src/profilegui.c:677
-#, c-format
+#: ../src/profilegui.c:678
+#, fuzzy, c-format
 msgid "Unable to load GTK UI definitions: %s"
-msgstr ""
+msgstr "Impossible de sauvegarder le fichier d'options %s : %s"
 
-#: ../src/profilegui.c:682
+#: ../src/profilegui.c:683
 #, c-format
 msgid "ROXTerm Profile \"%s\""
 msgstr "Profil ROXTerm \"%s\""
 
-#: ../src/profilegui.c:715
+#: ../src/profilegui.c:716
 msgid "Deleting edited profile that wasn't in list of profiles being edited"
 msgstr ""
 
 #: ../src/roxterm.c:507
-#, c-format
+#, fuzzy, c-format
 msgid "Unable to look up login details: %s"
-msgstr ""
+msgstr "Impossible de sauvegarder le fichier d'options %s : %s"
 
 #: ../src/roxterm.c:593
 #, fuzzy
@@ -800,8 +805,9 @@ msgstr ""
 "avec le terminal ?"
 
 #: ../src/roxterm.c:2057
+#, fuzzy
 msgid "Close"
-msgstr ""
+msgstr "_Fermer Onglet"
 
 #: ../src/roxterm.c:2059
 msgid "Leave open"
@@ -863,14 +869,14 @@ msgid "Unknown option type (%d)"
 msgstr "Type d'option (%d) inconnu"
 
 #: ../src/roxterm.c:3978
-#, c-format
+#, fuzzy, c-format
 msgid "Profile/key '%s/%s' not understood"
-msgstr ""
+msgstr "Profil '%s' non trouvé"
 
 #: ../src/roxterm.c:4074
-#, c-format
+#, fuzzy, c-format
 msgid "Changed options family '%s' not known"
-msgstr ""
+msgstr "Nom complet pour la famille '%s' inconnu"
 
 #: ../src/roxterm.c:4089
 msgid "[Deleted]"
@@ -931,13 +937,14 @@ msgid "_Don't show this again"
 msgstr ""
 
 #: ../src/roxterm.c:4712
+#, fuzzy
 msgid "Only warn if tasks are still _running"
-msgstr ""
+msgstr "Prévenir seulement si les tâches sont déjà en cours d'exécution"
 
 #: ../src/roxterm.c:4814
-#, c-format
+#, fuzzy, c-format
 msgid "Unable to spawn command %s: %s"
-msgstr ""
+msgstr "Impossible de créer le répertoire '%s'"
 
 #: ../src/roxterm.c:4976
 #, c-format
@@ -945,8 +952,9 @@ msgid "Unknown <window> attribute '%s'"
 msgstr ""
 
 #: ../src/roxterm.c:5026
+#, fuzzy
 msgid "Session contains window with no valid tabs"
-msgstr ""
+msgstr "Avertir à la fermeture d'une fenêtre comportant plusieurs onglets"
 
 #: ../src/roxterm.c:5161
 msgid "<command> with no arguments"
@@ -1013,9 +1021,9 @@ msgid "<arg> tag not within <command>"
 msgstr ""
 
 #: ../src/roxterm.c:5376
-#, c-format
+#, fuzzy, c-format
 msgid "Unknown element <%s>"
-msgstr ""
+msgstr "Jeu de couleurs '%s' inconnu"
 
 #: ../src/roxterm.c:5392
 msgid "Unmatched </roxterm_session>"
@@ -1042,38 +1050,44 @@ msgid "Unmatched </command>"
 msgstr ""
 
 #: ../src/roxterm.c:5447
-#, c-format
+#, fuzzy, c-format
 msgid "Unknown closing element </%s>"
-msgstr ""
+msgstr "Jeu de couleurs '%s' inconnu"
 
 #: ../src/roxterm.c:5457
-#, c-format
+#, fuzzy, c-format
 msgid "Unable to parse data for session '%s': %s"
-msgstr ""
+msgstr "Impossible de sauvegarder le fichier d'options %s : %s"
 
 #: ../src/rtdbus.c:37 ../src/rtdbus.c:45
+#, fuzzy
 msgid "<unknown>"
-msgstr ""
+msgstr "raison inconnue"
 
 #: ../src/rtdbus.c:66
+#, fuzzy
 msgid "Unable to send D-BUS message"
-msgstr ""
+msgstr "Impossible d'obtenir l'argument du message D-BUS"
 
 #: ../src/rtdbus.c:87
+#, fuzzy
 msgid "Unable to send/get reply to D-BUS message"
-msgstr ""
+msgstr "Impossible d'obtenir l'argument du message D-BUS"
 
 #: ../src/rtdbus.c:93
+#, fuzzy
 msgid "Unable to get D-BUS reply message"
-msgstr ""
+msgstr "Impossible d'obtenir l'argument du message D-BUS"
 
 #: ../src/rtdbus.c:123
+#, fuzzy
 msgid "Unable to start D-BUS service"
-msgstr ""
+msgstr "Impossible d'obtenir l'argument du message D-BUS"
 
 #: ../src/rtdbus.c:138
+#, fuzzy
 msgid "Unable to listen for D-BUS method calls"
-msgstr ""
+msgstr "Impossible d'obtenir l'argument du message D-BUS"
 
 #: ../src/rtdbus.c:159
 #, c-format
@@ -1081,24 +1095,29 @@ msgid "Error connecting to dbus: %s"
 msgstr ""
 
 #: ../src/rtdbus.c:180
+#, fuzzy
 msgid "Unable to add D-BUS match rule"
-msgstr ""
+msgstr "Impossible de lire les arguments du signal D-BUS"
 
 #: ../src/rtdbus.c:186
+#, fuzzy
 msgid "Unable to install D-BUS message filter"
-msgstr ""
+msgstr "Impossible d'obtenir l'argument du message D-BUS"
 
 #: ../src/rtdbus.c:225
+#, fuzzy
 msgid "Unable to append arguments to D-BUS message"
-msgstr ""
+msgstr "Impossible d'obtenir l'argument du message D-BUS"
 
 #: ../src/rtdbus.c:251
+#, fuzzy
 msgid "Unable to create D-BUS signal message"
-msgstr ""
+msgstr "Impossible de lire les arguments du signal D-BUS"
 
 #: ../src/rtdbus.c:279
+#, fuzzy
 msgid "Unable to create D-BUS method call message"
-msgstr ""
+msgstr "Impossible de lire les arguments du signal D-BUS"
 
 #: ../src/rtdbus.c:299
 #, c-format
@@ -1120,14 +1139,14 @@ msgid ""
 msgstr ""
 
 #: ../src/search.c:53
-#, c-format
+#, fuzzy, c-format
 msgid "Unable to create config directory '%s': %s"
-msgstr ""
+msgstr "Impossible de créer le répertoire '%s'"
 
 #: ../src/search.c:79
-#, c-format
+#, fuzzy, c-format
 msgid "Unable to read search history file '%s': %s"
-msgstr ""
+msgstr "Impossible de sauvegarder le fichier d'options %s : %s"
 
 #: ../src/search.c:105
 #, c-format
@@ -1139,9 +1158,9 @@ msgid "Already in use"
 msgstr ""
 
 #: ../src/search.c:135
-#, c-format
+#, fuzzy, c-format
 msgid "Unable to write search history file '%s': %s"
-msgstr ""
+msgstr "Impossible de sauvegarder le fichier d'options %s : %s"
 
 #: ../src/search.c:156
 #, c-format
@@ -1149,25 +1168,29 @@ msgid "Error writing search history file: %s"
 msgstr ""
 
 #: ../src/search.c:285
-#, c-format
+#, fuzzy, c-format
 msgid "Invalid search expression: %s"
-msgstr ""
+msgstr "Répertoire '%s' invalide"
 
 #: ../src/search.c:309
+#, fuzzy
 msgid "_Search for:"
-msgstr ""
+msgstr "_Rechercher"
 
 #: ../src/search.c:312
+#, fuzzy
 msgid "Find"
-msgstr ""
+msgstr "_Chercher..."
 
 #: ../src/search.c:315
+#, fuzzy
 msgid "_Close"
-msgstr ""
+msgstr "_Fermer Onglet"
 
 #: ../src/search.c:316
+#, fuzzy
 msgid "_Find"
-msgstr ""
+msgstr "_Chercher..."
 
 #: ../src/search.c:327
 msgid ""
@@ -1210,8 +1233,9 @@ msgid ""
 msgstr ""
 
 #: ../src/search.c:364
+#, fuzzy
 msgid "_Wrap Around"
-msgstr ""
+msgstr "Couleur de l'_arrière-plan"
 
 #: ../src/search.c:365
 msgid ""
@@ -1235,9 +1259,9 @@ msgid "Unable to load session from '%s': %s"
 msgstr "Impossible de sauvegarder le fichier d'options %s : %s"
 
 #: ../src/shortcuts.c:199
-#, c-format
+#, fuzzy, c-format
 msgid "Unable to read keys from shortcuts file %s: %s"
-msgstr ""
+msgstr "Impossible de sauvegarder le fichier d'options %s : %s"
 
 #: ../src/shortcuts.c:244
 #, c-format
@@ -1252,6 +1276,207 @@ msgstr ""
 #: ../src/shortcuts.c:422
 #, c-format
 msgid "Error trying to edit or monitor Shortcuts file '%s': %s"
+msgstr ""
+
+#: ../src/globalopts.c:225
+msgid "Show brief usage message"
+msgstr "Montrer un court message d'utilisation"
+
+#: ../src/globalopts.c:228
+msgid "Set the terminal's working directory"
+msgstr "Déterminer le répertoire de travail du terminal"
+
+#: ../src/globalopts.c:228 ../src/globalopts.c:241
+msgid "DIRECTORY"
+msgstr "REPERTOIRE"
+
+#: ../src/globalopts.c:231
+msgid ""
+"Set size of terminal. GEOMETRY is WxH or\n"
+"                                   WxH+X+Y (X11 only); '-' can be used\n"
+"                                   instead of '+'"
+msgstr ""
+
+#: ../src/globalopts.c:236
+msgid "GEOMETRY"
+msgstr "GEOMETRIE"
+
+#: ../src/globalopts.c:239
+msgid ""
+"Application directory when run as a ROX\n"
+"                                   application"
+msgstr ""
+
+#: ../src/globalopts.c:244
+msgid "Show the menu bar, overriding profile"
+msgstr "Montrer la barre de menu, indépendamment du profil "
+
+#: ../src/globalopts.c:247
+msgid "Hide the menu bar, overriding profile"
+msgstr "Cacher la barre de menu, indépendamment du profil"
+
+#: ../src/globalopts.c:250
+msgid "Use the named profile"
+msgstr "Utiliser le profil nommé"
+
+#: ../src/globalopts.c:250
+msgid "PROFILE"
+msgstr "PROFIL"
+
+#: ../src/globalopts.c:253
+msgid "Use the named colour scheme"
+msgstr "Utiliser le jeu de couleur nommé"
+
+#: ../src/globalopts.c:254 ../src/globalopts.c:259 ../src/globalopts.c:263
+msgid "SCHEME"
+msgstr "JEU"
+
+#: ../src/globalopts.c:257
+msgid ""
+"Use the named colour scheme\n"
+"                                   (same as --colour-scheme)"
+msgstr ""
+
+#: ../src/globalopts.c:262
+#, fuzzy
+msgid "Use the named keyboard shortcut scheme"
+msgstr "Utiliser le jeu de couleur nommé"
+
+#: ../src/globalopts.c:268
+msgid "Maximise the window, overriding profile"
+msgstr "Maximiser la fenêtre, indépendamment du profil"
+
+#: ../src/globalopts.c:271
+msgid "Synonym for --maximise"
+msgstr "Synonyme de --maximise"
+
+#: ../src/globalopts.c:274
+#, fuzzy
+msgid ""
+"Make the initial terminal take up the whole\n"
+"                                   screen with no window furniture"
+msgstr "Rendre le terminal plein écran sans bordure de fenêtre."
+
+#: ../src/globalopts.c:279
+#, fuzzy
+msgid "Show without decorations, overriding profile"
+msgstr "Montrer la barre de menu, indépendamment du profil "
+
+#: ../src/globalopts.c:282
+msgid ""
+"Scale factor for terminal's fonts\n"
+"                                   (1.0 is normal)"
+msgstr ""
+
+#: ../src/globalopts.c:284
+msgid "ZOOM"
+msgstr "ZOOM"
+
+#: ../src/globalopts.c:287
+msgid "Use a separate process to run this terminal"
+msgstr "Utiliser un processus séparé pour exécuter ce terminal"
+
+#: ../src/globalopts.c:290
+msgid ""
+"Replace any existing process as ROXTerm's\n"
+"                                   D-BUS service provider"
+msgstr ""
+
+#: ../src/globalopts.c:295
+msgid "Set window title"
+msgstr "Déterminer le titre de la fenêtre"
+
+#: ../src/globalopts.c:295
+msgid "TITLE"
+msgstr "TITRE"
+
+#: ../src/globalopts.c:298
+msgid "Set tab name"
+msgstr "Déterminer le nom de l'onglet"
+
+#: ../src/globalopts.c:298 ../src/globalopts.c:322
+msgid "NAME"
+msgstr "NOM"
+
+#: ../src/globalopts.c:301
+msgid ""
+"Open a tab in an existing window instead of\n"
+"                                   a new window if possible"
+msgstr ""
+
+#: ../src/globalopts.c:306
+#, fuzzy
+msgid ""
+"Fork into the background even if this is the\n"
+"                                   first instance"
+msgstr ""
+"Exécute le reste de la ligne de commande dans le terminal. Cela doit être la "
+"dernière option."
+
+#: ../src/globalopts.c:311
+msgid "On command exit: close, hold, respawn, ask"
+msgstr ""
+
+#: ../src/globalopts.c:312
+msgid "ACTION"
+msgstr ""
+
+#: ../src/globalopts.c:315
+msgid "An alias for --atexit=hold: keep tab open"
+msgstr ""
+
+#: ../src/globalopts.c:319
+#, fuzzy
+msgid "Restore the named user session"
+msgstr "Utiliser le jeu de couleur nommé"
+
+#: ../src/globalopts.c:319
+msgid "SESSION"
+msgstr ""
+
+#: ../src/globalopts.c:322
+msgid "Set X window system 'role' hint"
+msgstr ""
+
+#: ../src/globalopts.c:325
+msgid ""
+"Execute remainder of command line inside the\n"
+"                                   terminal. Must be the final option."
+msgstr ""
+"Exécute le reste de la ligne de commande dans le terminal. Cela doit être la "
+"dernière option."
+
+#: ../src/profilegui.c:585
+msgid "Text"
+msgstr ""
+
+#: ../src/profilegui.c:585
+msgid "Appearance"
+msgstr "Apparence"
+
+#: ../src/profilegui.c:585
+#, fuzzy
+msgid "Command"
+msgstr "Commande"
+
+#: ../src/profilegui.c:585
+msgid "General"
+msgstr "Général"
+
+#: ../src/profilegui.c:586
+msgid "Scrolling"
+msgstr "Défilement"
+
+#: ../src/profilegui.c:586
+msgid "Keyboard"
+msgstr "Clavier"
+
+#: ../src/profilegui.c:586
+msgid "Tabs"
+msgstr "Onglets"
+
+#: ../src/profilegui.c:586
+msgid "Clipboard"
 msgstr ""
 
 #: ../src/roxterm-config.ui:8
@@ -2275,69 +2500,8 @@ msgstr "Options diverses à ajouter à la ligne de commande ssh."
 #~ msgid "Edit Encoding"
 #~ msgstr "Editer Encodage"
 
-#~ msgid "Show brief usage message"
-#~ msgstr "Montrer un court message d'utilisation"
-
-#~ msgid "Set the terminal's working directory"
-#~ msgstr "Déterminer le répertoire de travail du terminal"
-
-#~ msgid "DIRECTORY"
-#~ msgstr "REPERTOIRE"
-
-#~ msgid "GEOMETRY"
-#~ msgstr "GEOMETRIE"
-
-#~ msgid "Show the menu bar, overriding profile"
-#~ msgstr "Montrer la barre de menu, indépendamment du profil "
-
-#~ msgid "Hide the menu bar, overriding profile"
-#~ msgstr "Cacher la barre de menu, indépendamment du profil"
-
-#~ msgid "Use the named profile"
-#~ msgstr "Utiliser le profil nommé"
-
-#~ msgid "PROFILE"
-#~ msgstr "PROFIL"
-
-#~ msgid "Use the named colour scheme"
-#~ msgstr "Utiliser le jeu de couleur nommé"
-
-#~ msgid "SCHEME"
-#~ msgstr "JEU"
-
-#~ msgid "Maximise the window, overriding profile"
-#~ msgstr "Maximiser la fenêtre, indépendamment du profil"
-
-#~ msgid "Synonym for --maximise"
-#~ msgstr "Synonyme de --maximise"
-
-#~ msgid "ZOOM"
-#~ msgstr "ZOOM"
-
-#~ msgid "Use a separate process to run this terminal"
-#~ msgstr "Utiliser un processus séparé pour exécuter ce terminal"
-
-#~ msgid "Set window title"
-#~ msgstr "Déterminer le titre de la fenêtre"
-
-#~ msgid "TITLE"
-#~ msgstr "TITRE"
-
-#~ msgid "Set tab name"
-#~ msgstr "Déterminer le nom de l'onglet"
-
-#~ msgid "NAME"
-#~ msgstr "NOM"
-
 #~ msgid "Disable session management"
 #~ msgstr "Désactiver la gestion de session"
-
-#~ msgid ""
-#~ "Execute remainder of command line inside the\n"
-#~ "                                   terminal. Must be the final option."
-#~ msgstr ""
-#~ "Exécute le reste de la ligne de commande dans le terminal. Cela doit être "
-#~ "la dernière option."
 
 #~ msgid "Unable to read current workspace"
 #~ msgstr "Impossible de lire l'espace de travail courant"
@@ -2351,21 +2515,6 @@ msgstr "Options diverses à ajouter à la ligne de commande ssh."
 #, c-format
 #~ msgid "Encoding '%s' not found in menu"
 #~ msgstr "Encodage '%s' non trouvé dans le menu"
-
-#~ msgid "Appearance"
-#~ msgstr "Apparence"
-
-#~ msgid "General"
-#~ msgstr "Général"
-
-#~ msgid "Scrolling"
-#~ msgstr "Défilement"
-
-#~ msgid "Keyboard"
-#~ msgstr "Clavier"
-
-#~ msgid "Tabs"
-#~ msgstr "Onglets"
 
 #~ msgid "Click to remove the selected encoding from the list"
 #~ msgstr "Cliquer pour supprimer l'encodage sélectionné de la liste"

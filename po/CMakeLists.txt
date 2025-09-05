@@ -18,6 +18,15 @@ if (GETTEXT_XGETTEXT_EXECUTABLE)
     )
     set(POT_UI "../src/roxterm-config.ui")
     set(POT_DEPS ${POT_SOURCES} ${POT_UI})
+
+    set(XGETTEXT_ARGS
+        --from-code=UTF-8
+        --output=${POT_FILE}
+        --package-name=roxterm
+        --package-version=${ROXTERM_VERSION}
+        --msgid-bugs-address="https://github.com/realh/roxterm/issues"
+    )
+
     # CMake docs claim that the Gettext module creates a target called
     # potfile. This is a lie, rendering the alleged target useless, but
     # we'd better avoid possibly clashing with it.
@@ -27,23 +36,22 @@ if (GETTEXT_XGETTEXT_EXECUTABLE)
         PRE_BUILD
         COMMAND
             xgettext
-            --from-code=UTF-8
+            ${XGETTEXT_ARGS}
             --language=C
             --keyword=_
-            --output=${POT_FILE}
-            --package-name=roxterm
-            --package-version=${ROXTERM_VERSION}
-            --msgid-bugs-address="https://github.com/realh/roxterm/issues"
             ${POT_SOURCES}
         COMMAND
             xgettext
-            --from-code=UTF-8
+            ${XGETTEXT_ARGS}
+            --language=C
+            --keyword=N_
+            --join-existing
+            ${POT_SOURCES}
+        COMMAND
+            xgettext
+            ${XGETTEXT_ARGS}
             --language=Glade
             --join-existing
-            --output=${POT_FILE}
-            --package-name=roxterm
-            --package-version="${ROXTERM_VERSION}"
-            --msgid-bugs-address="https://github.com/realh/roxterm/issues"
             ${POT_UI}
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     )
@@ -90,7 +98,7 @@ if (GETTEXT_MSGFMT_EXECUTABLE)
         install(
             FILES "${MO_FILE}"
             DESTINATION
-            "${CMAKE_INSTALL_FULL_LOCALEDIR}/locale/${LANG}/LC_MESSAGES"
+            "${CMAKE_INSTALL_FULL_LOCALEDIR}/${LANG}/LC_MESSAGES"
             COMPONENT
                 po
         )

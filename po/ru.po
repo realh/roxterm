@@ -8,8 +8,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: roxterm\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-02 23:23+0100\n"
+"Report-Msgid-Bugs-To: https://github.com/realh/roxterm/issues\n"
+"POT-Creation-Date: 2025-09-05 13:09+0100\n"
 "PO-Revision-Date: 2015-10-24 18:50+0000\n"
 "Last-Translator: Tony Houghton <h@realh.co.uk>\n"
 "Language-Team: Russian (http://www.transifex.com/realh/roxterm/language/"
@@ -27,7 +27,7 @@ msgid "Thanks to the developers of VTE"
 msgstr ""
 
 #: ../src/about.c:40
-msgid "(c) 2005-2018 Tony Houghton"
+msgid "(c) 2005-2025 Tony Houghton"
 msgstr ""
 
 #: ../src/capplet.c:181
@@ -54,9 +54,9 @@ msgid "Unable to load 'Colour_Scheme_Editor' from UI defs: %s"
 msgstr ""
 
 #: ../src/colourgui.c:707
-#, c-format
+#, fuzzy, c-format
 msgid "ROXTerm Colour Scheme \"%s\""
-msgstr ""
+msgstr "Цветовая схема ROXTerm"
 
 #: ../src/colourgui.c:714
 msgid "Unable to back up colour scheme to revert"
@@ -73,21 +73,24 @@ msgid "Unable to parse colour '%s' for %s in scheme %s"
 msgstr ""
 
 #: ../src/colourscheme.c:173
-#, c-format
+#, fuzzy, c-format
 msgid "Invalid palette size %d in colour scheme %s"
-msgstr ""
+msgstr "Нажмите для удаления выбранной цветовой схемы"
 
 #: ../src/configlet.c:96
+#, fuzzy
 msgid "Profile"
-msgstr ""
+msgstr "<b>Профили</b>"
 
 #: ../src/configlet.c:100
+#, fuzzy
 msgid "Colour Scheme"
-msgstr ""
+msgstr "Цветовая схема ROXTerm"
 
 #: ../src/configlet.c:104
+#, fuzzy
 msgid "Keyboard Shortcuts Scheme"
-msgstr ""
+msgstr "<b>Клавиатура</b>"
 
 #: ../src/configlet.c:108
 #, c-format
@@ -105,8 +108,9 @@ msgid "'%s' will now refer to a %s provided by the system"
 msgstr ""
 
 #: ../src/configlet.c:602
+#, fuzzy
 msgid "Unable to rename profile/scheme"
-msgstr ""
+msgstr "Нажмите для изменения выбранной цветовой схемы"
 
 #: ../src/configlet.c:622
 #, c-format
@@ -136,9 +140,9 @@ msgid "No selection to copy"
 msgstr ""
 
 #: ../src/configlet.c:750
-#, c-format
+#, fuzzy, c-format
 msgid "You may not delete the selected default %s"
-msgstr ""
+msgstr "Нажмите для удаления выбранного профиля"
 
 #: ../src/configlet.c:757
 msgid "No selection to delete"
@@ -343,16 +347,18 @@ msgid "Reset And C_lear"
 msgstr ""
 
 #: ../src/menutree.c:146
+#, fuzzy
 msgid "Show Menu_bar"
-msgstr ""
+msgstr "Показывать номер"
 
 #: ../src/menutree.c:149
 msgid "Select _Profile"
 msgstr ""
 
 #: ../src/menutree.c:150
+#, fuzzy
 msgid "Select _Colour Scheme"
-msgstr ""
+msgstr "Цветовая схема ROXTerm"
 
 #: ../src/menutree.c:151
 msgid "Select _Shortcuts Scheme"
@@ -363,8 +369,9 @@ msgid "_Edit Current Profile"
 msgstr ""
 
 #: ../src/menutree.c:154
+#, fuzzy
 msgid "E_dit Current Colour Scheme"
-msgstr ""
+msgstr "Цветовая схема ROXTerm"
 
 #: ../src/menutree.c:159
 msgid "Configuration _Manager"
@@ -379,20 +386,23 @@ msgid "New _Tab"
 msgstr ""
 
 #: ../src/menutree.c:337
+#, fuzzy
 msgid "New _Window With Profile"
-msgstr ""
+msgstr "Заголовок окна:"
 
 #: ../src/menutree.c:338
 msgid "New Tab With _Profile"
 msgstr ""
 
 #: ../src/menutree.c:339
+#, fuzzy
 msgid "C_lose Tab"
-msgstr ""
+msgstr "Закрыть вкладку"
 
 #: ../src/menutree.c:340
+#, fuzzy
 msgid "_Close Window"
-msgstr ""
+msgstr "Закрыть это окно"
 
 #: ../src/menutree.c:342
 msgid "Save Buffer _As..."
@@ -407,24 +417,28 @@ msgid "_Save Session..."
 msgstr ""
 
 #: ../src/menutree.c:353 ../src/menutree.c:364
+#, fuzzy
 msgid "Profiles"
-msgstr ""
+msgstr "<b>Профили</b>"
 
 #: ../src/menutree.c:376
+#, fuzzy
 msgid "_Set Window Title..."
-msgstr ""
+msgstr "Заголовок окна:"
 
 #: ../src/menutree.c:379
 msgid "Res_tart command"
 msgstr ""
 
 #: ../src/menutree.c:387
+#, fuzzy
 msgid "_Always Show Tab Bar"
-msgstr ""
+msgstr "Всегда показывать панель вкладок"
 
 #: ../src/menutree.c:388
+#, fuzzy
 msgid "_Full Screen"
-msgstr ""
+msgstr "Полный экран"
 
 #: ../src/menutree.c:389 ../src/roxterm-config.ui:1888
 msgid "_Borderless"
@@ -467,12 +481,14 @@ msgid "Scroll Down One Hal_f Page"
 msgstr ""
 
 #: ../src/menutree.c:401
+#, fuzzy
 msgid "Scroll To _Top"
-msgstr ""
+msgstr "Следовать за выводом"
 
 #: ../src/menutree.c:402
+#, fuzzy
 msgid "Scroll To _Bottom"
-msgstr ""
+msgstr "Следовать за выводом"
 
 #: ../src/menutree.c:409
 msgid "_Find..."
@@ -495,12 +511,14 @@ msgid "_Detach Tab"
 msgstr ""
 
 #: ../src/menutree.c:428
+#, fuzzy
 msgid "_Close Tab"
-msgstr ""
+msgstr "Закрыть вкладку"
 
 #: ../src/menutree.c:429
+#, fuzzy
 msgid "Close _Other Tabs"
-msgstr ""
+msgstr "Закрыть вкладку"
 
 #: ../src/menutree.c:430
 msgid "Na_me Tab..."
@@ -571,8 +589,9 @@ msgid "Unable to save session to file '%s': %s"
 msgstr ""
 
 #: ../src/multitab.c:1422
+#, fuzzy
 msgid "Set Window Title"
-msgstr ""
+msgstr "Заголовок окна:"
 
 #: ../src/multitab.c:1433
 msgid ""
@@ -716,17 +735,17 @@ msgid ""
 "Kinetic scrolling is enabled."
 msgstr ""
 
-#: ../src/profilegui.c:677
+#: ../src/profilegui.c:678
 #, c-format
 msgid "Unable to load GTK UI definitions: %s"
 msgstr ""
 
-#: ../src/profilegui.c:682
-#, c-format
+#: ../src/profilegui.c:683
+#, fuzzy, c-format
 msgid "ROXTerm Profile \"%s\""
-msgstr ""
+msgstr "Профиль ROXTerm"
 
-#: ../src/profilegui.c:715
+#: ../src/profilegui.c:716
 msgid "Deleting edited profile that wasn't in list of profiles being edited"
 msgstr ""
 
@@ -760,8 +779,9 @@ msgid "Couldn't create a font from '%s'"
 msgstr ""
 
 #: ../src/roxterm.c:1593 ../src/roxterm.c:3535
+#, fuzzy
 msgid "ROXTerm"
-msgstr ""
+msgstr "Профиль ROXTerm"
 
 #: ../src/roxterm.c:1636
 #, c-format
@@ -786,16 +806,18 @@ msgid ""
 msgstr ""
 
 #: ../src/roxterm.c:2057
+#, fuzzy
 msgid "Close"
-msgstr ""
+msgstr "Закрыть вкладку"
 
 #: ../src/roxterm.c:2059
 msgid "Leave open"
 msgstr ""
 
 #: ../src/roxterm.c:2061
+#, fuzzy
 msgid "Rerun command"
-msgstr ""
+msgstr "Команда"
 
 #: ../src/roxterm.c:2113
 msgid ""
@@ -804,9 +826,9 @@ msgid ""
 msgstr ""
 
 #: ../src/roxterm.c:2177
-#, c-format
+#, fuzzy, c-format
 msgid "Unknown colour scheme '%s'"
-msgstr ""
+msgstr "Цветовая схема ROXTerm"
 
 #: ../src/roxterm.c:2205 ../src/roxterm.c:2262 ../src/roxterm.c:2305
 #: ../src/roxterm.c:2346
@@ -901,8 +923,9 @@ msgid ""
 msgstr ""
 
 #: ../src/roxterm.c:4699
+#, fuzzy
 msgid "ROXTerm: Confirm close"
-msgstr ""
+msgstr "Профиль ROXTerm"
 
 #: ../src/roxterm.c:4704
 msgid "_Don't show this again"
@@ -923,8 +946,9 @@ msgid "Unknown <window> attribute '%s'"
 msgstr ""
 
 #: ../src/roxterm.c:5026
+#, fuzzy
 msgid "Session contains window with no valid tabs"
-msgstr ""
+msgstr "Предупреждать при закрытии окна с несколькими вкладками"
 
 #: ../src/roxterm.c:5161
 msgid "<command> with no arguments"
@@ -1140,8 +1164,9 @@ msgid "Find"
 msgstr ""
 
 #: ../src/search.c:315
+#, fuzzy
 msgid "_Close"
-msgstr ""
+msgstr "Закрыть вкладку"
 
 #: ../src/search.c:316
 msgid "_Find"
@@ -1188,8 +1213,9 @@ msgid ""
 msgstr ""
 
 #: ../src/search.c:364
+#, fuzzy
 msgid "_Wrap Around"
-msgstr ""
+msgstr "Цвет _фона"
 
 #: ../src/search.c:365
 msgid ""
@@ -1229,6 +1255,202 @@ msgstr ""
 #: ../src/shortcuts.c:422
 #, c-format
 msgid "Error trying to edit or monitor Shortcuts file '%s': %s"
+msgstr ""
+
+#: ../src/globalopts.c:225
+msgid "Show brief usage message"
+msgstr ""
+
+#: ../src/globalopts.c:228
+msgid "Set the terminal's working directory"
+msgstr ""
+
+#: ../src/globalopts.c:228 ../src/globalopts.c:241
+msgid "DIRECTORY"
+msgstr ""
+
+#: ../src/globalopts.c:231
+msgid ""
+"Set size of terminal. GEOMETRY is WxH or\n"
+"                                   WxH+X+Y (X11 only); '-' can be used\n"
+"                                   instead of '+'"
+msgstr ""
+
+#: ../src/globalopts.c:236
+msgid "GEOMETRY"
+msgstr ""
+
+#: ../src/globalopts.c:239
+msgid ""
+"Application directory when run as a ROX\n"
+"                                   application"
+msgstr ""
+
+#: ../src/globalopts.c:244
+msgid "Show the menu bar, overriding profile"
+msgstr ""
+
+#: ../src/globalopts.c:247
+msgid "Hide the menu bar, overriding profile"
+msgstr ""
+
+#: ../src/globalopts.c:250
+msgid "Use the named profile"
+msgstr ""
+
+#: ../src/globalopts.c:250
+msgid "PROFILE"
+msgstr ""
+
+#: ../src/globalopts.c:253
+#, fuzzy
+msgid "Use the named colour scheme"
+msgstr "Нажмите для изменения выбранной цветовой схемы"
+
+#: ../src/globalopts.c:254 ../src/globalopts.c:259 ../src/globalopts.c:263
+msgid "SCHEME"
+msgstr ""
+
+#: ../src/globalopts.c:257
+msgid ""
+"Use the named colour scheme\n"
+"                                   (same as --colour-scheme)"
+msgstr ""
+
+#: ../src/globalopts.c:262
+#, fuzzy
+msgid "Use the named keyboard shortcut scheme"
+msgstr "Нажмите для переименования выбранной схемы сочетания клавиш"
+
+#: ../src/globalopts.c:268
+msgid "Maximise the window, overriding profile"
+msgstr ""
+
+#: ../src/globalopts.c:271
+msgid "Synonym for --maximise"
+msgstr ""
+
+#: ../src/globalopts.c:274
+#, fuzzy
+msgid ""
+"Make the initial terminal take up the whole\n"
+"                                   screen with no window furniture"
+msgstr "Развернуть терминал наполное окно без оформления окна"
+
+#: ../src/globalopts.c:279
+msgid "Show without decorations, overriding profile"
+msgstr ""
+
+#: ../src/globalopts.c:282
+msgid ""
+"Scale factor for terminal's fonts\n"
+"                                   (1.0 is normal)"
+msgstr ""
+
+#: ../src/globalopts.c:284
+msgid "ZOOM"
+msgstr ""
+
+#: ../src/globalopts.c:287
+msgid "Use a separate process to run this terminal"
+msgstr ""
+
+#: ../src/globalopts.c:290
+msgid ""
+"Replace any existing process as ROXTerm's\n"
+"                                   D-BUS service provider"
+msgstr ""
+
+#: ../src/globalopts.c:295
+#, fuzzy
+msgid "Set window title"
+msgstr "Заголовок окна:"
+
+#: ../src/globalopts.c:295
+msgid "TITLE"
+msgstr ""
+
+#: ../src/globalopts.c:298
+msgid "Set tab name"
+msgstr ""
+
+#: ../src/globalopts.c:298 ../src/globalopts.c:322
+msgid "NAME"
+msgstr ""
+
+#: ../src/globalopts.c:301
+msgid ""
+"Open a tab in an existing window instead of\n"
+"                                   a new window if possible"
+msgstr ""
+
+#: ../src/globalopts.c:306
+msgid ""
+"Fork into the background even if this is the\n"
+"                                   first instance"
+msgstr ""
+
+#: ../src/globalopts.c:311
+msgid "On command exit: close, hold, respawn, ask"
+msgstr ""
+
+#: ../src/globalopts.c:312
+msgid "ACTION"
+msgstr ""
+
+#: ../src/globalopts.c:315
+msgid "An alias for --atexit=hold: keep tab open"
+msgstr ""
+
+#: ../src/globalopts.c:319
+msgid "Restore the named user session"
+msgstr ""
+
+#: ../src/globalopts.c:319
+msgid "SESSION"
+msgstr ""
+
+#: ../src/globalopts.c:322
+msgid "Set X window system 'role' hint"
+msgstr ""
+
+#: ../src/globalopts.c:325
+msgid ""
+"Execute remainder of command line inside the\n"
+"                                   terminal. Must be the final option."
+msgstr ""
+
+#: ../src/profilegui.c:585
+msgid "Text"
+msgstr ""
+
+#: ../src/profilegui.c:585
+msgid "Appearance"
+msgstr "Вид"
+
+#: ../src/profilegui.c:585
+#, fuzzy
+msgid "Command"
+msgstr "Команда"
+
+#: ../src/profilegui.c:585
+msgid "General"
+msgstr "Основные"
+
+#: ../src/profilegui.c:586
+msgid "Scrolling"
+msgstr "Скроллинг"
+
+#: ../src/profilegui.c:586
+msgid "Keyboard"
+msgstr "Клавиатура"
+
+#: ../src/profilegui.c:586
+msgid "Tabs"
+msgstr "Вкладки"
+
+#: ../src/profilegui.c:586
+msgid "Clipboard"
 msgstr ""
 
 #: ../src/roxterm-config.ui:8
@@ -2215,21 +2437,6 @@ msgstr ""
 msgid "Miscellaneous options to add to the ssh command line."
 msgstr "Без полосы прокрутки"
 
-#~ msgid "Appearance"
-#~ msgstr "Вид"
-
-#~ msgid "General"
-#~ msgstr "Основные"
-
-#~ msgid "Scrolling"
-#~ msgstr "Скроллинг"
-
-#~ msgid "Keyboard"
-#~ msgstr "Клавиатура"
-
-#~ msgid "Tabs"
-#~ msgstr "Вкладки"
-
 #~ msgid "Click to add a new encoding name"
 #~ msgstr "Нажмите для добавления новой кодировки"
 
@@ -2277,9 +2484,6 @@ msgstr "Без полосы прокрутки"
 
 #~ msgid "Background"
 #~ msgstr "Фон"
-
-#~ msgid "S_how number"
-#~ msgstr "Показывать номер"
 
 #, fuzzy
 #~ msgid "background_colour"

@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: roxterm 3.16.6.20~g1a6f254\n"
+"Project-Id-Version: roxterm 3.16.6.29~gf09cbb3\n"
 "Report-Msgid-Bugs-To: https://github.com/realh/roxterm/issues\n"
-"POT-Creation-Date: 2025-09-04 15:32+0100\n"
+"POT-Creation-Date: 2025-09-05 13:09+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -710,17 +710,17 @@ msgid ""
 "Kinetic scrolling is enabled."
 msgstr ""
 
-#: ../src/profilegui.c:677
+#: ../src/profilegui.c:678
 #, c-format
 msgid "Unable to load GTK UI definitions: %s"
 msgstr ""
 
-#: ../src/profilegui.c:682
+#: ../src/profilegui.c:683
 #, c-format
 msgid "ROXTerm Profile \"%s\""
 msgstr ""
 
-#: ../src/profilegui.c:715
+#: ../src/profilegui.c:716
 msgid "Deleting edited profile that wasn't in list of profiles being edited"
 msgstr ""
 
@@ -1222,6 +1222,197 @@ msgstr ""
 #: ../src/shortcuts.c:422
 #, c-format
 msgid "Error trying to edit or monitor Shortcuts file '%s': %s"
+msgstr ""
+
+#: ../src/globalopts.c:225
+msgid "Show brief usage message"
+msgstr ""
+
+#: ../src/globalopts.c:228
+msgid "Set the terminal's working directory"
+msgstr ""
+
+#: ../src/globalopts.c:228 ../src/globalopts.c:241
+msgid "DIRECTORY"
+msgstr ""
+
+#: ../src/globalopts.c:231
+msgid ""
+"Set size of terminal. GEOMETRY is WxH or\n"
+"                                   WxH+X+Y (X11 only); '-' can be used\n"
+"                                   instead of '+'"
+msgstr ""
+
+#: ../src/globalopts.c:236
+msgid "GEOMETRY"
+msgstr ""
+
+#: ../src/globalopts.c:239
+msgid ""
+"Application directory when run as a ROX\n"
+"                                   application"
+msgstr ""
+
+#: ../src/globalopts.c:244
+msgid "Show the menu bar, overriding profile"
+msgstr ""
+
+#: ../src/globalopts.c:247
+msgid "Hide the menu bar, overriding profile"
+msgstr ""
+
+#: ../src/globalopts.c:250
+msgid "Use the named profile"
+msgstr ""
+
+#: ../src/globalopts.c:250
+msgid "PROFILE"
+msgstr ""
+
+#: ../src/globalopts.c:253
+msgid "Use the named colour scheme"
+msgstr ""
+
+#: ../src/globalopts.c:254 ../src/globalopts.c:259 ../src/globalopts.c:263
+msgid "SCHEME"
+msgstr ""
+
+#: ../src/globalopts.c:257
+msgid ""
+"Use the named colour scheme\n"
+"                                   (same as --colour-scheme)"
+msgstr ""
+
+#: ../src/globalopts.c:262
+msgid "Use the named keyboard shortcut scheme"
+msgstr ""
+
+#: ../src/globalopts.c:268
+msgid "Maximise the window, overriding profile"
+msgstr ""
+
+#: ../src/globalopts.c:271
+msgid "Synonym for --maximise"
+msgstr ""
+
+#: ../src/globalopts.c:274
+msgid ""
+"Make the initial terminal take up the whole\n"
+"                                   screen with no window furniture"
+msgstr ""
+
+#: ../src/globalopts.c:279
+msgid "Show without decorations, overriding profile"
+msgstr ""
+
+#: ../src/globalopts.c:282
+msgid ""
+"Scale factor for terminal's fonts\n"
+"                                   (1.0 is normal)"
+msgstr ""
+
+#: ../src/globalopts.c:284
+msgid "ZOOM"
+msgstr ""
+
+#: ../src/globalopts.c:287
+msgid "Use a separate process to run this terminal"
+msgstr ""
+
+#: ../src/globalopts.c:290
+msgid ""
+"Replace any existing process as ROXTerm's\n"
+"                                   D-BUS service provider"
+msgstr ""
+
+#: ../src/globalopts.c:295
+msgid "Set window title"
+msgstr ""
+
+#: ../src/globalopts.c:295
+msgid "TITLE"
+msgstr ""
+
+#: ../src/globalopts.c:298
+msgid "Set tab name"
+msgstr ""
+
+#: ../src/globalopts.c:298 ../src/globalopts.c:322
+msgid "NAME"
+msgstr ""
+
+#: ../src/globalopts.c:301
+msgid ""
+"Open a tab in an existing window instead of\n"
+"                                   a new window if possible"
+msgstr ""
+
+#: ../src/globalopts.c:306
+msgid ""
+"Fork into the background even if this is the\n"
+"                                   first instance"
+msgstr ""
+
+#: ../src/globalopts.c:311
+msgid "On command exit: close, hold, respawn, ask"
+msgstr ""
+
+#: ../src/globalopts.c:312
+msgid "ACTION"
+msgstr ""
+
+#: ../src/globalopts.c:315
+msgid "An alias for --atexit=hold: keep tab open"
+msgstr ""
+
+#: ../src/globalopts.c:319
+msgid "Restore the named user session"
+msgstr ""
+
+#: ../src/globalopts.c:319
+msgid "SESSION"
+msgstr ""
+
+#: ../src/globalopts.c:322
+msgid "Set X window system 'role' hint"
+msgstr ""
+
+#: ../src/globalopts.c:325
+msgid ""
+"Execute remainder of command line inside the\n"
+"                                   terminal. Must be the final option."
+msgstr ""
+
+#: ../src/profilegui.c:585
+msgid "Text"
+msgstr ""
+
+#: ../src/profilegui.c:585
+msgid "Appearance"
+msgstr ""
+
+#: ../src/profilegui.c:585
+msgid "Command"
+msgstr ""
+
+#: ../src/profilegui.c:585
+msgid "General"
+msgstr ""
+
+#: ../src/profilegui.c:586
+msgid "Scrolling"
+msgstr ""
+
+#: ../src/profilegui.c:586
+msgid "Keyboard"
+msgstr ""
+
+#: ../src/profilegui.c:586
+msgid "Tabs"
+msgstr ""
+
+#: ../src/profilegui.c:586
+msgid "Clipboard"
 msgstr ""
 
 #: ../src/roxterm-config.ui:8

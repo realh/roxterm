@@ -10,8 +10,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: roxterm\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-02 23:23+0100\n"
+"Report-Msgid-Bugs-To: https://github.com/realh/roxterm/issues\n"
+"POT-Creation-Date: 2025-09-05 13:09+0100\n"
 "PO-Revision-Date: 2024-09-25 18:50+0000\n"
 "Last-Translator: marcelocripe <marcelocripe@gmail.com>, 2024\n"
 "Language-Team: Portuguese (Brazil) (https://app.transifex.com/antix-linux-"
@@ -34,7 +34,7 @@ msgstr ""
 
 #: ../src/about.c:40
 #, fuzzy
-msgid "(c) 2005-2018 Tony Houghton"
+msgid "(c) 2005-2025 Tony Houghton"
 msgstr ""
 "Desenvolvido por:\n"
 "(c) 2005-2015 Tony Houghton"
@@ -759,18 +759,18 @@ msgid ""
 "Kinetic scrolling is enabled."
 msgstr ""
 
-#: ../src/profilegui.c:677
+#: ../src/profilegui.c:678
 #, c-format
 msgid "Unable to load GTK UI definitions: %s"
 msgstr ""
 "Não foi possível carregar as definições da interface gráfica do GTK: %s"
 
-#: ../src/profilegui.c:682
+#: ../src/profilegui.c:683
 #, c-format
 msgid "ROXTerm Profile \"%s\""
 msgstr "Perfil do ROXTerm ‘%s’"
 
-#: ../src/profilegui.c:715
+#: ../src/profilegui.c:716
 msgid "Deleting edited profile that wasn't in list of profiles being edited"
 msgstr ""
 "Excluir o perfil editado que não estava na lista dos perfis que estavam "
@@ -1325,6 +1325,220 @@ msgstr ""
 msgid "Error trying to edit or monitor Shortcuts file '%s': %s"
 msgstr ""
 "Ocorreu um erro ao tentar editar ou monitorar o arquivo dos atalhos ‘%s’: %s"
+
+#: ../src/globalopts.c:225
+msgid "Show brief usage message"
+msgstr "Exibir uma breve mensagem da utilização"
+
+#: ../src/globalopts.c:228
+msgid "Set the terminal's working directory"
+msgstr "Definir o diretório de trabalho do terminal"
+
+#: ../src/globalopts.c:228 ../src/globalopts.c:241
+msgid "DIRECTORY"
+msgstr "DIRETÓRIO"
+
+#: ../src/globalopts.c:231
+msgid ""
+"Set size of terminal. GEOMETRY is WxH or\n"
+"                                   WxH+X+Y (X11 only); '-' can be used\n"
+"                                   instead of '+'"
+msgstr ""
+
+#: ../src/globalopts.c:236
+msgid "GEOMETRY"
+msgstr "GEOMETRIA"
+
+#: ../src/globalopts.c:239
+msgid ""
+"Application directory when run as a ROX\n"
+"                                   application"
+msgstr ""
+"Diretório do aplicativo quando é executado\n"
+"                                   um aplicativo no ROX"
+
+#: ../src/globalopts.c:244
+msgid "Show the menu bar, overriding profile"
+msgstr "Exibir a barra do menu e ignorar as configurações do perfil"
+
+#: ../src/globalopts.c:247
+msgid "Hide the menu bar, overriding profile"
+msgstr "Ocultar a barra do menu e ignorar as configurações do perfil"
+
+#: ../src/globalopts.c:250
+msgid "Use the named profile"
+msgstr "Utilizar o perfil que foi nomeado"
+
+#: ../src/globalopts.c:250
+msgid "PROFILE"
+msgstr "PERFIL"
+
+#: ../src/globalopts.c:253
+msgid "Use the named colour scheme"
+msgstr "Utilizar o esquema das cores que foram nomeadas"
+
+#: ../src/globalopts.c:254 ../src/globalopts.c:259 ../src/globalopts.c:263
+msgid "SCHEME"
+msgstr "ESQUEMA"
+
+#: ../src/globalopts.c:257
+msgid ""
+"Use the named colour scheme\n"
+"                                   (same as --colour-scheme)"
+msgstr ""
+"Utilizar o esquema das\n"
+"                                   cores que foram nomeadas\n"
+"                                   (é o mesmo que utilizar a\n"
+"                                   opção ‘--colour-scheme’)"
+
+#: ../src/globalopts.c:262
+#, fuzzy
+msgid "Use the named keyboard shortcut scheme"
+msgstr "Utilizar o esquema das cores que foram nomeadas"
+
+#: ../src/globalopts.c:268
+msgid "Maximise the window, overriding profile"
+msgstr "Maximizar a janela e ignorar as configurações do perfil"
+
+#: ../src/globalopts.c:271
+msgid "Synonym for --maximise"
+msgstr "É um sinônimo para ‘--maximise’"
+
+#: ../src/globalopts.c:274
+msgid ""
+"Make the initial terminal take up the whole\n"
+"                                   screen with no window furniture"
+msgstr ""
+"Indica que o terminal inicial pode ocupar toda\n"
+"                                   a tela sem a decoração da janela"
+
+#: ../src/globalopts.c:279
+#, fuzzy
+msgid "Show without decorations, overriding profile"
+msgstr "Exibir a barra do menu e ignorar as configurações do perfil"
+
+#: ../src/globalopts.c:282
+msgid ""
+"Scale factor for terminal's fonts\n"
+"                                   (1.0 is normal)"
+msgstr ""
+"Fator da escala para as letras do terminal\n"
+"                                   (O valor 1.0 é o normal)"
+
+#: ../src/globalopts.c:284
+msgid "ZOOM"
+msgstr "APROXIMAR"
+
+#: ../src/globalopts.c:287
+msgid "Use a separate process to run this terminal"
+msgstr "Utilizar um processo separado ao executar este termial"
+
+#: ../src/globalopts.c:290
+msgid ""
+"Replace any existing process as ROXTerm's\n"
+"                                   D-BUS service provider"
+msgstr ""
+"Substituir qualquer processo existente do\n"
+"                                   ROXTerm para o provedor de\n"
+"                                   serviços ‘D-BUS’"
+
+#: ../src/globalopts.c:295
+msgid "Set window title"
+msgstr "Definir o título da janela"
+
+#: ../src/globalopts.c:295
+msgid "TITLE"
+msgstr "TÍTULO"
+
+#: ../src/globalopts.c:298
+msgid "Set tab name"
+msgstr "Definir o nome da aba ou da guia"
+
+#: ../src/globalopts.c:298 ../src/globalopts.c:322
+msgid "NAME"
+msgstr "NOME"
+
+#: ../src/globalopts.c:301
+msgid ""
+"Open a tab in an existing window instead of\n"
+"                                   a new window if possible"
+msgstr ""
+"Abrir uma aba ou guia em uma janela\n"
+"                                   existente ao invés de uma nova\n"
+"                                   janela, se for possível"
+
+#: ../src/globalopts.c:306
+#, fuzzy
+msgid ""
+"Fork into the background even if this is the\n"
+"                                   first instance"
+msgstr ""
+"Deslocar para o segundo plano, mesmo que esta seja a primeira instância"
+
+#: ../src/globalopts.c:311
+msgid "On command exit: close, hold, respawn, ask"
+msgstr ""
+
+#: ../src/globalopts.c:312
+msgid "ACTION"
+msgstr ""
+
+#: ../src/globalopts.c:315
+msgid "An alias for --atexit=hold: keep tab open"
+msgstr ""
+
+#: ../src/globalopts.c:319
+msgid "Restore the named user session"
+msgstr "Restaurar a sessão nomeada pelo usuário"
+
+#: ../src/globalopts.c:319
+msgid "SESSION"
+msgstr "SESSÃO"
+
+#: ../src/globalopts.c:322
+msgid "Set X window system 'role' hint"
+msgstr "Definir a dica da ‘função’ do sistema de janelas X"
+
+#: ../src/globalopts.c:325
+msgid ""
+"Execute remainder of command line inside the\n"
+"                                   terminal. Must be the final option."
+msgstr ""
+"Executar o restante da linha de comando dentro\n"
+"                                   do terminal. Esta deve ser a opção\n"
+"                                   final."
+
+#: ../src/profilegui.c:585
+msgid "Text"
+msgstr ""
+
+#: ../src/profilegui.c:585
+msgid "Appearance"
+msgstr "Aparência"
+
+#: ../src/profilegui.c:585
+msgid "Command"
+msgstr "Comando"
+
+#: ../src/profilegui.c:585
+msgid "General"
+msgstr "Geral"
+
+#: ../src/profilegui.c:586
+msgid "Scrolling"
+msgstr "Rolagem"
+
+#: ../src/profilegui.c:586
+msgid "Keyboard"
+msgstr "Teclado"
+
+#: ../src/profilegui.c:586
+msgid "Tabs"
+msgstr "Abas"
+
+#: ../src/profilegui.c:586
+msgid "Clipboard"
+msgstr ""
 
 #: ../src/roxterm-config.ui:8
 msgid "ROXTerm Colour Scheme"
@@ -2411,15 +2625,6 @@ msgstr "Várias opções para adicionar na linha dos comandos do SSH."
 #~ msgstr ""
 #~ "Tentar diminuir o valor abaixo de 0 (zero) para a opção ‘encodings_lock’"
 
-#~ msgid "Show brief usage message"
-#~ msgstr "Exibir uma breve mensagem da utilização"
-
-#~ msgid "Set the terminal's working directory"
-#~ msgstr "Definir o diretório de trabalho do terminal"
-
-#~ msgid "DIRECTORY"
-#~ msgstr "DIRETÓRIO"
-
 #~ msgid ""
 #~ "Set size and/or position of terminal\n"
 #~ "                                   according to X geometry specification"
@@ -2428,112 +2633,8 @@ msgstr "Várias opções para adicionar na linha dos comandos do SSH."
 #~ "                                   terminal de acordo com a\n"
 #~ "                                   especificação geometria do X"
 
-#~ msgid "GEOMETRY"
-#~ msgstr "GEOMETRIA"
-
-#~ msgid ""
-#~ "Application directory when run as a ROX\n"
-#~ "                                   application"
-#~ msgstr ""
-#~ "Diretório do aplicativo quando é executado\n"
-#~ "                                   um aplicativo no ROX"
-
-#~ msgid "Show the menu bar, overriding profile"
-#~ msgstr "Exibir a barra do menu e ignorar as configurações do perfil"
-
-#~ msgid "Hide the menu bar, overriding profile"
-#~ msgstr "Ocultar a barra do menu e ignorar as configurações do perfil"
-
-#~ msgid "Use the named profile"
-#~ msgstr "Utilizar o perfil que foi nomeado"
-
-#~ msgid "PROFILE"
-#~ msgstr "PERFIL"
-
-#~ msgid "Use the named colour scheme"
-#~ msgstr "Utilizar o esquema das cores que foram nomeadas"
-
-#~ msgid "SCHEME"
-#~ msgstr "ESQUEMA"
-
-#~ msgid ""
-#~ "Use the named colour scheme\n"
-#~ "                                   (same as --colour-scheme)"
-#~ msgstr ""
-#~ "Utilizar o esquema das\n"
-#~ "                                   cores que foram nomeadas\n"
-#~ "                                   (é o mesmo que utilizar a\n"
-#~ "                                   opção ‘--colour-scheme’)"
-
-#~ msgid "Maximise the window, overriding profile"
-#~ msgstr "Maximizar a janela e ignorar as configurações do perfil"
-
-#~ msgid "Synonym for --maximise"
-#~ msgstr "É um sinônimo para ‘--maximise’"
-
-#~ msgid ""
-#~ "Make the initial terminal take up the whole\n"
-#~ "                                   screen with no window furniture"
-#~ msgstr ""
-#~ "Indica que o terminal inicial pode ocupar toda\n"
-#~ "                                   a tela sem a decoração da janela"
-
-#~ msgid ""
-#~ "Scale factor for terminal's fonts\n"
-#~ "                                   (1.0 is normal)"
-#~ msgstr ""
-#~ "Fator da escala para as letras do terminal\n"
-#~ "                                   (O valor 1.0 é o normal)"
-
-#~ msgid "ZOOM"
-#~ msgstr "APROXIMAR"
-
-#~ msgid "Use a separate process to run this terminal"
-#~ msgstr "Utilizar um processo separado ao executar este termial"
-
-#~ msgid ""
-#~ "Replace any existing process as ROXTerm's\n"
-#~ "                                   D-BUS service provider"
-#~ msgstr ""
-#~ "Substituir qualquer processo existente do\n"
-#~ "                                   ROXTerm para o provedor de\n"
-#~ "                                   serviços ‘D-BUS’"
-
-#~ msgid "Set window title"
-#~ msgstr "Definir o título da janela"
-
-#~ msgid "TITLE"
-#~ msgstr "TÍTULO"
-
-#~ msgid "Set tab name"
-#~ msgstr "Definir o nome da aba ou da guia"
-
-#~ msgid "NAME"
-#~ msgstr "NOME"
-
-#~ msgid ""
-#~ "Open a tab in an existing window instead of\n"
-#~ "                                   a new window if possible"
-#~ msgstr ""
-#~ "Abrir uma aba ou guia em uma janela\n"
-#~ "                                   existente ao invés de uma nova\n"
-#~ "                                   janela, se for possível"
-
-#~ msgid "Fork into the background even if this is the first instance"
-#~ msgstr ""
-#~ "Deslocar para o segundo plano, mesmo que esta seja a primeira instância"
-
 #~ msgid "Disable session management"
 #~ msgstr "Desativar o gerenciamento da sessão"
-
-#~ msgid "Set X window system 'role' hint"
-#~ msgstr "Definir a dica da ‘função’ do sistema de janelas X"
-
-#~ msgid "Restore the named user session"
-#~ msgstr "Restaurar a sessão nomeada pelo usuário"
-
-#~ msgid "SESSION"
-#~ msgstr "SESSÃO"
 
 #~ msgid ""
 #~ "Don't set window geometry hints. This is a workaround for <https://"
@@ -2542,14 +2643,6 @@ msgstr "Várias opções para adicionar na linha dos comandos do SSH."
 #~ "Não defina as dicas de geometria da janela. Esta é uma solução "
 #~ "alternativa, para obter mais informações consulte a página <https://"
 #~ "bugzilla.gnome.org/show_bug.cgi?id=649680>"
-
-#~ msgid ""
-#~ "Execute remainder of command line inside the\n"
-#~ "                                   terminal. Must be the final option."
-#~ msgstr ""
-#~ "Executar o restante da linha de comando dentro\n"
-#~ "                                   do terminal. Esta deve ser a opção\n"
-#~ "                                   final."
 
 #~ msgid "Unable to read current workspace"
 #~ msgstr "Não foi possível ler o espaço de trabalho atual"
@@ -2570,29 +2663,11 @@ msgstr "Várias opções para adicionar na linha dos comandos do SSH."
 #~ "‘%s’ contém as sequências de %% que não são válidas para o título do "
 #~ "modelo"
 
-#~ msgid "Appearance"
-#~ msgstr "Aparência"
-
-#~ msgid "General"
-#~ msgstr "Geral"
-
-#~ msgid "Command"
-#~ msgstr "Comando"
-
 #~ msgid "Net URIs"
 #~ msgstr "URIs da rede"
 
 #~ msgid "File URIs"
 #~ msgstr "URIs do arquivo"
-
-#~ msgid "Scrolling"
-#~ msgstr "Rolagem"
-
-#~ msgid "Keyboard"
-#~ msgstr "Teclado"
-
-#~ msgid "Tabs"
-#~ msgstr "Abas"
 
 #, c-format
 #~ msgid "Action '%s' not recognised for encodings"
