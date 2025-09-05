@@ -620,7 +620,8 @@ static void profilegui_init_kinetic_warning(ProfileGUI *pg)
         "Kinetic scrolling is available with vte 0.64 or later. It enhances "
         "the UX for touch pads and screens, but can be <a href=\"%s\">"
         "buggy</a>. Enabling \"Scroll in units of pixels\" (vte &gt;= 0.66) or "
-        "disabling \"Limit scrollback\" (vte &lt; 0.66) is advised to mitigate " "against these bugs when Kinetic scrolling is enabled.");
+        "disabling \"Limit scrollback\" (vte &lt; 0.66) is advised to mitigate "
+        "against these bugs when Kinetic scrolling is enabled.");
     static const char *kinetic_bug_url =
         "https://gitlab.gnome.org/GNOME/vte/-/issues/336";
     GtkWidget *kinetic_warning_label = profilegui_widget(pg, "kinetic_warning");
