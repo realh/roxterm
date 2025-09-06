@@ -70,7 +70,6 @@ static char **options_file_join_strvs(const char * const *v1,
 	return result;
 }
 
-#if 0
 static void options_file_debug_options_pathv(void)
 {
 	int n;
@@ -83,10 +82,9 @@ static void options_file_debug_options_pathv(void)
 	g_debug("options_pathv contains:");
 	for (n = 0; options_pathv[n]; ++n)
 	{
-		g_debug(options_pathv[n]);
+		g_debug("  %s", options_pathv[n]);
 	}
 }
-#endif
 
 static void options_file_append_leaf_to_pathv(char **pathv, const char *leaf)
 {
@@ -118,30 +116,52 @@ static void options_file_prepend_str_to_v(char *s)
 static void options_file_init_paths(void)
 {
 	if (options_pathv)
+    {
 		return;
+    }
 
 	/* Add in reverse order of priority because we prepend */
 
 	/* XDG system conf dirs */
 	options_pathv = options_file_join_strvs(g_get_system_config_dirs(), NULL);
-	if (options_pathv)
+    g_debug("options_file_init_paths: options_pathv from XDG:");
+    options_file_debug_options_pathv();
+    if (options_pathv)
+    {
+        g_debug("options_file_init_paths: appending ROXTERM_LEAF_DIR %s",
+                ROXTERM_LEAF_DIR);
 		options_file_append_leaf_to_pathv(options_pathv, ROXTERM_LEAF_DIR);
+        options_file_debug_options_pathv();
+    }
+    else
+    {
+        g_debug("options_file_init_paths: pathv is still NULL");
+    }
 
 	/* AppDir or datadir */
 	if (global_options_appdir)
 	{
+        g_debug("options_file_init_paths: prepending appdir %s",
+                global_options_appdir);
 		options_file_prepend_str_to_v(g_build_filename(global_options_appdir,
 					"Config", NULL));
+        options_file_debug_options_pathv();
 	}
 	else
 	{
+        g_debug("options_file_init_paths: prepending PKG_DATA_DIR %s",
+                PKG_DATA_DIR);
 		options_file_prepend_str_to_v(g_build_filename(PKG_DATA_DIR,
 					"Config", NULL));
+        options_file_debug_options_pathv();
 	}
 
 	/* XDG home conf dir (highest priority) */
+    g_debug("options_file_init_paths: prepending XDG~/ROXTERM_LEAF_DIR %s/%s",
+            g_get_user_config_dir(), ROXTERM_LEAF_DIR);
 	options_file_prepend_str_to_v(g_build_filename(g_get_user_config_dir(),
 				ROXTERM_LEAF_DIR, NULL));
+    options_file_debug_options_pathv();
 }
 
 const char * const *options_file_get_pathv(void)
@@ -163,7 +183,11 @@ static char *options_file_filename_from_pathv(const char *leafname,
 		char *filename = g_build_filename(pathv[n], leafname, NULL);
 
 		if (g_file_test(filename, G_FILE_TEST_EXISTS))
+        {
+            g_debug("options_file_filename_from_pathv: found '%s'", filename);
 			return filename;
+        }
+        g_debug("options_file_filename_from_pathv: '%s' not found", filename);
 		g_free(filename);
 	}
 	return NULL;
@@ -207,9 +231,12 @@ GKeyFile *options_file_open(const char *leafname, const char *group_name)
 
 	options_file_init_paths();
 	filename = options_file_build_filename(leafname, NULL);
+    g_debug("options_file_open: Generated filename '%s' for leafname '%s', "
+            "group_name '%s'", filename, leafname, group_name);
 	if (!filename)
 		return kf;
 
+    g_debug("options_file_open: Loading options file %s for %p", filename, kf);
 	if (!g_key_file_load_from_file(kf, filename,
 				G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS,
 				&err))

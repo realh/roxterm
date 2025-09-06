@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en-GB" lang="en-GB" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<meta name="author" content="Adrian Sampson" />
+	<meta name="description" content="ROXTerm, a full-featured VTE terminal emulator" />
+	<title>ROXTerm</title>
+	<link rel="stylesheet" type="text/css" href="../lib/roxterm.css" />
+	
+	<!--[if lte IE 7]>
+
+	<link rel="stylesheet" type="text/css" href="../lib/roxterm_ie.css" />
+	<![endif]-->
+<link rel="shortcut icon" type="image/x-icon" href="../lib/favicon.ico" />
+    <script type="text/javascript" src="../lib/lang.js"></script>
+    <script type="text/javascript" src="../lib/lang-menu.js"></script>
+</head>
+<body>
+	<div id="Container">
+		<div id="Header">
+			<div>
+				<a id="Logo" href="index.html">
+					<img src="../lib/logo_text.png" alt="ROXTerm" />
+				</a>
+
+				<ul>
+					<li><a id="MainNav_Home" href="index.html">Inicio</a></li>
+					<li><a id="MainNav_News" class="active" href="#">Noticias</a></li>
+					<li><a id="MainNav_Installation" href="installation.html">Instalación</a></li>
+					<li><a id="MainNav_UserGuide" href="guide.html">Guía de usuario</a></li>
+				</ul>
+			</div>
+			<div id="lang-selector"></div>
+		</div>
+
+		<div id="Middle" class='clear'>
+			<div id="Content">
+				<h1>Noticias</h1>
+
+				
+
+				<!--<hr />
+-->
+<div class="newsItem">
+					<span class="newsItemHeader">2018-03-01</span> <span
+class="newsItemSubHeader">Version 3.5.1</span>
+					<ul>
+                        <li><span>Migrated to github.</span></li>
+                        <li><span>Use CMake build system.</span></li>
+                        <li><span>Fixed the geometry bug introduced by GTK 3.20.0.</span></li>
+                        <li><span>Removed X11-specific code and options for improved Wayland
+support.</span></li>
+                        <li><span>Minimum version requirements are now GTK 3.20 and vte 0.48.</span></li>
+                        <li><span>Improved support for URIs.</span></li>
+                        <li><span>Numerous other fixes and updates.</span></li>
+					</ul>
+				</div>
+
+				<div class="newsItem">
+					<span class="newsItemHeader">2015-12-02</span> <span
+class="newsItemSubHeader">Version 3.3.1</span>
+					<ul>
+                      <li><span>Terminals running the default shell are only considered to be running
+(when confirming close actions)  if the shells have child processes. This
+may only work in Linux.</span></li>
+					</ul>
+				</div>
+
+				<div class="newsItem">
+					<span class="newsItemHeader">2015-08-11</span> <span
+class="newsItemSubHeader">Version 3.1.1</span>
+					<ul>
+                      <li><span>This version supports the saving and restoring of named user
+sessions.</span></li>
+                      <li><span>The initial number of tabs profile option has been removed; its
+functionality is better served by sessions.</span></li>
+					</ul>
+				</div>
+
+				<div class="newsItem">
+					<span class="newsItemHeader">2015-07-09</span> <span
+class="newsItemSubHeader">Version 3.0.1</span>
+					<ul>
+                      <li><span>The GTK2 version has been dropped and only the vte-2.91 API (vte 0.38
+or newer) is supported. You may need to change the background opacity
+setting (now found in the Appearance section of your profile) when upgrading
+from an earlier version.</span></li>
+                      <li><span>mscript.py now uses python3 by default, but is backwards compatible
+with python2. python3-lockfile is relatively new so you may need to
+explicitly run mscript.py in python2. To do this when building a Debian
+package edit debian/rules and change the dependencies in
+debian/control.</span></li>
+					</ul>
+				</div>
+            </div>
+        </div>
+
+		<div id="Footer">
+			<div id="FooterButtons">
+				<a id="GithubLink" href="https://github.com/realh/roxterm" title="RoxTerm
+Github"> roxterm @ github </a>
+
+				<br />
+
+				<a id="DonationLink" class="spriteLink"
+href="http://sourceforge.net/donate/index.php?group_id=124080">Donar</a> <a
+id="ValidMarkupLink" class="spriteLink"
+href="http://validator.w3.org/check?uri=referer">XHTML Válido</a>
+			</div>
+
+			<p>ROXTerm se publica bajo la licencia <a
+href="http://www.gnu.org/licenses/gpl-3.0-standalone.html">GPL</a> | Diseño
+de la página web por Adrian Sampson | Traducción al español por F&eacute;lix
+Medrano</p>
+		</div>
+	</div>
+</body>
+</html>

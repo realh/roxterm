@@ -16,18 +16,18 @@ a {
 	display:block;
 }
 
-* html #Middle,
-* html #Content,
+* html .Middle,
+* html .Content,
 * html #SubNav {
 	padding-top:0;
 }
 
-#Middle {
+.Middle {
 	min-width:60em;
 	width:auto;
 }
 
-* html #Middle {
+* html .Middle {
 	margin-top:2em;
 }
 
@@ -42,7 +42,7 @@ a {
 	position:static;
 }
 
-* html #Content.partialWidth {
+* html .Content.partialWidth {
 	padding:0 0 15em;
 	margin:0 !important;
 	float:left;
