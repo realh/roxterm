@@ -90,7 +90,7 @@ a img {
 	display:inline-block;
 }
 
-#Header ul li a, #SubNav li a {
+#Header ul li a, .SubNav li a {
 	outline:none;
 	text-decoration:none;
 	font-family:"Segoe UI","Trebuchet MS",Tahoma,sans-serif;
@@ -106,6 +106,10 @@ a img {
 
 #Header ul li a.active, #Header ul li a:hover {
 	border-color:#4284C9;
+}
+
+#ClearHeader {
+    margin-top: 6em;
 }
 
 .Middle {
@@ -286,18 +290,6 @@ a.pageAnchor {
 
 .invisible {
     display:none;
-}
-
-/* Language selection form */
-
-#Header {
-     white-space:nowrap;
-     position:relative;
-}
-
-#Header form#LangForm {
-     text-align:right;
-     margin:3em 2em 0 0;
 }
 
 #lang-selector {
