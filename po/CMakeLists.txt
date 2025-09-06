@@ -7,7 +7,7 @@ file(GLOB PO_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.po)
 message(TRACE " PO_FILES: ${PO_FILES}")
 set(LANGUAGES)
 string(REGEX REPLACE "\\.po" "" LANGUAGES "${PO_FILES}")
-message(TRACE " LANGUAGES: ${LANGUAGES}")
+message(STATUS " LANGUAGES: ${LANGUAGES}")
 
 # The .pot file should be checked in to git and re-generated if necessary
 # before pushing to github so that new translators can use the .pot file.
@@ -30,7 +30,10 @@ if (GETTEXT_XGETTEXT_EXECUTABLE)
     # CMake docs claim that the Gettext module creates a target called
     # potfile. This is a lie, rendering the alleged target useless, but
     # we'd better avoid possibly clashing with it.
-    add_custom_target(pot DEPENDS ${POT_DEPS})
+    add_custom_target(pot
+        DEPENDS ${POT_DEPS}
+        COMMENT "Regenerating ${POT_FILE}"
+    )
     add_custom_command(
         TARGET pot
         PRE_BUILD
@@ -63,10 +66,12 @@ if (GETTEXT_MSGMERGE_EXECUTABLE)
         DEPENDS pot
     )
     foreach(PO_FILE IN ITEMS ${PO_FILES})
-        message(STATUS " Enabling msgmerge for: ${PO_FILE}")
+        message(TRACE " Enabling msgmerge for: ${PO_FILE}")
         add_custom_command(
             TARGET pot-merge
             PRE_BUILD
+            COMMAND
+                ${CMAKE_COMMAND} -E echo "Updating ${PO_FILE}"
             COMMAND
                 ${GETTEXT_MSGMERGE_EXECUTABLE}
                 --output-file=${CMAKE_CURRENT_SOURCE_DIR}/${PO_FILE}
@@ -80,12 +85,19 @@ if (GETTEXT_MSGFMT_EXECUTABLE)
     add_custom_target(
         po-compile
         ALL
-        DEPENDS pot-merge
+        DEPENDS ${PO_FILES}
     )
-    message(STATUS " Enabling msgfmt for ${LANGUAGES}")
+    message(TRACE " Enabling msgfmt for ${LANGUAGES}")
+    add_custom_command(
+        TARGET po-compile
+        PRE_BUILD
+        COMMAND
+        ${CMAKE_COMMAND} -E echo Compiling '${PO_FILES}'
+    )
     foreach(LANG IN ITEMS ${LANGUAGES})
         set(MO_DIR "${CMAKE_CURRENT_BINARY_DIR}/${LANG}/LC_MESSAGES")
         set(MO_FILE "${MO_DIR}/roxterm.mo")
+        set(PO_FILE ${CMAKE_CURRENT_SOURCE_DIR}/${LANG}.po)
         file(MAKE_DIRECTORY ${MO_DIR})
         add_custom_command(
             TARGET po-compile
@@ -93,12 +105,13 @@ if (GETTEXT_MSGFMT_EXECUTABLE)
             COMMAND
                 ${GETTEXT_MSGFMT_EXECUTABLE}
                 --output-file=${MO_FILE}
-                ${CMAKE_CURRENT_SOURCE_DIR}/${LANG}.po
+                ${PO_FILE}
+            COMMENT
         )
         install(
             FILES "${MO_FILE}"
             DESTINATION
-            "${CMAKE_INSTALL_FULL_LOCALEDIR}/${LANG}/LC_MESSAGES"
+                "${CMAKE_INSTALL_FULL_LOCALEDIR}/${LANG}/LC_MESSAGES"
             COMPONENT
                 po
         )

@@ -94,11 +94,11 @@ I am in the process of reinstating support for translations. Please note that
 most of the existing translations are out-of-date and/or incomplete.
 
 CMake integration for translating strings in the code and UI should be working
-now. To add a new translation, simply create a new .po file in the po directory
-with your language code as its basename.
+now. To add a new translation, simply create a new .po file in the `po`
+directory with your language code as its basename.
 
-The .pot file for these translations is messages.pot. It can be
-regenerated with the `pot` target:
+The .pot file for these translations is `messages.pot`. It can be
+regenerated with the `pot` make/ninja target:
 
 ```
 make -C build pot
@@ -108,15 +108,21 @@ or
 ninja -C build pot
 ```
 
-When your new .po file is ready it will automatically be detected by CMake. The
-`pot-merge` target can be used to merge it with messages.pot whenever that gets
-updated. The `po-compile` target compiles .po files into .mo files.
+You can copy `messages.pot` to create a brand new .po file. When the source
+strings have been updated, use the `pot-merge` make/ninja target to merge
+`messages.pot` with existing .po files. Then edit your .po file and commit it;
+ignore the other .po files.
+
+The `po-compile` target compiles .po files into .mo files. This is run
+automatically during the overall build process, but the other rules above must
+be run explicitly; this is to reduce the chance of your edits accidentally
+being overwritten. `pot-merge` automatically runs `pot` first if necessary.
 
 If you want to build a local deb package you will have to add any new mo files
 to `debian/roxterm.install`.
 
 Translating the HTML documentation and man pages is not currently supported,
-but is currently being worked on.
+but is being worked on.
 
 You can submit your translations by creating a github PR, attaching the po file
 to an issue, or by emailing it to me <h@realh.co.uk>.
