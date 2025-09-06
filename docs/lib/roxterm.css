@@ -47,7 +47,7 @@ a img {
 	position:relative;
 }
 
-#Header, #Footer, #SubNav li a:hover {
+#Header, #Footer, .SubNav li a:hover {
 	background:#222;
 }
 
@@ -110,6 +110,7 @@ a img {
 
 .Middle {
 	padding: 2em 0 0;
+    position: relative;
 }
 
 a#TopAnchor {
@@ -127,18 +128,18 @@ a#TopAnchor {
 	left:0;
 }
 
-#SubNav li {
+.SubNav li {
 	margin:0.65em 0.5em;
 }
 
-#SubNav a {
+.SubNav a {
 	-moz-border-radius:0.75em;
 	border-radius:0.75em;
 	font-size:0.85em;
 	padding:0.4em 1.25em;
 }
 
-#SubNav a:hover {
+.SubNav a:hover {
 	color:#4891DE;
 }
 
@@ -281,6 +282,10 @@ a.pageAnchor {
 	clear:both;
 	display:block;
 	visibility:hidden;
+}
+
+.invisible {
+    display:none;
 }
 
 /* Language selection form */
