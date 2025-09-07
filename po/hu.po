@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://github.com/realh/roxterm/issues\n"
 "POT-Creation-Date: 2025-09-05 13:09+0100\n"
-"PO-Revision-Date: 2025-09-06 22:42+0200\n"
+"PO-Revision-Date: 2025-09-07 11:26+0200\n"
 "Last-Translator: kempelen <kempelen@netengine.hu>\n"
 "Language-Team: Hungarian <kde-l10n-hu@kde.org>\n"
 "Language: hu_HU\n"
@@ -61,8 +61,7 @@ msgstr "Nem sikerült a színséma biztonsági mentése a visszaállításhoz"
 msgid ""
 "Deleting edited colour scheme that wasn't in list of schemes being edited"
 msgstr ""
-"Szerkesztett színséma törlése úgy, hogy nem volt benne a szerkesztett sémák"
-" listájában"
+"A törölni kívánt színséma nincs benne a szerkesztett színsémák listájában"
 
 #: ../src/colourscheme.c:121
 #, c-format
@@ -562,11 +561,18 @@ msgid ""
 "restored automatically if named 'Default'. Leaving the field blank is "
 "equivalent to 'Default'."
 msgstr ""
+"A jelenlegi munkamenet a $XDG_CONFIG_HOME/"
+"roxterm.sourceforge.net/UserSessions/ mappába kerül mentésre a megadott "
+"névvel (az XDG_CONFIG_HOME alapértelmezett értéke ~/.config). A "
+"munkamenet a jelenlegi ablakok és lapok állapotát menti, de a terminálok "
+"szöveges tartalmát nem. A munkamenet a roxterm --session parancssori "
+"kapcsolóval állítható vissza, vagy automatikusan visszaáll, ha a neve "
+"'Default'. Ha a mezőt üresen hagyja, az  megegyezik a 'Default' értékkel."
 
 #: ../src/multitab.c:1407
 #, c-format
 msgid "Unable to save session to file '%s': %s"
-msgstr ""
+msgstr "A munkamenet mentése nem sikerült: '%s': %s"
 
 #: ../src/multitab.c:1422
 msgid "Set Window Title"
@@ -588,122 +594,124 @@ msgstr ""
 #: ../src/options.c:75
 #, c-format
 msgid "Unable to copy options keyfile data: %s"
-msgstr ""
+msgstr "A beállításfájl adatainak másolása nem sikerült: %s"
 
 #: ../src/options.c:163
 #, c-format
 msgid "Unable to convert value '%s' for key '%s' in '%s' to number"
 msgstr ""
+"Az érték számmá alakítása nem sikerült: '%s', beállítás: '%s', hely: '%s'"
 
 #: ../src/options.c:170
 #, c-format
 msgid "Unable to convert value '%s' for key '%s' in '%s' to number: %s"
 msgstr ""
+"Az érték számmá alakítása nem sikerült: '%s', beállítás: '%s', hely: '%s': %s"
 
 #: ../src/optsdbus.c:61
 msgid "Unable to get argument from D-BUS message"
-msgstr ""
+msgstr "A paraméter beolvasása a D-Bus üzenetből nem sikerült"
 
 #: ../src/optsdbus.c:65
 msgid "Unable to get argument"
-msgstr ""
+msgstr "Paraméter beolvasása sikertelen"
 
 #: ../src/optsdbus.c:138
 #, c-format
 msgid "Don't know how to handle method %s.%s"
-msgstr ""
+msgstr "A metódus kezelésének módja nem ismert: %s.%s"
 
 #: ../src/optsdbus.c:313
 #, c-format
 msgid "Unrecognised ROXTERM_ID '%s' in D-Bus message"
-msgstr ""
+msgstr "Ismeretlen ROXTERM_ID '%s' a D-Bus üzenetben"
 
 #: ../src/optsdbus.c:439
 msgid "Unable to read D-BUS signal arguments"
-msgstr ""
+msgstr "A D-Bus jelzés paramétereinek olvasása nem sikerült"
 
 #: ../src/optsdbus.c:470
 #, c-format
 msgid "Unrecognised D-BUS signal %s.%s"
-msgstr ""
+msgstr "Ismeretlen D-Bus jelzés: %s.%s"
 
 #: ../src/optsdbus.c:545
 #, c-format
 msgid "Error launching capplet: %s"
-msgstr ""
+msgstr "A capplet indítása nem sikerült: %s"
 
 #: ../src/optsfile.c:218
 #, c-format
 msgid "Can't read options file %s: %s"
-msgstr ""
+msgstr "A beállításfájl olvasása nem sikerült: %s: %s"
 
 #: ../src/optsfile.c:221
 #, c-format
 msgid "Can't read options file %s"
-msgstr ""
+msgstr "A beállításfájl olvasása nem sikerült: %s"
 
 #: ../src/optsfile.c:231
 #, c-format
 msgid "Options file %s does not start with group '%s'"
-msgstr ""
+msgstr "A(z) %s beállításfájl nem csoporttal kezdődik: '%s'"
 
 #: ../src/optsfile.c:248
 #, c-format
 msgid "Invalid directory name '%s'"
-msgstr ""
+msgstr "Érvénytelen könyvtárnév: '%s'"
 
 #: ../src/optsfile.c:253
 #, c-format
 msgid "Failed to create directory '%s': %s"
-msgstr ""
+msgstr "Könyvtár létrehozása nem sikerült: '%s': %s"
 
 #: ../src/optsfile.c:305
 #, c-format
 msgid "Unable to generate options file %s: %s"
-msgstr ""
+msgstr "Beállításfájl létrehozása nem sikerült: %s: %s"
 
 #: ../src/optsfile.c:310
 #, c-format
 msgid "Unable to generate options file %s"
-msgstr ""
+msgstr "Beállításfájl létrehozása nem sikerült: %s"
 
 #: ../src/optsfile.c:321
 #, c-format
 msgid "Unable to save options file %s: %s"
-msgstr ""
+msgstr "Beállításfájl mentése nem sikerült: %s: %s"
 
 #: ../src/optsfile.c:326
 #, c-format
 msgid "Unable to save options file %s"
-msgstr ""
+msgstr "Beállításfájl mentése nem sikerült: %s"
 
 #: ../src/optsfile.c:343
 #, c-format
 msgid "Error looking up option '%s' in '%s': %s"
-msgstr ""
+msgstr "Hiba a(z) '%s' beállítás megkeresésekor, hely: '%s': %s"
 
 #: ../src/optsfile.c:440
 #, c-format
 msgid "Unable to create directory '%s'"
-msgstr ""
+msgstr "A könyvtár létrehozása nem sikerült: '%s'"
 
 #: ../src/optsfile.c:465
 #, c-format
 msgid "Unable to copy profile/scheme: %s"
-msgstr ""
+msgstr "A profil vagy séma átnevezése nem sikerült: %s"
 
 #: ../src/optsfile.c:466 ../src/shortcuts.c:202
 msgid "unknown reason"
-msgstr ""
+msgstr "oka ismeretlen"
 
 #: ../src/profilegui.c:76
 #, c-format
 msgid "Profile widget '%s' not found"
-msgstr ""
+msgstr "A(z) '%s' profilpanel nem található"
 
 #: ../src/profilegui.c:383
 msgid "(Don't set)"
-msgstr ""
+msgstr "(Ne legyen beállítva)"
 
 #: ../src/profilegui.c:384 ../src/profilegui.c:385
 msgid "Default"
@@ -727,7 +735,7 @@ msgstr ""
 #: ../src/profilegui.c:678
 #, c-format
 msgid "Unable to load GTK UI definitions: %s"
-msgstr ""
+msgstr "A GTK UI definíciók betöltése nem sikerült: %s"
 
 #: ../src/profilegui.c:683
 #, c-format
@@ -736,7 +744,7 @@ msgstr "ROXTerm profil \"%s\""
 
 #: ../src/profilegui.c:716
 msgid "Deleting edited profile that wasn't in list of profiles being edited"
-msgstr ""
+msgstr "A törölni kívánt profil nincs benne a szerkesztett profilok listájában"
 
 #: ../src/roxterm.c:507
 #, c-format
@@ -1198,9 +1206,8 @@ msgid ""
 msgstr ""
 
 #: ../src/search.c:364
-#, fuzzy
 msgid "_Wrap Around"
-msgstr "_Előtér"
+msgstr "_Körbefordul"
 
 #: ../src/search.c:365
 msgid ""
@@ -1288,9 +1295,8 @@ msgid "PROFILE"
 msgstr ""
 
 #: ../src/globalopts.c:253
-#, fuzzy
 msgid "Use the named colour scheme"
-msgstr "Kattintson ide a kijelölt színséma szerkesztéséhez"
+msgstr "Az adott nevű színséma használata"
 
 #: ../src/globalopts.c:254 ../src/globalopts.c:259 ../src/globalopts.c:263
 msgid "SCHEME"
@@ -2520,8 +2526,7 @@ msgstr "Nem sikerült a színséma biztonsági mentése a visszaállításhoz"
 msgid ""
 "Deleting edited colour scheme that wasn't in list of schemes being edited"
 msgstr ""
-"Szerkesztett színséma törlése úgy, hogy nem volt benne a szerkesztett sémák"
-" listájában"
+"A törölni kívánt színséma nincs benne a szerkesztett színsémák listájában"
 
 #: src/colourscheme.c:121
 #, c-format
@@ -3160,7 +3165,7 @@ msgstr ""
 
 #: src/profilegui.c:696
 msgid "Deleting edited profile that wasn't in list of profiles being edited"
-msgstr ""
+msgstr "A törölni kívánt profil nincs benne a szerkesztett profilok listájában"
 
 #: src/roxterm.c:507
 #, c-format
