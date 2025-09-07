@@ -1,76 +1,477 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xml:lang="en-GB" lang="en-GB" xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!-- vim: set ts=2 sw=2 et: -->
+<html xml:lang="pt_BR" lang="pt_BR" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-	<meta name="author" content="Adrian Sampson" />
-	<meta name="description" content="ROXTerm: a full-featured VTE terminal emulator." />
-	<title>ROXTerm</title>
-	<link rel="stylesheet" type="text/css" href="../lib/roxterm.css" />
-	
-	<!--[if lte IE 7]>
-
-	<link rel="stylesheet" type="text/css" href="../lib/roxterm_ie.css" />
-	<![endif]-->
-<link rel="shortcut icon" type="image/x-icon" href="../lib/favicon.ico" />
-    <script type="text/javascript" src="../lib/lang.js"></script>
-    <script type="text/javascript" src="../lib/navigate.js"></script>
+  <meta name="generator" content=
+  "HTML Tidy for HTML5 for Linux version 5.7.45" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Adrian Sampson" />
+  <meta name="description" content=
+  "ROXTerm: a full-featured VTE terminal emulator." />
+  <title>ROXTerm</title>
+  <link rel="stylesheet" type="text/css" href="../lib/roxterm.css" />
+  <!--[if lte IE 7]>
+    <link rel="stylesheet" type="text/css" href="../lib/roxterm_ie.css" />
+  <![endif]-->
+  <link rel="shortcut icon" type="image/x-icon" href="../lib/favicon.ico" />
+  <script type="text/javascript" src="../lib/lang.js"></script>
+  <script type="text/javascript" src="../lib/navigate.js"></script>
 </head>
 <body>
-	<div id="Container">
-		<div id="Header">
-			<div>
-				<a id="Logo" href="index.html">
-					<img src="../lib/logo_text.png" alt="ROXTerm" />
-				</a>
-
-				<ul>
-					<li><a id="MainNav_Home" class="active" href="#">Inicio</a></li>
-					<li><a id="MainNav_News" href="news.html">Notícias</a></li>
-					<li><a id="MainNav_Installation" href="installation.html">Instalação</a></li>
-					<li><a id="MainNav_UserGuide" href="guide.html">Guia do Usuário</a></li>
-				</ul>
-			</div>
-            <div id="lang-selector"></div>
-		</div>
-
-		<div id="Middle">
-			<div id="Content">
-				<h1>Bem vindo</h1>
-
-                <p>ROXTerm is a terminal emulator intended to provide similar features to
-gnome-terminal, based on the same VTE library. It was originally designed to
-have a smaller footprint and quicker start-up time by not using the Gnome
-libraries and by using a separate applet to provide the configuration GUI,
-but thanks to all the features it's acquired over the years ROXTerm can
-probably now be accused of bloat.  However, it is more configurable than
-gnome-terminal and aimed more at "power" users who make heavy use of
-terminals.</p>
-
-                <p>It still supports the ROX desktop application layout it was named after, but
-can also be installed in a more conventional manner for use in other desktop
-environments.</p>
-			</div>
-
-			<div id="Footer">
-				<div id="FooterButtons">
-					<a id="GithubLink" href="https://github.com/realh/roxterm" title="RoxTerm
-Github"> roxterm @ github </a>
-
-					<br />
-
-					<a id="DonationLink" class="spriteLink"
-href="http://sourceforge.net/donate/index.php?group_id=124080">Doar</a> <a
-id="ValidMarkupLink" class="spriteLink"
-href="http://validator.w3.org/check?uri=referer">XHTML Válido</a>
-				</div>
-
-				<p>ROXTerm está licenciado sob a <a
-href="http://www.gnu.org/licenses/gpl-3.0-standalone.html">GPL</a> | Design
-do site por Adrian Sampson | Tradução do Português Brasileiro por Alexandro
-Casanova</p>
-			</div>
-		</div>
-	</div>
+  <div id="Container">
+    <div id="Header">
+      <div>
+        <a id="Logo" href="index.html" name="Logo"><img src=
+        "../lib/logo_text.png" alt="ROXTerm" /></a>
+        <ul>
+          <li><a id="MainNav_Home" class="active" href="#" name=
+          "MainNav_Home">Inicio</a></li>
+          <li><a id="MainNav_News" href="#News"
+          name="MainNav_News">Notícias</a></li>
+          <li><a id="MainNav_Installation" href="#Installation" name=
+          "MainNav_Installation">Instalação</a></li>
+          <li><a id="MainNav_UserGuide" href="#Guide" name=
+          "MainNav_UserGuide">Guia do Usuário</a></li>
+        </ul>
+      </div>
+      <div id="lang-selector"></div>
+    </div>
+    <div id="ClearHeader"></div>
+    <div class="Middle" id="Welcome">
+      <div class="Content">
+        <h1>Bem vindo</h1>
+        <p>ROXTerm is a terminal emulator intended to provide similar features
+        to gnome-terminal, based on the same VTE library. It was originally
+        designed to have a smaller footprint and quicker start-up time by not
+        using the Gnome libraries and by using a separate applet to provide the
+        configuration GUI, but thanks to all the features it's acquired over
+        the years ROXTerm can probably now be accused of bloat. However, it is
+        more configurable than gnome-terminal and aimed more at "power" users
+        who make heavy use of terminals.</p>
+        <p>It still supports the ROX desktop application layout it was named
+        after, but can also be installed in a more conventional manner for use
+        in other desktop environments.</p>
+      </div>
+    </div>
+    <div class="Middle clear" id="News">
+      <div class="Content">
+        <h1>Notícias</h1><!--<hr /> -->
+        <div class="newsItem">
+          <span class="newsItemHeader">2018-03-01</span> <span class=
+          "newsItemSubHeader">Version 3.5.1</span>
+          <ul>
+            <li><span>Migrated to github.</span></li>
+            <li><span>Use CMake build system.</span></li>
+            <li><span>Fixed the geometry bug introduced by GTK
+            3.20.0.</span></li>
+            <li><span>Removed X11-specific code and options for improved
+            Wayland support.</span></li>
+            <li><span>Minimum version requirements are now GTK 3.20 and vte
+            0.48.</span></li>
+            <li><span>Improved support for URIs.</span></li>
+            <li><span>Numerous other fixes and updates.</span></li>
+          </ul>
+        </div>
+        <div class="newsItem">
+          <span class="newsItemHeader">2015-12-02</span> <span class=
+          "newsItemSubHeader">Version 3.3.1</span>
+          <ul>
+            <li><span>Terminals running the default shell are only considered
+            to be running (when confirming close actions) if the shells have
+            child processes. This may only work in Linux.</span></li>
+          </ul>
+        </div>
+        <div class="newsItem">
+          <span class="newsItemHeader">2015-08-11</span> <span class=
+          "newsItemSubHeader">Version 3.1.1</span>
+          <ul>
+            <li><span>This version supports the saving and restoring of named
+            user sessions.</span></li>
+            <li><span>The initial number of tabs profile option has been
+            removed; its functionality is better served by
+            sessions.</span></li>
+          </ul>
+        </div>
+        <div class="newsItem">
+          <span class="newsItemHeader">2015-07-09</span> <span class=
+          "newsItemSubHeader">Version 3.0.1</span>
+          <ul>
+            <li><span>The GTK2 version has been dropped and only the vte-2.91
+            API (vte 0.38 or newer) is supported. You may need to change the
+            background opacity setting (now found in the Appearance section of
+            your profile) when upgrading from an earlier version.</span></li>
+            <li><span>mscript.py now uses python3 by default, but is backwards
+            compatible with python2. python3-lockfile is relatively new so you
+            may need to explicitly run mscript.py in python2. To do this when
+            building a Debian package edit debian/rules and change the
+            dependencies in debian/control.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="Middle clear" id="Installation">
+      <ol class="SubNav">
+        <li><a href="#Download">Download</a></li>
+        <li><a href="#Requirements">Requerimentos</a></li>
+        <li><a href="#Installing">Instalando</a></li>
+      </ol>
+      <div class="Content partialWidth">
+        <h1>Instalação</h1>
+        <h2>Download <a class="pageAnchor" name="Download" id=
+        "Download">:</a></h2>
+        <p>Visit the <a href="http://github.com/realh/roxterm">github project
+        page</a> to download snapshots. For a stable version use the latest
+        numerical tag. If you are using an old LTS distro with a GTK3 version
+        lower than 3.20 you should use roxterm 3.3.1, preferably from your
+        distro's package manager. In case your distro is really old, roxterm
+        2.x supports GTK2.</p>
+        <h2>Requerimentos <a class="pageAnchor" name="Requirements" id=
+        "Requirements">:</a></h2>
+        <p>You need the libraries for GTK+3 which is pretty much standard on
+        all free Unix derivatives these days. It needs at least version 2.16 of
+        glib and GTK+ 3.20. You will also need vte/libvte (at least version
+        0.48 of vte-2.91), a GNOME component. D-BUS is also required (see
+        below).</p>
+        <p>Para compilar ROXTerm você precisara dos arquivos de cabeçalho para
+        as bibliotecas anteriores. Em sistemas de pacotes eles geralmente vem
+        em pacotes cujos nomes terminam em "-dev" ou "-devel".</p>
+        <p>Prior to 3.5.0 ROXTerm used a bespoke build system called maitch.
+        This requires python and the python 'lockfile' module. 3.5.0 uses the
+        more conventional <a href="https://cmake.org/">CMake</a>.</p>
+        <h3>D-Bus</h3>
+        <p>D-Bus is a messaging system which ROXTerm uses to connect terminals
+        with its configure tool. ROXTerm uses the "session" bus, which should
+        be started along with your desktop environment. Current versions of
+        ROX, GNOME and KDE/Plasma session managers all launch D-Bus. If you use
+        some other session/desktop/window manager which doesn't launch D-Bus
+        you can start it by inserting something like this near the start of
+        your .xinitrc or .xsession:</p>
+        <p class="snippet"><span>if test -z "$DBUS_SESSION_BUS_ADDRESS" ;
+        then</span> <span class="indented">eval `dbus-launch --sh-syntax
+        --exit-with-session`</span> <span class="indented">export
+        DBUS_SESSION_BUS_ADDRESS</span> <span>fi</span></p>
+        <p>A razão para usar um sistema de mensagens de configurações sob
+        medida feito sobre D-bus em vez de gconf é por que gconf não fornece
+        uma forma de mapear um número arbitrário de perfis para nomes de
+        arquivos de configuração.</p>
+        <h2>Instalando <a class="pageAnchor" name="Installing" id=
+        "Installing">:</a></h2>
+        <p>To install ROXTerm for ROX all you need to do is check it out or
+        unpack it into your Apps directory and run it from there, but you will
+        probably want to rename the folder to ROXTerm. For other systems
+        ROXTerm may be installed in the typical CMake way:</p>
+        <p class="snippet"><span>mkdir build</span> <span>cd build</span>
+        <span>cmake ..</span> <span>make -j 4</span> <span>sudo make
+        install</span></p>
+        <p>The <code>-j 4</code> is optional, to accelerate the build by using
+        multiple processing threads. Replace the 4 with the number of "threads"
+        or cores your CPU has.</p>
+        <p>Various other options are available, run</p>
+        <p class="snippet"><span>cmake --help</span></p>para detalhes.
+        <h3>Debian &amp; Ubuntu</h3>
+        <p>Up-to-date official Debian packages are not currently available, but
+        packages from the <a href=
+        "https://launchpad.net/~h-realh/+archive/roxterm">Ubuntu PPA</a> may be
+        compatible, or you can take advantage of the debian build files
+        provided.</p>
+        <p>You can use <code>sudo apt-get build-dep roxterm</code> at this
+        point, but depending on the version already in your distro the set of
+        packages may be out-of-date, so be prepared for dependency errors later
+        and install the necessary packages at that point.</p>
+        <p>If not using a release snapshot it's a good idead to use
+        <code>dch</code> to ensure the newest version number in
+        <code>debian/changelog</code> has an appropriate version number eg what
+        <code>./version.sh</code> generates in the file <code>version</code>,
+        based on the output of <code>git describe</code>. Now you can build the
+        packages eg with <code>debuild -b -uc -us</code>. Note the
+        <code>-b</code>:- only binary packages can be built in the absence of
+        an orig tarball.</p>
+      </div>
+    </div>
+    <div class="Middle clear" id="Guide">
+      <ol class="SubNav">
+        <li><a href="#Tabs">Abas</a></li>
+        <li><a href="#Menus">Menus</a></li>
+        <li><a href="#URIHighlighting">Destacado de URI</a></li>
+        <li><a href="#DragAndDrop">Arrastar &amp; Soltar</a></li>
+        <li><a href="#Sessions">Named User Sessions</a></li>
+        <li><a href="#Configuration">Configuração</a></li>
+        <li><a href="#KeyboardShortcuts">Atalhos do teclado</a></li>
+        <li><a href="#ConfigurationManagement">Gerenciamento de
+        Configuração</a></li>
+        <li><a href="#CommandlineOptions">Opções de linha de comando</a></li>
+        <li><a href="#GtkStyling">GTK Styling</a></li>
+        <li><a href="#AdvancedDbusUsage">Uso avançado do D-bus</a></li>
+      </ol>
+      <div class="Content partialWidth">
+        <h1>Guia do Usuário</h1>
+        <h2>Abas <a class="pageAnchor" name="Tabs" id="Tabs">:</a></h2>
+        <p>Cada janela pode conter um numero de abas, cada um com seu próprio
+        terminal. A diferença do gnome-terminal e versões anteriores do
+        ROXTerm, a barra de abas é sempre mostrada por padrão, mesmo se houver
+        apenas uma guia, para evitar inconsistências ao redimensionar, mas isto
+        é configurável.</p>
+        <p>If you experience a problem with tab labels shrinking after dragging
+        tabs so that they only have room to display '...', try making sure the
+        pointer is over the body of a terminal when you drop a dragged tab, not
+        over the tab bar area.</p>
+        <h2>Menus <a class="pageAnchor" name="Menus" id="Menus">:</a></h2>
+        <p>Quando a barra de menu é escondida, o menu popup duplica os mesmos
+        itens na barra de menu. isto dá a você acesso completo para todas as
+        funções com a barra de menu oculta. A barra de menu é efetivamente
+        redundante, mas fornecido para fazer RoxTerm parecer mais simples para
+        usuários principiantes. Isso pode ser ligado ou desligado por uma
+        janela particular ou mais permanentemente através do gerente de
+        configuração.</p>
+        <p>O menu popup também permite endereço web e email, para ser aberto em
+        aplicações externas, se tal endereço é realçado pelo cursor sobre
+        ele.</p>
+        <h2>Destacado de URI <a class="pageAnchor" name="URIHighlighting" id=
+        "URIHighlighting">:</a></h2>
+        <p>Quando o cursor estiver sobre um endereço que o ROXTerm reconhece
+        como uma URI (tipicamente uma URL da web ou endereço de email) será
+        realçado por sublinhado e mudará a forma do cursor. Você pode abrir o
+        endereço pelo botão direito do mouse e selecionando abrir... no menu
+        mantendo pressionado Ctrl e clicar com botão esquerdo do mouse. As
+        aplicações usadas para gerenciar esses endereços, podem ser definidas
+        através das ferramentas de configurações, caso contrário terá que
+        tentar encontrar um padrão adequado. Também mantendo pressionado Crtl
+        você pode arrastar a URI para passar para outra aplicação que aceita
+        URI ou texto, arrastando-o para a mesma janela que veio o endereço de
+        volta colado.</p>
+        <p>Nota que se o cursor está sobre uma parte de uma URL de endereço de
+        servidor, somente realça o endereço, omitindo o nome do arquivo, mova o
+        cursor do mouse sobre o nome do arquivo para obter URL inteira. Da
+        mesma forma você pode destacar em endereço de email com ou sem um
+        principal mailto:.</p>
+        <p>As of version 2.9.1 ssh URI and hostname matching is supported. URIs
+        including a path name can only be copied to the clipboard; in the
+        absence of a pathname ROXTerm can also start a ssh session to the
+        described host. Plain hostnames are also matched, but only if they
+        start with "ssh" or end with ".local" or ".lan". Attempting to match
+        more generic hostnames would cause too many false positives. If you
+        regularly use a non-matching ssh server consider adding a matching
+        alias in /etc/hosts.</p>
+        <h2>Arrastar &amp; Soltar <a class="pageAnchor" name="DragAndDrop" id=
+        "DragAndDrop">:</a></h2>
+        <p>Agora você pode arrastar itens na janela do terminal. Objetos de
+        texto são enviados para o terminal como tivesse digitado. Arquivos e
+        URIs tem sua localização (Nome do arquivo ou URI) em lugar do conteúdo
+        do objeto. Arquivos gráficos podem também serem arrastados para área
+        apropriada do gerente de configuração, para definir o fundo da imagem
+        do terminal. Segure a tecla Ctrl enquanto arrasta um URI destacada,
+        permite o endereço a ser arrastado para outra aplicação.</p>
+        <p>Você pode arrastar abas para reordena-las dentro de uma janela
+        ROXTerm, ou mudar para outra janela ROXTerm, ao soltar uma janela
+        ROXTerm fora de uma janela, uma nova janela ROXTerm é criada. Use o
+        botão direito do mouse para mover uma aba não selecionada sem
+        seleciona-la. Note que versões versões anteriores a 1.9 utiliza o botão
+        do meio do mouse. Na versão atual o botão do meio do mouse é um atalho
+        para colar conteúdo da área de transferência com o nome da aba.</p>
+        <h2>Named User Sessions <a class="pageAnchor" name="Sessions" id=
+        "Sessions">:</a></h2>
+        <p>New in version 3.1.1 is the ability to save named user sessions.
+        Click Save Session... in the File menu to name your session and save
+        it. A session saves the state of current windows and tabs but not the
+        terminals' text content. A session can be restored with roxterm's
+        --session command-line option, or will be restored automatically if
+        named 'Default'. Leaving the field blank is equivalent to
+        'Default'.</p>
+        <h2>Configuração <a class="pageAnchor" name="Configuration" id=
+        "Configuration">:</a></h2>
+        <p>Configuração se baseia no nome de perfil para que você possa salvar
+        diferente definições de opções e mudar rapidamente entre eles. São
+        perfis para configurações gerais, esquema de cores e atalhos do teclado
+        (ás vezes referidos como aceleradores). Esquema de cores e perfis se
+        aplicam em uma aba de cada vez, mas atalhos do teclado aplicam-se em
+        todas as abas numa mesma janela, para evitar uma potencial confusão em
+        diferentes abas, por haver atalhos diferente de teclado para alternar
+        entre elas. Novas janelas e abas herdarão as definições a partir das
+        novas janela/aba que se abriram.</p>
+        <p>Antes da versão 1.15.1 todas as abas compartilhavam o mesmo perfil,
+        mas isso foi mudado. Em consequência uma fonte de um perfil e outras
+        definições que afetam o tamanho do terminal, podem ser substituídas
+        para mantem uma geometria consistente atreves de um numero de abas em
+        uma mesma janela.</p>
+        <p>As preferências do menu permitem você selecionar um perfil atual e
+        etc... (estas configurações não serão lembradas, use o gerente de
+        configuração para definir o padrão), abra o gerente de configuração
+        para editar o perfil atual ou o esquema de cores ou para gerenciar
+        todas as configurações. No gerente de configuração você pode selecionar
+        um dos quatro tipos do grupo de opções e editar, copiar, deletar ou
+        renome-la. Cada item tem um campo de seleção. O item com o campo
+        selecionado é o padrão para novos terminais. Note que codificação de
+        caracteres são ligeiramente manuseados de forma diferente.</p>
+        <h2>Atalhos do teclado <a class="pageAnchor" name="KeyboardShortcuts"
+        id="KeyboardShortcuts">:</a></h2>
+        <p>There is no editor for keyboard shortcuts; instead, prior to GTK+
+        3.10 they can be changed by pressing keys while the mouse is hovering
+        over a menu item in the terminal. This feature must be enabled with the
+        "Enable editing" option under the "Keyboard shortcuts" section of the
+        <a href="#ConfigurationManagement">Configuration Manager</a>. There is
+        also a "hidden" global GNOME setting to determine whether GTK
+        applications can have their shortcuts edited in this way. The global
+        option is managed by gconf, which roxterm is not linked with, so in
+        some circumstances the global and roxterm options may conflict with
+        each other.</p>
+        <p>The above method for editing shortcuts has been disabled from GTK+
+        3.10 onwards. Instead ROXTerm 2.9.1 onwards allows the shortcuts
+        profiles to be edited in a text editor, either via the Configuration
+        Manager or from a terminal's menu (Preferences submenu). The action
+        names correspond to the localised labels used in the menu items. The
+        new shortcuts should automatically be reloaded when you save the file.
+        Alternatively, selecting a scheme in the Preferences menu now forces it
+        to be reloaded.</p>
+        <p>If you have GTK+ 3.10 or newer, but can't upgrade from an older
+        ROXTerm you will have to open the config files in a text editor
+        yourself, then restart roxterm. The default file is
+        ~/.config/roxterm.sourceforge.net/Shortcuts/Default. If one does not
+        already exist you can copy the Default file provided with roxterm and
+        use it as a template. This can be found as Config/Shortcuts/Default in
+        the source tree, or /usr/share/roxterm/Config/Shortcuts/Default in most
+        installed packages.</p>
+        <h2>Gerenciamento de Configuração <a class="pageAnchor" name=
+        "ConfigurationManagement" id="ConfigurationManagement">:</a></h2>
+        <p>Você também pode executar o gerente de configuração selecionando
+        "Configurar..." no menu ROX para aplicação ROXTerm ou executando
+        roxterm-config se o ROXTerm foi instalado de forma convencional.</p>
+        <p>Os arquivos de configurações podem ser facilmente trocados com
+        outros usuários. Cada perfil, esquema de cores e atalhos do teclado tem
+        um único arquivo associado a ele, salvando um arquivo valido no
+        diretório adequado criara um perfil com os mesmo nome como o
+        arquivo.</p>
+        <p>Os locais do diretório onde se armazenam os arquivos de
+        configurações, seguem as especificações XDG Base Directory. Em ordem
+        descendente de importância, são eles:</p>
+        <ol>
+          <li><span>${XDG_CONFIG_HOME}/roxterm.sourceforge.net por padrão
+          ~/.config/roxterm.sourceforge.net</span></li>
+          <li><span>${XDG_CONFIG_DIRS}/roxtem.sourceforge.net por padrão
+          /etc/xdg/roxtem.sourceforge.net</span></li>
+          <li><span>ROXTerm/Configuração para usuários ROX, ou
+          ${datadir}/roxterm/Configuração para os outros; ${datadir}
+          normalmente é /usr/share para pacotes ou /usr/local/share quando
+          compilado a partir do código de fonte</span></li>
+        </ol>
+        <p>Files will be loaded from any and all the above locations; files in
+        high priority locations shadow ones with the same name in lower
+        priority locations. Files are only saved in the first location.</p>
+        <p>Dentro de qualquer ou cada um desse locais, perfis são salvos em um
+        subdiretório "Perfis", esquema de cor em "Cores" e esquema de atalhos
+        de teclado em "Atalhos". Um arquivo chamado "Global" contem varias
+        opções que não cai nas categorias anteriores, incluindo o perfil padrão
+        para novos terminais.</p>
+        <h2>Opções de linha de comando <a class="pageAnchor" name=
+        "CommandlineOptions" id="CommandlineOptions">:</a></h2>
+        <p>ROXTerm aceita várias opções por linha de comando. Executar:</p>
+        <p class="snippet">roxterm --help</p>
+        <p>para uma lista completa.</p>
+        <p>Desde a versão 1.1.0 ROXTerm por padrão ele usa somente um processo
+        para todos os terminais, de modo que você possa arrastar abas entre
+        janelas. Se executa o comando novamente, ele envia uma mensagem D-BUS
+        para o processo existente para sinalizar que abra um novo terminal e o
+        segundo processo termina. Para fazer um comando roxterm executar em seu
+        próprio processo independente use a opção --separate.</p>
+        <p>Note que as opções --colour_scheme e --shortcut_scheme foram
+        substituídas por --colour-scheme e --shortcut-scheme respectivamente em
+        1.7.0 (mudou sublinhado para hifens) mas as versões antigas permanece
+        utilizável para versões anteriores para manter compatibilidade.</p>
+        <h2>GTK Styling <a class="pageAnchor" name="GtkStyling" id=
+        "GtkStyling">:</a></h2>
+        <p>Like any VTE-based terminal, you can apply custom GTK styles on
+        ROXTerm terminals.</p>
+        <p>A common use-case is to add padding around the terminal content. You
+        can do this by adding the following to your global GTK stylesheet in
+        ~/.config/gtk-3.0/gtk.css:</p>
+        <p class="snippet"><span>VteTerminal,</span> <span>vte-terminal
+        {</span> <span>&nbsp;&nbsp;-VteTerminal-inner-border: 20px;</span>
+        <span>&nbsp;&nbsp;padding: 20px;</span> <span>}</span></p>
+        <p>Per-profile styling is possible by targeting specific classes in the
+        GTK stylesheet. For example, if you want to apply a different padding
+        to a profile named "Minimal", while still keeping your default padding,
+        you can add this style rule after the previous one:</p>
+        <p class="snippet"><span>VteTerminal.roxterm-Minimal,</span>
+        <span>vte-terminal.roxterm-Minimal {</span>
+        <span>&nbsp;&nbsp;-VteTerminal-inner-border: 2px;</span>
+        <span>&nbsp;&nbsp;padding: 2px;</span> <span>}</span></p>
+        <p>When a profile name contains spaces, the generated class replaces
+        them with hyphens.</p>
+        <h2>Uso avançado do D-Bus <a class="pageAnchor" name=
+        "AdvancedDbusUsage" id="AdvancedDbusUsage">:</a></h2>
+        <p>A partir da versão 1.14.0 usuários avançados podem usar D-Bus para
+        configurar terminais para outras aplicações e scripts. Existem três
+        métodos D-Bus especialmente para este fim, eles exigem um código de
+        identificação para atingir um terminal especifico, cada código de
+        identificação de terminal podem ser lidos de um ambiente variável
+        ROXTERM_ID executando na aplicação/shell. O caminho do objeto D-Bus e
+        métodos para interface são "net.sf.roxterm.Options" e
+        "net/sf/roxterm/Options" respectivamente. Os métodos são:</p>
+        <p class="snippet">SetProfile("identificação", "nome_do_perfil")</p>
+        <p>Peça ao terminal para usar o perfil definido. Note que quaisquer
+        outras abas na mesma janela será atualizada para a mesmo perfil novo.
+        Todas as abas de uma janela deve ter o mesmo perfil para que o tamanho
+        da fonte permaneça com o temanho do terminal consistente.</p>
+        <p class="snippet">SetColourScheme("identificador",
+        "nome_do_esquema")</p>
+        <p>Peça ao terminal para usar um esquema de cores definidos. Abas que
+        compartilham a mesma janela podem haver esquemas de cores diferentes
+        das outras.</p>
+        <p class="snippet">SetShortcutScheme("identificação",
+        "Nome_do_esquema")</p>
+        <p>Peça ao terminal para usar um esquema definido de atalhos de
+        atalhos. Abas que compartilham a mesma janela, compartilham os mesmo
+        esquemas de atalho do teclado.</p>
+        <p>Exemplo utilizando dbus-send num shell script:</p>
+        <p class="snippet"><span>dbus-send --session /net/sf/roxterm/Options
+        \</span> <span>net.sf.roxterm.Options.SetColourScheme
+        string:$ROXTERM_ID string:GTK</span></p>
+        <p>Você poderá enviar sinais D-Bus para mudar opções individuais dentro
+        de um perfil definido ou esquemas de cores usando os métodos
+        StringOption (também usada para opções boolean) e FloatOption. Todos os
+        terminais usando o perfil chamado ou o esquema de cores, são afetados,
+        mas somente temporariamente As opções não são salvas para novos
+        terminais. Os métodos tem 3 argumentos.</p>
+        <ul>
+          <li><span>Nome do perfil completo, incluindo um prefixo de
+          "Profiles/" ou "Colours/"</span></li>
+          <li><span>Nome da opção</span></li>
+          <li><span>Valor</span></li>
+        </ul>
+        <p>Para ver quais nomes de opção você pode usar, cheque o arquivo de
+        configuração, de quais tipos podem ser deduzidas.</p>
+        <p>Exemplo utilizando dbus-send num shell script:</p>
+        <p class="snippet"><span>dbus-send --session /net/sf/roxterm/Options
+        \</span> <span>net.sf.roxterm.Options.StringOption \</span>
+        <span>string:Colours/GTK string:background 'string:#ffffff'</span></p>
+        <p>Um terceiro uso possível é para notificar o roxterm que um perfil,
+        esquema de cores ou esquemas de atalhos do teclado, foram mudados por
+        um programa externo e todos os terminais utilizando esse perfil, etc.
+        Precisam ser recarregados:</p>
+        <p class="snippet">OptionsChanged("família", "nome_do_perfil")</p>
+        <p>onde nome_de_família é um dos "Perfis", "Cores" ou "Atalhos". Por
+        exemplo:</p>
+        <p class="snippet"><span>dbus-send --session /net/sf/roxterm/Options
+        \</span> <span>net.sf.roxterm.Options.OptionsChanged \</span>
+        <span>string:Profiles string:Default</span></p>
+      </div>
+    </div>
+    <div id="ClearFooter"></div>
+    <div id="Footer">
+      <div id="FooterButtons">
+        <a id="GithubLink" href="https://github.com/realh/roxterm" title=
+        "RoxTerm Github" name="GithubLink">roxterm @ github</a><br />
+        <a id="DonationLink" class="spriteLink" href=
+        "http://sourceforge.net/donate/index.php?group_id=124080" name=
+        "DonationLink">Doar</a> <a id="ValidMarkupLink" class="spriteLink"
+        href="http://validator.w3.org/check?uri=referer" name=
+        "ValidMarkupLink">XHTML Válido</a>
+      </div>
+      <p>ROXTerm está licenciado sob a <a href=
+      "http://www.gnu.org/licenses/gpl-3.0-standalone.html">GPL</a> | Design do
+      site por Adrian Sampson | Tradução do Português Brasileiro por Alexandro
+      Casanova</p>
+    </div>
+  </div>
 </body>
 </html>
