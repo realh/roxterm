@@ -42,12 +42,9 @@ configure_file(${PROJECT_SOURCE_DIR}/AppInfo.xml.in
 # metainfo should really be processed by i18n
 configure_file(${PROJECT_SOURCE_DIR}/roxterm.metainfo.xml.in
     ${PROJECT_BINARY_DIR}/roxterm.metainfo.xml)
-configure_file(${PROJECT_SOURCE_DIR}/roxterm.1.xml.in
-    ${PROJECT_BINARY_DIR}/roxterm.1.xml)
-configure_file(${PROJECT_SOURCE_DIR}/roxterm-config.1.xml.in
-    ${PROJECT_BINARY_DIR}/roxterm-config.1.xml)
 
 add_subdirectory(src)
+add_subdirectory(man)
 
 install(FILES src/icons/roxterm.svg
     DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/apps)
@@ -57,31 +54,6 @@ install(DIRECTORY Config
 
 install(DIRECTORY docs/
     DESTINATION ${CMAKE_INSTALL_DOCDIR})
-
-find_program(XSLTPROC xsltproc)
-if (NOT "${XSLTPROC}" EQUAL "XSLTPROC-NOTFOUND")
-    set(XSLTPROC_OPTIONS --novalid --param man.charmap.use.subset 0
-        http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl)
-    add_custom_command(OUTPUT roxterm.1
-        COMMAND ${XSLTPROC} -o roxterm.1 ${XSLTPROC_OPTIONS}
-            ${PROJECT_BINARY_DIR}/roxterm.1.xml
-        MAIN_DEPENDENCY ${PROJECT_BINARY_DIR}/roxterm.1.xml
-        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-    add_custom_command(OUTPUT roxterm-config.1
-        COMMAND ${XSLTPROC} -o roxterm-config.1 ${XSLTPROC_OPTIONS}
-            ${PROJECT_BINARY_DIR}/roxterm-config.1.xml
-        MAIN_DEPENDENCY ${PROJECT_BINARY_DIR}/roxterm-config.1.xml
-        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-    add_custom_target(manpages ALL
-        DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/roxterm.1
-            ${CMAKE_CURRENT_BINARY_DIR}/roxterm-config.1)
-    install(FILES
-        ${CMAKE_CURRENT_BINARY_DIR}/roxterm.1
-        ${CMAKE_CURRENT_BINARY_DIR}/roxterm-config.1
-        DESTINATION ${CMAKE_INSTALL_MANDIR}/man1) 
-else ()
-    message(WARNING "xsltproc not found, man pages will not be generated")
-endif ()
 
 install(FILES roxterm.desktop
     DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
@@ -111,15 +83,14 @@ add_custom_command(OUTPUT "${TARBALL_NAME}"
     docs
     INSTALL
     INSTALL.Debian
+    man
     mkycmflags
     NEWS
     po
     README
     README.md
     README.translations
-    roxterm.1.xml.in
     roxterm.metainfo.xml.in
-    roxterm-config.1.xml.in
     roxterm.desktop
     roxterm.lsm.in
     roxterm.xml
