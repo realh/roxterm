@@ -98,7 +98,7 @@ now. To add a new translation, simply create a new .po file in the `po`
 directory with your language code as its basename.
 
 The .pot file for these translations is `messages.pot`. It can be
-regenerated with the `pot` make/ninja target:
+generated with the `pot` make/ninja target:
 
 ```
 make -C build pot
@@ -108,10 +108,12 @@ or
 ninja -C build pot
 ```
 
-You can copy `messages.pot` to create a brand new .po file. When the source
-strings have been updated, use the `pot-merge` make/ninja target to merge
-`messages.pot` with existing .po files. Then edit your .po file and commit it;
-ignore the other .po files.
+Its default location is `build/po/messages.pot`. You can copy it to the `po`
+directory and edit it to create a brand new .po file. When your edits are
+complete, commit your .po file to git, ignoring the other .po files. When an
+upstream updates causes changes to the strings use the `pot-merge` make/ninja
+target to merge `messages.pot` with existing .po files. Then edit your .po file
+and commit it again.
 
 The `po-compile` target compiles .po files into .mo files. This is run
 automatically during the overall build process, but the other rules above must

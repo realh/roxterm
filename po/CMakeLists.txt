@@ -2,15 +2,13 @@ find_program(GETTEXT_XGETTEXT_EXECUTABLE xgettext)
 find_program(GETTEXT_MSGMERGE_EXECUTABLE msgmerge)
 find_program(GETTEXT_MSGFMT_EXECUTABLE msgfmt)
 
-set(POT_FILE "${CMAKE_CURRENT_SOURCE_DIR}/messages.pot")
+set(POT_FILE "${CMAKE_CURRENT_BUILD_DIR}/messages.pot")
 file(GLOB PO_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.po)
 message(TRACE " PO_FILES: ${PO_FILES}")
 set(LANGUAGES)
 string(REGEX REPLACE "\\.po" "" LANGUAGES "${PO_FILES}")
 message(STATUS " LANGUAGES: ${LANGUAGES}")
 
-# The .pot file should be checked in to git and re-generated if necessary
-# before pushing to github so that new translators can use the .pot file.
 if (GETTEXT_XGETTEXT_EXECUTABLE)
     file(GLOB_RECURSE POT_SOURCES
         RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
