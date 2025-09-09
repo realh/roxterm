@@ -90,8 +90,10 @@ support for roxterm by the time you read this. If not, you can use
 
 ## Translations
 
-I am in the process of reinstating support for translations. Please note that
+Support for translations has just been reinstated. Please note that
 most of the existing translations are out-of-date and/or incomplete.
+
+### Code and UI
 
 CMake integration for translating strings in the code and UI should be working
 now. To add a new translation, simply create a new .po file in the `po`
@@ -128,3 +130,18 @@ but is being worked on.
 
 You can submit your translations by creating a github PR, attaching the po file
 to an issue, or by emailing it to me <h@realh.co.uk>.
+
+### Documentation
+
+The HTML manual in the `docs` directory has been refactored to use a single
+HTML file containing all the pages, using Javascript to mimic a multi-page
+site. Partial translations have been constructed in the new format. Due to the
+static nature of the content I think it will be easier for translators to edit
+the XHTML manually for now, but I am willing to add a po4a workflow again if you
+prefer working with `po` files.
+
+The man page translations were so incomplete that I have removed them
+altogether. If you want to translate the man pages, start by copying the
+Docbook XML files, `man/roxterm.1.xml.in` and `man/roxterm-config.1.xml.in`,
+adding your language code to the filenames and add them to the CMake script, or
+ask me to add them. These could also be managed by po4a if you prefer.
