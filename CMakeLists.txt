@@ -89,7 +89,6 @@ add_custom_command(OUTPUT "${TARBALL_NAME}"
     po
     README
     README.md
-    README.translations
     roxterm.metainfo.xml.in
     roxterm.desktop
     roxterm.lsm.in
