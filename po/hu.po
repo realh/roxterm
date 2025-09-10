@@ -6,10 +6,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://github.com/realh/roxterm/issues\n"
-"POT-Creation-Date: 2025-09-05 13:09+0100\n"
+"POT-Creation-Date: 2025-09-10 23:47+0200\n"
 "PO-Revision-Date: 2025-09-10 23:39+0200\n"
 "Last-Translator: kempelen <kempelen@netengine.hu>\n"
-"Language-Team: Hungarian <kde-l10n-hu@kde.org>\n"
 "Language: hu_HU\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -553,21 +552,20 @@ msgstr "_Mentés"
 
 #: ../src/multitab.c:1366
 msgid ""
-"The current session will be saved in $XDG_CONFIG_HOME/"
-"roxterm.sourceforge.net/UserSessions/ with the given leafname "
-"(XDG_CONFIG_HOME defaults to ~/.config). A session saves the state of "
-"current windows and tabs but not the terminals' text content. A session can "
-"be restored with roxterm's --session command-line option, or will be "
-"restored automatically if named 'Default'. Leaving the field blank is "
-"equivalent to 'Default'."
+"The current session will be saved in $XDG_CONFIG_HOME/roxterm.sourceforge."
+"net/UserSessions/ with the given leafname (XDG_CONFIG_HOME defaults to ~/."
+"config). A session saves the state of current windows and tabs but not the "
+"terminals' text content. A session can be restored with roxterm's --session "
+"command-line option, or will be restored automatically if named 'Default'. "
+"Leaving the field blank is equivalent to 'Default'."
 msgstr ""
-"A jelenlegi munkamenet a $XDG_CONFIG_HOME/"
-"roxterm.sourceforge.net/UserSessions/ mappába kerül mentésre a megadott "
-"névvel (az XDG_CONFIG_HOME alapértelmezett értéke ~/.config). A "
-"munkamenet a jelenlegi ablakok és lapok állapotát menti, de a terminálok "
-"szöveges tartalmát nem. A munkamenet a roxterm --session parancssori "
-"kapcsolóval állítható vissza, vagy automatikusan visszaáll, ha a neve "
-"'Default'. Ha a mezőt üresen hagyja, az  megegyezik a 'Default' értékkel."
+"A jelenlegi munkamenet a $XDG_CONFIG_HOME/roxterm.sourceforge.net/"
+"UserSessions/ mappába kerül mentésre a megadott névvel (az XDG_CONFIG_HOME "
+"alapértelmezett értéke ~/.config). A munkamenet a jelenlegi ablakok és lapok "
+"állapotát menti, de a terminálok szöveges tartalmát nem. A munkamenet a "
+"roxterm --session parancssori kapcsolóval állítható vissza, vagy "
+"automatikusan visszaáll, ha a neve 'Default'. Ha a mezőt üresen hagyja, az  "
+"megegyezik a 'Default' értékkel."
 
 #: ../src/multitab.c:1407
 #, c-format
@@ -585,11 +583,10 @@ msgid ""
 "tabs and or '%%' for a literal '%'. Other '%' sequences are passed through. "
 "Apply an empty string here to use the profile's title string."
 msgstr ""
-"A címsor beállítás a következő behelyettesítéseket tartalmazhatja: '%s' az"
-"aktuális lap neve vagy ablakcíme, '%t' az aktív lap sorszáma, '%n' a "
-"megnyitott lapok száma, '%%' egy százalékjel. Más '%' parancsok "
-"továbbadásra kerülnek.. Üres érték megadásakor a profil neve kerül "
-"felhasználásra."
+"A címsor beállítás a következő behelyettesítéseket tartalmazhatja: '%s' "
+"azaktuális lap neve vagy ablakcíme, '%t' az aktív lap sorszáma, '%n' a "
+"megnyitott lapok száma, '%%' egy százalékjel. Más '%' parancsok továbbadásra "
+"kerülnek.. Üres érték megadásakor a profil neve kerül felhasználásra."
 
 #: ../src/options.c:75
 #, c-format
@@ -640,67 +637,67 @@ msgstr "Ismeretlen D-Bus jelzés: %s.%s"
 msgid "Error launching capplet: %s"
 msgstr "A capplet indítása nem sikerült: %s"
 
-#: ../src/optsfile.c:218
+#: ../src/optsfile.c:245
 #, c-format
 msgid "Can't read options file %s: %s"
 msgstr "A beállításfájl olvasása nem sikerült: %s: %s"
 
-#: ../src/optsfile.c:221
+#: ../src/optsfile.c:248
 #, c-format
 msgid "Can't read options file %s"
 msgstr "A beállításfájl olvasása nem sikerült: %s"
 
-#: ../src/optsfile.c:231
+#: ../src/optsfile.c:258
 #, c-format
 msgid "Options file %s does not start with group '%s'"
 msgstr "A(z) %s beállításfájl nem csoporttal kezdődik: '%s'"
 
-#: ../src/optsfile.c:248
+#: ../src/optsfile.c:275
 #, c-format
 msgid "Invalid directory name '%s'"
 msgstr "Érvénytelen könyvtárnév: '%s'"
 
-#: ../src/optsfile.c:253
+#: ../src/optsfile.c:280
 #, c-format
 msgid "Failed to create directory '%s': %s"
 msgstr "Könyvtár létrehozása nem sikerült: '%s': %s"
 
-#: ../src/optsfile.c:305
+#: ../src/optsfile.c:332
 #, c-format
 msgid "Unable to generate options file %s: %s"
 msgstr "Beállításfájl létrehozása nem sikerült: %s: %s"
 
-#: ../src/optsfile.c:310
+#: ../src/optsfile.c:337
 #, c-format
 msgid "Unable to generate options file %s"
 msgstr "Beállításfájl létrehozása nem sikerült: %s"
 
-#: ../src/optsfile.c:321
+#: ../src/optsfile.c:348
 #, c-format
 msgid "Unable to save options file %s: %s"
 msgstr "Beállításfájl mentése nem sikerült: %s: %s"
 
-#: ../src/optsfile.c:326
+#: ../src/optsfile.c:353
 #, c-format
 msgid "Unable to save options file %s"
 msgstr "Beállításfájl mentése nem sikerült: %s"
 
-#: ../src/optsfile.c:343
+#: ../src/optsfile.c:370
 #, c-format
 msgid "Error looking up option '%s' in '%s': %s"
 msgstr "Hiba a(z) '%s' beállítás megkeresésekor, hely: '%s': %s"
 
-#: ../src/optsfile.c:440
+#: ../src/optsfile.c:467
 #, c-format
 msgid "Unable to create directory '%s'"
 msgstr "A könyvtár létrehozása nem sikerült: '%s'"
 
-#: ../src/optsfile.c:465
+#: ../src/optsfile.c:492
 #, c-format
 msgid "Unable to copy profile/scheme: %s"
 msgstr "A profil vagy séma átnevezése nem sikerült: %s"
 
-#: ../src/optsfile.c:466 ../src/shortcuts.c:202
+#: ../src/optsfile.c:493 ../src/shortcuts.c:202
 msgid "unknown reason"
 msgstr "oka ismeretlen"
 
