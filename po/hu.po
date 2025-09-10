@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://github.com/realh/roxterm/issues\n"
 "POT-Creation-Date: 2025-09-05 13:09+0100\n"
-"PO-Revision-Date: 2025-09-07 11:26+0200\n"
+"PO-Revision-Date: 2025-09-10 23:39+0200\n"
 "Last-Translator: kempelen <kempelen@netengine.hu>\n"
 "Language-Team: Hungarian <kde-l10n-hu@kde.org>\n"
 "Language: hu_HU\n"
@@ -3011,15 +3011,22 @@ msgid ""
 "command-line option, or will be restored automatically if named 'Default'. "
 "Leaving the field blank is equivalent to 'Default'."
 msgstr ""
+"A jelenlegi munkamenet a $XDG_CONFIG_HOME/roxterm.sourceforge."
+"net/UserSessions/ mappába kerül mentésre a megadott "
+"névvel (az XDG_CONFIG_HOME alapértelmezett értéke ~/.config). A "
+"munkamenet a jelenlegi ablakok és lapok állapotát menti, de a terminálok "
+"szöveges tartalmát nem. A munkamenet a roxterm --session parancssori "
+"kapcsolóval állítható vissza, vagy automatikusan visszaáll, ha a neve "
+"'Default'. Ha a mezőt üresen hagyja, az  megegyezik a 'Default' értékkel."
 
 #: src/multitab.c:1407
 #, c-format
 msgid "Unable to save session to file '%s': %s"
-msgstr ""
+msgstr "A munkamenet mentése nem sikerült: '%s': %s"
 
 #: src/multitab.c:1422
 msgid "Set Window Title"
-msgstr ""
+msgstr "Ablakcímsor beállítása"
 
 #: src/multitab.c:1433
 msgid ""
@@ -3028,140 +3035,147 @@ msgid ""
 "tabs and or '%%' for a literal '%'. Other '%' sequences are passed through. "
 "Apply an empty string here to use the profile's title string."
 msgstr ""
+"A címsor beállítás a következő behelyettesítéseket tartalmazhatja: '%s' az"
+"aktuális lap neve vagy ablakcíme, '%t' az aktív lap sorszáma, '%n' a "
+"megnyitott lapok száma, '%%' egy százalékjel. Más '%' parancsok "
+"továbbadásra kerülnek.. Üres érték megadásakor a profil neve kerül "
+"felhasználásra."
 
 #: src/options.c:75
 #, c-format
 msgid "Unable to copy options keyfile data: %s"
-msgstr ""
+msgstr "A beállításfájl adatainak másolása nem sikerült: %s"
 
 #: src/options.c:163
 #, c-format
 msgid "Unable to convert value '%s' for key '%s' in '%s' to number"
 msgstr ""
+"Az érték számmá alakítása nem sikerült: '%s', beállítás: '%s', hely: '%s'"
 
 #: src/options.c:170
 #, c-format
 msgid "Unable to convert value '%s' for key '%s' in '%s' to number: %s"
 msgstr ""
+"Az érték számmá alakítása nem sikerült: '%s', beállítás: '%s', hely: '%s': %s"
 
 #: src/optsdbus.c:61
 msgid "Unable to get argument from D-BUS message"
-msgstr ""
+msgstr "A paraméter beolvasása a D-Bus üzenetből nem sikerült"
 
 #: src/optsdbus.c:65
 msgid "Unable to get argument"
-msgstr ""
+msgstr "Paraméter beolvasása sikertelen"
 
 #: src/optsdbus.c:138
 #, c-format
 msgid "Don't know how to handle method %s.%s"
-msgstr ""
+msgstr "A metódus kezelésének módja nem ismert: %s.%s"
 
 #: src/optsdbus.c:313
 #, c-format
 msgid "Unrecognised ROXTERM_ID '%s' in D-Bus message"
-msgstr ""
+msgstr "Ismeretlen ROXTERM_ID '%s' a D-Bus üzenetben"
 
 #: src/optsdbus.c:439
 msgid "Unable to read D-BUS signal arguments"
-msgstr ""
+msgstr "A D-Bus jelzés paramétereinek olvasása nem sikerült"
 
 #: src/optsdbus.c:470
 #, c-format
 msgid "Unrecognised D-BUS signal %s.%s"
-msgstr ""
+msgstr "Ismeretlen D-Bus jelzés: %s.%s"
 
 #: src/optsdbus.c:545
 #, c-format
 msgid "Error launching capplet: %s"
-msgstr ""
+msgstr "A capplet indítása nem sikerült: %s"
 
 #: src/optsfile.c:218
 #, c-format
 msgid "Can't read options file %s: %s"
-msgstr ""
+msgstr "A beállításfájl olvasása nem sikerült: %s: %s"
 
 #: src/optsfile.c:221
 #, c-format
 msgid "Can't read options file %s"
-msgstr ""
+msgstr "A beállításfájl olvasása nem sikerült: %s"
 
 #: src/optsfile.c:231
 #, c-format
 msgid "Options file %s does not start with group '%s'"
-msgstr ""
+msgstr "A(z) %s beállításfájl nem csoporttal kezdődik: '%s'"
 
 #: src/optsfile.c:248
 #, c-format
 msgid "Invalid directory name '%s'"
-msgstr ""
+msgstr "Érvénytelen könyvtárnév: '%s'"
 
 #: src/optsfile.c:253
 #, c-format
 msgid "Failed to create directory '%s': %s"
-msgstr ""
+msgstr "Könyvtár létrehozása nem sikerült: '%s': %s"
 
 #: src/optsfile.c:305
 #, c-format
 msgid "Unable to generate options file %s: %s"
-msgstr ""
+msgstr "Beállításfájl létrehozása nem sikerült: %s: %s"
 
 #: src/optsfile.c:310
 #, c-format
 msgid "Unable to generate options file %s"
-msgstr ""
+msgstr "Beállításfájl létrehozása nem sikerült: %s"
 
 #: src/optsfile.c:321
 #, c-format
 msgid "Unable to save options file %s: %s"
-msgstr ""
+msgstr "Beállításfájl mentése nem sikerült: %s: %s"
 
 #: src/optsfile.c:326
 #, c-format
 msgid "Unable to save options file %s"
-msgstr ""
+msgstr "Beállításfájl mentése nem sikerült: %s"
 
 #: src/optsfile.c:343
 #, c-format
 msgid "Error looking up option '%s' in '%s': %s"
-msgstr ""
+msgstr "Hiba a(z) '%s' beállítás megkeresésekor, hely: '%s': %s"
 
 #: src/optsfile.c:440
 #, c-format
 msgid "Unable to create directory '%s'"
-msgstr ""
+msgstr "A könyvtár létrehozása nem sikerült: '%s'"
 
 #: src/optsfile.c:465
 #, c-format
 msgid "Unable to copy profile/scheme: %s"
-msgstr ""
+msgstr "A profil vagy séma átnevezése nem sikerült: %s"
 
 #: src/optsfile.c:466 src/shortcuts.c:202
 msgid "unknown reason"
-msgstr ""
+msgstr "oka ismeretlen"
 
 #: src/profilegui.c:73
 #, c-format
 msgid "Profile widget '%s' not found"
-msgstr ""
+msgstr "A(z) '%s' profilpanel nem található"
 
 #: src/profilegui.c:380
 msgid "(Don't set)"
-msgstr ""
+msgstr "(Ne legyen beállítva)"
 
 #: src/profilegui.c:381 src/profilegui.c:382
 msgid "Default"
-msgstr ""
+msgstr "Alapértelmezett"
 
 #: src/profilegui.c:659
 #, c-format
 msgid "Unable to load GTK UI definitions: %s"
-msgstr ""
+msgstr "A GTK UI definíciók betöltése nem sikerült: %s"
 
 #: src/profilegui.c:664
 #, c-format
 msgid "ROXTerm Profile \"%s\""
-msgstr ""
+msgstr "ROXTerm profil \"%s\""
 
 #: src/profilegui.c:696
 msgid "Deleting edited profile that wasn't in list of profiles being edited"
@@ -3170,16 +3184,16 @@ msgstr "A törölni kívánt profil nincs benne a szerkesztett profilok listáj�
 #: src/roxterm.c:507
 #, c-format
 msgid "Unable to look up login details: %s"
-msgstr ""
+msgstr "A bejelentkezési adatok kikeresése nem sikerült: %s"
 
 #: src/roxterm.c:593
 msgid "Failed to run command"
-msgstr ""
+msgstr "A parancs futtatása nem sikerült"
 
 #: src/roxterm.c:747
 #, c-format
 msgid "Unable to parse command '%s'"
-msgstr ""
+msgstr "A parancs értelmezése nem sikerült: '%s'"
 
 #: src/roxterm.c:883
 #, c-format
@@ -3198,7 +3212,7 @@ msgstr ""
 
 #: src/roxterm.c:1593 src/roxterm.c:3535
 msgid "ROXTerm"
-msgstr ""
+msgstr "ROXTerm"
 
 #: src/roxterm.c:1636
 #, c-format
@@ -3224,7 +3238,7 @@ msgstr ""
 
 #: src/roxterm.c:2057
 msgid "Close"
-msgstr ""
+msgstr "Bezárás"
 
 #: src/roxterm.c:2059
 msgid "Leave open"
@@ -3232,18 +3246,20 @@ msgstr ""
 
 #: src/roxterm.c:2061
 msgid "Rerun command"
-msgstr ""
+msgstr "A parancs újraindítása"
 
 #: src/roxterm.c:2113
 msgid ""
 "\n"
 ".\n"
 msgstr ""
+"\n"
+".\n"
 
 #: src/roxterm.c:2177
 #, c-format
 msgid "Unknown colour scheme '%s'"
-msgstr ""
+msgstr "Ismeretlen színséma: '%s'"
 
 #: src/roxterm.c:2205 src/roxterm.c:2262 src/roxterm.c:2305 src/roxterm.c:2346
 #, c-format
@@ -3258,7 +3274,7 @@ msgstr ""
 #: src/roxterm.c:2327
 #, c-format
 msgid "Colour scheme '%s' not found"
-msgstr ""
+msgstr "A(z) '%s' színséma nem található"
 
 #: src/roxterm.c:2469
 msgid "Unknown error"
@@ -3294,7 +3310,7 @@ msgstr ""
 
 #: src/roxterm.c:4089
 msgid "[Deleted]"
-msgstr ""
+msgstr "[Törölve]"
 
 #: src/roxterm.c:4112
 #, c-format
@@ -3337,7 +3353,7 @@ msgstr ""
 
 #: src/roxterm.c:4699
 msgid "ROXTerm: Confirm close"
-msgstr ""
+msgstr "ROXTerm: Bezárás jóváhagyása"
 
 #: src/roxterm.c:4704
 msgid "_Don't show this again"
@@ -3345,12 +3361,12 @@ msgstr ""
 
 #: src/roxterm.c:4712
 msgid "Only warn if tasks are still _running"
-msgstr ""
+msgstr "Csak akkor, ha még fut valamilyen folyamat"
 
 #: src/roxterm.c:4814
 #, c-format
 msgid "Unable to spawn command %s: %s"
-msgstr ""
+msgstr "A parancs indítása nem sikerült: %s: %s"
 
 #: src/roxterm.c:4976
 #, c-format
@@ -3359,7 +3375,7 @@ msgstr ""
 
 #: src/roxterm.c:5026
 msgid "Session contains window with no valid tabs"
-msgstr ""
+msgstr "A munkafolyamat ablaknának nincs érvényes lapja"
 
 #: src/roxterm.c:5161
 msgid "<command> with no arguments"
@@ -3428,7 +3444,7 @@ msgstr ""
 #: src/roxterm.c:5376
 #, c-format
 msgid "Unknown element <%s>"
-msgstr ""
+msgstr "Ismeretlen elem: <%s>"
 
 #: src/roxterm.c:5392
 msgid "Unmatched </roxterm_session>"
@@ -3457,7 +3473,7 @@ msgstr ""
 #: src/roxterm.c:5447
 #, c-format
 msgid "Unknown closing element </%s>"
-msgstr ""
+msgstr "Ismeretlen záró elem: </%s>"
 
 #: src/roxterm.c:5457
 #, c-format
@@ -3624,7 +3640,7 @@ msgstr ""
 
 #: src/search.c:364
 msgid "_Wrap Around"
-msgstr ""
+msgstr "_Körbefordul"
 
 #: src/search.c:365
 msgid ""
