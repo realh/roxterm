@@ -73,7 +73,6 @@ if (GETTEXT_MSGMERGE_EXECUTABLE)
             COMMAND
                 ${GETTEXT_MSGMERGE_EXECUTABLE}
                 --update --no-fuzzy-matching --backup=off
-                --output-file=${CMAKE_CURRENT_SOURCE_DIR}/${PO_FILE}
                 ${CMAKE_CURRENT_SOURCE_DIR}/${PO_FILE}
                 ${POT_FILE}
         )
