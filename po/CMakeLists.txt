@@ -2,7 +2,7 @@ find_program(GETTEXT_XGETTEXT_EXECUTABLE xgettext)
 find_program(GETTEXT_MSGMERGE_EXECUTABLE msgmerge)
 find_program(GETTEXT_MSGFMT_EXECUTABLE msgfmt)
 
-set(POT_FILE "${CMAKE_CURRENT_BUILD_DIR}/messages.pot")
+set(POT_FILE "${CMAKE_CURRENT_BINARY_DIR}/messages.pot")
 file(GLOB PO_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.po)
 message(TRACE " PO_FILES: ${PO_FILES}")
 set(LANGUAGES)
