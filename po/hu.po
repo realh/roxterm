@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://github.com/realh/roxterm/issues\n"
-"POT-Creation-Date: 2025-09-10 23:47+0200\n"
-"PO-Revision-Date: 2025-09-10 23:39+0200\n"
+"POT-Creation-Date: 2025-09-11 20:39+0200\n"
+"PO-Revision-Date: 2025-09-11 22:36+0200\n"
 "Last-Translator: kempelen <kempelen@netengine.hu>\n"
 "Language: hu_HU\n"
 "MIME-Version: 1.0\n"
@@ -15,6 +15,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Lokalize 22.12.3\n"
+"Language-Team: Hungarian <>\n"
 
 #: ../src/about.c:35
 msgid "Thanks to the developers of VTE"
@@ -584,7 +585,7 @@ msgid ""
 "Apply an empty string here to use the profile's title string."
 msgstr ""
 "A címsor beállítás a következő behelyettesítéseket tartalmazhatja: '%s' "
-"azaktuális lap neve vagy ablakcíme, '%t' az aktív lap sorszáma, '%n' a "
+"az aktuális lap neve vagy ablakcíme, '%t' az aktív lap sorszáma, '%n' a "
 "megnyitott lapok száma, '%%' egy százalékjel. Más '%' parancsok továbbadásra "
 "kerülnek.. Üres érték megadásakor a profil neve kerül felhasználásra."
 
@@ -746,7 +747,7 @@ msgstr "A törölni kívánt profil nincs benne a szerkesztett profilok listáj�
 #: ../src/roxterm.c:507
 #, c-format
 msgid "Unable to look up login details: %s"
-msgstr ""
+msgstr "A bejelentkezési adatok kikeresése nem sikerült: %s"
 
 #: ../src/roxterm.c:593
 msgid "Failed to run command"
@@ -760,17 +761,17 @@ msgstr "A parancs értelmezése nem sikerült: '%s'"
 #: ../src/roxterm.c:883
 #, c-format
 msgid "Unable to open URI %s: %s"
-msgstr ""
+msgstr "Az URI megnyitása nem sikerült: %s %s"
 
 #: ../src/roxterm.c:1009
 #, c-format
 msgid "Saturation option %f out of range"
-msgstr ""
+msgstr "A telítettség opció %f tartományon kívül esik"
 
 #: ../src/roxterm.c:1270
 #, c-format
 msgid "Couldn't create a font from '%s'"
-msgstr ""
+msgstr "Betűkészlet létrehozása nem sikerült: '%s'"
 
 #: ../src/roxterm.c:1593 ../src/roxterm.c:3535
 msgid "ROXTerm"
@@ -779,11 +780,11 @@ msgstr "ROXTerm"
 #: ../src/roxterm.c:1636
 #, c-format
 msgid "No menu item matches profile/scheme '%s'"
-msgstr ""
+msgstr "Egyetlen menüelem sem illeszkedik a profilra vagy sémára: '%s'"
 
 #: ../src/roxterm.c:1818
 msgid "Kill current task?"
-msgstr ""
+msgstr "Kilövi a jelenlegi folyamatot?"
 
 #: ../src/roxterm.c:1819
 msgid ""
@@ -791,24 +792,29 @@ msgid ""
 "be killed. Do you want to kill the current task to replace it with a new "
 "instance?"
 msgstr ""
+"A jelenlegi folyamat még fut. A jelenlegi példány újraindításához "
+"ki kell lőni. Kilövi a jelenlegi folyamatot és elindít helyette egy új "
+"példányt?"
 
 #: ../src/roxterm.c:2052
 msgid ""
 "The command in this terminal has terminated. What do you want to do with the "
 "terminal now?"
 msgstr ""
+"Az ebben a terminálban futó parancs befejeződött. Mit történjen ezzel a "
+"terminállal?"
 
 #: ../src/roxterm.c:2057
 msgid "Close"
-msgstr "Bezárás"
+msgstr "Záródjon be"
 
 #: ../src/roxterm.c:2059
 msgid "Leave open"
-msgstr ""
+msgstr "Maradjon nyitva"
 
 #: ../src/roxterm.c:2061
 msgid "Rerun command"
-msgstr "A parancs újraindítása"
+msgstr "Induljon újra a parancs"
 
 #: ../src/roxterm.c:2113
 msgid ""
@@ -827,12 +833,12 @@ msgstr "Ismeretlen színséma: '%s'"
 #: ../src/roxterm.c:2346
 #, c-format
 msgid "Menu item has no '%s' data"
-msgstr ""
+msgstr "A menüelemnek nincs '%s' adata"
 
 #: ../src/roxterm.c:2214 ../src/roxterm.c:2288
 #, c-format
 msgid "Profile '%s' not found"
-msgstr ""
+msgstr "A(z) '%s' profil nem található"
 
 #: ../src/roxterm.c:2327
 #, c-format
@@ -841,35 +847,35 @@ msgstr "A(z) '%s' színséma nem található"
 
 #: ../src/roxterm.c:2469
 msgid "Unknown error"
-msgstr ""
+msgstr "Ismeretlen hiba"
 
 #: ../src/roxterm.c:2471
 #, c-format
 msgid "Unable to save buffer to '%s': %s"
-msgstr ""
+msgstr "A puffer mentése nem sikerült: 's': %s"
 
 #: ../src/roxterm.c:2486
 msgid "Save Terminal Buffer"
-msgstr ""
+msgstr "Terminálpuffer mentése"
 
 #: ../src/roxterm.c:2499
 msgid "Untitled"
-msgstr ""
+msgstr "Névtelen"
 
 #: ../src/roxterm.c:3596
 #, c-format
 msgid "Unknown option type (%d)"
-msgstr ""
+msgstr "Ismeretlen opciótípus (%d)"
 
 #: ../src/roxterm.c:3978
 #, c-format
 msgid "Profile/key '%s/%s' not understood"
-msgstr ""
+msgstr "A profil vagy kulcs nem értelmezhető: '%s/%s'"
 
 #: ../src/roxterm.c:4074
 #, c-format
 msgid "Changed options family '%s' not known"
-msgstr ""
+msgstr "A megváltozott opciókészlet ismeretlen: '%s'"
 
 #: ../src/roxterm.c:4089
 msgid "[Deleted]"
@@ -878,7 +884,7 @@ msgstr "[Törölve]"
 #: ../src/roxterm.c:4112
 #, c-format
 msgid "Options family change action '%s' not known"
-msgstr ""
+msgstr "Az opciókészletet megváltoztató művelet ismeretlen: '%s'"
 
 #: ../src/roxterm.c:4211
 #, c-format
@@ -886,33 +892,39 @@ msgid ""
 "Invalid ROXTERM_ID %p in D-Bus message (this is expected if you used "
 "roxterm's --separate option)"
 msgstr ""
+"Érvénytelen ROXTERM_ID %p a D-Bus üzenetben (ez normális, ha a "
+"roxtermet a --separate kapcsolóval használja)"
 
 #: ../src/roxterm.c:4235
 #, c-format
 msgid "Unknown profile '%s' in D-Bus signal"
-msgstr ""
+msgstr "Ismeretlen profil a D-Bus üzenetben: '%s'"
 
 #: ../src/roxterm.c:4334
 msgid "Invalid geometry specification"
-msgstr ""
+msgstr "Érvénytelen geometria meghatározás"
 
 #: ../src/roxterm.c:4682
 msgid ""
 "Closing this ROXTerm tab may cause loss of data. Are you sure you want to "
 "continue?"
-msgstr ""
+msgstr "A ROXTerm lap bezárása adatvesztéssel járhat. Biztos, hogy folytatja?"
 
 #: ../src/roxterm.c:4686
 msgid ""
 "You are about to close a ROXTerm window; this may cause loss of data. Are "
 "you sure you want to continue?"
 msgstr ""
+"Egy ROXTerm ablak bezárásra készül, ami adatvesztéssel járhat. Biztos, "
+"hogy folytatja?"
 
 #: ../src/roxterm.c:4690
 msgid ""
 "You are about to close a window containing multiple ROXTerm tabs; this may "
 "cause loss of data. Are you sure you want to continue?"
 msgstr ""
+"Több lappal rendelkező ROXTerm ablak bezárására készül, ez adatvesztéssel "
+"járhat. Biztos, hogy folytatja?"
 
 #: ../src/roxterm.c:4699
 msgid "ROXTerm: Confirm close"
@@ -920,7 +932,7 @@ msgstr "ROXTerm: Bezárás jóváhagyása"
 
 #: ../src/roxterm.c:4704
 msgid "_Don't show this again"
-msgstr ""
+msgstr "_Ne jelenjen meg újra"
 
 #: ../src/roxterm.c:4712
 msgid "Only warn if tasks are still _running"
@@ -934,75 +946,75 @@ msgstr "A parancs indítása nem sikerült: %s: %s"
 #: ../src/roxterm.c:4976
 #, c-format
 msgid "Unknown <window> attribute '%s'"
-msgstr ""
+msgstr "Ismeretlen <window> attribútum: '%s'"
 
 #: ../src/roxterm.c:5026
 msgid "Session contains window with no valid tabs"
-msgstr "A munkafolyamat ablaknának nincs érvényes lapja"
+msgstr "A munkafolyamat egyik ablakának nincs érvényes lapja"
 
 #: ../src/roxterm.c:5161
 msgid "<command> with no arguments"
-msgstr ""
+msgstr "<command> argumentumok nélkül"
 
 #: ../src/roxterm.c:5207
 #, c-format
 msgid "Unknown <command> attribute '%s'"
-msgstr ""
+msgstr "Ismeretlen <command> attribútum: '%s'"
 
 #: ../src/roxterm.c:5219
 msgid "<command> missing argc attribute"
-msgstr ""
+msgstr "<command> nem rendelkezik argc attribútummal"
 
 #: ../src/roxterm.c:5233
 #, c-format
 msgid "Too many <arg> elements for <command argc='%d>"
-msgstr ""
+msgstr "Túl sok <arg> elem a <command argc='%d> elemhez"
 
 #: ../src/roxterm.c:5250
 #, c-format
 msgid "Unknown <arg> attribute '%s'"
-msgstr ""
+msgstr "Ismeretlen <arg> attribútum: '%s'"
 
 #: ../src/roxterm.c:5262
 msgid "<arg> missing s attribute"
-msgstr ""
+msgstr "<arg> nem rendelkezik s attribútummal"
 
 #: ../src/roxterm.c:5282
 #, c-format
 msgid "Unknown <roxterm_session> attribute '%s'"
-msgstr ""
+msgstr "Ismeretlen <roxterm_session> attribútum: '%s'"
 
 #: ../src/roxterm.c:5301
 msgid "<roxterm_session> tag nested within <window>"
-msgstr ""
+msgstr "<roxterm_session> beágyazva <window> elembe"
 
 #: ../src/roxterm.c:5315
 msgid "<window> tag not within <roxterm_session>"
-msgstr ""
+msgstr "<window> nincs beágyazva <roxterm_session> elembe"
 
 #: ../src/roxterm.c:5320
 msgid "<window> tag nested within another <window>"
-msgstr ""
+msgstr "<window> beágyazva egy másik <window> elembe"
 
 #: ../src/roxterm.c:5332
 msgid "<tab> tag not within <window>"
-msgstr ""
+msgstr "<tab> nincs beágyazva <window> elembe"
 
 #: ../src/roxterm.c:5337
 msgid "<tab> tag nested within another <tab>"
-msgstr ""
+msgstr "<tab> beágyazva egy másik <tab> elembe"
 
 #: ../src/roxterm.c:5349
 msgid "<command> tag not within <tab>"
-msgstr ""
+msgstr "<command> nincs beágyazva <tab> elembe"
 
 #: ../src/roxterm.c:5354
 msgid "<command> tag nested within another <command>"
-msgstr ""
+msgstr "<command> beágyazva egy másik <command> elembe"
 
 #: ../src/roxterm.c:5366
 msgid "<arg> tag not within <command>"
-msgstr ""
+msgstr "<arg> nincs beágyazva <command> elembe"
 
 #: ../src/roxterm.c:5376
 #, c-format
@@ -1011,27 +1023,27 @@ msgstr "Ismeretlen elem: <%s>"
 
 #: ../src/roxterm.c:5392
 msgid "Unmatched </roxterm_session>"
-msgstr ""
+msgstr "Pár nélküli </roxterm_session>"
 
 #: ../src/roxterm.c:5397
 msgid "Attempt to close <roxterm_session> without closing <window>"
-msgstr ""
+msgstr "<roxterm_session> bezárása <window> bezárása nélkül"
 
 #: ../src/roxterm.c:5410
 msgid "Unmatched </window>"
-msgstr ""
+msgstr "Pár nélküli </window>"
 
 #: ../src/roxterm.c:5415
 msgid "Attempt to close <window> without closing <tab>"
-msgstr ""
+msgstr "<window> bezárása <tab> bezárása nélkül"
 
 #: ../src/roxterm.c:5427
 msgid "Unmatched </tab>"
-msgstr ""
+msgstr "Pár nélküli </tab>"
 
 #: ../src/roxterm.c:5441
 msgid "Unmatched </command>"
-msgstr ""
+msgstr "Pár nélküli </command>"
 
 #: ../src/roxterm.c:5447
 #, c-format
@@ -1041,61 +1053,63 @@ msgstr "Ismeretlen záró elem: </%s>"
 #: ../src/roxterm.c:5457
 #, c-format
 msgid "Unable to parse data for session '%s': %s"
-msgstr ""
+msgstr "A munkafolyamat adatainak értelmezése nem sikerült: '%s': %s"
 
 #: ../src/rtdbus.c:37 ../src/rtdbus.c:45
 msgid "<unknown>"
-msgstr ""
+msgstr "<unknown>"
 
 #: ../src/rtdbus.c:66
 msgid "Unable to send D-BUS message"
-msgstr ""
+msgstr "D-Bus üzenet elküldése nem sikerült"
 
 #: ../src/rtdbus.c:87
 msgid "Unable to send/get reply to D-BUS message"
 msgstr ""
+"A D-Bus üzenetre érkezett válasz elküldése vagy beszerzése nem sikerült"
 
 #: ../src/rtdbus.c:93
 msgid "Unable to get D-BUS reply message"
-msgstr ""
+msgstr "A D-Bus üzenetre érkezett válasz beszerzése nem sikerült"
 
 #: ../src/rtdbus.c:123
 msgid "Unable to start D-BUS service"
-msgstr ""
+msgstr "A D-Bus szolgáltatás indítása nem sikerült"
 
 #: ../src/rtdbus.c:138
 msgid "Unable to listen for D-BUS method calls"
-msgstr ""
+msgstr "Nem sikerült figyelést kezdeményezni a D-Bus metódushívásokra"
 
 #: ../src/rtdbus.c:159
 #, c-format
 msgid "Error connecting to dbus: %s"
-msgstr ""
+msgstr "Kapcsolódás a D-Bushoz nem sikerült: %s"
 
 #: ../src/rtdbus.c:180
 msgid "Unable to add D-BUS match rule"
-msgstr ""
+msgstr "D-Bus egyezési szabály hozzáadása nem sikerült"
 
 #: ../src/rtdbus.c:186
 msgid "Unable to install D-BUS message filter"
-msgstr ""
+msgstr "D-Bus üzenetszűrő telepítése nem sikerült"
 
 #: ../src/rtdbus.c:225
 msgid "Unable to append arguments to D-BUS message"
-msgstr ""
+msgstr "A D-Bus üzenethez nem sikerült argumentumokat hozzáfűzni"
 
 #: ../src/rtdbus.c:251
 msgid "Unable to create D-BUS signal message"
-msgstr ""
+msgstr "D-Bus jelzésüzenet létrehozása nem sikerült"
 
 #: ../src/rtdbus.c:279
 msgid "Unable to create D-BUS method call message"
-msgstr ""
+msgstr "D-Bus metódushívás üzenet létrehozása nem sikerült"
 
 #: ../src/rtdbus.c:299
 #, c-format
 msgid "Invalid argument type ('%c') in NewTerminal D-BUS method"
 msgstr ""
+"Érvénytelen argumentumtípus ('%c') az Új Terminálablak D-Bus metódusban"
 
 #: ../src/rtdbus.c:329
 #, c-format
@@ -1103,6 +1117,8 @@ msgid ""
 "Invalid first argument type ('%c') in NewTerminal D-BUS method; expected "
 "array"
 msgstr ""
+"Érvénytelen az első argumentum típusa ('%c') az Új Terminálablak D-Bus "
+"metódusban, tömb szükséges"
 
 #: ../src/rtdbus.c:335
 #, c-format
@@ -1110,97 +1126,105 @@ msgid ""
 "Invalid array element type ('%c') in NewTerminal D-BUS method; expected "
 "strings"
 msgstr ""
+"Érvénytelen tömb elemtípus ('%c') az Új Terminálablak D-Bus metódusban, "
+"karakterlánc szükséges"
 
 #: ../src/search.c:53
 #, c-format
 msgid "Unable to create config directory '%s': %s"
-msgstr ""
+msgstr "A beállítási könyvtár létrehozása nem sikerült: '%s': %s"
 
 #: ../src/search.c:79
 #, c-format
 msgid "Unable to read search history file '%s': %s"
-msgstr ""
+msgstr "A keresési előzmények fájl olvasása nem sikerült: '%s': %s"
 
 #: ../src/search.c:105
 #, c-format
 msgid "Error reading search history file: %s"
-msgstr ""
+msgstr "Hiba történt a keresési előzmények fájl olvasása közben: %s"
 
 #: ../src/search.c:106 ../src/search.c:157
 msgid "Already in use"
-msgstr ""
+msgstr "Már használatban van"
 
 #: ../src/search.c:135
 #, c-format
 msgid "Unable to write search history file '%s': %s"
-msgstr ""
+msgstr "A keresési előzmények fájl írása nem sikerült: '%s': %s"
 
 #: ../src/search.c:156
 #, c-format
 msgid "Error writing search history file: %s"
-msgstr ""
+msgstr "Hiba történt a keresési előzmények fájl írása közben: %s"
 
 #: ../src/search.c:285
 #, c-format
 msgid "Invalid search expression: %s"
-msgstr ""
+msgstr "Érvénytelen keresési kifejezés: %s"
 
 #: ../src/search.c:309
 msgid "_Search for:"
-msgstr ""
+msgstr "_Keresés:"
 
 #: ../src/search.c:312
 msgid "Find"
-msgstr ""
+msgstr "Keresés"
 
 #: ../src/search.c:315
-#, fuzzy
 msgid "_Close"
-msgstr "Lap _bezárása"
+msgstr "_Bezárás"
 
 #: ../src/search.c:316
 msgid "_Find"
-msgstr ""
+msgstr "_Keresés"
 
 #: ../src/search.c:327
 msgid ""
 "A search string or perl-compatible regular expression. An empty string "
 "clears any previous search."
 msgstr ""
+"Keresendő szöveg vagy Perl szerinti reguláris kifejezés. Üres érték "
+"törli a korábbi keresést."
 
 #: ../src/search.c:338
 msgid "Match C_ase"
-msgstr ""
+msgstr "Kis- és nagybetűk &egyeztetése"
 
 #: ../src/search.c:340
 msgid "Whether the search is case sensitive"
-msgstr ""
+msgstr "Megadja, hogy a keresés megkülönböztesse-e a kis- és nagybetűket"
 
 #: ../src/search.c:344
 msgid "Match _Entire Word"
-msgstr ""
+msgstr "Egész &szavak egyezése"
 
 #: ../src/search.c:345
 msgid "If set the pattern will only match when it forms a word on its own."
 msgstr ""
+"Bekapcsolásakor a találat csak akkor fog egyezni,ha önálló szóként szerepel a"
+" keresett kifejezés."
 
 #: ../src/search.c:351
 msgid "Match As _Regular Expression"
-msgstr ""
+msgstr "Egyeztetés &reguláris kifejezéssel"
 
 #: ../src/search.c:352
 msgid "If set the pattern is a perl-compatible regular expression."
 msgstr ""
+"Bekapcsolásakor a keresőmezőben Perl szerinti reguláris kifejezés adható meg."
 
 #: ../src/search.c:357
 msgid "Search _Backwards"
-msgstr ""
+msgstr "Keresés &visszafelé"
 
 #: ../src/search.c:358
 msgid ""
 "Whether to search backwards when the Find button is clicked. This does not "
 "affect the Find Next and Find Previous menu items."
 msgstr ""
+"Megadja, hogy a Keresés gomb megnyomásakor a keresés visszafelé történjen-e. "
+"Nincs hatással a Következő keresése és Előző keresése menükre."
 
 #: ../src/search.c:364
 msgid "_Wrap Around"
@@ -1211,6 +1235,8 @@ msgid ""
 "Whether to wrap the search to the opposite end of the buffer when the "
 "beginning or end is reached."
 msgstr ""
+"Megadja, hogy a keresés folytatódjon-e a puffer ellentétes oldalán, a végének "
+"vagy az elejének az elérésekor."
 
 #: ../src/session-file.c:65
 #, c-format
@@ -1307,7 +1333,7 @@ msgstr ""
 
 #: ../src/globalopts.c:262
 msgid "Use the named keyboard shortcut scheme"
-msgstr "Az adott nevű gyorbillentyű-készlet használata"
+msgstr "Az adott nevű gyorsbillentyű-készlet használata"
 
 #: ../src/globalopts.c:268
 msgid "Maximise the window, overriding profile"
@@ -1467,7 +1493,6 @@ msgid "_Text colour"
 msgstr "S_zövegszín"
 
 #: ../src/roxterm-config.ui:117 ../src/roxterm-config.ui:118
-#: ../src/roxterm-config.ui:182 ../src/roxterm-config.ui:183
 msgid "Foreground colour of text; click to change"
 msgstr "A szöveg előtérszíne; kattintson a kiválasztáshoz"
 
@@ -1484,10 +1509,12 @@ msgid "Set b_old colour"
 msgstr "_Félkövér szín"
 
 #: ../src/roxterm-config.ui:164 ../src/roxterm-config.ui:165
-#: ../src/roxterm-config.ui:257 ../src/roxterm-config.ui:258
-msgid "Set the cursor colour from the adjacent field"
+msgid "Set the bold text colour from the adjacent field"
 msgstr ""
-"Bekapcsolásakor a következő mező határozza meg a félkövér szöveg színét"
+
+#: ../src/roxterm-config.ui:182 ../src/roxterm-config.ui:183
+msgid "Colour of bold text; click to change"
+msgstr ""
 
 #: ../src/roxterm-config.ui:194
 msgid "Use custom _palette"
@@ -1513,6 +1540,11 @@ msgstr ""
 msgid "Set _cursor colour"
 msgstr "_Kurzor szín"
 
+#: ../src/roxterm-config.ui:257 ../src/roxterm-config.ui:258
+msgid "Set the cursor colour from the adjacent field"
+msgstr ""
+"Bekapcsolásakor a következő mező határozza meg a félkövér szöveg színét"
+
 #: ../src/roxterm-config.ui:275 ../src/roxterm-config.ui:276
 #: ../src/roxterm-config.ui:290 ../src/roxterm-config.ui:291
 msgid "Click to change the cursor colour"
@@ -1524,7 +1556,7 @@ msgstr "_Előtér"
 
 #: ../src/roxterm-config.ui:538 ../src/roxterm-config.ui:539
 msgid "Set just the first 8 palette entries from this row"
-msgstr "Csak a palette első 8 színének meghatározása, ebből a sorból"
+msgstr "Csak a paletta első 8 színének meghatározása, ebből a sorból"
 
 #: ../src/roxterm-config.ui:556 ../src/roxterm-config.ui:557
 msgid "Set 16 palette entries from both rows"
@@ -1888,7 +1920,7 @@ msgid ""
 "tabs and or '%%' for a literal '%'. Other '%' sequences are passed through."
 msgstr ""
 "A címsor beállítás a következő behelyettesítéseket tartalmazhatja: '%s' "
-"azaktuális lap neve vagy ablakcíme, '%t' az aktív lap sorszáma, '%n' a "
+"az aktuális lap neve vagy ablakcíme, '%t' az aktív lap sorszáma, '%n' a "
 "megnyitott lapok száma, '%%' egy százalékjel. Más '%' parancsok továbbadásra "
 "kerülnek."
 
@@ -2335,7 +2367,7 @@ msgstr ""
 
 #: ../src/roxterm-config.ui:3494
 msgid "Open new tabs _adjacent to current tab"
-msgstr "Új lapok megnyitsa az _aktuális mellett"
+msgstr "Új lapok megnyitása az _aktuális mellett"
 
 #: ../src/roxterm-config.ui:3524
 msgid "Use Ctrl-Tab keyboard shortcut"
