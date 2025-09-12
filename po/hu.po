@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://github.com/realh/roxterm/issues\n"
 "POT-Creation-Date: 2025-09-11 20:39+0200\n"
-"PO-Revision-Date: 2025-09-11 22:36+0200\n"
+"PO-Revision-Date: 2025-09-12 22:10+0200\n"
 "Last-Translator: kempelen <kempelen@netengine.hu>\n"
 "Language: hu_HU\n"
 "MIME-Version: 1.0\n"
@@ -71,7 +71,7 @@ msgstr "A(z) '%s' szín értelmezése nem sikerült, %s célra, a(z) %s sémába
 #: ../src/colourscheme.c:173
 #, c-format
 msgid "Invalid palette size %d in colour scheme %s"
-msgstr "Érvénytelen palettaméret: %s, a(z) %s színsémában"
+msgstr "Érvénytelen palettaméret: %d, a(z) %s színsémában"
 
 #: ../src/configlet.c:96
 msgid "Profile"
@@ -401,7 +401,7 @@ msgstr "_Puffer mentése"
 
 #: ../src/menutree.c:345
 msgid "_Save Session..."
-msgstr "_Munkafolyamat mentése..."
+msgstr "_Munkamenet mentése..."
 
 #: ../src/menutree.c:353 ../src/menutree.c:364
 msgid "Profiles"
@@ -485,7 +485,7 @@ msgstr "Elő_ző keresése"
 
 #: ../src/menutree.c:419
 msgid "Edi_t Current Shortcuts Scheme"
-msgstr "Jelenlegi gyorsbillentyűk szerkesztése"
+msgstr "Jelenlegi _gyorsbillentyűk szerkesztése"
 
 #: ../src/menutree.c:427
 msgid "_Detach Tab"
@@ -545,7 +545,7 @@ msgstr "_Alkalmazás"
 
 #: ../src/multitab.c:1355
 msgid "Save Session"
-msgstr "Munkafolyamat mentése"
+msgstr "Munkamenet mentése"
 
 #: ../src/multitab.c:1359 ../src/roxterm.c:2491
 msgid "_Save"
@@ -852,7 +852,7 @@ msgstr "Ismeretlen hiba"
 #: ../src/roxterm.c:2471
 #, c-format
 msgid "Unable to save buffer to '%s': %s"
-msgstr "A puffer mentése nem sikerült: 's': %s"
+msgstr "A puffer mentése nem sikerült: '%s': %s"
 
 #: ../src/roxterm.c:2486
 msgid "Save Terminal Buffer"
@@ -936,7 +936,7 @@ msgstr "_Ne jelenjen meg újra"
 
 #: ../src/roxterm.c:4712
 msgid "Only warn if tasks are still _running"
-msgstr "Csak akkor, ha még fut valamilyen folyamat"
+msgstr "Csak akkor, ha még _fut valamilyen folyamat"
 
 #: ../src/roxterm.c:4814
 #, c-format
@@ -950,7 +950,7 @@ msgstr "Ismeretlen <window> attribútum: '%s'"
 
 #: ../src/roxterm.c:5026
 msgid "Session contains window with no valid tabs"
-msgstr "A munkafolyamat egyik ablakának nincs érvényes lapja"
+msgstr "A munkamenet egyik ablakának nincs érvényes lapja"
 
 #: ../src/roxterm.c:5161
 msgid "<command> with no arguments"
@@ -1053,7 +1053,7 @@ msgstr "Ismeretlen záró elem: </%s>"
 #: ../src/roxterm.c:5457
 #, c-format
 msgid "Unable to parse data for session '%s': %s"
-msgstr "A munkafolyamat adatainak értelmezése nem sikerült: '%s': %s"
+msgstr "A munkamenet adatainak értelmezése nem sikerült: '%s': %s"
 
 #: ../src/rtdbus.c:37 ../src/rtdbus.c:45
 msgid "<unknown>"
@@ -1189,7 +1189,7 @@ msgstr ""
 
 #: ../src/search.c:338
 msgid "Match C_ase"
-msgstr "Kis- és nagybetűk &egyeztetése"
+msgstr "Kis- és nagybetűk _egyeztetése"
 
 #: ../src/search.c:340
 msgid "Whether the search is case sensitive"
@@ -1197,7 +1197,7 @@ msgstr "Megadja, hogy a keresés megkülönböztesse-e a kis- és nagybetűket"
 
 #: ../src/search.c:344
 msgid "Match _Entire Word"
-msgstr "Egész &szavak egyezése"
+msgstr "Egész _szavak egyezése"
 
 #: ../src/search.c:345
 msgid "If set the pattern will only match when it forms a word on its own."
@@ -1207,7 +1207,7 @@ msgstr ""
 
 #: ../src/search.c:351
 msgid "Match As _Regular Expression"
-msgstr "Egyeztetés &reguláris kifejezéssel"
+msgstr "Egyeztetés _reguláris kifejezéssel"
 
 #: ../src/search.c:352
 msgid "If set the pattern is a perl-compatible regular expression."
@@ -1216,7 +1216,7 @@ msgstr ""
 
 #: ../src/search.c:357
 msgid "Search _Backwards"
-msgstr "Keresés &visszafelé"
+msgstr "Keresés _visszafelé"
 
 #: ../src/search.c:358
 msgid ""
@@ -1241,48 +1241,50 @@ msgstr ""
 #: ../src/session-file.c:65
 #, c-format
 msgid "Unable to create Sessions directory '%s': %s"
-msgstr ""
+msgstr "A munkamenetkönyvtár létrehozása nem sikerült: '%s': %s"
 
 #: ../src/session-file.c:148
 msgid "Window with no user data"
-msgstr ""
+msgstr "Ablak felhasználói adatok nélkül"
 
 #: ../src/session-file.c:227
 #, c-format
 msgid "Unable to load session from '%s': %s"
-msgstr ""
+msgstr "A munkamenet betöltése nem sikerült: '%s': %s"
 
 #: ../src/shortcuts.c:199
 #, c-format
 msgid "Unable to read keys from shortcuts file %s: %s"
-msgstr ""
+msgstr "A gyorsbillentyűfájl betöltése nem sikerült: %s: %s"
 
 #: ../src/shortcuts.c:244
 #, c-format
 msgid "Shortcut '%s' in '%s' has invalid value"
-msgstr ""
+msgstr "A(z) '%s' gyorsbillentyű értéke érvénytelen: %s"
 
 #: ../src/shortcuts.c:398
 msgid ""
 "Unable to find a text editor. Please install gedit, gvim, kate or emacs."
 msgstr ""
+"Szövegszerkesztő nem található. Telepítse ezek egyikét:  gedit, gvim, kate"
+" vagy emacs."
 
 #: ../src/shortcuts.c:422
 #, c-format
 msgid "Error trying to edit or monitor Shortcuts file '%s': %s"
-msgstr ""
+msgstr "Hiba a szerkesztés vagy ellenőrzés során. Gyorsbillentyűfájl: '%s': %s"
 
 #: ../src/globalopts.c:225
 msgid "Show brief usage message"
-msgstr ""
+msgstr "Rövid használati útmutató megjelenítése"
 
 #: ../src/globalopts.c:228
 msgid "Set the terminal's working directory"
-msgstr ""
+msgstr "A terminál munkakönyvtárának beállítása"
 
 #: ../src/globalopts.c:228 ../src/globalopts.c:241
 msgid "DIRECTORY"
-msgstr ""
+msgstr "KÖNYVTÁR"
 
 #: ../src/globalopts.c:231
 msgid ""
@@ -1290,152 +1292,174 @@ msgid ""
 "                                   WxH+X+Y (X11 only); '-' can be used\n"
 "                                   instead of '+'"
 msgstr ""
+"A terminál méretének megadása. A GEOMETRIA\n"
+"                                   SZxM vagy SZxM+X+Y (csak X11-en) és\n"
+"                                   '-' is használható '+' helyett"
 
 #: ../src/globalopts.c:236
 msgid "GEOMETRY"
-msgstr ""
+msgstr "GEOMETRIA"
 
 #: ../src/globalopts.c:239
 msgid ""
 "Application directory when run as a ROX\n"
 "                                   application"
 msgstr ""
+"Alkalmazás könyvtára amikor egy ROX\n"
+"                                   alkalmazásként fut"
 
 #: ../src/globalopts.c:244
 msgid "Show the menu bar, overriding profile"
-msgstr ""
+msgstr "Menü megjelenítése, felülbírálja a profilt"
 
 #: ../src/globalopts.c:247
 msgid "Hide the menu bar, overriding profile"
-msgstr ""
+msgstr "Menü elrejtése, felülbírálja a profilt"
 
 #: ../src/globalopts.c:250
 msgid "Use the named profile"
-msgstr ""
+msgstr "A megadott profil használata"
 
 #: ../src/globalopts.c:250
 msgid "PROFILE"
-msgstr ""
+msgstr "PROFIL"
 
 #: ../src/globalopts.c:253
 msgid "Use the named colour scheme"
-msgstr "Az adott nevű színséma használata"
+msgstr "A megadott színséma használata"
 
 #: ../src/globalopts.c:254 ../src/globalopts.c:259 ../src/globalopts.c:263
 msgid "SCHEME"
-msgstr ""
+msgstr "SÉMA"
 
 #: ../src/globalopts.c:257
 msgid ""
 "Use the named colour scheme\n"
 "                                   (same as --colour-scheme)"
 msgstr ""
+"A megadott színséma használata\n"
+"                                   (ugyanaz mint a --colour-scheme)"
 
 #: ../src/globalopts.c:262
 msgid "Use the named keyboard shortcut scheme"
-msgstr "Az adott nevű gyorsbillentyű-készlet használata"
+msgstr "A megadott gyorsbillentyű-készlet használata"
 
 #: ../src/globalopts.c:268
 msgid "Maximise the window, overriding profile"
-msgstr ""
+msgstr "Ablak maximalizálása, felülbírálja a profilt"
 
 #: ../src/globalopts.c:271
 msgid "Synonym for --maximise"
-msgstr ""
+msgstr "Egyenértékű a --maximise kapcsolóval"
 
 #: ../src/globalopts.c:274
 msgid ""
 "Make the initial terminal take up the whole\n"
 "                                   screen with no window furniture"
 msgstr ""
-"A terminál az indításkor töltse ki a teljes képernyőt,\n"
-"                               az ablakkeretek elrejtésével"
+"A terminál az indításkor töltse ki a teljes\n"
+"                                   képernyőt, az ablakkeretek elrejtésével"
 
 #: ../src/globalopts.c:279
 msgid "Show without decorations, overriding profile"
 msgstr ""
+"Ablakdekorációk elrejtése, felülbírálja\n"
+"                                   a profilt"
 
 #: ../src/globalopts.c:282
 msgid ""
 "Scale factor for terminal's fonts\n"
 "                                   (1.0 is normal)"
 msgstr ""
+"A terminál betűtípusainak nagyítási tényezője\n"
+"                                   (1.0 a normál)"
 
 #: ../src/globalopts.c:284
 msgid "ZOOM"
-msgstr ""
+msgstr "NAGYÍTÁS"
 
 #: ../src/globalopts.c:287
 msgid "Use a separate process to run this terminal"
-msgstr ""
+msgstr "A terminál indítása külön folyamatként"
 
 #: ../src/globalopts.c:290
 msgid ""
 "Replace any existing process as ROXTerm's\n"
 "                                   D-BUS service provider"
-msgstr ""
+msgstr "Meglévő ROXTerm D-Bus szolgáltató lecserélése"
 
 #: ../src/globalopts.c:295
 msgid "Set window title"
-msgstr "Ablakcímsor beállítása"
+msgstr "A megadott ablakcímsor használata"
 
 #: ../src/globalopts.c:295
 msgid "TITLE"
-msgstr ""
+msgstr "CÍM"
 
 #: ../src/globalopts.c:298
 msgid "Set tab name"
-msgstr "Lap nevének beállítása"
+msgstr "A megadott lapnév használata"
 
 #: ../src/globalopts.c:298 ../src/globalopts.c:322
 msgid "NAME"
-msgstr ""
+msgstr "NÉV"
 
 #: ../src/globalopts.c:301
 msgid ""
 "Open a tab in an existing window instead of\n"
 "                                   a new window if possible"
 msgstr ""
+"Nyisson egy új lapot egy meglévő ablakon, új\n"
+"                                   ablak nyitása helyett, ha lehetséges"
 
 #: ../src/globalopts.c:306
 msgid ""
 "Fork into the background even if this is the\n"
 "                                   first instance"
 msgstr ""
+"Indítás háttérfolyamatként, akkor is, ha ez az\n"
+"                                   első példány"
 
 #: ../src/globalopts.c:311
 msgid "On command exit: close, hold, respawn, ask"
 msgstr ""
+"Mi történjen a parancs kilépésekor:\n"
+"                                   close: zárja be az ablakot\n"
+"                                   hold: tartsa nyitva az ablakot\n"
+"                                   respawn: indítsa újra a parancsot\n"
+"                                   ask: kérdezze meg mi történjen"
 
 #: ../src/globalopts.c:312
 msgid "ACTION"
-msgstr ""
+msgstr "MŰVELET"
 
 #: ../src/globalopts.c:315
 msgid "An alias for --atexit=hold: keep tab open"
-msgstr ""
+msgstr "Egyenértékű a --atexit=hold értékkel"
 
 #: ../src/globalopts.c:319
 msgid "Restore the named user session"
-msgstr ""
+msgstr "A megadott munkamenet betöltése"
 
 #: ../src/globalopts.c:319
 msgid "SESSION"
-msgstr ""
+msgstr "MUNKAMENET"
 
 #: ../src/globalopts.c:322
 msgid "Set X window system 'role' hint"
-msgstr ""
+msgstr "Az X ablakkezelő 'role' szerepkör beállítása"
 
 #: ../src/globalopts.c:325
 msgid ""
 "Execute remainder of command line inside the\n"
 "                                   terminal. Must be the final option."
 msgstr ""
+"A parancssor további részét futtassa a\n"
+"                                   terminálban. Csak utolsóként szerepelhet."
 
 #: ../src/profilegui.c:585
 msgid "Text"
-msgstr ""
+msgstr "Szöveg"
 
 #: ../src/profilegui.c:585
 msgid "Appearance"
@@ -1459,11 +1483,11 @@ msgstr "Billentyűzet"
 
 #: ../src/profilegui.c:586
 msgid "Tabs"
-msgstr ""
+msgstr "Lapok"
 
 #: ../src/profilegui.c:586
 msgid "Clipboard"
-msgstr ""
+msgstr "Vágólap"
 
 #: ../src/roxterm-config.ui:8
 msgid "ROXTerm Colour Scheme"
@@ -1511,10 +1535,11 @@ msgstr "_Félkövér szín"
 #: ../src/roxterm-config.ui:164 ../src/roxterm-config.ui:165
 msgid "Set the bold text colour from the adjacent field"
 msgstr ""
+"Bekapcsolásakor a következő mező határozza meg a félkövér szöveg színét"
 
 #: ../src/roxterm-config.ui:182 ../src/roxterm-config.ui:183
 msgid "Colour of bold text; click to change"
-msgstr ""
+msgstr "Félkövér szöveg színe, kattintson a kiválasztáshoz"
 
 #: ../src/roxterm-config.ui:194
 msgid "Use custom _palette"
@@ -2129,23 +2154,22 @@ msgstr "_Egérkurzor elrejtése írás közben"
 
 #: ../src/roxterm-config.ui:2739
 msgid "Audible bel_l"
-msgstr "_Hallható csippanás"
+msgstr "_Hallható csengő"
 
 #: ../src/roxterm-config.ui:2744
 msgid "If selected, \"printing\" an ASCII bell character will cause a beep."
-msgstr ""
-"Bekapcsolásakor a csippanásnak megfelelő ASCII karakter hallható jelet ad ki."
+msgstr "Bekapcsolásakor az ASCII csengő karakter hallható hangjelzést ad ki."
 
 #: ../src/roxterm-config.ui:2758
 msgid "Bell _highlights tab/window"
-msgstr "Csippanás fel_villantja az ablakot"
+msgstr "Hangjelzés fel_villantja az ablakot"
 
 #: ../src/roxterm-config.ui:2763
 msgid ""
 "If the \"bell rings\" in a terminal while it isn't the active tab or window, "
 "its tab label will flash and/or its window will be marked \"urgent\"."
 msgstr ""
-"Ha egy csippanás lenne hallható az egyik háttérben lévő lapon vagy ablakban, "
+"Ha egy hangjelzés lenne hallható az egyik háttérben lévő lapon vagy ablakban, "
 "a lap címkéje villogni fog vagy az ablak \"sürgősként\" kerül megjelölésre."
 
 #: ../src/roxterm-config.ui:2779
@@ -2276,7 +2300,7 @@ msgstr ""
 
 #: ../src/roxterm-config.ui:3258
 msgid "Disable menu _access key (F10 by default)"
-msgstr "Menübillentyű letiltása (alapértelmezetten F10)"
+msgstr "Menübillentyű le_tiltása (alapértelmezetten F10)"
 
 #: ../src/roxterm-config.ui:3264
 msgid ""
@@ -2288,7 +2312,7 @@ msgstr ""
 
 #: ../src/roxterm-config.ui:3278
 msgid "Disable other menu _shortcut keys (Alt+...)"
-msgstr "További menübillentyűk kikapcsolása (Alt+..)"
+msgstr "További menübillentyűk _kikapcsolása (Alt+..)"
 
 #: ../src/roxterm-config.ui:3284
 msgid ""
@@ -2300,7 +2324,7 @@ msgstr ""
 
 #: ../src/roxterm-config.ui:3298
 msgid "Disable _tab switching shortcut keys (Alt+number)"
-msgstr "Lapváltó billentyűk kikapcsolása (Alt+szám)"
+msgstr "_Lapváltó billentyűk kikapcsolása (Alt+szám)"
 
 #: ../src/roxterm-config.ui:3304
 msgid ""
@@ -2355,7 +2379,7 @@ msgstr ""
 
 #: ../src/roxterm-config.ui:3474
 msgid "Show terminal _status in close buttons"
-msgstr "A állapot megjelenítése a bezárógombon"
+msgstr "Állapot _megjelenítése a bezárógombon"
 
 #: ../src/roxterm-config.ui:3481
 msgid ""
