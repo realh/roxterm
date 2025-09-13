@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://github.com/realh/roxterm/issues\n"
 "POT-Creation-Date: 2025-09-11 20:39+0200\n"
-"PO-Revision-Date: 2025-09-12 22:10+0200\n"
+"PO-Revision-Date: 2025-09-13 21:11+0200\n"
 "Last-Translator: kempelen <kempelen@netengine.hu>\n"
 "Language: hu_HU\n"
 "MIME-Version: 1.0\n"
@@ -587,7 +587,7 @@ msgstr ""
 "A címsor beállítás a következő behelyettesítéseket tartalmazhatja: '%s' "
 "az aktuális lap neve vagy ablakcíme, '%t' az aktív lap sorszáma, '%n' a "
 "megnyitott lapok száma, '%%' egy százalékjel. Más '%' parancsok továbbadásra "
-"kerülnek.. Üres érték megadásakor a profil neve kerül felhasználásra."
+"kerülnek. Üres érték megadásakor a profil neve kerül felhasználásra."
 
 #: ../src/options.c:75
 #, c-format
@@ -1197,13 +1197,12 @@ msgstr "Megadja, hogy a keresés megkülönböztesse-e a kis- és nagybetűket"
 
 #: ../src/search.c:344
 msgid "Match _Entire Word"
-msgstr "Egész _szavak egyezése"
+msgstr "Egész _szavak egyeztetése"
 
 #: ../src/search.c:345
 msgid "If set the pattern will only match when it forms a word on its own."
 msgstr ""
-"Bekapcsolásakor a találat csak akkor fog egyezni,ha önálló szóként szerepel a"
-" keresett kifejezés."
+"Bekapcsolásakor a minta csak akkor fog egyezni,ha önálló szóként szerepel."
 
 #: ../src/search.c:351
 msgid "Match As _Regular Expression"
