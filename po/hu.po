@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://github.com/realh/roxterm/issues\n"
 "POT-Creation-Date: 2025-09-11 20:39+0200\n"
-"PO-Revision-Date: 2025-09-13 21:11+0200\n"
+"PO-Revision-Date: 2025-09-14 21:43+0200\n"
 "Last-Translator: kempelen <kempelen@netengine.hu>\n"
 "Language: hu_HU\n"
 "MIME-Version: 1.0\n"
@@ -134,7 +134,7 @@ msgstr "Nincs elem kijelölve a másoláshoz"
 #: ../src/configlet.c:750
 #, c-format
 msgid "You may not delete the selected default %s"
-msgstr "Nem törölhető a jelenlegi alapértelmezett %s"
+msgstr "A jelenlegi alapértelmezett %s nem törölhető"
 
 #: ../src/configlet.c:757
 msgid "No selection to delete"
@@ -321,7 +321,7 @@ msgstr "_Súgó"
 
 #: ../src/menutree.c:135
 msgid "Select _All"
-msgstr "Összes _kijelölése"
+msgstr "Ö_sszes kijelölése"
 
 #: ../src/menutree.c:137
 msgid "_Paste"
@@ -357,11 +357,11 @@ msgstr "_Gyorsbillentyűk kiválasztása"
 
 #: ../src/menutree.c:153
 msgid "_Edit Current Profile"
-msgstr "Jelenlegi profil s_zerkesztése"
+msgstr "Jelenlegi p_rofil szerkesztése"
 
 #: ../src/menutree.c:154
 msgid "E_dit Current Colour Scheme"
-msgstr "Jelenlegi színsé_ma szerkesztése"
+msgstr "Jelenlegi s_zínséma szerkesztése"
 
 #: ../src/menutree.c:159
 msgid "Configuration _Manager"
@@ -377,19 +377,19 @@ msgstr "Új _lap"
 
 #: ../src/menutree.c:337
 msgid "New _Window With Profile"
-msgstr "Új a_blak profillal"
+msgstr "Új ablak _profillal"
 
 #: ../src/menutree.c:338
 msgid "New Tab With _Profile"
-msgstr "Új l_ap profillal"
+msgstr "Új lap p_rofillal"
 
 #: ../src/menutree.c:339
 msgid "C_lose Tab"
-msgstr "Lap _bezárása"
+msgstr "Lap be_zárása"
 
 #: ../src/menutree.c:340
 msgid "_Close Window"
-msgstr "Ablak be_zárása"
+msgstr "Ablak _bezárása"
 
 #: ../src/menutree.c:342
 msgid "Save Buffer _As..."
@@ -397,7 +397,7 @@ msgstr "Pu_ffer mentése mint..."
 
 #: ../src/menutree.c:343
 msgid "Save _Buffer"
-msgstr "_Puffer mentése"
+msgstr "Puffer menté_se"
 
 #: ../src/menutree.c:345
 msgid "_Save Session..."
@@ -417,15 +417,15 @@ msgstr "_Parancs újraindítása"
 
 #: ../src/menutree.c:387
 msgid "_Always Show Tab Bar"
-msgstr "_Lapok mindig láthatóak"
+msgstr "Lapok min_dig láthatóak"
 
 #: ../src/menutree.c:388
 msgid "_Full Screen"
-msgstr "_Teljes képernyő"
+msgstr "Teljes ké_pernyő"
 
 #: ../src/menutree.c:389 ../src/roxterm-config.ui:1888
 msgid "_Borderless"
-msgstr "_Keret nélkül"
+msgstr "K_eret nélkül"
 
 #: ../src/menutree.c:391
 msgid "Zoom _In"
@@ -437,31 +437,31 @@ msgstr "_Kicsinyítés"
 
 #: ../src/menutree.c:393
 msgid "_Normal Size"
-msgstr "_Normál méret"
+msgstr "N_ormál méret"
 
 #: ../src/menutree.c:395
 msgid "Scroll _Up One Line"
-msgstr "Görgetés _fel egy sorral"
+msgstr "Görgetés fel egy _sorral"
 
 #: ../src/menutree.c:396
 msgid "Scroll _Down One Line"
-msgstr "_Görgetés le egy sorral"
+msgstr "Görgetés le eg_y sorral"
 
 #: ../src/menutree.c:397
 msgid "Scroll Up One _Page"
-msgstr "Görgetés felfelé eg_y oldalt"
+msgstr "Görgetés _felfelé egy oldalt"
 
 #: ../src/menutree.c:398
 msgid "Scroll Do_wn One Page"
-msgstr "Görgetés lefelé egy _oldalt"
+msgstr "Görgetés _lefelé egy oldalt"
 
 #: ../src/menutree.c:399
 msgid "Scroll Up One _Half Page"
-msgstr "Görgetés felfelé _fél oldalt"
+msgstr "_Görgetés felfelé fél oldalt"
 
 #: ../src/menutree.c:400
 msgid "Scroll Down One Hal_f Page"
-msgstr "Görgetés lef_elé fél oldalt"
+msgstr "Gö_rgetés lefelé fél oldalt"
 
 #: ../src/menutree.c:401
 msgid "Scroll To _Top"
@@ -477,15 +477,15 @@ msgstr "_Keresés..."
 
 #: ../src/menutree.c:410
 msgid "Find _Next"
-msgstr "Kö_vetkező keresése"
+msgstr "Következő ke_resése"
 
 #: ../src/menutree.c:411
 msgid "Find _Previous"
-msgstr "Elő_ző keresése"
+msgstr "_Előző keresése"
 
 #: ../src/menutree.c:419
 msgid "Edi_t Current Shortcuts Scheme"
-msgstr "Jelenlegi _gyorsbillentyűk szerkesztése"
+msgstr "Jelenlegi g_yorsbillentyűk szerkesztése"
 
 #: ../src/menutree.c:427
 msgid "_Detach Tab"
@@ -493,7 +493,7 @@ msgstr "Lap le_választása"
 
 #: ../src/menutree.c:428
 msgid "_Close Tab"
-msgstr "Lap _bezárása"
+msgstr "Lap be_zárása"
 
 #: ../src/menutree.c:429
 msgid "Close _Other Tabs"
@@ -915,16 +915,15 @@ msgid ""
 "You are about to close a ROXTerm window; this may cause loss of data. Are "
 "you sure you want to continue?"
 msgstr ""
-"Egy ROXTerm ablak bezárásra készül, ami adatvesztéssel járhat. Biztos, "
-"hogy folytatja?"
+"A ROXTerm ablak bezárása adatvesztéssel járhat. Biztos, hogy folytatja?"
 
 #: ../src/roxterm.c:4690
 msgid ""
 "You are about to close a window containing multiple ROXTerm tabs; this may "
 "cause loss of data. Are you sure you want to continue?"
 msgstr ""
-"Több lappal rendelkező ROXTerm ablak bezárására készül, ez adatvesztéssel "
-"járhat. Biztos, hogy folytatja?"
+"Több lappal rendelkező ROXTerm ablak bezárása adatvesztéssel járhat. "
+"Biztos, hogy folytatja?"
 
 #: ../src/roxterm.c:4699
 msgid "ROXTerm: Confirm close"
@@ -1234,8 +1233,8 @@ msgid ""
 "Whether to wrap the search to the opposite end of the buffer when the "
 "beginning or end is reached."
 msgstr ""
-"Megadja, hogy a keresés folytatódjon-e a puffer ellentétes oldalán, a végének "
-"vagy az elejének az elérésekor."
+"Megadja, hogy a keresés folytatódjon-e a puffer ellentétes oldalán, amikor "
+"elérte a végét illetve az elejét."
 
 #: ../src/session-file.c:65
 #, c-format
@@ -1508,8 +1507,8 @@ msgstr "_Szöveg és háttérszínek beállítása"
 msgid ""
 "Whether to set terminals' text and background colours using the fields below"
 msgstr ""
-"Bekapcsolásakor a terminál szöveg és a háttérszínét az alább megadott mezők "
-"adják meg"
+"Bekapcsolásakor a terminál szöveg és a háttérszínét az alábbi mezők "
+"határozzák meg"
 
 #: ../src/roxterm-config.ui:102
 msgid "_Text colour"
@@ -1566,8 +1565,7 @@ msgstr "_Kurzor szín"
 
 #: ../src/roxterm-config.ui:257 ../src/roxterm-config.ui:258
 msgid "Set the cursor colour from the adjacent field"
-msgstr ""
-"Bekapcsolásakor a következő mező határozza meg a félkövér szöveg színét"
+msgstr "Bekapcsolásakor a következő mező határozza meg a kurzor színét"
 
 #: ../src/roxterm-config.ui:275 ../src/roxterm-config.ui:276
 #: ../src/roxterm-config.ui:290 ../src/roxterm-config.ui:291
@@ -1847,7 +1845,7 @@ msgstr "_Maximalizálás"
 
 #: ../src/roxterm-config.ui:1790
 msgid "Use a maximised window."
-msgstr "Maximalizált ablak használata."
+msgstr "A terminálablak töltse ki a rendelkezésre álló képernyőterületet."
 
 #: ../src/roxterm-config.ui:1806
 msgid "F_ull screen"
@@ -1903,7 +1901,7 @@ msgstr "Mé_ret"
 
 #: ../src/roxterm-config.ui:1913
 msgid "Set the terminal's size in characters from the adjacent values."
-msgstr "A terminál méretének beállítása a megadott karakterszámok alapján."
+msgstr "A terminál méretének beállítása, karakterben megadott értékek alapján."
 
 #: ../src/roxterm-config.ui:1928
 msgid "_Width:"
@@ -1911,7 +1909,8 @@ msgstr "_Szélesség:"
 
 #: ../src/roxterm-config.ui:1942 ../src/roxterm-config.ui:1986
 msgid "New windows with this profile will open at this size."
-msgstr "Az ezzel a profillal megnyitott új ablakok alapértelmezett szélessége."
+msgstr ""
+"Megadja az ezzel a profillal megnyitott új ablakok alapértelmezett méretét."
 
 #: ../src/roxterm-config.ui:1944
 msgid "80"
@@ -1966,7 +1965,7 @@ msgstr "_Sötét színséma:"
 
 #: ../src/roxterm-config.ui:2176
 msgid "<i><small>Trans_parent</small></i>"
-msgstr "<i><small>Á_ttetszőség</small></i>"
+msgstr "<i><small>Á_ttetsző</small></i>"
 
 #: ../src/roxterm-config.ui:2191
 msgid "<i><small>Opaque</small></i>"
@@ -1986,7 +1985,7 @@ msgstr "_Bejelentkezési parancsértelmező"
 
 #: ../src/roxterm-config.ui:2286
 msgid "Whether shells running in the terminal are login shells"
-msgstr "Minden parancsértelmező bejelentkezésiként lesz futtatva."
+msgstr "Bekapcsolásakor minden parancsértelmező bejelentkezésiként indul."
 
 #: ../src/roxterm-config.ui:2300
 msgid "_Custom command"
@@ -1994,7 +1993,7 @@ msgstr "_Egyéni parancs"
 
 #: ../src/roxterm-config.ui:2305
 msgid "Enable the adjacent custom command for this profile."
-msgstr "Aktiválja a megadott egyéni parancsot ehhez a profilhoz."
+msgstr "A következő mezőben megadott parancs futtatása."
 
 #: ../src/roxterm-config.ui:2323
 msgid "Command to run in place of a shell"
@@ -2006,8 +2005,7 @@ msgstr "_Ssh"
 
 #: ../src/roxterm-config.ui:2343
 msgid "Connect to a ssh (secure shell) with this profile."
-msgstr ""
-"Kapcsolódás egy ssh szerverhez (távoli bejelentkezés) ezzel a profillal."
+msgstr "Kapcsolódás egy ssh szerverhez (távoli bejelentkezés)."
 
 #: ../src/roxterm-config.ui:2361
 msgid "Ssh server address. Use the Edit... button to change it."
@@ -2031,11 +2029,11 @@ msgstr "A parancs újraindul"
 
 #: ../src/roxterm-config.ui:2395
 msgid "Ask user"
-msgstr "Kérdezze meg a felhasználótól"
+msgstr "Kérdezze meg a mi történjen"
 
 #: ../src/roxterm-config.ui:2410
 msgid "_Pause:"
-msgstr "_Pillanatmegállítás:"
+msgstr "_Várakozás:"
 
 #: ../src/roxterm-config.ui:2425
 msgid ""
@@ -2063,7 +2061,7 @@ msgstr "mp"
 
 #: ../src/roxterm-config.ui:2475 ../src/roxterm-config.ui:2476
 msgid "SSH program to use when a host name is opened"
-msgstr "A használni kívánt SSH program a gépnév megnyitásakor"
+msgstr "A szerverhez kapcsolódáshoz használni kívánt SSH program"
 
 #: ../src/roxterm-config.ui:2478
 msgid "The command used to open ssh URIs."
@@ -2201,7 +2199,7 @@ msgstr ""
 
 #: ../src/roxterm-config.ui:2901
 msgid "Scroll on _keystroke"
-msgstr "Görgetés _billentyű lenyomáskor"
+msgstr "Görgetés _billentyű lenyomásakor"
 
 #: ../src/roxterm-config.ui:2906
 msgid ""
@@ -2213,7 +2211,7 @@ msgstr ""
 
 #: ../src/roxterm-config.ui:2941
 msgid "Changes to the scrollbar position only take effect in new windows."
-msgstr "A görgetősáv beállítások csak újonnan nyitott ablakokra érvényesek."
+msgstr "A görgetősáv beállítások csak újonnan megnyitott ablakokra érvényesek."
 
 #: ../src/roxterm-config.ui:2966
 msgid "Li_mit scrollback:"
@@ -2224,8 +2222,8 @@ msgid ""
 "Number of lines of output text to retain in the buffer so that they can "
 "still be viewed by scrolling up"
 msgstr ""
-"Meghatározza, hogy hány sort jegyezzen meg a terminál, hogy visszagörgethető "
-"legyen."
+"A pufferben megőrzendő kimeneti szövegsorok száma, hogy azok "
+"felfelé görgetéssel megtekinthetők legyenek"
 
 #: ../src/roxterm-config.ui:2988
 msgid "1000"
@@ -2248,8 +2246,8 @@ msgid ""
 "Whether to superimpose the scrollbar over the terminal or allocate extra "
 "space for it."
 msgstr ""
-"Meghatározza, hogy a görgetősáv a terminál területe felett jelenjen meg, és "
-"ne foglaljon el külön területet."
+"Bekapcsolásakor a görgetősáv a terminál területe felett jelenik meg, és "
+"nem foglal el külön területet."
 
 #: ../src/roxterm-config.ui:3059
 msgid "_Kinetic scrolling"
@@ -2289,7 +2287,7 @@ msgstr "_Delete billentyű hatása:"
 
 #: ../src/roxterm-config.ui:3240
 msgid "_Reset to defaults"
-msgstr "_Vissza alapértékekre"
+msgstr "_Visszaállítás alapértékekre"
 
 #: ../src/roxterm-config.ui:3245
 msgid "Reset the backspace and delete keys to their defaults"
@@ -2330,7 +2328,7 @@ msgid ""
 "This option disables the shortcut keys for switching tabs (Alt+1-9 and Alt+0 "
 "by default)"
 msgstr ""
-"Kikapcsolja a lapok között váltásra szolgál gyorsbillentyűket "
+"Kikapcsolja a lapok közötti váltásra szolgáló gyorsbillentyűket "
 "(alapértelmezetten Alt+1-9-ig és Alt+0)"
 
 #: ../src/roxterm-config.ui:3324
@@ -2339,7 +2337,7 @@ msgstr "<b>Billentyűzet</b>"
 
 #: ../src/roxterm-config.ui:3368
 msgid "<b>Middle click on label action</b>"
-msgstr "<b>A címkén való középső kattintás hatása</b>"
+msgstr "<b>Címkén való középső kattintás hatása</b>"
 
 #: ../src/roxterm-config.ui:3379
 msgid "Do n_othing"
@@ -2363,8 +2361,8 @@ msgid ""
 "around from the first and last tab to the opposite end of the row; the move "
 "tab left/right/up/down menu items are affected similarly."
 msgstr ""
-"Bekapcsolásakor az előző vagy a következő lapra váltáskor a szélső lapok "
-"esetén a túloldalon lévő lap aktiválódik. A lap balra, jobbra, fel és le "
+"Bekapcsolásakor az előző vagy a következő lapra váltáskor, a szélső lapok "
+"után a túloldalon lévő lap aktiválódik. A lap balra, jobbra, fel és le "
 "mozgatása szolgáló menüelemekre hasonló hatással van."
 
 #: ../src/roxterm-config.ui:3453
@@ -2406,7 +2404,7 @@ msgstr ""
 
 #: ../src/roxterm-config.ui:3561
 msgid "_Tab title:"
-msgstr "_Lap címe:"
+msgstr "_Lapok címe:"
 
 #: ../src/roxterm-config.ui:3575
 msgid ""
@@ -2472,13 +2470,11 @@ msgstr "_Jóváhagyás szükséges"
 msgid ""
 "Text will not be pasted to the clipboard until you click the confirmation "
 "button."
-msgstr ""
-"A szöveg csak egy jóváhagyó gomb megnyomása után elfogadása után kerül a "
-"vágólapra."
+msgstr "A szöveg csak a jóváhagyó gomb megnyomása utánkerül a vágólapra."
 
 #: ../src/roxterm-config.ui:3762
 msgid "_Accept"
-msgstr "_Elfogadás"
+msgstr "_Engedélyezve"
 
 #: ../src/roxterm-config.ui:3766
 msgid ""
@@ -2495,8 +2491,7 @@ msgstr "Kilobájt"
 
 #: ../src/roxterm-config.ui:3841
 msgid "Allow programs to write to the clipboard with OSC 52"
-msgstr ""
-"Engedélyezi, hogy a programok az OSC52 segítségével a vágólapra írjanak"
+msgstr "A vágólapra való írás engedélyezése, az OSC52 módszerrel"
 
 #: ../src/roxterm-config.ui:3928
 msgid "_Address"
