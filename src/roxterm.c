@@ -5526,7 +5526,7 @@ gboolean roxterm_set_search(ROXTermData *roxterm,
 
         regex = vte_regex_new_for_search(pattern, -1,
                 ((flags & ROXTERM_SEARCH_MATCH_CASE) ? 0 : PCRE2_CASELESS) |
-                PCRE2_NOTEMPTY,
+                PCRE2_NOTEMPTY | PCRE2_MULTILINE,
                 error);
         g_free(cooked_pattern);
         if (!regex)
