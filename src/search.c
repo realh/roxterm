@@ -257,7 +257,7 @@ static void search_response_cb(GtkWidget *widget,
                 gtk_toggle_button_get_active(search_data.backwards);
         guint flags =
                 (gtk_toggle_button_get_active(search_data.match_case) ?
-                        0 : ROXTERM_SEARCH_MATCH_CASE) |
+                        ROXTERM_SEARCH_MATCH_CASE : 0) |
                 (gtk_toggle_button_get_active(search_data.as_regex) ?
                         ROXTERM_SEARCH_AS_REGEX : 0) |
                 (gtk_toggle_button_get_active(search_data.entire_word) ?
