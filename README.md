@@ -180,7 +180,9 @@ po4a-gettextize --format xhtml --master docs/en/index.html \
 
 This tool is only intended to be run once to import an existing translation
 into the po4a workflow. Work with the generated .po file from then on. All the
-translations will be labelled as "fuzzy" to ensure they are reviewed.
+translations will be labelled as "fuzzy" to ensure they are reviewed, and
+untranslated strings will contain English instead of being left blank in the
+po file.
 
 #### Creating a po file from scratch
 
