@@ -1,13 +1,14 @@
 find_program(GETTEXT_XGETTEXT_EXECUTABLE xgettext)
 find_program(GETTEXT_MSGMERGE_EXECUTABLE msgmerge)
 find_program(GETTEXT_MSGFMT_EXECUTABLE msgfmt)
+find_program(PO4A_EXECUTABLE po4a)
 
 set(POT_FILE "${CMAKE_CURRENT_BINARY_DIR}/messages.pot")
 file(GLOB PO_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.po)
 message(TRACE " PO_FILES: ${PO_FILES}")
 set(LANGUAGES)
 string(REGEX REPLACE "\\.po" "" LANGUAGES "${PO_FILES}")
-message(STATUS " LANGUAGES: ${LANGUAGES}")
+message(STATUS " Languages for main translation: ${LANGUAGES}")
 
 if (GETTEXT_XGETTEXT_EXECUTABLE)
     file(GLOB_RECURSE POT_SOURCES
@@ -115,3 +116,25 @@ if (GETTEXT_MSGFMT_EXECUTABLE)
         )
     endforeach()
 endif (GETTEXT_MSGFMT_EXECUTABLE)
+
+if (PO4A_EXECUTABLE)
+    set(XHTML_SRC "${CMAKE_SOURCE_DIR}/docs/en/index.html")
+    set(XHTML_POT_FILE "${CMAKE_CURRENT_SOURCE_DIR}/xhtml/xhtml.pot")
+    file(GLOB XHTML_PO_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} xhtml/*.po)
+    message(TRACE " XHTML PO_FILES: ${XHTML_PO_FILES}")
+    set(XHTML_LANGUAGES)
+    string(REGEX REPLACE "\\.po" "" XHTML_LANGUAGES "${XHTML_PO_FILES}")
+    string(REGEX REPLACE "xhtml/" "" XHTML_LANGUAGES "${XHTML_LANGUAGES}")
+    message(STATUS " Languages for xhtml translation: ${XHTML_LANGUAGES}")
+
+    add_custom_target(poxhtml
+        DEPENDS ${XHTML_SRC}
+        COMMENT "Regenerating XHTML translations"
+    )
+    add_custom_command(
+        TARGET poxhtml
+        PRE_BUILD
+        COMMAND ${PO4A_EXECUTABLE} po4a.xhtml.cfg
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    )
+endif (PO4A_EXECUTABLE)
