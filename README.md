@@ -17,6 +17,33 @@ environments.
 The [Debian changelog](./debian/changelog) provides a good summary of what's
 changed between versions.
 
+## Building
+
+First generate a build directory using cmake, for example:
+
+```
+cmake -S . -B build
+```
+
+Then build with:
+
+```
+cmake --build build
+```
+
+or `ninja -C build` or `make -C build` depending which of ninja/make cmake
+chose.
+
+Install with:
+
+```
+sudo cmake --install build
+```
+
+or `sudo ninja install -C build` or `sudo make install -C build`
+
+The default prefix is `/usr/local`.
+
 ## CSS styling
 
 Version 3.15.1 onwards apply a CSS class name to ROXTerm's vte widget, based on
@@ -100,7 +127,7 @@ now. To add a new translation, simply create a new .po file in the `po`
 directory with your language code as its basename.
 
 The .pot file for these translations is `messages.pot`. It can be
-generated with the `pot` make/ninja target:
+generated with the `pot` make/ninja target (after running cmake):
 
 ```
 make -C build pot
@@ -112,8 +139,8 @@ ninja -C build pot
 
 Its default location is `build/po/messages.pot`. You can copy it to the `po`
 directory and edit it to create a brand new .po file. When your edits are
-complete, commit your .po file to git, ignoring the other .po files. When an
-upstream updates causes changes to the strings use the `pot-merge` make/ninja
+complete, commit your .po file to git, ignoring the other .po files. Whenever an
+upstream update causes changes to the strings use the `pot-merge` make/ninja
 target to merge `messages.pot` with existing .po files. Then edit your .po file
 and commit it again.
 
@@ -131,17 +158,46 @@ but is being worked on.
 You can submit your translations by creating a github PR, attaching the po file
 to an issue, or by emailing it to me <h@realh.co.uk>.
 
-### Documentation
+### HTML Documentation
 
-The HTML manual in the `docs` directory has been refactored to use a single
-HTML file containing all the pages, using Javascript to mimic a multi-page
-site. Partial translations have been constructed in the new format. Due to the
-static nature of the content I think it will be easier for translators to edit
-the XHTML manually for now, but I am willing to add a po4a workflow again if you
-prefer working with `po` files.
+The HTML guide in the `docs` directory has been refactored to use a single
+XHTML file containing all the pages, using Javascript to mimic a multi-page
+site. Partial translations have been constructed in the new format, but they
+are quite outdated.
+
+Creating a new translation, or updating one of the above, is supported using
+po4a.
+
+#### Creating a po file from an existing translated xhtml file
+
+With the `pt_BR` translation, for example:
+
+```
+po4a-gettextize --format xhtml --master docs/en/index.html \
+    --localized docs/pt_BR/index.html --po po/xhtml/pt_BR.po \
+    --master-charset UTF-8 --localized-charset UTF-8
+```
+
+#### Creating a po file from scratch
+
+Simply create a new empty .po file in `po/xhtml` with your language code as its
+basename. Then the command in the next step will convert it to a valid po file.
+
+#### Updating the translation
+
+The entire workflow is handled by a single po4a command. This can be run with:
+
+```
+make -C build po4a
+```
+
+(or `ninja` if appropriate). If you have edited your po file you should check
+it in to git or back it up before running the above command, just in case. If
+the po file is sufficiently complete, po4a will generate a new xhtml file in a
+subdirectory of `docs`. This can also be checked in to git.
+
+### Man pages
 
 The man page translations were so incomplete that I have removed them
-altogether. If you want to translate the man pages, start by copying the
-Docbook XML files, `man/roxterm.1.xml.in` and `man/roxterm-config.1.xml.in`,
-adding your language code to the filenames and add them to the CMake script, or
-ask me to add them. These could also be managed by po4a if you prefer.
+altogether. Support for new translations will be provided in the near future,
+also using po4a.
