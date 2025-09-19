@@ -97,7 +97,7 @@ most of the existing translations are out-of-date and/or incomplete.
 
 CMake integration for translating strings in the code and UI should be working
 now. To add a new translation, simply create a new .po file in the `po`
-directory with your language code as its basename.
+directory called roxterm.xx.po, where xx is your language code.
 
 The .pot file for these translations is `messages.pot`. It can be
 generated with the `pot` make/ninja target:
