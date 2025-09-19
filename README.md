@@ -178,6 +178,10 @@ po4a-gettextize --format xhtml --master docs/en/index.html \
     --master-charset UTF-8 --localized-charset UTF-8
 ```
 
+This tool is only intended to be run once to import an existing translation
+into the po4a workflow. Work with the generated .po file from then on. All the
+translations will be labelled as "fuzzy" to ensure they are reviewed.
+
 #### Creating a po file from scratch
 
 Simply create a new empty .po file in `po/xhtml` with your language code as its
