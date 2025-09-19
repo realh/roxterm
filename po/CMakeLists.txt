@@ -3,11 +3,10 @@ find_program(GETTEXT_MSGMERGE_EXECUTABLE msgmerge)
 find_program(GETTEXT_MSGFMT_EXECUTABLE msgfmt)
 
 set(POT_FILE "${CMAKE_CURRENT_BINARY_DIR}/messages.pot")
-file(GLOB PO_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} roxterm.*.po)
+file(GLOB PO_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.po)
 message(TRACE " PO_FILES: ${PO_FILES}")
 set(LANGUAGES)
 string(REGEX REPLACE "\\.po" "" LANGUAGES "${PO_FILES}")
-string(REGEX REPLACE "roxterm\\." "" LANGUAGES "${LANGUAGES}")
 message(STATUS " LANGUAGES: ${LANGUAGES}")
 
 if (GETTEXT_XGETTEXT_EXECUTABLE)
@@ -96,7 +95,7 @@ if (GETTEXT_MSGFMT_EXECUTABLE)
     foreach(LANG IN ITEMS ${LANGUAGES})
         set(MO_DIR "${CMAKE_CURRENT_BINARY_DIR}/${LANG}/LC_MESSAGES")
         set(MO_FILE "${MO_DIR}/roxterm.mo")
-        set(PO_FILE ${CMAKE_CURRENT_SOURCE_DIR}/roxterm.${LANG}.po)
+        set(PO_FILE ${CMAKE_CURRENT_SOURCE_DIR}/${LANG}.po)
         file(MAKE_DIRECTORY ${MO_DIR})
         add_custom_command(
             TARGET po-compile
