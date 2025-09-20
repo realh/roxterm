@@ -2250,6 +2250,7 @@
                       <object class="GtkAlignment" id="alignment7">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
+                        <property name="double-buffered">False</property>
                         <property name="margin-start">12</property>
                         <property name="margin-top">4</property>
                         <child>
@@ -2475,7 +2476,7 @@
                                 <property name="tooltip-markup" translatable="yes">SSH program to use when a host name is opened</property>
                                 <property name="tooltip-text" translatable="yes">SSH program to use when a host name is opened</property>
                                 <property name="invisible-char">•</property>
-                                <property name="primary-icon-tooltip-text" translatable="yes">The command used to open ssh URIs.</property>
+                                <property name="primary-icon-tooltip-text" translatable="yes">The command used to open ssh URIs or if the above Ssh option is selected. Defaults to 'ssh'.</property>
                                 <signal name="activate" handler="on_entry_activate" swapped="no"/>
                                 <signal name="changed" handler="on_editable_changed" swapped="no"/>
                               </object>
@@ -2489,11 +2490,10 @@
                               <object class="GtkLabel" id="label32">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
-                                <property name="margin-left">12</property>
-                                <property name="margin-right">8</property>
+                                <property name="double-buffered">False</property>
                                 <property name="margin-start">12</property>
                                 <property name="margin-end">8</property>
-                                <property name="label" translatable="yes">SSH Co_mmand</property>
+                                <property name="label" translatable="yes">SSH Co_mmand:</property>
                                 <property name="use-underline">True</property>
                                 <property name="mnemonic-widget">ssh</property>
                                 <property name="xalign">0</property>
@@ -3380,7 +3380,7 @@
                                     <property name="visible">True</property>
                                     <property name="can-focus">True</property>
                                     <property name="receives-default">False</property>
-                                    <property name="tooltip-markup">Nothing happens if the tab label is middle-clicked.</property>
+                                    <property name="tooltip-text" translatable="yes">Nothing happens if the tab label is middle-clicked.</property>
                                     <property name="halign">start</property>
                                     <property name="use-underline">True</property>
                                     <property name="active">True</property>
@@ -3398,7 +3398,7 @@
                                     <property name="visible">True</property>
                                     <property name="can-focus">True</property>
                                     <property name="receives-default">False</property>
-                                    <property name="tooltip-markup">If the tab label is middle-clicked the tab is closed.</property>
+                                    <property name="tooltip-text" translatable="yes">If the tab label is middle-clicked the tab is closed.</property>
                                     <property name="halign">start</property>
                                     <property name="use-underline">True</property>
                                     <property name="draw-indicator">True</property>
@@ -3416,7 +3416,7 @@
                                     <property name="visible">True</property>
                                     <property name="can-focus">True</property>
                                     <property name="receives-default">False</property>
-                                    <property name="tooltip-markup">If the tab label is middle-clicked the tab's name is pasted from the clipboard.</property>
+                                    <property name="tooltip-text" translatable="yes">If the tab label is middle-clicked the tab's name is pasted from the clipboard.</property>
                                     <property name="halign">start</property>
                                     <property name="use-underline">True</property>
                                     <property name="draw-indicator">True</property>
@@ -3827,6 +3827,49 @@
                                 <property name="expand">False</property>
                                 <property name="fill">True</property>
                                 <property name="position">3</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkBox">
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="spacing">8</property>
+                                <child>
+                                  <object class="GtkImage" id="osc52_tip_image">
+                                    <property name="visible">True</property>
+                                    <property name="can-focus">False</property>
+                                    <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                                    <property name="icon-name">dialog-information</property>
+                                    <property name="icon_size">6</property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel" id="osc52_tip">
+                                    <property name="visible">True</property>
+                                    <property name="can-focus">False</property>
+                                    <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                                    <property name="hexpand">True</property>
+                                    <property name="label" translatable="yes">Buffer size determines the maximum amount of text that can be clipped at a time. The amount of raw text is approximately 3/4 of the buffer size due to base64 encoding overhead.</property>
+                                    <property name="wrap">True</property>
+                                    <property name="width-chars">30</property>
+                                    <property name="max-width-chars">40</property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">4</property>
                               </packing>
                             </child>
                           </object>
