@@ -166,7 +166,10 @@ site. Partial translations have been constructed in the new format, but they
 are quite outdated.
 
 Creating a new translation, or updating one of the above, is supported using
-po4a.
+po4a. For the following steps, the current directory should be the root of the
+checked out or unpacked roxterm source tree.
+
+You will need po4a installed in addition to cmake, make etc.
 
 #### Creating a po file from an existing translated xhtml file
 
@@ -187,20 +190,25 @@ po file.
 #### Creating a po file from scratch
 
 Simply create a new empty .po file in `po/xhtml` with your language code as its
-basename. Then the command in the next step will convert it to a valid po file.
+basename, for example `po/xhtml/pt_BR.po`. Then the following steps will convert
+it to a valid po file.
 
 #### Updating the translation
 
-The entire workflow is handled by a single po4a command. This can be run with:
+Step-by-step:
 
-```
-make -C build po4a
-```
+1. Make sure po4a is installed on your system (and cmake and make if necessary).
+1. Commit or back-up your po file if you have edited it.
+1. Make sure the build directory is ready by running `cmake -S . -B build`.
+1. Run `make -C build poxhtml` (or `ninja `...).
+1. Edit your po file if necessary and repeat from step 2.
 
-(or `ninja` if appropriate). If you have edited your po file you should check
-it in to git or back it up before running the above command, just in case. If
-the po file is sufficiently complete, po4a will generate a new xhtml file in a
-subdirectory of `docs`. This can also be checked in to git.
+Step 4 uses po4a to perform the following with a single command:
+
+1. Update `po/xhtml/xhtml.pot` with respect to `docs/en/index.html`
+1. Update any po files in `po/xhtml` by merging them with `po/xhtml/xhtml.pot`
+1. For each po file which is sufficiently complete, generate a new XHTML file
+   in a subdirectory of `docs` (for example `docs/pt_BR/index.html`).
 
 ### Man pages
 
