@@ -747,8 +747,8 @@ static void on_delete_clicked(ConfigletList *cl)
     if (get_selected_state(cl))
     {
         dlg_warning(GTK_WINDOW(cl->cg->widget),
-                _("You may not delete the selected default %s"),
-                full_name_from_family(cl->family));
+                _("You may not delete the selected default"));
+        // This comment is to avoid following translatables changing line #.
         return;
     }
     name = get_selected_name(cl);
@@ -760,8 +760,8 @@ static void on_delete_clicked(ConfigletList *cl)
     if (!is_in_user_dir(cl->family, name))
     {
         dlg_warning(GTK_WINDOW(cl->cg->widget),
-                _("'%s' is a system %s and can not be deleted"),
-                name, full_name_from_family(cl->family));
+                _("'%s' is a system default and can not be deleted"),
+                name);
     }
     else
     {
