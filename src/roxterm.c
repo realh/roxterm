@@ -695,6 +695,8 @@ static void roxterm_run_command(ROXTermData *roxterm, VteTerminal *vte)
         if (options_lookup_int_with_default(roxterm->profile,
                     "use_ssh", FALSE))
         {
+            const char *ssh_bin = options_lookup_string_with_default(
+                    roxterm->profile, "ssh", "ssh");
             const char *host = options_lookup_string_with_default(
                     roxterm->profile, "ssh_address", "localhost");
             const char *user = options_lookup_string(roxterm->profile,
@@ -704,7 +706,8 @@ static void roxterm_run_command(ROXTermData *roxterm, VteTerminal *vte)
             int port = options_lookup_int_with_default(roxterm->profile,
                     "ssh_port", 22);
 
-            command = g_strdup_printf("ssh%s%s %s -p %d %s",
+            command = g_strdup_printf("%s%s%s %s -p %d %s",
+                    ssh_bin,
                     (user && user[0]) ? " -l " : "",
                     (user && user[0]) ? user : "",
                     (ssh_opts && ssh_opts[0]) ? ssh_opts : "",
