@@ -1908,7 +1908,7 @@ static void roxterm_show_about(MultiWin * win)
 
 static char *roxterm_get_help_filename(const char *base_dir, const char *lang)
 {
-    char *filename = g_build_filename(base_dir, lang, "guide.html", NULL);
+    char *filename = g_build_filename(base_dir, lang, "index.html", NULL);
 
     if (!g_file_test(filename, G_FILE_TEST_EXISTS))
     {
@@ -1946,7 +1946,7 @@ static char *roxterm_get_help_uri(const char *base_dir, const char *lang)
             filename = roxterm_get_help_filename(base_dir, "en");
         }
     }
-    uri = g_strconcat("file://", filename, NULL);
+    uri = g_strdup_printf("file://%s?p=Guide#Guide", filename, NULL);
     g_free(filename);
     return uri;
 }
