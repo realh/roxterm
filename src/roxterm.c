@@ -1946,7 +1946,7 @@ static char *roxterm_get_help_uri(const char *base_dir, const char *lang)
             filename = roxterm_get_help_filename(base_dir, "en");
         }
     }
-    uri = g_strdup_printf("file://%s?p=Guide#Guide", filename, NULL);
+    uri = g_strdup_printf("file://%s?p=Guide#Guide", filename);
     g_free(filename);
     return uri;
 }
