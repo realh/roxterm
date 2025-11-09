@@ -3,7 +3,7 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# marcelo cripe <marcelocripe@gmail.com>, 2024
+# Wallon Wallon, 2025
 # 
 msgid ""
 msgstr ""
@@ -11,423 +11,462 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-01-06 17:19+0000\n"
 "PO-Revision-Date: 2024-07-23 12:33+0000\n"
-"Last-Translator: marcelo cripe <marcelocripe@gmail.com>, 2024\n"
-"Language-Team: Spanish (https://app.transifex.com/antix-linux-community-contributions/teams/120110/es/)\n"
+"Last-Translator: Wallon Wallon, 2025\n"
+"Language-Team: French (Belgium) (https://app.transifex.com/antix-linux-community-contributions/teams/120110/fr_BE/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: es\n"
-"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
+"Language: fr_BE\n"
+"Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
 #: ../src/about.c:55
 #, c-format
 msgid "Unable to load logo for about dialog: %s"
-msgstr ""
+msgstr "Impossible de charger le logo pour le dialogue « À propos »: %s"
 
 #: ../src/about.c:69
 msgid "Tony Houghton <h@realh.co.uk>"
-msgstr ""
+msgstr "Tony Houghton <h@realh.co.uk>"
 
 #: ../src/about.c:70
 msgid "Thanks to the developers of VTE"
-msgstr ""
+msgstr "Remerciements aux développeurs de VTE"
 
 #: ../src/about.c:76
 msgid "(c) 2005-2015 Tony Houghton"
-msgstr ""
+msgstr "(c) 2005-2015 Tony Houghton"
 
 #: ../src/capplet.c:180
 msgid "No radio button selected in queried group"
-msgstr ""
+msgstr "Aucun bouton radio sélectionné dans le groupe demandé"
 
 #: ../src/capplet.c:313
 msgid "roxterm-config"
-msgstr ""
+msgstr "roxterm-config"
 
 #: ../src/colourgui.c:250
 #, c-format
 msgid "Illegal palette size %d"
-msgstr ""
+msgstr "Taille de palette %d illégale"
 
 #: ../src/colourgui.c:477
 #, c-format
 msgid "Unable to get colour option name from widget name '%s'"
 msgstr ""
+"Impossible d’obtenir le nom de l’option de couleur à partir du nom du widget"
+" « %s »"
 
 #: ../src/colourgui.c:676
 #, c-format
 msgid "Unable to load 'Colour_Scheme_Editor' from UI defs: %s"
 msgstr ""
+"Impossible de charger « Colour_Scheme_Editor » à partir des définitions de "
+"l’interface utilisateur•rice: %s"
 
 #: ../src/colourgui.c:683
 #, c-format
 msgid "ROXTerm Colour Scheme \"%s\""
-msgstr ""
+msgstr "Jeu de couleurs ROXTerm « %s »"
 
 #: ../src/colourgui.c:690
 msgid "Unable to back up colour scheme to revert"
-msgstr ""
+msgstr "Impossible de sauvegarder le jeu de couleurs pour revenir en arrière"
 
 #: ../src/colourgui.c:714
 msgid ""
 "Deleting edited colour scheme that wasn't in list of schemes being edited"
 msgstr ""
+"Suppression d’un jeu de couleurs modifié qui ne figurait pas dans la liste "
+"des jeux en cours de modification"
 
 #: ../src/colourscheme.c:121
 #, c-format
 msgid "Unable to parse colour '%s' for %s in scheme %s"
-msgstr ""
+msgstr "Impossible d’analyser la couleur « %s » pour %s dans le schéma %s"
 
 #: ../src/colourscheme.c:173
 #, c-format
 msgid "Invalid palette size %d in colour scheme %s"
-msgstr ""
+msgstr "Taille de palette %d invalide dans le jeu de couleurs %s"
 
 #: ../src/configlet.c:98
 msgid "Profile"
-msgstr ""
+msgstr "Profil"
 
 #: ../src/configlet.c:102
 msgid "Colour Scheme"
-msgstr ""
+msgstr "Jeu de couleurs"
 
 #: ../src/configlet.c:106
 msgid "Keyboard Shortcuts Scheme"
-msgstr ""
+msgstr "Jeu de raccourcis clavier"
 
 #: ../src/configlet.c:110
 msgid "Character Encodings"
-msgstr ""
+msgstr "Encodages de caractères"
 
 #: ../src/configlet.c:114
 #, c-format
 msgid "Full name for family '%s' not known"
-msgstr ""
+msgstr "Nom complet pour la famille « %s » inconnu"
 
 #: ../src/configlet.c:156
 #, c-format
 msgid "Bad options family basename '%s'"
-msgstr ""
+msgstr "Mauvaises options nom de base de la famille « %s »"
 
 #: ../src/configlet.c:561
 #, c-format
 msgid "'%s' will now refer to a %s provided by the system"
-msgstr ""
+msgstr "« %s » fera désormais référence à un %s proprosé par le système"
 
 #: ../src/configlet.c:661
 msgid "Unable to rename profile/scheme"
-msgstr ""
+msgstr "Impossible de renommer un profil ou un schéma"
 
 #: ../src/configlet.c:684
 msgid "Encoding names have no properties"
-msgstr ""
+msgstr "Les noms d’encodage n’ont pas de propriétés"
 
 #: ../src/configlet.c:688
 #, c-format
 msgid "Option family name '%s' not recognised for editing"
-msgstr ""
+msgstr "Option nom de famille « %s » non reconnue pour l’édition"
 
 #: ../src/configlet.c:710
 msgid "No selection to edit"
-msgstr ""
+msgstr "Pas de sélection à éditer"
 
 #: ../src/configlet.c:743
 msgid "Can't get iterator for activated item"
-msgstr ""
+msgstr "Impossible d’obtenir un itérateur pour l’élément activé"
 
 #: ../src/configlet.c:769
 msgid "Add Encoding"
-msgstr ""
+msgstr "Ajouter un encodage"
 
 #: ../src/configlet.c:770 ../src/roxterm-config.ui:1153
 msgid "_Add"
-msgstr ""
+msgstr "_Ajouter"
 
 #: ../src/configlet.c:777
 #, c-format
 msgid "Copy %s"
-msgstr ""
+msgstr "Copier %s"
 
 #: ../src/configlet.c:779 ../src/menutree.c:134 ../src/roxterm-config.ui:718
 #: ../src/roxterm-config.ui:854 ../src/roxterm-config.ui:1011
 msgid "_Copy"
-msgstr ""
+msgstr "_Copier"
 
 #: ../src/configlet.c:797 ../src/configlet.c:955
 msgid "No selection to copy"
-msgstr ""
+msgstr "Pas de sélection à copier"
 
 #: ../src/configlet.c:837
 #, c-format
 msgid "You may not delete the selected default %s"
-msgstr ""
+msgstr "Vous ne pouvez pas supprimer %s par défaut sélectionné"
 
 #: ../src/configlet.c:844
 msgid "No selection to delete"
-msgstr ""
+msgstr "Pas de sélection à supprimer"
 
 #: ../src/configlet.c:850
 #, c-format
 msgid "'%s' is a system %s and can not be deleted"
-msgstr ""
+msgstr "« %s » est un système %s et ne peut être supprimé"
 
 #: ../src/configlet.c:873
 #, c-format
 msgid "Unable to delete '%s'"
-msgstr ""
+msgstr "Impossible de supprimer « %s »"
 
 #: ../src/configlet.c:929
 msgid "Edit Encoding"
-msgstr ""
+msgstr "Éditer un encodage"
 
 #: ../src/configlet.c:936
 #, c-format
 msgid "Rename %s"
-msgstr ""
+msgstr "Renommer %s"
 
 #: ../src/configlet.c:943
 msgid "Apply"
-msgstr ""
+msgstr "Appliquer"
 
 #: ../src/configlet.c:1064
 #, c-format
 msgid "Unable to create 'Configlet' from UI definition: %s"
 msgstr ""
+"Impossible de créer « Configlet » à partir de la définition de l’interface "
+"utilisateur: %s"
 
 #: ../src/configlet.c:1132
 msgid "Trying to decrease profile_lock below 0"
-msgstr ""
+msgstr "Tentative de réduire profile_lock à une valeur inférieure à 0"
 
 #: ../src/configlet.c:1150
 msgid "Trying to decrease colours_lock below 0"
-msgstr ""
+msgstr "Tentative de réduire colours_lock à une valeur inférieure à 0"
 
 #: ../src/configlet.c:1168
 msgid "Trying to decrease shortcuts_lock below 0"
-msgstr ""
+msgstr "Tentative de réduire shortcuts_lock à une valeur inférieure à 0"
 
 #: ../src/configlet.c:1186
 msgid "Trying to decrease encodings_lock below 0"
-msgstr ""
+msgstr "Tentative de réduire encodings_lock à une valeur inférieure à 0"
 
 #: ../src/dlg.c:26
 #, c-format
 msgid "%s from ROXTerm"
-msgstr ""
+msgstr "%s depuis ROXTerm"
 
 #: ../src/dlg.c:49
 msgid "Message"
-msgstr ""
+msgstr "Message"
 
 #: ../src/dlg.c:52
 msgid "Warning"
-msgstr ""
+msgstr "Avertissement"
 
 #: ../src/dlg.c:55
 msgid "Error"
-msgstr ""
+msgstr "Erreur"
 
 #: ../src/dragrcv.c:75
 #, c-format
 msgid "text/plain dropped on widget had wrong format (%d) or length (%d)"
 msgstr ""
+"Le texte déposé (text/plain) sur le widget est invalide: format (%d) ou "
+"longueur (%d) incorrecte"
 
 #: ../src/dragrcv.c:101
 #, c-format
 msgid "Mozilla url dropped on widget had wrong format (%d) or length (%d)"
 msgstr ""
+"L’url Mozilla déposée sur le widget a un mauvais format (%d) ou une mauvaise"
+" longueur (%d)"
 
 #: ../src/dragrcv.c:133
 #, c-format
 msgid "URI list dropped on widget had wrong format (%d) or length (%d)"
 msgstr ""
+"La liste URI déposée sur le widget a un mauvais format (%d) ou une mauvaise "
+"longueur (%d)"
 
 #: ../src/getname.c:77 ../src/multitab.c:1285 ../src/multitab.c:1328
 #: ../src/multitab.c:1394
 msgid "_Cancel"
-msgstr ""
+msgstr "_Annuler"
 
 #: ../src/getname.c:118
 msgid "An item with that name already exists"
-msgstr ""
+msgstr "Un élément portant ce nom existe déjà"
 
 #: ../src/globalopts.c:155
 #, c-format
 msgid "Invalid directory '%s'"
-msgstr ""
+msgstr "Répertoire « %s » invalide"
 
 #: ../src/globalopts.c:212
 msgid "Show brief usage message"
-msgstr ""
+msgstr "Afficher un bref message d’utilisation"
 
 #: ../src/globalopts.c:215
 msgid "Set the terminal's working directory"
-msgstr ""
+msgstr "Déterminer le répertoire de travail du terminal"
 
 #: ../src/globalopts.c:215 ../src/globalopts.c:226
 msgid "DIRECTORY"
-msgstr ""
+msgstr "RÉPERTOIRE"
 
 #: ../src/globalopts.c:218
 msgid ""
 "Set size and/or position of terminal\n"
 "                                   according to X geometry specification"
 msgstr ""
+"Configurer la taille et/ou la position du terminal\n"
+"                                   en fonction de la spécification de géométrie X"
 
 #: ../src/globalopts.c:221
 msgid "GEOMETRY"
-msgstr ""
+msgstr "GÉOMÉTRIE"
 
 #: ../src/globalopts.c:224
 msgid ""
 "Application directory when run as a ROX\n"
 "                                   application"
 msgstr ""
+"Répertoire de l’application quand elle est exécutée comme une\n"
+"                                   application ROX"
 
 #: ../src/globalopts.c:229
 msgid "Show the menu bar, overriding profile"
-msgstr ""
+msgstr "Afficher la barre de menu, sans tenir compte du profil"
 
 #: ../src/globalopts.c:232
 msgid "Hide the menu bar, overriding profile"
-msgstr ""
+msgstr "Cacher la barre de menu, indépendamment du profil"
 
 #: ../src/globalopts.c:235
 msgid "Use the named profile"
-msgstr ""
+msgstr "Utiliser le profil nommé"
 
 #: ../src/globalopts.c:235
 msgid "PROFILE"
-msgstr ""
+msgstr "PROFIL"
 
 #: ../src/globalopts.c:238
 msgid "Use the named colour scheme"
-msgstr ""
+msgstr "Utiliser le jeu de couleur nommé"
 
 #: ../src/globalopts.c:239 ../src/globalopts.c:244 ../src/globalopts.c:248
 msgid "SCHEME"
-msgstr ""
+msgstr "JEU"
 
 #: ../src/globalopts.c:242
 msgid ""
 "Use the named colour scheme\n"
 "                                   (same as --colour-scheme)"
 msgstr ""
+"Utiliser le schéma de couleurs spécifié par son nom\n"
+"                                   (équivalent à --colour-scheme)"
 
 #: ../src/globalopts.c:247
 msgid "Use the named keyboard shortcut scheme"
-msgstr ""
+msgstr "Utiliser le jeu de raccourcis clavier nommé"
 
 #: ../src/globalopts.c:253
 msgid "Maximise the window, overriding profile"
-msgstr ""
+msgstr "Maximiser la fenêtre, indépendamment du profil"
 
 #: ../src/globalopts.c:256
 msgid "Synonym for --maximise"
-msgstr ""
+msgstr "Synonyme de --maximise"
 
 #: ../src/globalopts.c:259
 msgid ""
 "Make the initial terminal take up the whole\n"
 "                                   screen with no window furniture"
 msgstr ""
+"Afficher le terminal initial en plein écran\n"
+"                                   sans décorations de fenêtre"
 
 #: ../src/globalopts.c:264
 msgid ""
 "Scale factor for terminal's fonts\n"
 "                                   (1.0 is normal)"
 msgstr ""
+"Facteur de zoom pour les polices du terminal\n"
+"                                   (1.0 correspond à la taille normale)"
 
 #: ../src/globalopts.c:266
 msgid "ZOOM"
-msgstr ""
+msgstr "ZOOM"
 
 #: ../src/globalopts.c:269
 msgid "Use a separate process to run this terminal"
-msgstr ""
+msgstr "Utiliser un processus séparé pour exécuter ce terminal"
 
 #: ../src/globalopts.c:272
 msgid ""
 "Replace any existing process as ROXTerm's\n"
 "                                   D-BUS service provider"
 msgstr ""
+"Remplacer tout processus déjà en cours fournissant\n"
+"                                   le service D-BUS de ROXTerm"
 
 #: ../src/globalopts.c:277
 msgid "Set window title"
-msgstr ""
+msgstr "Définir le titre de la fenêtre"
 
 #: ../src/globalopts.c:277
 msgid "TITLE"
-msgstr ""
+msgstr "TITRE"
 
 #: ../src/globalopts.c:280
 msgid "Set tab name"
-msgstr ""
+msgstr "Définir le nom de l’onglet"
 
 #: ../src/globalopts.c:280 ../src/globalopts.c:295
 msgid "NAME"
-msgstr ""
+msgstr "NOM"
 
 #: ../src/globalopts.c:283
 msgid ""
 "Open a tab in an existing window instead of\n"
 "                                   a new window if possible"
 msgstr ""
+"Ouvrir un nouvel onglet dans une fenêtre déjà ouverte plutôt que de créer\n"
+"                                   une nouvelle fenêtre, si c’est possible"
 
 #: ../src/globalopts.c:288
 msgid "Fork into the background even if this is the first instance"
 msgstr ""
+"Créer un processus en arrière-plan (fork) même si c’est la première instance"
+" lancée"
 
 #: ../src/globalopts.c:292
 msgid "Disable session management"
-msgstr ""
+msgstr "Désactiver la gestion de session"
 
 #: ../src/globalopts.c:295
 msgid "Set X window system 'role' hint"
-msgstr ""
+msgstr "Attribuer un « role » à la fenêtre dans le système X Window"
 
 #: ../src/globalopts.c:298
 msgid "Restore the named user session"
-msgstr ""
+msgstr "Restaurer la session utilisateur identifiée par un nom"
 
 #: ../src/globalopts.c:298
 msgid "SESSION"
-msgstr ""
+msgstr "SESSION"
 
 #: ../src/globalopts.c:305
 msgid ""
 "Don't set window geometry hints. This is a workaround for "
 "<https://bugzilla.gnome.org/show_bug.cgi?id=649680>"
 msgstr ""
+"Ne pas appliquer les conseils de géométrie de la fenêtre. Ceci est un "
+"contournement du bug référencé à "
+"<https://bugzilla.gnome.org/show_bug.cgi?id=649680>"
 
 #: ../src/globalopts.c:309
 msgid ""
 "Execute remainder of command line inside the\n"
 "                                   terminal. Must be the final option."
 msgstr ""
+"Exécuter le reste de la commande dans le\n"
+"                                   terminal. Cette option doit être la dernière."
 
 #: ../src/globalopts.c:399
 #, c-format
 msgid "Error parsing command line options: %s"
-msgstr ""
+msgstr "Erreur lors de l’analyse des options de la ligne de commande: %s"
 
 #: ../src/globalopts.c:459
 msgid "Can't find roxterm-config"
-msgstr ""
+msgstr "Impossible de trouver roxterm-config"
 
 #: ../src/main.c:81
 msgid "Unable to read current workspace"
-msgstr ""
+msgstr "Impossible de lire l’espace de travail courant"
 
 #: ../src/main.c:229
 #, c-format
 msgid "Parent failed to read signal from child for --fork: %s"
 msgstr ""
+"Le processus parent n’a pas pu recevoir le signal du processus enfant lors "
+"de l’utilisation de --fork: %s"
 
 #: ../src/main.c:244
 #, c-format
 msgid "Child failed to signal parent for --fork: %s"
 msgstr ""
+"Le processus enfant n’a pas réussi à envoyer un signal au parent pour "
+"--fork: %s"
 
 #: ../src/main.c:309
 #, c-format
@@ -441,7 +480,7 @@ msgstr ""
 
 #: ../src/main.c:391
 msgid "Missing command after -e/--execute option"
-msgstr ""
+msgstr "Commande manquante après l’option -e/--execute"
 
 #: ../src/menutree.c:115
 msgid "_SSH to host"
@@ -449,53 +488,53 @@ msgstr ""
 
 #: ../src/menutree.c:116
 msgid "_Open URL in browser"
-msgstr ""
+msgstr "_Ouvrir l’URL dans le navigateur"
 
 #: ../src/menutree.c:117
 msgid "_Send email"
-msgstr ""
+msgstr "_Envoyer un courriel"
 
 #: ../src/menutree.c:118
 msgid "_Open file/directory in filer"
-msgstr ""
+msgstr "_Ouvrir un fichier/répertoire dans le gestionnaire de fichiers Filer"
 
 #: ../src/menutree.c:119
 msgid "_Copy address to clipboard"
-msgstr ""
+msgstr "_Copier l’adresse dans le presse-papiers"
 
 #: ../src/menutree.c:120
 msgid "_"
-msgstr ""
+msgstr "_"
 
 #: ../src/menutree.c:122
 msgid "_Search"
-msgstr ""
+msgstr "_Rechercher"
 
 #: ../src/menutree.c:124
 msgid "_File"
-msgstr ""
+msgstr "_Fichier"
 
 #: ../src/menutree.c:125 ../src/roxterm-config.ui:738
 #: ../src/roxterm-config.ui:834 ../src/roxterm-config.ui:994
 #: ../src/roxterm-config.ui:1193
 msgid "_Edit"
-msgstr ""
+msgstr "_Éditer"
 
 #: ../src/menutree.c:126
 msgid "_View"
-msgstr ""
+msgstr "_Affichage"
 
 #: ../src/menutree.c:128
 msgid "_Preferences"
-msgstr ""
+msgstr "_Préférences"
 
 #: ../src/menutree.c:129
 msgid "Ta_bs"
-msgstr ""
+msgstr "On_glets"
 
 #: ../src/menutree.c:130
 msgid "_Help"
-msgstr ""
+msgstr "A_ide"
 
 #: ../src/menutree.c:133
 msgid "Select _All"
@@ -503,84 +542,84 @@ msgstr ""
 
 #: ../src/menutree.c:135
 msgid "_Paste"
-msgstr ""
+msgstr "_Coller"
 
 #: ../src/menutree.c:136
 msgid "Cop_y & Paste"
-msgstr ""
+msgstr "Cop_ier & coller"
 
 #: ../src/menutree.c:140
 msgid "_Reset"
-msgstr ""
+msgstr "_Réinitialiser"
 
 #: ../src/menutree.c:141
 msgid "Reset And C_lear"
-msgstr ""
+msgstr "Réinitia_liser et nettoyer"
 
 #: ../src/menutree.c:144
 msgid "Show Menu_bar"
-msgstr ""
+msgstr "Afficher la _barre de menu"
 
 #: ../src/menutree.c:147
 msgid "C_haracter Encoding"
-msgstr ""
+msgstr "Encodage de c_aractères"
 
 #: ../src/menutree.c:150
 msgid "Select _Profile"
-msgstr ""
+msgstr "Sélectionner un _profil"
 
 #: ../src/menutree.c:151
 msgid "Select _Colour Scheme"
-msgstr ""
+msgstr "Sélectionner un jeu de _couleurs"
 
 #: ../src/menutree.c:152
 msgid "Select _Shortcuts Scheme"
-msgstr ""
+msgstr "Sélectionner un jeu de _raccourcis"
 
 #: ../src/menutree.c:154
 msgid "_Edit Current Profile"
-msgstr ""
+msgstr "_Éditer le profil actuel"
 
 #: ../src/menutree.c:155
 msgid "E_dit Current Colour Scheme"
-msgstr ""
+msgstr "É_diter le jeu de couleurs actuel"
 
 #: ../src/menutree.c:160
 msgid "Configuration _Manager"
-msgstr ""
+msgstr "_Gestionnaire de configuration"
 
 #: ../src/menutree.c:340 ../src/profilegui.c:346 ../src/profilegui.c:347
 msgid "Default"
-msgstr ""
+msgstr "Par défaut"
 
 #: ../src/menutree.c:426
 #, c-format
 msgid "Encoding '%s' not found in menu"
-msgstr ""
+msgstr "Encodage « %s » introuvable dans le menu"
 
 #: ../src/menutree.c:512
 msgid "_New Window"
-msgstr ""
+msgstr "_Nouvelle fenêtre"
 
 #: ../src/menutree.c:513
 msgid "New _Tab"
-msgstr ""
+msgstr "Nouvel _onglet"
 
 #: ../src/menutree.c:514
 msgid "New _Window With Profile"
-msgstr ""
+msgstr "Nouvelle _fenêtre avec un profil"
 
 #: ../src/menutree.c:515
 msgid "New Tab With _Profile"
-msgstr ""
+msgstr "Nouvel onglet avec un _profil"
 
 #: ../src/menutree.c:516
 msgid "C_lose Tab"
-msgstr ""
+msgstr "Fermer l’ong_let"
 
 #: ../src/menutree.c:517
 msgid "_Close Window"
-msgstr ""
+msgstr "_Fermer la fenêtre"
 
 #: ../src/menutree.c:518
 msgid "_Save Session..."
@@ -588,79 +627,79 @@ msgstr ""
 
 #: ../src/menutree.c:526 ../src/menutree.c:535
 msgid "Profiles"
-msgstr ""
+msgstr "Profils"
 
 #: ../src/menutree.c:545
 msgid "_Set Window Title..."
-msgstr ""
+msgstr "_Définir le titre de la fenêtre..."
 
 #: ../src/menutree.c:548
 msgid "Res_tart command"
-msgstr ""
+msgstr "Commande de re_démarrage"
 
 #: ../src/menutree.c:556
 msgid "_Always Show Tab Bar"
-msgstr ""
+msgstr "_Toujours afficher la barre d’onglets"
 
 #: ../src/menutree.c:557
 msgid "_Full Screen"
-msgstr ""
+msgstr "Plein _écran"
 
 #: ../src/menutree.c:559
 msgid "Zoom _In"
-msgstr ""
+msgstr "Zoom _avant"
 
 #: ../src/menutree.c:560
 msgid "Zoom _Out"
-msgstr ""
+msgstr "Zoom a_rrière"
 
 #: ../src/menutree.c:561
 msgid "_Normal Size"
-msgstr ""
+msgstr "Taille _normale"
 
 #: ../src/menutree.c:563
 msgid "Scroll _Up One Line"
-msgstr ""
+msgstr "Défilement d’une ligne vers le _haut"
 
 #: ../src/menutree.c:564
 msgid "Scroll _Down One Line"
-msgstr ""
+msgstr "Défilement d’une ligne vers le _bas"
 
 #: ../src/menutree.c:565
 msgid "Scroll Up One _Page"
-msgstr ""
+msgstr "Défilement d’une _page vers le haut"
 
 #: ../src/menutree.c:566
 msgid "Scroll Do_wn One Page"
-msgstr ""
+msgstr "Défilement d’u_ne page vers le bas"
 
 #: ../src/menutree.c:567
 msgid "Scroll Up One _Half Page"
-msgstr ""
+msgstr "Défilement d’une _demi-page vers le haut"
 
 #: ../src/menutree.c:568
 msgid "Scroll Down One Hal_f Page"
-msgstr ""
+msgstr "Défilement d’une demi-pa_ge vers le bas"
 
 #: ../src/menutree.c:569
 msgid "Scroll To _Top"
-msgstr ""
+msgstr "Défilement vers le _haut"
 
 #: ../src/menutree.c:570
 msgid "Scroll To _Bottom"
-msgstr ""
+msgstr "Défilement vers le _bas"
 
 #: ../src/menutree.c:577
 msgid "_Find..."
-msgstr ""
+msgstr "_Rechercher ..."
 
 #: ../src/menutree.c:578
 msgid "Find _Next"
-msgstr ""
+msgstr "Rechercher _suivant"
 
 #: ../src/menutree.c:579
 msgid "Find _Previous"
-msgstr ""
+msgstr "Rechercher _précédent"
 
 #: ../src/menutree.c:587
 msgid "Edi_t Current Shortcuts Scheme"
@@ -668,51 +707,51 @@ msgstr ""
 
 #: ../src/menutree.c:595
 msgid "_Detach Tab"
-msgstr ""
+msgstr "_Détacher l’onglet"
 
 #: ../src/menutree.c:596
 msgid "_Close Tab"
-msgstr ""
+msgstr "_Fermer l’onglet"
 
 #: ../src/menutree.c:597
 msgid "Close _Other Tabs"
-msgstr ""
+msgstr "Fermer les _autres onglets"
 
 #: ../src/menutree.c:598
 msgid "Na_me Tab..."
-msgstr ""
+msgstr "No_m de l’onglet ..."
 
 #: ../src/menutree.c:600
 msgid "_Previous Tab"
-msgstr ""
+msgstr "Onglet _précédent"
 
 #: ../src/menutree.c:601
 msgid "_Next Tab"
-msgstr ""
+msgstr "Onglet suiva_nt"
 
 #: ../src/menutree.c:603
 msgid "Move Tab _Left"
-msgstr ""
+msgstr "Déplacer l’onglet vers la _gauche"
 
 #: ../src/menutree.c:604
 msgid "Move Tab _Right"
-msgstr ""
+msgstr "Déplacer l’onglet vers la d_roite"
 
 #: ../src/menutree.c:611
 msgid "Show _Manual"
-msgstr ""
+msgstr "Afficher le _manuel"
 
 #: ../src/menutree.c:612
 msgid "_About ROXTerm"
-msgstr ""
+msgstr "_À propos de ROXTerm"
 
 #: ../src/menutree.c:849
 msgid "Move Tab _Up"
-msgstr ""
+msgstr "Déplacer l’onglet vers le _haut"
 
 #: ../src/menutree.c:851
 msgid "Move Tab _Down"
-msgstr ""
+msgstr "Déplacer l’onglet vers le _bas"
 
 #: ../src/multitab.c:421
 #, c-format
@@ -721,7 +760,7 @@ msgstr ""
 
 #: ../src/multitab.c:1282
 msgid "Name Tab"
-msgstr ""
+msgstr "Nom de l’onglet"
 
 #: ../src/multitab.c:1286 ../src/multitab.c:1395
 msgid "_Apply"
@@ -753,7 +792,7 @@ msgstr ""
 
 #: ../src/multitab.c:1391
 msgid "Set Window Title"
-msgstr ""
+msgstr "Définir le titre de la fenêtre"
 
 #: ../src/multitab.c:1402
 msgid ""
@@ -780,30 +819,30 @@ msgstr ""
 
 #: ../src/optsdbus.c:65
 msgid "Unable to get argument from D-BUS message"
-msgstr ""
+msgstr "Impossible d’obtenir l’argument du message D-BUS"
 
 #: ../src/optsdbus.c:69
 msgid "Unable to get argument"
-msgstr ""
+msgstr "Impossible d’obtenir l’argument"
 
 #: ../src/optsdbus.c:149
 #, c-format
 msgid "Don't know how to handle method %s.%s"
-msgstr ""
+msgstr "Impossible de traiter la méthode %s.%s"
 
 #: ../src/optsdbus.c:328
 #, c-format
 msgid "Unrecognised ROXTERM_ID '%s' in D-Bus message"
-msgstr ""
+msgstr "ROXTERM_ID « %s » non reconnu dans le message D-BUS"
 
 #: ../src/optsdbus.c:454
 msgid "Unable to read D-BUS signal arguments"
-msgstr ""
+msgstr "Impossible de lire les arguments du signal D-BUS"
 
 #: ../src/optsdbus.c:485
 #, c-format
 msgid "Unrecognised D-BUS signal %s.%s"
-msgstr ""
+msgstr "Signal D_BUS %s.%s non reconnu"
 
 #: ../src/optsdbus.c:565
 #, c-format
@@ -813,47 +852,47 @@ msgstr ""
 #: ../src/optsfile.c:218
 #, c-format
 msgid "Can't read options file %s: %s"
-msgstr ""
+msgstr "Impossible de lire le fichier des options %s: %s"
 
 #: ../src/optsfile.c:221
 #, c-format
 msgid "Can't read options file %s"
-msgstr ""
+msgstr "Impossible de lire le fichier des options %s"
 
 #: ../src/optsfile.c:231
 #, c-format
 msgid "Options file %s does not start with group '%s'"
-msgstr ""
+msgstr "Le fichier des options %s ne commence pas par le groupe « %s »"
 
 #: ../src/optsfile.c:248
 #, c-format
 msgid "Invalid directory name '%s'"
-msgstr ""
+msgstr "Nom de répertoire « %s » non valide"
 
 #: ../src/optsfile.c:253
 #, c-format
 msgid "Failed to create directory '%s': %s"
-msgstr ""
+msgstr "Impossible de créer le répertoire « %s »: %s"
 
 #: ../src/optsfile.c:305
 #, c-format
 msgid "Unable to generate options file %s: %s"
-msgstr ""
+msgstr "Impossible de générer le fichier des options %s: %s"
 
 #: ../src/optsfile.c:310
 #, c-format
 msgid "Unable to generate options file %s"
-msgstr ""
+msgstr "Impossible de générer le fichier des options %s"
 
 #: ../src/optsfile.c:321
 #, c-format
 msgid "Unable to save options file %s: %s"
-msgstr ""
+msgstr "Impossible de sauvegarder le fichier des options %s: %s"
 
 #: ../src/optsfile.c:326
 #, c-format
 msgid "Unable to save options file %s"
-msgstr ""
+msgstr "Impossible de sauvegarder le fichier des options %s"
 
 #: ../src/optsfile.c:343
 #, c-format
@@ -863,7 +902,7 @@ msgstr ""
 #: ../src/optsfile.c:399
 #, c-format
 msgid "Unable to create directory '%s'"
-msgstr ""
+msgstr "Impossible de créer le répertoire « %s »"
 
 #: ../src/optsfile.c:424
 #, c-format
@@ -873,12 +912,12 @@ msgstr ""
 #: ../src/optsfile.c:425 ../src/roxterm.c:841 ../src/session.c:332
 #: ../src/shortcuts.c:202
 msgid "unknown reason"
-msgstr ""
+msgstr "raison inconnue"
 
 #: ../src/profilegui.c:83
 #, c-format
 msgid "Profile widget '%s' not found"
-msgstr ""
+msgstr "Profil du widget « %s » non trouvé"
 
 #: ../src/profilegui.c:345
 msgid "(Don't set)"
@@ -886,35 +925,35 @@ msgstr ""
 
 #: ../src/profilegui.c:518 ../src/roxterm-config.ui:2027
 msgid "Appearance"
-msgstr "Apariencia"
+msgstr "Apparence"
 
 #: ../src/profilegui.c:518 ../src/roxterm-config.ui:2414
 msgid "General"
-msgstr "General"
+msgstr "Général"
 
 #: ../src/profilegui.c:518 ../src/roxterm-config.ui:2703
 msgid "Command"
-msgstr "Comando"
+msgstr "Commande"
 
 #: ../src/profilegui.c:519 ../src/roxterm-config.ui:3073
 msgid "Net URIs"
-msgstr "URIs de red"
+msgstr ""
 
 #: ../src/profilegui.c:519 ../src/roxterm-config.ui:3371
 msgid "File URIs"
-msgstr "URIs de archivo"
+msgstr ""
 
 #: ../src/profilegui.c:520 ../src/roxterm-config.ui:3804
 msgid "Scrolling"
-msgstr "Desplazamiento"
+msgstr "Défilement"
 
 #: ../src/profilegui.c:520 ../src/roxterm-config.ui:4176
 msgid "Keyboard"
-msgstr "Teclado"
+msgstr "Clavier"
 
 #: ../src/profilegui.c:520 ../src/roxterm-config.ui:4191
 msgid "Tabs"
-msgstr "Pestañas"
+msgstr "Onglets"
 
 #: ../src/profilegui.c:596
 #, c-format
@@ -924,7 +963,7 @@ msgstr ""
 #: ../src/profilegui.c:604
 #, c-format
 msgid "ROXTerm Profile \"%s\""
-msgstr ""
+msgstr "Profil ROXTerm « %s »"
 
 #: ../src/profilegui.c:636
 msgid "Deleting edited profile that wasn't in list of profiles being edited"
@@ -967,7 +1006,7 @@ msgstr ""
 #: ../src/roxterm.c:1409
 #, c-format
 msgid "Couldn't create a font from '%s'"
-msgstr ""
+msgstr "Impossible de créer une police à partir de « %s »"
 
 #: ../src/roxterm.c:1601
 #, c-format
@@ -976,7 +1015,7 @@ msgstr ""
 
 #: ../src/roxterm.c:1745 ../src/roxterm.c:3326
 msgid "ROXTerm"
-msgstr ""
+msgstr "ROXTerm"
 
 #: ../src/roxterm.c:1794
 #, c-format
@@ -985,7 +1024,7 @@ msgstr ""
 
 #: ../src/roxterm.c:1999
 msgid "Kill current task?"
-msgstr ""
+msgstr "Tuer la tâche en cours?"
 
 #: ../src/roxterm.c:2000
 msgid ""
@@ -993,12 +1032,17 @@ msgid ""
 "be killed. Do you want to kill the current task to replace it with a new "
 "instance?"
 msgstr ""
+"La tâche actuelle est toujours en cours d’exécution; pour la relancer, "
+"l’instance actuelle doit être tuée. Voulez-vous tuer la tâche en cours pour "
+"la remplacer par une nouvelle instance?"
 
 #: ../src/roxterm.c:2223
 msgid ""
 "The command in this terminal has terminated. What do you want to do with the"
 " terminal now?"
 msgstr ""
+"La commande dans ce terminal est terminée. Que voulez-vous faire maintenant "
+"avec le terminal?"
 
 #: ../src/roxterm.c:2228
 msgid "Close"
@@ -1006,11 +1050,11 @@ msgstr ""
 
 #: ../src/roxterm.c:2230
 msgid "Leave open"
-msgstr ""
+msgstr "Garder ouvert"
 
 #: ../src/roxterm.c:2232
 msgid "Rerun command"
-msgstr ""
+msgstr "Réexécuter la commande"
 
 #: ../src/roxterm.c:2278
 msgid ""
@@ -1021,28 +1065,28 @@ msgstr ""
 #: ../src/roxterm.c:2342
 #, c-format
 msgid "Unknown colour scheme '%s'"
-msgstr ""
+msgstr "Jeu de couleurs « %s » inconnu"
 
 #: ../src/roxterm.c:2370 ../src/roxterm.c:2427 ../src/roxterm.c:2470
 #: ../src/roxterm.c:2510
 #, c-format
 msgid "Menu item has no '%s' data"
-msgstr ""
+msgstr "L’élément du menu n’a pas de données « %s »"
 
 #: ../src/roxterm.c:2379 ../src/roxterm.c:2453
 #, c-format
 msgid "Profile '%s' not found"
-msgstr ""
+msgstr "Profil « %s » non trouvé"
 
 #: ../src/roxterm.c:2491
 #, c-format
 msgid "Colour scheme '%s' not found"
-msgstr ""
+msgstr "Jeu de couleurs « %s » non trouvé"
 
 #: ../src/roxterm.c:3381
 #, c-format
 msgid "Unknown option type (%d)"
-msgstr ""
+msgstr "Type d’option (%d) inconnu"
 
 #: ../src/roxterm.c:3709
 #, c-format
@@ -1056,7 +1100,7 @@ msgstr ""
 
 #: ../src/roxterm.c:3825
 msgid "[Deleted]"
-msgstr ""
+msgstr "[Supprimé]"
 
 #: ../src/roxterm.c:3848
 #, c-format
@@ -1073,33 +1117,40 @@ msgstr ""
 #: ../src/roxterm.c:3977
 #, c-format
 msgid "Unknown profile '%s' in D-Bus signal"
-msgstr ""
+msgstr "Profil « %s » inconnu dans le signal D-Bus"
 
 #: ../src/roxterm.c:4145
 msgid "Invalid geometry specification"
-msgstr ""
+msgstr "Spécification géométrique invalide"
 
 #: ../src/roxterm.c:4505
 msgid ""
 "Closing this ROXTerm tab may cause loss of data. Are you sure you want to "
 "continue?"
 msgstr ""
+"La fermeture de cet onglet ROXTerm peut entraîner la perte de données. Êtes-"
+"vous certain•e de vouloir continuer?"
 
 #: ../src/roxterm.c:4509
 msgid ""
 "You are about to close a ROXTerm window; this may cause loss of data. Are "
 "you sure you want to continue?"
 msgstr ""
+"Vous êtes sur le point de fermer une fenêtre ROXTerm, ce qui peut entraîner "
+"une perte de données. Êtes-vous certain•e de vouloir continuer?"
 
 #: ../src/roxterm.c:4513
 msgid ""
 "You are about to close a window containing multiple ROXTerm tabs; this may "
 "cause loss of data. Are you sure you want to continue?"
 msgstr ""
+"Vous êtes sur le point de fermer une fenêtre contenant plusieurs onglets "
+"ROXTerm, ce qui peut causer la perte de données. Êtes-vous certain•e de "
+"vouloir continuer?"
 
 #: ../src/roxterm.c:4522
 msgid "ROXTerm: Confirm close"
-msgstr ""
+msgstr "ROXTerm: confirmez la fermeture"
 
 #: ../src/roxterm.c:4527
 msgid "_Don't show this again"
@@ -1443,43 +1494,41 @@ msgstr ""
 
 #: ../src/roxterm-config.ui:8
 msgid "ROXTerm Colour Scheme"
-msgstr "Esquema de color de ROXTerm"
+msgstr "Jeu de couleurs ROXTerm"
 
 #: ../src/roxterm-config.ui:29
 msgid "_Revert"
-msgstr "_Deshacer"
+msgstr ""
 
 #: ../src/roxterm-config.ui:52
 msgid "Close this window"
-msgstr "Cierra esta ventana"
+msgstr "Fermer la fenêtre"
 
 #: ../src/roxterm-config.ui:75
 msgid "_Set text and background colours"
-msgstr "_Cambia los colores de texto y fondo"
+msgstr "Définir les couleurs du _texte et de l’arrière-plan"
 
 #: ../src/roxterm-config.ui:81
 msgid ""
 "Whether to set terminals' text and background colours using the fields below"
 msgstr ""
-"Indica cuando cambiar los colores de texto y fondo de la terminal según los "
-"siguientes campos"
 
 #: ../src/roxterm-config.ui:104
 msgid "_Text colour"
-msgstr "Color de _texto"
+msgstr "Couleur du _texte"
 
 #: ../src/roxterm-config.ui:120 ../src/roxterm-config.ui:121
 #: ../src/roxterm-config.ui:189 ../src/roxterm-config.ui:190
 msgid "Foreground colour of text; click to change"
-msgstr "Color de primer plano del texto; click para cambiar"
+msgstr "Couleur de l’avant-plan du texte; cliquez pour modifier"
 
 #: ../src/roxterm-config.ui:135
 msgid "_Background colour"
-msgstr "Color de _fondo"
+msgstr "Couleur de l’_arrière-plan"
 
 #: ../src/roxterm-config.ui:151 ../src/roxterm-config.ui:152
 msgid "Background colour of terminals; click to change"
-msgstr "Color de fondo de las terminales; click para cambiar"
+msgstr "Couleur d’arrière-plan des terminaux; cliquez pour changer"
 
 #: ../src/roxterm-config.ui:163
 msgid "Set b_old colour"
@@ -1488,48 +1537,45 @@ msgstr ""
 #: ../src/roxterm-config.ui:169 ../src/roxterm-config.ui:170
 #: ../src/roxterm-config.ui:527 ../src/roxterm-config.ui:528
 msgid "Set the cursor colour from the adjacent field"
-msgstr "Cambia el color del cursor según lo indicado"
+msgstr "Définir la couleur du curseur dans le champ adjacent"
 
 #: ../src/roxterm-config.ui:201
 msgid "Use custom _palette"
-msgstr "Usar una _paleta personalizada"
+msgstr "Utiliser une _palette personnalisée"
 
 #: ../src/roxterm-config.ui:207 ../src/roxterm-config.ui:208
 msgid "Whether to set the terminal's colours from the table below"
 msgstr ""
-"Indica cuando cambiar los colores de la terminal según la siguiente tabla"
 
 #: ../src/roxterm-config.ui:223
 msgid "_Get text and background colours from palette"
-msgstr "_Obtener los colores de fondo y texto de la paleta"
+msgstr "_Obtenir les couleurs de texte et de fond depuis la palette"
 
 #: ../src/roxterm-config.ui:229 ../src/roxterm-config.ui:230
 msgid ""
 "Whether to use the palette table below to set the background and text "
 "foreground colours"
 msgstr ""
-"Indica cuando usar la siguiente paleta para establecer los colores de primer"
-" plano y fondo"
 
 #: ../src/roxterm-config.ui:266 ../src/roxterm-config.ui:267
 msgid "Set just the first 8 palette entries from this row"
-msgstr "Pone las primeras 8 entradas en la paleta desde esta fila"
+msgstr ""
 
 #: ../src/roxterm-config.ui:390 ../src/roxterm-config.ui:391
 msgid "Set 16 palette entries from both rows"
-msgstr "Pone 16 entradas en la paleta desde ambas filas"
+msgstr ""
 
 #: ../src/roxterm-config.ui:521
 msgid "Set _cursor colour"
-msgstr "_Cambia el color del cursor"
+msgstr "Définir la couleur du _curseur"
 
 #: ../src/roxterm-config.ui:547 ../src/roxterm-config.ui:548
 msgid "Click to change the cursor colour"
-msgstr "Click para cambiar el color del cursor"
+msgstr "Cliquez pour changer la couleur du curseur"
 
 #: ../src/roxterm-config.ui:579
 msgid "Configure ROXTerm"
-msgstr "Configurar ROXTerm"
+msgstr "Configurer ROXTerm"
 
 #: ../src/roxterm-config.ui:661
 msgid ""
@@ -1537,47 +1583,44 @@ msgid ""
 "radio button to set the profile used when roxterm is run without a --profile"
 " option."
 msgstr ""
-"Seleccione una fila para realizar cambios sobre el perfil correspondiente. "
-"Marque el perfil que desea utilizar cuando roxterm se ejecuta sin la opción "
-"--profile."
 
 #: ../src/roxterm-config.ui:678 ../src/roxterm-config.ui:894
 #: ../src/roxterm-config.ui:1051
 msgid "_Rename"
-msgstr ""
+msgstr "R_enommer"
 
 #: ../src/roxterm-config.ui:686
 msgid "Click to rename the selected profile"
-msgstr "Click para renombrar el perfil seleccionado"
+msgstr "Cliquez pour renommer le profil sélectionné"
 
 #: ../src/roxterm-config.ui:698 ../src/roxterm-config.ui:874
 #: ../src/roxterm-config.ui:1031 ../src/roxterm-config.ui:1173
 msgid "_Delete"
-msgstr ""
+msgstr "_Supprimer"
 
 #: ../src/roxterm-config.ui:706 ../src/roxterm-config.ui:1039
 msgid "Click to delete the selected profile"
-msgstr "Click para borrar el perfil seleccionado"
+msgstr "Cliquez pour supprimer le profil sélectionné"
 
 #: ../src/roxterm-config.ui:726
 msgid ""
 "Click to create a new profile with settings copied from the current "
 "selection"
 msgstr ""
-"Click para crear un nuevo perfil con la configuración copiada de la "
-"selección actual"
+"Cliquez sur pour créer un nouveau profil dont les paramètres sont copiés à "
+"partir de la sélection actuelle"
 
 #: ../src/roxterm-config.ui:746
 msgid "Click to edit the selected profile"
-msgstr "Click para editar el perfil seleccionado"
+msgstr "Cliquez pour éditer le profil sélectionné"
 
 #: ../src/roxterm-config.ui:764
 msgid "<b>Profiles</b>"
-msgstr "<b>Perfiles</b>"
+msgstr "<b>Profils</b>"
 
 #: ../src/roxterm-config.ui:774
 msgid "_Profiles"
-msgstr ""
+msgstr "_Profils"
 
 #: ../src/roxterm-config.ui:817
 msgid ""
@@ -1585,29 +1628,26 @@ msgid ""
 "Select a radio button to set the colour scheme used when roxterm is run "
 "without a --colour-scheme option."
 msgstr ""
-"Seleccione una fila para realizar cambios sobre el esquema de color "
-"correspondiente. Marque el esquema de color que desea utilizar cuando "
-"roxterm se ejecuta sin la opción --colour-scheme."
 
 #: ../src/roxterm-config.ui:842
 msgid "Click to edit the selected colour scheme"
-msgstr "Click para editar el esquema de color seleccionado"
+msgstr "Cliquez pour éditer le jeu de couleurs sélectionné"
 
 #: ../src/roxterm-config.ui:862
 msgid ""
 "Click to create a new colour scheme with settings copied from the current "
 "selection"
 msgstr ""
-"Click para crear un nuevo esquema de color con las opciones copiadas del "
-"esquema seleccionado"
+"Cliquez pour créer un nouveau jeu de couleur avec les paramètres copiés à "
+"partir de la sélection actuelle"
 
 #: ../src/roxterm-config.ui:882
 msgid "Click to delete the selected colour scheme"
-msgstr "Click para eliminar el esquema de color seleccionado"
+msgstr "Cliquez pour supprimer le jeu de couleurs sélectionné"
 
 #: ../src/roxterm-config.ui:902
 msgid "Click to rename the selected colour scheme"
-msgstr "Click para renombrar el esquema de color seleccionado"
+msgstr "Cliquez pour renommer le jeu de couleurs sélectionné"
 
 #: ../src/roxterm-config.ui:920
 msgid "<b>Colour Schemes</b>"
@@ -1615,7 +1655,7 @@ msgstr ""
 
 #: ../src/roxterm-config.ui:933
 msgid "Co_lours"
-msgstr ""
+msgstr "Cou_leurs"
 
 #: ../src/roxterm-config.ui:977
 msgid ""
@@ -1623,9 +1663,6 @@ msgid ""
 "apply to. Select a radio button to set the shortcuts scheme used when "
 "roxterm is run without a --shortcut-scheme option."
 msgstr ""
-"Seleccione una fila para realizar cambios sobre el esquema de teclado "
-"correspondiente. Marque el esquema de teclado que desea utilizar cuando "
-"roxterm se ejecuta sin la opción --shortcut-scheme."
 
 #: ../src/roxterm-config.ui:999
 msgid "Click to edit the selected Shortcuts scheme in a text editor."
@@ -1636,12 +1673,12 @@ msgid ""
 "Click to create a new keyboard shortcuts scheme with settings copied from "
 "the current selection"
 msgstr ""
-"Click para crear un nuevo esquema de atajos con las configuraciones copiadas"
-" de la selección actual"
+"Cliquez pour créer un nouveau jeu de raccourcis clavier avec les paramètres "
+"copiés à partir de la sélection actuelle"
 
 #: ../src/roxterm-config.ui:1059
 msgid "Click to rename the selected keyboard shortcuts scheme"
-msgstr "Click para renombrar el esquema de atajos seleccionado"
+msgstr "Cliquez pour renommer le jeu de raccourcis clavier sélectionné"
 
 #: ../src/roxterm-config.ui:1077
 msgid "<b>Keyboard Shortcuts</b>"
@@ -1656,21 +1693,18 @@ msgid ""
 "Select a row to choose which encoding the buttons below apply to. Select a "
 "radio button to set the encoding used by default."
 msgstr ""
-"Seleccione una fila para realizar cambios sobre la codificación de "
-"caracteres correspondiente. Marque la codificación que desea utilizar de "
-"forma predeterminada."
 
 #: ../src/roxterm-config.ui:1161
 msgid "Click to add a new encoding name"
-msgstr "Click para añadir una nueva codificación"
+msgstr ""
 
 #: ../src/roxterm-config.ui:1181
 msgid "Click to remove the selected encoding from the list"
-msgstr "Click para eliminar la codificación seleccionada"
+msgstr "Cliquez pour supprimer l’encodage sélectionné de la liste"
 
 #: ../src/roxterm-config.ui:1201
 msgid "Click to edit the selected encoding name"
-msgstr "Click para editar el nombre de la codificación"
+msgstr ""
 
 #: ../src/roxterm-config.ui:1222
 msgid "<b>Character Encodings</b>"
@@ -1678,31 +1712,31 @@ msgstr ""
 
 #: ../src/roxterm-config.ui:1235
 msgid "E_ncodings"
-msgstr ""
+msgstr "E_ncodages"
 
 #: ../src/roxterm-config.ui:1262
 msgid "No warnings when closing windows/tabs"
-msgstr "Sin avisos al cerrar ventanas/pestañas"
+msgstr "Pas d’avertissement lors de la fermeture des fenêtres ou des onglets"
 
 #: ../src/roxterm-config.ui:1279
 msgid "Warn when closing a window with multiple tabs"
-msgstr "Avisar al cerrar una ventana con varias pestañas"
+msgstr "Avertir lors de la fermeture d’une fenêtre avec plusieurs onglets"
 
 #: ../src/roxterm-config.ui:1297
 msgid "Warn when closing any window"
-msgstr "Avisar al cerrar cualquier ventana"
+msgstr "Avertir lors de la fermeture d’une fenêtre"
 
 #: ../src/roxterm-config.ui:1315
 msgid "Warn when closing any tab"
-msgstr "Avisar al cerrar cualquier pestaña"
+msgstr "Avertir lors de la fermeture d’un onglet"
 
 #: ../src/roxterm-config.ui:1333
 msgid "Only warn if tasks are still running"
-msgstr "Avisar solo si hay tareas en ejecución"
+msgstr "N’avertir que si des tâches sont encore en cours d’exécution"
 
 #: ../src/roxterm-config.ui:1349
 msgid "Use dark theme"
-msgstr "Utilizar tema oscuro"
+msgstr "Utiliser le thème sombre"
 
 #: ../src/roxterm-config.ui:1356
 msgid ""
@@ -1710,9 +1744,6 @@ msgid ""
 "colours are handled separately. It does not apply to the configuration "
 "applet."
 msgstr ""
-"Este opción afecta a los menús de la ventana, bordes, etc; los colores de la"
-" terminal se configuran independientemente. Tampoco afecta al gestor de "
-"configuración."
 
 #: ../src/roxterm-config.ui:1378
 msgid "<b>Miscellaneous global options</b>"
@@ -1720,36 +1751,37 @@ msgstr ""
 
 #: ../src/roxterm-config.ui:1393
 msgid "_Options"
-msgstr ""
+msgstr "_Options"
 
 #: ../src/roxterm-config.ui:1475
 msgid "ROXTerm profile"
-msgstr "Perfil de ROXTerm"
+msgstr "Profil ROXTerm"
 
 #: ../src/roxterm-config.ui:1576
 msgid "_Font:"
-msgstr "_Tipografía:"
+msgstr "_Police de caractères:"
 
 #: ../src/roxterm-config.ui:1593
 msgid "Click to change the font; monospace fonts are recommended."
 msgstr ""
-"Click para cambiar el tipo de letra; se recomiendan las monoespaciadas."
+"Cliquez sur pour modifier la police de caractères; les polices monospace "
+"sont recommandées."
 
 #: ../src/roxterm-config.ui:1618
 msgid "_Size"
-msgstr "Ta_maño"
+msgstr "_Taille"
 
 #: ../src/roxterm-config.ui:1624
 msgid "Set the terminal's size in characters from the adjacent values."
-msgstr "Cambia el tamaño de la terminal en caracteres según lo indicado."
+msgstr ""
 
 #: ../src/roxterm-config.ui:1640
 msgid "_Width:"
-msgstr "_Ancho:"
+msgstr "_Largeur :"
 
 #: ../src/roxterm-config.ui:1654 ../src/roxterm-config.ui:1700
 msgid "New windows with this profile will open at this size."
-msgstr "Las ventanas nuevas con este perfil se abrirán con este tamaño."
+msgstr "Les nouvelles fenêtres avec ce profil s’ouvriront avec cette taille."
 
 #: ../src/roxterm-config.ui:1656
 msgid "80"
@@ -1757,71 +1789,76 @@ msgstr ""
 
 #: ../src/roxterm-config.ui:1674
 msgid "columns"
-msgstr "columnas"
+msgstr "colonnes"
 
 #: ../src/roxterm-config.ui:1686
 msgid "_Height:"
-msgstr "A_lto:"
+msgstr "_Hauteur :"
 
 #: ../src/roxterm-config.ui:1702
 msgid "32"
-msgstr ""
+msgstr "32"
 
 #: ../src/roxterm-config.ui:1720
 msgid "rows"
-msgstr "filas"
+msgstr "lignes"
 
 #: ../src/roxterm-config.ui:1729
 msgid "_Maximise"
-msgstr "_Maximizar"
+msgstr "_Maximiser"
 
 #: ../src/roxterm-config.ui:1736
 msgid "Use a maximised window."
-msgstr "Usar una ventana maximizada."
+msgstr "Utiliser une fenêtre maximisée."
 
 #: ../src/roxterm-config.ui:1752
 msgid "F_ull screen"
-msgstr "_Pantalla completa"
+msgstr "P_lein écran"
 
 #: ../src/roxterm-config.ui:1759
 msgid "Make the terminal take up the whole screen with no window borders."
-msgstr "Hace que la terminal ocupe toda la pantalla sin bordes de ventana."
+msgstr ""
+"Faire en sorte que le terminal occupe tout l’écran, sans bordure de fenêtre."
 
 #: ../src/roxterm-config.ui:1775
 msgid "Show _menubar by default"
-msgstr "Mostrar la _barra de menú por defecto"
+msgstr "Afficher la barre de _menu par défaut"
 
 #: ../src/roxterm-config.ui:1782
 msgid ""
 "Whether new windows with this profile will have a menu bar. You can also "
 "turn the menu bar on and off from terminal menus."
 msgstr ""
-"Hace que las nuevas ventanas con este perfil tengan barra de menu. También "
-"se puede mostrar u ocultar la barra desde los menús de la terminal."
+"Choisir si les nouvelles fenêtre avec ce profil auront une barre de menu. "
+"Vous pouvez aussi choisir d’afficher ou non la barre de menu depuis le menu "
+"du terminal."
 
 #: ../src/roxterm-config.ui:1796
 msgid "_Always show tab bar"
-msgstr "Mostrar la barra de p_estañas siempre"
+msgstr "_Toujours afficher la barre des onglets"
 
 #: ../src/roxterm-config.ui:1804
 msgid ""
 "If this option is enabled the tabs at the top of each terminal are always "
 "shown, even in windows which only contain one tab"
 msgstr ""
-"Si se habilita esta opción se muestran siempre las pestañas en la parte "
-"superior de la terminal, incluso en ventanas con una sola pestaña"
+"Si cette option est sélectionnée, les onglets en haut de chaque terminal "
+"seront toujours visibles, même si les fenêtre ne contiennent qu’un seul "
+"onglet"
 
 #: ../src/roxterm-config.ui:1818
 msgid "Show a_dd tab button"
-msgstr ""
+msgstr "Afficher le bouton d’a_jout d’onglet"
 
 #: ../src/roxterm-config.ui:1826
 msgid "Enables a button in the tab bar which adds a new tab when clicked."
 msgstr ""
+"Active un bouton dans la barre d’onglets qui ajoute un nouvel onglet "
+"lorsqu’on clique dessus."
 
 #: ../src/roxterm-config.ui:1867
 msgid "Window _title:"
-msgstr "_Título de ventana:"
+msgstr "_Titre de la fenêtre:"
 
 #: ../src/roxterm-config.ui:1883
 msgid ""
@@ -1829,90 +1866,90 @@ msgid ""
 "the current tab's label. No other % characters or sequences are permitted "
 "except '%%' which is displayed as a single %."
 msgstr ""
-"El texto de título puede incluir '%s' que se sustituye por la etiqueta de la"
-" pestaña actual. No se permite ningún otro caracter o secuencia  % excepto "
-"'%%' que se muestra como un solo %."
+"La chaîne de titre peut inclure « %s », qui est remplacé par le contenu du "
+"label de l’onglet en cours. Aucun autre caractère ou séquence % n’est "
+"autorisé, excepté « %% » qui est affiché comme un seul %."
 
 #: ../src/roxterm-config.ui:1901
 msgid "C_olour scheme:"
-msgstr ""
+msgstr "Jeu de c_ouleur :"
 
 #: ../src/roxterm-config.ui:1914
 msgid "Edit"
-msgstr ""
+msgstr "Éditer"
 
 #: ../src/roxterm-config.ui:1922
 msgid "Click to edit this colour scheme."
-msgstr ""
+msgstr "Cliquez pour éditer ce jeu de couleurs."
 
 #: ../src/roxterm-config.ui:1963
 msgid "<i><small>Trans_parent</small></i>"
-msgstr ""
+msgstr "<i><small>Trans_parent</small></i>"
 
 #: ../src/roxterm-config.ui:1978
 msgid "<i><small>Opaque</small></i>"
-msgstr "<i><small>Opaco</small></i>"
+msgstr "<i><small>Opaque</small></i>"
 
 #: ../src/roxterm-config.ui:2017
 msgid "<b>Appearance</b>"
-msgstr "<b>Aspecto</b>"
+msgstr "<b>Apparence</b>"
 
 #: ../src/roxterm-config.ui:2056
 msgid "Blinking cursor:"
-msgstr "Parpadeo del cursor:"
+msgstr "Curseur clignotant:"
 
 #: ../src/roxterm-config.ui:2066
 msgid "S_ystem"
-msgstr "S_istema"
+msgstr "S_ystème"
 
 #: ../src/roxterm-config.ui:2072
 msgid "Whether the terminal cursor blinks depends on the GTK system setting."
 msgstr ""
-"El que el cursor de la terminal parpadee depende de la configuración de GTK."
+"Le clignotement du curseur du terminal dépend des paramètres du système GTK."
 
 #: ../src/roxterm-config.ui:2086
 msgid "Blin_k"
-msgstr "_Parpadear"
+msgstr "_Clignoter"
 
 #: ../src/roxterm-config.ui:2092
 msgid "The terminal cursor blinks."
-msgstr "El cursor en la terminal parpadea."
+msgstr "Le curseur du terminal clignote."
 
 #: ../src/roxterm-config.ui:2107
 msgid "Do_n't blink"
-msgstr "_No parpadear"
+msgstr "_Pas de clignotement"
 
 #: ../src/roxterm-config.ui:2113
 msgid "The terminal cursor doesn't blink."
-msgstr "El cursor en la terminal no parpadea."
+msgstr "Le curseur du terminal ne clignote pas."
 
 #: ../src/roxterm-config.ui:2130
 msgid "Cursor shape:"
-msgstr "Forma del cursor:"
+msgstr "Forme du curseur:"
 
 #: ../src/roxterm-config.ui:2140
 msgid "Bl_ock"
-msgstr "_Bloque"
+msgstr "Bl_oc"
 
 #: ../src/roxterm-config.ui:2146
 msgid "The cursor is a rectangle taking up the whole of a character space."
-msgstr "El cursor es un rectángulo que ocupa todo el espacio del carácter."
+msgstr "Le curseur est un rectangle occupant tout l’espace d’un caractère."
 
 #: ../src/roxterm-config.ui:2160
 msgid "_I-beam"
-msgstr "V_ertical"
+msgstr "Poutre en _I"
 
 #: ../src/roxterm-config.ui:2166
 msgid "The cursor is a vertical line at the left of each character."
-msgstr "El cursor es una línea vertical a la izquierda del carácter."
+msgstr "Le curseur est une ligne verticale à gauche de chaque caractère."
 
 #: ../src/roxterm-config.ui:2181
 msgid "_Underline"
-msgstr "_Horizontal"
+msgstr "_Soulignement"
 
 #: ../src/roxterm-config.ui:2187
 msgid "The cursor is a horizontal line at the bottom of each character."
-msgstr "El cursor es una línea horizontal debajo del carácter."
+msgstr "Le curseur est une ligne horizontale en dessous de chaque caractère."
 
 #: ../src/roxterm-config.ui:2204
 msgid "_Word characters:"
@@ -1927,32 +1964,33 @@ msgstr ""
 
 #: ../src/roxterm-config.ui:2238
 msgid "_COLORTERM environment variable:"
-msgstr "Variable de entorno _COLORTERM:"
+msgstr "Variable d’environnement _COLORTERM:"
 
 #: ../src/roxterm-config.ui:2269
 msgid "_TERM environment variable:"
-msgstr "Variable de entorno _TERM:"
+msgstr "Variable d’environnement _TERM:"
 
 #: ../src/roxterm-config.ui:2298
 msgid "Allow _bold text"
-msgstr "Permitir texto en _negrita"
+msgstr "Autoriser le texte en _gras"
 
 #: ../src/roxterm-config.ui:2317
 msgid "Hide mouse _pointer when typing"
-msgstr "_Ocultar el puntero del ratón al escribir"
+msgstr "Masquer le _curseur de la souris pendant la frappe"
 
 #: ../src/roxterm-config.ui:2335
 msgid "Audible bel_l"
-msgstr "_Campana audible"
+msgstr "Cloche _audible"
 
 #: ../src/roxterm-config.ui:2341
 msgid "If selected, \"printing\" an ASCII bell character will cause a beep."
 msgstr ""
-"Si se selecciona, «imprimir» el carácter ASCII campana producirá un pitido."
+"Si cette option est sélectionnée, « l’impression » d’un caractère de cloche "
+"ASCII provoquera un bip."
 
 #: ../src/roxterm-config.ui:2355
 msgid "Bell _highlights tab/window"
-msgstr "La campana _ilumina la pestaña/ventana"
+msgstr ""
 
 #: ../src/roxterm-config.ui:2361
 msgid ""
@@ -1972,110 +2010,108 @@ msgstr ""
 
 #: ../src/roxterm-config.ui:2401
 msgid "<b>General</b>"
-msgstr "<b>General</b>"
+msgstr "<b>Général</b>"
 
 #: ../src/roxterm-config.ui:2442
 msgid "_Default shell"
-msgstr "_Intérprete predeterminado"
+msgstr "Shell par _défaut"
 
 #: ../src/roxterm-config.ui:2460
 msgid "_Login shell"
-msgstr "_Intérprete de acceso"
+msgstr ""
 
 #: ../src/roxterm-config.ui:2466
 msgid "Whether shells running in the terminal are login shells"
 msgstr ""
-"Indica si los intérpretes que se ejecutan en la terminal son de acceso"
 
 #: ../src/roxterm-config.ui:2479
 msgid "_Update login records"
-msgstr "_Actualizar los registros de acceso"
+msgstr ""
 
 #: ../src/roxterm-config.ui:2485
 msgid "Whether to log sessions to login records (utmp/wtmp/utmpx/wtmpx)"
 msgstr ""
-"Indica si almacenar los registros de acceso o sesión (utmp/wtmp/utmpx/wtmpx)"
 
 #: ../src/roxterm-config.ui:2499
 msgid "_Custom command"
-msgstr "_Comando personalizado"
+msgstr "Commande _personnalisée"
 
 #: ../src/roxterm-config.ui:2505
 msgid "Enable the adjacent custom command for this profile."
-msgstr "Habilita el comando personalizado indicado para este perfil."
+msgstr ""
 
 #: ../src/roxterm-config.ui:2523
 msgid "Command to run in place of a shell"
-msgstr "Comando a ejecutar en lugar del intérprete"
+msgstr "Commande à exécuter à la place d’un shell"
 
 #: ../src/roxterm-config.ui:2540
 msgid "_Ssh"
-msgstr "_Ssh"
+msgstr "_SSH"
 
 #: ../src/roxterm-config.ui:2546
 msgid "Connect to a ssh (secure shell) with this profile."
-msgstr "Conectar a ssh (secure shell) con este perfil."
+msgstr "Se connecter à un ssh (shell sécurisé) avec ce profil."
 
 #: ../src/roxterm-config.ui:2564
 msgid "Ssh server address. Use the Edit... button to change it."
 msgstr ""
-"Dirección del servidor ssh. Utilice el botón Editar... para cambiarla."
+"Adresse du serveur ssh. Utiliser le bouton Éditer ... pour la changer."
 
 #: ../src/roxterm-config.ui:2581
 msgid "When command e_xits:"
-msgstr "Cuando el comando _termina:"
+msgstr ""
 
 #: ../src/roxterm-config.ui:2598
 msgid "Exit terminal"
-msgstr ""
+msgstr "Sortir du terminal"
 
 #: ../src/roxterm-config.ui:2599
 msgid "Hold terminal open"
-msgstr ""
+msgstr "Maintenir le terminal ouvert"
 
 #: ../src/roxterm-config.ui:2600
 msgid "Restart command"
-msgstr ""
+msgstr "Commande de redémarrage"
 
 #: ../src/roxterm-config.ui:2601
 msgid "Ask user"
-msgstr ""
+msgstr "Demander à l’utilisateur•rice"
 
 #: ../src/roxterm-config.ui:2616
 msgid "_Pause:"
-msgstr "_Pausa:"
+msgstr "_Pause:"
 
 #: ../src/roxterm-config.ui:2631
 msgid ""
 "Pause for this number of seconds after the command exits before performing "
 "the action above."
 msgstr ""
-"Pausar este número de segundos después de que el comando termina antes de "
-"realizar la acción indicada."
+"Patientez pendant ce nombre de secondes après la fin de la commande avant "
+"d’effectuer l’action ci-dessus."
 
 #: ../src/roxterm-config.ui:2635
 msgid "0.0"
-msgstr ""
+msgstr "0.0"
 
 #: ../src/roxterm-config.ui:2649
 msgid "_Edit..."
-msgstr "_Editar..."
+msgstr "_Éditer ..."
 
 #: ../src/roxterm-config.ui:2655
 msgid "Click here to edit the ssh details."
-msgstr "Haga clic aquí para editar los detalles de ssh."
+msgstr "Cliquez ici pour éditer les détails de ssh."
 
 #: ../src/roxterm-config.ui:2671
 msgid "secs"
-msgstr "segs"
+msgstr "secondes"
 
 #: ../src/roxterm-config.ui:2688
 msgid "<b>Command</b>"
-msgstr "<b>Comando</b>"
+msgstr "<b>Commande</b>"
 
 #: ../src/roxterm-config.ui:2702
 msgid "Use the default shell in this profile."
-msgstr "Usar el intérprete predeterminado en este perfil."
+msgstr "Utiliser le shell par défaut dans ce profil."
 
 #: ../src/roxterm-config.ui:2724
 msgid "<b>Web browser</b>"
@@ -2087,65 +2123,68 @@ msgstr ""
 
 #: ../src/roxterm-config.ui:2755
 msgid "Web browser to use when a link is opened"
-msgstr "Navegador web a utilizar cuando se abre un enlace"
+msgstr "Navigateur web à utiliser lors de l’ouverture d’un lien"
 
 #: ../src/roxterm-config.ui:2770 ../src/roxterm-config.ui:2883
 #: ../src/roxterm-config.ui:3000 ../src/roxterm-config.ui:3141
 #: ../src/roxterm-config.ui:3258
 msgid "Independent"
-msgstr "Independiente"
+msgstr "Indépendant"
 
 #: ../src/roxterm-config.ui:2777
 msgid "Run the browser without a terminal."
-msgstr "Ejecutar el navegador sin terminal asociada."
+msgstr "Exécuter le navigateur sans terminal."
 
 #: ../src/roxterm-config.ui:2793 ../src/roxterm-config.ui:2905
 #: ../src/roxterm-config.ui:3022 ../src/roxterm-config.ui:3163
 #: ../src/roxterm-config.ui:3280
 msgid "New terminal window"
-msgstr "Nueva ventana de terminal"
+msgstr "Nouvelle fenêtre de terminal"
 
 #: ../src/roxterm-config.ui:2799
 msgid "Run the browser in a new ROXTerm window."
-msgstr "Ejecutar el navegador en una ventana de ROXTerm."
+msgstr "Exécuter le navigateur dans une nouvelle fenêtre ROXTerm."
 
 #: ../src/roxterm-config.ui:2814 ../src/roxterm-config.ui:2927
 #: ../src/roxterm-config.ui:3044 ../src/roxterm-config.ui:3185
 #: ../src/roxterm-config.ui:3301
 msgid "New terminal tab"
-msgstr "Nueva pestaña de terminal"
+msgstr "Nouvel onglet du terminal"
 
 #: ../src/roxterm-config.ui:2820
 msgid "Run the browser in a new ROXTerm tab."
-msgstr "Ejecutar el navegador en una pestaña de ROXTerm."
+msgstr "Exécuter le navigateur dans un nouvel onglet ROXTerm."
 
 #: ../src/roxterm-config.ui:2838
 msgid "<b>Email</b>"
-msgstr ""
+msgstr "<b>Courriel</b>"
 
 #: ../src/roxterm-config.ui:2854
 msgid "_Mailer"
-msgstr ""
+msgstr "_Courrier électronique"
 
 #: ../src/roxterm-config.ui:2868
 msgid "EMail program to use when an email address is opened"
-msgstr "Cliente de correo a utilizar al abrir una dirección de email"
+msgstr ""
+"Programme de messagerie électronique à utiliser lors de l’ouverture d’une "
+"adresse électronique"
 
 #: ../src/roxterm-config.ui:2890
 msgid "Run the mailer without a terminal."
-msgstr "Ejecutar el cliente de correo sin terminal asociada."
+msgstr "Exécuter la messagerie électronique sans terminal."
 
 #: ../src/roxterm-config.ui:2912
 msgid "Run the mailer in a new ROXTerm window."
-msgstr "Ejecutar el cliente de correo en una ventana de ROXTerm."
+msgstr ""
+"Exécuter la messagerie électronique dans une nouvelle fenêtre ROXTerm."
 
 #: ../src/roxterm-config.ui:2934
 msgid "Run the mailer in a new ROXTerm tab."
-msgstr "Ejecutar el cliente de correo en una pestaña de ROXTerm."
+msgstr "Exécuter la messagerie électronique dans un nouvel onglet ROXTerm."
 
 #: ../src/roxterm-config.ui:2952
 msgid "<b>Ssh</b>"
-msgstr ""
+msgstr "<b>SSH</b>"
 
 #: ../src/roxterm-config.ui:2969
 msgid "_SSH Command"
@@ -2173,24 +2212,28 @@ msgstr ""
 
 #: ../src/roxterm-config.ui:3111
 msgid "Filer"
-msgstr "Explorador"
+msgstr "Filer - Gestionnaire de fichiers"
 
 #: ../src/roxterm-config.ui:3126
 msgid "File manager to use when a directory URI is opened."
 msgstr ""
-"Explorador de archivos a utilizar cuando se abre una URI de directorio."
+"Gestionnaire de fichiers à utiliser lorsqu’un chemin « URI » de répertoire "
+"est ouvert."
 
 #: ../src/roxterm-config.ui:3148 ../src/roxterm-config.ui:3265
 msgid "Run the filer without a terminal."
-msgstr "Ejecutar el explorador sin terminal asociada."
+msgstr "Exécuter le gestionnaire de fichiers Filer sans terminal."
 
 #: ../src/roxterm-config.ui:3170 ../src/roxterm-config.ui:3287
 msgid "Run the filer in a new ROXTerm window."
-msgstr "Ejecutar el explorador en una ventana de ROXTerm."
+msgstr ""
+"Exécuter le gestionnaire de fichiers Filer dans une nouvelle fenêtre "
+"ROXTerm."
 
 #: ../src/roxterm-config.ui:3192 ../src/roxterm-config.ui:3308
 msgid "Run the filer in a new ROXTerm tab."
-msgstr "Ejecutar el explorador en una pestaña de ROXTerm."
+msgstr ""
+"Exécuter le gestionnaire de fichiers Filer dans un nouvel onglet ROXTerm."
 
 #: ../src/roxterm-config.ui:3209
 msgid "<b>Files</b>"
@@ -2198,83 +2241,73 @@ msgstr ""
 
 #: ../src/roxterm-config.ui:3226
 msgid "_Filer"
-msgstr ""
+msgstr "_Filer - Gestionnaire de fichiers"
 
 #: ../src/roxterm-config.ui:3243
 msgid "File manager to use when a file URI is opened."
-msgstr "Explorador de archivos a utilizar cuando se abre una URI de archivo."
+msgstr ""
+"Gestionnaire de fichiers à utiliser lorsqu’un chemin « URI » de fichier est "
+"ouvert."
 
 #: ../src/roxterm-config.ui:3323
 msgid "O_pen parent directory instead"
-msgstr "Abrir el directorio _superior en su lugar"
+msgstr "Ouvrir le répertoire _parent à la place"
 
 #: ../src/roxterm-config.ui:3329
 msgid "If set open the file's parent directory instead of the file."
-msgstr ""
-"Indica si se debe abrir el directorio donde está el archivo en lugar del "
-"archivo."
+msgstr "Si activé, ouvrir le répertoire parent du fichier au lieu du fichier."
 
 #: ../src/roxterm-config.ui:3344
 msgid "_Match filenames without file:// prefix"
-msgstr "_Localizar nombres de archivo sin prefijo file://"
+msgstr "_Correspondance avec les noms de fichiers sans préfixe file://"
 
 #: ../src/roxterm-config.ui:3349
 msgid ""
 "If enabled, patterns which look like filenames will be highlighted even if "
 "they lack a file:// URI prefix."
 msgstr ""
-"Cuando se activa, los patrones que parecen nombres de archivos serán "
-"resaltados incluso si no tienen un prefijo URI file://."
 
 #: ../src/roxterm-config.ui:3399
 msgid "_No scrollbar"
-msgstr "_Sin barra"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3417
 msgid "Scrollbar on _right"
-msgstr "Barra a la _derecha"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3435
 msgid "Scrollbar on _left"
-msgstr "Barra a la _izquierda"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3453
 msgid "Scroll on _output"
-msgstr "Desplazar con _nuevo texto"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3459
 msgid ""
 "Whether to make the scrollbar jump to the bottom when new text is printed in"
 " the terminal"
 msgstr ""
-"Indica si se debe desplazar al final del texto cuando se escribe texto nuevo"
-" en la terminal"
 
 #: ../src/roxterm-config.ui:3472
 msgid "Scroll on _keystroke"
-msgstr "Desplazar con _tecla pulsada"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3478
 msgid ""
 "Whether to make the scrollbar jump to the bottom when text is typed into a "
 "terminal"
 msgstr ""
-"Indica si se debe desplazar al final del texto cuando se escribe texto en la"
-" terminal"
 
 #: ../src/roxterm-config.ui:3512
 msgid "Changes to the scrollbar position only take effect in new windows."
 msgstr ""
-"Los cambios en la posición de la barra de desplazamiento solo afectan a "
-"ventanas nuevas."
 
 #: ../src/roxterm-config.ui:3538
 msgid ""
 "Number of lines of output text to retain in the buffer so that they can "
 "still be viewed by scrolling up"
 msgstr ""
-"Número de línea de texto de salida a almacenar en el buffer para que se "
-"puedan ver al desplazarse hacia arriba"
 
 #: ../src/roxterm-config.ui:3541
 msgid "1000"
@@ -2290,15 +2323,15 @@ msgstr ""
 
 #: ../src/roxterm-config.ui:3600
 msgid "<b>Scrolling</b>"
-msgstr "<b>Desplazamiento</b>"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3613
 msgid "Background"
-msgstr "Fondo"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3643
 msgid "_Backspace key generates:"
-msgstr "La tecla de _retroceso genera:"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3658 ../src/roxterm-config.ui:3689
 msgid "Automatic choice"
@@ -2318,59 +2351,53 @@ msgstr ""
 
 #: ../src/roxterm-config.ui:3674
 msgid "_Delete key generates:"
-msgstr "La tecla de _borrado genera:"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3703
 msgid "_Reset to defaults"
-msgstr "_Configuración predeterminada"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3709
 msgid "Reset the backspace and delete keys to their defaults"
-msgstr "Pone los valores predeterminados para las teclas borrado y retroceso"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3722
 msgid "Disable menu _access key (F10 by default)"
-msgstr "Deshabilitar la tecla de _acceso al menú (F10 por defecto)"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3729
 msgid ""
 "This option disables the keyboard shortcut for opening the first menu. The "
 "default shortcut is F10."
 msgstr ""
-"Esta opción deshabilita el atajo de teclado para abrir el primer menú. El "
-"atajo predeterminado es F10."
 
 #: ../src/roxterm-config.ui:3743
 msgid "Disable other menu _shortcut keys (Alt+...)"
-msgstr "Deshabilitar otros atajos de menú (Alt+...)"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3750
 msgid ""
 "This option disables the underlined shortcut keys in the menus (eg Alt+F for"
 " the File menu)."
 msgstr ""
-"Esta opción deshabilita los atajos asociados a las opciones del menú (ej: "
-"Alt+A para el menú Archivo)."
 
 #: ../src/roxterm-config.ui:3764
 msgid "Disable _tab switching shortcut keys (Alt+number)"
-msgstr "Deshabilitar los atajos para cambiar de _pestaña (Alt+número)"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3771
 msgid ""
 "This option disables the shortcut keys for switching tabs (Alt+1-9 and Alt+0"
 " by default)"
 msgstr ""
-"Esta opción deshabilita los atajos para cambiar de pestaña (Alt+1-9 y Alt+0 "
-"por defecto)"
 
 #: ../src/roxterm-config.ui:3791
 msgid "<b>Keyboard</b>"
-msgstr "<b>Teclado</b>"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3838
 msgid "_Tab title:"
-msgstr "_Título de pestaña:"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3851
 msgid ""
@@ -2379,20 +2406,15 @@ msgid ""
 "characters or sequences are permitted except '%%' which is displayed as a "
 "single %."
 msgstr ""
-"El título puede incluir '%s' que se sustituye por el título establecido por "
-"el subcomando (normalmente el directorio actual para terminales). No se "
-"permiten otros caracteres o secuencias % excepto '%%' que se muestra como un"
-" solo %."
 
 #: ../src/roxterm-config.ui:3866
 msgid "S_how number"
-msgstr "_Mostrar número"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3871
 msgid ""
 "This option causes the tab number to be shown at the start of the title."
 msgstr ""
-"Esta opción hace que se muestre el número de pestaña al inicio del título."
 
 #: ../src/roxterm-config.ui:3898
 msgid "<b>Middle click on label action</b>"
@@ -2400,19 +2422,19 @@ msgstr ""
 
 #: ../src/roxterm-config.ui:3909
 msgid "Do n_othing"
-msgstr "_No hacer nada"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3928
 msgid "C_lose tab"
-msgstr "_Cerrar pestaña"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3947
 msgid "_Paste tab name"
-msgstr "_Pegar el nombre de pestaña"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3966
 msgid "_Wrap when switching tabs"
-msgstr "_Rotar al cambiar de pestaña"
+msgstr ""
 
 #: ../src/roxterm-config.ui:3974
 msgid ""
@@ -2420,9 +2442,6 @@ msgid ""
 "around from the first and last tab to the opposite end of the row; the move "
 "tab left/right/up/down menu items are affected similarly."
 msgstr ""
-"Esta opción hace que las pestañas anterior y siguiente salten desde la "
-"primera y última pestaña hasta el extremo opuesto de la fila; las opciones "
-"del menú que mueven las pestañas se ven afectados de forma similar."
 
 #: ../src/roxterm-config.ui:3987
 msgid "Show Close _buttons on tabs"
@@ -2431,31 +2450,26 @@ msgstr ""
 #: ../src/roxterm-config.ui:3995
 msgid "If this option is enabled close buttons are shown at the top of tabs."
 msgstr ""
-"Si se habilita esta opción se muestran botones para cerrar las pestañas."
 
 #: ../src/roxterm-config.ui:4009
 msgid "Show terminal _status in close buttons"
-msgstr "_Estado de la terminal en los botones de cierre"
+msgstr ""
 
 #: ../src/roxterm-config.ui:4017
 msgid ""
 "If this option is enabled the icons in close buttons may be changed in "
 "inactive tabs to reflect the status of their terminals."
 msgstr ""
-"Si se habilita esta opción los iconos en los botones de cierre pueden "
-"cambiar en pestañas inactivas para reflejar su estado."
 
 #: ../src/roxterm-config.ui:4030
 msgid "Open new tabs _adjacent to current tab"
-msgstr "Abrir pestañas nuevas _junto a la actual"
+msgstr ""
 
 #: ../src/roxterm-config.ui:4037
 msgid ""
 "Whether to open new tabs adjacent to the current tab in a window, otherwise "
 "append them."
 msgstr ""
-"Indica si las pestañas nuevas se abrirán adyacentes a la pestaña actual en "
-"una ventana, en caso contrario se añadirán al final."
 
 #: ../src/roxterm-config.ui:4092
 msgid ""
@@ -2489,36 +2503,36 @@ msgstr ""
 
 #: ../src/roxterm-config.ui:4163
 msgid "<b>Tabs</b>"
-msgstr "<b>Pestañas</b>"
+msgstr ""
 
 #: ../src/roxterm-config.ui:4271
 msgid "_Address"
-msgstr "_Dirección"
+msgstr ""
 
 #: ../src/roxterm-config.ui:4285
 msgid "Ssh server address."
-msgstr "Dirección del servidor ssh."
+msgstr ""
 
 #: ../src/roxterm-config.ui:4304
 msgid "_User"
-msgstr "_Usuario"
+msgstr ""
 
 #: ../src/roxterm-config.ui:4318
 msgid "Remote username."
-msgstr "Usuario remoto."
+msgstr ""
 
 #: ../src/roxterm-config.ui:4335
 msgid "_Port"
-msgstr "_Puerto"
+msgstr ""
 
 #: ../src/roxterm-config.ui:4349
 msgid "Ssh server port."
-msgstr "Puerto del servidor ssh."
+msgstr ""
 
 #: ../src/roxterm-config.ui:4378
 msgid "_Other options"
-msgstr "_Otras opciones"
+msgstr ""
 
 #: ../src/roxterm-config.ui:4392
 msgid "Miscellaneous options to add to the ssh command line."
-msgstr "Opciones varias para añadir a la línea de comandos ssh."
+msgstr ""
