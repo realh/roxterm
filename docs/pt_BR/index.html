@@ -49,10 +49,9 @@
 		que é executado dentro de um programa maior) separado para fornecer a 
 		interface gráfica de configurações. No entanto, graças a todas as 
 		funcionalidades que adquiriu ao longo dos anos, o ROXTerm provavelmente 
-		pode ser acusado de ter um excesso de funcionalidades. No entanto, o 
-		ROXTerm é muito mais configurável do que o GNOME Terminal que é voltado 
-		para os usuários ‘avançados’ que utilizam intensamente os emuladores de 
-		terminais.</p>
+		pode ser acusado de ter um excesso de funcionalidades. Contudo, o ROXTerm 
+		é muito mais configurável do que o GNOME Terminal que é voltado para os 
+		usuários ‘avançados’ que utilizam intensamente os emuladores de terminais.</p>
         <p>O ROXTerm também é compatível com o leiaute do programa da área de 
 		trabalho ROX que lhe deu o nome, mas também pode ser instalado de uma 
 		maneira mais convencional para ser utilizado em outros ambientes de 
@@ -165,7 +164,7 @@
 		utiliza o barramento da ‘sessão’, que deve ser iniciado junto com 
 		o seu ambiente de área de trabalho. As versões atuais dos 
 		gerenciadores de sessão do ROX, GNOME e KDE/Plasma iniciam o D-Bus. 
-		Se você utiliza um algum outro gerenciador de sessão ou ambiente de 
+		Se você utiliza um outro gerenciador de sessão ou ambiente de 
 		área de trabalho ou gerenciador de janelas que não inicia o D-Bus, 
 		você pode iniciá-lo inserindo no seu arquivo de configurações 
 		‘.xinitrc’ ou ‘.xsession’ os parâmetros abaixo:</p>
@@ -250,7 +249,7 @@
         <p>O menu da caixa de diálogo também permite que os endereços de e-mail e das 
 		páginas eletrônicas (URL ou link) sejam abertos com programas externos, se um 
 		endereço é destacado ou realçado quando o cursor ou a seta fica posicionado 
-		em cima endereço eletrônico.</p>
+		em cima do endereço eletrônico.</p>
         <h2>Destaque ou Realce de um URI<a class="pageAnchor" name="URIHighlighting" id="URIHighlighting">:</a></h2>
         <p>Quando o cursor ou a seta estiver posicionado em cima de um endereço que 
 		o ROXTerm reconhece como um URI (Identificador Uniforme de Recurso), que 
@@ -262,7 +261,7 @@
 		do botão direito e um clique do botão esquerdo na opção ‘Abrir...’ do menu 
         ou mantendo a tecla ‘Ctrl’ pressionada e clicando com o botão esquerdo em 
 		cima do endereço eletrônico. Os programas utilizados para gerenciar os endereços 
-		eletrônicos podem ser definidos com a ferramenta de configurações, caso 
+		eletrônicos podem ser especificados com a ferramenta de configurações, caso 
 		contrário, o ROXTerm tentará encontrar um programa padrão adequado. Também 
 		é possível manter a tecla ‘Ctrl’ pressionada e arrastar um endereço de URI 
 		para passá-lo para um outro programa que aceite um URI ou um texto, arrastando-o 
@@ -270,7 +269,7 @@
         <p>Observe que, se o cursor ou a seta estiver em cima de uma parte do endereço 
 		de URL do servidor, somente será destacado ou realçado o endereço e será omitido 
 		o nome do arquivo, mova o cursor ou a seta em cima do nome do arquivo para obter 
-		o endereço do URL completo. Da mesma forma você pode destacar ou realçar o 
+		o endereço completo do URL. Da mesma forma, você pode destacar ou realçar o 
 		endereço de e-mail, mesmo que não tenha o código ‘mailto:’ no início do respectivo
 		endereço.</p>
         <p>A partir da versão 2.9.1, a correspondência dos URIs e dos nomes dos hospedeiros 
@@ -283,11 +282,11 @@
 		muitos falsos positivos. Se você utiliza regularmente um servidor de SSH não 
 		correspondente, considere adicionar um alias correspondente no arquivo ‘/etc/hosts’.</p>
         <h2>Ação de Arrastar e Soltar<a class="pageAnchor" name="DragAndDrop" id="DragAndDrop">:</a></h2>
-        <p>Você pode arrastar os itens para a janela do terminal. Os objetos de 
-		texto são enviados para o terminal como se tivessem sido digitados. Os arquivos 
-		e os URIs tem a sua localização (o nome do arquivo ou o URI) no lugar do conteúdo 
-        do objeto. Os arquivos gráficos também podem ser arrastados para a área 
-		apropriada do gerenciador de configurações para definir a imagem do fundo do 
+        <p>Você pode arrastar os itens para a janela do emulador de terminal. Os objetos 
+		de texto são enviados para o emulador de terminal como se tivessem sido digitados. 
+		Os arquivos e os URIs tem a sua localização (o nome do arquivo ou o URI) no lugar 
+        do conteúdo do objeto. Os arquivos gráficos também podem ser arrastados para a 
+		área apropriada do gerenciador das configurações para definir a imagem do fundo do 
 		emulador de terminal. Mantenha a tecla ‘Ctrl’ pressionada enquanto arrasta um URI 
 		que foi destacado ou realçado para permitir que o endereço seja arrastado para um 
 		outro programa.</p>
@@ -331,20 +330,17 @@
 		para os novos emuladores de terminais. Observe que, a codificação dos caracteres 
 		são tratadas de forma ligeiramente diferente.</p>
         <h2>Atalhos do Teclado<a class="pageAnchor" name="KeyboardShortcuts" id="KeyboardShortcuts">:</a></h2>
-          <p>
-            O ROXTerm permite que os perfis dos atalhos podem ser editados em um
-            editor de texto, seja por meio do Gerenciador das Configurações ou
-            por menu de um emulador terminal (no submenu das ‘Preferências’). Os
-            nomes utilizados nas ações correspondem aos rótulos localizados nos
-            itens do menu. Os novos atalhos devem ser recarregados
-            automaticamente ao salvar o arquivo. Opcionalmente, você pode
-            selecionar um esquema no menu das ‘Preferências’ que agora força o
-            recarregamento.
-          </p>
+        <p>O ROXTerm permite que os perfis dos atalhos do teclado sejam editados em um 
+        editor de texto, seja por meio do Gerenciador das Configurações ou seja por meio 
+        de um emulador terminal (no submenu das ‘Preferências’). Os nomes utilizados nas 
+        ações correspondem aos rótulos localizados nos itens do menu. Os novos atalhos do 
+        teclado devem ser recarregados automaticamente ao salvar o arquivo de configurações. 
+        Opcionalmente, você pode selecionar um esquema no menu das ‘Preferências’ que esta 
+        ação forçará o recarregamento das configurações.</p>
         <h2>Gerenciador das Configurações<a class="pageAnchor" name="ConfigurationManagement" id="ConfigurationManagement">:</a></h2>
         <p>Você também pode executar o gerenciador das configurações selecionando a opção 
-		‘Configurar...’ no menu do ROX para o emulador de terminal ROXTerm ou executando 
-		o comando ‘roxterm-config’ se o ROXTerm tiver sido instalado de forma convencional.</p>
+		‘Configurações...’ no menu do ROXTerm ou executando o comando ‘roxterm-config’ se 
+		o ROXTerm tiver sido instalado de forma convencional.</p>
         <p>Os arquivos de configurações podem ser facilmente trocados com outros usuários. 
 		Cada perfil, esquema das cores e os atalhos do teclado possui um único arquivo 
 		associado a ele. Se você salvar um arquivo válido no diretório adequado, esta ação 
@@ -361,11 +357,11 @@
         <p>Os arquivos de configurações serão carregados em todos os locais descritos acima e os 
 		arquivos em locais de alta prioridade se sobrepõem aos de mesmo nome em locais de menor 
 		prioridade. Os arquivos são salvos apenas no primeiro local.</p>
-        <p>Em qualquer um desses locais, os perfis são salvos no subdiretório ‘Profiles’ 
+        <p>Em qualquer um destes locais, os perfis são salvos no subdiretório ‘Profiles’ 
 		(Perfis), o esquema das cores no subdiretório ‘Colours’ (Cores) e o esquema dos 
 		atalhos do teclado no subdiretório ‘Shortcuts’ (Atalhos). Um arquivo chamado 
 		‘Global’ contém várias opções que não se enquadram nas categorias citadas acima, 
-		incluindo o perfil padrão para os novos terminais.</p>
+		incluindo o perfil padrão para os novos emuladores de terminais.</p>
         <h2>Opções da Linha de Comando<a class="pageAnchor" name="CommandlineOptions" id="CommandlineOptions">:</a></h2>
         <p>O ROXTerm aceita várias opções para serem utilizadas na linha de comando. Execute o comando abaixo para obter as informações completa.</p>
         <p class="snippet">roxterm --help</p>
@@ -373,7 +369,7 @@
 		para todos os emuladores de terminais, de modo que você possa arrastar as abas 
 		ou guias entre as janelas. Se você executar o comando novamente, ele envia uma 
 		mensagem do D-BUS para o processo existente com o objetivo de sinalizar que 
-		abra um novo terminal e o segundo processo termina. Para fazer um comando do 
+		abra um novo emulador de terminal e o segundo processo termina. Para fazer um comando do 
 		ROXTerm executar em seu próprio processo independente, utilize a opção 
 		‘--separate’.</p>
         <p>Observe que, as opções ‘--colour_scheme’ e ‘--shortcut_scheme’ foram substituídas, 
@@ -409,32 +405,32 @@
 		da interface são respectivamente ‘net.sf.roxterm.Options’ e ‘/net/sf/roxterm/Options’. Os 
 		métodos são:</p>
         <p class="snippet">SetProfile("identificador", "nome_do_perfil")</p>
-		<p>Você pode solicitar ao emulador de terminal para utilizar o perfil que foi definido. Observe
-		que, quaisquer outras abas ou guias na mesma janela serão atualizadas para o mesmo novo perfil. 
-        Todas as abas ou guias de uma janela devem ter o mesmo perfil para que o tamanho da fonte 
-		e o tamanho do emulador de terminal permaneçam consistentes.</p>
+		<p>Você pode solicitar ao emulador de terminal para utilizar o perfil que foi especificado. 
+		Observe	que, quaisquer outras abas ou guias na mesma janela serão atualizadas para o mesmo 
+		novo perfil. Todas as abas ou guias de uma janela devem ter o mesmo perfil para que o tamanho 
+		da fonte e o tamanho do emulador de terminal permaneçam consistentes.</p>
         <p class="snippet">SetColourScheme("identificador", "nome_do_esquema")</p>
         <p>Você pode solicitar ao emulador de terminal para utilizar o esquema das cores que foi  
-		definido. As abas ou guias que compartilham a mesma janela podem ter os esquemas das cores 
+		especificado. As abas ou guias que compartilham a mesma janela podem ter os esquemas das cores 
         diferentes umas das outras.</p>
         <p class="snippet">SetShortcutScheme("identificador", "nome_do_esquema")</p>
-        <p>Você pode solicitar ao emulador de terminal para utilizar o esquema que foi definido dos 
-		atalhos do teclado. As abas ou guias que compartilham a mesma janela, também compartilham o 
-		mesmo esquema dos atalhos do teclado.</p>
+        <p>Você pode solicitar ao emulador de terminal para utilizar o esquema que foi especificado 
+		dos atalhos do teclado. As abas ou guias que compartilham a mesma janela, também compartilham 
+		o mesmo esquema dos atalhos do teclado.</p>
         <p>Exemplo de como utilizar o ‘dbus-send’ em um programa (script) no shell:</p>
         <p class="snippet"><span>dbus-send --session /net/sf/roxterm/Options \</span>
 		<span>net.sf.roxterm.Options.SetColourScheme string:$ROXTERM_ID string:GTK</span></p>
-        <p>Você também pode enviar os sinais do D-Bus para alterar as opções individuais dentro de um perfil que 
-		foi definido ou o esquema das cores utilizando os métodos StringOption, IntOption (também pode ser 
-		utilizada para opções booleanas) e o FloatOption. Todos os emuladores de terminais que utilizam o 
-		perfil ou o esquema das cores que foram definidos são afetados, mas somente temporariamente. As 
+        <p>Você também pode enviar os sinais do D-Bus para alterar as opções individuais dentro de um perfil 
+		que foi especificado ou o esquema das cores utilizando os métodos StringOption, IntOption (também pode 
+		ser utilizada as opções booleanas) e o FloatOption. Todos os emuladores de terminais que utilizam o 
+		perfil ou o esquema das cores que foram especificados são afetados, mas somente temporariamente. As 
 		opções não são salvas para os novos emuladores de terminais. Os métodos podem receber três argumentos:</p>
         <ul>
           <li><span>O nome completo do perfil, incluindo um prefixo de ‘Profiles/’ (Perfis) ou ‘Colors/’ (Cores)</span></li>
           <li><span>O nome da opção</span></li>
           <li><span>O valor</span></li>
         </ul>
-        <p>Para ver quais são os nomes das opções que você pode utilizar, verifique os arquivos de 
+        <p>Para verificar quais são os nomes das opções que você pode utilizar, consulte os arquivos de 
 		configurações e de quais tipos podem ser deduzidos.</p>
         <p>
 		Exemplo de como utilizar o ‘dbus-send’ em um programa (script) no shell:</p>

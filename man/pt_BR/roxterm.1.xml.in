@@ -1,0 +1,987 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
+
+<!--
+
+Processe este arquivo com um processador XSLT 
+`xsltproc -''-nonet \ /usr/share/xml/docbook/stylesheet/nwalsh/manpages/docbook.xsl \ roxterm.xml'
+
+Para a página do manual ser gerada utilize o comando 
+<package>.<section>
+
+Você pode visualizar a página do manual com o comando 
+nroff -man <package>.<section> | less'
+
+Uma entrada típica em um Makefile ou Makefile.am é 
+
+DB2MAN=/usr/share/xml/docbook/stylesheet/nwalsh/manpages/docbook.xsl
+XP=xsltproc -''-nonet
+
+manpage.1: manpage.dbk
+        $(XP) $(DB2MAN) $<
+
+O binário do ‘xsltproc’ encontra-se no pacote ‘xsltproc’. Os 
+arquivos com a extensão XSL estão no ‘docbook-xsl’. Lembre-se 
+de que, se você criar uma versão do nroff em um dos destinos 
+do arquivo debian/rules (como o build), você precisará incluir 
+o ‘xsltproc’ e o ‘docbook-xsl’ no campo do controle do Build-Depends.
+
+-->
+
+  <!-- Preencha os campos do NOME e do SOBRENOME com seu nome. -->
+  <!ENTITY dhfirstname "<firstname>Tony</firstname>">
+  <!ENTITY dhsurname   "<surname>Houghton</surname>">
+  <!-- Por favor, ajuste a data sempre que você revisar a página do manual. -->
+  <!ENTITY dhdate      "<date>01 abril de 2013</date>">
+  <!-- A seção deve ser de 1 a 8, talvez com a subseção dos outros parâmetros sejam permitidos, consulte o man(7) e o man(1). -->
+  <!ENTITY dhsection   "<manvolnum>1</manvolnum>">
+  <!ENTITY dhemail     "<email>h@realh.co.uk</email>">
+  <!ENTITY dhusername  "Tony Houghton">
+  <!ENTITY dhucpackage "<refentrytitle>roxterm</refentrytitle>">
+  <!ENTITY dhpackage   "roxterm">
+  <!ENTITY product     "ROXTerm">
+
+  <!ENTITY debian      "<productname>Debian</productname>">
+  <!ENTITY gnu         "<acronym>GNU</acronym>">
+  <!ENTITY gpl         "&gnu; <acronym>GPL</acronym>">
+]>
+
+<refentry lang="pt_BR">
+  <refentryinfo>
+    <address>
+      &dhemail;
+    </address>
+    <author>
+      <contrib>Desenvolvedor</contrib>
+      &dhfirstname; &dhsurname;
+    </author>
+    <copyright>
+      <year>2005-2025</year>
+      <holder>&dhusername;</holder>
+    </copyright>
+    &dhdate;
+  </refentryinfo>
+  <refmeta>
+    &dhucpackage;
+    &dhsection;
+    <refmiscinfo class="source">&product;</refmiscinfo>
+    <refmiscinfo class="version">@VERSÃO@</refmiscinfo>
+    <refmiscinfo class="manual">Comandos do Usuário</refmiscinfo>
+  </refmeta>
+  <refnamediv>
+    <refname>&dhpackage;</refname>
+
+    <refpurpose>Emulador de Terminal</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <cmdsynopsis>
+      <command>&dhpackage;</command>
+      <arg><option>-?</option> | <option>--help</option></arg>
+      <arg><option>--help-all</option></arg>
+      <arg><option>--help-gtk</option></arg>
+      <arg><option>-u</option> | <option>--usage</option></arg>
+      <arg><option>--geometry=<replaceable>GEOMETRIA</replaceable></option>
+         | <option>-g <replaceable>GEOMETRIA</replaceable></option></arg>
+      <arg><option>--appdir=<replaceable>DIRETÓRIO</replaceable></option></arg>
+      <arg><option>--profile=<replaceable>PERFIL</replaceable></option> 
+         | <option>-p <replaceable>PERFIL</replaceable></option></arg>
+      <arg><option>--colour-scheme=<replaceable>ESQUEMA</replaceable></option> 
+         | <option>--color-scheme=<replaceable>ESQUEMA</replaceable></option> 
+         | <option>-c <replaceable>ESQUEMA</replaceable></option></arg>
+      <arg><option>--shortcut-scheme=<replaceable>ESQUEMA</replaceable></option> 
+         | <option>-s <replaceable>ESQUEMA</replaceable></option></arg>
+      <arg><option>--separate</option></arg>
+      <arg><option>--replace</option></arg>
+      <arg><option>--fork</option></arg>
+      <arg><option>--hold</option></arg>
+      <arg><option>--atexit=<replaceable>AÇÃO</replaceable></option></arg>
+      <arg><option>--directory=<replaceable>DIRETÓRIO</replaceable></option> 
+         | <option>-d <replaceable>DIRETÓRIO</replaceable></option></arg>
+      <arg><option>--show-menubar</option></arg>
+      <arg><option>--hide-menubar</option></arg>
+      <arg><option>--maximise</option> | <option>-m</option></arg>
+      <arg><option>--fullscreen</option> | <option>-f</option></arg>
+      <arg><option>--borderless</option> | <option>-b</option></arg>
+      <arg><option>--disable-sm</option></arg>
+      <arg><option>--tab</option></arg>
+      <arg><option>--zoom=<replaceable>APROXIMAR</replaceable></option> 
+         | <option>-z <replaceable>APROXIMAR</replaceable></option></arg>
+      <arg><option>--title=<replaceable>TÍTULO</replaceable></option> 
+         | <option>-T <replaceable>TÍTULO</replaceable></option></arg>
+      <arg><option>--tab-name=<replaceable>NOME</replaceable></option> 
+         | <option>-n <replaceable>NOME</replaceable></option></arg>
+      <arg><option>--role=<replaceable>FUNÇÃO</replaceable></option></arg>
+      <arg><option>--session=<replaceable>SESSÃO</replaceable></option></arg>
+      <arg><option>--display=<replaceable>EXIBIÇÃO</replaceable></option></arg>
+      <arg><option>--execute <replaceable>COMANDO</replaceable></option> 
+         | <option>-e <replaceable>COMANDO</replaceable></option></arg>
+    </cmdsynopsis>
+  </refsynopsisdiv>
+  <refsect1>
+    <title>DESCRIÇÃO</title>
+    <para>
+	O ROXTerm é um emulador de terminal que foi projetado para fornecer 
+	funcionalidades semelhantes ao GNOME Terminal (gnome-terminal) e é 
+	baseado na biblioteca VTE (libvte), que implementa um emulador de 
+	terminal virtual.
+	</para>
+    <para>
+    Os objetivos originais do projeto do ROXTerm eram dois:
+    Ter um consumo de memória reduzido e um tempo de inicialização 
+	menor. Isto foi alcançado ao não utilizar as bibliotecas do GNOME 
+	e ao mover a interface gráfica de configuração para um applet (é 
+	um pequeno programa que é executado dentro de um programa maior) 
+	separado. No entanto, graças a todas as funcionalidades que adquiriu 
+	ao longo dos anos, o ROXTerm provavelmente pode ser acusado de ter 
+	um excesso de funcionalidades. Contudo, o ROXTerm é muito mais 
+	configurável do que o GNOME Terminal que é voltado para os usuários 
+	‘avançados’ que utilizam intensamente os emuladores de terminais.
+	</para>
+    <para>
+	O ROXTerm também é compatível com o leiaute do programa da área de 
+	trabalho ROX que lhe deu o nome, mas também pode ser instalado de 
+	uma maneira mais convencional para ser utilizado em outros ambientes 
+	de área de trabalho.
+    É compatível tanto com o X11 quanto com o Wayland.
+    </para>
+  </refsect1>
+  <refsect1>
+    <title>OPÇÕES</title>
+    <para>
+	O ROXTerm segue a sintaxe usual da linha de comandos do GNU. 
+    São fornecidas as opções longas, começando com dois hífens (`-'), 
+	e as opções curtas ou resumidas, começando com um hífen (`-').
+    Segue um resumo das opções.
+    </para>
+    <variablelist>
+      <varlistentry>
+        <term><option>-?</option>
+          <option>--help</option>
+        </term>
+        <listitem>
+          <para>
+		  Permite exibir a lista de opções do ROXTerm.
+		  </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--help-gtk</option>
+        </term>
+        <listitem>
+          <para>
+		  Permite exibir apenas as opções do GTK+.
+		  </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--help-all</option>
+        </term>
+        <listitem>
+          <para>
+		  Permite exibir todas opções.
+		  </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--usage</option>
+        </term>
+        <listitem>
+          <para>
+		  Permite exibir um breve resumo de como utilizar o ROXTerm.
+		  </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-d <replaceable>DIRETÓRIO</replaceable></option>
+          <option>--directory=<replaceable>DIRETÓRIO</replaceable></option>
+        </term>
+        <listitem>
+          <para>
+		  Permite executar o comando do shell no <replaceable>DIRETÓRIO</replaceable>.
+		  </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>
+            <option>-g <replaceable>COLUNASxLINHAS+X+Y</replaceable></option>
+            <option>--geometry=<replaceable>COLUNASxLINHAS+X+Y</replaceable></option>
+        </term>
+        <listitem>
+            <para>
+            As <replaceable>COLUNASxLINHAS</replaceable> permitem especificar 
+			o tamanho da janela do emulador de terminal em unidades de 
+			caracteres.
+            As coordenadas <replaceable>+X+Y</replaceable> são opcionais e 
+			especificam o deslocamento em pixels dimensionados por DPI (pontos 
+			por polega) das bordas do lado esquerda e do canto superior da 
+			janela em relação à tela.
+			O <quote>-</quote> pode ser utilizado no lugar do <quote>+</quote> 
+			para se referir às bordas do lado direito e/ou do canto inferior. 
+			Os deslocamentos estão obsoletos e geralmente são suportados apenas 
+			no X11.
+            </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--appdir=<replaceable>DIRETÓRIO</replaceable></option>
+        </term>
+        <listitem>
+          <para>
+		  Permite definir o diretório do programa quando é executado como um 
+		  aplicativo do ROX.
+		  </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--show-menubar</option>
+          <option>--hide-menubar</option>
+        </term>
+        <listitem>
+          <para>
+		  Permite exibir ou ocultar a barra dos menus, sobrescrevendo o perfil. 
+		  O padrão é exibi-la.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--maximise</option>
+          <option>-m</option>
+        </term>
+        <listitem>
+          <para>
+		  Permite que a janela inicial do emulador de terminal ocupe a tela 
+		  inteira, mas mantenha as decorações da moldura da janela.
+		  </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--fullscreen</option>
+          <option>-f</option>
+        </term>
+        <listitem>
+          <para>
+		  Permite que a janela inicial do emulador de terminal ocupe toda a 
+		  tela, mas sem nenhum elemento externo.
+		  </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--borderless</option>
+          <option>-b</option>
+        </term>
+        <listitem>
+          <para>
+		  Permite desativar as decorações da janela, como a barra de título, 
+		  os controles de redimensionamento e a borda da moldura, se o 
+	      gerenciador de janelas suportar esta opção.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--tab</option>
+        </term>
+        <listitem>
+          <para>
+		  Permite abrir um novo emulador de terminal em uma janela existente, 
+		  quando é possível, em vez de abrir uma nova janela. Se esta opção for 
+		  utilizada em conjunto com o <option>-T</option> ou o <option>--title</option>, 
+		  a aba ou guia será adicionada em uma janela existente com o mesmo 
+		  modelo do título, se houver. Esta opção substitui o <option>--zoom</option> 
+		  e o <option>--fullscreen</option>.
+		  </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--zoom=<replaceable>APROXIMAR</replaceable></option>
+          <option>-z <replaceable>APROXIMAR</replaceable></option>
+        </term>
+        <listitem>
+          <para>
+		  Permite ampliar ou aumentar o tamanho da fonte do emulador de 
+		  terminal por um fator do ZOOM (o valor 1.0 é o tamanho normal).
+		  </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-p <replaceable>PERFIL</replaceable></option>
+          <option>--profile=<replaceable>PERFIL</replaceable></option>
+        </term>
+        <listitem>
+          <para>
+		  Permite utilizar o perfil que foi indicado.
+		  </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-c <replaceable>ESQUEMA</replaceable></option>
+          <option>--colour-scheme=<replaceable>ESQUEMA</replaceable></option>
+          <option>--color-scheme=<replaceable>ESQUEMA</replaceable></option>
+        </term>
+        <listitem>
+          <para>
+		  Permite utilizar o esquema das cores que foi indicado.
+		  </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-s <replaceable>ESQUEMA</replaceable></option>
+          <option>--shortcut-scheme=<replaceable>ESQUEMA</replaceable></option>
+        </term>
+        <listitem>
+          <para>
+		  Permite utilizar o esquema dos atalhos do teclado que foi indicado.
+		  </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--title=<replaceable>TÍTULO</replaceable></option>
+          <option>-T <replaceable>TÍTULO</replaceable></option>
+        </term>
+        <listitem>
+          <para>
+		  Permite definir o modelo do título da janela. Pode incluir o ‘%s’, 
+		  que é substituído pelo conteúdo completo do rótulo da aba ou guia, 
+		  o ‘%n’ é substituído pelo número das abas ou guias e o ‘%t’ é 
+		  substituído pelo número da aba ou guia atual.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--tab-name=<replaceable>NOME</replaceable></option>
+          <option>-n <replaceable>NOME</replaceable></option>
+        </term>
+        <listitem>
+          <para>
+		  Permite definir o nome da aba ou guia conforme é exibido no seu 
+		  rótulo. Pode incluir o ‘%s’ que é substituído pela texto do título 
+		  da janela que foi definida pelo emulador de terminal, o ‘%n’ é 
+		  substituído pelo número de abas e ‘%t’ é substituído pelo número 
+		  da aba ou guia atual.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--separate</option>
+        </term>
+        <listitem>
+          <para>
+		  Permite utilizar um processo separado para este emulador de terminal.
+		  </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--fork</option>
+        </term>
+        <listitem>
+          <para>
+		  Permite criar um processo filho em segundo plano. Normalmente, 
+		  a primeira instância permanece em primeiro plano e as invocações 
+		  subsequentes retornam assim que solicitam à instância mestre que 
+		  processa os seus comandos. Esta opção faz com que a instância 
+		  mestre crie um processo filho em segundo plano, o processo em 
+		  primeiro plano retorna assim que a instância mestre estiver pronta 
+		  para processar os novos comandos.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+          <term><option>--atexit=<replaceable>AÇÃO</replaceable></option>
+        </term>
+        <listitem>
+          <para>
+		  Permite definir o que deve ser feito com a tecla Tab (Tabulação) 
+		  após o comando do shell ser encerrado, podendo ser escolhido uma 
+		  das opções: fechar, manter pressionada, reiniciar ou perguntar.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--hold</option>
+        </term>
+        <listitem>
+          <para>
+		  Permite utilizar um alias para o ‘--atexit=hold’ e manter a aba 
+		  ou guia aberta.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--replace</option>
+        </term>
+        <listitem>
+          <para>
+		  Permite substituir qualquer instância existente como o provedor 
+		  de serviços D-BUS no ROXTerm.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>
+          <option>--role=<replaceable>FUNÇÃO</replaceable></option>
+        </term>
+        <listitem>
+          <para>
+		  Permite definir a propriedade ‘WM_WINDOW_ROLE’ na janela.
+          Esta opção pode ser utilizada para identificar exclusivamente 
+	      uma janela em diferentes sessões ou na seleção de recursos de 
+		  configuração pelos gerenciadores de janelas.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>
+          <option>--session=<replaceable>SESSÃO</replaceable></option>
+        </term>
+        <listitem>
+          <para>
+		  Permite restaurar a sessão do usuário que foi especificado.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>
+          <option>--display=<replaceable>EXIBIÇÃO</replaceable></option>
+        </term>
+        <listitem>
+          <para>
+		  Permite definir o nome do servidor X a ser utilizado. Se você 
+		  utilizar o ROXTerm em vários monitores diferentes no mesmo 
+		  sistema, também precisará utilizar a opção ‘--separate’.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-e</option>
+          <option>--execute</option>
+        </term>
+        <listitem>
+          <para>
+          Permite executar o restante da linha de comando dentro do emulador 
+		  de terminal e deve ser utilizada como a opção final.
+          Se houver apenas um argumento subsequente, esta opção será analisada 
+		  caso seja um comando com argumentos separados por espaço que foi 
+		  passado para o ROXTerm entre as aspas.
+		  Se houver mais de um argumento, eles serão tratados como um comando 
+		  e seus argumentos e sem serem analisados.
+          </para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </refsect1>
+  <refsect1>
+    <title>CONFIGURAÇÕES</title>
+    <para>
+	O D-Bus é um sistema de mensagens que o ROXTerm utiliza para conectar 
+	os emuladores de terminais com a sua ferramenta de configurações.
+    O ROXTerm utiliza o barramento da ‘sessão’, que deve ser iniciado 
+	junto com o seu ambiente de área de trabalho.
+    As versões atuais dos gerenciadores de sessão do ROX, GNOME e KDE/Plasma 
+	iniciam o D-Bus.
+    Se você utiliza um outro gerenciador de sessão ou ambiente de área 
+	de trabalho ou gerenciador de janelas que não inicia o D-Bus, então 
+	você precisa iniciá-lo manualmente.
+	Insira no seu arquivo de configurações ‘.xinitrc’ ou ‘.xsession’ os 
+	parâmetros abaixo:
+	</para>
+    <programlisting>
+        if test -z "$DBUS_SESSION_BUS_ADDRESS" ; then
+            eval `dbus-launch --sh-syntax --exit-with-session`
+            export DBUS_SESSION_BUS_ADDRESS
+        fi
+    </programlisting>
+  <para>
+  Esta configuração permite mapear um número arbitrário de perfis com os 
+  nomes dos arquivos de configurações.
+  </para>
+  </refsect1>
+  <refsect1>
+    <title>ABAS OU GUIAS</title>
+    <para>
+	Cada janela pode conter várias abas ou guias, onde cada aba ou guia 
+	contém o seu próprio emulador de terminal.
+	A barra das abas ou guias é sempre exibida por padrão, mesmo se houver 
+	apenas uma aba ou guia, para evitar inconsistências ao redimensionar 
+	a janela, mas esta opção pode ser modificada.
+    </para>
+    <para>
+    Se você tiver problemas com os rótulos das abas ou das guias 
+	encolhendo após arrastá-las de modo que elas tenham espaço apenas 
+	para exibir os três pontos ‘...’, tente garantir que o cursor ou 
+	a seta esteja em cima do corpo de um emulador de terminal quando 
+	você soltar em cima de uma aba ou guia que foi arrastada, não 
+	solte em cima da área da barra das abas ou guias.
+    </para>
+  </refsect1>
+  <refsect1>
+    <title>MENUS</title>
+    <para>
+    Quando a barra do menu está oculta, o menu da caixa de diálogo 
+	duplica os mesmos itens na barra do menu. Esta ação dá a você 
+	acesso a todas as funcionalidades, mesmo com a barra do menu 
+	estando oculta.
+	A barra do menu é efetivamente redundante, mas foi criada com 
+	a intenção de tornar o ROXTerm	muito mais intuitivo para os 
+	usuários iniciantes.
+	Esta funcionalidade pode ser ativada ou desativada em uma janela 
+	específica ou de forma mais permanente por meio do gerenciador 
+	das configurações.
+    </para>
+    <para>
+    O menu da caixa de diálogo também permite que os endereços de e-mail e das 
+	páginas eletrônicas (URL ou link) sejam abertos com programas externos, se um 
+	endereço é destacado ou realçado quando o cursor ou a seta fica posicionado 
+	em cima do endereço eletrônico.</p>
+    </para>
+  </refsect1>
+  <refsect1>
+    <title>DESTAQUE OU REALCE DE UM URI</title>
+    <para>
+    Quando o cursor ou a seta estiver posicionado em cima de um endereço 
+	que o ROXTerm reconhece como um URI (Identificador Uniforme de Recurso), 
+	que normalmente é um URL (Localizador Uniforme de Recursos), também 
+	conhecido por página eletrônica, sítio, ‘site’, vínculo, ligação, 
+	‘link’, etc. da internet ou endereço de correspondência eletrônica 
+	(e-mail) será destacado ou realçado por um sublinhado e ocorrerá a 
+	alteração do formato do cursor ou da seta.
+	Você pode abrir o endereço eletrônico com um clique do botão direito 
+	e um clique do botão esquerdo na opção ‘Abrir...’ do menu ou mantendo 
+	a tecla ‘Ctrl’ pressionada e clicando com o botão esquerdo em cima do 
+	endereço eletrônico.
+	Os programas utilizados para gerenciar os endereços eletrônicos podem 
+	ser especificados com a ferramenta de configurações, caso contrário, o 
+	ROXTerm tentará encontrar um programa padrão adequado.
+    </para>
+    <para>
+    Também é possível manter a tecla ‘Ctrl’ pressionada e arrastar um 
+	endereço de URI para passá-lo para um outro programa que aceite um 
+	URI ou um texto, arrastando-o de volta para a mesma janela de onde 
+	veio, o endereço será colado.
+    </para>
+    <para>
+    Observe que, se o cursor ou a seta estiver em cima de uma parte do 
+	endereço de URL do servidor, somente será destacado ou realçado o 
+	endereço e será omitido o nome do arquivo, mova o cursor ou a seta 
+	em cima do nome do arquivo para obter o endereço completo do URL. 
+	Da mesma forma, você pode destacar ou realçar o endereço de e-mail, 
+	mesmo que não tenha o código ‘mailto:’ no início do respectivo 
+	endereço.
+    </para>
+    <para>
+    A correspondência dos URIs e dos nomes dos hospedeiros (host) do 
+	SSH (Secure Shell ou Shell Seguro) passou a ser compatíveis.
+	Os URIs que incluem um nome do caminho só podem ser copiados para 
+	a área de transferência.
+	Na ausência de um nome do caminho, o ROXTerm também pode iniciar 
+	uma sessão do SSH com o hospedeiro que foi descrito.
+	Os nomes simples dos hospedeiros também são correspondidos, mas 
+	somente se começarem com ‘ssh’ ou terminarem com ‘.local’ ou ‘.lan’.
+    </para>
+  </refsect1>
+  <refsect1>
+    <title>AÇÃO DE ARRASTAR E SOLTAR</title>
+    <para>
+    Você pode arrastar os itens para a janela do emulador de terminal.
+	Os objetos de texto são enviados para o emulador de terminal como 
+	se tivessem sido digitados.
+	Os arquivos e os URIs tem a sua localização (o nome do arquivo ou o 
+	URI) no lugar do conteúdo do objeto.
+	Os arquivos gráficos também podem ser arrastados para a área apropriada 
+	do gerenciador das configurações para definir a imagem do fundo do 
+	emulador de terminal.
+	Mantenha a tecla ‘Ctrl’ pressionada enquanto arrasta um URI que foi 
+	destacado ou realçado para permitir que o endereço seja arrastado para 
+	um outro programa.
+    </para>
+    <para>
+    Você pode arrastar as abas ou as guias para reordená-las dentro de uma mesma janela, 
+	ou pode movê-las de uma janela para outra janela do ROXTerm, se quiser pode arrastar 
+	as abas ou as guias e soltar para fora da janela do ROXTerm que esta ação irá criar 
+	uma nova janela do ROXTerm.
+	Utilize o botão direito do rato ou ‘mouse’ para mover uma aba ou guia que não foi 
+	selecionada.
+	Utilize o botão do meio do rato ou ‘mouse’ para colar o conteúdo da área de 
+	transferência como o nome da aba ou guia.
+    </para>
+  </refsect1>
+  <refsect1>
+    <title>SESSÕES</title>
+    <para>
+    As sessões de usuário podem ser salvas com um nome, clique no menu 
+	‘Arquivo’, na opção ‘Salvar a Sessão...’, insira o nome da sua 
+	sessão e clique na opção ‘Salvar’.
+	Uma sessão salva o estado das janelas e das abas ou guias atuais, 
+	mas não salva o conteúdo do texto que estiver nos emuladores de 
+	terminais.
+	Uma sessão pode ser restaurada com a opção de linha de comando 
+	‘--session’ do ROXTerm, ou será restaurada automaticamente se for 
+	nomeada como ‘Default’ (Padrão). 
+	Manter o campo em branco ou vazio equivale a opção ‘Padrão’.
+    </para>
+  </refsect1>
+  <refsect1>
+      <title>Configurações</title>
+    <para>
+    As configurações se baseiam no nome do perfil para que você 
+	possa salvar diferentes definições de opções e trocar rapidamente 
+	entre cada um dos perfis.
+	Existem perfis para configurações gerais, para o esquema das 
+	cores e para os atalhos do teclado.
+	Os esquemas	das cores e dos perfis se aplicam a uma aba ou guia 
+	de cada vez, mas os atalhos	do teclado aplicam-se em todas as abas 
+	ou guias de uma mesma janela.
+	As novas janelas e as novas abas ou guias herdarão as configurações 
+	da janela ou da aba de onde foram abertas.
+    </para>
+    <para>
+    O menu das ‘Preferências’ permite selecionar o perfil atual.
+	Inicie o gerenciador das configurações para editar o perfil 
+	atual ou o esquema das cores ou para gerenciar todas as 
+	configurações.
+	No gerenciador das configurações, você pode selecionar um dos 
+	quatro tipos dos grupos das opções e editar, copiar, excluir 
+	ou renomear.
+	O item com o campo que foi selecionado será o padrão para os 
+	novos emuladores de 
+	terminais.
+    </para>
+  </refsect1>
+  <refsect1>
+    <title>ATALHOS DO TECLADO</title>
+    <para>
+    O ROXTerm permite que os perfis dos atalhos do teclado sejam 
+	editados em um editor de texto, seja por meio do Gerenciador 
+	das Configurações ou seja por meio de um emulador terminal 
+	(no submenu das ‘Preferências’).
+	Os nomes utilizados nas ações correspondem aos rótulos 
+	localizados nos itens do menu. Os novos atalhos do teclado 
+	devem ser recarregados automaticamente ao salvar o arquivo 
+	de configurações. Opcionalmente, você pode selecionar um 
+	esquema no menu das ‘Preferências’ que esta ação forçará o 
+	recarregamento das configurações.
+    O arquivo padrão para os atalhos do teclado é 
+	</para>
+    <programlisting>
+        ~/.config/roxterm.sourceforge.net/Shortcuts/Default
+    </programlisting>
+    <para>
+    Os atalhos do teclado padrão são:
+    </para>
+    <programlisting>
+        Ctrl+Shift+N    Nova Janela
+        Ctrl+Shift+T    Nova Aba
+        Ctrl+Shift+Q    Fechar a Janela
+        Ctrl+Shift+W    Fechar a Aba
+        Ctrl+PageUp     Aba Anterior
+        Ctrl+PageDown   Próxima Aba
+        Ctrl+Shift+A    Selecionar Tudo
+        Ctrl+Shift+C    Copiar
+        Ctrl+Shift+V    Colar
+        Ctrl+Shift+M    Exibir a Barra do Menu
+        Ctrl+plus       Ampliar
+        Ctrl+minus      Reduzir
+        Ctrl+0          Normal Size
+        F11             Tamanho Normal
+        Ctrl+Shift+B    Janela Sem as Bordas
+        Shift+Up        Rolar Uma Linha para Cima
+        Shift+Down      Rolar Uma Linha para Baixo
+        F1              Exibir o Manual
+        Ctrl+Shift+Y    Copiar e Colar
+        Ctrl+Shift+F    Localizar...
+        Ctrl+Shift+I    Localizar o Próximo
+        Ctrl+Shift+P    Localizar o Anterior
+    </programlisting>
+    <para>
+    Além disso, as abas ou guias podem ser selecionadas pressionando 
+	simultaneamente as teclas <keycombo action='simul'>‘<keycap>Alt</keycap>’ 
+	junto com a tecla ‘<keycap>1</keycap>’</keycombo>, onde a tecla 1 
+	pode ser substituída por uma outra tecla de um outro número que 
+	corresponde ao número da aba ou guia.
+	Esta funcionalidade pode ser desativada no perfil.
+    </para>
+  </refsect1>
+  <refsect1>
+      <title>Gerenciador das Configurações</title>
+    <para>
+    Você também pode executar o gerenciador das configurações selecionando 
+	a opção ‘Configurações...’ no menu do ROXTerm ou executando	o comando 
+	‘<command>roxterm-config</command>’.
+	</para>
+    <para>
+    Os arquivos de configurações podem ser facilmente trocados com outros 
+	usuários.
+	Cada perfil, esquema das cores e os atalhos do teclado possui um único 
+	arquivo associado a ele. Se você salvar um arquivo válido no diretório 
+	adequado, esta ação criará um perfil com o mesmo nome no arquivo de 
+	configurações.
+    </para>
+    <para>
+    Os locais dos diretórios onde são armazenados os arquivos de configurações, 
+	seguem as especificações do ‘XDG Base Directory’ (Diretório Base do XDG).
+    </para>
+    <orderedlist numeration="arabic">
+      <listitem>
+        <para>
+          &#x0024;{XDG_CONFIG_HOME}/roxterm.sourceforge.net,
+          por padrão é ~/.config/roxterm.sourceforge.net.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          &#x0024;{XDG_CONFIG_DIRS}/roxtem.sourceforge.net,
+          por padrão é /etc/xdg/roxtem.sourceforge.net.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          O ROXTerm/Config para os usuários do ROX ou 
+		  &#x0024;{datadir}/roxterm/Config para os outros, o 
+		  &#x0024;{datadir} normalmente é o /usr/share para 
+		  os pacotes ou /usr/local/share quando é compilado a 
+		  partir do código de fonte.
+        </para>
+      </listitem>
+    </orderedlist>
+    <para>
+    Em qualquer um destes locais, os perfis são salvos no subdiretório 
+	‘Profiles’ (Perfis), o esquema das cores no subdiretório ‘Colours’ 
+	(Cores) e o esquema dos atalhos do teclado no subdiretório ‘Shortcuts’ 
+	(Atalhos).
+	Um arquivo chamado ‘Global’ contém várias opções que não se enquadram 
+	nas categorias citadas acima, incluindo o perfil padrão para os novos 
+	emuladores de terminais.
+	</para>
+  </refsect1>
+  <refsect1>
+    <title>UTILIZAÇÃO AVANÇADA DO D-BUS</title>
+    <para>
+	É possível utilizar o D-Bus para configurar os emuladores de terminais do 
+	ROXTerm a partir de outros programas (scripts). Existem três métodos no	
+	D-Bus que são dedicados especialmente para esta finalidade, eles exigem um 
+	código de identificação para atingir um emulador de terminal especifico, o 
+	código de identificação de cada emulador de terminal pode ser lido a partir 
+	da variável de ambiente ‘ROXTERM_ID’ no shell (interpretador) e/ou no programa 
+	em execução.
+	O caminho do objeto do D-Bus e os métodos da interface são respectivamente 
+	‘net.sf.roxterm.Options’ e ‘/net/sf/roxterm/Options’.
+	Os métodos são:
+    </para>
+    <programlisting>
+        SetProfile("identificador", "nome_do_perfil")
+    </programlisting>
+    <para>
+    Você pode solicitar ao emulador de terminal para utilizar o perfil que foi 
+	especificado. Observe que, quaisquer outras abas ou guias na mesma janela 
+	serão atualizadas para o mesmo novo perfil. 
+    Todas as abas ou guias de uma janela devem ter o mesmo perfil para que o 
+	tamanho da fonte e o tamanho do emulador de terminal permaneçam consistentes.
+    </para>
+    <programlisting>
+        SetColourScheme("identificador", "nome_do_esquema")
+    </programlisting>
+    <para>
+    Você pode solicitar ao emulador de terminal para utilizar o esquema das cores 
+	que foi especificado. As abas ou guias que compartilham a mesma janela podem 
+	ter os esquemas das cores diferentes umas das outras.
+    </para>
+    <programlisting>
+        SetShortcutScheme("identificador", "nome_do_esquema")
+    </programlisting>
+    <para>
+    Você pode solicitar ao emulador de terminal para utilizar o esquema que foi 
+	especificado dos atalhos do teclado. As abas ou guias que compartilham a mesma 
+	janela, também compartilham o mesmo esquema dos atalhos do teclado. 
+    </para>
+    <para>
+	Exemplo de como utilizar o ‘dbus-send’ em um programa (script) no shell:</p>
+    </para>
+    <programlisting>
+      dbus-send --session /net/sf/roxterm/Options \
+           net.sf.roxterm.Options.SetColourScheme \
+           string:$ROXTERM_ID string:GTK
+    </programlisting>
+    <para>
+    Você também pode enviar os sinais do D-Bus para alterar as opções 
+	individuais dentro de um perfil que foi especificado ou o esquema 
+	das cores utilizando os métodos StringOption, IntOption (também 
+	pode ser utilizada as opções booleanas) e o FloatOption. Todos os 
+	emuladores de terminais que utilizam o perfil ou o esquema das 
+	cores que foram especificados são afetados, mas somente 
+	temporariamente. As	opções não são salvas para os novos emuladores 
+	de terminais. 
+	Os métodos podem receber três argumentos:
+    </para>
+    <itemizedlist>
+        <listitem>
+            <para>
+            O nome completo do perfil, incluindo um prefixo de ‘Profiles/’ (Perfis) ou ‘Colors/’ (Cores)
+            </para>
+        </listitem>
+        <listitem>
+            <para>
+            O nome da opção
+            </para>
+        </listitem>
+        <listitem>
+            <para>
+            O valor
+            </para>
+        </listitem>
+    </itemizedlist>
+    <para>
+	Para verificar quais são os nomes das opções que você pode utilizar, 
+	consulte os arquivos de configurações e de quais tipos podem ser 
+	deduzidos.
+    Exemplo de como utilizar o ‘dbus-send’ em um programa (script) no 
+	shell:
+    </para>
+    <programlisting>
+        dbus-send --session /net/sf/roxterm/Options \
+            net.sf.roxterm.Options.StringOption \
+            string:Colours/GTK string:background 'string:#ffffff'
+    </programlisting>
+    <para>
+    Também é possível notificar o ROXTerm de que um perfil, esquema das 
+	cores ou o esquema dos atalhos do teclado foi alterado por um 
+	programa externo e todos os emuladores de terminais que utilizam 
+	este perfil precisam ser recarregados:
+    </para>
+    <programlisting>
+        OptionsChanged("family_name", "profile_name")
+    </programlisting>
+    <para>
+        where family_name is one of "Profiles", "Colours"
+        or "Shortcuts". For example:
+    </para>
+    <programlisting>
+        dbus-send --session /net/sf/roxterm/Options \
+            net.sf.roxterm.Options.OptionsChanged \
+            string:Profiles string:Default
+    </programlisting>
+  </refsect1>
+
+  <refsect1>
+    <title>VARIÁVEIS DE AMBIENTE</title>
+    <para>
+    As seguintes variáveis de ambiente são especificadas ou utilizadas 
+	pelo roxterm:
+    </para>
+    <variablelist>
+      <varlistentry>
+        <term>COLORTERM</term>
+        <listitem>
+            <para>
+			Esta opção pode ser definida como ‘truecolor’ (cores verdadeiras) pelo 
+			VTE se a janela for compatível com 16 milhões de cores.
+            </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>EDITOR DE TEXTO</term>
+        <listitem>
+            <para>
+			O nome do editor de texto.
+            O padrão é ‘gedit’, ‘kate’, ‘gvim’, ‘emacs’ ou aquele que for exibido 
+			primeiro no PATH (caminho).
+            </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>IDIOMA</term>
+        <listitem>
+            <para>
+            O idioma padrão da ajuda do URI é o idioma inglês (en), mas existem 
+			algumas traduções, por exemplo, a tradução do idioma português do 
+			Brasil (pt_BR) que foi iniciada por Alexandro Casanova e foi 
+			finalizada por <a href="https://github.com/marcelocripe/">marcelocripe</a>.
+            </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>ROXTERM_ID</term>
+        <listitem>
+            <para>
+            A identidade única da instância do D-Bus do ROXTerm.
+            </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>ROXTERM_NUM</term>
+        <listitem>
+            <para>
+            A quatidade de janelas do nível superior que são gerenciadas por 
+			este processo ROXTerm.
+            </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>ROXTERM_PID</term>
+        <listitem>
+            <para>
+            O identificador de processo do ROXTerm.
+            </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>TERM</term>
+        <listitem>
+            <para>
+            O nome da descrição do ‘terminfo’ é ‘xterm-256color’.
+            </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>VTE_VERSION</term>
+        <listitem>
+            <para>
+			O número da versão da biblioteca do VTE.
+            </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>WINDOWID</term>
+        <listitem>
+            <para>
+            O ID (Identificador) decimal da janela do X do nível superior do 
+			ROXTerm. Suportado apenas em um ambiente X.
+            </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>XDG_CONFIG_HOME</term>
+        <listitem>
+            <para>
+            Diretório onde é armazenado o arquivo de configurações para 
+			salvar as sessões do ROXTerm. O padrão é o diretório 
+			~/.config (ou /home/nome do usuário/.config). As sessões são 
+			salvas no $XDG_CONFIG_HOME/roxterm.sourceforge.net/UserSessions/.
+            </para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </refsect1>
+  <refsect1>
+    <title>LEIA TAMBÉM</title>
+    <para>
+    O arquivo
+	<br>
+	<filename>file://@CMAKE_INSTALL_FULL_DOCDIR@/en/index.html</filename>
+	<br>ou<br>
+	<filename>file://@CMAKE_INSTALL_FULL_DOCDIR@/pt_BR/index.html</filename>
+    </para>
+  </refsect1>
+  <refsect1>
+    <title>AUTOR</title>
+
+    <para>
+	Esta página do manual foi escrita por &dhusername; &dhemail;. 
+    É concedida a permissão para copiar, distribuir e/ou modificar este 
+	documento sob os termos da Licença Pública Geral do &gnu;, da versão 
+	2 ou qualquer outra versão posterior que seja publicada pela Free 
+	Software Foundation.
+	</para>
+  <para>
+  Nos sistemas operacionais baseados no Debian, o texto completo 
+  da Licença Pública Geral do GNU pode ser encontrado no diretório 
+  /usr/share/common-licenses/GPL.
+  </para>
+  </refsect1>
+</refentry>

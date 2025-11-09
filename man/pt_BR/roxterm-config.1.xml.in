@@ -1,0 +1,174 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
+
+<!--
+
+Processe este arquivo com um processador XSLT e utilize o comando 
+
+`xsltproc -''-nonet \ /usr/share/xml/docbook/stylesheet/nwalsh/manpages/docbook.xsl \ roxterm.xml' 
+
+Para a página do manual ser gerada utilize o comando 
+
+<package>.<section> 
+
+Você pode visualizar a página do manual com o comando 
+
+nroff -man <package>.<section> | less'
+
+Uma entrada típica em um Makefile ou Makefile.am é 
+
+DB2MAN=/usr/share/xml/docbook/stylesheet/nwalsh/manpages/docbook.xsl
+XP=xsltproc -''-nonet
+
+manpage.1: manpage.dbk
+        $(XP) $(DB2MAN) $<
+
+O binário do ‘xsltproc’ encontra-se no pacote ‘xsltproc’. Os 
+arquivos com a extensão XSL estão no ‘docbook-xsl’. Lembre-se 
+de que, se você criar uma versão do nroff em um dos destinos 
+do arquivo debian/rules (como o build), você precisará incluir 
+o ‘xsltproc’ e o ‘docbook-xsl’ no campo do controle do Build-Depends.
+
+-->
+
+  <!-- Preencha os campos do NOME e do SOBRENOME com seu nome. -->
+  <!ENTITY dhfirstname "<firstname>Tony</firstname>">
+  <!ENTITY dhsurname   "<surname>Houghton</surname>">
+  <!-- Por favor, ajuste a data sempre que você revisar a página do manual. -->
+  <!ENTITY dhdate      "<date>19 de novembro de 2011</date>">
+  <!-- A seção deve ser de 1 a 8, talvez com a subseção dos outros parâmetros sejam permitidos, consulte o man(7) e o man(1). -->
+  <!ENTITY dhsection   "<manvolnum>1</manvolnum>">
+  <!ENTITY dhemail     "<email>h@realh.co.uk</email>">
+  <!ENTITY dhusername  "Tony Houghton">
+  <!ENTITY dhucpackage "<refentrytitle>roxterm</refentrytitle>">
+  <!ENTITY dhpackage   "roxterm-config">
+  <!ENTITY product     "ROXTerm">
+
+  <!ENTITY debian      "<productname>Debian</productname>">
+  <!ENTITY gnu         "<acronym>GNU</acronym>">
+  <!ENTITY gpl         "&gnu; <acronym>GPL</acronym>">
+]>
+
+<refentry lang="pt_BR">
+  <refentryinfo>
+    <address>
+      &dhemail;
+    </address>
+    <author>
+      <contrib>Desenvolvedor</contrib>
+      &dhfirstname; &dhsurname;
+    </author>
+    <copyright>
+      <year>2005-2025</year>
+      <holder>&dhusername;</holder>
+    </copyright>
+    &dhdate;
+  </refentryinfo>
+  <refmeta>
+    &dhucpackage;
+    &dhsection;
+    <refmiscinfo class="source">&product;</refmiscinfo>
+    <refmiscinfo class="version">@VERSÃO@</refmiscinfo>
+    <refmiscinfo class="manual">Comandos do Usuário</refmiscinfo>
+  </refmeta>
+  <refnamediv>
+    <refname>&dhpackage;</refname>
+    <refpurpose>Emulador de Terminal</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <cmdsynopsis>
+      <command>&dhpackage;</command>
+      <arg><option>--appdir=<replaceable>DIRETÓRIO</replaceable></option></arg>
+            <arg><option>--EditProfile=<replaceable>PERFIL</replaceable></option></arg>
+            <arg><option>--EditColourScheme=<replaceable>ESQUEMA</replaceable></option></arg>
+      <arg><option>--Configlet</option></arg>
+      <arg><option>--listen</option></arg>
+    </cmdsynopsis>
+  </refsynopsisdiv>
+  <refsect1>
+    <title>DESCRIÇÃO</title>
+    <para>
+	Esta página do manual documenta resumidamente o comando 
+	‘<command>&dhpackage;</command>’.
+	</para>
+    <para>
+	O comando ‘<command>&dhpackage;</command>’ no emulador de 
+	terminal serve para configurar o ROXTerm.
+	</para>
+  </refsect1>
+  <refsect1>
+    <title>OPÇÕES</title>
+    <para>
+	Estes programas seguem a sintaxe usual da linha de comando 
+	do &gnu;, com as opções longas começando com dois hífens (`--'). 
+	Um resumo das opções estão incluídos abaixo.
+	</para>
+    <variablelist>
+      <varlistentry>
+        <term><option>--appdir=DIRETÓRIO</option>
+        </term>
+        <listitem>
+          <para>
+		  Permite especificar o diretório do programa quando é executado 
+		  como um aplicativo do ROX.
+		  </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--EditProfile=PERFIL</option>
+        </term>
+        <listitem>
+          <para>
+		  Permite editar o perfil que foi especificado.
+		  </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--EditColourScheme=ESQUEMA</option>
+        </term>
+        <listitem>
+          <para>
+		  Permite editar o esquema das cores que foi especificado.
+		  </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--listen</option>
+        </term>
+        <listitem>
+          <para>
+		  Permite aguardar até que o ROXTerm solicite as operações 
+		  via D-BUS.
+		  </para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </refsect1>
+  <refsect1>
+    <title>LEIA TAMBÉM</title>
+        <para>
+		O ‘roxterm-config’ é geralmente executado pelo ROXTerm. 
+		O pacote está totalmente documentado no arquivo HTML.
+        <br>
+		<filename>file://@CMAKE_INSTALL_FULL_DOCDIR@/en/index.html</filename>.
+		<br>ou<br>
+		<filename>file://@CMAKE_INSTALL_FULL_DOCDIR@/pt_BR/index.html</filename>
+		</para>
+  </refsect1>
+  <refsect1>
+    <title>AUTOR</title>
+    <para>
+	Esta página do manual foi escrita por &dhusername; &dhemail;. 
+    É concedida a permissão para copiar, distribuir e/ou modificar este 
+	documento sob os termos da Licença Pública Geral do &gnu;, da versão 
+	2 ou qualquer outra versão posterior que seja publicada pela Free 
+	Software Foundation.
+    </para>
+    <para>
+	Nos sistemas operacionais baseados no Debian, o texto completo 
+	da Licença Pública Geral do GNU pode ser encontrado no diretório 
+	/usr/share/common-licenses/GPL.
+    </para>
+  </refsect1>
+</refentry>
