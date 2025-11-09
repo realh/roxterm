@@ -66,7 +66,7 @@ o ‘xsltproc’ e o ‘docbook-xsl’ no campo do controle do Build-Depends.
     &dhucpackage;
     &dhsection;
     <refmiscinfo class="source">&product;</refmiscinfo>
-    <refmiscinfo class="version">@VERSÃO@</refmiscinfo>
+    <refmiscinfo class="version">@VERSION@</refmiscinfo>
     <refmiscinfo class="manual">Comandos do Usuário</refmiscinfo>
   </refmeta>
   <refnamediv>
@@ -529,8 +529,7 @@ o ‘xsltproc’ e o ‘docbook-xsl’ no campo do controle do Build-Depends.
     O menu da caixa de diálogo também permite que os endereços de e-mail e das 
 	páginas eletrônicas (URL ou link) sejam abertos com programas externos, se um 
 	endereço é destacado ou realçado quando o cursor ou a seta fica posicionado 
-	em cima do endereço eletrônico.</p>
-    </para>
+	em cima do endereço eletrônico.</para>
   </refsect1>
   <refsect1>
     <title>DESTAQUE OU REALCE DE UM URI</title>
@@ -791,7 +790,7 @@ o ‘xsltproc’ e o ‘docbook-xsl’ no campo do controle do Build-Depends.
 	janela, também compartilham o mesmo esquema dos atalhos do teclado. 
     </para>
     <para>
-	Exemplo de como utilizar o ‘dbus-send’ em um programa (script) no shell:</p>
+	Exemplo de como utilizar o ‘dbus-send’ em um programa (script) no shell:
     </para>
     <programlisting>
       dbus-send --session /net/sf/roxterm/Options \
@@ -960,12 +959,13 @@ o ‘xsltproc’ e o ‘docbook-xsl’ no campo do controle do Build-Depends.
   </refsect1>
   <refsect1>
     <title>LEIA TAMBÉM</title>
+    <para>O arquivo</para>
     <para>
-    O arquivo
-	<br>
-	<filename>file://@CMAKE_INSTALL_FULL_DOCDIR@/en/index.html</filename>
-	<br>ou<br>
-	<filename>file://@CMAKE_INSTALL_FULL_DOCDIR@/pt_BR/index.html</filename>
+	    <filename>file://@CMAKE_INSTALL_FULL_DOCDIR@/en/index.html</filename>
+    </para>
+    <para>ou</para>
+    <para>
+      <filename>file://@CMAKE_INSTALL_FULL_DOCDIR@/pt_BR/index.html</filename>
     </para>
   </refsect1>
   <refsect1>

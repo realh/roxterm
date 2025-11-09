@@ -69,7 +69,7 @@ o ‘xsltproc’ e o ‘docbook-xsl’ no campo do controle do Build-Depends.
     &dhucpackage;
     &dhsection;
     <refmiscinfo class="source">&product;</refmiscinfo>
-    <refmiscinfo class="version">@VERSÃO@</refmiscinfo>
+    <refmiscinfo class="version">@VERSION@</refmiscinfo>
     <refmiscinfo class="manual">Comandos do Usuário</refmiscinfo>
   </refmeta>
   <refnamediv>
@@ -148,12 +148,15 @@ o ‘xsltproc’ e o ‘docbook-xsl’ no campo do controle do Build-Depends.
   <refsect1>
     <title>LEIA TAMBÉM</title>
         <para>
-		O ‘roxterm-config’ é geralmente executado pelo ROXTerm. 
+		O ‘roxterm-config’ é geralmente executado pelo ROXTerm.
 		O pacote está totalmente documentado no arquivo HTML.
-        <br>
-		<filename>file://@CMAKE_INSTALL_FULL_DOCDIR@/en/index.html</filename>.
-		<br>ou<br>
-		<filename>file://@CMAKE_INSTALL_FULL_DOCDIR@/pt_BR/index.html</filename>
+        </para>
+        <para>
+		  <filename>file://@CMAKE_INSTALL_FULL_DOCDIR@/en/index.html</filename>.
+        </para>
+        <para>ou</para>
+        <para>
+		  <filename>file://@CMAKE_INSTALL_FULL_DOCDIR@/pt_BR/index.html</filename>
 		</para>
   </refsect1>
   <refsect1>
