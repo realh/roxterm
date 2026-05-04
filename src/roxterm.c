@@ -3355,7 +3355,7 @@ static gboolean
 roxterm_drag_data_received(GtkWidget *widget,
         const char *text, gulong len, gpointer data)
 {
-    char *sep = strstr(text, "\r\n");
+    const char *sep = strstr(text, "\r\n");
     char *rejoined = NULL;
     (void) data;
 
