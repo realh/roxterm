@@ -52,6 +52,11 @@ static char *strip_underscore(const char *in)
     return out;
 }
 
+static char *menutree_label_for_id(MenuTreeID id)
+{
+    return strip_underscore(menutree_labels[id]);
+}
+
 /* Builds a menu; va_list is a series of pairs of labels and IDs, terminated
  * by a NULL label; use "_" for a separator, and MENUTREE_NULL_ID for any item
  * you don't want stored in item_widgets */
@@ -175,30 +180,60 @@ static char *get_accel_path(Options *shortcuts, const char *branch_name)
 }
 
 static void
-menutree_set_accel_path_for_submenu(MenuTree *mtree, MenuTreeID id,
-        const char *menu_branch)
+menutree_set_accel_path_for_submenu(MenuTree *mtree, MenuTreeID id)
 {
     GtkMenu *menu = menutree_submenu_from_id(mtree, id);
+    char *menu_name;
     char *accel_path;
 
     if (!menu)
         return;
-    accel_path = get_accel_path(mtree->shortcuts, menu_branch);
+    menu_name = menutree_label_for_id(id);
+    accel_path = get_accel_path(mtree->shortcuts, menu_name);
+    g_free(menu_name);
     gtk_menu_set_accel_path(menu, accel_path);
     g_free(accel_path);
     gtk_menu_set_accel_group(menu, mtree->accel_group);
 }
 
 static void
-menutree_set_accel_path_for_item(MenuTree * tree, MenuTreeID id,
-    const char *path_leaf)
+menutree_set_accel_path_for_item_ids(MenuTree *tree,
+        MenuTreeID section_id, MenuTreeID item_id)
 {
-    GtkWidget *item = tree->item_widgets[id];
-    char *full_path;
+    GtkWidget *item = tree->item_widgets[item_id];
+    char *section, *leaf, *path, *full_path;
 
     if (!item)
         return;
-    full_path = get_accel_path(tree->shortcuts, path_leaf);
+    section = menutree_label_for_id(section_id);
+    leaf = menutree_label_for_id(item_id);
+    path = g_strjoin("/", section, leaf, NULL);
+    g_free(section);
+    g_free(leaf);
+    full_path = get_accel_path(tree->shortcuts, path);
+    g_free(path);
+    gtk_menu_item_set_accel_path(GTK_MENU_ITEM(item), full_path);
+    g_free(full_path);
+}
+
+static void
+menutree_set_accel_path_for_item_ids3(MenuTree *tree,
+        MenuTreeID section_id, MenuTreeID mid_id, MenuTreeID item_id)
+{
+    GtkWidget *item = tree->item_widgets[item_id];
+    char *section, *mid, *leaf, *path, *full_path;
+
+    if (!item)
+        return;
+    section = menutree_label_for_id(section_id);
+    mid = menutree_label_for_id(mid_id);
+    leaf = menutree_label_for_id(item_id);
+    path = g_strjoin("/", section, mid, leaf, NULL);
+    g_free(section);
+    g_free(mid);
+    g_free(leaf);
+    full_path = get_accel_path(tree->shortcuts, path);
+    g_free(path);
     gtk_menu_item_set_accel_path(GTK_MENU_ITEM(item), full_path);
     g_free(full_path);
 }
@@ -236,23 +271,27 @@ static void menutree_apply_tab_shortcuts(MenuTree *mtree)
 void menutree_apply_shortcuts(MenuTree *tree, Options *shortcuts)
 {
     GtkMenu *submenu;
-    char *accel_path;
+    char *file, *item, *path, *accel_path;
 
     tree->shortcuts = shortcuts;
     shortcuts_enable_signal_handler(FALSE);
-    menutree_set_accel_path_for_submenu(tree, MENUTREE_FILE, "File");
-    menutree_set_accel_path_for_submenu(tree, MENUTREE_EDIT, "Edit");
-    menutree_set_accel_path_for_submenu(tree, MENUTREE_VIEW, "View");
-    menutree_set_accel_path_for_submenu(tree, MENUTREE_SEARCH, "Search");
-    menutree_set_accel_path_for_submenu(tree, MENUTREE_PREFERENCES,
-            "Preferences");
-    menutree_set_accel_path_for_submenu(tree, MENUTREE_HELP, "Help");
+    menutree_set_accel_path_for_submenu(tree, MENUTREE_FILE);
+    menutree_set_accel_path_for_submenu(tree, MENUTREE_EDIT);
+    menutree_set_accel_path_for_submenu(tree, MENUTREE_VIEW);
+    menutree_set_accel_path_for_submenu(tree, MENUTREE_SEARCH);
+    menutree_set_accel_path_for_submenu(tree, MENUTREE_PREFERENCES);
+    menutree_set_accel_path_for_submenu(tree, MENUTREE_HELP);
 
     submenu = GTK_MENU(tree->new_win_profiles_menu);
     if (submenu)
     {
-        accel_path = get_accel_path(tree->shortcuts,
-                "File/New Window With Profile");
+        file = menutree_label_for_id(MENUTREE_FILE);
+        item = menutree_label_for_id(MENUTREE_FILE_NEW_WINDOW_WITH_PROFILE);
+        path = g_strjoin("/", file, item, NULL);
+        g_free(file);
+        g_free(item);
+        accel_path = get_accel_path(tree->shortcuts, path);
+        g_free(path);
         gtk_menu_set_accel_path(submenu, accel_path);
         g_free(accel_path);
         gtk_menu_set_accel_group(submenu, tree->accel_group);
@@ -260,8 +299,13 @@ void menutree_apply_shortcuts(MenuTree *tree, Options *shortcuts)
     submenu = GTK_MENU(tree->new_tab_profiles_menu);
     if (submenu)
     {
-        accel_path = get_accel_path(tree->shortcuts,
-                "File/New Tab With Profile");
+        file = menutree_label_for_id(MENUTREE_FILE);
+        item = menutree_label_for_id(MENUTREE_FILE_NEW_TAB_WITH_PROFILE);
+        path = g_strjoin("/", file, item, NULL);
+        g_free(file);
+        g_free(item);
+        accel_path = get_accel_path(tree->shortcuts, path);
+        g_free(path);
         gtk_menu_set_accel_path(submenu, accel_path);
         g_free(accel_path);
         gtk_menu_set_accel_group(submenu, tree->accel_group);
@@ -272,29 +316,28 @@ void menutree_apply_shortcuts(MenuTree *tree, Options *shortcuts)
     submenu = menutree_submenu_from_id(tree, MENUTREE_TABS);
     if (submenu)
         gtk_menu_set_accel_group(submenu, tree->accel_group);
-    menutree_set_accel_path_for_item(tree,
-            MENUTREE_FILE_NEW_WINDOW_WITH_PROFILE_HEADER,
-            "File/New Window With Profile/Profiles");
-    menutree_set_accel_path_for_item(tree,
-            MENUTREE_FILE_NEW_TAB_WITH_PROFILE_HEADER,
-            "File/New Tab With Profile/Profiles");
-    menutree_set_accel_path_for_item(tree, MENUTREE_TABS_DETACH_TAB,
-            "Tabs/Detach Tab");
-    menutree_set_accel_path_for_item(tree, MENUTREE_TABS_CLOSE_TAB,
-            "Tabs/Close Tab");
-    menutree_set_accel_path_for_item(tree, MENUTREE_TABS_CLOSE_OTHER_TABS,
-            "Tabs/Close Other Tabs");
-    menutree_set_accel_path_for_item(tree, MENUTREE_TABS_NAME_TAB,
-            "Tabs/Name Tab...");
-    menutree_set_accel_path_for_item(tree, MENUTREE_TABS_NEXT_TAB,
-            "Tabs/Next Tab");
-    menutree_set_accel_path_for_item(tree, MENUTREE_TABS_PREVIOUS_TAB,
-            "Tabs/Previous Tab");
-    menutree_set_accel_path_for_item(tree, MENUTREE_TABS_MOVE_TAB_LEFT,
-            "Tabs/Move Tab Left");
-    menutree_set_accel_path_for_item(tree, MENUTREE_TABS_MOVE_TAB_RIGHT,
-            "Tabs/Move Tab Right");
-    menutree_set_accel_path_for_submenu(tree, MENUTREE_HELP, "Help");
+    menutree_set_accel_path_for_item_ids3(tree,
+            MENUTREE_FILE, MENUTREE_FILE_NEW_WINDOW_WITH_PROFILE,
+            MENUTREE_FILE_NEW_WINDOW_WITH_PROFILE_HEADER);
+    menutree_set_accel_path_for_item_ids3(tree,
+            MENUTREE_FILE, MENUTREE_FILE_NEW_TAB_WITH_PROFILE,
+            MENUTREE_FILE_NEW_TAB_WITH_PROFILE_HEADER);
+    menutree_set_accel_path_for_item_ids(tree,
+            MENUTREE_TABS, MENUTREE_TABS_DETACH_TAB);
+    menutree_set_accel_path_for_item_ids(tree,
+            MENUTREE_TABS, MENUTREE_TABS_CLOSE_TAB);
+    menutree_set_accel_path_for_item_ids(tree,
+            MENUTREE_TABS, MENUTREE_TABS_CLOSE_OTHER_TABS);
+    menutree_set_accel_path_for_item_ids(tree,
+            MENUTREE_TABS, MENUTREE_TABS_NAME_TAB);
+    menutree_set_accel_path_for_item_ids(tree,
+            MENUTREE_TABS, MENUTREE_TABS_NEXT_TAB);
+    menutree_set_accel_path_for_item_ids(tree,
+            MENUTREE_TABS, MENUTREE_TABS_PREVIOUS_TAB);
+    menutree_set_accel_path_for_item_ids(tree,
+            MENUTREE_TABS, MENUTREE_TABS_MOVE_TAB_LEFT);
+    menutree_set_accel_path_for_item_ids(tree,
+            MENUTREE_TABS, MENUTREE_TABS_MOVE_TAB_RIGHT);
     menutree_apply_tab_shortcuts(tree);
     shortcuts_enable_signal_handler(TRUE);
 }
