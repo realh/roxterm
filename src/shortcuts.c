@@ -225,12 +225,6 @@ Options *shortcuts_open(const char *scheme, gboolean reload)
                 full_path = make_full_path(data->index_str, path);
                 if (gtk_accel_map_lookup_entry(full_path, NULL))
                 {
-                    if (g_str_has_suffix(path, "New Window"))
-                    {
-                        g_debug(
-                            "Changing existing accel map entry '%s' to '%s'",
-                                full_path, accel);
-                    }
                     gtk_accel_map_change_entry(full_path,
                             item.key, item.modifiers, TRUE);
                     shortcuts_change_item(data->items, path,
@@ -238,12 +232,6 @@ Options *shortcuts_open(const char *scheme, gboolean reload)
                 }
                 else
                 {
-                    if (g_str_has_suffix(path, "New Window"))
-                    {
-                        g_debug(
-                            "Setting new accel map entry '%s' to '%s'",
-                                full_path, accel);
-                    }
                     item.path = g_strdup(path);
                     g_array_append_val(data->items, item);
                     gtk_accel_map_add_entry(full_path,

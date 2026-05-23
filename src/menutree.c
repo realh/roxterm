@@ -108,10 +108,6 @@ static void menutree_build_shell_ap(MenuTree *menu_tree, GtkMenuShell *shell,
         if (id != MENUTREE_NULL_ID)
         {
             menu_tree->item_widgets[id] = item;
-            if (id >= MENUTREE_FILE && id <= MENUTREE_HELP)
-            {
-                g_debug("Created widget %p for id %d", item, id);
-            }
         }
     }
 }
@@ -197,20 +193,6 @@ menutree_set_accel_path_for_item(MenuTree * tree, MenuTreeID id,
     if (!item)
         return;
     full_path = get_accel_path(tree->shortcuts, path_leaf);
-    if (id == MENUTREE_FILE_NEW_WINDOW)
-    {
-        g_debug("New Window has accel path %s", full_path);
-        GtkAccelKey key;
-        if (gtk_accel_map_lookup_entry(full_path, &key))
-        {
-            g_debug("New Window shortcut is %d %x",
-                    key.accel_key, key.accel_mods);
-        }
-        else
-        {
-            g_debug("New Window accel path %s has no mapping", full_path);
-        }
-    }
     gtk_menu_item_set_accel_path(GTK_MENU_ITEM(item), full_path);
     g_free(full_path);
 }
@@ -416,8 +398,6 @@ static void menutree_build(MenuTree *menu_tree, Options *shortcuts,
 {
     GtkWidget *submenu;
 
-    g_debug("Entering menutree_build");
-
     menu_tree->top_level = menu_type == GTK_TYPE_MENU_BAR ?
         gtk_menu_bar_new() : gtk_menu_new();
     if (menu_type == GTK_TYPE_MENU_BAR)
@@ -550,9 +530,7 @@ static void menutree_build(MenuTree *menu_tree, Options *shortcuts,
         N_("_About ROXTerm"), MENUTREE_HELP_ABOUT, NULL);
     gtk_menu_item_set_submenu(GTK_MENU_ITEM(menu_tree->item_widgets
             [MENUTREE_HELP]), submenu);
-    g_debug("menutree_build applying shortcuts");
     menutree_apply_shortcuts(menu_tree, shortcuts);
-    g_debug("Leaving menutree_build");
 }
 
 static void menutree_build_short_popup(MenuTree *menu_tree, Options *shortcuts,
@@ -610,7 +588,6 @@ static MenuTree *menutree_new_common(Options *shortcuts,
     MenuTree *tree = g_new0(MenuTree, 1);
     int n;
 
-    g_debug("menutree_new_common clearing item_widgets array");
     for (n = 0; n < MENUTREE_NUM_IDS; ++n)
     {
         tree->item_widgets[n] = NULL;
@@ -621,7 +598,6 @@ static MenuTree *menutree_new_common(Options *shortcuts,
     tree->disable_shortcuts = disable_shortcuts;
     tree->disable_tab_shortcuts = disable_tab_shortcuts;
 
-    g_debug("menutree_new_common: shortcuts %p", shortcuts);
     builder(tree, shortcuts, menu_type);
 
     g_signal_connect(tree->top_level,
@@ -644,7 +620,6 @@ MenuTree *menutree_new(Options *shortcuts, GtkAccelGroup *accel_group,
         for (n = 0; n < MENUTREE_NUM_IDS; ++n)
             menutree_labels[n] = NULL;
     }
-    g_debug("menutree_new: shortcuts %p", shortcuts);
     tree = menutree_new_common(shortcuts, accel_group, menu_type,
         menutree_build, disable_shortcuts, disable_tab_shortcuts, user_data);
     /*
@@ -659,7 +634,6 @@ MenuTree *menutree_new_short_popup(Options *shortcuts,
         GtkAccelGroup *accel_group, gboolean disable_shortcuts,
         gpointer user_data)
 {
-    g_debug("menutree_new_short_popup: shortcuts %p", shortcuts);
     MenuTree *tree = menutree_new_common(shortcuts, accel_group, GTK_TYPE_MENU,
         menutree_build_short_popup, disable_shortcuts, FALSE, user_data);
     //g_debug("Created short popup menu %p", tree->top_level);
