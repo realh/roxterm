@@ -78,8 +78,13 @@ static void menutree_build_shell_ap(MenuTree *menu_tree, GtkMenuShell *shell,
             {
                 menutree_labels[id] = label;
             }
+            label = dgettext(PACKAGE, label);
+            char *stripped = NULL;
             if (menu_tree->disable_shortcuts)
+            {
                 label = strip_underscore(label);
+                stripped = label;
+            }
             item = NULL;
             switch (id)
             {
@@ -94,8 +99,7 @@ static void menutree_build_shell_ap(MenuTree *menu_tree, GtkMenuShell *shell,
                     item = menutree_append_new_item_with_mnemonic(shell, label);
                     break;
             }
-            if (menu_tree->disable_shortcuts)
-                g_free(label);
+            g_free(stripped);
         }
         if (id != MENUTREE_NULL_ID)
             menu_tree->item_widgets[id] = item;
@@ -113,50 +117,50 @@ static void menutree_build_shell(MenuTree *menu_tree, GtkMenuShell * shell, ...)
 }
 
 #define URI_MENU_ITEMS \
-        _("_SSH to host"), MENUTREE_SSH_HOST, \
-        _("_Open link"), MENUTREE_OPEN_IN_BROWSER, \
-        _("Send e_mail"), MENUTREE_OPEN_IN_MAILER, \
-        _("_Open file/directory in filer"), MENUTREE_OPEN_IN_FILER, \
-        _("_Call"), MENUTREE_VOIP_CALL, \
-        _("_Copy address to clipboard"), MENUTREE_COPY_URI, \
-        _("_"), MENUTREE_URI_SEPARATOR
+        N_("_SSH to host"), MENUTREE_SSH_HOST, \
+        N_("_Open link"), MENUTREE_OPEN_IN_BROWSER, \
+        N_("Send e_mail"), MENUTREE_OPEN_IN_MAILER, \
+        N_("_Open file/directory in filer"), MENUTREE_OPEN_IN_FILER, \
+        N_("_Call"), MENUTREE_VOIP_CALL, \
+        N_("_Copy address to clipboard"), MENUTREE_COPY_URI, \
+        N_("_"), MENUTREE_URI_SEPARATOR
 
-#define MENUTREE_SEARCH_ITEM _("_Search"), MENUTREE_SEARCH,
+#define MENUTREE_SEARCH_ITEM N_("_Search"), MENUTREE_SEARCH,
 #define TOP_LEVEL_MENU_ITEMS \
-        _("_File"), MENUTREE_FILE, \
-        _("_Edit"), MENUTREE_EDIT, \
-        _("_View"), MENUTREE_VIEW, \
+        N_("_File"), MENUTREE_FILE, \
+        N_("_Edit"), MENUTREE_EDIT, \
+        N_("_View"), MENUTREE_VIEW, \
         MENUTREE_SEARCH_ITEM \
-        _("_Preferences"), MENUTREE_PREFERENCES, \
-        _("Ta_bs"), MENUTREE_TABS, \
-        _("_Help"), MENUTREE_HELP
+        N_("_Preferences"), MENUTREE_PREFERENCES, \
+        N_("Ta_bs"), MENUTREE_TABS, \
+        N_("_Help"), MENUTREE_HELP
 
 #define COPY_PASTE_MENU_ITEMS \
-        _("Select _All"), MENUTREE_EDIT_SELECT_ALL, \
-        _("_Copy"), MENUTREE_EDIT_COPY, \
-        _("_Paste"), MENUTREE_EDIT_PASTE, \
-        _("Cop_y & Paste"), MENUTREE_EDIT_COPY_AND_PASTE, \
+        N_("Select _All"), MENUTREE_EDIT_SELECT_ALL, \
+        N_("_Copy"), MENUTREE_EDIT_COPY, \
+        N_("_Paste"), MENUTREE_EDIT_PASTE, \
+        N_("Cop_y & Paste"), MENUTREE_EDIT_COPY_AND_PASTE, \
         "_", MENUTREE_NULL_ID
 
 #define RESET_MENU_ITEMS \
-        _("_Reset"), MENUTREE_EDIT_RESET, \
-        _("Reset And C_lear"), MENUTREE_EDIT_RESET_AND_CLEAR
+        N_("_Reset"), MENUTREE_EDIT_RESET, \
+        N_("Reset And C_lear"), MENUTREE_EDIT_RESET_AND_CLEAR
 
 #define SHOW_MENU_BAR_ITEM \
-        _("Show Menu_bar"), MENUTREE_VIEW_SHOW_MENUBAR
+        N_("Show Menu_bar"), MENUTREE_VIEW_SHOW_MENUBAR
 
 #define PREFS_ITEMS1 \
-        _("Select _Profile"), MENUTREE_PREFERENCES_SELECT_PROFILE, \
-        _("Select _Colour Scheme"), MENUTREE_PREFERENCES_SELECT_COLOUR_SCHEME, \
-        _("Select _Shortcuts Scheme"), MENUTREE_PREFERENCES_SELECT_SHORTCUTS, \
+        N_("Select _Profile"), MENUTREE_PREFERENCES_SELECT_PROFILE, \
+        N_("Select _Colour Scheme"), MENUTREE_PREFERENCES_SELECT_COLOUR_SCHEME, \
+        N_("Select _Shortcuts Scheme"), MENUTREE_PREFERENCES_SELECT_SHORTCUTS, \
         "_", MENUTREE_NULL_ID, \
-        _("_Edit Current Profile"), MENUTREE_PREFERENCES_EDIT_CURRENT_PROFILE, \
-        _("E_dit Current Colour Scheme"), \
+        N_("_Edit Current Profile"), MENUTREE_PREFERENCES_EDIT_CURRENT_PROFILE, \
+        N_("E_dit Current Colour Scheme"), \
             MENUTREE_PREFERENCES_EDIT_CURRENT_COLOUR_SCHEME
 
 #define PREFS_ITEMS2 \
         "_", MENUTREE_NULL_ID, \
-        _("Configuration _Manager"), MENUTREE_PREFERENCES_CONFIG_MANAGER, \
+        N_("Configuration _Manager"), MENUTREE_PREFERENCES_CONFIG_MANAGER, \
         "_", MENUTREE_NULL_ID, \
         NULL
 
@@ -332,17 +336,17 @@ static void menutree_build(MenuTree *menu_tree, Options *shortcuts,
             G_CALLBACK(submenu_destroy_handler), NULL);
     */
     menutree_build_shell(menu_tree, GTK_MENU_SHELL(submenu),
-        _("_New Window"), MENUTREE_FILE_NEW_WINDOW,
-        _("New _Tab"), MENUTREE_FILE_NEW_TAB,
-        _("New _Window With Profile"), MENUTREE_FILE_NEW_WINDOW_WITH_PROFILE,
-        _("New Tab With _Profile"), MENUTREE_FILE_NEW_TAB_WITH_PROFILE,
-        _("C_lose Tab"), MENUTREE_FILE_CLOSE_TAB,
-        _("_Close Window"), MENUTREE_FILE_CLOSE_WINDOW,
+        N_("_New Window"), MENUTREE_FILE_NEW_WINDOW,
+        N_("New _Tab"), MENUTREE_FILE_NEW_TAB,
+        N_("New _Window With Profile"), MENUTREE_FILE_NEW_WINDOW_WITH_PROFILE,
+        N_("New Tab With _Profile"), MENUTREE_FILE_NEW_TAB_WITH_PROFILE,
+        N_("C_lose Tab"), MENUTREE_FILE_CLOSE_TAB,
+        N_("_Close Window"), MENUTREE_FILE_CLOSE_WINDOW,
         "_", MENUTREE_NULL_ID,
-        _("Save Buffer _As..."), MENUTREE_FILE_SAVE_BUFFER_AS,
-        _("Save _Buffer"), MENUTREE_FILE_SAVE_BUFFER,
+        N_("Save Buffer _As..."), MENUTREE_FILE_SAVE_BUFFER_AS,
+        N_("Save _Buffer"), MENUTREE_FILE_SAVE_BUFFER,
         "_", MENUTREE_NULL_ID,
-        _("_Save Session..."), MENUTREE_FILE_SAVE_SESSION,
+        N_("_Save Session..."), MENUTREE_FILE_SAVE_SESSION,
         NULL);
     gtk_menu_item_set_submenu(GTK_MENU_ITEM(menu_tree->item_widgets
             [MENUTREE_FILE]), submenu);
@@ -350,7 +354,7 @@ static void menutree_build(MenuTree *menu_tree, Options *shortcuts,
     menu_tree->new_win_profiles_menu = gtk_menu_new();
     menutree_build_shell(menu_tree,
             GTK_MENU_SHELL(menu_tree->new_win_profiles_menu),
-            _("Profiles"), MENUTREE_FILE_NEW_WINDOW_WITH_PROFILE_HEADER,
+            N_("Profiles"), MENUTREE_FILE_NEW_WINDOW_WITH_PROFILE_HEADER,
             "_", MENUTREE_NULL_ID,
             NULL);
     gtk_widget_set_sensitive(menutree_get_widget_for_id(menu_tree,
@@ -361,7 +365,7 @@ static void menutree_build(MenuTree *menu_tree, Options *shortcuts,
     menu_tree->new_tab_profiles_menu = gtk_menu_new();
     menutree_build_shell(menu_tree,
             GTK_MENU_SHELL(menu_tree->new_tab_profiles_menu),
-            _("Profiles"), MENUTREE_FILE_NEW_TAB_WITH_PROFILE_HEADER,
+            N_("Profiles"), MENUTREE_FILE_NEW_TAB_WITH_PROFILE_HEADER,
             "_", MENUTREE_NULL_ID,
             NULL);
     gtk_widget_set_sensitive(menutree_get_widget_for_id(menu_tree,
@@ -373,10 +377,10 @@ static void menutree_build(MenuTree *menu_tree, Options *shortcuts,
     submenu = gtk_menu_new();
     menutree_build_shell(menu_tree, GTK_MENU_SHELL(submenu),
         COPY_PASTE_MENU_ITEMS,
-        _("_Set Window Title..."), MENUTREE_EDIT_SET_WINDOW_TITLE,
+        N_("_Set Window Title..."), MENUTREE_EDIT_SET_WINDOW_TITLE,
         RESET_MENU_ITEMS,
         "_", MENUTREE_NULL_ID,
-        _("Res_tart command"), MENUTREE_EDIT_RESPAWN,
+        N_("Res_tart command"), MENUTREE_EDIT_RESPAWN,
         NULL);
     gtk_menu_item_set_submenu(GTK_MENU_ITEM(menu_tree->item_widgets
             [MENUTREE_EDIT]), submenu);
@@ -384,31 +388,31 @@ static void menutree_build(MenuTree *menu_tree, Options *shortcuts,
     submenu = gtk_menu_new();
     menutree_build_shell(menu_tree, GTK_MENU_SHELL(submenu),
         SHOW_MENU_BAR_ITEM,
-        _("_Always Show Tab Bar"), MENUTREE_VIEW_SHOW_TAB_BAR,
-        _("_Full Screen"), MENUTREE_VIEW_FULLSCREEN,
-        _("_Borderless"), MENUTREE_VIEW_BORDERLESS,
+        N_("_Always Show Tab Bar"), MENUTREE_VIEW_SHOW_TAB_BAR,
+        N_("_Full Screen"), MENUTREE_VIEW_FULLSCREEN,
+        N_("_Borderless"), MENUTREE_VIEW_BORDERLESS,
         "_", MENUTREE_NULL_ID,
-        _("Zoom _In"), MENUTREE_VIEW_ZOOM_IN,
-        _("Zoom _Out"), MENUTREE_VIEW_ZOOM_OUT,
-        _("_Normal Size"), MENUTREE_VIEW_ZOOM_NORM,
+        N_("Zoom _In"), MENUTREE_VIEW_ZOOM_IN,
+        N_("Zoom _Out"), MENUTREE_VIEW_ZOOM_OUT,
+        N_("_Normal Size"), MENUTREE_VIEW_ZOOM_NORM,
         "_", MENUTREE_NULL_ID,
-        _("Scroll _Up One Line"), MENUTREE_VIEW_SCROLL_UP,
-        _("Scroll _Down One Line"), MENUTREE_VIEW_SCROLL_DOWN,
-        _("Scroll Up One _Page"), MENUTREE_VIEW_SCROLL_PAGE_UP,
-        _("Scroll Do_wn One Page"), MENUTREE_VIEW_SCROLL_PAGE_DOWN,
-        _("Scroll Up One _Half Page"), MENUTREE_VIEW_SCROLL_HALF_PAGE_UP,
-        _("Scroll Down One Hal_f Page"), MENUTREE_VIEW_SCROLL_HALF_PAGE_DOWN,
-        _("Scroll To _Top"), MENUTREE_VIEW_SCROLL_TO_TOP,
-        _("Scroll To _Bottom"), MENUTREE_VIEW_SCROLL_TO_BOTTOM,
+        N_("Scroll _Up One Line"), MENUTREE_VIEW_SCROLL_UP,
+        N_("Scroll _Down One Line"), MENUTREE_VIEW_SCROLL_DOWN,
+        N_("Scroll Up One _Page"), MENUTREE_VIEW_SCROLL_PAGE_UP,
+        N_("Scroll Do_wn One Page"), MENUTREE_VIEW_SCROLL_PAGE_DOWN,
+        N_("Scroll Up One _Half Page"), MENUTREE_VIEW_SCROLL_HALF_PAGE_UP,
+        N_("Scroll Down One Hal_f Page"), MENUTREE_VIEW_SCROLL_HALF_PAGE_DOWN,
+        N_("Scroll To _Top"), MENUTREE_VIEW_SCROLL_TO_TOP,
+        N_("Scroll To _Bottom"), MENUTREE_VIEW_SCROLL_TO_BOTTOM,
         NULL);
     gtk_menu_item_set_submenu(GTK_MENU_ITEM(menu_tree->item_widgets
             [MENUTREE_VIEW]), submenu);
 
     submenu = gtk_menu_new();
     menutree_build_shell(menu_tree, GTK_MENU_SHELL(submenu),
-        _("_Find..."), MENUTREE_SEARCH_FIND,
-        _("Find _Next"), MENUTREE_SEARCH_FIND_NEXT,
-        _("Find _Previous"), MENUTREE_SEARCH_FIND_PREVIOUS,
+        N_("_Find..."), MENUTREE_SEARCH_FIND,
+        N_("Find _Next"), MENUTREE_SEARCH_FIND_NEXT,
+        N_("Find _Previous"), MENUTREE_SEARCH_FIND_PREVIOUS,
         NULL);
     gtk_menu_item_set_submenu(GTK_MENU_ITEM(menu_tree->item_widgets
             [MENUTREE_SEARCH]), submenu);
@@ -416,7 +420,7 @@ static void menutree_build(MenuTree *menu_tree, Options *shortcuts,
     submenu = gtk_menu_new();
     menutree_build_shell(menu_tree, GTK_MENU_SHELL(submenu),
         PREFS_ITEMS1,
-        _("Edi_t Current Shortcuts Scheme"),
+        N_("Edi_t Current Shortcuts Scheme"),
             MENUTREE_PREFERENCES_EDIT_CURRENT_SHORTCUTS_SCHEME,
         PREFS_ITEMS2);
     gtk_menu_item_set_submenu(GTK_MENU_ITEM(menu_tree->item_widgets
@@ -424,24 +428,24 @@ static void menutree_build(MenuTree *menu_tree, Options *shortcuts,
 
     submenu = gtk_menu_new();
     menutree_build_shell(menu_tree, GTK_MENU_SHELL(submenu),
-        _("_Detach Tab"), MENUTREE_TABS_DETACH_TAB,
-        _("_Close Tab"), MENUTREE_TABS_CLOSE_TAB,
-        _("Close _Other Tabs"), MENUTREE_TABS_CLOSE_OTHER_TABS,
-        _("Na_me Tab..."), MENUTREE_TABS_NAME_TAB,
+        N_("_Detach Tab"), MENUTREE_TABS_DETACH_TAB,
+        N_("_Close Tab"), MENUTREE_TABS_CLOSE_TAB,
+        N_("Close _Other Tabs"), MENUTREE_TABS_CLOSE_OTHER_TABS,
+        N_("Na_me Tab..."), MENUTREE_TABS_NAME_TAB,
         "_", MENUTREE_NULL_ID,
-        _("_Previous Tab"), MENUTREE_TABS_PREVIOUS_TAB,
-        _("_Next Tab"), MENUTREE_TABS_NEXT_TAB,
+        N_("_Previous Tab"), MENUTREE_TABS_PREVIOUS_TAB,
+        N_("_Next Tab"), MENUTREE_TABS_NEXT_TAB,
         "_", MENUTREE_NULL_ID,
-        _("Move Tab _Left"), MENUTREE_TABS_MOVE_TAB_LEFT,
-        _("Move Tab _Right"), MENUTREE_TABS_MOVE_TAB_RIGHT,
+        N_("Move Tab _Left"), MENUTREE_TABS_MOVE_TAB_LEFT,
+        N_("Move Tab _Right"), MENUTREE_TABS_MOVE_TAB_RIGHT,
         "_", MENUTREE_NULL_ID, NULL);
     gtk_menu_item_set_submenu(GTK_MENU_ITEM(menu_tree->item_widgets
             [MENUTREE_TABS]), submenu);
 
     submenu = gtk_menu_new();
     menutree_build_shell(menu_tree, GTK_MENU_SHELL(submenu),
-        _("Show _Manual"), MENUTREE_HELP_SHOW_MANUAL,
-        _("_About ROXTerm"), MENUTREE_HELP_ABOUT, NULL);
+        N_("Show _Manual"), MENUTREE_HELP_SHOW_MANUAL,
+        N_("_About ROXTerm"), MENUTREE_HELP_ABOUT, NULL);
     gtk_menu_item_set_submenu(GTK_MENU_ITEM(menu_tree->item_widgets
             [MENUTREE_HELP]), submenu);
     menutree_apply_shortcuts(menu_tree, shortcuts);
@@ -677,9 +681,9 @@ GtkWidget *menutree_change_tab_title(MenuTree * tree,
 void menutree_change_move_tab_labels(MenuTree *tree)
 {
     menutree_change_label(tree, MENUTREE_TABS_MOVE_TAB_LEFT,
-            _("Move Tab _Up"));
+            N_("Move Tab _Up"));
     menutree_change_label(tree, MENUTREE_TABS_MOVE_TAB_RIGHT,
-            _("Move Tab _Down"));
+            N_("Move Tab _Down"));
 }
 
 static void menutree_set_toggle(MenuTree *tree, MenuTreeID id, gboolean active)
@@ -756,7 +760,8 @@ void menutree_disable_shortcuts(MenuTree *tree, gboolean disable)
             {
                 if (disable)
                 {
-                    char *stripped = strip_underscore(menutree_labels[n]);
+                    char *stripped = strip_underscore(
+                            dgettext(PACKAGE, menutree_labels[n]));
 
                     gtk_label_set_text(GTK_LABEL(child), stripped);
                     g_free(stripped);
@@ -764,7 +769,7 @@ void menutree_disable_shortcuts(MenuTree *tree, gboolean disable)
                 else
                 {
                     gtk_label_set_text_with_mnemonic(GTK_LABEL(child),
-                            menutree_labels[n]);
+                            dgettext(PACKAGE, menutree_labels[n]));
                 }
             }
         }
