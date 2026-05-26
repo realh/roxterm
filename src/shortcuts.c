@@ -26,6 +26,7 @@
 
 #include "dlg.h"
 #include "dynopts.h"
+#include "glib.h"
 #include "optsdbus.h"
 #include "optsfile.h"
 #include "shortcuts.h"
@@ -57,9 +58,25 @@ static Options **shortcuts_indexed_names = NULL;
 
 static guint32 shortcuts_index_size = 0;
 
-inline static char *make_full_path(const char *index_str, const char *path_leaf)
+static char *make_full_path(const char *index_str, const char *path_leaf)
 {
-    return g_strjoin("/", ACCEL_PATH, index_str, path_leaf, NULL);
+    char *s = g_strjoin("/", ACCEL_PATH, index_str, path_leaf, NULL);
+    // size_t l = strlen(s);
+    // if (l >= 4 && !strcmp(s + l - 3, "..."))
+    // {
+    //     g_debug("MFP: Stripping ... from '%s'", s);
+    //     s[l - 3] = 0;
+    //     g_debug("MFP: Stripped:          '%s'", s);
+    // }
+    // else if (g_str_has_suffix(path_leaf, "..."))
+    // {
+    //     g_critical("GAP: Missed stripping ... from '%s'", s);
+    // }
+    // else if (strstr(s, "Find"))
+    // {
+    //     g_debug("GAP: Not stripping ... from '%s'", s);
+    // }
+    return s;
 }
 
 static char *full_path_for_tab(const char *index_str, int tab)
@@ -214,8 +231,14 @@ Options *shortcuts_open(const char *scheme, gboolean reload)
             char *full_path;
             ShortcutsItem item;
 
+            gboolean dbg = g_str_has_prefix(path, "Search/");
+
             if (!accel)
             {
+                if (dbg)
+                {
+                    g_debug("No accel for '%s'", path);
+                }
                 /* Not an error, user may have deleted shortcut */
                 continue;
             }
@@ -229,6 +252,11 @@ Options *shortcuts_open(const char *scheme, gboolean reload)
                             item.key, item.modifiers, TRUE);
                     shortcuts_change_item(data->items, path,
                             item.key, item.modifiers);
+                    if (dbg)
+                    {
+                        g_debug("Changed accel for '%s' ('%s') to '%s'",
+                                full_path, item.path, accel);
+                    }
                 }
                 else
                 {
@@ -236,6 +264,11 @@ Options *shortcuts_open(const char *scheme, gboolean reload)
                     g_array_append_val(data->items, item);
                     gtk_accel_map_add_entry(full_path,
                             item.key, item.modifiers);
+                    if (dbg)
+                    {
+                        g_debug("Created accel for '%s' ('%s'): '%s'",
+                                full_path, item.path, accel);
+                    }
                 }
                 g_free(full_path);
             }

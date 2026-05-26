@@ -179,8 +179,24 @@ GtkMenu *menutree_submenu_from_id(MenuTree *mtree, MenuTreeID id)
 
 static char *get_accel_path(Options *shortcuts, const char *branch_name)
 {
-    return g_strjoin("/", ACCEL_PATH,
+    char *s = g_strjoin("/", ACCEL_PATH,
             shortcuts_get_index_str(shortcuts), branch_name, NULL);
+    // size_t l = strlen(s);
+    // if (l >= 4 && !strcmp(s + l - 3, "..."))
+    // {
+    //     g_debug("GAP: Stripping ... from '%s'", s);
+    //     s[l - 3] = 0;
+    //     g_debug("GAP: Stripped:          '%s'", s);
+    // }
+    // else if (g_str_has_suffix(branch_name, "..."))
+    // {
+    //     g_critical("GAP: Missed stripping ... from '%s'", s);
+    // }
+    // else if (strstr(s, "Find"))
+    // {
+    //     g_debug("GAP: Not stripping ... from '%s'", s);
+    // }
+    return s;
 }
 
 static void
@@ -325,7 +341,10 @@ void menutree_apply_shortcuts(MenuTree *tree, Options *shortcuts)
 
     tree->shortcuts = shortcuts;
     shortcuts_enable_signal_handler(FALSE);
-    gtk_menu_set_accel_group(GTK_MENU(tree->top_level), tree->accel_group);
+    if (GTK_IS_MENU(tree->top_level))
+    {
+        gtk_menu_set_accel_group(GTK_MENU(tree->top_level), tree->accel_group);
+    }
     menutree_set_accel_path_for_submenu(tree, MENUTREE_FILE, "File");
     menutree_set_accel_path_for_submenu(tree, MENUTREE_EDIT, "Edit");
     menutree_set_accel_path_for_submenu(tree, MENUTREE_VIEW, "View");
