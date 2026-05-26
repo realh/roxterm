@@ -2,25 +2,27 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the roxterm package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 # Translators:
 # marcelo cripe <marcelocripe@gmail.com>, 2024
 # Wallon Wallon, 2025
-# 
+#
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: roxterm 3.17.2.31~g4e266fa\n"
 "Report-Msgid-Bugs-To: https://github.com/realh/roxterm/issues\n"
-"POT-Creation-Date: 2025-11-01 22:30+0000\n"
+"POT-Creation-Date: 2026-05-26 21:49+0100\n"
 "PO-Revision-Date: 2024-07-23 12:33+0000\n"
 "Last-Translator: Wallon Wallon, 2025\n"
-"Language-Team: French (https://app.transifex.com/antix-linux-community-contributions/teams/120110/fr/)\n"
+"Language-Team: French (https://app.transifex.com/antix-linux-community-"
+"contributions/teams/120110/fr/)\n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: fr\n"
-"Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
+"Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % "
+"1000000 == 0 ? 1 : 2;\n"
 
 #: ../src/about.c:35
 msgid "Thanks to the developers of VTE"
@@ -47,8 +49,8 @@ msgstr "Taille de palette %d illégale"
 #, c-format
 msgid "Unable to get colour option name from widget name '%s'"
 msgstr ""
-"Impossible d’obtenir le nom de l’option de couleur à partir du nom du widget"
-" « %s »"
+"Impossible d’obtenir le nom de l’option de couleur à partir du nom du widget "
+"« %s »"
 
 #: ../src/colourgui.c:702
 #, c-format
@@ -132,7 +134,7 @@ msgstr "Impossible d’obtenir un itérateur pour l’élément activé"
 msgid "Copy %s"
 msgstr "Copier %s"
 
-#: ../src/configlet.c:703 ../src/menutree.c:136 ../src/roxterm-config.ui:728
+#: ../src/configlet.c:703 ../src/menutree.c:172 ../src/roxterm-config.ui:728
 #: ../src/roxterm-config.ui:862 ../src/roxterm-config.ui:1113
 msgid "_Copy"
 msgstr "_Copier"
@@ -216,8 +218,8 @@ msgstr ""
 #, c-format
 msgid "Mozilla url dropped on widget had wrong format (%d) or length (%d)"
 msgstr ""
-"L’url Mozilla déposée sur le widget a un mauvais format (%d) ou une mauvaise"
-" longueur (%d)"
+"L’url Mozilla déposée sur le widget a un mauvais format (%d) ou une mauvaise "
+"longueur (%d)"
 
 #: ../src/dragrcv.c:133
 #, c-format
@@ -265,8 +267,8 @@ msgstr ""
 #, c-format
 msgid "Child failed to signal parent for --fork: %s"
 msgstr ""
-"Le processus enfant n’a pas réussi à envoyer un signal au parent pour "
-"--fork : %s"
+"Le processus enfant n’a pas réussi à envoyer un signal au parent pour --"
+"fork : %s"
 
 #: ../src/main.c:251
 #, c-format
@@ -281,279 +283,6 @@ msgstr "Impossible de créer un fork pour implémenter --fork : %s"
 #: ../src/main.c:286
 msgid "Missing command after -e/--execute option"
 msgstr "Commande manquante après l’option -e/--execute"
-
-#: ../src/menutree.c:116
-msgid "_SSH to host"
-msgstr "_SSH vers l’hôte"
-
-#: ../src/menutree.c:117
-msgid "_Open link"
-msgstr "_Ouvrir le lien"
-
-#: ../src/menutree.c:118
-msgid "Send e_mail"
-msgstr "Envoyer un _courriel"
-
-#: ../src/menutree.c:119
-msgid "_Open file/directory in filer"
-msgstr "_Ouvrir un fichier/répertoire dans le gestionnaire de fichiers Filer"
-
-#: ../src/menutree.c:120
-msgid "_Call"
-msgstr "A_ppeler"
-
-#: ../src/menutree.c:121
-msgid "_Copy address to clipboard"
-msgstr "_Copier l’adresse dans le presse-papiers"
-
-#: ../src/menutree.c:122
-msgid "_"
-msgstr "_"
-
-#: ../src/menutree.c:124
-msgid "_Search"
-msgstr "_Rechercher"
-
-#: ../src/menutree.c:126
-msgid "_File"
-msgstr "_Fichier"
-
-#: ../src/menutree.c:127 ../src/roxterm-config.ui:747
-#: ../src/roxterm-config.ui:843 ../src/roxterm-config.ui:1097
-msgid "_Edit"
-msgstr "_Éditer"
-
-#: ../src/menutree.c:128
-msgid "_View"
-msgstr "_Affichage"
-
-#: ../src/menutree.c:130
-msgid "_Preferences"
-msgstr "_Préférences"
-
-#: ../src/menutree.c:131
-msgid "Ta_bs"
-msgstr "On_glets"
-
-#: ../src/menutree.c:132
-msgid "_Help"
-msgstr "A_ide"
-
-#: ../src/menutree.c:135
-msgid "Select _All"
-msgstr "_Tout sélectionner"
-
-#: ../src/menutree.c:137
-msgid "_Paste"
-msgstr "_Coller"
-
-#: ../src/menutree.c:138
-msgid "Cop_y & Paste"
-msgstr "Cop_ier & coller"
-
-#: ../src/menutree.c:142
-msgid "_Reset"
-msgstr "_Réinitialiser"
-
-#: ../src/menutree.c:143
-msgid "Reset And C_lear"
-msgstr "Réinitia_liser et nettoyer"
-
-#: ../src/menutree.c:146
-msgid "Show Menu_bar"
-msgstr "Afficher la _barre de menu"
-
-#: ../src/menutree.c:149
-msgid "Select _Profile"
-msgstr "Sélectionner un _profil"
-
-#: ../src/menutree.c:150
-msgid "Select _Colour Scheme"
-msgstr "Sélectionner un jeu de _couleurs"
-
-#: ../src/menutree.c:151
-msgid "Select _Shortcuts Scheme"
-msgstr "Sélectionner un jeu de _raccourcis"
-
-#: ../src/menutree.c:153
-msgid "_Edit Current Profile"
-msgstr "Éditer le profil actu_el"
-
-#: ../src/menutree.c:154
-msgid "E_dit Current Colour Scheme"
-msgstr "É_diter le jeu de couleurs actuel"
-
-#: ../src/menutree.c:159
-msgid "Configuration _Manager"
-msgstr "_Gestionnaire de configuration"
-
-#: ../src/menutree.c:335
-msgid "_New Window"
-msgstr "_Nouvelle fenêtre"
-
-#: ../src/menutree.c:336
-msgid "New _Tab"
-msgstr "Nouvel _onglet"
-
-#: ../src/menutree.c:337
-msgid "New _Window With Profile"
-msgstr "Nouvelle _fenêtre avec un profil"
-
-#: ../src/menutree.c:338
-msgid "New Tab With _Profile"
-msgstr "Nouvel onglet avec un _profil"
-
-#: ../src/menutree.c:339
-msgid "C_lose Tab"
-msgstr "Fermer l’ong_let"
-
-#: ../src/menutree.c:340
-msgid "_Close Window"
-msgstr "_Fermer la fenêtre"
-
-#: ../src/menutree.c:342
-msgid "Save Buffer _As..."
-msgstr "Enregistrer le _buffer/la mémoire tampon sous…"
-
-#: ../src/menutree.c:343
-msgid "Save _Buffer"
-msgstr "Enregistrer le b_uffer/la mémoire tampon"
-
-#: ../src/menutree.c:345
-msgid "_Save Session..."
-msgstr "_Enregistrer la session…"
-
-#: ../src/menutree.c:353 ../src/menutree.c:364
-msgid "Profiles"
-msgstr "Profils"
-
-#: ../src/menutree.c:376
-msgid "_Set Window Title..."
-msgstr "_Définir le titre de la fenêtre…"
-
-#: ../src/menutree.c:379
-msgid "Res_tart command"
-msgstr "Commande de re_démarrage"
-
-#: ../src/menutree.c:387
-msgid "_Always Show Tab Bar"
-msgstr "_Toujours afficher la barre d’onglets"
-
-#: ../src/menutree.c:388
-msgid "_Full Screen"
-msgstr "Plein _écran"
-
-#: ../src/menutree.c:389 ../src/roxterm-config.ui:1888
-msgid "_Borderless"
-msgstr "Sans _bordure"
-
-#: ../src/menutree.c:391
-msgid "Zoom _In"
-msgstr "Zoom _avant"
-
-#: ../src/menutree.c:392
-msgid "Zoom _Out"
-msgstr "Zoom a_rrière"
-
-#: ../src/menutree.c:393
-msgid "_Normal Size"
-msgstr "Taille _normale"
-
-#: ../src/menutree.c:395
-msgid "Scroll _Up One Line"
-msgstr "Défilement d’une ligne vers le _haut"
-
-#: ../src/menutree.c:396
-msgid "Scroll _Down One Line"
-msgstr "Défilement d’une ligne vers le _bas"
-
-#: ../src/menutree.c:397
-msgid "Scroll Up One _Page"
-msgstr "Défilement d’une _page vers le haut"
-
-#: ../src/menutree.c:398
-msgid "Scroll Do_wn One Page"
-msgstr "Défilement d’u_ne page vers le bas"
-
-#: ../src/menutree.c:399
-msgid "Scroll Up One _Half Page"
-msgstr "Défilement d’une _demi-page vers le haut"
-
-#: ../src/menutree.c:400
-msgid "Scroll Down One Hal_f Page"
-msgstr "Défilement d’une demi-pa_ge vers le bas"
-
-#: ../src/menutree.c:401
-msgid "Scroll To _Top"
-msgstr "Défilement vers le _haut"
-
-#: ../src/menutree.c:402
-msgid "Scroll To _Bottom"
-msgstr "Défilement vers le _bas"
-
-#: ../src/menutree.c:409
-msgid "_Find..."
-msgstr "_Rechercher…"
-
-#: ../src/menutree.c:410
-msgid "Find _Next"
-msgstr "Rechercher _suivant"
-
-#: ../src/menutree.c:411
-msgid "Find _Previous"
-msgstr "Rechercher _précédent"
-
-#: ../src/menutree.c:419
-msgid "Edi_t Current Shortcuts Scheme"
-msgstr "Édi_ter le jeu de raccourcis actuel"
-
-#: ../src/menutree.c:427
-msgid "_Detach Tab"
-msgstr "_Détacher l’onglet"
-
-#: ../src/menutree.c:428
-msgid "_Close Tab"
-msgstr "_Fermer l’onglet"
-
-#: ../src/menutree.c:429
-msgid "Close _Other Tabs"
-msgstr "Fermer les _autres onglets"
-
-#: ../src/menutree.c:430
-msgid "Na_me Tab..."
-msgstr "No_m de l’onglet…"
-
-#: ../src/menutree.c:432
-msgid "_Previous Tab"
-msgstr "Onglet _précédent"
-
-#: ../src/menutree.c:433
-msgid "_Next Tab"
-msgstr "Onglet suiva_nt"
-
-#: ../src/menutree.c:435
-msgid "Move Tab _Left"
-msgstr "Déplacer l’onglet vers la _gauche"
-
-#: ../src/menutree.c:436
-msgid "Move Tab _Right"
-msgstr "Déplacer l’onglet vers la d_roite"
-
-#: ../src/menutree.c:443
-msgid "Show _Manual"
-msgstr "Afficher le _manuel"
-
-#: ../src/menutree.c:444
-msgid "_About ROXTerm"
-msgstr "_À propos de ROXTerm"
-
-#: ../src/menutree.c:680
-msgid "Move Tab _Up"
-msgstr "Déplacer l’onglet vers le _haut"
-
-#: ../src/menutree.c:682
-msgid "Move Tab _Down"
-msgstr "Déplacer l’onglet vers le _bas"
 
 #: ../src/multitab.c:1309
 msgid "Name Tab"
@@ -573,22 +302,21 @@ msgstr "_Enregistrer"
 
 #: ../src/multitab.c:1366
 msgid ""
-"The current session will be saved in "
-"$XDG_CONFIG_HOME/roxterm.sourceforge.net/UserSessions/ with the given "
-"leafname (XDG_CONFIG_HOME defaults to ~/.config). A session saves the state "
-"of current windows and tabs but not the terminals' text content. A session "
-"can be restored with roxterm's --session command-line option, or will be "
+"The current session will be saved in $XDG_CONFIG_HOME/"
+"roxterm.sourceforge.net/UserSessions/ with the given leafname "
+"(XDG_CONFIG_HOME defaults to ~/.config). A session saves the state of "
+"current windows and tabs but not the terminals' text content. A session can "
+"be restored with roxterm's --session command-line option, or will be "
 "restored automatically if named 'Default'. Leaving the field blank is "
 "equivalent to 'Default'."
 msgstr ""
-"La session en cours sera enregistrée dans "
-"$XDG_CONFIG_HOME/roxterm.sourceforge.net/UserSessions/ avec le nom de "
-"feuille donné (XDG_CONFIG_HOME est par défaut ~/.config). Une session "
-"enregistre l’état des fenêtres et des onglets actuels, mais pas le contenu "
-"textuel du terminal. Une session peut être restaurée à l’aide de l’option de"
-" ligne de commande --session de roxterm, ou sera restaurée automatiquement "
-"si elle est nommée « Default ». Laisser le champ vide équivaut à "
-"« Default »."
+"La session en cours sera enregistrée dans $XDG_CONFIG_HOME/"
+"roxterm.sourceforge.net/UserSessions/ avec le nom de feuille donné "
+"(XDG_CONFIG_HOME est par défaut ~/.config). Une session enregistre l’état "
+"des fenêtres et des onglets actuels, mais pas le contenu textuel du "
+"terminal. Une session peut être restaurée à l’aide de l’option de ligne de "
+"commande --session de roxterm, ou sera restaurée automatiquement si elle est "
+"nommée « Default ». Laisser le champ vide équivaut à « Default »."
 
 #: ../src/multitab.c:1407
 #, c-format
@@ -601,14 +329,14 @@ msgstr "Définir le titre de la fenêtre"
 
 #: ../src/multitab.c:1433
 msgid ""
-"The title string may include '%s' which is substituted with the active tab's"
-" name/window title, '%t' for the active tab's number, '%n' for the number of"
-" tabs and or '%%' for a literal '%'. Other '%' sequences are passed through."
-" Apply an empty string here to use the profile's title string."
+"The title string may include '%s' which is substituted with the active tab's "
+"name/window title, '%t' for the active tab's number, '%n' for the number of "
+"tabs and or '%%' for a literal '%'. Other '%' sequences are passed through. "
+"Apply an empty string here to use the profile's title string."
 msgstr ""
 "La chaîne de caractères du titre peut inclure « %s », qui sera remplacé par "
-"le nom ou le titre de la fenêtre de l’onglet actif, « %t » pour le numéro de"
-" l’onglet actif, « %n » pour le nombre total d’onglets, et « %% » pour "
+"le nom ou le titre de la fenêtre de l’onglet actif, « %t » pour le numéro de "
+"l’onglet actif, « %n » pour le nombre total d’onglets, et « %% » pour "
 "afficher un caractère « % » littéral. Les autres séquences commençant par "
 "« % » sont transmises telles quelles. Saisissez une chaîne de caractères "
 "vide ici pour utiliser la chaîne de caractères du titre définie dans le "
@@ -725,7 +453,7 @@ msgstr "Impossible de créer le répertoire « %s »"
 msgid "Unable to copy profile/scheme: %s"
 msgstr "Impossible de copier le profil/jeu : %s"
 
-#: ../src/optsfile.c:493 ../src/shortcuts.c:202
+#: ../src/optsfile.c:493 ../src/shortcuts.c:219
 msgid "unknown reason"
 msgstr "raison inconnue"
 
@@ -829,8 +557,8 @@ msgstr ""
 
 #: ../src/roxterm.c:2055
 msgid ""
-"The command in this terminal has terminated. What do you want to do with the"
-" terminal now?"
+"The command in this terminal has terminated. What do you want to do with the "
+"terminal now?"
 msgstr ""
 "La commande dans ce terminal est terminée. Que voulez-vous faire maintenant "
 "avec le terminal ?"
@@ -884,8 +612,7 @@ msgstr "Erreur inconnue"
 #, c-format
 msgid "Unable to save buffer to '%s': %s"
 msgstr ""
-"Impossible d’enregistrer le buffer/la mémoire mémoire tampon dans « %s » : "
-"%s"
+"Impossible d’enregistrer le buffer/la mémoire mémoire tampon dans « %s » : %s"
 
 #: ../src/roxterm.c:2489
 msgid "Save Terminal Buffer"
@@ -1210,7 +937,7 @@ msgstr "Rechercher"
 msgid "_Close"
 msgstr "_Fermer"
 
-#: ../src/search.c:316
+#: ../src/search.c:316 ../src/menutree.c:521
 msgid "_Find"
 msgstr "_Rechercher"
 
@@ -1260,8 +987,8 @@ msgid ""
 "affect the Find Next and Find Previous menu items."
 msgstr ""
 "Indique si la recherche doit se s’effectuer vers l’arrière lorsque l’on "
-"clique sur le bouton « Rechercher ». Cela n’affecte pas les éléments de menu"
-" « Rechercher suivant » et « Rechercher précédent »."
+"clique sur le bouton « Rechercher ». Cela n’affecte pas les éléments de menu "
+"« Rechercher suivant » et « Rechercher précédent »."
 
 #: ../src/search.c:364
 msgid "_Wrap Around"
@@ -1289,30 +1016,30 @@ msgstr "Fenêtre sans données de l’utilisateur"
 msgid "Unable to load session from '%s': %s"
 msgstr "Impossible de charger la session « %s » : %s"
 
-#: ../src/shortcuts.c:199
+#: ../src/shortcuts.c:216
 #, c-format
 msgid "Unable to read keys from shortcuts file %s: %s"
 msgstr ""
 "Impossible de lire les touches dans le fichier de raccourcis « %s » : %s"
 
-#: ../src/shortcuts.c:244
+#: ../src/shortcuts.c:277
 #, c-format
 msgid "Shortcut '%s' in '%s' has invalid value"
 msgstr "Le raccourci « %s » dans « %s » a une valeur invalide"
 
-#: ../src/shortcuts.c:398
+#: ../src/shortcuts.c:431
 msgid ""
 "Unable to find a text editor. Please install gedit, gvim, kate or emacs."
 msgstr ""
 "Impossible de trouver un éditeur de texte. Veuillez installer gedit, gvim, "
 "kate ou emacs."
 
-#: ../src/shortcuts.c:422
+#: ../src/shortcuts.c:455
 #, c-format
 msgid "Error trying to edit or monitor Shortcuts file '%s': %s"
 msgstr ""
-"Erreur lors de la tentative de modification ou de surveillance du fichier de"
-" raccourcis « %s » : %s"
+"Erreur lors de la tentative de modification ou de surveillance du fichier de "
+"raccourcis « %s » : %s"
 
 #: ../src/globalopts.c:225
 msgid "Show brief usage message"
@@ -1333,7 +1060,8 @@ msgid ""
 "                                   instead of '+'"
 msgstr ""
 "Définir la taille du terminal. La syntaxe GÉOMÉTRIE est WxH ou\n"
-"                                   WxH+X+Y (X11 uniquement) ; « - » peut être utilisé\n"
+"                                   WxH+X+Y (X11 uniquement) ; « - » peut "
+"être utilisé\n"
 "                                   à la place de « + »"
 
 #: ../src/globalopts.c:236
@@ -1490,7 +1218,277 @@ msgid ""
 "                                   terminal. Must be the final option."
 msgstr ""
 "Exécuter le reste de la commande dans le\n"
-"                                   terminal. Cette option doit être la dernière."
+"                                   terminal. Cette option doit être la "
+"dernière."
+
+#: ../src/menutree.c:152
+msgid "_SSH to host"
+msgstr "_SSH vers l’hôte"
+
+#: ../src/menutree.c:153
+msgid "_Open link"
+msgstr "_Ouvrir le lien"
+
+#: ../src/menutree.c:154
+msgid "Send e_mail"
+msgstr "Envoyer un _courriel"
+
+#: ../src/menutree.c:155
+msgid "_Open file/directory in filer"
+msgstr "_Ouvrir un fichier/répertoire dans le gestionnaire de fichiers Filer"
+
+#: ../src/menutree.c:156
+msgid "_Call"
+msgstr "A_ppeler"
+
+#: ../src/menutree.c:157
+msgid "_Copy address to clipboard"
+msgstr "_Copier l’adresse dans le presse-papiers"
+
+#: ../src/menutree.c:158
+msgid "_"
+msgstr "_"
+
+#: ../src/menutree.c:160
+msgid "_Search"
+msgstr "_Rechercher"
+
+#: ../src/menutree.c:162
+msgid "_File"
+msgstr "_Fichier"
+
+#: ../src/menutree.c:163 ../src/roxterm-config.ui:747
+#: ../src/roxterm-config.ui:843 ../src/roxterm-config.ui:1097
+msgid "_Edit"
+msgstr "_Éditer"
+
+#: ../src/menutree.c:164
+msgid "_View"
+msgstr "_Affichage"
+
+#: ../src/menutree.c:166
+msgid "_Preferences"
+msgstr "_Préférences"
+
+#: ../src/menutree.c:167
+msgid "Ta_bs"
+msgstr "On_glets"
+
+#: ../src/menutree.c:168
+msgid "_Help"
+msgstr "A_ide"
+
+#: ../src/menutree.c:171
+msgid "Select _All"
+msgstr "_Tout sélectionner"
+
+#: ../src/menutree.c:173
+msgid "_Paste"
+msgstr "_Coller"
+
+#: ../src/menutree.c:174
+msgid "Cop_y & Paste"
+msgstr "Cop_ier & coller"
+
+#: ../src/menutree.c:178
+msgid "_Reset"
+msgstr "_Réinitialiser"
+
+#: ../src/menutree.c:179
+msgid "Reset And C_lear"
+msgstr "Réinitia_liser et nettoyer"
+
+#: ../src/menutree.c:182
+msgid "Show Menu_bar"
+msgstr "Afficher la _barre de menu"
+
+#: ../src/menutree.c:185
+msgid "Select _Profile"
+msgstr "Sélectionner un _profil"
+
+#: ../src/menutree.c:186
+msgid "Select _Colour Scheme"
+msgstr "Sélectionner un jeu de _couleurs"
+
+#: ../src/menutree.c:187
+msgid "Select _Shortcuts Scheme"
+msgstr "Sélectionner un jeu de _raccourcis"
+
+#: ../src/menutree.c:189
+msgid "_Edit Current Profile"
+msgstr "Éditer le profil actu_el"
+
+#: ../src/menutree.c:190
+msgid "E_dit Current Colour Scheme"
+msgstr "É_diter le jeu de couleurs actuel"
+
+#: ../src/menutree.c:195
+msgid "Configuration _Manager"
+msgstr "_Gestionnaire de configuration"
+
+#: ../src/menutree.c:447
+msgid "_New Window"
+msgstr "_Nouvelle fenêtre"
+
+#: ../src/menutree.c:448
+msgid "New _Tab"
+msgstr "Nouvel _onglet"
+
+#: ../src/menutree.c:449
+msgid "New _Window With Profile"
+msgstr "Nouvelle _fenêtre avec un profil"
+
+#: ../src/menutree.c:450
+msgid "New Tab With _Profile"
+msgstr "Nouvel onglet avec un _profil"
+
+#: ../src/menutree.c:451
+msgid "C_lose Tab"
+msgstr "Fermer l’ong_let"
+
+#: ../src/menutree.c:452
+msgid "_Close Window"
+msgstr "_Fermer la fenêtre"
+
+#: ../src/menutree.c:454
+msgid "Save Buffer _As"
+msgstr "Enregistrer le _buffer/la mémoire tampon sous"
+
+#: ../src/menutree.c:455
+msgid "Save _Buffer"
+msgstr "Enregistrer le b_uffer/la mémoire tampon"
+
+#: ../src/menutree.c:457
+msgid "_Save Session"
+msgstr "_Enregistrer la session"
+
+#: ../src/menutree.c:465 ../src/menutree.c:476
+msgid "Profiles"
+msgstr "Profils"
+
+#: ../src/menutree.c:488
+msgid "_Set Window Title"
+msgstr "_Définir le titre de la fenêtre"
+
+#: ../src/menutree.c:491
+msgid "Res_tart command"
+msgstr "Commande de re_démarrage"
+
+#: ../src/menutree.c:499
+msgid "_Always Show Tab Bar"
+msgstr "_Toujours afficher la barre d’onglets"
+
+#: ../src/menutree.c:500
+msgid "_Full Screen"
+msgstr "Plein _écran"
+
+#: ../src/menutree.c:501
+msgid "_Border_less"
+msgstr ""
+
+#: ../src/menutree.c:503
+msgid "Zoom _In"
+msgstr "Zoom _avant"
+
+#: ../src/menutree.c:504
+msgid "Zoom _Out"
+msgstr "Zoom a_rrière"
+
+#: ../src/menutree.c:505
+msgid "_Normal Size"
+msgstr "Taille _normale"
+
+#: ../src/menutree.c:507
+msgid "Scroll _Up One Line"
+msgstr "Défilement d’une ligne vers le _haut"
+
+#: ../src/menutree.c:508
+msgid "Scroll _Down One Line"
+msgstr "Défilement d’une ligne vers le _bas"
+
+#: ../src/menutree.c:509
+msgid "Scroll Up One _Page"
+msgstr "Défilement d’une _page vers le haut"
+
+#: ../src/menutree.c:510
+msgid "Scroll Do_wn One Page"
+msgstr "Défilement d’u_ne page vers le bas"
+
+#: ../src/menutree.c:511
+msgid "Scroll Up One _Half Page"
+msgstr "Défilement d’une _demi-page vers le haut"
+
+#: ../src/menutree.c:512
+msgid "Scroll Down One Hal_f Page"
+msgstr "Défilement d’une demi-pa_ge vers le bas"
+
+#: ../src/menutree.c:513
+msgid "Scroll To _Top"
+msgstr "Défilement vers le _haut"
+
+#: ../src/menutree.c:514
+msgid "Scroll To _Bottom"
+msgstr "Défilement vers le _bas"
+
+#: ../src/menutree.c:522
+msgid "Find _Next"
+msgstr "Rechercher _suivant"
+
+#: ../src/menutree.c:523
+msgid "Find _Previous"
+msgstr "Rechercher _précédent"
+
+#: ../src/menutree.c:531
+msgid "Edi_t Current Shortcuts Scheme"
+msgstr "Édi_ter le jeu de raccourcis actuel"
+
+#: ../src/menutree.c:539
+msgid "_Detach Tab"
+msgstr "_Détacher l’onglet"
+
+#: ../src/menutree.c:540
+msgid "_Close Tab"
+msgstr "_Fermer l’onglet"
+
+#: ../src/menutree.c:541
+msgid "Close _Other Tabs"
+msgstr "Fermer les _autres onglets"
+
+#: ../src/menutree.c:542
+msgid "Na_me Tab"
+msgstr "No_m de l’onglet"
+
+#: ../src/menutree.c:544
+msgid "_Previous Tab"
+msgstr "Onglet _précédent"
+
+#: ../src/menutree.c:545
+msgid "_Next Tab"
+msgstr "Onglet suiva_nt"
+
+#: ../src/menutree.c:547
+msgid "Move Tab _Left"
+msgstr "Déplacer l’onglet vers la _gauche"
+
+#: ../src/menutree.c:548
+msgid "Move Tab _Right"
+msgstr "Déplacer l’onglet vers la d_roite"
+
+#: ../src/menutree.c:555
+msgid "Show _Manual"
+msgstr "Afficher le _manuel"
+
+#: ../src/menutree.c:556
+msgid "_About ROXTerm"
+msgstr "_À propos de ROXTerm"
+
+#: ../src/menutree.c:802
+msgid "Move Tab _Up"
+msgstr "Déplacer l’onglet vers le _haut"
+
+#: ../src/menutree.c:804
+msgid "Move Tab _Down"
+msgstr "Déplacer l’onglet vers le _bas"
 
 #: ../src/profilegui.c:585
 msgid "Text"
@@ -1630,8 +1628,8 @@ msgstr "Configurer ROXTerm"
 #: ../src/roxterm-config.ui:673
 msgid ""
 "Select a row to choose which profile the buttons below apply to. Select a "
-"radio button to set the profile used when roxterm is run without a --profile"
-" option."
+"radio button to set the profile used when roxterm is run without a --profile "
+"option."
 msgstr ""
 "Sélectionnez une ligne pour choisir le profil auquel s’appliquent les "
 "boutons ci-dessous. Sélectionnez un bouton radio pour définir le profil "
@@ -1657,8 +1655,7 @@ msgstr "Cliquez pour supprimer le profil sélectionné"
 
 #: ../src/roxterm-config.ui:735
 msgid ""
-"Click to create a new profile with settings copied from the current "
-"selection"
+"Click to create a new profile with settings copied from the current selection"
 msgstr ""
 "Cliquez sur pour créer un nouveau profil dont les paramètres sont copiés à "
 "partir de la sélection actuelle"
@@ -1707,8 +1704,8 @@ msgstr "Cliquez pour renommer le jeu de couleurs sélectionné"
 
 #: ../src/roxterm-config.ui:944
 msgid ""
-"You can now choose two different default colour schemes depending on whether"
-" the UI theme is light or dark."
+"You can now choose two different default colour schemes depending on whether "
+"the UI theme is light or dark."
 msgstr ""
 "Vous pouvez maintenant choisir deux jeux de couleurs par défaut différents "
 "selon que le thème de l’interface est clair ou sombre."
@@ -1741,14 +1738,13 @@ msgid ""
 msgstr ""
 "Sélectionnez une ligne pour choisir à quel jeu de raccourcis clavier "
 "s’appliquent les boutons ci-dessous. Sélectionnez un bouton radio pour "
-"définir le jeu de raccourcis utilisé lorsque roxterm est lancé sans l’option"
-" --shortcut-scheme."
+"définir le jeu de raccourcis utilisé lorsque roxterm est lancé sans l’option "
+"--shortcut-scheme."
 
 #: ../src/roxterm-config.ui:1101
 msgid "Click to edit the selected Shortcuts scheme in a text editor."
 msgstr ""
-"Cliquez pour éditer le jeu de raccourcis sélectionné dans un éditeur de "
-"texte"
+"Cliquez pour éditer le jeu de raccourcis sélectionné dans un éditeur de texte"
 
 #: ../src/roxterm-config.ui:1120
 msgid ""
@@ -1935,13 +1931,17 @@ msgstr ""
 "Active un bouton dans la barre d’onglets qui ajoute un nouvel onglet "
 "lorsqu’on clique dessus."
 
+#: ../src/roxterm-config.ui:1888
+msgid "_Borderless"
+msgstr "Sans _bordure"
+
 #: ../src/roxterm-config.ui:1895
 msgid ""
 "If this option is enabled and if the window manager supports it, then the "
 "window frame decorations will be disabled."
 msgstr ""
-"Si cette option est activée et si le gestionnaire de fenêtres le permet, les"
-" décorations/bordures du cadre de fenêtre seront désactivées."
+"Si cette option est activée et si le gestionnaire de fenêtres le permet, les "
+"décorations/bordures du cadre de fenêtre seront désactivées."
 
 #: ../src/roxterm-config.ui:1908
 msgid "_Size"
@@ -1986,14 +1986,14 @@ msgstr "_Titre de la fenêtre :"
 
 #: ../src/roxterm-config.ui:2048
 msgid ""
-"The title string may include '%s' which is substituted with the active tab's"
-" name/window title, '%t' for the active tab's number, '%n' for the number of"
-" tabs and or '%%' for a literal '%'. Other '%' sequences are passed through."
+"The title string may include '%s' which is substituted with the active tab's "
+"name/window title, '%t' for the active tab's number, '%n' for the number of "
+"tabs and or '%%' for a literal '%'. Other '%' sequences are passed through."
 msgstr ""
-"La chaîne de caractères du titre peut inclure « %s », remplacé par le nom ou"
-" le titre de la fenêtre de l’onglet actif, « %t » pour le numéro de l’onglet"
-" actif, « %n » pour le nombre d’onglets, et « %% » pour afficher le "
-"caractère « % ». Les autres séquences « % » sont transmises telles quelles."
+"La chaîne de caractères du titre peut inclure « %s », remplacé par le nom ou "
+"le titre de la fenêtre de l’onglet actif, « %t » pour le numéro de l’onglet "
+"actif, « %n » pour le nombre d’onglets, et « %% » pour afficher le caractère "
+"« % ». Les autres séquences « % » sont transmises telles quelles."
 
 #: ../src/roxterm-config.ui:2064
 msgid "_Light colour scheme:"
@@ -2034,8 +2034,8 @@ msgstr "She_ll de connexion/login"
 #: ../src/roxterm-config.ui:2287
 msgid "Whether shells running in the terminal are login shells"
 msgstr ""
-"Indique si les shells exécutés dans le terminal sont des shells de "
-"connexion/login"
+"Indique si les shells exécutés dans le terminal sont des shells de connexion/"
+"login"
 
 #: ../src/roxterm-config.ui:2301
 msgid "_Custom command"
@@ -2193,8 +2193,8 @@ msgstr "Caractères de _mot :"
 #: ../src/roxterm-config.ui:2709
 msgid ""
 "Words can be selected by double-clicking. Characters in this list, in "
-"addition to alphanumerics, are considered part of a word. Do not add "
-"0-9A-Za-z etc here. If including a minus sign it must come first."
+"addition to alphanumerics, are considered part of a word. Do not add 0-9A-Za-"
+"z etc here. If including a minus sign it must come first."
 msgstr ""
 "Les mots peuvent être sélectionnés en double-cliquant. Les caractères de "
 "cette liste, en plus des caractères alphanumériques, sont considérés comme "
@@ -2221,8 +2221,8 @@ msgstr "_Signal sonore mettant en évidence l’onglet/la fenêtre"
 
 #: ../src/roxterm-config.ui:2763
 msgid ""
-"If the \"bell rings\" in a terminal while it isn't the active tab or window,"
-" its tab label will flash and/or its window will be marked \"urgent\"."
+"If the \"bell rings\" in a terminal while it isn't the active tab or window, "
+"its tab label will flash and/or its window will be marked \"urgent\"."
 msgstr ""
 "Si le « signal sonore » se déclenche dans un terminal alors qu’il n’est pas "
 "l’onglet ou la fenêtre active, le label de l’onglet clignotera et/ou la "
@@ -2250,8 +2250,8 @@ msgstr "Faire défiler le c_ontenu du terminal"
 
 #: ../src/roxterm-config.ui:2888
 msgid ""
-"Whether to make the scrollbar jump to the bottom when new text is printed in"
-" the terminal"
+"Whether to make the scrollbar jump to the bottom when new text is printed in "
+"the terminal"
 msgstr ""
 "Indique si la barre de défilement doit passer en bas lorsque du nouveau "
 "texte est affiché dans le terminal."
@@ -2271,8 +2271,8 @@ msgstr ""
 #: ../src/roxterm-config.ui:2941
 msgid "Changes to the scrollbar position only take effect in new windows."
 msgstr ""
-"Les modifications de la position de la barre de défilement ne prennent effet"
-" que dans les nouvelles fenêtres."
+"Les modifications de la position de la barre de défilement ne prennent effet "
+"que dans les nouvelles fenêtres."
 
 #: ../src/roxterm-config.ui:2966
 msgid "Li_mit scrollback:"
@@ -2374,8 +2374,8 @@ msgstr "Désactiver les autres raccourci_s clavier du menu (Alt+…)"
 
 #: ../src/roxterm-config.ui:3284
 msgid ""
-"This option disables the underlined shortcut keys in the menus (eg Alt+F for"
-" the File menu)."
+"This option disables the underlined shortcut keys in the menus (eg Alt+F for "
+"the File menu)."
 msgstr ""
 "Cette option désactive les raccourcis soulignés dans les menus (par ex. "
 "Alt+F pour le menu Fichier)."
@@ -2386,8 +2386,8 @@ msgstr "Désactiver les raccourcis _pour changer d’onglet (Alt+chiffre)"
 
 #: ../src/roxterm-config.ui:3304
 msgid ""
-"This option disables the shortcut keys for switching tabs (Alt+1-9 and Alt+0"
-" by default)"
+"This option disables the shortcut keys for switching tabs (Alt+1-9 and Alt+0 "
+"by default)"
 msgstr ""
 "Cette option désactive les raccourcis clavier permettant de passer d’un "
 "onglet à l’autre (Alt + 1 à 9 et Alt + 0 par défaut)."
@@ -2442,9 +2442,9 @@ msgid ""
 "around from the first and last tab to the opposite end of the row; the move "
 "tab left/right/up/down menu items are affected similarly."
 msgstr ""
-"Cette option fait en sorte que les opérations « Onglet suivant » et « Onglet"
-" précédent » se poursuivent respectivement du premier onglet au dernier et "
-"du dernier au premier ; les éléments de menu « Déplacer l’onglet » vers la "
+"Cette option fait en sorte que les opérations « Onglet suivant » et « Onglet "
+"précédent » se poursuivent respectivement du premier onglet au dernier et du "
+"dernier au premier ; les éléments de menu « Déplacer l’onglet » vers la "
 "gauche/droite/haut/bas sont affectés de la même manière."
 
 #: ../src/roxterm-config.ui:3453
@@ -2466,8 +2466,8 @@ msgid ""
 "If this option is enabled the icons in close buttons may be changed in "
 "inactive tabs to reflect the status of their terminals."
 msgstr ""
-"Si cette option est activée, les icônes des boutons de fermeture des onglets"
-" inactifs peuvent être modifiées pour refléter l’état de leurs terminaux."
+"Si cette option est activée, les icônes des boutons de fermeture des onglets "
+"inactifs peuvent être modifiées pour refléter l’état de leurs terminaux."
 
 #: ../src/roxterm-config.ui:3494
 msgid "Open new tabs _adjacent to current tab"
@@ -2483,8 +2483,7 @@ msgid ""
 "regardless of the above Wrap option."
 msgstr ""
 "Utilisez Ctrl-Tab pour naviguer entre les onglets. Ce raccourci passe du "
-"dernier au premier onglet, quel que soit le réglage « Rebouclage » ci-"
-"dessus."
+"dernier au premier onglet, quel que soit le réglage « Rebouclage » ci-dessus."
 
 #: ../src/roxterm-config.ui:3561
 msgid "_Tab title:"
@@ -2492,8 +2491,8 @@ msgstr "Titre de l’_onglet :"
 
 #: ../src/roxterm-config.ui:3575
 msgid ""
-"The title string may include '%s' which is substituted with the title set by"
-" the child command (usually the current directory for shells), '%t' for the "
+"The title string may include '%s' which is substituted with the title set by "
+"the child command (usually the current directory for shells), '%t' for the "
 "active tab's number, '%n' for the number of tabs and or '%%' for a literal "
 "'%'. Other '%' sequences are passed through."
 msgstr ""
@@ -2585,9 +2584,8 @@ msgid ""
 "base64 encoding overhead."
 msgstr ""
 "La taille du tampon détermine la quantité maximale de texte pouvant être "
-"extraite à la fois. La quantité de texte brut correspond à environ 3/4 de la"
-" taille de la mémoire tampon en raison de la surcharge liée au codage "
-"base64."
+"extraite à la fois. La quantité de texte brut correspond à environ 3/4 de la "
+"taille de la mémoire tampon en raison de la surcharge liée au codage base64."
 
 #: ../src/roxterm-config.ui:3884
 msgid "Allow programs to write to the clipboard with OSC 52"

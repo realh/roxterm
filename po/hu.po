@@ -6,16 +6,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://github.com/realh/roxterm/issues\n"
-"POT-Creation-Date: 2025-09-11 20:39+0200\n"
+"POT-Creation-Date: 2026-05-26 21:49+0100\n"
 "PO-Revision-Date: 2025-09-14 22:21+0200\n"
 "Last-Translator: kempelen <kempelen@netengine.hu>\n"
+"Language-Team: Hungarian <>\n"
 "Language: hu_HU\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Lokalize 22.12.3\n"
-"Language-Team: Hungarian <>\n"
 
 #: ../src/about.c:35
 msgid "Thanks to the developers of VTE"
@@ -122,7 +122,7 @@ msgstr "Nem sikerült a feldolgozó létrehozása az aktív elemhez"
 msgid "Copy %s"
 msgstr "%s másolása"
 
-#: ../src/configlet.c:703 ../src/menutree.c:136 ../src/roxterm-config.ui:728
+#: ../src/configlet.c:703 ../src/menutree.c:172 ../src/roxterm-config.ui:728
 #: ../src/roxterm-config.ui:862 ../src/roxterm-config.ui:1113
 msgid "_Copy"
 msgstr "_Másolás"
@@ -132,9 +132,8 @@ msgid "No selection to copy"
 msgstr "Nincs elem kijelölve a másoláshoz"
 
 #: ../src/configlet.c:750
-#, c-format
-msgid "You may not delete the selected default %s"
-msgstr "A jelenlegi alapértelmezett %s nem törölhető"
+msgid "You may not delete the selected default"
+msgstr ""
 
 #: ../src/configlet.c:757
 msgid "No selection to delete"
@@ -142,8 +141,8 @@ msgstr "Nincs kijelölt elem a törléshez"
 
 #: ../src/configlet.c:763
 #, c-format
-msgid "'%s' is a system %s and can not be deleted"
-msgstr "A(z) '%s' egy rendszer %s és nem törölhető"
+msgid "'%s' is a system default and can not be deleted"
+msgstr ""
 
 #: ../src/configlet.c:775
 #, c-format
@@ -209,7 +208,7 @@ msgid "URI list dropped on widget had wrong format (%d) or length (%d)"
 msgstr "Az elemre ejtett URL lista hibás formátumú (%d) vagy hosszúságú (%d)"
 
 #: ../src/getname.c:76 ../src/multitab.c:1312 ../src/multitab.c:1358
-#: ../src/multitab.c:1425 ../src/roxterm.c:2489
+#: ../src/multitab.c:1425 ../src/roxterm.c:2492
 msgid "_Cancel"
 msgstr "_Mégse"
 
@@ -262,279 +261,6 @@ msgstr "Nem sikerült a folyamat indítása --fork végrehajtásához: %s"
 msgid "Missing command after -e/--execute option"
 msgstr "Nincs megadva parancs a -e vagy --execute kapcsolóhoz"
 
-#: ../src/menutree.c:116
-msgid "_SSH to host"
-msgstr "_SSH egy gépre"
-
-#: ../src/menutree.c:117
-msgid "_Open link"
-msgstr "_Hivatkozás megnyitása"
-
-#: ../src/menutree.c:118
-msgid "Send e_mail"
-msgstr "_E-mail küldése"
-
-#: ../src/menutree.c:119
-msgid "_Open file/directory in filer"
-msgstr "_Fájl vagy mappa megnyitása"
-
-#: ../src/menutree.c:120
-msgid "_Call"
-msgstr "_Hívás"
-
-#: ../src/menutree.c:121
-msgid "_Copy address to clipboard"
-msgstr "_Cím másolása a vágólapra"
-
-#: ../src/menutree.c:122
-msgid "_"
-msgstr "_"
-
-#: ../src/menutree.c:124
-msgid "_Search"
-msgstr "_Keresés"
-
-#: ../src/menutree.c:126
-msgid "_File"
-msgstr "_Fájl"
-
-#: ../src/menutree.c:127 ../src/roxterm-config.ui:747
-#: ../src/roxterm-config.ui:843 ../src/roxterm-config.ui:1097
-msgid "_Edit"
-msgstr "S_zerkesztés"
-
-#: ../src/menutree.c:128
-msgid "_View"
-msgstr "_Nézet"
-
-#: ../src/menutree.c:130
-msgid "_Preferences"
-msgstr "_Beállítások"
-
-#: ../src/menutree.c:131
-msgid "Ta_bs"
-msgstr "_Lapok"
-
-#: ../src/menutree.c:132
-msgid "_Help"
-msgstr "_Súgó"
-
-#: ../src/menutree.c:135
-msgid "Select _All"
-msgstr "Ö_sszes kijelölése"
-
-#: ../src/menutree.c:137
-msgid "_Paste"
-msgstr "_Beillesztés"
-
-#: ../src/menutree.c:138
-msgid "Cop_y & Paste"
-msgstr "Más_olás és beillesztés"
-
-#: ../src/menutree.c:142
-msgid "_Reset"
-msgstr "_Visszaállítás"
-
-#: ../src/menutree.c:143
-msgid "Reset And C_lear"
-msgstr "Visszaállítás és _törlés"
-
-#: ../src/menutree.c:146
-msgid "Show Menu_bar"
-msgstr "_Menü megjelenítése"
-
-#: ../src/menutree.c:149
-msgid "Select _Profile"
-msgstr "_Profil kiválasztása"
-
-#: ../src/menutree.c:150
-msgid "Select _Colour Scheme"
-msgstr "_Színséma kiválasztása"
-
-#: ../src/menutree.c:151
-msgid "Select _Shortcuts Scheme"
-msgstr "_Gyorsbillentyűk kiválasztása"
-
-#: ../src/menutree.c:153
-msgid "_Edit Current Profile"
-msgstr "Jelenlegi p_rofil szerkesztése"
-
-#: ../src/menutree.c:154
-msgid "E_dit Current Colour Scheme"
-msgstr "Jelenlegi s_zínséma szerkesztése"
-
-#: ../src/menutree.c:159
-msgid "Configuration _Manager"
-msgstr "_Beállításkezelő"
-
-#: ../src/menutree.c:335
-msgid "_New Window"
-msgstr "Új _ablak"
-
-#: ../src/menutree.c:336
-msgid "New _Tab"
-msgstr "Új _lap"
-
-#: ../src/menutree.c:337
-msgid "New _Window With Profile"
-msgstr "Új ablak _profillal"
-
-#: ../src/menutree.c:338
-msgid "New Tab With _Profile"
-msgstr "Új lap p_rofillal"
-
-#: ../src/menutree.c:339
-msgid "C_lose Tab"
-msgstr "Lap be_zárása"
-
-#: ../src/menutree.c:340
-msgid "_Close Window"
-msgstr "Ablak _bezárása"
-
-#: ../src/menutree.c:342
-msgid "Save Buffer _As..."
-msgstr "Pu_ffer mentése mint..."
-
-#: ../src/menutree.c:343
-msgid "Save _Buffer"
-msgstr "Puffer menté_se"
-
-#: ../src/menutree.c:345
-msgid "_Save Session..."
-msgstr "_Munkamenet mentése..."
-
-#: ../src/menutree.c:353 ../src/menutree.c:364
-msgid "Profiles"
-msgstr "Profilok"
-
-#: ../src/menutree.c:376
-msgid "_Set Window Title..."
-msgstr "Ablak_címsor beállítása"
-
-#: ../src/menutree.c:379
-msgid "Res_tart command"
-msgstr "_Parancs újraindítása"
-
-#: ../src/menutree.c:387
-msgid "_Always Show Tab Bar"
-msgstr "Lapok min_dig láthatóak"
-
-#: ../src/menutree.c:388
-msgid "_Full Screen"
-msgstr "Teljes ké_pernyő"
-
-#: ../src/menutree.c:389 ../src/roxterm-config.ui:1888
-msgid "_Borderless"
-msgstr "K_eret nélkül"
-
-#: ../src/menutree.c:391
-msgid "Zoom _In"
-msgstr "_Nagyítás"
-
-#: ../src/menutree.c:392
-msgid "Zoom _Out"
-msgstr "_Kicsinyítés"
-
-#: ../src/menutree.c:393
-msgid "_Normal Size"
-msgstr "N_ormál méret"
-
-#: ../src/menutree.c:395
-msgid "Scroll _Up One Line"
-msgstr "Görgetés fel egy _sorral"
-
-#: ../src/menutree.c:396
-msgid "Scroll _Down One Line"
-msgstr "Görgetés le eg_y sorral"
-
-#: ../src/menutree.c:397
-msgid "Scroll Up One _Page"
-msgstr "Görgetés _felfelé egy oldalt"
-
-#: ../src/menutree.c:398
-msgid "Scroll Do_wn One Page"
-msgstr "Görgetés _lefelé egy oldalt"
-
-#: ../src/menutree.c:399
-msgid "Scroll Up One _Half Page"
-msgstr "_Görgetés felfelé fél oldalt"
-
-#: ../src/menutree.c:400
-msgid "Scroll Down One Hal_f Page"
-msgstr "Gö_rgetés lefelé fél oldalt"
-
-#: ../src/menutree.c:401
-msgid "Scroll To _Top"
-msgstr "Görgetés a _tetejére"
-
-#: ../src/menutree.c:402
-msgid "Scroll To _Bottom"
-msgstr "Görgetés az _aljára"
-
-#: ../src/menutree.c:409
-msgid "_Find..."
-msgstr "_Keresés..."
-
-#: ../src/menutree.c:410
-msgid "Find _Next"
-msgstr "Következő ke_resése"
-
-#: ../src/menutree.c:411
-msgid "Find _Previous"
-msgstr "_Előző keresése"
-
-#: ../src/menutree.c:419
-msgid "Edi_t Current Shortcuts Scheme"
-msgstr "Jelenlegi g_yorsbillentyűk szerkesztése"
-
-#: ../src/menutree.c:427
-msgid "_Detach Tab"
-msgstr "Lap le_választása"
-
-#: ../src/menutree.c:428
-msgid "_Close Tab"
-msgstr "Lap be_zárása"
-
-#: ../src/menutree.c:429
-msgid "Close _Other Tabs"
-msgstr "_Többi lap bezárása"
-
-#: ../src/menutree.c:430
-msgid "Na_me Tab..."
-msgstr "Lap el_nevezése..."
-
-#: ../src/menutree.c:432
-msgid "_Previous Tab"
-msgstr "_Előző lap"
-
-#: ../src/menutree.c:433
-msgid "_Next Tab"
-msgstr "_Következő lap"
-
-#: ../src/menutree.c:435
-msgid "Move Tab _Left"
-msgstr "Lap mozgatása _balra"
-
-#: ../src/menutree.c:436
-msgid "Move Tab _Right"
-msgstr "Lap mozgatása _jobbra"
-
-#: ../src/menutree.c:443
-msgid "Show _Manual"
-msgstr "_Kézikönyv megjelenítése"
-
-#: ../src/menutree.c:444
-msgid "_About ROXTerm"
-msgstr "A ROXTerm _névjegye"
-
-#: ../src/menutree.c:680
-msgid "Move Tab _Up"
-msgstr "Lap mozgatása _fel"
-
-#: ../src/menutree.c:682
-msgid "Move Tab _Down"
-msgstr "Lap mozgatása _le"
-
 #: ../src/multitab.c:1309
 msgid "Name Tab"
 msgstr "Lap elnevezése"
@@ -547,18 +273,19 @@ msgstr "_Alkalmazás"
 msgid "Save Session"
 msgstr "Munkamenet mentése"
 
-#: ../src/multitab.c:1359 ../src/roxterm.c:2491
+#: ../src/multitab.c:1359 ../src/roxterm.c:2494
 msgid "_Save"
 msgstr "_Mentés"
 
 #: ../src/multitab.c:1366
 msgid ""
-"The current session will be saved in $XDG_CONFIG_HOME/roxterm.sourceforge."
-"net/UserSessions/ with the given leafname (XDG_CONFIG_HOME defaults to ~/."
-"config). A session saves the state of current windows and tabs but not the "
-"terminals' text content. A session can be restored with roxterm's --session "
-"command-line option, or will be restored automatically if named 'Default'. "
-"Leaving the field blank is equivalent to 'Default'."
+"The current session will be saved in $XDG_CONFIG_HOME/"
+"roxterm.sourceforge.net/UserSessions/ with the given leafname "
+"(XDG_CONFIG_HOME defaults to ~/.config). A session saves the state of "
+"current windows and tabs but not the terminals' text content. A session can "
+"be restored with roxterm's --session command-line option, or will be "
+"restored automatically if named 'Default'. Leaving the field blank is "
+"equivalent to 'Default'."
 msgstr ""
 "A jelenlegi munkamenet a $XDG_CONFIG_HOME/roxterm.sourceforge.net/"
 "UserSessions/ mappába kerül mentésre a megadott névvel (az XDG_CONFIG_HOME "
@@ -584,8 +311,8 @@ msgid ""
 "tabs and or '%%' for a literal '%'. Other '%' sequences are passed through. "
 "Apply an empty string here to use the profile's title string."
 msgstr ""
-"A címsor beállítás a következő behelyettesítéseket tartalmazhatja: '%s' "
-"az aktuális lap neve vagy ablakcíme, '%t' az aktív lap sorszáma, '%n' a "
+"A címsor beállítás a következő behelyettesítéseket tartalmazhatja: '%s' az "
+"aktuális lap neve vagy ablakcíme, '%t' az aktív lap sorszáma, '%n' a "
 "megnyitott lapok száma, '%%' egy százalékjel. Más '%' parancsok továbbadásra "
 "kerülnek. Üres érték megadásakor a profil neve kerül felhasználásra."
 
@@ -698,7 +425,7 @@ msgstr "A könyvtár létrehozása nem sikerült: '%s'"
 msgid "Unable to copy profile/scheme: %s"
 msgstr "A profil vagy séma átnevezése nem sikerült: %s"
 
-#: ../src/optsfile.c:493 ../src/shortcuts.c:202
+#: ../src/optsfile.c:493 ../src/shortcuts.c:219
 msgid "unknown reason"
 msgstr "oka ismeretlen"
 
@@ -753,50 +480,49 @@ msgstr "A bejelentkezési adatok kikeresése nem sikerült: %s"
 msgid "Failed to run command"
 msgstr "A parancs futtatása nem sikerült"
 
-#: ../src/roxterm.c:747
+#: ../src/roxterm.c:750
 #, c-format
 msgid "Unable to parse command '%s'"
 msgstr "A parancs értelmezése nem sikerült: '%s'"
 
-#: ../src/roxterm.c:883
+#: ../src/roxterm.c:886
 #, c-format
 msgid "Unable to open URI %s: %s"
 msgstr "Az URI megnyitása nem sikerült: %s %s"
 
-#: ../src/roxterm.c:1009
+#: ../src/roxterm.c:1012
 #, c-format
 msgid "Saturation option %f out of range"
 msgstr "A telítettség opció %f tartományon kívül esik"
 
-#: ../src/roxterm.c:1270
+#: ../src/roxterm.c:1273
 #, c-format
 msgid "Couldn't create a font from '%s'"
 msgstr "Betűkészlet létrehozása nem sikerült: '%s'"
 
-#: ../src/roxterm.c:1593 ../src/roxterm.c:3535
+#: ../src/roxterm.c:1596 ../src/roxterm.c:3538
 msgid "ROXTerm"
 msgstr "ROXTerm"
 
-#: ../src/roxterm.c:1636
+#: ../src/roxterm.c:1639
 #, c-format
 msgid "No menu item matches profile/scheme '%s'"
 msgstr "Egyetlen menüelem sem illeszkedik a profilra vagy sémára: '%s'"
 
-#: ../src/roxterm.c:1818
+#: ../src/roxterm.c:1821
 msgid "Kill current task?"
 msgstr "Kilövi a jelenlegi folyamatot?"
 
-#: ../src/roxterm.c:1819
+#: ../src/roxterm.c:1822
 msgid ""
 "The current task is still running; to restart it the current instance must "
 "be killed. Do you want to kill the current task to replace it with a new "
 "instance?"
 msgstr ""
-"A jelenlegi folyamat még fut. A jelenlegi példány újraindításához "
-"ki kell lőni. Kilövi a jelenlegi folyamatot és elindít helyette egy új "
-"példányt?"
+"A jelenlegi folyamat még fut. A jelenlegi példány újraindításához ki kell "
+"lőni. Kilövi a jelenlegi folyamatot és elindít helyette egy új példányt?"
 
-#: ../src/roxterm.c:2052
+#: ../src/roxterm.c:2055
 msgid ""
 "The command in this terminal has terminated. What do you want to do with the "
 "terminal now?"
@@ -804,19 +530,19 @@ msgstr ""
 "Az ebben a terminálban futó parancs befejeződött. Mit történjen ezzel a "
 "terminállal?"
 
-#: ../src/roxterm.c:2057
+#: ../src/roxterm.c:2060
 msgid "Close"
 msgstr "Záródjon be"
 
-#: ../src/roxterm.c:2059
+#: ../src/roxterm.c:2062
 msgid "Leave open"
 msgstr "Maradjon nyitva"
 
-#: ../src/roxterm.c:2061
+#: ../src/roxterm.c:2064
 msgid "Rerun command"
 msgstr "Induljon újra a parancs"
 
-#: ../src/roxterm.c:2113
+#: ../src/roxterm.c:2116
 msgid ""
 "\n"
 ".\n"
@@ -824,232 +550,232 @@ msgstr ""
 "\n"
 ".\n"
 
-#: ../src/roxterm.c:2177
+#: ../src/roxterm.c:2180
 #, c-format
 msgid "Unknown colour scheme '%s'"
 msgstr "Ismeretlen színséma: '%s'"
 
-#: ../src/roxterm.c:2205 ../src/roxterm.c:2262 ../src/roxterm.c:2305
-#: ../src/roxterm.c:2346
+#: ../src/roxterm.c:2208 ../src/roxterm.c:2265 ../src/roxterm.c:2308
+#: ../src/roxterm.c:2349
 #, c-format
 msgid "Menu item has no '%s' data"
 msgstr "A menüelemnek nincs '%s' adata"
 
-#: ../src/roxterm.c:2214 ../src/roxterm.c:2288
+#: ../src/roxterm.c:2217 ../src/roxterm.c:2291
 #, c-format
 msgid "Profile '%s' not found"
 msgstr "A(z) '%s' profil nem található"
 
-#: ../src/roxterm.c:2327
+#: ../src/roxterm.c:2330
 #, c-format
 msgid "Colour scheme '%s' not found"
 msgstr "A(z) '%s' színséma nem található"
 
-#: ../src/roxterm.c:2469
+#: ../src/roxterm.c:2472
 msgid "Unknown error"
 msgstr "Ismeretlen hiba"
 
-#: ../src/roxterm.c:2471
+#: ../src/roxterm.c:2474
 #, c-format
 msgid "Unable to save buffer to '%s': %s"
 msgstr "A puffer mentése nem sikerült: '%s': %s"
 
-#: ../src/roxterm.c:2486
+#: ../src/roxterm.c:2489
 msgid "Save Terminal Buffer"
 msgstr "Terminálpuffer mentése"
 
-#: ../src/roxterm.c:2499
+#: ../src/roxterm.c:2502
 msgid "Untitled"
 msgstr "Névtelen"
 
-#: ../src/roxterm.c:3596
+#: ../src/roxterm.c:3599
 #, c-format
 msgid "Unknown option type (%d)"
 msgstr "Ismeretlen opciótípus (%d)"
 
-#: ../src/roxterm.c:3978
+#: ../src/roxterm.c:3981
 #, c-format
 msgid "Profile/key '%s/%s' not understood"
 msgstr "A profil vagy kulcs nem értelmezhető: '%s/%s'"
 
-#: ../src/roxterm.c:4074
+#: ../src/roxterm.c:4077
 #, c-format
 msgid "Changed options family '%s' not known"
 msgstr "A megváltozott opciókészlet ismeretlen: '%s'"
 
-#: ../src/roxterm.c:4089
+#: ../src/roxterm.c:4092
 msgid "[Deleted]"
 msgstr "[Törölve]"
 
-#: ../src/roxterm.c:4112
+#: ../src/roxterm.c:4115
 #, c-format
 msgid "Options family change action '%s' not known"
 msgstr "Az opciókészletet megváltoztató művelet ismeretlen: '%s'"
 
-#: ../src/roxterm.c:4211
+#: ../src/roxterm.c:4214
 #, c-format
 msgid ""
 "Invalid ROXTERM_ID %p in D-Bus message (this is expected if you used "
 "roxterm's --separate option)"
 msgstr ""
-"Érvénytelen ROXTERM_ID %p a D-Bus üzenetben (ez normális, ha a "
-"roxtermet a --separate kapcsolóval használja)"
+"Érvénytelen ROXTERM_ID %p a D-Bus üzenetben (ez normális, ha a roxtermet a --"
+"separate kapcsolóval használja)"
 
-#: ../src/roxterm.c:4235
+#: ../src/roxterm.c:4238
 #, c-format
 msgid "Unknown profile '%s' in D-Bus signal"
 msgstr "Ismeretlen profil a D-Bus üzenetben: '%s'"
 
-#: ../src/roxterm.c:4334
+#: ../src/roxterm.c:4337
 msgid "Invalid geometry specification"
 msgstr "Érvénytelen geometria meghatározás"
 
-#: ../src/roxterm.c:4682
+#: ../src/roxterm.c:4685
 msgid ""
 "Closing this ROXTerm tab may cause loss of data. Are you sure you want to "
 "continue?"
 msgstr "A ROXTerm lap bezárása adatvesztéssel járhat. Biztos, hogy folytatja?"
 
-#: ../src/roxterm.c:4686
+#: ../src/roxterm.c:4689
 msgid ""
 "You are about to close a ROXTerm window; this may cause loss of data. Are "
 "you sure you want to continue?"
 msgstr ""
 "A ROXTerm ablak bezárása adatvesztéssel járhat. Biztos, hogy folytatja?"
 
-#: ../src/roxterm.c:4690
+#: ../src/roxterm.c:4693
 msgid ""
 "You are about to close a window containing multiple ROXTerm tabs; this may "
 "cause loss of data. Are you sure you want to continue?"
 msgstr ""
-"Több lappal rendelkező ROXTerm ablak bezárása adatvesztéssel járhat. "
-"Biztos, hogy folytatja?"
+"Több lappal rendelkező ROXTerm ablak bezárása adatvesztéssel járhat. Biztos, "
+"hogy folytatja?"
 
-#: ../src/roxterm.c:4699
+#: ../src/roxterm.c:4702
 msgid "ROXTerm: Confirm close"
 msgstr "ROXTerm: Bezárás jóváhagyása"
 
-#: ../src/roxterm.c:4704
+#: ../src/roxterm.c:4707
 msgid "_Don't show this again"
 msgstr "_Ne jelenjen meg újra"
 
-#: ../src/roxterm.c:4712
+#: ../src/roxterm.c:4715
 msgid "Only warn if tasks are still _running"
 msgstr "Csak akkor, ha még _fut valamilyen folyamat"
 
-#: ../src/roxterm.c:4814
+#: ../src/roxterm.c:4817
 #, c-format
 msgid "Unable to spawn command %s: %s"
 msgstr "A parancs indítása nem sikerült: %s: %s"
 
-#: ../src/roxterm.c:4976
+#: ../src/roxterm.c:4979
 #, c-format
 msgid "Unknown <window> attribute '%s'"
 msgstr "Ismeretlen <window> attribútum: '%s'"
 
-#: ../src/roxterm.c:5026
+#: ../src/roxterm.c:5029
 msgid "Session contains window with no valid tabs"
 msgstr "A munkamenet egyik ablakának nincs érvényes lapja"
 
-#: ../src/roxterm.c:5161
+#: ../src/roxterm.c:5164
 msgid "<command> with no arguments"
 msgstr "<command> argumentumok nélkül"
 
-#: ../src/roxterm.c:5207
+#: ../src/roxterm.c:5210
 #, c-format
 msgid "Unknown <command> attribute '%s'"
 msgstr "Ismeretlen <command> attribútum: '%s'"
 
-#: ../src/roxterm.c:5219
+#: ../src/roxterm.c:5222
 msgid "<command> missing argc attribute"
 msgstr "<command> nem rendelkezik argc attribútummal"
 
-#: ../src/roxterm.c:5233
+#: ../src/roxterm.c:5236
 #, c-format
 msgid "Too many <arg> elements for <command argc='%d>"
 msgstr "Túl sok <arg> elem a <command argc='%d> elemhez"
 
-#: ../src/roxterm.c:5250
+#: ../src/roxterm.c:5253
 #, c-format
 msgid "Unknown <arg> attribute '%s'"
 msgstr "Ismeretlen <arg> attribútum: '%s'"
 
-#: ../src/roxterm.c:5262
+#: ../src/roxterm.c:5265
 msgid "<arg> missing s attribute"
 msgstr "<arg> nem rendelkezik s attribútummal"
 
-#: ../src/roxterm.c:5282
+#: ../src/roxterm.c:5285
 #, c-format
 msgid "Unknown <roxterm_session> attribute '%s'"
 msgstr "Ismeretlen <roxterm_session> attribútum: '%s'"
 
-#: ../src/roxterm.c:5301
+#: ../src/roxterm.c:5304
 msgid "<roxterm_session> tag nested within <window>"
 msgstr "<roxterm_session> beágyazva <window> elembe"
 
-#: ../src/roxterm.c:5315
+#: ../src/roxterm.c:5318
 msgid "<window> tag not within <roxterm_session>"
 msgstr "<window> nincs beágyazva <roxterm_session> elembe"
 
-#: ../src/roxterm.c:5320
+#: ../src/roxterm.c:5323
 msgid "<window> tag nested within another <window>"
 msgstr "<window> beágyazva egy másik <window> elembe"
 
-#: ../src/roxterm.c:5332
+#: ../src/roxterm.c:5335
 msgid "<tab> tag not within <window>"
 msgstr "<tab> nincs beágyazva <window> elembe"
 
-#: ../src/roxterm.c:5337
+#: ../src/roxterm.c:5340
 msgid "<tab> tag nested within another <tab>"
 msgstr "<tab> beágyazva egy másik <tab> elembe"
 
-#: ../src/roxterm.c:5349
+#: ../src/roxterm.c:5352
 msgid "<command> tag not within <tab>"
 msgstr "<command> nincs beágyazva <tab> elembe"
 
-#: ../src/roxterm.c:5354
+#: ../src/roxterm.c:5357
 msgid "<command> tag nested within another <command>"
 msgstr "<command> beágyazva egy másik <command> elembe"
 
-#: ../src/roxterm.c:5366
+#: ../src/roxterm.c:5369
 msgid "<arg> tag not within <command>"
 msgstr "<arg> nincs beágyazva <command> elembe"
 
-#: ../src/roxterm.c:5376
+#: ../src/roxterm.c:5379
 #, c-format
 msgid "Unknown element <%s>"
 msgstr "Ismeretlen elem: <%s>"
 
-#: ../src/roxterm.c:5392
+#: ../src/roxterm.c:5395
 msgid "Unmatched </roxterm_session>"
 msgstr "Pár nélküli </roxterm_session>"
 
-#: ../src/roxterm.c:5397
+#: ../src/roxterm.c:5400
 msgid "Attempt to close <roxterm_session> without closing <window>"
 msgstr "<roxterm_session> bezárása <window> bezárása nélkül"
 
-#: ../src/roxterm.c:5410
+#: ../src/roxterm.c:5413
 msgid "Unmatched </window>"
 msgstr "Pár nélküli </window>"
 
-#: ../src/roxterm.c:5415
+#: ../src/roxterm.c:5418
 msgid "Attempt to close <window> without closing <tab>"
 msgstr "<window> bezárása <tab> bezárása nélkül"
 
-#: ../src/roxterm.c:5427
+#: ../src/roxterm.c:5430
 msgid "Unmatched </tab>"
 msgstr "Pár nélküli </tab>"
 
-#: ../src/roxterm.c:5441
+#: ../src/roxterm.c:5444
 msgid "Unmatched </command>"
 msgstr "Pár nélküli </command>"
 
-#: ../src/roxterm.c:5447
+#: ../src/roxterm.c:5450
 #, c-format
 msgid "Unknown closing element </%s>"
 msgstr "Ismeretlen záró elem: </%s>"
 
-#: ../src/roxterm.c:5457
+#: ../src/roxterm.c:5460
 #, c-format
 msgid "Unable to parse data for session '%s': %s"
 msgstr "A munkamenet adatainak értelmezése nem sikerült: '%s': %s"
@@ -1174,7 +900,7 @@ msgstr "Keresés"
 msgid "_Close"
 msgstr "_Bezárás"
 
-#: ../src/search.c:316
+#: ../src/search.c:316 ../src/menutree.c:521
 msgid "_Find"
 msgstr "_Keresés"
 
@@ -1183,8 +909,8 @@ msgid ""
 "A search string or perl-compatible regular expression. An empty string "
 "clears any previous search."
 msgstr ""
-"Keresendő szöveg vagy Perl szerinti reguláris kifejezés. Üres érték "
-"törli a korábbi keresést."
+"Keresendő szöveg vagy Perl szerinti reguláris kifejezés. Üres érték törli a "
+"korábbi keresést."
 
 #: ../src/search.c:338
 msgid "Match C_ase"
@@ -1250,24 +976,24 @@ msgstr "Ablak felhasználói adatok nélkül"
 msgid "Unable to load session from '%s': %s"
 msgstr "A munkamenet betöltése nem sikerült: '%s': %s"
 
-#: ../src/shortcuts.c:199
+#: ../src/shortcuts.c:216
 #, c-format
 msgid "Unable to read keys from shortcuts file %s: %s"
 msgstr "A gyorsbillentyűfájl betöltése nem sikerült: %s: %s"
 
-#: ../src/shortcuts.c:244
+#: ../src/shortcuts.c:277
 #, c-format
 msgid "Shortcut '%s' in '%s' has invalid value"
 msgstr "A(z) '%s' gyorsbillentyű értéke érvénytelen: %s"
 
-#: ../src/shortcuts.c:398
+#: ../src/shortcuts.c:431
 msgid ""
 "Unable to find a text editor. Please install gedit, gvim, kate or emacs."
 msgstr ""
-"Szövegszerkesztő nem található. Telepítse ezek egyikét:  gedit, gvim, kate"
-" vagy emacs."
+"Szövegszerkesztő nem található. Telepítse ezek egyikét:  gedit, gvim, kate "
+"vagy emacs."
 
-#: ../src/shortcuts.c:422
+#: ../src/shortcuts.c:455
 #, c-format
 msgid "Error trying to edit or monitor Shortcuts file '%s': %s"
 msgstr "Hiba a szerkesztés vagy ellenőrzés során. Gyorsbillentyűfájl: '%s': %s"
@@ -1454,6 +1180,275 @@ msgid ""
 msgstr ""
 "A parancssor további részét futtassa a\n"
 "                                   terminálban. Csak utolsóként szerepelhet."
+
+#: ../src/menutree.c:152
+msgid "_SSH to host"
+msgstr "_SSH egy gépre"
+
+#: ../src/menutree.c:153
+msgid "_Open link"
+msgstr "_Hivatkozás megnyitása"
+
+#: ../src/menutree.c:154
+msgid "Send e_mail"
+msgstr "_E-mail küldése"
+
+#: ../src/menutree.c:155
+msgid "_Open file/directory in filer"
+msgstr "_Fájl vagy mappa megnyitása"
+
+#: ../src/menutree.c:156
+msgid "_Call"
+msgstr "_Hívás"
+
+#: ../src/menutree.c:157
+msgid "_Copy address to clipboard"
+msgstr "_Cím másolása a vágólapra"
+
+#: ../src/menutree.c:158
+msgid "_"
+msgstr "_"
+
+#: ../src/menutree.c:160
+msgid "_Search"
+msgstr "_Keresés"
+
+#: ../src/menutree.c:162
+msgid "_File"
+msgstr "_Fájl"
+
+#: ../src/menutree.c:163 ../src/roxterm-config.ui:747
+#: ../src/roxterm-config.ui:843 ../src/roxterm-config.ui:1097
+msgid "_Edit"
+msgstr "S_zerkesztés"
+
+#: ../src/menutree.c:164
+msgid "_View"
+msgstr "_Nézet"
+
+#: ../src/menutree.c:166
+msgid "_Preferences"
+msgstr "_Beállítások"
+
+#: ../src/menutree.c:167
+msgid "Ta_bs"
+msgstr "_Lapok"
+
+#: ../src/menutree.c:168
+msgid "_Help"
+msgstr "_Súgó"
+
+#: ../src/menutree.c:171
+msgid "Select _All"
+msgstr "Ö_sszes kijelölése"
+
+#: ../src/menutree.c:173
+msgid "_Paste"
+msgstr "_Beillesztés"
+
+#: ../src/menutree.c:174
+msgid "Cop_y & Paste"
+msgstr "Más_olás és beillesztés"
+
+#: ../src/menutree.c:178
+msgid "_Reset"
+msgstr "_Visszaállítás"
+
+#: ../src/menutree.c:179
+msgid "Reset And C_lear"
+msgstr "Visszaállítás és _törlés"
+
+#: ../src/menutree.c:182
+msgid "Show Menu_bar"
+msgstr "_Menü megjelenítése"
+
+#: ../src/menutree.c:185
+msgid "Select _Profile"
+msgstr "_Profil kiválasztása"
+
+#: ../src/menutree.c:186
+msgid "Select _Colour Scheme"
+msgstr "_Színséma kiválasztása"
+
+#: ../src/menutree.c:187
+msgid "Select _Shortcuts Scheme"
+msgstr "_Gyorsbillentyűk kiválasztása"
+
+#: ../src/menutree.c:189
+msgid "_Edit Current Profile"
+msgstr "Jelenlegi p_rofil szerkesztése"
+
+#: ../src/menutree.c:190
+msgid "E_dit Current Colour Scheme"
+msgstr "Jelenlegi s_zínséma szerkesztése"
+
+#: ../src/menutree.c:195
+msgid "Configuration _Manager"
+msgstr "_Beállításkezelő"
+
+#: ../src/menutree.c:447
+msgid "_New Window"
+msgstr "Új _ablak"
+
+#: ../src/menutree.c:448
+msgid "New _Tab"
+msgstr "Új _lap"
+
+#: ../src/menutree.c:449
+msgid "New _Window With Profile"
+msgstr "Új ablak _profillal"
+
+#: ../src/menutree.c:450
+msgid "New Tab With _Profile"
+msgstr "Új lap p_rofillal"
+
+#: ../src/menutree.c:451
+msgid "C_lose Tab"
+msgstr "Lap be_zárása"
+
+#: ../src/menutree.c:452
+msgid "_Close Window"
+msgstr "Ablak _bezárása"
+
+#: ../src/menutree.c:454
+msgid "Save Buffer _As"
+msgstr "Pu_ffer mentése mint"
+
+#: ../src/menutree.c:455
+msgid "Save _Buffer"
+msgstr "Puffer menté_se"
+
+#: ../src/menutree.c:457
+msgid "_Save Session"
+msgstr "_Munkamenet mentése"
+
+#: ../src/menutree.c:465 ../src/menutree.c:476
+msgid "Profiles"
+msgstr "Profilok"
+
+#: ../src/menutree.c:488
+msgid "_Set Window Title"
+msgstr "Ablak_címsor beállítása"
+
+#: ../src/menutree.c:491
+msgid "Res_tart command"
+msgstr "_Parancs újraindítása"
+
+#: ../src/menutree.c:499
+msgid "_Always Show Tab Bar"
+msgstr "Lapok min_dig láthatóak"
+
+#: ../src/menutree.c:500
+msgid "_Full Screen"
+msgstr "Teljes ké_pernyő"
+
+#: ../src/menutree.c:501
+msgid "_Border_less"
+msgstr ""
+
+#: ../src/menutree.c:503
+msgid "Zoom _In"
+msgstr "_Nagyítás"
+
+#: ../src/menutree.c:504
+msgid "Zoom _Out"
+msgstr "_Kicsinyítés"
+
+#: ../src/menutree.c:505
+msgid "_Normal Size"
+msgstr "N_ormál méret"
+
+#: ../src/menutree.c:507
+msgid "Scroll _Up One Line"
+msgstr "Görgetés fel egy _sorral"
+
+#: ../src/menutree.c:508
+msgid "Scroll _Down One Line"
+msgstr "Görgetés le eg_y sorral"
+
+#: ../src/menutree.c:509
+msgid "Scroll Up One _Page"
+msgstr "Görgetés _felfelé egy oldalt"
+
+#: ../src/menutree.c:510
+msgid "Scroll Do_wn One Page"
+msgstr "Görgetés _lefelé egy oldalt"
+
+#: ../src/menutree.c:511
+msgid "Scroll Up One _Half Page"
+msgstr "_Görgetés felfelé fél oldalt"
+
+#: ../src/menutree.c:512
+msgid "Scroll Down One Hal_f Page"
+msgstr "Gö_rgetés lefelé fél oldalt"
+
+#: ../src/menutree.c:513
+msgid "Scroll To _Top"
+msgstr "Görgetés a _tetejére"
+
+#: ../src/menutree.c:514
+msgid "Scroll To _Bottom"
+msgstr "Görgetés az _aljára"
+
+#: ../src/menutree.c:522
+msgid "Find _Next"
+msgstr "Következő ke_resése"
+
+#: ../src/menutree.c:523
+msgid "Find _Previous"
+msgstr "_Előző keresése"
+
+#: ../src/menutree.c:531
+msgid "Edi_t Current Shortcuts Scheme"
+msgstr "Jelenlegi g_yorsbillentyűk szerkesztése"
+
+#: ../src/menutree.c:539
+msgid "_Detach Tab"
+msgstr "Lap le_választása"
+
+#: ../src/menutree.c:540
+msgid "_Close Tab"
+msgstr "Lap be_zárása"
+
+#: ../src/menutree.c:541
+msgid "Close _Other Tabs"
+msgstr "_Többi lap bezárása"
+
+#: ../src/menutree.c:542
+msgid "Na_me Tab"
+msgstr "Lap el_nevezése"
+
+#: ../src/menutree.c:544
+msgid "_Previous Tab"
+msgstr "_Előző lap"
+
+#: ../src/menutree.c:545
+msgid "_Next Tab"
+msgstr "_Következő lap"
+
+#: ../src/menutree.c:547
+msgid "Move Tab _Left"
+msgstr "Lap mozgatása _balra"
+
+#: ../src/menutree.c:548
+msgid "Move Tab _Right"
+msgstr "Lap mozgatása _jobbra"
+
+#: ../src/menutree.c:555
+msgid "Show _Manual"
+msgstr "_Kézikönyv megjelenítése"
+
+#: ../src/menutree.c:556
+msgid "_About ROXTerm"
+msgstr "A ROXTerm _névjegye"
+
+#: ../src/menutree.c:802
+msgid "Move Tab _Up"
+msgstr "Lap mozgatása _fel"
+
+#: ../src/menutree.c:804
+msgid "Move Tab _Down"
+msgstr "Lap mozgatása _le"
 
 #: ../src/profilegui.c:585
 msgid "Text"
@@ -1887,6 +1882,10 @@ msgstr "Lap _hozzáadása gomb"
 msgid "Enables a button in the tab bar which adds a new tab when clicked."
 msgstr "Bekapcsolásakor a lapok sorában megjelenik egy gomb új lap nyitásához."
 
+#: ../src/roxterm-config.ui:1888
+msgid "_Borderless"
+msgstr "K_eret nélkül"
+
 #: ../src/roxterm-config.ui:1895
 msgid ""
 "If this option is enabled and if the window manager supports it, then the "
@@ -1942,8 +1941,8 @@ msgid ""
 "name/window title, '%t' for the active tab's number, '%n' for the number of "
 "tabs and or '%%' for a literal '%'. Other '%' sequences are passed through."
 msgstr ""
-"A címsor beállítás a következő behelyettesítéseket tartalmazhatja: '%s' "
-"az aktuális lap neve vagy ablakcíme, '%t' az aktív lap sorszáma, '%n' a "
+"A címsor beállítás a következő behelyettesítéseket tartalmazhatja: '%s' az "
+"aktuális lap neve vagy ablakcíme, '%t' az aktív lap sorszáma, '%n' a "
 "megnyitott lapok száma, '%%' egy százalékjel. Más '%' parancsok továbbadásra "
 "kerülnek."
 
@@ -1975,67 +1974,67 @@ msgstr "<i><small>Átlátszatlan</small></i>"
 msgid "<b>Appearance</b>"
 msgstr "<b>Megjelenés</b>"
 
-#: ../src/roxterm-config.ui:2264
+#: ../src/roxterm-config.ui:2265
 msgid "_Default shell"
 msgstr "Alap _parancsértelmező"
 
-#: ../src/roxterm-config.ui:2281
+#: ../src/roxterm-config.ui:2282
 msgid "_Login shell"
 msgstr "_Bejelentkezési parancsértelmező"
 
-#: ../src/roxterm-config.ui:2286
+#: ../src/roxterm-config.ui:2287
 msgid "Whether shells running in the terminal are login shells"
 msgstr "Bekapcsolásakor minden parancsértelmező bejelentkezésiként indul."
 
-#: ../src/roxterm-config.ui:2300
+#: ../src/roxterm-config.ui:2301
 msgid "_Custom command"
 msgstr "_Egyéni parancs"
 
-#: ../src/roxterm-config.ui:2305
+#: ../src/roxterm-config.ui:2306
 msgid "Enable the adjacent custom command for this profile."
 msgstr "A következő mezőben megadott parancs futtatása."
 
-#: ../src/roxterm-config.ui:2323
+#: ../src/roxterm-config.ui:2324
 msgid "Command to run in place of a shell"
 msgstr "A parancsértelmező helyett futtatandó parancs"
 
-#: ../src/roxterm-config.ui:2338
+#: ../src/roxterm-config.ui:2339
 msgid "_Ssh"
 msgstr "_Ssh"
 
-#: ../src/roxterm-config.ui:2343
+#: ../src/roxterm-config.ui:2344
 msgid "Connect to a ssh (secure shell) with this profile."
 msgstr "Kapcsolódás egy ssh szerverhez (távoli bejelentkezés)."
 
-#: ../src/roxterm-config.ui:2361
+#: ../src/roxterm-config.ui:2362
 msgid "Ssh server address. Use the Edit... button to change it."
 msgstr "Ssh szerver címe. A Szerkesztés.. gombbal tudja megváltoztatni."
 
-#: ../src/roxterm-config.ui:2375
+#: ../src/roxterm-config.ui:2376
 msgid "When command e_xits:"
 msgstr "Parancs _befejezésekor:"
 
-#: ../src/roxterm-config.ui:2392
+#: ../src/roxterm-config.ui:2393
 msgid "Exit terminal"
 msgstr "A terminál bezárul"
 
-#: ../src/roxterm-config.ui:2393
+#: ../src/roxterm-config.ui:2394
 msgid "Hold terminal open"
 msgstr "A terminál nyitva marad"
 
-#: ../src/roxterm-config.ui:2394
+#: ../src/roxterm-config.ui:2395
 msgid "Restart command"
 msgstr "A parancs újraindul"
 
-#: ../src/roxterm-config.ui:2395
+#: ../src/roxterm-config.ui:2396
 msgid "Ask user"
 msgstr "Kérdezze meg a mi történjen"
 
-#: ../src/roxterm-config.ui:2410
+#: ../src/roxterm-config.ui:2411
 msgid "_Pause:"
 msgstr "_Várakozás:"
 
-#: ../src/roxterm-config.ui:2425
+#: ../src/roxterm-config.ui:2426
 msgid ""
 "Pause for this number of seconds after the command exits before performing "
 "the action above."
@@ -2043,33 +2042,35 @@ msgstr ""
 "A parancs befejeződése után várakozás a megadott ideig, mielőtt a fentebb "
 "kiválasztott befejezés végrehajtódna."
 
-#: ../src/roxterm-config.ui:2429
+#: ../src/roxterm-config.ui:2430
 msgid "0.0"
 msgstr "0.0"
 
-#: ../src/roxterm-config.ui:2441
+#: ../src/roxterm-config.ui:2442
 msgid "_Edit..."
 msgstr "_Szerkesztés..."
 
-#: ../src/roxterm-config.ui:2446
+#: ../src/roxterm-config.ui:2447
 msgid "Click here to edit the ssh details."
 msgstr "Kattintson ide az ssh adatok szerkesztéséhez."
 
-#: ../src/roxterm-config.ui:2462
+#: ../src/roxterm-config.ui:2463
 msgid "secs"
 msgstr "mp"
 
-#: ../src/roxterm-config.ui:2475 ../src/roxterm-config.ui:2476
+#: ../src/roxterm-config.ui:2476 ../src/roxterm-config.ui:2477
 msgid "SSH program to use when a host name is opened"
 msgstr "A szerverhez kapcsolódáshoz használni kívánt SSH program"
 
-#: ../src/roxterm-config.ui:2478
-msgid "The command used to open ssh URIs."
-msgstr "Az ssh URI címek megnyitásához használni kívánt parancs."
+#: ../src/roxterm-config.ui:2479
+msgid ""
+"The command used to open ssh URIs or if the above Ssh option is selected. "
+"Defaults to 'ssh'."
+msgstr ""
 
 #: ../src/roxterm-config.ui:2496
-msgid "SSH Co_mmand"
-msgstr "SSH _parancs"
+msgid "SSH Co_mmand:"
+msgstr ""
 
 #: ../src/roxterm-config.ui:2514
 msgid "<b>Command</b>"
@@ -2166,8 +2167,9 @@ msgid ""
 "If the \"bell rings\" in a terminal while it isn't the active tab or window, "
 "its tab label will flash and/or its window will be marked \"urgent\"."
 msgstr ""
-"Ha egy hangjelzés lenne hallható az egyik háttérben lévő lapon vagy ablakban, "
-"a lap címkéje villogni fog vagy az ablak \"sürgősként\" kerül megjelölésre."
+"Ha egy hangjelzés lenne hallható az egyik háttérben lévő lapon vagy "
+"ablakban, a lap címkéje villogni fog vagy az ablak \"sürgősként\" kerül "
+"megjelölésre."
 
 #: ../src/roxterm-config.ui:2779
 msgid "_TERM environment variable:"
@@ -2222,8 +2224,8 @@ msgid ""
 "Number of lines of output text to retain in the buffer so that they can "
 "still be viewed by scrolling up"
 msgstr ""
-"A pufferben megőrzendő kimeneti szövegsorok száma, hogy azok "
-"felfelé görgetéssel megtekinthetők legyenek"
+"A pufferben megőrzendő kimeneti szövegsorok száma, hogy azok felfelé "
+"görgetéssel megtekinthetők legyenek"
 
 #: ../src/roxterm-config.ui:2988
 msgid "1000"
@@ -2246,8 +2248,8 @@ msgid ""
 "Whether to superimpose the scrollbar over the terminal or allocate extra "
 "space for it."
 msgstr ""
-"Bekapcsolásakor a görgetősáv a terminál területe felett jelenik meg, és "
-"nem foglal el külön területet."
+"Bekapcsolásakor a görgetősáv a terminál területe felett jelenik meg, és nem "
+"foglal el külön területet."
 
 #: ../src/roxterm-config.ui:3059
 msgid "_Kinetic scrolling"
@@ -2343,13 +2345,27 @@ msgstr "<b>Címkén való középső kattintás hatása</b>"
 msgid "Do n_othing"
 msgstr "_Ne történjen semmi"
 
+#: ../src/roxterm-config.ui:3383
+msgid "Nothing happens if the tab label is middle-clicked."
+msgstr ""
+
 #: ../src/roxterm-config.ui:3397
 msgid "C_lose tab"
 msgstr "Lap _bezárása"
 
+#: ../src/roxterm-config.ui:3401
+msgid "If the tab label is middle-clicked the tab is closed."
+msgstr ""
+
 #: ../src/roxterm-config.ui:3415
 msgid "_Paste tab name"
 msgstr "L_ap nevének beillesztése"
+
+#: ../src/roxterm-config.ui:3419
+msgid ""
+"If the tab label is middle-clicked the tab's name is pasted from the "
+"clipboard."
+msgstr ""
 
 #: ../src/roxterm-config.ui:3433
 msgid "_Wrap when switching tabs"
@@ -2489,38 +2505,59 @@ msgstr "_Puffer mérete"
 msgid "KBytes"
 msgstr "Kilobájt"
 
-#: ../src/roxterm-config.ui:3841
+#: ../src/roxterm-config.ui:3857
+msgid ""
+"Buffer size determines the maximum amount of text that can be clipped at a "
+"time. The amount of raw text is approximately 3/4 of the buffer size due to "
+"base64 encoding overhead."
+msgstr ""
+
+#: ../src/roxterm-config.ui:3884
 msgid "Allow programs to write to the clipboard with OSC 52"
 msgstr "A vágólapra való írás engedélyezése, az OSC52 módszerrel"
 
-#: ../src/roxterm-config.ui:3928
+#: ../src/roxterm-config.ui:3971
 msgid "_Address"
 msgstr "_Cím"
 
-#: ../src/roxterm-config.ui:3942
+#: ../src/roxterm-config.ui:3985
 msgid "Ssh server address."
 msgstr "Ssh szerver címe."
 
-#: ../src/roxterm-config.ui:3959
+#: ../src/roxterm-config.ui:4002
 msgid "_User"
 msgstr "_Felhasználó"
 
-#: ../src/roxterm-config.ui:3973
+#: ../src/roxterm-config.ui:4016
 msgid "Remote username."
 msgstr "A távoli felhasználónév."
 
-#: ../src/roxterm-config.ui:3988
+#: ../src/roxterm-config.ui:4031
 msgid "_Port"
 msgstr "_Port"
 
-#: ../src/roxterm-config.ui:4002
+#: ../src/roxterm-config.ui:4045
 msgid "Ssh server port."
 msgstr "Az ssh szerver kapcsolódási portja."
 
-#: ../src/roxterm-config.ui:4029
+#: ../src/roxterm-config.ui:4072
 msgid "_Other options"
 msgstr "További _kapcsolók"
 
-#: ../src/roxterm-config.ui:4043
+#: ../src/roxterm-config.ui:4086
 msgid "Miscellaneous options to add to the ssh command line."
 msgstr "További kapcsolók az ssh parancssorhoz."
+
+#, c-format
+#~ msgid "You may not delete the selected default %s"
+#~ msgstr "A jelenlegi alapértelmezett %s nem törölhető"
+
+#, c-format
+#~ msgid "'%s' is a system %s and can not be deleted"
+#~ msgstr "A(z) '%s' egy rendszer %s és nem törölhető"
+
+#~ msgid "The command used to open ssh URIs."
+#~ msgstr "Az ssh URI címek megnyitásához használni kívánt parancs."
+
+#~ msgid "SSH Co_mmand"
+#~ msgstr "SSH _parancs"
