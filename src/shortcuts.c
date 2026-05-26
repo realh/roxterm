@@ -61,13 +61,13 @@ static guint32 shortcuts_index_size = 0;
 static char *make_full_path(const char *index_str, const char *path_leaf)
 {
     char *s = g_strjoin("/", ACCEL_PATH, index_str, path_leaf, NULL);
-    // size_t l = strlen(s);
-    // if (l >= 4 && !strcmp(s + l - 3, "..."))
-    // {
-    //     g_debug("MFP: Stripping ... from '%s'", s);
-    //     s[l - 3] = 0;
-    //     g_debug("MFP: Stripped:          '%s'", s);
-    // }
+    size_t l = strlen(s);
+    if (l >= 4 && !strcmp(s + l - 3, "..."))
+    {
+        g_debug("MFP: Stripping ... from '%s'", s);
+        s[l - 3] = 0;
+        g_debug("MFP: Stripped:          '%s'", s);
+    }
     // else if (g_str_has_suffix(path_leaf, "..."))
     // {
     //     g_critical("GAP: Missed stripping ... from '%s'", s);

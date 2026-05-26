@@ -33,6 +33,25 @@
 static char const *menutree_labels[MENUTREE_NUM_IDS];
 static gboolean filled_labels = FALSE;
 
+static gboolean menutree_id_needs_ellipsis(MenuTreeID id)
+{
+    switch (id)
+    {
+        case MENUTREE_FILE_SAVE_BUFFER_AS:
+        case MENUTREE_FILE_SAVE_SESSION:
+        case MENUTREE_EDIT_SET_WINDOW_TITLE:
+        case MENUTREE_SEARCH_FIND:
+        case MENUTREE_PREFERENCES_EDIT_CURRENT_PROFILE:
+        case MENUTREE_PREFERENCES_EDIT_CURRENT_COLOUR_SCHEME:
+        case MENUTREE_PREFERENCES_EDIT_CURRENT_SHORTCUTS_SCHEME:
+        case MENUTREE_PREFERENCES_CONFIG_MANAGER:
+        case MENUTREE_TABS_NAME_TAB:
+            return TRUE;
+        default:
+            return FALSE;
+    }
+}
+
 static GtkWidget *menutree_append_new_item_with_mnemonic(
         GtkMenuShell *shell, const char *label)
 {
@@ -83,6 +102,12 @@ static void menutree_build_shell_ap(MenuTree *menu_tree, GtkMenuShell *shell,
                 menutree_labels[id] = label;
             }
             label = dgettext(PACKAGE, label);
+            char *dynamic_label = NULL;
+            if (menutree_id_needs_ellipsis(id))
+            {
+                dynamic_label = g_strconcat(label, "...", NULL);
+                label = dynamic_label;
+            }
             char *stripped = NULL;
             if (menu_tree->disable_shortcuts)
             {
@@ -104,6 +129,7 @@ static void menutree_build_shell_ap(MenuTree *menu_tree, GtkMenuShell *shell,
                     break;
             }
             g_free(stripped);
+            g_free(dynamic_label);
         }
         if (id != MENUTREE_NULL_ID)
         {
@@ -286,8 +312,8 @@ menutree_set_accel_path_for_submenu(MenuTree *mtree, MenuTreeID id,
             last_item = MENUTREE_TABS_MOVE_TAB_RIGHT;
             break;
         case MENUTREE_HELP:
-            first_item = MENUTREE_SEARCH_FIND;
-            last_item = MENUTREE_SEARCH_FIND_PREVIOUS;
+            first_item = MENUTREE_HELP_SHOW_MANUAL;
+            last_item = MENUTREE_HELP_ABOUT;
             break;
         default:
             g_critical("Invalid submenu ID %d for branch %s", id, menu_branch);
@@ -351,6 +377,7 @@ void menutree_apply_shortcuts(MenuTree *tree, Options *shortcuts)
     menutree_set_accel_path_for_submenu(tree, MENUTREE_SEARCH, "Search");
     menutree_set_accel_path_for_submenu(tree, MENUTREE_PREFERENCES,
             "Preferences");
+    menutree_set_accel_path_for_submenu(tree, MENUTREE_TABS, "Tabs");
     menutree_set_accel_path_for_submenu(tree, MENUTREE_HELP, "Help");
 
     submenu = GTK_MENU(tree->new_win_profiles_menu);
@@ -374,32 +401,12 @@ void menutree_apply_shortcuts(MenuTree *tree, Options *shortcuts)
 
     /* Tabs have shortcuts set dynamically so set paths
      * for fixed items individually */
-    // submenu = menutree_submenu_from_id(tree, MENUTREE_TABS);
-    // if (submenu)
-    //     gtk_menu_set_accel_group(submenu, tree->accel_group);
     menutree_set_accel_path_for_item(tree,
             MENUTREE_FILE_NEW_WINDOW_WITH_PROFILE_HEADER,
             "File/New Window With Profile/Profiles");
     menutree_set_accel_path_for_item(tree,
             MENUTREE_FILE_NEW_TAB_WITH_PROFILE_HEADER,
             "File/New Tab With Profile/Profiles");
-    // menutree_set_accel_path_for_item(tree, MENUTREE_TABS_DETACH_TAB,
-    //         "Tabs/Detach Tab");
-    // menutree_set_accel_path_for_item(tree, MENUTREE_TABS_CLOSE_TAB,
-    //         "Tabs/Close Tab");
-    // menutree_set_accel_path_for_item(tree, MENUTREE_TABS_CLOSE_OTHER_TABS,
-    //         "Tabs/Close Other Tabs");
-    // menutree_set_accel_path_for_item(tree, MENUTREE_TABS_NAME_TAB,
-    //         "Tabs/Name Tab...");
-    // menutree_set_accel_path_for_item(tree, MENUTREE_TABS_NEXT_TAB,
-    //         "Tabs/Next Tab");
-    // menutree_set_accel_path_for_item(tree, MENUTREE_TABS_PREVIOUS_TAB,
-    //         "Tabs/Previous Tab");
-    // menutree_set_accel_path_for_item(tree, MENUTREE_TABS_MOVE_TAB_LEFT,
-    //         "Tabs/Move Tab Left");
-    // menutree_set_accel_path_for_item(tree, MENUTREE_TABS_MOVE_TAB_RIGHT,
-    //         "Tabs/Move Tab Right");
-    menutree_set_accel_path_for_submenu(tree, MENUTREE_HELP, "Help");
     menutree_apply_tab_shortcuts(tree);
     shortcuts_enable_signal_handler(TRUE);
 }
@@ -444,10 +451,10 @@ static void menutree_build(MenuTree *menu_tree, Options *shortcuts,
         N_("C_lose Tab"), MENUTREE_FILE_CLOSE_TAB,
         N_("_Close Window"), MENUTREE_FILE_CLOSE_WINDOW,
         "_", MENUTREE_NULL_ID,
-        N_("Save Buffer _As..."), MENUTREE_FILE_SAVE_BUFFER_AS,
+        N_("Save Buffer _As"), MENUTREE_FILE_SAVE_BUFFER_AS,
         N_("Save _Buffer"), MENUTREE_FILE_SAVE_BUFFER,
         "_", MENUTREE_NULL_ID,
-        N_("_Save Session..."), MENUTREE_FILE_SAVE_SESSION,
+        N_("_Save Session"), MENUTREE_FILE_SAVE_SESSION,
         NULL);
     gtk_menu_item_set_submenu(GTK_MENU_ITEM(menu_tree->item_widgets
             [MENUTREE_FILE]), submenu);
@@ -478,7 +485,7 @@ static void menutree_build(MenuTree *menu_tree, Options *shortcuts,
     submenu = gtk_menu_new();
     menutree_build_shell(menu_tree, GTK_MENU_SHELL(submenu),
         COPY_PASTE_MENU_ITEMS,
-        N_("_Set Window Title..."), MENUTREE_EDIT_SET_WINDOW_TITLE,
+        N_("_Set Window Title"), MENUTREE_EDIT_SET_WINDOW_TITLE,
         RESET_MENU_ITEMS,
         "_", MENUTREE_NULL_ID,
         N_("Res_tart command"), MENUTREE_EDIT_RESPAWN,
@@ -491,7 +498,7 @@ static void menutree_build(MenuTree *menu_tree, Options *shortcuts,
         SHOW_MENU_BAR_ITEM,
         N_("_Always Show Tab Bar"), MENUTREE_VIEW_SHOW_TAB_BAR,
         N_("_Full Screen"), MENUTREE_VIEW_FULLSCREEN,
-        N_("_Borderless"), MENUTREE_VIEW_BORDERLESS,
+        N_("_Border_less"), MENUTREE_VIEW_BORDERLESS,
         "_", MENUTREE_NULL_ID,
         N_("Zoom _In"), MENUTREE_VIEW_ZOOM_IN,
         N_("Zoom _Out"), MENUTREE_VIEW_ZOOM_OUT,
@@ -511,7 +518,7 @@ static void menutree_build(MenuTree *menu_tree, Options *shortcuts,
 
     submenu = gtk_menu_new();
     menutree_build_shell(menu_tree, GTK_MENU_SHELL(submenu),
-        N_("_Find..."), MENUTREE_SEARCH_FIND,
+        N_("_Find"), MENUTREE_SEARCH_FIND,
         N_("Find _Next"), MENUTREE_SEARCH_FIND_NEXT,
         N_("Find _Previous"), MENUTREE_SEARCH_FIND_PREVIOUS,
         NULL);
@@ -532,7 +539,7 @@ static void menutree_build(MenuTree *menu_tree, Options *shortcuts,
         N_("_Detach Tab"), MENUTREE_TABS_DETACH_TAB,
         N_("_Close Tab"), MENUTREE_TABS_CLOSE_TAB,
         N_("Close _Other Tabs"), MENUTREE_TABS_CLOSE_OTHER_TABS,
-        N_("Na_me Tab..."), MENUTREE_TABS_NAME_TAB,
+        N_("Na_me Tab"), MENUTREE_TABS_NAME_TAB,
         "_", MENUTREE_NULL_ID,
         N_("_Previous Tab"), MENUTREE_TABS_PREVIOUS_TAB,
         N_("_Next Tab"), MENUTREE_TABS_NEXT_TAB,
@@ -871,16 +878,37 @@ void menutree_disable_shortcuts(MenuTree *tree, gboolean disable)
             {
                 if (disable)
                 {
-                    char *stripped = strip_underscore(
-                            dgettext(PACKAGE, menutree_labels[n]));
-
-                    gtk_label_set_text(GTK_LABEL(child), stripped);
+                    char *translated = dgettext(PACKAGE, menutree_labels[n]);
+                    char *stripped = strip_underscore(translated);
+                    if (menutree_id_needs_ellipsis(n))
+                    {
+                        char *with_ellipsis = g_strconcat(stripped, "...",
+                                NULL);
+                        gtk_label_set_text(GTK_LABEL(child), with_ellipsis);
+                        g_free(with_ellipsis);
+                    }
+                    else
+                    {
+                        gtk_label_set_text(GTK_LABEL(child), stripped);
+                    }
                     g_free(stripped);
                 }
                 else
                 {
-                    gtk_label_set_text_with_mnemonic(GTK_LABEL(child),
-                            dgettext(PACKAGE, menutree_labels[n]));
+                    char *translated = dgettext(PACKAGE, menutree_labels[n]);
+                    if (menutree_id_needs_ellipsis(n))
+                    {
+                        char *with_ellipsis = g_strconcat(translated, "...",
+                                NULL);
+                        gtk_label_set_text_with_mnemonic(GTK_LABEL(child),
+                                with_ellipsis);
+                        g_free(with_ellipsis);
+                    }
+                    else
+                    {
+                        gtk_label_set_text_with_mnemonic(GTK_LABEL(child),
+                                translated);
+                    }
                 }
             }
         }
