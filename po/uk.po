@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: roxterm\n"
 "Report-Msgid-Bugs-To: https://github.com/realh/roxterm/issues\n"
-"POT-Creation-Date: 2026-05-26 21:49+0100\n"
+"POT-Creation-Date: 2026-05-28 14:20+0100\n"
 "PO-Revision-Date: 2024-07-23 12:33+0000\n"
 "Last-Translator: marcelo cripe <marcelocripe@gmail.com>, 2024\n"
 "Language-Team: Ukrainian (https://app.transifex.com/antix-linux-community-"
@@ -127,7 +127,7 @@ msgstr ""
 msgid "Copy %s"
 msgstr ""
 
-#: ../src/configlet.c:703 ../src/menutree.c:172 ../src/roxterm-config.ui:728
+#: ../src/configlet.c:703 ../src/menu-labels.h:128 ../src/roxterm-config.ui:728
 #: ../src/roxterm-config.ui:862 ../src/roxterm-config.ui:1113
 msgid "_Copy"
 msgstr ""
@@ -868,7 +868,7 @@ msgstr ""
 msgid "_Close"
 msgstr ""
 
-#: ../src/search.c:316 ../src/menutree.c:521
+#: ../src/search.c:316 ../src/menu-labels.h:169
 msgid "_Find"
 msgstr ""
 
@@ -1115,272 +1115,272 @@ msgid ""
 "                                   terminal. Must be the final option."
 msgstr ""
 
-#: ../src/menutree.c:152
-msgid "_SSH to host"
-msgstr ""
-
-#: ../src/menutree.c:153
-msgid "_Open link"
-msgstr ""
-
-#: ../src/menutree.c:154
-msgid "Send e_mail"
-msgstr ""
-
-#: ../src/menutree.c:155
-msgid "_Open file/directory in filer"
-msgstr ""
-
-#: ../src/menutree.c:156
-msgid "_Call"
-msgstr ""
-
-#: ../src/menutree.c:157
-msgid "_Copy address to clipboard"
-msgstr ""
-
-#: ../src/menutree.c:158
-msgid "_"
-msgstr ""
-
-#: ../src/menutree.c:160
-msgid "_Search"
-msgstr ""
-
-#: ../src/menutree.c:162
+#: ../src/menu-labels.h:103
 msgid "_File"
 msgstr ""
 
-#: ../src/menutree.c:163 ../src/roxterm-config.ui:747
+#: ../src/menu-labels.h:104 ../src/roxterm-config.ui:747
 #: ../src/roxterm-config.ui:843 ../src/roxterm-config.ui:1097
 msgid "_Edit"
 msgstr ""
 
-#: ../src/menutree.c:164
+#: ../src/menu-labels.h:105
 msgid "_View"
 msgstr ""
 
-#: ../src/menutree.c:166
+#: ../src/menu-labels.h:106
+msgid "_Search"
+msgstr ""
+
+#: ../src/menu-labels.h:107
 msgid "_Preferences"
 msgstr ""
 
-#: ../src/menutree.c:167
+#: ../src/menu-labels.h:108
 msgid "Ta_bs"
 msgstr ""
 
-#: ../src/menutree.c:168
+#: ../src/menu-labels.h:109
 msgid "_Help"
 msgstr ""
 
-#: ../src/menutree.c:171
-msgid "Select _All"
-msgstr ""
-
-#: ../src/menutree.c:173
-msgid "_Paste"
-msgstr ""
-
-#: ../src/menutree.c:174
-msgid "Cop_y & Paste"
-msgstr ""
-
-#: ../src/menutree.c:178
-msgid "_Reset"
-msgstr ""
-
-#: ../src/menutree.c:179
-msgid "Reset And C_lear"
-msgstr ""
-
-#: ../src/menutree.c:182
-msgid "Show Menu_bar"
-msgstr ""
-
-#: ../src/menutree.c:185
-msgid "Select _Profile"
-msgstr ""
-
-#: ../src/menutree.c:186
-msgid "Select _Colour Scheme"
-msgstr ""
-
-#: ../src/menutree.c:187
-msgid "Select _Shortcuts Scheme"
-msgstr ""
-
-#: ../src/menutree.c:189
-msgid "_Edit Current Profile"
-msgstr ""
-
-#: ../src/menutree.c:190
-msgid "E_dit Current Colour Scheme"
-msgstr ""
-
-#: ../src/menutree.c:195
-msgid "Configuration _Manager"
-msgstr ""
-
-#: ../src/menutree.c:447
+#: ../src/menu-labels.h:113
 msgid "_New Window"
 msgstr ""
 
-#: ../src/menutree.c:448
+#: ../src/menu-labels.h:114
 msgid "New _Tab"
 msgstr ""
 
-#: ../src/menutree.c:449
+#: ../src/menu-labels.h:115
 msgid "New _Window With Profile"
 msgstr ""
 
-#: ../src/menutree.c:450
+#: ../src/menu-labels.h:116
 msgid "New Tab With _Profile"
 msgstr ""
 
-#: ../src/menutree.c:451
+#: ../src/menu-labels.h:117
 msgid "C_lose Tab"
 msgstr ""
 
-#: ../src/menutree.c:452
+#: ../src/menu-labels.h:118
 msgid "_Close Window"
 msgstr ""
 
-#: ../src/menutree.c:454
+#: ../src/menu-labels.h:120
 msgid "Save Buffer _As"
 msgstr ""
 
-#: ../src/menutree.c:455
+#: ../src/menu-labels.h:121
 msgid "Save _Buffer"
 msgstr ""
 
-#: ../src/menutree.c:457
+#: ../src/menu-labels.h:123
 msgid "_Save Session"
 msgstr ""
 
-#: ../src/menutree.c:465 ../src/menutree.c:476
-msgid "Profiles"
+#: ../src/menu-labels.h:127
+msgid "Select _All"
 msgstr ""
 
-#: ../src/menutree.c:488
+#: ../src/menu-labels.h:129
+msgid "_Paste"
+msgstr ""
+
+#: ../src/menu-labels.h:130
+msgid "Cop_y & Paste"
+msgstr ""
+
+#: ../src/menu-labels.h:134
+msgid "_Reset"
+msgstr ""
+
+#: ../src/menu-labels.h:135
+msgid "Reset And C_lear"
+msgstr ""
+
+#: ../src/menu-labels.h:139
 msgid "_Set Window Title"
 msgstr ""
 
-#: ../src/menutree.c:491
+#: ../src/menu-labels.h:142
 msgid "Res_tart command"
 msgstr ""
 
-#: ../src/menutree.c:499
+#: ../src/menu-labels.h:146
+msgid "Show Menu_bar"
+msgstr ""
+
+#: ../src/menu-labels.h:150
 msgid "_Always Show Tab Bar"
 msgstr ""
 
-#: ../src/menutree.c:500
+#: ../src/menu-labels.h:151
 msgid "_Full Screen"
 msgstr ""
 
-#: ../src/menutree.c:501
+#: ../src/menu-labels.h:152
 msgid "_Border_less"
 msgstr ""
 
-#: ../src/menutree.c:503
+#: ../src/menu-labels.h:154
 msgid "Zoom _In"
 msgstr ""
 
-#: ../src/menutree.c:504
+#: ../src/menu-labels.h:155
 msgid "Zoom _Out"
 msgstr ""
 
-#: ../src/menutree.c:505
+#: ../src/menu-labels.h:156
 msgid "_Normal Size"
 msgstr ""
 
-#: ../src/menutree.c:507
+#: ../src/menu-labels.h:158
 msgid "Scroll _Up One Line"
 msgstr ""
 
-#: ../src/menutree.c:508
+#: ../src/menu-labels.h:159
 msgid "Scroll _Down One Line"
 msgstr ""
 
-#: ../src/menutree.c:509
+#: ../src/menu-labels.h:160
 msgid "Scroll Up One _Page"
 msgstr ""
 
-#: ../src/menutree.c:510
+#: ../src/menu-labels.h:161
 msgid "Scroll Do_wn One Page"
 msgstr ""
 
-#: ../src/menutree.c:511
+#: ../src/menu-labels.h:162
 msgid "Scroll Up One _Half Page"
 msgstr ""
 
-#: ../src/menutree.c:512
+#: ../src/menu-labels.h:163
 msgid "Scroll Down One Hal_f Page"
 msgstr ""
 
-#: ../src/menutree.c:513
+#: ../src/menu-labels.h:164
 msgid "Scroll To _Top"
 msgstr ""
 
-#: ../src/menutree.c:514
+#: ../src/menu-labels.h:165
 msgid "Scroll To _Bottom"
 msgstr ""
 
-#: ../src/menutree.c:522
+#: ../src/menu-labels.h:170
 msgid "Find _Next"
 msgstr ""
 
-#: ../src/menutree.c:523
+#: ../src/menu-labels.h:171
 msgid "Find _Previous"
 msgstr ""
 
-#: ../src/menutree.c:531
+#: ../src/menu-labels.h:175
+msgid "Select _Profile"
+msgstr ""
+
+#: ../src/menu-labels.h:176
+msgid "Select _Colour Scheme"
+msgstr ""
+
+#: ../src/menu-labels.h:177
+msgid "Select _Shortcuts Scheme"
+msgstr ""
+
+#: ../src/menu-labels.h:179
+msgid "_Edit Current Profile"
+msgstr ""
+
+#: ../src/menu-labels.h:180
+msgid "E_dit Current Colour Scheme"
+msgstr ""
+
+#: ../src/menu-labels.h:182
 msgid "Edi_t Current Shortcuts Scheme"
 msgstr ""
 
-#: ../src/menutree.c:539
+#: ../src/menu-labels.h:185
+msgid "Configuration _Manager"
+msgstr ""
+
+#: ../src/menu-labels.h:189
 msgid "_Detach Tab"
 msgstr ""
 
-#: ../src/menutree.c:540
+#: ../src/menu-labels.h:190
 msgid "_Close Tab"
 msgstr ""
 
-#: ../src/menutree.c:541
+#: ../src/menu-labels.h:191
 msgid "Close _Other Tabs"
 msgstr ""
 
-#: ../src/menutree.c:542
+#: ../src/menu-labels.h:192
 msgid "Na_me Tab"
 msgstr ""
 
-#: ../src/menutree.c:544
+#: ../src/menu-labels.h:194
 msgid "_Previous Tab"
 msgstr ""
 
-#: ../src/menutree.c:545
+#: ../src/menu-labels.h:195
 msgid "_Next Tab"
 msgstr ""
 
-#: ../src/menutree.c:547
+#: ../src/menu-labels.h:197
 msgid "Move Tab _Left"
 msgstr ""
 
-#: ../src/menutree.c:548
+#: ../src/menu-labels.h:198
 msgid "Move Tab _Right"
 msgstr ""
 
-#: ../src/menutree.c:555
+#: ../src/menu-labels.h:203
 msgid "Show _Manual"
 msgstr ""
 
-#: ../src/menutree.c:556
+#: ../src/menu-labels.h:204
 msgid "_About ROXTerm"
 msgstr ""
 
-#: ../src/menutree.c:802
+#: ../src/menu-labels.h:208
+msgid "_SSH to host"
+msgstr ""
+
+#: ../src/menu-labels.h:209
+msgid "_Open link"
+msgstr ""
+
+#: ../src/menu-labels.h:210
+msgid "Send e_mail"
+msgstr ""
+
+#: ../src/menu-labels.h:211
+msgid "_Open file/directory in filer"
+msgstr ""
+
+#: ../src/menu-labels.h:212
+msgid "_Call"
+msgstr ""
+
+#: ../src/menu-labels.h:213
+msgid "_Copy address to clipboard"
+msgstr ""
+
+#: ../src/menu-labels.h:214
+msgid "_"
+msgstr ""
+
+#: ../src/menutree.c:422 ../src/menutree.c:433
+msgid "Profiles"
+msgstr ""
+
+#: ../src/menutree.c:722
 msgid "Move Tab _Up"
 msgstr ""
 
-#: ../src/menutree.c:804
+#: ../src/menutree.c:724
 msgid "Move Tab _Down"
 msgstr ""
 
