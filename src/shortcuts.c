@@ -18,26 +18,86 @@
 */
 
 
+#include "config.h"
 #include "defns.h"
 
+#include <libintl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <locale.h>
 
 #include "dlg.h"
 #include "dynopts.h"
 #include "glib.h"
+#include "menu-labels.h"
 #include "optsdbus.h"
 #include "optsfile.h"
 #include "shortcuts.h"
 
-#ifndef ROXTERM_CAPPLET
-
-#include "roxterm.h"
-
 #define SHORTCUTS_GROUP "roxterm shortcuts scheme"
 
 #define SHORTCUTS_SUBDIR "Shortcuts"
+
+char *shortcuts_strip_underscores(const char *in)
+{
+    char *out = g_new(char, strlen(in) + 1);
+    int n, m;
+
+    for (n = 0, m = 0; in[n]; ++n)
+    {
+        if (in[n] != '_')
+            out[m++] = in[n];
+    }
+    out[m] = 0;
+    return out;
+}
+
+static void shortcuts_debug_keyfile(GKeyFile *kf)
+{
+    GError *err = NULL;
+    char **all_keys = g_key_file_get_keys(kf, SHORTCUTS_GROUP,
+            NULL, &err);
+    char **pkey;
+
+    if (!all_keys || err)
+    {
+        g_critical("Unable to read keys from keyfile: %s",
+                (err && !STR_EMPTY(err->message)) ? err->message :
+                _("unknown reason"));
+        if (all_keys)
+            g_strfreev(all_keys);
+        if (err)
+            g_error_free(err);
+        return;
+    }
+
+    for (pkey = all_keys; *pkey; ++pkey)
+    {
+        char *path = *pkey;
+        char *accel = g_key_file_get_string(kf, SHORTCUTS_GROUP, path, &err);
+
+        if (err)
+        {
+            g_debug("Error looking up '%s' in shortcuts keyfile: %s",
+                    path, err->message);
+            continue;
+        }
+        if (!accel)
+        {
+            g_debug("shortcuts k '%s' has no value", path);
+            /* Not an error, user may have deleted shortcut */
+            continue;
+        }
+        g_debug("shortcuts k '%s' = '%s'", path, accel);
+        g_free(accel);
+    }
+    g_strfreev(all_keys);
+}
+
+#ifndef ROXTERM_CAPPLET
+
+#include "roxterm.h"
 
 typedef struct {
     guint key;
@@ -64,9 +124,7 @@ static char *make_full_path(const char *index_str, const char *path_leaf)
     size_t l = strlen(s);
     if (l >= 4 && !strcmp(s + l - 3, "..."))
     {
-        g_debug("MFP: Stripping ... from '%s'", s);
         s[l - 3] = 0;
-        g_debug("MFP: Stripped:          '%s'", s);
     }
     // else if (g_str_has_suffix(path_leaf, "..."))
     // {
@@ -205,6 +263,9 @@ Options *shortcuts_open(const char *scheme, gboolean reload)
 
     if (shortcuts->kf)
     {
+        g_debug("*** Debugging keyfile loaded for %s ***", scheme);
+        shortcuts_debug_keyfile(shortcuts->kf);
+        g_debug("****************");
         GError *err = NULL;
         char **all_keys = g_key_file_get_keys(shortcuts->kf, SHORTCUTS_GROUP,
                 NULL, &err);
@@ -231,7 +292,7 @@ Options *shortcuts_open(const char *scheme, gboolean reload)
             char *full_path;
             ShortcutsItem item;
 
-            gboolean dbg = g_str_has_prefix(path, "Search/");
+            gboolean dbg = TRUE;
 
             if (!accel)
             {
@@ -241,6 +302,10 @@ Options *shortcuts_open(const char *scheme, gboolean reload)
                 }
                 /* Not an error, user may have deleted shortcut */
                 continue;
+            }
+            if (dbg)
+            {
+                g_debug("Key '%s' = '%s'", path, accel);
             }
             gtk_accelerator_parse(accel, &item.key, &item.modifiers);
             if (item.key)
@@ -283,6 +348,7 @@ Options *shortcuts_open(const char *scheme, gboolean reload)
     }
     shortcuts_check_change_tabs(shortcuts, data->index_str);
     shortcuts_enable_signal_handler(TRUE);
+    g_debug("***********");
     return shortcuts;
 }
 
@@ -346,7 +412,8 @@ static const char *shortcuts_find_text_editor(void)
 {
     static char *editor = NULL;
     static char const *subs[] = {"vi", "emacs", "gedit", "kate", NULL};
-    static char const *editors[] = {"gedit", "kate", "gvim", "emacs", NULL};
+    static char const *editors[] = {"neovide", "gedit", "kate", "gvim",
+        "emacs", NULL};
     char *env;
     int n;
 
@@ -417,6 +484,216 @@ static void shortcuts_file_modified(GFileMonitor *monitor,
     }
 }
 
+static MenuTreeID shortcuts_items_without_accel[] = {
+    MENUTREE_FILE_NEW_WINDOW_WITH_PROFILE,
+    MENUTREE_FILE_NEW_TAB_WITH_PROFILE,
+    MENUTREE_PREFERENCES_SELECT_PROFILE,
+    MENUTREE_PREFERENCES_SELECT_COLOUR_SCHEME,
+    MENUTREE_PREFERENCES_SELECT_SHORTCUTS,
+    MENUTREE_NULL_ID,
+};
+
+// Makes an array of strings from one of the macros in menu-labels.h. The
+// macros include menutree ids so they act as the single source of truth; here
+// we only want the strings, but the ids are useful for filtering.
+static char const **build_label_list(MenuTreeID ignored, ...)
+{
+    char const **vec = NULL;
+    int vec_cap = 0;
+    int i = 0;
+    va_list ap;
+    va_start(ap, ignored);
+    const char *label = NULL;;
+    do
+    {
+        label = va_arg(ap, char *);
+        if (label)
+        {
+            ignored = va_arg(ap, MenuTreeID);
+            for (int j = 0;
+                    shortcuts_items_without_accel[j] != MENUTREE_NULL_ID; ++j)
+            {
+                if (shortcuts_items_without_accel[j] == ignored)
+                {
+                    ignored = MENUTREE_NULL_ID;
+                    break;
+                }
+            }
+            if (ignored == MENUTREE_NULL_ID)
+            {
+                continue;
+            }
+        }
+        else if (i == 0)
+        {
+            return vec;
+        }
+        if (i >= vec_cap)
+        {
+            if (vec_cap)
+            {
+                vec_cap *= 2;
+                vec = g_realloc_n(vec, vec_cap, sizeof(char const *));
+            }
+            else
+            {
+                vec_cap = 4;
+                vec = g_new(char const *, vec_cap);
+            }
+        }
+        vec[i++] = label;
+    }
+    while (label != NULL);
+    return vec;
+}
+
+static char *shortcuts_get_locale()
+{
+    char *raw_locale = setlocale(LC_MESSAGES, NULL);
+    if (!raw_locale)
+    {
+        return NULL;
+    }
+    char *lang_code = g_strdup(raw_locale);
+    // Terminate at '.' (encoding) or '@' (modifiers)
+    char *suffix = strpbrk(lang_code, ".@");
+    if (suffix) {
+        *suffix = '\0';
+    }
+    return lang_code;
+}
+
+// Loads existing `name` shortcuts file if one exists and builds the filename
+// for the user-writabe version. It writes all possible options to the writable
+// one, commenting out the ones which weren't set in the previous version of
+// the file. If the current locale isn't English, each option is accompanied
+// by its translation. Returns the pathname of the new file.
+// See https://github.com/realh/roxterm/pull/284#issuecomment-4470503786
+static char *make_editable_shortcuts_file(const char *name)
+{
+    char *twig_name = g_strdup_printf("%s/%s", SHORTCUTS_SUBDIR, name);
+    GKeyFile *existing_kf = options_file_open(twig_name, SHORTCUTS_GROUP);
+    g_free(twig_name);
+    g_debug("*** Debugging existing_kf for %s ***", name);
+    shortcuts_debug_keyfile(existing_kf);
+    g_debug("****************");
+
+    // We're going to replace these strings with ones that need to be freed
+    char **top_labels = (char **) build_label_list(0,
+            TOP_LEVEL_MENU_ITEMS, MENUTREE_URI_LABEL, MENUTREE_NUM_IDS, NULL);
+
+    char *lang = shortcuts_get_locale();
+    char **trans_top_labels = NULL;
+    gboolean translate = lang && !(lang[0] == 'C' && !lang[1]) &&
+        strcmp(lang, "POSIX") && !g_str_has_prefix(lang, "en");
+    if (translate)
+    {
+        int l = 0;
+        for (; top_labels[l]; ++l);
+        trans_top_labels = g_new(char *, l + 1);
+        for (int i = 0; i < l; ++i)
+        {
+            trans_top_labels[i] = shortcuts_strip_underscores(
+                    dgettext(PACKAGE, top_labels[i]));
+        }
+        trans_top_labels[l] = NULL;
+    }
+    for (int i = 0; top_labels[i]; ++i)
+    {
+        top_labels[i] = shortcuts_strip_underscores(top_labels[i]);
+    }
+
+    char *filename = options_file_filename_for_saving("Shortcuts", name, NULL);
+    char *dirname = g_path_get_dirname(filename);
+    g_mkdir_with_parents(dirname, 0755);
+    FILE *fp = fopen(filename, "w");
+    if (!fp)
+    {
+        g_critical("Unable to open '%s' for writing: %s",
+                filename, strerror(errno));
+        goto exit_make_shortcuts_file;
+    }
+    fputs("[" SHORTCUTS_GROUP "]\n", fp);
+
+    for (int i = 0; i < 8; ++i)
+    {
+        char const **item_labels;
+        switch (i)
+        {
+            case 0:
+                item_labels = build_label_list(0, FILE_MENU_ITEMS, NULL);
+                break;
+            case 1:
+                item_labels = build_label_list(0, EDIT_MENU_ITEMS, NULL);
+                break;
+            case 2:
+                item_labels = build_label_list(0, VIEW_MENU_ITEMS, NULL);
+                break;
+            case 3:
+                item_labels = build_label_list(0, SEARCH_MENU_ITEMS, NULL);
+                break;
+            case 4:
+                item_labels = build_label_list(0, PREFERENCES_MENU_ITEMS, NULL);
+                break;
+            case 5:
+                item_labels = build_label_list(0, TABS_MENU_ITEMS, NULL);
+                break;
+            case 6:
+                item_labels = build_label_list(0, TABS_MENU_ITEMS, NULL);
+                break;
+            case 7:
+                item_labels = build_label_list(0, URI_MENU_ITEMS, NULL);
+                break;
+        }
+        for (int j = 0; item_labels[j]; ++j)
+        {
+            fputc('\n', fp);
+            if (translate)
+            {
+                char *tpath = g_strjoin("/", trans_top_labels[i],
+                        shortcuts_strip_underscores(
+                            dgettext(PACKAGE, item_labels[j])), NULL);
+                fprintf(fp, "# # [%s] %s\n", lang, tpath);
+                g_free(tpath);
+            }
+            char *path = g_strjoin("/", top_labels[i],
+                    shortcuts_strip_underscores(item_labels[j]), NULL);
+            char *accel = g_key_file_get_string(existing_kf,
+                    SHORTCUTS_GROUP, path, NULL);
+            if (accel)
+            {
+                fprintf(fp, "%s=%s\n", path, accel);
+                g_free(accel);
+            }
+            else
+            {
+                fprintf(fp, "# %s=\n", path);
+            }
+            g_free(path);
+        }
+        g_free(item_labels);
+    }
+
+exit_make_shortcuts_file:
+    if (fp)
+    {
+        fclose(fp);
+    }
+    if (top_labels)
+    {
+        g_strfreev(top_labels);
+    }
+    if (trans_top_labels)
+    {
+        g_strfreev(trans_top_labels);
+    }
+    if (existing_kf)
+    {
+        g_key_file_unref(existing_kf);
+    }
+    return filename;
+}
+
 void shortcuts_edit(GtkWindow *window, const char *name)
 {
     char *filename;
@@ -432,7 +709,7 @@ void shortcuts_edit(GtkWindow *window, const char *name)
                 "gedit, gvim, kate or emacs."));
         return;
     }
-    filename = options_file_make_editable(window, "Shortcuts", name);
+    filename = make_editable_shortcuts_file(name);
     if (!filename)
         return;
     cmdv[0] = editor;

@@ -62,20 +62,6 @@ static GtkWidget *menutree_append_new_item_with_mnemonic(
     return item;
 }
 
-static char *strip_underscore(const char *in)
-{
-    char *out = g_new(char, strlen(in) + 1);
-    int n, m;
-
-    for (n = 0, m = 0; in[n]; ++n)
-    {
-        if (in[n] != '_')
-            out[m++] = in[n];
-    }
-    out[m] = 0;
-    return out;
-}
-
 /* Builds a menu; va_list is a series of pairs of labels and IDs, terminated
  * by a NULL label; use "_" for a separator, and MENUTREE_NULL_ID for any item
  * you don't want stored in item_widgets */
@@ -112,7 +98,7 @@ static void menutree_build_shell_ap(MenuTree *menu_tree, GtkMenuShell *shell,
             char *stripped = NULL;
             if (menu_tree->disable_shortcuts)
             {
-                label = strip_underscore(label);
+                label = shortcuts_strip_underscores(label);
                 stripped = label;
             }
             item = NULL;
@@ -196,6 +182,10 @@ static void
 menutree_set_accel_path_for_item_range(MenuTree *mtree, MenuTreeID first_item,
         MenuTreeID last_item, const char *menu_branch)
 {
+    if (first_item >= MENUTREE_SSH_HOST && last_item <= MENUTREE_COPY_URI)
+    {
+        menu_branch = MENUTREE_URI_LABEL;
+    }
     for (MenuTreeID item_id = first_item; item_id <= last_item; ++item_id)
     {
         // Skip separators
@@ -219,7 +209,7 @@ menutree_set_accel_path_for_item_range(MenuTree *mtree, MenuTreeID first_item,
                  MENUTREE_PREFERENCES_CONFIG_MANAGER);
             continue;
         }
-        char *leaf = strip_underscore(raw_leaf);
+        char *leaf = shortcuts_strip_underscores(raw_leaf);
         char *path;
         if (leaf[0] != 0 && menu_branch[0] != 0)
         {
@@ -799,7 +789,7 @@ void menutree_disable_shortcuts(MenuTree *tree, gboolean disable)
                 if (disable)
                 {
                     char *translated = dgettext(PACKAGE, menutree_labels[n]);
-                    char *stripped = strip_underscore(translated);
+                    char *stripped = shortcuts_strip_underscores(translated);
                     if (menutree_id_needs_ellipsis(n))
                     {
                         char *with_ellipsis = g_strconcat(stripped, "...",

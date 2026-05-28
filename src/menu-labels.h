@@ -109,6 +109,11 @@ typedef enum {
     N_("_Help"), MENUTREE_HELP
 
 
+// The only reason you might want to translate this is for the translation
+// hints that appear in generated Shortcuts config files.
+#define MENUTREE_URI_LABEL N_("URI")
+
+
 #define FILE_MENU_ITEMS \
     N_("_New Window"), MENUTREE_FILE_NEW_WINDOW, \
     N_("New _Tab"), MENUTREE_FILE_NEW_TAB, \

@@ -37,6 +37,7 @@ Options *shortcuts_open(const char *scheme_name, gboolean reload);
 
 void shortcuts_unref(Options *scheme);
 
+
 #if GTK_CHECK_VERSION(3, 10, 0)
 inline static void shortcuts_enable_signal_handler(gboolean enable)
 {
@@ -55,6 +56,8 @@ const char *shortcuts_get_index_str(Options *shortcuts);
 
 /* window = parent window for dialogs in case of error etc */
 void shortcuts_edit(GtkWindow *window, const char *name);
+
+char *shortcuts_strip_underscores(const char *in);
 
 #endif /* SHORTCUTS_H */
 
