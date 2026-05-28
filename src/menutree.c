@@ -799,6 +799,8 @@ GtkWidget *menutree_change_tab_title(MenuTree * tree,
 
 void menutree_change_move_tab_labels(MenuTree *tree)
 {
+    // These are not used in accel paths because they're aliases for left and
+    // right
     menutree_change_label(tree, MENUTREE_TABS_MOVE_TAB_LEFT,
             N_("Move Tab _Up"));
     menutree_change_label(tree, MENUTREE_TABS_MOVE_TAB_RIGHT,
