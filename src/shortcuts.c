@@ -53,48 +53,6 @@ char *shortcuts_strip_underscores(const char *in)
     return out;
 }
 
-static void shortcuts_debug_keyfile(GKeyFile *kf)
-{
-    GError *err = NULL;
-    char **all_keys = g_key_file_get_keys(kf, SHORTCUTS_GROUP,
-            NULL, &err);
-    char **pkey;
-
-    if (!all_keys || err)
-    {
-        g_critical("Unable to read keys from keyfile: %s",
-                (err && !STR_EMPTY(err->message)) ? err->message :
-                _("unknown reason"));
-        if (all_keys)
-            g_strfreev(all_keys);
-        if (err)
-            g_error_free(err);
-        return;
-    }
-
-    for (pkey = all_keys; *pkey; ++pkey)
-    {
-        char *path = *pkey;
-        char *accel = g_key_file_get_string(kf, SHORTCUTS_GROUP, path, &err);
-
-        if (err)
-        {
-            g_debug("Error looking up '%s' in shortcuts keyfile: %s",
-                    path, err->message);
-            continue;
-        }
-        if (!accel)
-        {
-            g_debug("shortcuts k '%s' has no value", path);
-            /* Not an error, user may have deleted shortcut */
-            continue;
-        }
-        g_debug("shortcuts k '%s' = '%s'", path, accel);
-        g_free(accel);
-    }
-    g_strfreev(all_keys);
-}
-
 #ifndef ROXTERM_CAPPLET
 
 #include "roxterm.h"
@@ -263,9 +221,6 @@ Options *shortcuts_open(const char *scheme, gboolean reload)
 
     if (shortcuts->kf)
     {
-        g_debug("*** Debugging keyfile loaded for %s ***", scheme);
-        shortcuts_debug_keyfile(shortcuts->kf);
-        g_debug("****************");
         GError *err = NULL;
         char **all_keys = g_key_file_get_keys(shortcuts->kf, SHORTCUTS_GROUP,
                 NULL, &err);
@@ -292,20 +247,10 @@ Options *shortcuts_open(const char *scheme, gboolean reload)
             char *full_path;
             ShortcutsItem item;
 
-            gboolean dbg = TRUE;
-
             if (!accel)
             {
-                if (dbg)
-                {
-                    g_debug("No accel for '%s'", path);
-                }
                 /* Not an error, user may have deleted shortcut */
                 continue;
-            }
-            if (dbg)
-            {
-                g_debug("Key '%s' = '%s'", path, accel);
             }
             gtk_accelerator_parse(accel, &item.key, &item.modifiers);
             if (item.key)
@@ -317,11 +262,6 @@ Options *shortcuts_open(const char *scheme, gboolean reload)
                             item.key, item.modifiers, TRUE);
                     shortcuts_change_item(data->items, path,
                             item.key, item.modifiers);
-                    if (dbg)
-                    {
-                        g_debug("Changed accel for '%s' ('%s') to '%s'",
-                                full_path, item.path, accel);
-                    }
                 }
                 else
                 {
@@ -329,11 +269,6 @@ Options *shortcuts_open(const char *scheme, gboolean reload)
                     g_array_append_val(data->items, item);
                     gtk_accel_map_add_entry(full_path,
                             item.key, item.modifiers);
-                    if (dbg)
-                    {
-                        g_debug("Created accel for '%s' ('%s'): '%s'",
-                                full_path, item.path, accel);
-                    }
                 }
                 g_free(full_path);
             }
@@ -348,7 +283,6 @@ Options *shortcuts_open(const char *scheme, gboolean reload)
     }
     shortcuts_check_change_tabs(shortcuts, data->index_str);
     shortcuts_enable_signal_handler(TRUE);
-    g_debug("***********");
     return shortcuts;
 }
 
@@ -574,9 +508,6 @@ static char *make_editable_shortcuts_file(const char *name)
     char *twig_name = g_strdup_printf("%s/%s", SHORTCUTS_SUBDIR, name);
     GKeyFile *existing_kf = options_file_open(twig_name, SHORTCUTS_GROUP);
     g_free(twig_name);
-    g_debug("*** Debugging existing_kf for %s ***", name);
-    shortcuts_debug_keyfile(existing_kf);
-    g_debug("****************");
 
     // We're going to replace these strings with ones that need to be freed
     char **top_labels = (char **) build_label_list(0,
