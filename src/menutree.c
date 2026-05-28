@@ -530,7 +530,8 @@ static void menutree_build(MenuTree *menu_tree, Options *shortcuts,
         PREFS_ITEMS1,
         N_("Edi_t Current Shortcuts Scheme"),
             MENUTREE_PREFERENCES_EDIT_CURRENT_SHORTCUTS_SCHEME,
-        PREFS_ITEMS2);
+        PREFS_ITEMS2,
+        NULL);
     gtk_menu_item_set_submenu(GTK_MENU_ITEM(menu_tree->item_widgets
             [MENUTREE_PREFERENCES]), submenu);
 
