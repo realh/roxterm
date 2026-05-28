@@ -179,9 +179,10 @@ typedef enum {
     N_("_Edit Current Profile"), MENUTREE_PREFERENCES_EDIT_CURRENT_PROFILE, \
     N_("E_dit Current Colour Scheme"), \
     MENUTREE_PREFERENCES_EDIT_CURRENT_COLOUR_SCHEME, \
+    N_("Edi_t Current Shortcuts Scheme"), \
+    MENUTREE_PREFERENCES_EDIT_CURRENT_SHORTCUTS_SCHEME, \
     "_", MENUTREE_NULL_ID, \
-    N_("Configuration _Manager"), MENUTREE_PREFERENCES_CONFIG_MANAGER, \
-    "_", MENUTREE_NULL_ID
+    N_("Configuration _Manager"), MENUTREE_PREFERENCES_CONFIG_MANAGER
 
 
 #define TABS_MENU_ITEMS \
