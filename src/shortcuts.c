@@ -597,16 +597,19 @@ static char *make_editable_shortcuts_file(const char *name)
         for (int j = 0; item_labels[j]; ++j)
         {
             fputc('\n', fp);
+            char *path = g_strjoin("/", top_labels[i],
+                    shortcuts_strip_underscores(item_labels[j]), NULL);
             if (translate)
             {
                 char *tpath = g_strjoin("/", trans_top_labels[i],
                         shortcuts_strip_underscores(
                             dgettext(PACKAGE, item_labels[j])), NULL);
-                fprintf(fp, "# # [%s] %s\n", lang, tpath);
+                if (strcmp(path, tpath))
+                {
+                    fprintf(fp, "# # [%s] %s\n", lang, tpath);
+                }
                 g_free(tpath);
             }
-            char *path = g_strjoin("/", top_labels[i],
-                    shortcuts_strip_underscores(item_labels[j]), NULL);
             char *accel = g_key_file_get_string(existing_kf,
                     SHORTCUTS_GROUP, path, NULL);
             if (accel)
