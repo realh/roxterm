@@ -444,6 +444,10 @@ static char const **build_label_list(MenuTreeID ignored, ...)
         if (label)
         {
             ignored = va_arg(ap, MenuTreeID);
+            if (!label[0] || (label[0] == '_' && label[1] == 0))
+            {
+                continue;
+            }
             for (int j = 0;
                     shortcuts_items_without_accel[j] != MENUTREE_NULL_ID; ++j)
             {
@@ -544,6 +548,10 @@ static char *make_editable_shortcuts_file(const char *name)
         {
             trans_top_labels[i] = shortcuts_strip_underscores(
                     dgettext(PACKAGE, top_labels[i]));
+            g_debug("Translated top_label[%d] from %p to %p", i,
+                    top_labels[i], trans_top_labels[i]);
+            g_debug("Translated top_label[%d] from %s to %s", i,
+                    top_labels[i], trans_top_labels[i]);
         }
         trans_top_labels[l] = NULL;
     }
@@ -588,7 +596,7 @@ static char *make_editable_shortcuts_file(const char *name)
                 item_labels = build_label_list(0, TABS_MENU_ITEMS, NULL);
                 break;
             case 6:
-                item_labels = build_label_list(0, TABS_MENU_ITEMS, NULL);
+                item_labels = build_label_list(0, HELP_MENU_ITEMS, NULL);
                 break;
             case 7:
                 item_labels = build_label_list(0, URI_MENU_ITEMS, NULL);

@@ -216,7 +216,7 @@ typedef enum {
     N_("_Open file/directory in filer"), MENUTREE_OPEN_IN_FILER, \
     N_("_Call"), MENUTREE_VOIP_CALL, \
     N_("_Copy address to clipboard"), MENUTREE_COPY_URI, \
-    N_("_"), MENUTREE_URI_SEPARATOR
+    "_", MENUTREE_URI_SEPARATOR
 
 
 #endif // MENU_LABELS_H
