@@ -483,18 +483,35 @@ static char const **build_label_list(MenuTreeID ignored, ...)
 
 static char *shortcuts_get_locale()
 {
-    char *raw_locale = setlocale(LC_MESSAGES, NULL);
-    if (!raw_locale)
-    {
-        return NULL;
+    // 1. Check LANGUAGE first (highest priority for gettext)
+    char *lang = getenv("LANGUAGE");
+
+    if (lang && strlen(lang) > 0) {
+        // GNU LANGUAGE can be a colon-separated list (e.g., "hu:de:en")
+        // We take the first preference
+        char *colon = strchr(lang, ':');
+        if (colon)
+        {
+            lang = g_strndup(lang, colon - lang);
+        }
+        else
+        {
+            lang = g_strdup(lang);
+        }
+    } else {
+        // 2. Fall back to standard setlocale if LANGUAGE isn't set
+        lang = setlocale(LC_MESSAGES, NULL);
+        if (lang) {
+            lang = g_strdup(lang);
+        }
     }
-    char *lang_code = g_strdup(raw_locale);
-    // Terminate at '.' (encoding) or '@' (modifiers)
-    char *suffix = strpbrk(lang_code, ".@");
+
+    // 3. Strip any encoding suffixes (.UTF-8 or @modifiers)
+    char *suffix = strpbrk(lang, ".@");
     if (suffix) {
-        *suffix = '\0';
+        *suffix = '\0'; 
     }
-    return lang_code;
+    return lang;
 }
 
 // Loads existing `name` shortcuts file if one exists and builds the filename
@@ -517,6 +534,7 @@ static char *make_editable_shortcuts_file(const char *name)
     char **trans_top_labels = NULL;
     gboolean translate = lang && !(lang[0] == 'C' && !lang[1]) &&
         strcmp(lang, "POSIX") && !g_str_has_prefix(lang, "en");
+    g_debug("lang %s, translate %d", lang, translate);
     if (translate)
     {
         int l = 0;
