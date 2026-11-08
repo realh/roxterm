@@ -1,5 +1,5 @@
 #!/bin/sh
-RELEASES="focal jammy noble questing resolute"
+RELEASES="focal jammy noble resolute stonking"
 set -e
 cd $(dirname $0)
 rm -rf build
